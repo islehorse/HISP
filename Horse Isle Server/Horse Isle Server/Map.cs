@@ -22,6 +22,10 @@ namespace Horse_Isle_Server
             else
                 return MapData.GetPixel(x, y).B;
         }
+        public static bool CheckPassable(int x, int y)
+        {
+            return true; // not implemented yet
+        }
 
         public static void OpenMap()
         {

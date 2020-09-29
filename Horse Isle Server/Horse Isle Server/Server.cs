@@ -30,9 +30,51 @@ namespace Horse_Isle_Server
                 Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
                 return;
             }
-            Logger.DebugPrint(sender.RemoteIp + " Requesting user information.");
+            Logger.DebugPrint(sender.LoggedinUser.Username + " Requesting user information.");
             byte[] userInfoPackets = PacketBuilder.CreateUserInfo(sender);
             sender.SendPacket(userInfoPackets);
+        }
+
+        public static void OnMovementPacket(Client sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent movement packet when not logged in.");
+                return;
+            }
+
+            User loggedInUser = sender.LoggedinUser;
+            byte movementDirection = packet[1];
+            switch(movementDirection)
+            {
+                case PacketBuilder.MOVE_UP:
+                    if(Map.CheckPassable(loggedInUser.X, loggedInUser.Y+1))
+                        loggedInUser.Y -= 1;
+                    byte[] moveUpResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_UP, PacketBuilder.DIRECTION_UP, true);
+                    sender.SendPacket(moveUpResponse);
+                    break;
+                case PacketBuilder.MOVE_LEFT:
+                    if (Map.CheckPassable(loggedInUser.X - 1, loggedInUser.Y))
+                        loggedInUser.X -= 1;
+                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_LEFT, PacketBuilder.DIRECTION_LEFT, true);
+                    sender.SendPacket(moveLeftResponse);
+                    break;
+                case PacketBuilder.MOVE_RIGHT:
+                    if (Map.CheckPassable(loggedInUser.X +1 , loggedInUser.Y))
+                        loggedInUser.X += 1;
+                    byte[] moveRightResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_RIGHT, PacketBuilder.DIRECTION_RIGHT, true);
+                    sender.SendPacket(moveRightResponse);
+                    break;
+                case PacketBuilder.MOVE_DOWN:
+                    if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
+                        loggedInUser.Y += 1;
+                    byte[] moveDownResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_DOWN, PacketBuilder.DIRECTION_DOWN, true);
+                    sender.SendPacket(moveDownResponse);
+                    break;
+            }
+
+            byte[] tileData = PacketBuilder.CreateAreaMessage(loggedInUser.X, loggedInUser.Y);
+            sender.SendPacket(tileData);
         }
         public static void OnLoginRequest(Client sender, byte[] packet)
         {
