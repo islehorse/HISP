@@ -9,7 +9,16 @@ namespace Horse_Isle_Server
 
     class World
     {
-
+        public struct Isle
+        {
+            public int StartX;
+            public int EndX;
+            public int StartY;
+            public int EndY;
+            public int Tileset;
+            public string Name;
+        }
+       
         public struct Time
         {
             public int minutes;
@@ -19,6 +28,7 @@ namespace Horse_Isle_Server
         }
         public const int MINUTE = 4320;
 
+        public static List<Isle> Isles = new List<Isle>();
         public static Time GetGameTime()
         {
             int epoch = Database.GetServerCreationTime();
@@ -44,6 +54,22 @@ namespace Horse_Isle_Server
             return time;
         }
 
+        public static Isle GetIsle(int x, int y)
+        {
+            foreach(Isle isle in Isles)
+            {
+
+                if (isle.StartX <= x && isle.EndX >= x && isle.StartY <= y && isle.EndY >= y)
+                {
+                    return isle;
+                }
+            }
+            throw new KeyNotFoundException("x,y not in an isle!");
+        }
+        public static int[] GetDroppedItems(int x, int y)
+        {
+            return new int[] { }; // Not implemented yet.
+        }
         public static string GetWeather()
         {
             return Database.GetWorldWeather();

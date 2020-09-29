@@ -5,32 +5,19 @@ using Newtonsoft.Json;
 namespace Horse_Isle_Server
 {
 
-    internal class Isle
-    {
-        public int StartX = 0;
-        public int EndX = 0;
-        public int StartY = 0;
-        public int EndY = 0;
-        public int Tileset = 0;
-        public string Name;
-        public Isle(int startx, int starty, int endx, int endy, int tileset, string name)
-        {
-            StartX = startx;
-            StartY = starty;
-            EndX = endx;
-            EndY = endy;
-            Tileset = tileset;
-            Name = name;
-        }
-    }
+
 
     class Gamedata
     {
-        public static List<Isle> Isles = new List<Isle>();
+        public static string TileFlags;
         
         public static int NewUserStartX;
         public static int NewUserStartY;
+        // Messages
         public static string NewUserMessage;
+        public static string AreaMessage;
+        public static string NothingMessage;
+        public static string LoginMessage;
         
         public static void ReadGamedata()
         {
@@ -46,25 +33,27 @@ namespace Horse_Isle_Server
             for(int i = 0; i < totalIsles; i++)
             {
 
-                int startx = gameData.isles[i].start_x;
-                int starty = gameData.isles[i].start_y;
-                int endx = gameData.isles[i].end_x;
-                int endy = gameData.isles[i].end_y;
-                int tileset = gameData.isles[i].tileset;
-                string name = gameData.isles[i].name;
+                World.Isle isle = new World.Isle();
+                isle.StartX = gameData.isles[i].start_x;
+                isle.StartY = gameData.isles[i].start_y;
+                isle.EndX = gameData.isles[i].end_x;
+                isle.EndY = gameData.isles[i].end_y;
+                isle.Tileset = gameData.isles[i].tileset;
+                isle.Name = gameData.isles[i].name;
 
-                Logger.DebugPrint("Registered Isle: " + name + " X " + startx + "-" + endx + " Y " + starty + "-" + endy + " tileset: " + tileset);
-                Isles.Add(new Isle(startx, starty, endx, endy, tileset, name));
+                Logger.DebugPrint("Registered Isle: " + isle.Name + " X " + isle.StartX + "-" + isle.EndX + " Y " + isle.StartY + "-" + isle.EndY + " tileset: " + isle.Tileset);
+                World.Isles.Add(isle);
             }
 
             NewUserMessage = gameData.new_user.starting_message;
-            Logger.DebugPrint("New User Message: " + NewUserMessage);
             NewUserStartX = gameData.new_user.starting_x;
-            Logger.DebugPrint("New User Start X: " + NewUserStartX);
             NewUserStartY = gameData.new_user.starting_y;
-            Logger.DebugPrint("New User Start Y: " + NewUserStartY);
 
+            LoginMessage = gameData.messages.login_format;
+            AreaMessage = gameData.messages.area_format;
+            NothingMessage = gameData.messages.nothing_message;
 
+            TileFlags = gameData.map_flags;
         }
 
     }

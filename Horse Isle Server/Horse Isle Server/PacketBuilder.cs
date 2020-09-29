@@ -20,6 +20,11 @@ namespace Horse_Isle_Server
         public const byte PACKET_USERINFO = 0x81;
         public const byte PACKET_WORLD = 0x7A;
         public const byte PACKET_BASE_STATS = 0x7B;
+        public const byte PACKET_PLACE_INFO = 0x1E;
+        public const byte PACKET_AREA_DEFS = 0x79;
+        public const byte PACKET_TILE_FLAGS = 0x75;
+        public const byte AREA_SEPERATOR = 0x5E;
+
         private const byte CHAT_BOTTOM_LEFT = 0x14;
         private const byte CHAT_BOTTOM_RIGHT = 0x15;
 
@@ -71,14 +76,19 @@ namespace Horse_Isle_Server
                 direction -= 20;
             }
 
+            int ystart = y - 3;
+
+            int xstart = x - 2;
+
+
             if (direction == 4)
             {
-                for(int rely = y - 3; rely < rely + 9; rely++)
+                for(int rely = 0; rely <= 9; rely++)
                 {
-                    for (int relx = x - 2; relx < relx + 12; relx++)
+                    for (int relx = 0; relx <= 12; relx++)
                     {
-                        int tileId = Map.GetTileId(relx, rely, false);
-                        int otileId = Map.GetTileId(relx, rely, true);
+                        int tileId = Map.GetTileId(xstart + relx, ystart + rely, false);
+                        int otileId = Map.GetTileId(xstart + relx, ystart + rely, true);
 
                         if (tileId == 290)
                             tileId -= 100;
@@ -94,6 +104,24 @@ namespace Horse_Isle_Server
 
 
             ms.WriteByte(PACKET_TERMINATOR);
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+            return Packet;
+        }
+
+        public static byte[] CreatePlaceInfo(string formattedText)
+        {
+            byte[] strBytes = Encoding.UTF8.GetBytes(formattedText);
+
+            MemoryStream ms = new MemoryStream();
+
+            ms.WriteByte(PACKET_PLACE_INFO);
+
+            ms.Write(strBytes, 0x00, strBytes.Length);
+
+            ms.WriteByte(PACKET_TERMINATOR);
+
             ms.Seek(0x00, SeekOrigin.Begin);
             byte[] Packet = ms.ToArray();
             ms.Dispose();
@@ -120,10 +148,14 @@ namespace Horse_Isle_Server
             return Packet;
         }
 
+        public static byte[] CreateAreaMessage(int x, int y)
+        {
+            string locationStr = Messages.LocationData(x, y);
+            return CreatePlaceInfo(locationStr);
+        }
         public static byte[] CreateLoginMessage(string username)
         {
-            string formattedStr = Gamedata.NewUserMessage.Replace("%USERNAME%", username);
-            
+            string formattedStr = Messages.LoginMessage(username); 
             return CreateChat(formattedStr,CHAT_BOTTOM_RIGHT);
         }
 
@@ -153,6 +185,41 @@ namespace Horse_Isle_Server
             return Packet;
         }
 
+        public static byte[] CreateIsleData(World.Isle[] isles)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_AREA_DEFS);
+            foreach(World.Isle isle in isles)
+            {
+                byte[] strBytes = Encoding.UTF8.GetBytes(isle.Name);
+
+                ms.WriteByte(AREA_SEPERATOR);
+
+                ms.WriteByte((byte)((isle.StartX / 64) + 20));
+                ms.WriteByte((byte)((isle.StartX % 64) + 20));
+
+                ms.WriteByte((byte)((isle.EndX / 64) + 20));
+                ms.WriteByte((byte)((isle.EndX % 64) + 20));
+
+                ms.WriteByte((byte)((isle.StartY / 64) + 20));
+                ms.WriteByte((byte)((isle.StartY % 64) + 20));
+
+                ms.WriteByte((byte)((isle.EndY / 64) + 20));
+                ms.WriteByte((byte)((isle.EndY % 64) + 20));
+
+                ms.WriteByte((byte)isle.Tileset.ToString()[0]);
+
+                ms.Write(strBytes, 0x00, strBytes.Length);
+            }
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
+
         public static byte[] CreateBaseStats(int money, int playerCount, int mail)
         {
             byte[] moneyStrBytes = Encoding.UTF8.GetBytes(money.ToString());
@@ -167,6 +234,23 @@ namespace Horse_Isle_Server
             ms.WriteByte((byte)'|');
             ms.Write(mailStrBytes, 0x00, mailStrBytes.Length);
             ms.WriteByte((byte)'|');
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
+
+        public static byte[] CreateTileFlags(string tileFlags)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_TILE_FLAGS);
+
+            byte[] strBytes = Encoding.UTF8.GetBytes(tileFlags);
+            ms.Write(strBytes, 0x00, strBytes.Length);
+
             ms.WriteByte(PACKET_TERMINATOR);
 
             ms.Seek(0x00, SeekOrigin.Begin);
@@ -219,15 +303,23 @@ namespace Horse_Isle_Server
             timestamp += time.minutes;
 
             byte[] WorldData = CreateWorldData(timestamp, time.days, time.year, World.GetWeather());
-            ms.Write(WorldData, 0x00, LoginMessage.Length);
+            ms.Write(WorldData, 0x00, WorldData.Length);
 
             byte[] SecCodePacket = CreateSecCode(user.SecCodeSeeds, user.SecCodeInc, user.Administrator, user.Moderator);
             ms.Write(SecCodePacket, 0x00, SecCodePacket.Length);
 
             byte[] BaseStatsPacketData = CreateBaseStats(user.Money, Server.GetNumberOfPlayers(), user.MailBox.MailCount);
             ms.Write(BaseStatsPacketData, 0x00, BaseStatsPacketData.Length);
-                
 
+            byte[] AreaMessage = CreateAreaMessage(user.X,user.Y);
+            ms.Write(AreaMessage, 0x00, AreaMessage.Length);
+
+            byte[] IsleData = CreateIsleData(World.Isles.ToArray());
+            ms.Write(IsleData, 0x00, IsleData.Length);
+
+            byte[] TileFlags = CreateTileFlags(Gamedata.TileFlags);
+            ms.Write(TileFlags, 0x00, TileFlags.Length);
+            
             ms.Seek(0x00, SeekOrigin.Begin);
             byte[] Packet = ms.ToArray();
             ms.Dispose();
