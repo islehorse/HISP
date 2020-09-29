@@ -14,7 +14,9 @@ namespace Horse_Isle_Server
     {
         public Socket ClientSocket;
         public string RemoteIp;
+
         public bool LoggedIn = false;
+        public User LoggedinUser;
 
         private Thread recvPackets;
 
@@ -23,6 +25,11 @@ namespace Horse_Isle_Server
         private const byte PACKET_MOVE = 0x15;
         private const byte PACKET_USERINFO = 0x81;
 
+        public void Login(int id)
+        {
+            LoggedinUser = new User(id);
+            LoggedIn = true;
+        }
         private void receivePackets()
         {
             // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator

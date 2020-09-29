@@ -19,36 +19,62 @@ namespace Horse_Isle_Server
             Logger.DebugPrint("Cross-Domain-Policy request received from: " + sender.RemoteIp);
 
             byte[] crossDomainPolicyResponse = CrossDomainPolicy.GetPolicy(); // Generate response packet
+
             sender.SendPacket(crossDomainPolicyResponse); // Send to client.
         }
 
         public static void OnLoginRequest(Client sender, byte[] packet)
         {
+            Logger.DebugPrint("Login request received from: " + sender.RemoteIp);
+
             string loginRequestString = Encoding.UTF8.GetString(packet).Substring(1);
 
-            if (!loginRequestString.Contains('|'))
+            if (!loginRequestString.Contains('|') || packet.Length < 3)
             {
-                Logger.ErrorPrint(sender.RemoteIp + " Sent an invalid login request" + loginRequestString);
+                Logger.ErrorPrint(sender.RemoteIp + " Sent an invalid login request");
                 return;
             }
 
-            string[] loginParts = loginRequestString.Split('|');
-            if(loginParts.Length < 3)
+            if(packet[1] != PacketBuilder.PACKET_A_TERMINATOR)
             {
-                Logger.ErrorPrint(sender.RemoteIp + " Sent a login request of invalid length. " + loginRequestString);
-                return;
+                string[] loginParts = loginRequestString.Split('|');
+                if (loginParts.Length < 3)
+                {
+                    Logger.ErrorPrint(sender.RemoteIp + " Sent a login request of invalid length. " + loginRequestString);
+                    return;
+                }
+
+                int version = int.Parse(loginParts[0]);
+                string encryptedUsername = loginParts[1];
+                string encryptedPassword = loginParts[2];
+                string username = Authentication.DecryptLogin(encryptedUsername);
+                string password = Authentication.DecryptLogin(encryptedPassword);
+
+                if (Authentication.CheckPassword(username, password))
+                {
+                    // Obtain user information
+                    int userId = Database.GetUserid(username);
+                    sender.Login(userId);
+
+                    byte[] ResponsePacket = PacketBuilder.CreateLoginPacket(true);
+                    sender.SendPacket(ResponsePacket);
+                }
+                else
+                {
+                    Logger.WarnPrint(sender.RemoteIp + " Attempted to login to: " + username + " with incorrect password " + password);
+                    byte[] ResponsePacket = PacketBuilder.CreateLoginPacket(false);
+                    sender.SendPacket(ResponsePacket);
+                }
+            }
+            else
+            {
+                if(!sender.LoggedIn)
+                {
+                    Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
+                    return;
+                }
             }
 
-            int version = int.Parse(loginParts[0]);
-            string encryptedUsername = loginParts[1];
-            string encryptedPassword = loginParts[2];
-            string username = Authentication.DecryptLogin(encryptedUsername);
-            string password = Authentication.DecryptLogin(encryptedPassword);
-
-            if(Authentication.CheckPassword(username, password))
-            {
-
-            }
         }
         public static void StartServer()
         {
