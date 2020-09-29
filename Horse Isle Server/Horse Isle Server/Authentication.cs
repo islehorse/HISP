@@ -57,26 +57,23 @@ namespace Horse_Isle_Server
         {
             byte[] plaintextBytes = Encoding.UTF8.GetBytes(plaintext);
 
-            SHA512 sha512 = SHA512.Create();
-            sha512.Initialize();
-            byte[] hash = sha512.TransformFinalBlock(plaintextBytes, 0x00, plaintextBytes.Length);
+            SHA512 sha512 = new SHA512Managed();
+            byte[] hash = sha512.ComputeHash(plaintextBytes);
 
             for (int i = 0; i < hash.Length; i++)
             {
                 hash[i] ^= salt[i];
             }
 
-            sha512 = SHA512.Create();
-            sha512.Initialize();
-            byte[] finalHash = sha512.TransformFinalBlock(hash, 0x00, hash.Length);
+
+            byte[] finalHash = sha512.ComputeHash(hash);
 
             return finalHash;
         }
 
         public static bool CheckPassword(string username, string password)
         {
-
-            try
+            if(Database.CheckUserExist(username))
             {
                 byte[] expectedPassword = Database.GetPasswordHash(username);
                 byte[] salt = Database.GetPasswordSalt(username);
@@ -84,14 +81,8 @@ namespace Horse_Isle_Server
 
                 if (Enumerable.SequenceEqual(expectedPassword, hashedPassword))
                     return true;
-                else
-                    return false;
             }
-            catch(KeyNotFoundException e)
-            {
-                Logger.DebugPrint(e.Message);
-                return false;
-            }
+            return false;
         }
 
     }

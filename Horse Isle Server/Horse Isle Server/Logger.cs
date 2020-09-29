@@ -13,6 +13,10 @@ namespace Horse_Isle_Server
             if (ConfigReader.Debug)
                 Console.WriteLine("[DEBUG] " + text);   
         }
+        public static void WarnPrint(string text)
+        {
+            Console.WriteLine("[WARN] " + text);
+        }
         public static void ErrorPrint(string text)
         {
             Console.WriteLine("[ERROR] " + text);

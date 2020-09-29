@@ -14,7 +14,7 @@ namespace Horse_Isle_Server
         {
             if (!File.Exists(ConfigReader.CrossDomainPolicyFile)) {
                 if (ConfigReader.Debug)
-                    Console.WriteLine("[DEBUG] Cross domain policy file not found, using default");
+                    Console.WriteLine("[DEBUG] Cross-Domain-Policy file not found, using default");
                 File.WriteAllText(ConfigReader.CrossDomainPolicyFile, Resources.DefaultCrossDomain);
             } 
                 

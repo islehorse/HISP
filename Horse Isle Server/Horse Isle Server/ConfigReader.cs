@@ -15,10 +15,11 @@ namespace Horse_Isle_Server
         public static string DatabaseName;
         public static string DatabasePassword;
         public static int DatabasePort;
-        
 
+        public static string Motd;
         public static string MapFile;
         public static string OverlayMapFile;
+        public static string GameDataFile;
         public static string CrossDomainPolicyFile;
         public static bool Debug;
 
@@ -77,6 +78,12 @@ namespace Horse_Isle_Server
                         break;
                     case "map":
                         MapFile = data;
+                        break;
+                    case "motd":
+                        Motd = data;
+                        break;
+                    case "gamedata":
+                        GameDataFile = data;
                         break;
                     case "overlaymap":
                         OverlayMapFile = data;

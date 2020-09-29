@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Sockets;
+﻿using System.IO;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Horse_Isle_Server
 {
@@ -15,7 +9,12 @@ namespace Horse_Isle_Server
         {
             Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
             ConfigReader.OpenConfig();
+            CrossDomainPolicy.GetPolicy();
             Database.OpenDatabase();
+            Map.OpenMap();
+            Gamedata.ReadGamedata();
+            Server.StartServer();
+
         }
     }
 }
