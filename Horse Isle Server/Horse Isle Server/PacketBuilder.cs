@@ -23,13 +23,28 @@ namespace Horse_Isle_Server
         public const byte PACKET_PLACE_INFO = 0x1E;
         public const byte PACKET_AREA_DEFS = 0x79;
         public const byte PACKET_TILE_FLAGS = 0x75;
+
         public const byte AREA_SEPERATOR = 0x5E;
 
-        private const byte CHAT_BOTTOM_LEFT = 0x14;
-        private const byte CHAT_BOTTOM_RIGHT = 0x15;
+        public const byte MOVE_UP = 0x14;
+        public const byte MOVE_DOWN = 0x15;
+        public const byte MOVE_RIGHT = 0x16;
+        public const byte MOVE_LEFT = 0x17;
+        public const byte MOVE_EXIT = 0x10;
+
+        public const byte CHAT_BOTTOM_LEFT = 0x14;
+        public const byte CHAT_BOTTOM_RIGHT = 0x15;
 
         public const byte LOGIN_INVALID_USER_PASS = 0x15;
         public const byte LOGIN_SUCCESS = 0x14;
+
+        public const byte DIRECTION_UP = 0;
+        public const byte DIRECTION_RIGHT = 1;
+        public const byte DIRECTION_DOWN = 2;
+        public const byte DIRECTION_LEFT = 3;
+        public const byte DIRECTION_LOGIN = 4;
+
+
 
         public static byte[] CreateLoginPacket(bool Success)
         {
@@ -48,7 +63,7 @@ namespace Horse_Isle_Server
             return Packet;
         }
 
-        public static byte[] CreateMovementPacket(int x, int y,int charId, int facing, int direction, bool walk)
+        public static byte[] CreateMovementPacket(int x, int y,int charId,int facing, int direction, bool walk)
         {
             // Header information
             MemoryStream ms = new MemoryStream();
@@ -77,11 +92,78 @@ namespace Horse_Isle_Server
             }
 
             int ystart = y - 3;
-
             int xstart = x - 2;
 
 
-            if (direction == 4)
+            if (direction == DIRECTION_UP)
+            {
+                for (int relx = 0; relx <= 12; relx++)
+                {
+                    int tileId = Map.GetTileId(xstart + relx, ystart, false);
+                    int otileId = Map.GetTileId(xstart + relx, ystart, true);
+
+                    if (tileId == 290)
+                        tileId -= 100;
+                    if (otileId == 290)
+                        otileId -= 100;
+
+                    ms.WriteByte((byte)tileId);
+                    ms.WriteByte((byte)otileId);
+                }
+            }
+
+            if (direction == DIRECTION_LEFT)
+            {
+                for (int rely = 0; rely <= 9; rely++)
+                {
+                    int tileId = Map.GetTileId(xstart, ystart + rely, false);
+                    int otileId = Map.GetTileId(xstart, ystart + rely, true);
+
+                    if (tileId == 290)
+                        tileId -= 100;
+                    if (otileId == 290)
+                        otileId -= 100;
+
+                    ms.WriteByte((byte)tileId);
+                    ms.WriteByte((byte)otileId);
+                }
+            }
+
+
+            if (direction == DIRECTION_RIGHT)
+            {
+                for (int rely = 0; rely <= 9; rely++)
+                {
+                    int tileId = Map.GetTileId(xstart + 12, ystart + rely, false);
+                    int otileId = Map.GetTileId(xstart + 12, ystart + rely, true);
+
+                    if (tileId == 290)
+                        tileId -= 100;
+                    if (otileId == 290)
+                        otileId -= 100;
+
+                    ms.WriteByte((byte)tileId);
+                    ms.WriteByte((byte)otileId);
+                }
+            }
+
+            if (direction == DIRECTION_DOWN)
+            {
+                for (int relx = 0; relx <= 12; relx++)
+                {
+                    int tileId = Map.GetTileId(xstart + relx, ystart + 9, false);
+                    int otileId = Map.GetTileId(xstart + relx, ystart + 9, true);
+
+                    if (tileId == 290)
+                        tileId -= 100;
+                    if (otileId == 290)
+                        otileId -= 100;
+
+                    ms.WriteByte((byte)tileId);
+                    ms.WriteByte((byte)otileId);
+                }
+            }
+            if (direction == DIRECTION_LOGIN)
             {
                 for(int rely = 0; rely <= 9; rely++)
                 {
@@ -292,7 +374,7 @@ namespace Horse_Isle_Server
                 throw new Exception("Client is not logged in.");
             User user = client.LoggedinUser;
 
-            byte[] MovementPacket = CreateMovementPacket(user.X, user.Y, user.CharacterId, 2, 4, false);
+            byte[] MovementPacket = CreateMovementPacket(user.X, user.Y, user.CharacterId, DIRECTION_DOWN, DIRECTION_LOGIN, false);
             ms.Write(MovementPacket, 0x00, MovementPacket.Length);
 
             byte[] LoginMessage = CreateLoginMessage(user.Username);

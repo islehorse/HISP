@@ -96,6 +96,12 @@ namespace Horse_Isle_Server
                     case PacketBuilder.PACKET_LOGIN:
                         Server.OnUserInfoRequest(this, Packet);
                         break;
+                    case PacketBuilder.PACKET_MOVE:
+                        Server.OnMovementPacket(this, Packet);
+                        break;
+                    default:
+                        Logger.ErrorPrint("Unimplemented Packet: " + BitConverter.ToString(Packet).Replace('-', ' '));
+                        break;
                 }
             }
         }
