@@ -3,8 +3,8 @@
 	"motd_format":"<FONT COLOR='#FF0000'><B>Today's Note:</B> %NOTE%</FONT>",
 	"mail_received":"A message has been sent to you from another player. It is in your inventory now.",
 	"global_format":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE</FONT>",
-	"area_format":"<I>You are on %AREA% </I>",
-	"nothing_message":"<BR>^LYou see nothing on the ground of interest.^R1"
+	"area_format":"               <I>You are on %AREA% </I><BR>",
+	"nothing_message":"^LYou see nothing on the ground of interest.^R1"
  },
  "new_user":{
 	 "starting_message":"<B>Welcome Newest Rider of Horse Isle!</B><BR>Start by talking to Welcome Willy in the cabin. Click the TALK button by his name in the right hand window. He will know the location of a buried treasure on this island!  Move to the spot he describes using the arrow keys.  Then Click the WRENCH Icon at the lower right.",
@@ -130,5 +130,6 @@
 	{"start_x":7,"end_x":247,"start_y":365,"end_y":473,"tileset":6,"name":"The Cloud Isles"},
 	{"start_x":405,"end_x":608,"start_y":154,"end_y":370,"tileset":0,"name":"Horse Isle"},
 	{"start_x":104,"end_x":327,"start_y":54,"end_y":265,"tileset":5,"name":"Jungle Isle"}
- ]
+ ],
+ "map_flags":"311111111111111130001133311113333333333333333111311113231333333333333333222211132222222222222222222222213222222222222222222222223333333312222223332222222222222222222233322222222333333113332003322223333222233223223222223311222333333331111111123323222333333331111333213333322322322222221122202033333333333333333333333333333333333333333333333333333333333333333333311111111223232222233333333332222313122220020332233333323322223222233333322222333221111331111111111111111111333333333331111112211333333333333333333333333111111111111111111111123222222220011113322222131133333333333333322222223213322332223003222222332111112332333122211111112333333331111133332333333111111111111111100011003000112232222223311113333"
 }
