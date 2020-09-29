@@ -19,7 +19,7 @@ namespace Horse_Isle_Server
         public const byte PACKET_MOVE = 0x15;
         public const byte PACKET_USERINFO = 0x81;
         public const byte PACKET_WORLD = 0x7A;
-
+        public const byte PACKET_BASE_STATS = 0x7B;
         private const byte CHAT_BOTTOM_LEFT = 0x14;
         private const byte CHAT_BOTTOM_RIGHT = 0x15;
 
@@ -152,6 +152,55 @@ namespace Horse_Isle_Server
 
             return Packet;
         }
+
+        public static byte[] CreateBaseStats(int money, int playerCount, int mail)
+        {
+            byte[] moneyStrBytes = Encoding.UTF8.GetBytes(money.ToString());
+            byte[] playerStrBytes = Encoding.UTF8.GetBytes(playerCount.ToString());
+            byte[] mailStrBytes = Encoding.UTF8.GetBytes(mail.ToString());
+
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_BASE_STATS);
+            ms.Write(moneyStrBytes, 0x00, moneyStrBytes.Length);
+            ms.WriteByte((byte)'|');
+            ms.Write(playerStrBytes, 0x00, playerStrBytes.Length);
+            ms.WriteByte((byte)'|');
+            ms.Write(mailStrBytes, 0x00, mailStrBytes.Length);
+            ms.WriteByte((byte)'|');
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
+        public static byte[] CreateSecCode(byte[] SecCodeSeed, int SecCodeInc, bool Admin, bool Moderator)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_USERINFO);
+
+            ms.WriteByte((byte)(SecCodeSeed[0] + 33));
+            ms.WriteByte((byte)(SecCodeSeed[1] + 33));
+            ms.WriteByte((byte)(SecCodeSeed[2] + 33));
+            ms.WriteByte((byte)(SecCodeInc + 33));
+
+            char userType = 'N'; // Normal?
+            if (Moderator)
+                userType = 'M';
+            if (Admin)
+                userType = 'A';
+
+            ms.WriteByte((byte)userType);
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
+
         public static byte[] CreateUserInfo(Client client)
         {
             MemoryStream ms = new MemoryStream();
@@ -171,6 +220,13 @@ namespace Horse_Isle_Server
 
             byte[] WorldData = CreateWorldData(timestamp, time.days, time.year, World.GetWeather());
             ms.Write(WorldData, 0x00, LoginMessage.Length);
+
+            byte[] SecCodePacket = CreateSecCode(user.SecCodeSeeds, user.SecCodeInc, user.Administrator, user.Moderator);
+            ms.Write(SecCodePacket, 0x00, SecCodePacket.Length);
+
+            byte[] BaseStatsPacketData = CreateBaseStats(user.Money, Server.GetNumberOfPlayers(), user.MailBox.MailCount);
+            ms.Write(BaseStatsPacketData, 0x00, BaseStatsPacketData.Length);
+                
 
             ms.Seek(0x00, SeekOrigin.Begin);
             byte[] Packet = ms.ToArray();

@@ -6,13 +6,20 @@ using System.Threading.Tasks;
 
 namespace Horse_Isle_Server
 {
+
     class World
     {
 
-        public static int ServerStartTime;
+        public struct Time
+        {
+            public int minutes;
+            public int hours;
+            public int days;
+            public int year;
+        }
         public const int MINUTE = 4320;
 
-        public static int GetGameDay()
+        public static Time GetGameTime()
         {
             int epoch = Database.GetServerCreationTime();
             DateTime serverCreationTime = DateTimeOffset.FromUnixTimeSeconds(epoch).DateTime;
@@ -20,13 +27,26 @@ namespace Horse_Isle_Server
 
             TimeSpan difference = (currentTime.Date - currentTime.Date);
 
-            Int64 totalMilis = Convert.ToInt32(difference.TotalMilliseconds);
+            int totalMilis = Convert.ToInt32(difference.TotalMilliseconds);
 
             
-            Int64 gameMinutes = totalMilis / 4320;
+            int gameMinutes = totalMilis / MINUTE;
+            int gameHours = (totalMilis / MINUTE * 600);
+            int gameDays = (totalMilis / (MINUTE * 60) * 24);
+            int gameYears = ((totalMilis / (MINUTE * 60) * 24)*365);
 
+            Time time = new Time();
+            time.days = gameDays;
+            time.year = gameYears;
+            time.minutes = gameMinutes;
+            time.hours = gameHours;
 
-            return;
+            return time;
+        }
+
+        public static string GetWeather()
+        {
+            return Database.GetWorldWeather();
         }
     }
 }

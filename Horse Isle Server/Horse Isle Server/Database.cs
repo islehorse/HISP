@@ -14,8 +14,9 @@ namespace Horse_Isle_Server
             db = new MySqlConnection("server=" + ConfigReader.DatabaseIP + ";user=" + ConfigReader.DatabaseUsername + ";password=" + ConfigReader.DatabasePassword+";database="+ConfigReader.DatabaseName);
             db.Open();
             string UserTable = "CREATE TABLE Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
-            string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, Money INT, BankBalance BIGINT,ProfilePage Text(1028), CharId, INT)";
-            string WorldTable = "CREATE TABLE World(TimeStarted INT, Weather TEXT(64)";
+            string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, Money INT, BankBalance BIGINT,ProfilePage Text(1028), CharId INT)";
+            string MailTable = "CREATE TABLE Mailbox(IdTo INT, PlayerFrom TEXT(16),Subject TEXT(128), Message Text(1028), TimeSent INT)";
+            string WorldTable = "CREATE TABLE World(TimeStarted INT, Weather TEXT(64))";
 
             try
             {
@@ -39,6 +40,19 @@ namespace Horse_Isle_Server
             {
                 Logger.WarnPrint(e.Message);
             };
+
+            try
+            {
+
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = MailTable;
+                sqlCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Logger.WarnPrint(e.Message);
+            };
+
 
             try
             {
@@ -105,7 +119,35 @@ namespace Horse_Isle_Server
                 throw new KeyNotFoundException("Username " + username + " not found in database.");
             }
         }
-        
+
+        public static int CheckMailcount(int id)
+        {
+            MySqlCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = "SELECT COUNT(1) FROM Mailbox WHERE IdTo=@id";
+            sqlCommand.Parameters.AddWithValue("@id", id);
+            sqlCommand.Prepare();
+
+            Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+            return count;
+        }
+
+        public static void AddMail(int toId, string fromName, string subject, string message)
+        {
+            MySqlCommand sqlCommand = db.CreateCommand();
+            int epoch = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+            sqlCommand.CommandText = "INSERT INTO Mailbox VALUES(@toId,@from,@subject,@message,@time)";
+            sqlCommand.Parameters.AddWithValue("@toId", toId);
+            sqlCommand.Parameters.AddWithValue("@from", fromName);
+            sqlCommand.Parameters.AddWithValue("@subject", subject);
+            sqlCommand.Parameters.AddWithValue("@mesasge", message);
+            sqlCommand.Parameters.AddWithValue("@time", epoch);
+            sqlCommand.Prepare();
+            sqlCommand.ExecuteNonQuery();
+
+
+        }
+
         public static bool CheckUserExist(int id)
         {
             MySqlCommand sqlCommand = db.CreateCommand();

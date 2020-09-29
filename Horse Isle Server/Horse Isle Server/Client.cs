@@ -20,10 +20,6 @@ namespace Horse_Isle_Server
 
         private Thread recvPackets;
 
-        private const byte PACKET_LOGIN = 0x7F;
-        private const byte PACKET_CHAT = 0x14;
-        private const byte PACKET_MOVE = 0x15;
-        private const byte PACKET_USERINFO = 0x81;
 
         public void Login(int id)
         {
@@ -88,7 +84,7 @@ namespace Horse_Isle_Server
                 }
                 switch(identifier)
                 {
-                    case PACKET_LOGIN:
+                    case PacketBuilder.PACKET_LOGIN:
                         Server.OnLoginRequest(this,Packet);
                         break;
                 }
