@@ -23,6 +23,17 @@ namespace Horse_Isle_Server
             sender.SendPacket(crossDomainPolicyResponse); // Send to client.
         }
 
+        public static void OnUserInfoRequest(Client sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
+                return;
+            }
+            Logger.DebugPrint(sender.RemoteIp + " Requesting user information.");
+            byte[] userInfoPackets = PacketBuilder.CreateUserInfo(sender);
+            sender.SendPacket(userInfoPackets);
+        }
         public static void OnLoginRequest(Client sender, byte[] packet)
         {
             Logger.DebugPrint("Login request received from: " + sender.RemoteIp);
@@ -64,14 +75,6 @@ namespace Horse_Isle_Server
                     Logger.WarnPrint(sender.RemoteIp + " Attempted to login to: " + username + " with incorrect password " + password);
                     byte[] ResponsePacket = PacketBuilder.CreateLoginPacket(false);
                     sender.SendPacket(ResponsePacket);
-                }
-            }
-            else
-            {
-                if(!sender.LoggedIn)
-                {
-                    Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
-                    return;
                 }
             }
 

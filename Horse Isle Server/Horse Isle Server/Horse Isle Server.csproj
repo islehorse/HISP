@@ -78,7 +78,9 @@
     <Compile Include="Logger.cs" />
     <Compile Include="ConfigReader.cs" />
     <Compile Include="CrossDomainPolicy.cs" />
+    <Compile Include="Mailbox.cs" />
     <Compile Include="Map.cs" />
+    <Compile Include="Messages.cs" />
     <Compile Include="PacketBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

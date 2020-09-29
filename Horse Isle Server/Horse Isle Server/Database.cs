@@ -17,6 +17,7 @@ namespace Horse_Isle_Server
             string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, Money INT, BankBalance BIGINT,ProfilePage Text(1028), CharId INT)";
             string MailTable = "CREATE TABLE Mailbox(IdTo INT, PlayerFrom TEXT(16),Subject TEXT(128), Message Text(1028), TimeSent INT)";
             string WorldTable = "CREATE TABLE World(TimeStarted INT, Weather TEXT(64))";
+            string DroppedTable = "CREATE TABLE DroppedItems(X INT, Y INT, ItemID INT)";
 
             try
             {
@@ -31,7 +32,6 @@ namespace Horse_Isle_Server
 
             try
             {
-
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = ExtTable;
                 sqlCommand.ExecuteNonQuery();
@@ -46,6 +46,18 @@ namespace Horse_Isle_Server
 
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = MailTable;
+                sqlCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Logger.WarnPrint(e.Message);
+            };
+
+            try
+            {
+
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = DroppedTable;
                 sqlCommand.ExecuteNonQuery();
             }
             catch (Exception e)

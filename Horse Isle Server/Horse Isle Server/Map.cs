@@ -17,10 +17,10 @@ namespace Horse_Isle_Server
             if ((x > MapData.Width || x < 0) || (y > MapData.Height || y < 0)) // Outside map?
                 return 0x01;
 
-            if(overlay)
-                return oMapData.GetPixel(x,y).ToArgb() & Convert.ToInt32(0xFF000000);
+            if (overlay)
+                return oMapData.GetPixel(x, y).B;
             else
-                return MapData.GetPixel(x, y).ToArgb() & Convert.ToInt32(0xFF000000);
+                return MapData.GetPixel(x, y).B;
         }
 
         public static void OpenMap()
@@ -32,7 +32,7 @@ namespace Horse_Isle_Server
             }
 
             MapData = new Bitmap(ConfigReader.MapFile);
-            oMapData = new Bitmap(ConfigReader.MapFile);
+            oMapData = new Bitmap(ConfigReader.OverlayMapFile);
         }
     }
 }

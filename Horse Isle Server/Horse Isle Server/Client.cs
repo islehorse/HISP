@@ -76,19 +76,28 @@ namespace Horse_Isle_Server
             }
 
             byte identifier = Packet[0];
-            if(!LoggedIn) // Must be either login or policy-file-request
+            if (!LoggedIn) // Must be either login or policy-file-request
             {
-                if(Encoding.UTF8.GetString(Packet).StartsWith("<policy-file-request/>")) // Policy File Request
+                if (Encoding.UTF8.GetString(Packet).StartsWith("<policy-file-request/>")) // Policy File Request
                 {
                     Server.OnCrossdomainPolicyRequest(this);
                 }
-                switch(identifier)
+                switch (identifier)
                 {
                     case PacketBuilder.PACKET_LOGIN:
-                        Server.OnLoginRequest(this,Packet);
+                        Server.OnLoginRequest(this, Packet);
                         break;
                 }
-            }    
+            }
+            else
+            {
+                switch (identifier)
+                {
+                    case PacketBuilder.PACKET_LOGIN:
+                        Server.OnUserInfoRequest(this, Packet);
+                        break;
+                }
+            }
         }
 
        public void Disconnect()
