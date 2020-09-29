@@ -13,6 +13,7 @@ namespace Horse_Isle_Server
         public bool Administrator;
         public bool Moderator;
         public bool NewPlayer = false;
+        public Mailbox MailBox;
 
         public string ProfilePage { 
             get 
@@ -52,7 +53,7 @@ namespace Horse_Isle_Server
             }
         }
 
-        public short X
+        public int X
         {
             get
             {
@@ -65,7 +66,7 @@ namespace Horse_Isle_Server
             }
         }
 
-        public short Y
+        public int Y
         {
             get
             {
@@ -78,7 +79,7 @@ namespace Horse_Isle_Server
             }
         }
 
-        public short CharacterId
+        public int CharacterId
         {
             get
             {
@@ -98,6 +99,28 @@ namespace Horse_Isle_Server
         private int money;
         private int bankMoney;
 
+        public byte[] SecCodeSeeds = new byte[3];
+        public  int SecCodeInc = 0;
+        public int SecCodeCount = 0;
+
+
+        public byte[] GenerateSecCode()
+        {
+            var i = 0;
+            SecCodeCount++;
+            SecCodeSeeds[SecCodeCount % 3] = (byte)(SecCodeSeeds[SecCodeCount % 3] + SecCodeInc);
+            SecCodeSeeds[SecCodeCount % 3] = (byte)(SecCodeSeeds[SecCodeCount % 3] % 92);
+            i = SecCodeSeeds[0] + SecCodeSeeds[1] * SecCodeSeeds[2] - SecCodeSeeds[1];
+            i = Math.Abs(i);
+            i = i % 92;
+
+            byte[] SecCode = new byte[4];
+            SecCode[0] = (byte)(SecCodeSeeds[0] + 33);
+            SecCode[1] = (byte)(SecCodeSeeds[1] + 33);
+            SecCode[2] = (byte)(SecCodeSeeds[2] + 33);
+            SecCode[3] = (byte)(i + 33);
+            return SecCode;
+        }
 
         public User(int UserId)
         {
@@ -118,11 +141,23 @@ namespace Horse_Isle_Server
 
             x = Database.GetPlayerX(UserId);
             y = Database.GetPlayerY(UserId);
+            charId = Database.GetPlayerCharId(UserId);
 
             money = Database.GetPlayerMoney(UserId);
             bankMoney = Database.GetPlayerBankMoney(UserId);
-
+            
             profilePage = Database.GetPlayerProfile(UserId);
+
+            MailBox = new Mailbox(this);
+
+            // Generate SecCodes
+
+            Random rng = new Random();
+            SecCodeSeeds[0] = (byte)rng.Next(0, 255 - 33);
+            SecCodeSeeds[1] = (byte)rng.Next(0, 255 - 33);
+            SecCodeSeeds[2] = (byte)rng.Next(0, 255 - 33);
+            SecCodeInc = (byte)rng.Next(0, 255 - 33);
+
         }
     }
 }

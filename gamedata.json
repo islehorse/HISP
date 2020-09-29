@@ -1,7 +1,10 @@
 {"messages":{
-	"login_message":"Welcome to the land of Horse Isle, %USERNAME%!!",
+	"login_format":"Welcome to the land of Horse Isle, %USERNAME%!!",
 	"motd_format":"<FONT COLOR='#FF0000'><B>Today's Note:</B> %NOTE%</FONT>",
-	"global_chat":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE</FONT>"
+	"mail_received":"A message has been sent to you from another player. It is in your inventory now.",
+	"global_format":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE</FONT>",
+	"area_format":"<I>You are on %AREA% </I>",
+	"nothing_message":"<BR>^LYou see nothing on the ground of interest.^R1"
  },
  "new_user":{
 	 "starting_message":"<B>Welcome Newest Rider of Horse Isle!</B><BR>Start by talking to Welcome Willy in the cabin. Click the TALK button by his name in the right hand window. He will know the location of a buried treasure on this island!  Move to the spot he describes using the arrow keys.  Then Click the WRENCH Icon at the lower right.",

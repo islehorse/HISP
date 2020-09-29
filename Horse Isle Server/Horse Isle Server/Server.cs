@@ -76,6 +76,17 @@ namespace Horse_Isle_Server
             }
 
         }
+
+        public static int GetNumberOfPlayers()
+        {
+            int count = 0;
+            foreach(Client client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                    count++;
+            }
+            return count;
+        }
         public static void StartServer()
         {
             ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
