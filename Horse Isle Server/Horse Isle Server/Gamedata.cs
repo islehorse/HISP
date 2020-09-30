@@ -89,10 +89,9 @@ namespace Horse_Isle_Server
             Messages.TileFormat = gameData.messages.meta.tile_format;
             Messages.NothingMessage = gameData.messages.meta.nothing_message;
 
-            JArray overlayTileDepth = gameData.tile_paramaters.overlay_tiles.tile_depth;
-            JArray terrainTilePassibility = gameData.tile_paramaters.terrain_tiles.passibility;
-            Map.OverlayTileDepth = overlayTileDepth.ToObject<int[]>();
-            Map.TerrainTilePassibility = terrainTilePassibility.ToObject<bool[]>();
+            Map.OverlayTileDepth = gameData.tile_paramaters.overlay_tiles.tile_depth.ToObject<int[]>();
+            Map.OverlayTilesetPassibility = gameData.tile_paramaters.overlay_tiles.passibility.ToObject<bool[][]>();
+            Map.TerrainTilePassibility = gameData.tile_paramaters.terrain_tiles.passibility.ToObject<bool[]>();
         }
 
     }

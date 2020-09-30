@@ -22,6 +22,9 @@ namespace Horse_Isle_Server
         public static string CrossDomainPolicyFile;
         public static bool Debug;
 
+        public static bool BadWords;
+        public static bool ExpandSlang;
+
         private static string ConfigurationFileName = "server.properties";
         public static void OpenConfig()
         {
@@ -86,6 +89,12 @@ namespace Horse_Isle_Server
                         break;
                     case "crossdomain":
                         CrossDomainPolicyFile = data;
+                        break;
+                    case "filter_bad_words":
+                        BadWords = data == "true";
+                        break;
+                    case "correct_slang":
+                        ExpandSlang = data == "true";
                         break;
                     case "debug":
                         Debug = data == "true";

@@ -1,13 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-
 namespace Horse_Isle_Server
 {
     class Client
@@ -21,6 +16,7 @@ namespace Horse_Isle_Server
         private Thread recvPackets;
         private Timer updateTimer;
 
+        private int updateInterval = 60 * 1000;
         private void updateTimerTick(object state)
         {
             Logger.DebugPrint("Sending update packet to "+ LoggedinUser.Username);
@@ -32,7 +28,8 @@ namespace Horse_Isle_Server
             LoggedinUser = new User(id);
             LoggedIn = true;
 
-            
+
+            updateTimer = new Timer(new TimerCallback(updateTimerTick), null, updateInterval, updateInterval);
         }
         private void receivePackets()
         {
@@ -82,8 +79,11 @@ namespace Horse_Isle_Server
             {
                 Logger.ErrorPrint("Received an invalid packet (size: "+Packet.Length+")");
             }
-
             byte identifier = Packet[0];
+
+            if (updateTimer != null)
+                updateTimer.Change(updateInterval, updateInterval);
+
             if (!LoggedIn) // Must be either login or policy-file-request
             {
                 if (Encoding.UTF8.GetString(Packet).StartsWith("<policy-file-request/>")) // Policy File Request
@@ -151,7 +151,6 @@ namespace Horse_Isle_Server
             RemoteIp = clientSocket.RemoteEndPoint.ToString();
 
             Logger.DebugPrint("Client connected @ " + RemoteIp);
-            updateTimer = new Timer(new TimerCallback(updateTimerTick), null, 60 * 1000, 60 * 1000);
 
             recvPackets = new Thread(() =>
             {
