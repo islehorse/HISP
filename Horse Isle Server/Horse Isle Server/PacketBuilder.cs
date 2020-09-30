@@ -12,7 +12,7 @@ namespace Horse_Isle_Server
 
         public const byte PACKET_TERMINATOR = 0x00;
         public const byte PACKET_A_TERMINATOR = 0x0A;
-
+        
 
         public const byte PACKET_LOGIN = 0x7F;
         public const byte PACKET_CHAT = 0x14;
@@ -24,8 +24,16 @@ namespace Horse_Isle_Server
         public const byte PACKET_AREA_DEFS = 0x79;
         public const byte PACKET_ANNOUNCEMENT = 0x7E;
         public const byte PACKET_TILE_FLAGS = 0x75;
+        public const byte PACKET_UPDATE = 0x7C;
+        public const byte PACKET_PROFILE = 0x18;
+
+        public const byte VIEW_PROFILE = 0x14;
+        public const byte SAVE_PROFILE = 0x15;
 
         public const byte AREA_SEPERATOR = 0x5E;
+        public const byte AREA_TOWN = 0x54;
+        public const byte AREA_AREA = 0x41;
+        public const byte AREA_ISLE = 0x49;
 
         public const byte MOVE_UP = 0x14;
         public const byte MOVE_DOWN = 0x15;
@@ -65,6 +73,23 @@ namespace Horse_Isle_Server
             return Packet;
         }
 
+        public static byte[] CreateProfilePacket(string userProfile)
+        {
+            MemoryStream ms = new MemoryStream();
+
+            ms.WriteByte(PACKET_PROFILE);
+
+            byte[] strBytes = Encoding.UTF8.GetBytes(userProfile);
+            ms.Write(strBytes, 0x00, strBytes.Length);
+
+            ms.WriteByte(PACKET_TERMINATOR);
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
+
         public static byte[] CreateMovementPacket(int x, int y,int charId,int facing, int direction, bool walk)
         {
             // Header information
@@ -96,7 +121,6 @@ namespace Horse_Isle_Server
             int ystart = y - 4;
             int xstart = x - 6;
 
-
             if (direction == DIRECTION_UP)
             {
                 for (int relx = 0; relx <= 12; relx++)
@@ -104,13 +128,19 @@ namespace Horse_Isle_Server
                     int tileId = Map.GetTileId(xstart + relx, ystart, false);
                     int otileId = Map.GetTileId(xstart + relx, ystart, true);
 
-
+                    if (tileId >= 190)
+                    {
+                        ms.WriteByte((byte)190);
+                        tileId -= 100;
+                    }
                     ms.WriteByte((byte)tileId);
-                    if (tileId == 190)
-                        ms.WriteByte((byte)0x5B);
+
+                    if (otileId >= 190)
+                    {
+                        ms.WriteByte((byte)190);
+                        otileId -= 100;
+                    }
                     ms.WriteByte((byte)otileId);
-                    if (otileId == 190)
-                        ms.WriteByte((byte)0x5A);
                 }
             }
 
@@ -122,12 +152,20 @@ namespace Horse_Isle_Server
                     int otileId = Map.GetTileId(xstart, ystart + rely, true);
 
 
+
+                    if (tileId >= 190)
+                    {
+                        ms.WriteByte((byte)190);
+                        tileId -= 100;
+                    }
                     ms.WriteByte((byte)tileId);
-                    if (tileId == 190)
-                        ms.WriteByte((byte)0x5B);
+
+                    if (otileId >= 190)
+                    {
+                        ms.WriteByte((byte)190);
+                        otileId -= 100;
+                    }
                     ms.WriteByte((byte)otileId);
-                    if (otileId == 190)
-                        ms.WriteByte((byte)0x5A);
                 }
             }
 
@@ -140,12 +178,19 @@ namespace Horse_Isle_Server
                     int otileId = Map.GetTileId(xstart + 12, ystart + rely, true);
 
 
+                    if (tileId >= 190)
+                    {
+                        ms.WriteByte((byte)190);
+                        tileId -= 100;
+                    }
                     ms.WriteByte((byte)tileId);
-                    if (tileId == 190)
-                        ms.WriteByte((byte)0x5B);
+
+                    if (otileId >= 190)
+                    {
+                        ms.WriteByte((byte)190);
+                        otileId -= 100;
+                    }
                     ms.WriteByte((byte)otileId);
-                    if (otileId == 190)
-                        ms.WriteByte((byte)0x5A);
                 }
             }
 
@@ -157,12 +202,19 @@ namespace Horse_Isle_Server
                     int otileId = Map.GetTileId(xstart + relx, ystart + 9, true);
 
 
+                    if (tileId >= 190)
+                    {
+                        ms.WriteByte((byte)190);
+                        tileId -= 100;
+                    }
                     ms.WriteByte((byte)tileId);
-                    if (tileId == 190)
-                        ms.WriteByte((byte)0x5B);
+
+                    if (otileId >= 190)
+                    {
+                        ms.WriteByte((byte)190);
+                        otileId -= 100;
+                    }
                     ms.WriteByte((byte)otileId);
-                    if (otileId == 190)
-                        ms.WriteByte((byte)0x5A);
                 }
             }
             if (direction == DIRECTION_LOGIN)
@@ -174,14 +226,20 @@ namespace Horse_Isle_Server
                         int tileId = Map.GetTileId(xstart + relx, ystart + rely, false);
                         int otileId = Map.GetTileId(xstart + relx, ystart + rely, true);
 
- 
+                        if(tileId >= 190)
+                        {
+                            ms.WriteByte((byte)190);
+                            tileId -= 100;
+                        }
                         ms.WriteByte((byte)tileId);
-                        if (tileId == 190)
-                            ms.WriteByte((byte)0x5B);
 
+                        if (otileId >= 190)
+                        {
+                            ms.WriteByte((byte)190);
+                            otileId -= 100;
+                        }
                         ms.WriteByte((byte)otileId);
-                        if (otileId == 190)
-                            ms.WriteByte((byte)0x5A);
+
                     }
                 }
 
@@ -193,8 +251,7 @@ namespace Horse_Isle_Server
             byte[] Packet = ms.ToArray();
             ms.Dispose();
 
-            Logger.DebugPrint(BitConverter.ToString(Packet).Replace('-', ' '));
-
+            //Logger.DebugPrint(BitConverter.ToString(Packet).Replace("-", " "));
             return Packet;
         }
 
@@ -262,15 +319,82 @@ namespace Horse_Isle_Server
             return Packet;
         }
 
-        public static byte[] CreateIsleData(World.Isle[] isles)
+        public static byte[] CreateUpdate()
+        {
+            MemoryStream ms = new MemoryStream();
+
+            ms.WriteByte(PACKET_UPDATE);
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
+        public static byte[] CreatePlaceData(World.Isle[] isles, World.Town[] towns, World.Area[] areas)
         {
             MemoryStream ms = new MemoryStream();
             ms.WriteByte(PACKET_AREA_DEFS);
-            foreach(World.Isle isle in isles)
+
+            // Write Towns
+
+            foreach (World.Town town in towns)
+            {
+                byte[] strBytes = Encoding.UTF8.GetBytes(town.Name);
+
+                ms.WriteByte(AREA_SEPERATOR);
+                ms.WriteByte(AREA_TOWN);
+
+                ms.WriteByte((byte)(((town.StartX - 4) / 64) + 20));
+                ms.WriteByte((byte)(((town.StartX - 4) % 64) + 20));
+
+                ms.WriteByte((byte)(((town.EndX - 4) / 64) + 20));
+                ms.WriteByte((byte)(((town.EndX - 4) % 64) + 20));
+
+                ms.WriteByte((byte)(((town.StartY - 1) / 64) + 20));
+                ms.WriteByte((byte)(((town.StartY - 1) % 64) + 20));
+
+                ms.WriteByte((byte)(((town.EndY - 1) / 64) + 20));
+                ms.WriteByte((byte)(((town.EndY - 1) % 64) + 20));
+
+
+                ms.Write(strBytes, 0x00, strBytes.Length);
+            }
+
+            // Write Areas
+
+            foreach (World.Area area in areas)
+            {
+                byte[] strBytes = Encoding.UTF8.GetBytes(area.Name);
+
+                ms.WriteByte(AREA_SEPERATOR);
+                ms.WriteByte(AREA_AREA);
+
+                ms.WriteByte((byte)(((area.StartX - 4) / 64) + 20));
+                ms.WriteByte((byte)(((area.StartX - 4) % 64) + 20));
+
+                ms.WriteByte((byte)(((area.EndX - 4) / 64) + 20));
+                ms.WriteByte((byte)(((area.EndX - 4) % 64) + 20));
+
+                ms.WriteByte((byte)(((area.StartY - 1) / 64) + 20));
+                ms.WriteByte((byte)(((area.StartY - 1) % 64) + 20));
+
+                ms.WriteByte((byte)(((area.EndY - 1) / 64) + 20));
+                ms.WriteByte((byte)(((area.EndY - 1) % 64) + 20));
+
+
+                ms.Write(strBytes, 0x00, strBytes.Length);
+            }
+
+            // Write Isles
+
+            foreach (World.Isle isle in isles)
             {
                 byte[] strBytes = Encoding.UTF8.GetBytes(isle.Name);
 
                 ms.WriteByte(AREA_SEPERATOR);
+                ms.WriteByte(AREA_ISLE);
 
                 ms.WriteByte((byte)(((isle.StartX - 4) / 64) + 20));
                 ms.WriteByte((byte)(((isle.StartX - 4) % 64) + 20));
@@ -394,49 +518,5 @@ namespace Horse_Isle_Server
             return CreateChat(formattedStr, CHAT_BOTTOM_RIGHT);
         }
 
-        public static byte[] CreateUserInfo(Client client)
-        {
-            MemoryStream ms = new MemoryStream();
-            if(!client.LoggedIn)         
-                throw new Exception("Client is not logged in.");
-            User user = client.LoggedinUser;
-
-            byte[] MovementPacket = CreateMovementPacket(user.X, user.Y, user.CharacterId, DIRECTION_DOWN, DIRECTION_LOGIN, true);
-            ms.Write(MovementPacket, 0x00, MovementPacket.Length);
-
-            byte[] LoginMessage = CreateLoginMessage(user.Username);
-            ms.Write(LoginMessage, 0x00, LoginMessage.Length);
-
-            World.Time time = World.GetGameTime();
-            int timestamp = time.hours * 60;
-            timestamp += time.minutes;
-
-            byte[] WorldData = CreateWorldData(timestamp, time.days, time.year, World.GetWeather());
-            ms.Write(WorldData, 0x00, WorldData.Length);
-
-            byte[] SecCodePacket = CreateSecCode(user.SecCodeSeeds, user.SecCodeInc, user.Administrator, user.Moderator);
-            ms.Write(SecCodePacket, 0x00, SecCodePacket.Length);
-
-            byte[] BaseStatsPacketData = CreateBaseStats(user.Money, Server.GetNumberOfPlayers(), user.MailBox.MailCount);
-            ms.Write(BaseStatsPacketData, 0x00, BaseStatsPacketData.Length);
-
-            byte[] AreaMessage = CreateAreaMessage(user.X,user.Y);
-            ms.Write(AreaMessage, 0x00, AreaMessage.Length);
-
-            byte[] IsleData = CreateIsleData(World.Isles.ToArray());
-            ms.Write(IsleData, 0x00, IsleData.Length);
-
-            byte[] TileFlags = CreateTileOverlayFlags(Map.OverlayTileDepth);
-            ms.Write(TileFlags, 0x00, TileFlags.Length);
-
-            byte[] MotdData = CreateMotd();
-            ms.Write(MotdData, 0x00, MotdData.Length);
-
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
-        }
     }
 }

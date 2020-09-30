@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
@@ -30,9 +31,112 @@ namespace Horse_Isle_Server
                 Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
                 return;
             }
-            Logger.DebugPrint(sender.LoggedinUser.Username + " Requesting user information.");
-            byte[] userInfoPackets = PacketBuilder.CreateUserInfo(sender);
-            sender.SendPacket(userInfoPackets);
+            Logger.DebugPrint(sender.LoggedinUser.Username + " Requested user information.");
+            MemoryStream ms = new MemoryStream();
+            User user = sender.LoggedinUser;
+
+            byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, PacketBuilder.DIRECTION_DOWN, PacketBuilder.DIRECTION_LOGIN, true);
+            ms.Write(MovementPacket, 0x00, MovementPacket.Length);
+
+            byte[] LoginMessage = PacketBuilder.CreateLoginMessage(user.Username);
+            ms.Write(LoginMessage, 0x00, LoginMessage.Length);
+
+            World.Time time = World.GetGameTime();
+            int timestamp = time.hours * 60;
+            timestamp += time.minutes;
+
+            byte[] WorldData = PacketBuilder.CreateWorldData(timestamp, time.days, time.year, World.GetWeather());
+            ms.Write(WorldData, 0x00, WorldData.Length);
+
+            byte[] SecCodePacket = PacketBuilder.CreateSecCode(user.SecCodeSeeds, user.SecCodeInc, user.Administrator, user.Moderator);
+            ms.Write(SecCodePacket, 0x00, SecCodePacket.Length);
+
+            byte[] BaseStatsPacketData = PacketBuilder.CreateBaseStats(user.Money, Server.GetNumberOfPlayers(), user.MailBox.MailCount);
+            ms.Write(BaseStatsPacketData, 0x00, BaseStatsPacketData.Length);
+
+            byte[] AreaMessage = PacketBuilder.CreateAreaMessage(user.X, user.Y);
+            ms.Write(AreaMessage, 0x00, AreaMessage.Length);
+
+            byte[] IsleData = PacketBuilder.CreatePlaceData(World.Isles.ToArray(), World.Towns.ToArray(), World.Areas.ToArray());
+            ms.Write(IsleData, 0x00, IsleData.Length);
+
+            byte[] TileFlags = PacketBuilder.CreateTileOverlayFlags(Map.OverlayTileDepth);
+            ms.Write(TileFlags, 0x00, TileFlags.Length);
+
+            byte[] MotdData = PacketBuilder.CreateMotd();
+            ms.Write(MotdData, 0x00, MotdData.Length);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            sender.SendPacket(Packet);
+        }
+        public static void OnUpdatePacket(Client sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
+                return;
+            }
+            if (packet.Length < 2)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid Update Packet");
+                return;
+            }
+
+            if(packet[1] == PacketBuilder.PACKET_A_TERMINATOR)
+            {
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Requested latest statistics (Money/Playercount/Mail)");
+                byte[] packetResponse = PacketBuilder.CreateBaseStats(sender.LoggedinUser.Money, GetNumberOfPlayers(), sender.LoggedinUser.MailBox.MailCount);
+                sender.SendPacket(packetResponse);
+            }
+        }
+        public static void OnProfilePacket(Client sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Requested to change profile page when not logged in.");
+                return;
+            }
+            if(packet.Length < 2)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid Profile Packet");
+                return;
+            }
+            
+            byte method = packet[1];
+            if(method == PacketBuilder.VIEW_PROFILE)
+            {
+                byte[] profilePacket = PacketBuilder.CreateProfilePacket(sender.LoggedinUser.ProfilePage);
+                sender.SendPacket(profilePacket);
+            }
+            else if(method == PacketBuilder.SAVE_PROFILE)
+            {
+
+                string packetStr = Encoding.UTF8.GetString(packet);
+                if (packet.Length < 3 || !packetStr.Contains('|'))
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid Profile SAVE Packet");
+                    return;
+                }
+
+                int characterId = (packet[2] - 20) * 64 + (packet[3] - 20);
+
+                string profilePage = packetStr.Split('|')[1];
+                profilePage = profilePage.Substring(0, profilePage.Length - 2);
+
+                sender.LoggedinUser.CharacterId = characterId;
+                sender.LoggedinUser.ProfilePage = profilePage;
+
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Changed to character id: " + characterId + " and set there Profile Description to '" + profilePage + "'");
+
+                byte[] chatPacket = PacketBuilder.CreateChat(Messages.ProfileSavedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(chatPacket);
+
+                UpdateArea(sender);
+            }
+
         }
 
         public static void OnMovementPacket(Client sender, byte[] packet)
@@ -104,10 +208,10 @@ namespace Horse_Isle_Server
 
             }
 
+            UpdateArea(sender);
 
-            byte[] tileData = PacketBuilder.CreateAreaMessage(loggedInUser.X, loggedInUser.Y);
-            sender.SendPacket(tileData);
         }
+
         public static void OnLoginRequest(Client sender, byte[] packet)
         {
             Logger.DebugPrint("Login request received from: " + sender.RemoteIp);
@@ -151,6 +255,14 @@ namespace Horse_Isle_Server
                     sender.SendPacket(ResponsePacket);
                 }
             }
+
+        }
+
+        public static void UpdateArea(Client forClient)
+        {
+
+            byte[] areaData = PacketBuilder.CreateAreaMessage(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
+            forClient.SendPacket(areaData);
 
         }
 

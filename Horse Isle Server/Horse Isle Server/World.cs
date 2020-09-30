@@ -18,7 +18,24 @@ namespace Horse_Isle_Server
             public int Tileset;
             public string Name;
         }
-       
+        public struct Town
+        {
+            public int StartX;
+            public int EndX;
+            public int StartY;
+            public int EndY;
+            public string Name;
+        }
+        public struct Area
+        {
+            public int StartX;
+            public int EndX;
+            public int StartY;
+            public int EndY;
+            public string Name;
+        }
+
+
         public struct Time
         {
             public int minutes;
@@ -29,6 +46,8 @@ namespace Horse_Isle_Server
         public const int MINUTE = 4320;
 
         public static List<Isle> Isles = new List<Isle>();
+        public static List<Town> Towns = new List<Town>();
+        public static List<Area> Areas = new List<Area>();
         public static Time GetGameTime()
         {
             int epoch = Database.GetServerCreationTime();
@@ -54,7 +73,45 @@ namespace Horse_Isle_Server
             return time;
         }
 
+        public static bool InArea(int x, int y)
+        {
+            try
+            {
+                GetArea(x, y);
+                return true;
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+        }
 
+        public static bool InTown(int x, int y)
+        {
+            try
+            {
+                GetTown(x, y);
+                return true;
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+        }
+
+
+        public static bool InIsle(int x, int y)
+        {
+            try
+            {
+                GetIsle(x, y);
+                return true;
+            }
+            catch(KeyNotFoundException)
+            {
+                return false;
+            }
+        }
         public static Isle GetIsle(int x, int y)
         {
             foreach(Isle isle in Isles)
@@ -67,6 +124,33 @@ namespace Horse_Isle_Server
             }
             throw new KeyNotFoundException("x,y not in an isle!");
         }
+
+        public static Area GetArea(int x, int y)
+        {
+            foreach (Area area in Areas)
+            {
+
+                if (area.StartX <= x && area.EndX >= x && area.StartY <= y && area.EndY >= y)
+                {
+                    return area;
+                }
+            }
+            throw new KeyNotFoundException("x,y not in an area!");
+        }
+
+        public static Town GetTown(int x, int y)
+        {
+            foreach (Town town in Towns)
+            {
+
+                if (town.StartX <= x && town.EndX >= x && town.StartY <= y && town.EndY >= y)
+                {
+                    return town;
+                }
+            }
+            throw new KeyNotFoundException("x,y not in a town!");
+        }
+
         public static int[] GetDroppedItems(int x, int y)
         {
             return new int[] { }; // Not implemented yet.
