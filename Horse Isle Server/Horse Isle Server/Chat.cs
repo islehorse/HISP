@@ -8,7 +8,7 @@ namespace Horse_Isle_Server
 {
     class Chat
     {
-        public static bool isCommand(User user, string message)
+        private static bool isCommand(User user, string message)
         {
             if (message.Length < 1)
                 return false;
@@ -18,9 +18,10 @@ namespace Horse_Isle_Server
                     return true;
             if (message[0] == '!')
                 return true;
+            return false;
  
         }
-        public static bool isAppropriate(string message)
+        private static bool isAppropriate(string message)
         {
             if (!ConfigReader.BadWords)
                 return true;
