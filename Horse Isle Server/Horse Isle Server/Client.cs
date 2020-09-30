@@ -19,12 +19,20 @@ namespace Horse_Isle_Server
         public User LoggedinUser;
 
         private Thread recvPackets;
+        private Timer updateTimer;
 
-
+        private void updateTimerTick(object state)
+        {
+            Logger.DebugPrint("Sending update packet to "+ LoggedinUser.Username);
+            byte[] updatePacket = PacketBuilder.CreateUpdate();
+            SendPacket(updatePacket);
+        }
         public void Login(int id)
         {
             LoggedinUser = new User(id);
             LoggedIn = true;
+
+            
         }
         private void receivePackets()
         {
@@ -99,6 +107,12 @@ namespace Horse_Isle_Server
                     case PacketBuilder.PACKET_MOVE:
                         Server.OnMovementPacket(this, Packet);
                         break;
+                    case PacketBuilder.PACKET_PROFILE:
+                        Server.OnProfilePacket(this, Packet);
+                        break;
+                    case PacketBuilder.PACKET_UPDATE:
+                        Server.OnUpdatePacket(this, Packet);
+                        break;
                     default:
                         Logger.ErrorPrint("Unimplemented Packet: " + BitConverter.ToString(Packet).Replace('-', ' '));
                         break;
@@ -109,15 +123,26 @@ namespace Horse_Isle_Server
        public void Disconnect()
         {
             Logger.DebugPrint(ClientSocket.RemoteEndPoint + " has Disconnected.");
+            recvPackets.Abort();
+            updateTimer.Dispose();
             LoggedIn = false;
             LoggedinUser = null;
             Server.ConnectedClients.Remove(this);
+            ClientSocket.Close();
             ClientSocket.Dispose();
         }
 
        public void SendPacket(byte[] PacketData)
         {
-            ClientSocket.Send(PacketData);
+            try
+            {
+                ClientSocket.Send(PacketData);
+            }
+            catch (SocketException e)
+            {
+                Logger.ErrorPrint("Socket exception occured: " + e.Message + " and so it was disconnected.");
+                Disconnect();
+            }
         }
 
         public Client(Socket clientSocket)
@@ -126,6 +151,7 @@ namespace Horse_Isle_Server
             RemoteIp = clientSocket.RemoteEndPoint.ToString();
 
             Logger.DebugPrint("Client connected @ " + RemoteIp);
+            updateTimer = new Timer(new TimerCallback(updateTimerTick), null, 60 * 1000, 60 * 1000);
 
             recvPackets = new Thread(() =>
             {
