@@ -11,7 +11,9 @@ namespace Horse_Isle_Server
     class Map
     {
         public static int[] OverlayTileDepth;
+
         public static bool[] TerrainTilePassibility;
+        public static bool[][] OverlayTilesetPassibility;
 
         public static Bitmap MapData;
 
@@ -31,9 +33,29 @@ namespace Horse_Isle_Server
         public static bool CheckPassable(int x, int y)
         {
             int tileId = GetTileId(x, y, false);
-            bool passable = TerrainTilePassibility[tileId-1];
-            Logger.DebugPrint("Checking tile passibility for tileid: " + tileId + " at " + x + "," + y+" passable: " +passable);
-            return passable;
+            int otileId = GetTileId(x, y, true);
+
+            bool terrainPassable = TerrainTilePassibility[tileId - 1];
+            int tileset = 0;
+
+            if (otileId > 190)
+            {
+                otileId -= 192;
+                if (World.InIsle(x, y))
+                    tileset = World.GetIsle(x, y).Tileset+1;
+            }
+
+            bool overlayPassable = OverlayTilesetPassibility[tileset][otileId - 1];
+
+            bool tilePassable = false;
+            if (terrainPassable || overlayPassable)
+                tilePassable = true;
+            if (!overlayPassable && otileId != 1)
+                tilePassable = false;
+
+
+            Logger.DebugPrint("Checking tile passibility for tileid: " + tileId + " and overlay tileid " + otileId + " on tileset " + tileset + " at " + x + "," + y);
+            return tilePassable;
         }
 
         public static void OpenMap()
