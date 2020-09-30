@@ -8,10 +8,20 @@ namespace Horse_Isle_Server
 {
     class Messages
     {
+        public static string NewUserMessage;
+        public static string AreaMessage;
+        public static string NothingMessage;
+        public static string LoginFormat;
 
-        public static string LoginMessage(string username)
+        public static string MotdFormat;
+
+        public static string GetMOTD()
         {
-            return Gamedata.LoginMessage.Replace("%USERNAME%", username);
+            return MotdFormat.Replace("%MOTD%", ConfigReader.Motd);
+        }
+        public static string GetLoginMessage(string username)
+        {
+            return LoginFormat.Replace("%USERNAME%", username);
         }
 
         public static string LocationData(int x, int y)
@@ -20,13 +30,13 @@ namespace Horse_Isle_Server
             try
             {
                 World.Isle isle = World.GetIsle(x, y);
-                message = Gamedata.AreaMessage.Replace("%AREA%", isle.Name);
+                message = AreaMessage.Replace("%AREA%", isle.Name);
             }
             catch (Exception) { }
 
             int[] itemIds = World.GetDroppedItems(x, y);
             if (itemIds.Length == 0)
-                message += Gamedata.NothingMessage;
+                message += NothingMessage;
 
             return message;
         }

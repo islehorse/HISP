@@ -233,10 +233,10 @@ namespace Horse_Isle_Server
                 throw new Exception("Userid " + id + " Allready in userext.");
 
             MySqlCommand sqlCommand = db.CreateCommand();
-            sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,0,0,'',5)";
+            sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,0,0,'',0)";
             sqlCommand.Parameters.AddWithValue("@id", id);
-            sqlCommand.Parameters.AddWithValue("@x", Gamedata.NewUserStartX);
-            sqlCommand.Parameters.AddWithValue("@y", Gamedata.NewUserStartY);
+            sqlCommand.Parameters.AddWithValue("@x", Map.NewUserStartX);
+            sqlCommand.Parameters.AddWithValue("@y", Map.NewUserStartY);
             sqlCommand.Prepare();
             sqlCommand.ExecuteNonQuery();
         }

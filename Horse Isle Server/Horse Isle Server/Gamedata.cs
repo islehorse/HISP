@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Horse_Isle_Server
 {
@@ -9,15 +10,6 @@ namespace Horse_Isle_Server
 
     class Gamedata
     {
-        public static string TileFlags;
-        
-        public static int NewUserStartX;
-        public static int NewUserStartY;
-        // Messages
-        public static string NewUserMessage;
-        public static string AreaMessage;
-        public static string NothingMessage;
-        public static string LoginMessage;
         
         public static void ReadGamedata()
         {
@@ -45,15 +37,19 @@ namespace Horse_Isle_Server
                 World.Isles.Add(isle);
             }
 
-            NewUserMessage = gameData.new_user.starting_message;
-            NewUserStartX = gameData.new_user.starting_x;
-            NewUserStartY = gameData.new_user.starting_y;
+            Messages.NewUserMessage = gameData.new_user.starting_message;
+            Map.NewUserStartX = gameData.new_user.starting_x;
+            Map.NewUserStartY = gameData.new_user.starting_y;
 
-            LoginMessage = gameData.messages.login_format;
-            AreaMessage = gameData.messages.area_format;
-            NothingMessage = gameData.messages.nothing_message;
+            Messages.LoginFormat = gameData.messages.login_format;
+            Messages.AreaMessage = gameData.messages.area_format;
+            Messages.NothingMessage = gameData.messages.nothing_message;
+            Messages.MotdFormat = gameData.messages.motd_format;
 
-            TileFlags = gameData.map_flags;
+            JArray overlayTileDepth = gameData.tile_paramaters.overlay_tiles.tile_depth;
+            JArray terrainTilePassibility = gameData.tile_paramaters.terrain_tiles.passibility;
+            Map.OverlayTileDepth = overlayTileDepth.ToObject<int[]>();
+            Map.TerrainTilePassibility = terrainTilePassibility.ToObject<bool[]>();
         }
 
     }
