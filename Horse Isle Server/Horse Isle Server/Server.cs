@@ -45,33 +45,65 @@ namespace Horse_Isle_Server
 
             User loggedInUser = sender.LoggedinUser;
             byte movementDirection = packet[1];
-            switch(movementDirection)
+
+            if(movementDirection == PacketBuilder.MOVE_UP)
             {
-                case PacketBuilder.MOVE_UP:
-                    if(Map.CheckPassable(loggedInUser.X, loggedInUser.Y+1))
-                        loggedInUser.Y -= 1;
+                if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y - 1))
+                {
+                    loggedInUser.Y -= 1;
                     byte[] moveUpResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_UP, PacketBuilder.DIRECTION_UP, true);
                     sender.SendPacket(moveUpResponse);
-                    break;
-                case PacketBuilder.MOVE_LEFT:
-                    if (Map.CheckPassable(loggedInUser.X - 1, loggedInUser.Y))
-                        loggedInUser.X -= 1;
+                }
+                else
+                {
+                    byte[] moveUpResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_UP, PacketBuilder.DIRECTION_NONE, false);
+                    sender.SendPacket(moveUpResponse);
+                }
+            }
+            else if(movementDirection == PacketBuilder.MOVE_LEFT)
+            {
+                if (Map.CheckPassable(loggedInUser.X - 1, loggedInUser.Y))
+                {
+                    loggedInUser.X -= 1;
                     byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_LEFT, PacketBuilder.DIRECTION_LEFT, true);
                     sender.SendPacket(moveLeftResponse);
-                    break;
-                case PacketBuilder.MOVE_RIGHT:
-                    if (Map.CheckPassable(loggedInUser.X +1 , loggedInUser.Y))
-                        loggedInUser.X += 1;
-                    byte[] moveRightResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_RIGHT, PacketBuilder.DIRECTION_RIGHT, true);
-                    sender.SendPacket(moveRightResponse);
-                    break;
-                case PacketBuilder.MOVE_DOWN:
-                    if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
-                        loggedInUser.Y += 1;
+                }
+                else
+                {
+                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_LEFT, PacketBuilder.DIRECTION_NONE, false);
+                    sender.SendPacket(moveLeftResponse);
+                }
+            }
+            else if(movementDirection == PacketBuilder.MOVE_RIGHT)
+            {
+                if (Map.CheckPassable(loggedInUser.X + 1, loggedInUser.Y))
+                {
+                    loggedInUser.X += 1;
+                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_RIGHT, PacketBuilder.DIRECTION_RIGHT, true);
+                    sender.SendPacket(moveLeftResponse);
+                }
+                else
+                {
+                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_RIGHT, PacketBuilder.DIRECTION_NONE, false);
+                    sender.SendPacket(moveLeftResponse);
+                }
+            }
+            else if(movementDirection == PacketBuilder.MOVE_DOWN)
+            {
+                if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
+                {
+                    loggedInUser.Y += 1;
                     byte[] moveDownResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_DOWN, PacketBuilder.DIRECTION_DOWN, true);
                     sender.SendPacket(moveDownResponse);
-                    break;
+                }
+                else
+                {
+                    byte[] moveDownResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_DOWN, PacketBuilder.DIRECTION_NONE, false);
+                    sender.SendPacket(moveDownResponse);
+                }
+
             }
+
 
             byte[] tileData = PacketBuilder.CreateAreaMessage(loggedInUser.X, loggedInUser.Y);
             sender.SendPacket(tileData);

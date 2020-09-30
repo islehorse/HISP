@@ -108,6 +108,9 @@ namespace Horse_Isle_Server
 
        public void Disconnect()
         {
+            Logger.DebugPrint(ClientSocket.RemoteEndPoint + " has Disconnected.");
+            LoggedIn = false;
+            LoggedinUser = null;
             Server.ConnectedClients.Remove(this);
             ClientSocket.Dispose();
         }

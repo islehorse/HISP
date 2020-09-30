@@ -22,6 +22,7 @@ namespace Horse_Isle_Server
         public const byte PACKET_BASE_STATS = 0x7B;
         public const byte PACKET_PLACE_INFO = 0x1E;
         public const byte PACKET_AREA_DEFS = 0x79;
+        public const byte PACKET_ANNOUNCEMENT = 0x7E;
         public const byte PACKET_TILE_FLAGS = 0x75;
 
         public const byte AREA_SEPERATOR = 0x5E;
@@ -43,6 +44,7 @@ namespace Horse_Isle_Server
         public const byte DIRECTION_DOWN = 2;
         public const byte DIRECTION_LEFT = 3;
         public const byte DIRECTION_LOGIN = 4;
+        public const byte DIRECTION_NONE = 10;
 
 
 
@@ -69,11 +71,11 @@ namespace Horse_Isle_Server
             MemoryStream ms = new MemoryStream();
             ms.WriteByte(PACKET_MOVE);
 
-            ms.WriteByte((byte)((x / 64) + 20)); //1
-            ms.WriteByte((byte)((x % 64) + 20)); //2
+            ms.WriteByte((byte)(((x-4) / 64) + 20)); //1
+            ms.WriteByte((byte)(((x-4) % 64) + 20)); //2
 
-            ms.WriteByte((byte)((y / 64) + 20)); //3
-            ms.WriteByte((byte)((y % 64) + 20)); //4
+            ms.WriteByte((byte)(((y-1) / 64) + 20)); //3
+            ms.WriteByte((byte)(((y-1) % 64) + 20)); //4
 
             ms.WriteByte((byte)(facing + 20)); //5
 
@@ -91,8 +93,8 @@ namespace Horse_Isle_Server
                 direction -= 20;
             }
 
-            int ystart = y - 3;
-            int xstart = x - 2;
+            int ystart = y - 4;
+            int xstart = x - 6;
 
 
             if (direction == DIRECTION_UP)
@@ -102,13 +104,13 @@ namespace Horse_Isle_Server
                     int tileId = Map.GetTileId(xstart + relx, ystart, false);
                     int otileId = Map.GetTileId(xstart + relx, ystart, true);
 
-                    if (tileId == 290)
-                        tileId -= 100;
-                    if (otileId == 290)
-                        otileId -= 100;
 
                     ms.WriteByte((byte)tileId);
+                    if (tileId == 190)
+                        ms.WriteByte((byte)0x5B);
                     ms.WriteByte((byte)otileId);
+                    if (otileId == 190)
+                        ms.WriteByte((byte)0x5A);
                 }
             }
 
@@ -119,13 +121,13 @@ namespace Horse_Isle_Server
                     int tileId = Map.GetTileId(xstart, ystart + rely, false);
                     int otileId = Map.GetTileId(xstart, ystart + rely, true);
 
-                    if (tileId == 290)
-                        tileId -= 100;
-                    if (otileId == 290)
-                        otileId -= 100;
 
                     ms.WriteByte((byte)tileId);
+                    if (tileId == 190)
+                        ms.WriteByte((byte)0x5B);
                     ms.WriteByte((byte)otileId);
+                    if (otileId == 190)
+                        ms.WriteByte((byte)0x5A);
                 }
             }
 
@@ -137,13 +139,13 @@ namespace Horse_Isle_Server
                     int tileId = Map.GetTileId(xstart + 12, ystart + rely, false);
                     int otileId = Map.GetTileId(xstart + 12, ystart + rely, true);
 
-                    if (tileId == 290)
-                        tileId -= 100;
-                    if (otileId == 290)
-                        otileId -= 100;
 
                     ms.WriteByte((byte)tileId);
+                    if (tileId == 190)
+                        ms.WriteByte((byte)0x5B);
                     ms.WriteByte((byte)otileId);
+                    if (otileId == 190)
+                        ms.WriteByte((byte)0x5A);
                 }
             }
 
@@ -154,13 +156,13 @@ namespace Horse_Isle_Server
                     int tileId = Map.GetTileId(xstart + relx, ystart + 9, false);
                     int otileId = Map.GetTileId(xstart + relx, ystart + 9, true);
 
-                    if (tileId == 290)
-                        tileId -= 100;
-                    if (otileId == 290)
-                        otileId -= 100;
 
                     ms.WriteByte((byte)tileId);
+                    if (tileId == 190)
+                        ms.WriteByte((byte)0x5B);
                     ms.WriteByte((byte)otileId);
+                    if (otileId == 190)
+                        ms.WriteByte((byte)0x5A);
                 }
             }
             if (direction == DIRECTION_LOGIN)
@@ -172,13 +174,14 @@ namespace Horse_Isle_Server
                         int tileId = Map.GetTileId(xstart + relx, ystart + rely, false);
                         int otileId = Map.GetTileId(xstart + relx, ystart + rely, true);
 
-                        if (tileId == 290)
-                            tileId -= 100;
-                        if(otileId == 290)
-                            otileId -= 100;
-
+ 
                         ms.WriteByte((byte)tileId);
+                        if (tileId == 190)
+                            ms.WriteByte((byte)0x5B);
+
                         ms.WriteByte((byte)otileId);
+                        if (otileId == 190)
+                            ms.WriteByte((byte)0x5A);
                     }
                 }
 
@@ -189,6 +192,9 @@ namespace Horse_Isle_Server
             ms.Seek(0x00, SeekOrigin.Begin);
             byte[] Packet = ms.ToArray();
             ms.Dispose();
+
+            Logger.DebugPrint(BitConverter.ToString(Packet).Replace('-', ' '));
+
             return Packet;
         }
 
@@ -230,17 +236,6 @@ namespace Horse_Isle_Server
             return Packet;
         }
 
-        public static byte[] CreateAreaMessage(int x, int y)
-        {
-            string locationStr = Messages.LocationData(x, y);
-            return CreatePlaceInfo(locationStr);
-        }
-        public static byte[] CreateLoginMessage(string username)
-        {
-            string formattedStr = Messages.LoginMessage(username); 
-            return CreateChat(formattedStr,CHAT_BOTTOM_RIGHT);
-        }
-
         public static byte[] CreateWorldData(int gameTime, int gameDay, int gameYear, string weather)
         {
             byte[] strBytes = Encoding.UTF8.GetBytes(weather);
@@ -277,17 +272,17 @@ namespace Horse_Isle_Server
 
                 ms.WriteByte(AREA_SEPERATOR);
 
-                ms.WriteByte((byte)((isle.StartX / 64) + 20));
-                ms.WriteByte((byte)((isle.StartX % 64) + 20));
+                ms.WriteByte((byte)(((isle.StartX - 4) / 64) + 20));
+                ms.WriteByte((byte)(((isle.StartX - 4) % 64) + 20));
 
-                ms.WriteByte((byte)((isle.EndX / 64) + 20));
-                ms.WriteByte((byte)((isle.EndX % 64) + 20));
+                ms.WriteByte((byte)(((isle.EndX - 4) / 64) + 20));
+                ms.WriteByte((byte)(((isle.EndX - 4) % 64) + 20));
 
-                ms.WriteByte((byte)((isle.StartY / 64) + 20));
-                ms.WriteByte((byte)((isle.StartY % 64) + 20));
+                ms.WriteByte((byte)(((isle.StartY - 1) / 64) + 20));
+                ms.WriteByte((byte)(((isle.StartY - 1) % 64) + 20));
 
-                ms.WriteByte((byte)((isle.EndY / 64) + 20));
-                ms.WriteByte((byte)((isle.EndY % 64) + 20));
+                ms.WriteByte((byte)(((isle.EndY - 1) / 64) + 20));
+                ms.WriteByte((byte)(((isle.EndY - 1) % 64) + 20));
 
                 ms.WriteByte((byte)isle.Tileset.ToString()[0]);
 
@@ -325,13 +320,15 @@ namespace Horse_Isle_Server
             return Packet;
         }
 
-        public static byte[] CreateTileFlags(string tileFlags)
+        public static byte[] CreateTileOverlayFlags(int[] tileDepthFlags)
         {
             MemoryStream ms = new MemoryStream();
             ms.WriteByte(PACKET_TILE_FLAGS);
 
-            byte[] strBytes = Encoding.UTF8.GetBytes(tileFlags);
-            ms.Write(strBytes, 0x00, strBytes.Length);
+            foreach(int tileDepthFlag in tileDepthFlags)
+            {
+                ms.WriteByte((byte)tileDepthFlag.ToString()[0]);
+            }
 
             ms.WriteByte(PACKET_TERMINATOR);
 
@@ -366,6 +363,36 @@ namespace Horse_Isle_Server
 
             return Packet;
         }
+        public static byte[] CreateAnnouncement(string announcement)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_ANNOUNCEMENT);
+            byte[] strBytes = Encoding.UTF8.GetBytes(announcement);
+            ms.Write(strBytes, 0x00, strBytes.Length);
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
+
+        public static byte[] CreateAreaMessage(int x, int y)
+        {
+            string locationStr = Messages.LocationData(x, y);
+            return CreatePlaceInfo(locationStr);
+        }
+        public static byte[] CreateMotd()
+        {
+            string formattedMotd = Messages.GetMOTD();
+            return CreateAnnouncement(formattedMotd);
+        }
+        public static byte[] CreateLoginMessage(string username)
+        {
+            string formattedStr = Messages.GetLoginMessage(username);
+            return CreateChat(formattedStr, CHAT_BOTTOM_RIGHT);
+        }
 
         public static byte[] CreateUserInfo(Client client)
         {
@@ -374,7 +401,7 @@ namespace Horse_Isle_Server
                 throw new Exception("Client is not logged in.");
             User user = client.LoggedinUser;
 
-            byte[] MovementPacket = CreateMovementPacket(user.X, user.Y, user.CharacterId, DIRECTION_DOWN, DIRECTION_LOGIN, false);
+            byte[] MovementPacket = CreateMovementPacket(user.X, user.Y, user.CharacterId, DIRECTION_DOWN, DIRECTION_LOGIN, true);
             ms.Write(MovementPacket, 0x00, MovementPacket.Length);
 
             byte[] LoginMessage = CreateLoginMessage(user.Username);
@@ -399,9 +426,12 @@ namespace Horse_Isle_Server
             byte[] IsleData = CreateIsleData(World.Isles.ToArray());
             ms.Write(IsleData, 0x00, IsleData.Length);
 
-            byte[] TileFlags = CreateTileFlags(Gamedata.TileFlags);
+            byte[] TileFlags = CreateTileOverlayFlags(Map.OverlayTileDepth);
             ms.Write(TileFlags, 0x00, TileFlags.Length);
-            
+
+            byte[] MotdData = CreateMotd();
+            ms.Write(MotdData, 0x00, MotdData.Length);
+
             ms.Seek(0x00, SeekOrigin.Begin);
             byte[] Packet = ms.ToArray();
             ms.Dispose();
