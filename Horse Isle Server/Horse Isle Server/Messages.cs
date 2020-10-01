@@ -8,14 +8,31 @@ namespace Horse_Isle_Server
 {
     class Messages
     {
+        // Announcements
         public static string NewUserMessage;
         public static string LoginFormat;
         public static string MotdFormat;
+        
 
+        // Records
         public static string ProfileSavedMessage;
 
-        public static string Sepeerator;
+        // Chat
+        public static string GlobalChatFormat;
+        public static string AdsChatFormat;
 
+        public static string GlobalChatFormatForModerators;
+
+        public static string HereChatFormatForSender;
+        public static string IsleChatFormatForSender;
+        public static string NearChatFormatForSender;
+        public static string BuddyChatFormatForSender;
+        public static string DirectChatFormatForSender;
+
+        public static string ChatViolationMessageFormat;
+        public static int RequiredChatViolations;
+
+        // Meta
         public static string IsleFormat;
         public static string TownFormat;
         public static string AreaFormat;
@@ -23,16 +40,32 @@ namespace Horse_Isle_Server
 
         public static string TileFormat;
         public static string NothingMessage;
-        public static string GetMOTD()
+        public static string Seperator;
+
+        public static string FormatGlobalChatViolationMessage(Chat.Reason violationReason)
+        {
+            return ChatViolationMessageFormat.Replace("%AMOUNT%", RequiredChatViolations.ToString()).Replace("%REASON%", violationReason.Message);
+        }
+        public static string FormatGlobalChatMessage(User sender, string message)
+        {
+            if (sender.Moderator)
+                return GlobalChatFormatForModerators.Replace("%USERNAME%", sender.Username).Replace("%MESSAGE%", message);
+            else
+                return GlobalChatFormat.Replace("%USERNAME%", sender.Username).Replace("%MESSAGE%", message);
+
+        }
+        public static string FormatMOTD()
         {
             return MotdFormat.Replace("%MOTD%", ConfigReader.Motd);
         }
-        public static string GetLoginMessage(string username)
+        public static string FormatLoginMessage(string username)
         {
             return LoginFormat.Replace("%USERNAME%", username);
         }
 
-        public static string LocationData(int x, int y)
+
+
+        public static string FormatLocationData(int x, int y)
         {
             string locationString = "";
             string message = "";

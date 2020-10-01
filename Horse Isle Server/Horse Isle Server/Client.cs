@@ -110,6 +110,9 @@ namespace Horse_Isle_Server
                     case PacketBuilder.PACKET_PROFILE:
                         Server.OnProfilePacket(this, Packet);
                         break;
+                    case PacketBuilder.PACKET_CHAT:
+                        Server.OnChatPacket(this, Packet);
+                        break;
                     case PacketBuilder.PACKET_UPDATE:
                         Server.OnUpdatePacket(this, Packet);
                         break;
