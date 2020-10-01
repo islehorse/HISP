@@ -32,7 +32,7 @@
 	"chat":{
 		"for_others":{
 			"global_format":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
-			"mod_format":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
+			"mod_format":"<FONT COLOR='#006600'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
 			"global_format_moderator":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
 			"ads_format":"<FONT COLOR='#550055'><B>%USERNAME%:</B> %MESSAGE%</FONT>"
 		},
