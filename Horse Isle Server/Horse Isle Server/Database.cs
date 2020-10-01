@@ -14,7 +14,7 @@ namespace Horse_Isle_Server
             db = new MySqlConnection("server=" + ConfigReader.DatabaseIP + ";user=" + ConfigReader.DatabaseUsername + ";password=" + ConfigReader.DatabasePassword+";database="+ConfigReader.DatabaseName);
             db.Open();
             string UserTable = "CREATE TABLE Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
-            string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, Money INT, BankBalance BIGINT,ProfilePage Text(1028), CharId INT)";
+            string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, Money INT, BankBalance BIGINT,ProfilePage Text(1028), CharId INT, ChatViolations INT)";
             string MailTable = "CREATE TABLE Mailbox(IdTo INT, PlayerFrom TEXT(16),Subject TEXT(128), Message Text(1028), TimeSent INT)";
             string WorldTable = "CREATE TABLE World(TimeStarted INT, Weather TEXT(64))";
             string DroppedTable = "CREATE TABLE DroppedItems(X INT, Y INT, ItemID INT)";
@@ -233,7 +233,7 @@ namespace Horse_Isle_Server
                 throw new Exception("Userid " + id + " Allready in userext.");
 
             MySqlCommand sqlCommand = db.CreateCommand();
-            sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,0,0,'',0)";
+            sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,0,0,'',0,0)";
             sqlCommand.Parameters.AddWithValue("@id", id);
             sqlCommand.Parameters.AddWithValue("@x", Map.NewUserStartX);
             sqlCommand.Parameters.AddWithValue("@y", Map.NewUserStartY);
@@ -340,6 +340,41 @@ namespace Horse_Isle_Server
             else
             {
                 throw new KeyNotFoundException("Id " + userId + " not found in database.");
+            }
+        }
+
+        public static int GetChatViolations(int userId)
+        {
+            if (CheckUserExtExists(userId))
+            {
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT ChatViolations FROM UserExt WHERE Id=@id";
+                sqlCommand.Parameters.AddWithValue("@id", userId);
+                sqlCommand.Prepare();
+                int violations = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                return violations;
+            }
+            else
+            {
+                throw new KeyNotFoundException("Id " + userId + " not found in database.");
+            }
+        }
+
+
+        public static void SetChatViolations(int violations, int id)
+        {
+            if (CheckUserExist(id))
+            {
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE UserExt SET ChatViolations=@violations WHERE Id=@id";
+                sqlCommand.Parameters.AddWithValue("@violations", violations);
+                sqlCommand.Parameters.AddWithValue("@id", id);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+            }
+            else
+            {
+                throw new KeyNotFoundException("Id " + id + " not found in database.");
             }
         }
         public static void SetPlayerY(int y, int id)

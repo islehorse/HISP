@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Horse_Isle_Server
 {
@@ -13,8 +10,32 @@ namespace Horse_Isle_Server
         public bool Administrator;
         public bool Moderator;
         public bool NewPlayer = false;
+
+        public bool MuteAds = false;
+        public bool MuteGlobal = false;
+        public bool MuteIsland = false;
+        public bool MuteNear = false;
+        public bool MuteHere = false;
+        public bool MuteBuddy = false;
+        public bool MutePM = false;
+        public bool MuteBR = false;
+        public bool MuteSocials = false;
+        public bool MuteLogins = false;
+
         public Mailbox MailBox;
 
+        public int ChatViolations
+        {
+            get
+            {
+                return chatViolations;
+            }
+            set
+            {
+                Database.SetChatViolations(value,Id);
+                chatViolations = value;
+            }
+        }
         public string ProfilePage { 
             get 
             { 
@@ -92,6 +113,7 @@ namespace Horse_Isle_Server
             }
         }
 
+        private int chatViolations;
         private int charId;
         private string profilePage;
         private int x;
@@ -139,6 +161,7 @@ namespace Horse_Isle_Server
             Administrator = Database.CheckUserIsAdmin(Username);
             Moderator = Database.CheckUserIsModerator(Username);
 
+            chatViolations = Database.GetChatViolations(UserId);
             x = Database.GetPlayerX(UserId);
             y = Database.GetPlayerY(UserId);
             charId = Database.GetPlayerCharId(UserId);
@@ -153,10 +176,10 @@ namespace Horse_Isle_Server
             // Generate SecCodes
 
             Random rng = new Random();
-            SecCodeSeeds[0] = (byte)rng.Next(0, 255 - 33);
-            SecCodeSeeds[1] = (byte)rng.Next(0, 255 - 33);
-            SecCodeSeeds[2] = (byte)rng.Next(0, 255 - 33);
-            SecCodeInc = (byte)rng.Next(0, 255 - 33);
+            SecCodeSeeds[0] = (byte)rng.Next(40, 140);
+            SecCodeSeeds[1] = (byte)rng.Next(40, 140);
+            SecCodeSeeds[2] = (byte)rng.Next(40, 140);
+            SecCodeInc = (byte)rng.Next(0, 99);
 
         }
     }

@@ -32,45 +32,42 @@ namespace Horse_Isle_Server
                 return;
             }
             Logger.DebugPrint(sender.LoggedinUser.Username + " Requested user information.");
-            MemoryStream ms = new MemoryStream();
+
             User user = sender.LoggedinUser;
 
             byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, PacketBuilder.DIRECTION_DOWN, PacketBuilder.DIRECTION_LOGIN, true);
-            ms.Write(MovementPacket, 0x00, MovementPacket.Length);
+            sender.SendPacket(MovementPacket);
 
             byte[] LoginMessage = PacketBuilder.CreateLoginMessage(user.Username);
-            ms.Write(LoginMessage, 0x00, LoginMessage.Length);
+            sender.SendPacket(LoginMessage);
 
             World.Time time = World.GetGameTime();
             int timestamp = time.hours * 60;
             timestamp += time.minutes;
 
             byte[] WorldData = PacketBuilder.CreateWorldData(timestamp, time.days, time.year, World.GetWeather());
-            ms.Write(WorldData, 0x00, WorldData.Length);
+            sender.SendPacket(WorldData);
 
             byte[] SecCodePacket = PacketBuilder.CreateSecCode(user.SecCodeSeeds, user.SecCodeInc, user.Administrator, user.Moderator);
-            ms.Write(SecCodePacket, 0x00, SecCodePacket.Length);
+            Logger.DebugPrint("SecCode: [5] == "+SecCodePacket[5]+" dump: " + BitConverter.ToString(SecCodePacket).Replace('-', ' '));
+            sender.SendPacket(new byte[] { 0x81, 0x7C, 0x70, 0x73, 0x26, 0x41, 0x00 });
 
             byte[] BaseStatsPacketData = PacketBuilder.CreateBaseStats(user.Money, Server.GetNumberOfPlayers(), user.MailBox.MailCount);
-            ms.Write(BaseStatsPacketData, 0x00, BaseStatsPacketData.Length);
+            sender.SendPacket(BaseStatsPacketData);
 
             byte[] AreaMessage = PacketBuilder.CreateAreaMessage(user.X, user.Y);
-            ms.Write(AreaMessage, 0x00, AreaMessage.Length);
+            sender.SendPacket(AreaMessage);
 
             byte[] IsleData = PacketBuilder.CreatePlaceData(World.Isles.ToArray(), World.Towns.ToArray(), World.Areas.ToArray());
-            ms.Write(IsleData, 0x00, IsleData.Length);
+            sender.SendPacket(IsleData);
 
             byte[] TileFlags = PacketBuilder.CreateTileOverlayFlags(Map.OverlayTileDepth);
-            ms.Write(TileFlags, 0x00, TileFlags.Length);
+            sender.SendPacket(TileFlags);
 
             byte[] MotdData = PacketBuilder.CreateMotd();
-            ms.Write(MotdData, 0x00, MotdData.Length);
+            sender.SendPacket(MotdData);
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
 
-            sender.SendPacket(Packet);
         }
         public static void OnUpdatePacket(Client sender, byte[] packet)
         {
@@ -211,7 +208,52 @@ namespace Horse_Isle_Server
             UpdateArea(sender);
 
         }
+        
+        public static void OnChatPacket(Client sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent chat packet when not logged in.");
+                return;
+            }
 
+            if(packet.Length < 4)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent an invalid chat packet.");
+                return;
+            }
+
+
+            string packetStr = Encoding.UTF8.GetString(packet);
+            
+            Chat.ChatChannel channel = (Chat.ChatChannel)packet[1];
+            string message = packetStr.Substring(2, packetStr.Length - 4);
+
+            Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to say '" + message + "' in channel: " + channel.ToString("X"));
+
+
+            Object violationReason = Chat.FilterMessage(message);
+            if (violationReason != null)  // This is such a hack, but i really couldnt think of any better way to do it.
+            {
+                sender.LoggedinUser.ChatViolations += 1;
+                string chatViolationMessage = Messages.FormatGlobalChatViolationMessage((Chat.Reason)violationReason);
+                byte[] chatViolationPacket = PacketBuilder.CreateChat(chatViolationMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(chatViolationPacket);
+                return;
+            }
+
+            Client[] recipiants = Chat.GetRecipiants(sender.LoggedinUser, channel);
+            byte chatSide = Chat.GetSide(channel);
+
+            string formattedMessage = Messages.FormatGlobalChatMessage(sender.LoggedinUser, message);
+            byte[] chatPacket = PacketBuilder.CreateChat(formattedMessage, chatSide);
+
+            // Send to clients ...
+            foreach (Client recipiant in recipiants)
+            {
+                recipiant.SendPacket(chatPacket);
+            }
+        }
         public static void OnLoginRequest(Client sender, byte[] packet)
         {
             Logger.DebugPrint("Login request received from: " + sender.RemoteIp);
@@ -247,6 +289,8 @@ namespace Horse_Isle_Server
 
                     byte[] ResponsePacket = PacketBuilder.CreateLoginPacket(true);
                     sender.SendPacket(ResponsePacket);
+
+                    Logger.DebugPrint(sender.RemoteIp + " Logged into : " + sender.LoggedinUser.Username + " (ADMIN: " + sender.LoggedinUser.Administrator + " MOD: " + sender.LoggedinUser.Moderator+")");
                 }
                 else
                 {

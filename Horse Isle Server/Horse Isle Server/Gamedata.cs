@@ -71,23 +71,82 @@ namespace Horse_Isle_Server
             }
 
 
+            // Register Filter Reasons
+            int totalReasons = gameData.messages.chat.reason_messages.Count;
+            for(int i = 0; i < totalReasons; i++)
+            {
+                Chat.Reason reason = new Chat.Reason();
+                reason.Name = gameData.messages.chat.reason_messages[i].name;
+                reason.Message = gameData.messages.chat.reason_messages[i].message;
+                Chat.Reasons.Add(reason);
+
+                Logger.DebugPrint("Registered Chat Warning Reason: " + reason.Name + " (Message: " + reason.Message + ")");
+            }
+            // Register Filters
+
+            int totalFilters = gameData.messages.chat.filter.Count;
+            for(int i = 0; i < totalFilters; i++)
+            {
+                Chat.Filter filter = new Chat.Filter();
+                filter.FilteredWord = gameData.messages.chat.filter[i].word;
+                filter.MatchAll = gameData.messages.chat.filter[i].match_all;
+                filter.Reason = Chat.GetReason((string)gameData.messages.chat.filter[i].reason_type);
+                Chat.FilteredWords.Add(filter);
+
+                Logger.DebugPrint("Registered Filtered Word: " + filter.FilteredWord + " With reason: "+filter.Reason.Name+" (Matching all: " + filter.MatchAll + ")");
+            }
+
+            // Register Corrections
+            int totalCorrections = gameData.messages.chat.correct.Count;
+            for (int i = 0; i < totalCorrections; i++)
+            {
+                Chat.Correction correction = new Chat.Correction();
+                correction.FilteredWord = gameData.messages.chat.correct[i].word;
+                correction.ReplacedWord = gameData.messages.chat.correct[i].new_word;
+                Chat.CorrectedWords.Add(correction);
+
+                Logger.DebugPrint("Registered Word Correction: " + correction.FilteredWord + " to "+correction.ReplacedWord);
+            }
+
+
+
+            // New Users
             Messages.NewUserMessage = gameData.new_user.starting_message;
             Map.NewUserStartX = gameData.new_user.starting_x;
             Map.NewUserStartY = gameData.new_user.starting_y;
+
+            // Announcements
 
             Messages.LoginFormat = gameData.messages.login_format;
             Messages.MotdFormat = gameData.messages.motd_format;
             Messages.ProfileSavedMessage = gameData.messages.profile_save;
 
+            // Chat
+
+            Messages.ChatViolationMessageFormat = gameData.messages.chat.violation_format;
+            Messages.RequiredChatViolations = gameData.messages.chat.violation_points_required;
+
+            Messages.GlobalChatFormat = gameData.messages.chat.for_others.global_format;
+            Messages.GlobalChatFormatForModerators = gameData.messages.chat.for_others.global_format_moderator;
+            Messages.AdsChatFormat = gameData.messages.chat.for_others.ads_format;
+
+            Messages.HereChatFormatForSender = gameData.messages.chat.for_sender.here_format;
+            Messages.IsleChatFormatForSender = gameData.messages.chat.for_sender.isle_format;
+            Messages.NearChatFormatForSender = gameData.messages.chat.for_sender.near_format;
+            Messages.BuddyChatFormatForSender = gameData.messages.chat.for_sender.friend_format;
+            Messages.DirectChatFormatForSender = gameData.messages.chat.for_sender.dm_format;
+
+            // Meta Format
+
+            Messages.LocationFormat = gameData.messages.meta.location_format;
             Messages.IsleFormat = gameData.messages.meta.isle_format;
             Messages.TownFormat = gameData.messages.meta.town_format;
             Messages.AreaFormat = gameData.messages.meta.area_format;
-            Messages.LocationFormat = gameData.messages.meta.location_format;
-
-            Messages.Sepeerator = gameData.messages.meta.seperator;
-
+            Messages.Seperator = gameData.messages.meta.seperator;
             Messages.TileFormat = gameData.messages.meta.tile_format;
             Messages.NothingMessage = gameData.messages.meta.nothing_message;
+
+            // Map Data
 
             Map.OverlayTileDepth = gameData.tile_paramaters.overlay_tiles.tile_depth.ToObject<int[]>();
             Map.OverlayTilesetPassibility = gameData.tile_paramaters.overlay_tiles.passibility.ToObject<bool[][]>();

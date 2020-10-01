@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Horse_Isle_Server
 {
@@ -43,6 +40,7 @@ namespace Horse_Isle_Server
 
         public const byte CHAT_BOTTOM_LEFT = 0x14;
         public const byte CHAT_BOTTOM_RIGHT = 0x15;
+
 
         public const byte LOGIN_INVALID_USER_PASS = 0x15;
         public const byte LOGIN_SUCCESS = 0x14;
@@ -504,17 +502,17 @@ namespace Horse_Isle_Server
 
         public static byte[] CreateAreaMessage(int x, int y)
         {
-            string locationStr = Messages.LocationData(x, y);
+            string locationStr = Messages.FormatLocationData(x, y);
             return CreatePlaceInfo(locationStr);
         }
         public static byte[] CreateMotd()
         {
-            string formattedMotd = Messages.GetMOTD();
+            string formattedMotd = Messages.FormatMOTD();
             return CreateAnnouncement(formattedMotd);
         }
         public static byte[] CreateLoginMessage(string username)
         {
-            string formattedStr = Messages.GetLoginMessage(username);
+            string formattedStr = Messages.FormatLoginMessage(username);
             return CreateChat(formattedStr, CHAT_BOTTOM_RIGHT);
         }
 

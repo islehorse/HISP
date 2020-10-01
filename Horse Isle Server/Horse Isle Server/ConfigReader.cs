@@ -90,10 +90,10 @@ namespace Horse_Isle_Server
                     case "crossdomain":
                         CrossDomainPolicyFile = data;
                         break;
-                    case "filter_bad_words":
+                    case "enable_corrections":
                         BadWords = data == "true";
                         break;
-                    case "correct_slang":
+                    case "enable_word_filter":
                         ExpandSlang = data == "true";
                         break;
                     case "debug":
