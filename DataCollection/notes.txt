@@ -26,3 +26,11 @@ Not implemented:
 	"winner_message":"<B>You are a Water Balloon winner!</B> Prize: $%PRIZE%",
 	"end_message_winner":"<B>WATER BALLOON FIGHT OVER:</B> Here were the winners:<BR>%USERNAME% was hit %AMOUNT% times."
  },
+ 
+ mod_format FOR SENDER is unconfirmed
+ mod_format is unconfirmed
+ admin_format is unconfirmed
+ admin_format FOR SENDER is unconfirmed.
+
+
+Near radius is a square, 15x19

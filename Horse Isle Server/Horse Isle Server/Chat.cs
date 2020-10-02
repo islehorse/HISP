@@ -78,7 +78,7 @@ namespace Horse_Isle_Server
                 }
                 else
                 {
-                    if (message.ToLower().Contains(filter.FilteredWord.ToLower()))
+                    if (message.ToLower().Contains(filter.FilteredWord))
                         return filter.Reason;
                 }
             }
@@ -106,7 +106,21 @@ namespace Horse_Isle_Server
             }
 
         }
-        public static Client[] GetRecipiants(User user, ChatChannel channel)
+
+        public static string GetDmRecipiant(string message)
+        {
+            if(message.Contains('|'))
+            {
+                string recipiantName = message.Split('|')[0];
+                return recipiantName.Substring(2);
+            }    
+            else
+            {
+                return null;
+            }
+        }
+
+        public static Client[] GetRecipiants(User user, ChatChannel channel, string to=null)
         {
             if (channel == ChatChannel.All)
             {
@@ -187,6 +201,27 @@ namespace Horse_Isle_Server
                 return recipiants.ToArray();
             }
 
+            if(channel == ChatChannel.Dm)
+            {
+                if (to != null)
+                {
+                    List<Client> recipiants = new List<Client>();
+                    foreach (Client client in Server.ConnectedClients)
+                    {
+                        if (client.LoggedIn)
+                            if (!client.LoggedinUser.MutePrivateMessage)
+                                if (client.LoggedinUser.Username != to)
+                                    recipiants.Add(client);
+                    }
+                    return recipiants.ToArray();
+                }
+                else
+                {
+                    Logger.ErrorPrint("Channel is " + channel + " (DM) BUT no 'to' Paramater was specfied");
+                    return new Client[0];
+                }
+            }
+
 
             Logger.ErrorPrint(user.Username + " Sent message in unknown channel: " + (byte)channel);
             return new Client[0]; // No recipiants
@@ -241,7 +276,6 @@ namespace Horse_Isle_Server
                     return "not implemented yet :(";
             }
         }
-
         public static string FormatChatForSender(User user, ChatChannel channel, string message)
         {
             switch (channel)
@@ -263,6 +297,32 @@ namespace Horse_Isle_Server
                     Logger.ErrorPrint(user.Username + " is trying to end a message in unknown channel " + channel.ToString("X"));
                     return "not implemented yet :(";
             }
+        }
+
+        public static string NonViolationChecks(User user, string message)
+        {
+
+            // Check if contains password.
+            if (message.ToLower().Contains(user.Password.ToLower()))
+            {
+                return Messages.PasswordNotice;
+            }
+
+
+            // Check if ALL CAPS
+            if (message.Contains(' ')) // hi1 apparently doesnt care about caps if its all 1 word?
+            {
+                string[] wordsSaid = message.Split(' ');
+                foreach (string word in wordsSaid)
+                {
+                    if (word.ToUpper() == word)
+                    {
+                        return Messages.CapsNotice;
+                    }
+                }
+            }
+
+            return null;
         }
         public static Reason GetReason(string name)
         {

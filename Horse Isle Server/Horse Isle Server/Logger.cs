@@ -21,5 +21,9 @@ namespace Horse_Isle_Server
         {
             Console.WriteLine("[ERROR] " + text);
         }
+        public static void InfoPrint(string text)
+        {
+            Console.WriteLine("[INFO] " + text);
+        }
     }
 }

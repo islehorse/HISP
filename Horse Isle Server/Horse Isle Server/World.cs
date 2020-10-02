@@ -38,39 +38,47 @@ namespace Horse_Isle_Server
 
         public struct Time
         {
-            public int minutes;
-            public int hours;
-            public int days;
-            public int year;
+            public int Minutes;
+            public int Days;
+            public int Years;
         }
-        public const int MINUTE = 4320;
+
+        public static Time ServerTime = new Time();
 
         public static List<Isle> Isles = new List<Isle>();
         public static List<Town> Towns = new List<Town>();
         public static List<Area> Areas = new List<Area>();
-        public static Time GetGameTime()
+
+        public static void TickWorldClock() 
         {
-            int epoch = Database.GetServerCreationTime();
-            DateTime serverCreationTime = DateTimeOffset.FromUnixTimeSeconds(epoch).DateTime;
-            DateTime currentTime = DateTime.Now;
+            ServerTime.Minutes += 1;
 
-            TimeSpan difference = (currentTime.Date - currentTime.Date);
+            int hours = ServerTime.Minutes / 60;
 
-            int totalMilis = Convert.ToInt32(difference.TotalMilliseconds);
+            // Periodically write time to database:
+            if (ServerTime.Minutes % 10 == 0) // every 10-in-game minutes)
+                Database.SetServerTime(ServerTime.Minutes, ServerTime.Days, ServerTime.Years);
 
-            
-            int gameMinutes = totalMilis / MINUTE;
-            int gameHours = (totalMilis / MINUTE * 600);
-            int gameDays = (totalMilis / (MINUTE * 60) * 24);
-            int gameYears = ((totalMilis / (MINUTE * 60) * 24)*365);
+            if (hours == 24) // 1 day
+            {
+                ServerTime.Days += 1;
+                ServerTime.Minutes = 0;
+            }
 
-            Time time = new Time();
-            time.days = gameDays;
-            time.year = gameYears;
-            time.minutes = gameMinutes;
-            time.hours = gameHours;
+            if (ServerTime.Days == 366)  // 1 year!
+            {
+                ServerTime.Days = 0;
+                ServerTime.Years += 1;
+            }
+        }
 
-            return time;
+        public static void ReadWorldData()
+        {
+            Logger.DebugPrint("Reading time from database...");
+            ServerTime.Minutes = Database.GetServerTime();
+            ServerTime.Days = Database.GetServerDay();
+            ServerTime.Years = Database.GetServerYear();
+            Logger.InfoPrint("It is " + ServerTime.Minutes / 60 + ":" + ServerTime.Minutes % 60 + " on Day " + ServerTime.Days + " in Year " + ServerTime.Years + "!!!");
         }
 
         public static bool InArea(int x, int y)

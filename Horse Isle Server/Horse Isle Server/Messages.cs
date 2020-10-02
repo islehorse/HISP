@@ -10,9 +10,11 @@ namespace Horse_Isle_Server
     {
         // Announcements
         public static string NewUserMessage;
-        public static string LoginFormat;
+        public static string WelcomeFormat;
         public static string MotdFormat;
-        
+        public static string IdleWarningFormat;
+        public static string LoginMessageForamt;
+        public static string LogoutMessageFormat;
 
         // Records
         public static string ProfileSavedMessage;
@@ -38,6 +40,8 @@ namespace Horse_Isle_Server
 
         public static string ChatViolationMessageFormat;
         public static int RequiredChatViolations;
+        public static string PasswordNotice;
+        public static string CapsNotice;
 
         // Meta
         public static string IsleFormat;
@@ -48,6 +52,10 @@ namespace Horse_Isle_Server
         public static string TileFormat;
         public static string NothingMessage;
         public static string Seperator;
+
+        // Disconnect Messages
+        public static string BanMessage;
+        public static string IdleKickMessageFormat;
 
         public static string FormatGlobalChatViolationMessage(Chat.Reason violationReason)
         {
@@ -114,25 +122,36 @@ namespace Horse_Isle_Server
         {
             return DirectChatFormatForSender.Replace("%FROMUSER%", username).Replace("%TOUSER%", toUsername).Replace(" %MESSAGE%", message);
         }
+        public static string FormatIdleWarningMessage()
+        {
+            return IdleWarningFormat.Replace("%WARN%", Server.IdleWarning.ToString()).Replace("%KICK%", Server.IdleTimeout.ToString());
+        }
 
+        public static string FormatLoginMessage(string username)
+        {
+            return LoginMessageForamt.Replace("%USERNAME%", username);
+        }
 
-
-
-
-
-
+        public static string FormatLogoutMessage(string username)
+        {
+            return LogoutMessageFormat.Replace("%USERNAME%", username);
+        }
 
         public static string FormatMOTD()
         {
             return MotdFormat.Replace("%MOTD%", ConfigReader.Motd);
         }
-        public static string FormatLoginMessage(string username)
+        public static string FormatWelcomeMessage(string username)
         {
-            return LoginFormat.Replace("%USERNAME%", username);
+            return WelcomeFormat.Replace("%USERNAME%", username);
         }
 
-
-
+        // Disconnect
+        public static string FormatIdleKickMessage()
+        {
+            return IdleKickMessageFormat.Replace("%KICK%", Server.IdleTimeout.ToString());
+        }
+        // Meta
         public static string FormatLocationData(int x, int y)
         {
             string locationString = "";
