@@ -49,8 +49,7 @@ namespace Horse_Isle_Server
             sender.SendPacket(WorldData);
 
             byte[] SecCodePacket = PacketBuilder.CreateSecCode(user.SecCodeSeeds, user.SecCodeInc, user.Administrator, user.Moderator);
-            Logger.DebugPrint("SecCode: [5] == "+SecCodePacket[5]+" dump: " + BitConverter.ToString(SecCodePacket).Replace('-', ' '));
-            sender.SendPacket(new byte[] { 0x81, 0x7C, 0x70, 0x73, 0x26, 0x41, 0x00 });
+            sender.SendPacket(SecCodePacket);
 
             byte[] BaseStatsPacketData = PacketBuilder.CreateBaseStats(user.Money, Server.GetNumberOfPlayers(), user.MailBox.MailCount);
             sender.SendPacket(BaseStatsPacketData);
@@ -244,15 +243,20 @@ namespace Horse_Isle_Server
 
             Client[] recipiants = Chat.GetRecipiants(sender.LoggedinUser, channel);
             byte chatSide = Chat.GetSide(channel);
-
-            string formattedMessage = Messages.FormatGlobalChatMessage(sender.LoggedinUser, message);
-            byte[] chatPacket = PacketBuilder.CreateChat(formattedMessage, chatSide);
-
+            message = Chat.DoCorrections(message);
+            message = Chat.EscapeMessage(message);
+            string formattedMessage = Chat.FormatChatForOthers(sender.LoggedinUser,channel,message);
+            string formattedMessageSender = Chat.FormatChatForSender(sender.LoggedinUser, channel, message);
+            byte[] chatPacketOthers = PacketBuilder.CreateChat(formattedMessage, chatSide);
+            byte[] chatPacketSender = PacketBuilder.CreateChat(formattedMessageSender, chatSide);
             // Send to clients ...
             foreach (Client recipiant in recipiants)
             {
-                recipiant.SendPacket(chatPacket);
+                recipiant.SendPacket(chatPacketOthers);
             }
+
+            // Send to sender
+            sender.SendPacket(chatPacketSender);
         }
         public static void OnLoginRequest(Client sender, byte[] packet)
         {
@@ -320,6 +324,31 @@ namespace Horse_Isle_Server
             }
             return count;
         }
+
+        public static int GetNumberOfModsOnline()
+        {
+            int count = 0;
+            foreach (Client client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                    if(client.LoggedinUser.Moderator)
+                        count++;
+            }
+            return count;
+        }
+
+        public static int GetNumberOfAdminsOnline()
+        {
+            int count = 0;
+            foreach (Client client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                    if (client.LoggedinUser.Administrator)
+                        count++;
+            }
+            return count;
+        }
+
         public static void StartServer()
         {
             ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

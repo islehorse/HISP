@@ -126,15 +126,23 @@ namespace Horse_Isle_Server
             Messages.ChatViolationMessageFormat = gameData.messages.chat.violation_format;
             Messages.RequiredChatViolations = gameData.messages.chat.violation_points_required;
 
-            Messages.GlobalChatFormat = gameData.messages.chat.for_others.global_format;
             Messages.GlobalChatFormatForModerators = gameData.messages.chat.for_others.global_format_moderator;
+            Messages.DirectChatFormatForModerators = gameData.messages.chat.for_others.dm_format_moderator;
+
+            Messages.GlobalChatFormat = gameData.messages.chat.for_others.global_format;
             Messages.AdsChatFormat = gameData.messages.chat.for_others.ads_format;
+            Messages.DirectChatFormat = gameData.messages.chat.for_others.dm_format;
+            Messages.BuddyChatFormat = gameData.messages.chat.for_others.friend_format;
+            Messages.ModChatFormat = gameData.messages.chat.for_others.mod_format;
+            Messages.AdminChatFormat = gameData.messages.chat.for_others.admin_format;
 
             Messages.HereChatFormatForSender = gameData.messages.chat.for_sender.here_format;
             Messages.IsleChatFormatForSender = gameData.messages.chat.for_sender.isle_format;
             Messages.NearChatFormatForSender = gameData.messages.chat.for_sender.near_format;
             Messages.BuddyChatFormatForSender = gameData.messages.chat.for_sender.friend_format;
             Messages.DirectChatFormatForSender = gameData.messages.chat.for_sender.dm_format;
+            Messages.ModChatFormatForSender = gameData.messages.chat.for_sender.mod_format;
+            Messages.AdminChatFormatForSender = gameData.messages.chat.for_sender.admin_format;
 
             // Meta Format
 

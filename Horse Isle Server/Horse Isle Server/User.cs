@@ -17,13 +17,13 @@ namespace Horse_Isle_Server
         public bool MuteNear = false;
         public bool MuteHere = false;
         public bool MuteBuddy = false;
-        public bool MutePM = false;
-        public bool MuteBR = false;
+        public bool MutePrivateMessage = false;
+        public bool MuteBuddyRequests = false;
         public bool MuteSocials = false;
         public bool MuteLogins = false;
 
         public Mailbox MailBox;
-
+        public Friends Friends;
         public int ChatViolations
         {
             get
@@ -181,6 +181,9 @@ namespace Horse_Isle_Server
             SecCodeSeeds[2] = (byte)rng.Next(40, 140);
             SecCodeInc = (byte)rng.Next(0, 99);
 
+            // Make some friends! (Get a life!)
+
+            Friends = new Friends(this);
         }
     }
 }

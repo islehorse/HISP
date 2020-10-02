@@ -23,7 +23,7 @@ namespace Horse_Isle_Server
         public static bool Debug;
 
         public static bool BadWords;
-        public static bool ExpandSlang;
+        public static bool DoCorrections;
 
         private static string ConfigurationFileName = "server.properties";
         public static void OpenConfig()
@@ -94,7 +94,7 @@ namespace Horse_Isle_Server
                         BadWords = data == "true";
                         break;
                     case "enable_word_filter":
-                        ExpandSlang = data == "true";
+                        DoCorrections = data == "true";
                         break;
                     case "debug":
                         Debug = data == "true";
