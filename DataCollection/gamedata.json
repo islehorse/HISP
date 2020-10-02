@@ -32,9 +32,13 @@
 	"chat":{
 		"for_others":{
 			"global_format":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
-			"mod_format":"<FONT COLOR='#006600'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
-			"global_format_moderator":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
-			"ads_format":"<FONT COLOR='#550055'><B>%USERNAME%:</B> %MESSAGE%</FONT>"
+			"global_format_moderator":"<FONT COLOR='#006600'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
+			"mod_format":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
+			"admin_format":"<FONT COLOR='#800000'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
+			"ads_format":"<FONT COLOR='#550055'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
+			"friend_format":"<FONT COLOR='#CC00CC'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
+			"dm_format":"<FONT COLOR='#0000FF'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
+			"dm_format)moderator":"<FONT COLOR='#0000FF'><B>%USERNAME%[<FONT COLOR='#880000'>mod</FONT>:</B> %MESSAGE%</FONT>"
 		},
 		
 		"for_sender":{
@@ -42,7 +46,7 @@
 			"isle_format":"<B>%USERNAME%:</B> %MESSAGE% [%AMOUNT% on isle]",
 			"near_format":"<B>%USERNAME%:</B> %MESSAGE% [%AMOUNT% near]",
 			"mod_format":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE%</FONT> [%AMOUNT% mods]",
-			"admin_format":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE%</FONT> [%AMOUNT% mods]",
+			"admin_format":"<FONT COLOR='#550000'><B>%USERNAME%:</B> %MESSAGE%</FONT> [%AMOUNT% admins]",
 			"friend_format":"<FONT COLOR='#CC00CC'><B>%USERNAME%:</B> %MESSAGE%</FONT> [%AMOUNT% buds]",
 			"dm_format":"<FONT COLOR='#0000FF'><B>%FROMUSER%>%TOUSER%:</B> %MESSAGE%</FONT>"
 		},

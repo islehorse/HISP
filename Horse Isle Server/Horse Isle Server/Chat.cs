@@ -32,8 +32,9 @@ namespace Horse_Isle_Server
             Near = 0x15,
             Buddies = 0x17,
             Isle = 0x24,
-            Mod,
-            Admin
+            Dm = 0x16,
+            Mod = 0x1c,
+            Admin  = 0x1b
         }
 
         public static List<Filter> FilteredWords = new List<Filter>();
@@ -71,13 +72,13 @@ namespace Horse_Isle_Server
                 {
                     foreach (string word in wordsSaid)
                     {
-                        if (word == filter.FilteredWord)
+                        if (word.ToLower() == filter.FilteredWord.ToLower())
                             return filter.Reason;
                     }
                 }
                 else
                 {
-                    if (message.Contains(filter.FilteredWord))
+                    if (message.ToLower().Contains(filter.FilteredWord.ToLower()))
                         return filter.Reason;
                 }
             }
@@ -93,10 +94,12 @@ namespace Horse_Isle_Server
                 case ChatChannel.Ads:
                 case ChatChannel.Isle:
                     return PacketBuilder.CHAT_BOTTOM_LEFT;
+                case ChatChannel.Buddies:
                 case ChatChannel.Admin:
                 case ChatChannel.Mod:
-                case ChatChannel.Buddies:
                     return PacketBuilder.CHAT_BOTTOM_RIGHT;
+                case ChatChannel.Dm:
+                    return PacketBuilder.CHAT_BTMR_W_DM_SFX;
                 default:
                     Logger.ErrorPrint("unknown channel: " + (byte)channel);
                     return PacketBuilder.CHAT_BOTTOM_LEFT;
@@ -105,18 +108,161 @@ namespace Horse_Isle_Server
         }
         public static Client[] GetRecipiants(User user, ChatChannel channel)
         {
-            if(channel == ChatChannel.All)
+            if (channel == ChatChannel.All)
             {
                 List<Client> recipiants = new List<Client>();
                 foreach (Client client in Server.ConnectedClients)
+                {
                     if (client.LoggedIn)
                         if (!client.LoggedinUser.MuteGlobal)
-                            recipiants.Add(client);
+                            if (client.LoggedinUser.Id != user.Id)
+                                recipiants.Add(client);
+                }
+                return recipiants.ToArray();
+            }
+            
+            if(channel == ChatChannel.Ads)
+            { 
+                List<Client> recipiants = new List<Client>();
+                foreach (Client client in Server.ConnectedClients)
+                {
+                    if (client.LoggedIn)
+                        if (!client.LoggedinUser.MuteAds)
+                            if (client.LoggedinUser.Id != user.Id)
+                                recipiants.Add(client);
+                }
                 return recipiants.ToArray();
             }
 
+            if(channel == ChatChannel.Buddies)
+            {
+                List<Client> recipiants = new List<Client>();
+                foreach (Client client in Server.ConnectedClients)
+                {
+                    if (client.LoggedIn)
+                        if (!client.LoggedinUser.MuteBuddy)
+                            if (client.LoggedinUser.Id != user.Id)
+                                if (client.LoggedinUser.Friends.List.Contains(user.Id)) 
+                                    recipiants.Add(client);
+                }
+                return recipiants.ToArray();
+            }
+
+            if (channel == ChatChannel.Mod)
+            {
+                if (!user.Moderator || !user.Administrator) // No mod chat for non-mods!
+                {
+                    Logger.WarnPrint(user.Username + " attempted to send in MOD chat, without being a MOD.");
+                    return new Client[0];
+                }
+
+                List<Client> recipiants = new List<Client>();
+                foreach (Client client in Server.ConnectedClients)
+                {
+                    if (client.LoggedIn)
+                        if (client.LoggedinUser.Moderator)
+                            if (client.LoggedinUser.Id != user.Id)
+                                recipiants.Add(client);
+                }
+                return recipiants.ToArray();
+            }
+
+            if(channel == ChatChannel.Admin)
+            {
+                if (!user.Administrator) // No admin chat for non-admins!
+                {
+                    Logger.WarnPrint(user.Username + " attempted to send in ADMIN chat, without being an ADMIN.");
+                    return new Client[0];
+                }
+                    
+
+                List<Client> recipiants = new List<Client>();
+                foreach (Client client in Server.ConnectedClients)
+                {
+                    if (client.LoggedIn)
+                        if (client.LoggedinUser.Administrator)
+                            if (client.LoggedinUser.Id != user.Id)
+                                recipiants.Add(client);
+                }
+                return recipiants.ToArray();
+            }
+
+
             Logger.ErrorPrint(user.Username + " Sent message in unknown channel: " + (byte)channel);
             return new Client[0]; // No recipiants
+        }
+
+        public static string DoCorrections(string message)
+        {
+            if (!ConfigReader.DoCorrections)
+                return message;
+
+            foreach(Correction correct in CorrectedWords)
+                message = message.Replace(correct.FilteredWord, correct.ReplacedWord);
+
+            return message;
+        }
+        public static string EscapeMessage(string message)
+        {
+            return message.Replace("<", "&lt;");
+        }
+
+        public static string FormatChatForOthers(User user, ChatChannel channel, string message)
+        {
+
+            switch (channel)
+            {
+                case ChatChannel.All:
+                    if (user.Moderator || user.Administrator)
+                        return Messages.FormatGlobalChatMessageForMod(user.Username, message);
+                    else
+                        return Messages.FormatGlobalChatMessage(user.Username, message);
+                case ChatChannel.Ads:
+                    return Messages.FormatAdsChatMessage(user.Username, message);
+                case ChatChannel.Buddies:
+                    return Messages.FormatBuddyChatMessage(user.Username, message);
+                case ChatChannel.Dm:
+                    if (user.Moderator || user.Administrator)
+                        return Messages.FormatDirectMessageForMod(user.Username, message);
+                    else
+                        return Messages.FormatDirectMessage(user.Username, message);
+                case ChatChannel.Mod:
+                    if (user.Moderator || user.Administrator)
+                        return Messages.FormatModChatMessage(user.Username, message);
+                    else
+                        return "Hacker!";
+                case ChatChannel.Admin:
+                    if (user.Administrator)
+                        return Messages.FormatAdminChatMessage(user.Username, message);
+                    else
+                        return "Hacker!";
+                default:
+                    Logger.ErrorPrint(user.Username + " is trying to end a message in unknown channel " + channel.ToString("X"));
+                    return "not implemented yet :(";
+            }
+        }
+
+        public static string FormatChatForSender(User user, ChatChannel channel, string message)
+        {
+            switch (channel)
+            {
+                case ChatChannel.All:
+                    if (user.Moderator || user.Administrator)
+                        return Messages.FormatGlobalChatMessageForMod(user.Username, message);
+                    else
+                        return Messages.FormatGlobalChatMessage(user.Username, message);
+                case ChatChannel.Ads:
+                    return Messages.FormatAdsChatMessage(user.Username, message);
+                case ChatChannel.Buddies:
+                    return Messages.FormatBuddyChatMessageForSender(user.Friends.Count, user.Username, message);
+                case ChatChannel.Mod:
+                    return Messages.FormatModChatForSender(Server.GetNumberOfModsOnline(), user.Username, message);
+                case ChatChannel.Admin:
+                    return Messages.FormatAdminChatForSender(Server.GetNumberOfAdminsOnline(),user.Username, message);
+                default:
+                    Logger.ErrorPrint(user.Username + " is trying to end a message in unknown channel " + channel.ToString("X"));
+                    return "not implemented yet :(";
+            }
         }
         public static Reason GetReason(string name)
         {

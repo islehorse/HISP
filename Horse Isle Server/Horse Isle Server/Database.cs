@@ -16,6 +16,7 @@ namespace Horse_Isle_Server
             string UserTable = "CREATE TABLE Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
             string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, Money INT, BankBalance BIGINT,ProfilePage Text(1028), CharId INT, ChatViolations INT)";
             string MailTable = "CREATE TABLE Mailbox(IdTo INT, PlayerFrom TEXT(16),Subject TEXT(128), Message Text(1028), TimeSent INT)";
+            string BuddyTable = "CREATE TABLE BuddyList(Id INT, IdFriend INT, Pending BOOL)";
             string WorldTable = "CREATE TABLE World(TimeStarted INT, Weather TEXT(64))";
             string DroppedTable = "CREATE TABLE DroppedItems(X INT, Y INT, ItemID INT)";
 
@@ -46,6 +47,18 @@ namespace Horse_Isle_Server
 
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = MailTable;
+                sqlCommand.ExecuteNonQuery();
+            }
+            catch (Exception e)
+            {
+                Logger.WarnPrint(e.Message);
+            };
+
+            try
+            {
+
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = BuddyTable;
                 sqlCommand.ExecuteNonQuery();
             }
             catch (Exception e)
@@ -227,6 +240,82 @@ namespace Horse_Isle_Server
             }
         }
 
+        public static int GetBuddyCount(int id)
+        {
+            MySqlCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE Id=@id OR IdFriend=@id AND Pending=false";
+            sqlCommand.Parameters.AddWithValue("@id", id);
+            sqlCommand.Prepare();
+
+            Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+            return count;
+        }
+
+        public static int[] GetBuddyList(int id)
+        {
+            if (GetBuddyCount(id) <= 0)
+                return new int[0];      // user is forever alone.
+
+            List<int> buddyList = new List<int>();
+
+            MySqlCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = "SELECT Id,IdFriend FROM BuddyList WHERE Id=@id OR IdFriend=@id AND Pending=false";
+            sqlCommand.Parameters.AddWithValue("@id", id);
+            sqlCommand.Prepare();
+            MySqlDataReader dataReader = sqlCommand.ExecuteReader();
+
+            while(dataReader.Read())
+            {
+                int adder = dataReader.GetInt32(0);
+                int friend = dataReader.GetInt32(1);
+                if (adder != id)
+                    buddyList.Add(adder);
+                else if (friend != id)
+                    buddyList.Add(adder);
+            }
+
+            return buddyList.ToArray();
+        }
+
+        public static bool IsPendingBuddyRequestExist(int id, int friendId)
+        {
+            MySqlCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id) AND Pending=true";
+            sqlCommand.Parameters.AddWithValue("@id", id);
+            sqlCommand.Parameters.AddWithValue("@friendId", friendId);
+            sqlCommand.Prepare();
+
+            Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+            return count >= 1;
+        }
+
+        public static void RemoveBuddy(int id, int friendId)
+        {
+            MySqlCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = "DELETE FROM BuddyList WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id)";
+            sqlCommand.Parameters.AddWithValue("@id", id);
+            sqlCommand.Parameters.AddWithValue("@friendId", friendId);
+            sqlCommand.Prepare();
+            sqlCommand.ExecuteNonQuery();
+        }
+        public static void AcceptBuddyRequest(int id, int friendId)
+        {
+            MySqlCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = "UPDATE BuddyList SET Pending=false WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id)";
+            sqlCommand.Parameters.AddWithValue("@id", id);
+            sqlCommand.Parameters.AddWithValue("@friendId", friendId);
+            sqlCommand.Prepare();
+            sqlCommand.ExecuteNonQuery();
+        }
+        public static void AddPendingBuddyRequest(int id, int friendId)
+        {
+            MySqlCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = "INSERT INTO BuddyList VALUES(@id,@friendId,true)";
+            sqlCommand.Parameters.AddWithValue("@id", id);
+            sqlCommand.Parameters.AddWithValue("@friendId", friendId);
+            sqlCommand.Prepare();
+            sqlCommand.ExecuteNonQuery();
+        }
         public static void CreateUserExt(int id)
         {
             if (CheckUserExtExists(id)) // user allready exists!

@@ -20,14 +20,21 @@ namespace Horse_Isle_Server
         // Chat
         public static string GlobalChatFormat;
         public static string AdsChatFormat;
+        public static string BuddyChatFormat;
+        public static string DirectChatFormat;
+        public static string ModChatFormat;
+        public static string AdminChatFormat;
 
         public static string GlobalChatFormatForModerators;
+        public static string DirectChatFormatForModerators;
 
         public static string HereChatFormatForSender;
         public static string IsleChatFormatForSender;
         public static string NearChatFormatForSender;
         public static string BuddyChatFormatForSender;
         public static string DirectChatFormatForSender;
+        public static string AdminChatFormatForSender;
+        public static string ModChatFormatForSender;
 
         public static string ChatViolationMessageFormat;
         public static int RequiredChatViolations;
@@ -46,14 +53,75 @@ namespace Horse_Isle_Server
         {
             return ChatViolationMessageFormat.Replace("%AMOUNT%", RequiredChatViolations.ToString()).Replace("%REASON%", violationReason.Message);
         }
-        public static string FormatGlobalChatMessage(User sender, string message)
-        {
-            if (sender.Moderator)
-                return GlobalChatFormatForModerators.Replace("%USERNAME%", sender.Username).Replace("%MESSAGE%", message);
-            else
-                return GlobalChatFormat.Replace("%USERNAME%", sender.Username).Replace("%MESSAGE%", message);
 
+        // For all
+        public static string FormatGlobalChatMessage(string username, string message)
+        {
+            return GlobalChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
         }
+
+        public static string FormatBuddyChatMessage(string username, string message)
+        {
+            return BuddyChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
+        }
+
+        public static string FormatDirectMessage(string username, string message)
+        {
+            return DirectChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
+        }
+        public static string FormatDirectMessageForMod(string username, string message)
+        {
+            return DirectChatFormatForModerators.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
+        }
+        
+        public static string FormatGlobalChatMessageForMod(string username, string message)
+        {
+            return GlobalChatFormatForModerators.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
+        }
+
+        public static string FormatAdsChatMessage(string username, string message)
+        {
+            return AdsChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
+        }
+
+        public static string FormatModChatMessage(string username, string message)
+        {
+            return ModChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
+        }
+
+        public static string FormatAdminChatMessage(string username, string message)
+        {
+            return AdminChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
+        }
+
+
+        // For Sender
+        public static string FormatBuddyChatMessageForSender(int numbBuddies, string username, string message)
+        {
+            return BuddyChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbBuddies.ToString());
+        }
+
+        public static string FormatAdminChatForSender(int numbAdmins, string username, string message)
+        {
+            return AdminChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbAdmins.ToString());
+        }
+
+        public static string FormatModChatForSender(int numbMods, string username, string message)
+        {
+            return ModChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbMods.ToString());
+        }
+        public static string FormatDirectChatMessageForSender(string username,string toUsername, string message)
+        {
+            return DirectChatFormatForSender.Replace("%FROMUSER%", username).Replace("%TOUSER%", toUsername).Replace(" %MESSAGE%", message);
+        }
+
+
+
+
+
+
+
+
         public static string FormatMOTD()
         {
             return MotdFormat.Replace("%MOTD%", ConfigReader.Motd);
