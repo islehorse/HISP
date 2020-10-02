@@ -8,7 +8,7 @@ namespace Horse_Isle_Server
     {
 
         public const byte PACKET_TERMINATOR = 0x00;
-        public const byte PACKET_A_TERMINATOR = 0x0A;
+        public const byte PACKET_CLIENT_TERMINATOR = 0x0A;
         
 
         public const byte PACKET_LOGIN = 0x7F;
@@ -21,8 +21,15 @@ namespace Horse_Isle_Server
         public const byte PACKET_AREA_DEFS = 0x79;
         public const byte PACKET_ANNOUNCEMENT = 0x7E;
         public const byte PACKET_TILE_FLAGS = 0x75;
-        public const byte PACKET_UPDATE = 0x7C;
+        public const byte PACKET_KEEP_ALIVE = 0x7C;
         public const byte PACKET_PROFILE = 0x18;
+        public const byte PACKET_KICK = 0x80;
+        public const byte PACKET_LEAVE = 0x7D;
+
+        public const byte PACKET_PLAYERINFO = 0x16;
+
+        public const byte PLAYERINFO_LEAVE = 0x16;
+        public const byte PLAYERINFO_UPDATE_OR_CREATE = 0x15;
 
         public const byte VIEW_PROFILE = 0x14;
         public const byte SAVE_PROFILE = 0x15;
@@ -49,10 +56,58 @@ namespace Horse_Isle_Server
         public const byte DIRECTION_RIGHT = 1;
         public const byte DIRECTION_DOWN = 2;
         public const byte DIRECTION_LEFT = 3;
-        public const byte DIRECTION_LOGIN = 4;
+        public const byte DIRECTION_TELEPORT = 4;
         public const byte DIRECTION_NONE = 10;
 
 
+        public static byte[] CreatePlayerLeavePacket(string username)
+        {
+            MemoryStream ms = new MemoryStream();
+
+            ms.WriteByte(PACKET_PLAYERINFO);
+            ms.WriteByte(PLAYERINFO_LEAVE);
+
+            byte[] strBytes = Encoding.UTF8.GetBytes(username);
+            ms.Write(strBytes, 0x00, strBytes.Length);
+
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
+        public static byte[] CreatePlayerInfoUpdateOrCreate(int x, int y, int facing, int charId, string username)
+        {
+            MemoryStream ms = new MemoryStream();
+
+            ms.WriteByte(PACKET_PLAYERINFO);
+            ms.WriteByte(PLAYERINFO_UPDATE_OR_CREATE);
+
+            ms.WriteByte((byte)(((x - 4) / 64) + 20)); 
+            ms.WriteByte((byte)(((x - 4) % 64) + 20));
+
+            ms.WriteByte((byte)(((y - 1) / 64) + 20)); 
+            ms.WriteByte((byte)(((y - 1) % 64) + 20));
+
+            ms.WriteByte((byte)(facing + 20));
+
+            ms.WriteByte((byte)((charId / 64) + 20)); //6
+            ms.WriteByte((byte)((charId % 64) + 20)); //7
+
+
+            byte[] strBytes = Encoding.UTF8.GetBytes(username);
+            ms.Write(strBytes, 0x00, strBytes.Length);
+
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
 
         public static byte[] CreateLoginPacket(bool Success)
         {
@@ -215,7 +270,7 @@ namespace Horse_Isle_Server
                     ms.WriteByte((byte)otileId);
                 }
             }
-            if (direction == DIRECTION_LOGIN)
+            if (direction == DIRECTION_TELEPORT)
             {
                 for(int rely = 0; rely <= 9; rely++)
                 {
@@ -262,7 +317,7 @@ namespace Horse_Isle_Server
             ms.WriteByte(PACKET_PLACE_INFO);
 
             ms.Write(strBytes, 0x00, strBytes.Length);
-
+            
             ms.WriteByte(PACKET_TERMINATOR);
 
             ms.Seek(0x00, SeekOrigin.Begin);
@@ -317,11 +372,11 @@ namespace Horse_Isle_Server
             return Packet;
         }
 
-        public static byte[] CreateUpdate()
+        public static byte[] CreateKeepAlive()
         {
             MemoryStream ms = new MemoryStream();
 
-            ms.WriteByte(PACKET_UPDATE);
+            ms.WriteByte(PACKET_KEEP_ALIVE);
             ms.WriteByte(PACKET_TERMINATOR);
 
             ms.Seek(0x00, SeekOrigin.Begin);
@@ -419,7 +474,7 @@ namespace Horse_Isle_Server
             return Packet;
         }
 
-        public static byte[] CreateBaseStats(int money, int playerCount, int mail)
+        public static byte[] CreatePlayerData(int money, int playerCount, int mail)
         {
             byte[] moneyStrBytes = Encoding.UTF8.GetBytes(money.ToString());
             byte[] playerStrBytes = Encoding.UTF8.GetBytes(playerCount.ToString());
@@ -460,6 +515,7 @@ namespace Horse_Isle_Server
 
             return Packet;
         }
+
         public static byte[] CreateSecCode(byte[] SecCodeSeed, int SecCodeInc, bool Admin, bool Moderator)
         {
             MemoryStream ms = new MemoryStream();
@@ -500,6 +556,21 @@ namespace Horse_Isle_Server
             return Packet;
         }
 
+        public static byte[] CreateKickMessage(string reason)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_KICK);
+            byte[] strBytes = Encoding.UTF8.GetBytes(reason);
+            ms.Write(strBytes, 0x00, strBytes.Length);
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
+
         public static byte[] CreateAreaMessage(int x, int y)
         {
             string locationStr = Messages.FormatLocationData(x, y);
@@ -510,7 +581,7 @@ namespace Horse_Isle_Server
             string formattedMotd = Messages.FormatMOTD();
             return CreateAnnouncement(formattedMotd);
         }
-        public static byte[] CreateLoginMessage(string username)
+        public static byte[] CreateWelcomeMessage(string username)
         {
             string formattedStr = Messages.FormatLoginMessage(username);
             return CreateChat(formattedStr, CHAT_BOTTOM_RIGHT);

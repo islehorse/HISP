@@ -17,7 +17,7 @@ namespace Horse_Isle_Server
             string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, Money INT, BankBalance BIGINT,ProfilePage Text(1028), CharId INT, ChatViolations INT)";
             string MailTable = "CREATE TABLE Mailbox(IdTo INT, PlayerFrom TEXT(16),Subject TEXT(128), Message Text(1028), TimeSent INT)";
             string BuddyTable = "CREATE TABLE BuddyList(Id INT, IdFriend INT, Pending BOOL)";
-            string WorldTable = "CREATE TABLE World(TimeStarted INT, Weather TEXT(64))";
+            string WorldTable = "CREATE TABLE World(Time INT,Day INT, Year INT, Weather TEXT(64))";
             string DroppedTable = "CREATE TABLE DroppedItems(X INT, Y INT, ItemID INT)";
 
             try
@@ -87,11 +87,9 @@ namespace Horse_Isle_Server
                 sqlCommand.ExecuteNonQuery();
 
 
-                int epoch = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
                 sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO World VALUES(@unix,'SUNNY')";
-                sqlCommand.Parameters.AddWithValue("@unix", epoch);
+                sqlCommand.CommandText = "INSERT INTO World VALUES(0,0,0,'SUNNY')";
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
@@ -103,14 +101,40 @@ namespace Horse_Isle_Server
         }
 
 
-        public static int GetServerCreationTime()
+        public static void SetServerTime(int time, int day, int year)
         {
             MySqlCommand sqlCommand = db.CreateCommand();
-            sqlCommand.CommandText = "SELECT TimeStarted FROM World";
+            sqlCommand.CommandText = "UPDATE World SET Time=@time,Day=@day,Year=@year";
+            sqlCommand.Parameters.AddWithValue("@time", time);
+            sqlCommand.Parameters.AddWithValue("@day", day);
+            sqlCommand.Parameters.AddWithValue("@year", year);
+            sqlCommand.Prepare();
+            sqlCommand.ExecuteNonQuery();
+        }
+
+        public static int GetServerTime()
+        {
+            MySqlCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = "SELECT Time FROM World";
+            int serverTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
+            return serverTime;
+        }
+
+        public static int GetServerDay()
+        {
+            MySqlCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = "SELECT Day FROM World";
+            int serverTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
+            return serverTime;
+        }
+
+        public static int GetServerYear()
+        {
+            MySqlCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = "SELECT Year FROM World";
             int creationTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
             return creationTime;
         }
-
         public static string GetWorldWeather()
         {
             MySqlCommand sqlCommand = db.CreateCommand();

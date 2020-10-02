@@ -117,9 +117,11 @@ namespace Horse_Isle_Server
 
             // Announcements
 
-            Messages.LoginFormat = gameData.messages.login_format;
+            Messages.WelcomeFormat = gameData.messages.welcome_format;
             Messages.MotdFormat = gameData.messages.motd_format;
             Messages.ProfileSavedMessage = gameData.messages.profile_save;
+            Messages.LoginMessageForamt = gameData.messages.login_format;
+            Messages.LogoutMessageFormat = gameData.messages.logout_format;
 
             // Chat
 
@@ -144,6 +146,9 @@ namespace Horse_Isle_Server
             Messages.ModChatFormatForSender = gameData.messages.chat.for_sender.mod_format;
             Messages.AdminChatFormatForSender = gameData.messages.chat.for_sender.admin_format;
 
+            Messages.PasswordNotice = gameData.messages.chat.password_included;
+            Messages.CapsNotice = gameData.messages.chat.caps_notice;
+
             // Meta Format
 
             Messages.LocationFormat = gameData.messages.meta.location_format;
@@ -159,6 +164,17 @@ namespace Horse_Isle_Server
             Map.OverlayTileDepth = gameData.tile_paramaters.overlay_tiles.tile_depth.ToObject<int[]>();
             Map.OverlayTilesetPassibility = gameData.tile_paramaters.overlay_tiles.passibility.ToObject<bool[][]>();
             Map.TerrainTilePassibility = gameData.tile_paramaters.terrain_tiles.passibility.ToObject<bool[]>();
+
+            // Disconnect Reasons
+
+            Messages.BanMessage = gameData.messages.disconnect.banned;
+            Messages.IdleKickMessageFormat = gameData.messages.disconnect.client_timeout.kick_message;
+            Messages.IdleWarningFormat = gameData.messages.disconnect.client_timeout.warn_message;
+
+
+            Server.IdleWarning = gameData.messages.disconnect.client_timeout.warn_after;
+            Server.IdleTimeout = gameData.messages.disconnect.client_timeout.kick_after;
+
         }
 
     }

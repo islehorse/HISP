@@ -14,22 +14,52 @@ namespace Horse_Isle_Server
         public User LoggedinUser;
 
         private Thread recvPackets;
+        
         private Timer updateTimer;
+        private Timer inactivityTimer;
 
+        private Timer warnTimer;
+        private Timer kickTimer;
+
+
+        private int keepAliveInterval = 60 * 1000;
         private int updateInterval = 60 * 1000;
+
+        private int warnInterval = Server.IdleWarning * 60 * 1000;
+        private int kickInterval = Server.IdleTimeout * 60 * 1000;
+
+        
+        private void keepAliveTimerTick(object state)
+        {
+            Logger.DebugPrint("Sending keep-alive packet to "+ LoggedinUser.Username);
+            byte[] updatePacket = PacketBuilder.CreateKeepAlive();
+            SendPacket(updatePacket);
+        }
+
+        private void warnTimerTick(object state)
+        {
+            Logger.DebugPrint("Sending inactivity warning to: " + RemoteIp);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatIdleWarningMessage(), PacketBuilder.CHAT_BOTTOM_RIGHT);
+            SendPacket(chatPacket);
+        }
+
+        private void kickTimerTick(object state)
+        {
+            Kick(Messages.FormatIdleKickMessage());
+        }
         private void updateTimerTick(object state)
         {
-            Logger.DebugPrint("Sending update packet to "+ LoggedinUser.Username);
-            byte[] updatePacket = PacketBuilder.CreateUpdate();
-            SendPacket(updatePacket);
+            Server.UpdateArea(this);
+            Server.UpdateWorld(this);
+            Server.UpdatePlayer(this);
         }
         public void Login(int id)
         {
             LoggedinUser = new User(id);
             LoggedIn = true;
 
-
             updateTimer = new Timer(new TimerCallback(updateTimerTick), null, updateInterval, updateInterval);
+            inactivityTimer = new Timer(new TimerCallback(keepAliveTimerTick), null, keepAliveInterval, keepAliveInterval);
         }
         private void receivePackets()
         {
@@ -54,6 +84,7 @@ namespace Horse_Isle_Server
                                 ms.Seek(0x00, SeekOrigin.Begin);
                                 byte[] fullPacket = ms.ToArray();
                                 parsePackets(fullPacket);
+
                                 ms.Close();
                                 ms = new MemoryStream();
                             }
@@ -63,7 +94,7 @@ namespace Horse_Isle_Server
                 }
                 catch(SocketException e)
                 {
-                    Logger.ErrorPrint("Socket exception occured: " + e.Message +" and so it was disconnected.");
+                    Logger.ErrorPrint("Socket exception occured: " + e.Message);
                     Disconnect();
                     break;
                 }
@@ -81,8 +112,16 @@ namespace Horse_Isle_Server
             }
             byte identifier = Packet[0];
 
-            if (updateTimer != null)
-                updateTimer.Change(updateInterval, updateInterval);
+            // Reset timers
+            if (inactivityTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
+                inactivityTimer.Change(keepAliveInterval, keepAliveInterval);
+
+           
+            if (kickTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
+                kickTimer.Change(kickInterval, kickInterval);
+
+            if (warnTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
+                warnTimer.Change(warnInterval, warnInterval);
 
             if (!LoggedIn) // Must be either login or policy-file-request
             {
@@ -113,8 +152,8 @@ namespace Horse_Isle_Server
                     case PacketBuilder.PACKET_CHAT:
                         Server.OnChatPacket(this, Packet);
                         break;
-                    case PacketBuilder.PACKET_UPDATE:
-                        Server.OnUpdatePacket(this, Packet);
+                    case PacketBuilder.PACKET_KEEP_ALIVE:
+                        Server.OnKeepAlive(this, Packet);
                         break;
                     default:
                         Logger.ErrorPrint("Unimplemented Packet: " + BitConverter.ToString(Packet).Replace('-', ' '));
@@ -127,12 +166,29 @@ namespace Horse_Isle_Server
         {
             Logger.DebugPrint(ClientSocket.RemoteEndPoint + " has Disconnected.");
             recvPackets.Abort();
-            updateTimer.Dispose();
+            if(updateTimer != null)
+                updateTimer.Dispose();
+            if(inactivityTimer != null)
+                inactivityTimer.Dispose();
+            if(warnTimer != null)
+                warnTimer.Dispose();
+            if(kickTimer != null)
+                kickTimer.Dispose();
+            
+            Server.OnDisconnect(this);
             LoggedIn = false;
             LoggedinUser = null;
-            Server.ConnectedClients.Remove(this);
             ClientSocket.Close();
             ClientSocket.Dispose();
+        }
+
+       public void Kick(string Reason)
+        {
+            byte[] kickPacket = PacketBuilder.CreateKickMessage(Reason);
+            SendPacket(kickPacket);
+            Disconnect();
+
+            Logger.InfoPrint("CLIENT: "+RemoteIp+" KICKED for: "+Reason);
         }
 
        public void SendPacket(byte[] PacketData)
@@ -143,7 +199,7 @@ namespace Horse_Isle_Server
             }
             catch (SocketException e)
             {
-                Logger.ErrorPrint("Socket exception occured: " + e.Message + " and so it was disconnected.");
+                Logger.ErrorPrint("Socket exception occured: " + e.Message);
                 Disconnect();
             }
         }
@@ -154,6 +210,9 @@ namespace Horse_Isle_Server
             RemoteIp = clientSocket.RemoteEndPoint.ToString();
 
             Logger.DebugPrint("Client connected @ " + RemoteIp);
+
+            kickTimer = new Timer(new TimerCallback(kickTimerTick), null, kickInterval, kickInterval);
+            warnTimer = new Timer(new TimerCallback(warnTimerTick), null, warnInterval, warnInterval);
 
             recvPackets = new Thread(() =>
             {

@@ -17,6 +17,7 @@ namespace Horse_Isle_Server
             Database.OpenDatabase();
             Map.OpenMap();
             Gamedata.ReadGamedata();
+            World.ReadWorldData();
             Server.StartServer();
 
         }

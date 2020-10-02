@@ -22,8 +22,12 @@ namespace Horse_Isle_Server
         public bool MuteSocials = false;
         public bool MuteLogins = false;
 
+        public bool Stealth = false;
+
+        public int Facing;
         public Mailbox MailBox;
         public Friends Friends;
+        public string Password; // For chat filter.
         public int ChatViolations
         {
             get
@@ -157,7 +161,7 @@ namespace Horse_Isle_Server
 
             Id = UserId;
             Username = Database.GetUsername(UserId);
-
+            
             Administrator = Database.CheckUserIsAdmin(Username);
             Moderator = Database.CheckUserIsModerator(Username);
 
@@ -165,6 +169,8 @@ namespace Horse_Isle_Server
             x = Database.GetPlayerX(UserId);
             y = Database.GetPlayerY(UserId);
             charId = Database.GetPlayerCharId(UserId);
+
+            Facing = PacketBuilder.DIRECTION_DOWN;
 
             money = Database.GetPlayerMoney(UserId);
             bankMoney = Database.GetPlayerBankMoney(UserId);
@@ -181,6 +187,7 @@ namespace Horse_Isle_Server
             SecCodeSeeds[2] = (byte)rng.Next(40, 140);
             SecCodeInc = (byte)rng.Next(0, 99);
 
+            
             // Make some friends! (Get a life!)
 
             Friends = new Friends(this);

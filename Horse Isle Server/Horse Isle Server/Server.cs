@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Horse_Isle_Server
@@ -13,8 +14,25 @@ namespace Horse_Isle_Server
     {
 
         public static Socket ServerSocket;
-        public static List<Client> ConnectedClients = new List<Client>();
 
+
+        public static Client[] ConnectedClients // Done to prevent Enumerator Changed errors.
+        { 
+            get {
+                    return connectedClients.ToArray();
+                } 
+        }
+
+        public static int IdleTimeout;
+        public static int IdleWarning;
+
+        
+
+        // used for world time,
+        private static int gameTickSpeed = 4320; // Changing this to ANYTHING else will cause desync with the client.
+        private static Timer serverTimer;
+
+        private static List<Client> connectedClients = new List<Client>();
         public static void OnCrossdomainPolicyRequest(Client sender) // When a cross-domain-policy request is received.
         {
             Logger.DebugPrint("Cross-Domain-Policy request received from: " + sender.RemoteIp);
@@ -35,27 +53,35 @@ namespace Horse_Isle_Server
 
             User user = sender.LoggedinUser;
 
-            byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, PacketBuilder.DIRECTION_DOWN, PacketBuilder.DIRECTION_LOGIN, true);
+            byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
             sender.SendPacket(MovementPacket);
 
-            byte[] LoginMessage = PacketBuilder.CreateLoginMessage(user.Username);
-            sender.SendPacket(LoginMessage);
+            byte[] WelcomeMessage = PacketBuilder.CreateWelcomeMessage(user.Username);
+            sender.SendPacket(WelcomeMessage);
 
-            World.Time time = World.GetGameTime();
-            int timestamp = time.hours * 60;
-            timestamp += time.minutes;
-
-            byte[] WorldData = PacketBuilder.CreateWorldData(timestamp, time.days, time.year, World.GetWeather());
+            byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, World.GetWeather());
             sender.SendPacket(WorldData);
 
             byte[] SecCodePacket = PacketBuilder.CreateSecCode(user.SecCodeSeeds, user.SecCodeInc, user.Administrator, user.Moderator);
             sender.SendPacket(SecCodePacket);
 
-            byte[] BaseStatsPacketData = PacketBuilder.CreateBaseStats(user.Money, Server.GetNumberOfPlayers(), user.MailBox.MailCount);
+            byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(user.Money, Server.GetNumberOfPlayers(), user.MailBox.MailCount);
             sender.SendPacket(BaseStatsPacketData);
 
             byte[] AreaMessage = PacketBuilder.CreateAreaMessage(user.X, user.Y);
             sender.SendPacket(AreaMessage);
+
+            foreach(Client client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                {
+                    if(client.LoggedinUser.Id != user.Id)
+                    {
+                        byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.Facing, client.LoggedinUser.CharacterId, client.LoggedinUser.Username);
+                        sender.SendPacket(PlayerInfo);
+                    }
+                }
+            }
 
             byte[] IsleData = PacketBuilder.CreatePlaceData(World.Isles.ToArray(), World.Towns.ToArray(), World.Areas.ToArray());
             sender.SendPacket(IsleData);
@@ -68,24 +94,24 @@ namespace Horse_Isle_Server
 
 
         }
-        public static void OnUpdatePacket(Client sender, byte[] packet)
+        
+        public static void OnKeepAlive(Client sender, byte[] packet)
         {
             if (!sender.LoggedIn)
             {
-                Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
+                Logger.ErrorPrint(sender.RemoteIp + " Requested update when not logged in.");
                 return;
             }
             if (packet.Length < 2)
             {
-                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid Update Packet");
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid update Packet");
                 return;
             }
 
-            if(packet[1] == PacketBuilder.PACKET_A_TERMINATOR)
+            if(packet[1] == PacketBuilder.PACKET_CLIENT_TERMINATOR)
             {
-                Logger.DebugPrint(sender.LoggedinUser.Username + " Requested latest statistics (Money/Playercount/Mail)");
-                byte[] packetResponse = PacketBuilder.CreateBaseStats(sender.LoggedinUser.Money, GetNumberOfPlayers(), sender.LoggedinUser.MailBox.MailCount);
-                sender.SendPacket(packetResponse);
+                Logger.DebugPrint("Sending "+ sender.LoggedinUser.Username +" updated info...");
+                UpdatePlayer(sender);
             }
         }
         public static void OnProfilePacket(Client sender, byte[] packet)
@@ -131,6 +157,7 @@ namespace Horse_Isle_Server
                 sender.SendPacket(chatPacket);
 
                 UpdateArea(sender);
+                UpdateUserInfo(sender.LoggedinUser);
             }
 
         }
@@ -148,64 +175,70 @@ namespace Horse_Isle_Server
 
             if(movementDirection == PacketBuilder.MOVE_UP)
             {
+                loggedInUser.Facing = PacketBuilder.DIRECTION_UP;
                 if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y - 1))
                 {
                     loggedInUser.Y -= 1;
-                    byte[] moveUpResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_UP, PacketBuilder.DIRECTION_UP, true);
+
+                    byte[] moveUpResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, sender.LoggedinUser.Facing, PacketBuilder.DIRECTION_UP, true);
                     sender.SendPacket(moveUpResponse);
                 }
                 else
                 {
-                    byte[] moveUpResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_UP, PacketBuilder.DIRECTION_NONE, false);
+                    byte[] moveUpResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, sender.LoggedinUser.Facing, PacketBuilder.DIRECTION_NONE, false);
                     sender.SendPacket(moveUpResponse);
                 }
             }
             else if(movementDirection == PacketBuilder.MOVE_LEFT)
             {
+                loggedInUser.Facing = PacketBuilder.DIRECTION_LEFT;
                 if (Map.CheckPassable(loggedInUser.X - 1, loggedInUser.Y))
                 {
                     loggedInUser.X -= 1;
-                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_LEFT, PacketBuilder.DIRECTION_LEFT, true);
+                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_LEFT, true);
                     sender.SendPacket(moveLeftResponse);
                 }
                 else
                 {
-                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_LEFT, PacketBuilder.DIRECTION_NONE, false);
+                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
                     sender.SendPacket(moveLeftResponse);
                 }
             }
             else if(movementDirection == PacketBuilder.MOVE_RIGHT)
             {
+                loggedInUser.Facing = PacketBuilder.DIRECTION_RIGHT;
                 if (Map.CheckPassable(loggedInUser.X + 1, loggedInUser.Y))
                 {
                     loggedInUser.X += 1;
-                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_RIGHT, PacketBuilder.DIRECTION_RIGHT, true);
+                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_RIGHT, true);
                     sender.SendPacket(moveLeftResponse);
                 }
                 else
                 {
-                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_RIGHT, PacketBuilder.DIRECTION_NONE, false);
+                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
                     sender.SendPacket(moveLeftResponse);
                 }
             }
             else if(movementDirection == PacketBuilder.MOVE_DOWN)
             {
+                loggedInUser.Facing = PacketBuilder.DIRECTION_DOWN;
                 if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
                 {
                     loggedInUser.Y += 1;
-                    byte[] moveDownResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_DOWN, PacketBuilder.DIRECTION_DOWN, true);
+                    byte[] moveDownResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_DOWN, true);
                     sender.SendPacket(moveDownResponse);
                 }
                 else
                 {
-                    byte[] moveDownResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, PacketBuilder.DIRECTION_DOWN, PacketBuilder.DIRECTION_NONE, false);
+                    byte[] moveDownResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
                     sender.SendPacket(moveDownResponse);
                 }
 
             }
 
-            UpdateArea(sender);
 
+            UpdateUserInfo(sender.LoggedinUser);
+            UpdateArea(sender);
         }
         
         public static void OnChatPacket(Client sender, byte[] packet)
@@ -228,11 +261,15 @@ namespace Horse_Isle_Server
             Chat.ChatChannel channel = (Chat.ChatChannel)packet[1];
             string message = packetStr.Substring(2, packetStr.Length - 4);
 
-            Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to say '" + message + "' in channel: " + channel.ToString("X"));
+            Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to say '" + message + "' in channel: " + channel.ToString());
+
+            string nameTo = null;
+            if (channel == Chat.ChatChannel.Dm)
+                nameTo = Chat.GetDmRecipiant(message);
 
 
             Object violationReason = Chat.FilterMessage(message);
-            if (violationReason != null)  // This is such a hack, but i really couldnt think of any better way to do it.
+            if (violationReason != null)  
             {
                 sender.LoggedinUser.ChatViolations += 1;
                 string chatViolationMessage = Messages.FormatGlobalChatViolationMessage((Chat.Reason)violationReason);
@@ -241,10 +278,22 @@ namespace Horse_Isle_Server
                 return;
             }
 
-            Client[] recipiants = Chat.GetRecipiants(sender.LoggedinUser, channel);
             byte chatSide = Chat.GetSide(channel);
             message = Chat.DoCorrections(message);
             message = Chat.EscapeMessage(message);
+
+            
+            string failedReason = Chat.NonViolationChecks(sender.LoggedinUser, message);
+            if (failedReason != null)
+            {
+                byte[] failedMessage = PacketBuilder.CreateChat(failedReason, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(failedMessage);
+                return;
+            }
+
+            Client[] recipiants = Chat.GetRecipiants(sender.LoggedinUser, channel, nameTo);
+
+            // Finally send chat message.
             string formattedMessage = Chat.FormatChatForOthers(sender.LoggedinUser,channel,message);
             string formattedMessageSender = Chat.FormatChatForSender(sender.LoggedinUser, channel, message);
             byte[] chatPacketOthers = PacketBuilder.CreateChat(formattedMessage, chatSide);
@@ -258,6 +307,7 @@ namespace Horse_Isle_Server
             // Send to sender
             sender.SendPacket(chatPacketSender);
         }
+        
         public static void OnLoginRequest(Client sender, byte[] packet)
         {
             Logger.DebugPrint("Login request received from: " + sender.RemoteIp);
@@ -270,7 +320,7 @@ namespace Horse_Isle_Server
                 return;
             }
 
-            if(packet[1] != PacketBuilder.PACKET_A_TERMINATOR)
+            if(packet[1] != PacketBuilder.PACKET_CLIENT_TERMINATOR)
             {
                 string[] loginParts = loginRequestString.Split('|');
                 if (loginParts.Length < 3)
@@ -290,11 +340,23 @@ namespace Horse_Isle_Server
                     // Obtain user information
                     int userId = Database.GetUserid(username);
                     sender.Login(userId);
+                    sender.LoggedinUser.Password = password;
 
                     byte[] ResponsePacket = PacketBuilder.CreateLoginPacket(true);
                     sender.SendPacket(ResponsePacket);
 
                     Logger.DebugPrint(sender.RemoteIp + " Logged into : " + sender.LoggedinUser.Username + " (ADMIN: " + sender.LoggedinUser.Administrator + " MOD: " + sender.LoggedinUser.Moderator+")");
+
+                    // Send login message
+                    byte[] loginMessageBytes = PacketBuilder.CreateChat(Messages.FormatLoginMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
+                    foreach (Client client in ConnectedClients)
+                        if (client.LoggedIn)
+                            if (!client.LoggedinUser.MuteLogins)
+                                if(client.LoggedinUser.Id != userId)
+                                    client.SendPacket(loginMessageBytes);
+
+                    UpdateUserInfo(sender.LoggedinUser);
+
                 }
                 else
                 {
@@ -306,12 +368,71 @@ namespace Horse_Isle_Server
 
         }
 
+        public static void OnDisconnect(Client sender)
+        {
+            if(sender.LoggedIn)
+            {
+                // Send disconnect message
+                byte[] logoutMessageBytes = PacketBuilder.CreateChat(Messages.FormatLogoutMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
+                foreach (Client client in ConnectedClients)
+                    if (client.LoggedIn)
+                        if (!client.LoggedinUser.MuteLogins)
+                            if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
+                                client.SendPacket(logoutMessageBytes);
+                // Tell clients of diconnect (remove from chat)
+                byte[] playerRemovePacket = PacketBuilder.CreatePlayerLeavePacket(sender.LoggedinUser.Username);
+                foreach (Client client in ConnectedClients)
+                    if (client.LoggedIn)
+                        if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
+                            client.SendPacket(playerRemovePacket);
+            }
+
+           connectedClients.Remove(sender);
+        }
+
         public static void UpdateArea(Client forClient)
         {
+            if (!forClient.LoggedIn)
+            {
+                Logger.ErrorPrint(forClient.RemoteIp + "tried to update tile information when not logged in.");
+                return;
+            }
 
             byte[] areaData = PacketBuilder.CreateAreaMessage(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
             forClient.SendPacket(areaData);
 
+        }
+
+        public static void UpdateWorld(Client forClient)
+        {
+            if (!forClient.LoggedIn)
+            {
+                Logger.ErrorPrint(forClient.RemoteIp + "tried to update world information when not logged in.");
+                return;
+            }
+
+            byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, World.GetWeather());
+            forClient.SendPacket(WorldData);
+        }
+
+        public static void UpdatePlayer(Client forClient)
+        {
+            if (!forClient.LoggedIn)
+            {
+                Logger.ErrorPrint(forClient.RemoteIp + "tried to update player information when not logged in.");
+                return;
+            }
+            byte[] PlayerData = PacketBuilder.CreatePlayerData(forClient.LoggedinUser.Money, Server.GetNumberOfPlayers(), forClient.LoggedinUser.MailBox.MailCount);
+            forClient.SendPacket(PlayerData);
+        }
+
+        public static void UpdateUserInfo(User user)
+        {
+            byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
+            foreach (Client client in ConnectedClients)
+                if (client.LoggedIn)
+                    if (client.LoggedinUser.Id != user.Id)
+                        client.SendPacket(playerInfoBytes);
         }
 
         public static int GetNumberOfPlayers()
@@ -320,7 +441,8 @@ namespace Horse_Isle_Server
             foreach(Client client in ConnectedClients)
             {
                 if (client.LoggedIn)
-                    count++;
+                    if(!client.LoggedinUser.Stealth)
+                        count++;
             }
             return count;
         }
@@ -349,6 +471,10 @@ namespace Horse_Isle_Server
             return count;
         }
 
+        private static void onTick(object state)
+        {
+            World.TickWorldClock();
+        }
         public static void StartServer()
         {
             ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -358,13 +484,15 @@ namespace Horse_Isle_Server
             Logger.DebugPrint("Binding to ip: " + ConfigReader.BindIP + " On port: " + ConfigReader.Port.ToString());
             ServerSocket.Listen(10000);
 
-            while(true)
+            serverTimer = new Timer(new TimerCallback(onTick), null, gameTickSpeed, gameTickSpeed);
+
+            while (true)
             {
                 Logger.DebugPrint("Waiting for new connections...");
 
                 Socket cientSocket = ServerSocket.Accept();
                 Client client = new Client(cientSocket);
-                ConnectedClients.Add(client);
+                connectedClients.Add(client);
             }
         }
     }

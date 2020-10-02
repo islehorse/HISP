@@ -1,17 +1,28 @@
 {"messages":{
-	"login_format":"Welcome to the land of Horse Isle, %USERNAME%!!",
+	"welcome_format":"Welcome to the land of Horse Isle, %USERNAME%!!",
 	"motd_format":"<FONT COLOR='#FF0000'><B>Today's Note:</B> %MOTD%</FONT>",
 	"mail_received":"A message has been sent to you from another player. It is in your inventory now.",
-	"login_message":"Player %USERNAME% has logged in",
-	"logout_message":"Player %USERNAME% has disconnected",
+	"login_format":"Player %USERNAME% has logged in",
+	"logout_format":"Player %USERNAME% has disconnected",
 	"profile_save":"Your profile changes were saved.",
 	"buddy_request":"Attempting to Add Buddy.  The other player must click ADD BUDDY as well. (Many players reserve this for just a couple players so don't feel insulted if they do not).",
+	"drawing_notice":"Drawing not sent to other players when you are not a subscriber.",
+	"tag":{
+		"for_sender":"<B>TAG!!</B> %USERNAME% is now it! (tagged by %TAGGER%) [%AMOUNT% buds]",
+		"for_others":"<B>TAG!!</B> %USERNAME% is now it! (tagged by %TAGGER%)"
+	},
 	"commands":{
 		"mute_help":"<FONT COLOR='#FF0000'><B>PLAYER COMMAND [%COMMAND%] COMPLETED</B></FONT> Mute Channel Not Recognized. (ALL/ADS/GLOBAL/ISLAND/NEAR/HERE/BUDDY/PM/BR/SOCIALS/LOGINS)",
 		"command_completed":"<FONT COLOR='#FF0000'><B>PLAYER COMMAND [%COMMAND%] COMPLETED</B></FONT>"
 	},
 	"disconnect":{
-		"banned":"Your account has been BANNED. You will no longer be able to login"
+		"banned":"Your account has been BANNED. You will no longer be able to login",
+		"client_timeout":{
+			"warn_after":10,
+			"kick_after":25,
+			"warn_message":"You have been idle for %WARN% minutes.  You will be disconnected at %KICK% minutes idle",
+			"kick_message":"%KICK% Minute Player Idle Timeout Reached"
+		 }
 	},
 	"login":{
 		"banned":"Your account has been banned. This occurs when too many rules have been broken",
@@ -29,6 +40,112 @@
 			"bridge_text":"A bridge crosses over the water to another isle. That'll save you some travel costs!"
 		}
 	},
+	"socials":{
+		"for_sender":{
+			"friendly":{
+				"smile":"<FONT COLOR='#BA0042'>* You smile at %USERNAME%. *</FONT>",
+				"wave":"<FONT COLOR='#BA0042'>* You wave enthusiastically at %USERNAME%! *</FONT>",
+				"wink":"<FONT COLOR='#BA0042'>* You sneak a wink off to %USERNAME%. *</FONT>",
+				"laugh":"<FONT COLOR='#BA0042'>* You laugh at %USERNAME%'s humor. *</FONT>",
+				"high5":"<FONT COLOR='#BA0042'>* You give a big high-five to %USERNAME%! *</FONT>",
+				"clap":"<FONT COLOR='#BA0042'>* You clap at what %USERNAME% has done! *</FONT>",
+				"hug":"<FONT COLOR='#BA0042'>* You give %USERNAME% a welcome hug. *</FONT>",
+				"bearhug":"<FONT COLOR='#BA0042'>* You nearly crush %USERNAME% with your massive bearhug! *</FONT>",
+				"dance":"<FONT COLOR='#BA0042'>* You do a little dance with %USERNAME%! *</FONT>",
+				"nod":"<FONT COLOR='#BA0042'>* You nod at %USERNAME%. *</FONT>",
+				"tickle":"<FONT COLOR='#BA0042'>* You tickle %USERNAME%'s sides. *</FONT>",
+				"thumbsup":"<FONT COLOR='#BA0042'>* You give %USERNAME% an enthusiastic thumbs up. *</FONT>",
+				"shoulderpat":"<FONT COLOR='#BA0042'>* You pat %USERNAME% comfortingly on the shoulder. *</FONT>",
+				"circle":"<FONT COLOR='#BA0042'>* You run circles around %USERNAME% making them dizzy. *</FONT>",
+				"glomp":"<FONT COLOR='#BA0042'>* You surprise %USERNAME% by tackling and hugging them very tightly! %USERNAME% squeaks in surprise! *</FONT>",
+				"beam":"<FONT COLOR='#BA0042'>* You produce one of the biggest, happiest faces possible towards %USERNAME%! *</FONT>",
+				"handshake":"<FONT COLOR='#BA0042'>* You shake hands with %USERNAME% enthusiastically. *</FONT>",
+				"rofl":"<FONT COLOR='#BA0042'>* %USERNAME% is so funny you end up rolling on the floor from laughing so hard!! *</FONT>",
+				"spin":"<FONT COLOR='#BA0042'>* You playfully spin %USERNAME% in circles making them dizzy. *</FONT>",
+				"sing":"<FONT COLOR='#BA0042'>* You sing a silly song to %USERNAME% hoping they laugh. *</FONT>",
+				"flail":"<FONT COLOR='#BA0042'>* You flail wildly at %USERNAME%! *</FONT>"
+			},
+			"unfriendly":{
+				"frown":"<FONT COLOR='#BA0042'>* You frown upon %USERNAME%'s behavior. *</FONT>",
+				"poke":"<FONT COLOR='#BA0042'>* You poke %USERNAME% right in the ribs! *</FONT>",
+				"ignore":"<FONT COLOR='#BA0042'>* You stick your nose in the air and ignore %USERNAME%s childish behavior! *</FONT>",
+				"growl":"<FONT COLOR='#BA0042'>* In a deep growling voice, you attempt to frighten %USERNAME%! *</FONT>",
+				"point":"<FONT COLOR='#BA0042'>* You point jokingly at %USERNAME%! *</FONT>",
+				"burp":"<FONT COLOR='#BA0042'>* BuuuuuuuurrrrP! *</FONT>",
+				"cry":"<FONT COLOR='#BA0042'>* %USERNAME% has made you cry like a little baby! *</FONT>",
+				"yell":"<FONT COLOR='#BA0042'>* You start yelling angrily at %USERNAME%. *</FONT>",
+				"nudge":"<FONT COLOR='#BA0042'>* You nudge %USERNAME% carefully out of your way. *</FONT>",
+				"yawn":"<FONT COLOR='#BA0042'>* YYYYAAAAWWWWNNNNN...  Boy %USERNAME% is boring... *</FONT>",
+				"tease":"<FONT COLOR='#BA0042'>* You laughingly tease %USERNAME% about their silly shoes. *</FONT>",
+				"quack":"<FONT COLOR='#BA0042'>* You make weird animal noises at %USERNAME% trying to sound like a ferocious...  duck. *</FONT>",
+				"snore":"<FONT COLOR='#BA0042'>* ZZzzzzz....   %USERNAME% has bored you to the point of SNORING!!  Wow..  now,  that is boring..  *</FONT>",
+				"scream":"<FONT COLOR='#BA0042'>* AAAAAAAAAAAAAHHH!!!!   You scream loudly at %USERNAME%.. .   maybe overreacting? *</FONT>",
+				"hide":"<FONT COLOR='#BA0042'>* You quickly hide in the shadows,  hoping %USERNAME% does not see you. . . *</FONT>",
+				"trip":"<FONT COLOR='#BA0042'>* Poor %USERNAME% tripped over your giant hobbitty feet!! *</FONT>",
+				"roar":"<FONT COLOR='#BA0042'>* From the bottom of your being you release the loudest roar possible!. .  Only. . on its way out,  your voice squeaks a little,  and that takes away from the intimidation. . .  *</FONT>",
+				"boo":"<FONT COLOR='#BA0042'>* BOOOOO!   You frighten %USERNAME% really bad!  They did not see that coming! *</FONT>"
+			},
+			"horse":{
+				"wink":"<FONT COLOR='#BA0042'>* Your horse winks at %USERNAME%. *</FONT>",
+				"neigh":"<FONT COLOR='#BA0042'>* Your horse neighs loudly at %USERNAME%. *</FONT>",
+				"whinny":"<FONT COLOR='#BA0042'>* Your horse whinnies softly and happily towards %USERNAME%. *</FONT>",
+				"snort":"<FONT COLOR='#BA0042'>* Your horse rudely snorts towards %USERNAME%! *</FONT>",
+				"buck":"<FONT COLOR='#BA0042'>* Your horse bucks you lightly.  Must have been excited to see %USERNAME%. *</FONT>"
+			}
+		},
+		"for_others":{
+			"friendly":{
+				"smile":"<FONT COLOR='#BA0042'>* %USERNAME% smiles at you. *</FONT>",
+				"wave":"<FONT COLOR='#BA0042'>* %USERNAME% is waving at you very enthusiastically! *</FONT>",
+				"wink":"<FONT COLOR='#BA0042'>* %USERNAME% winks at you secretively. *</FONT>",
+				"laugh":"<FONT COLOR='#BA0042'>* %USERNAME% laughs at your humor. *</FONT>",
+				"high5":"<FONT COLOR='#BA0042'>* %USERNAME% comes at you with a high-five! You manage to meet the clap in time! *</FONT>",
+				"clap":"<FONT COLOR='#BA0042'>* %USERNAME% is clapping at what you have accomplished! *</FONT>",
+				"hug":"<FONT COLOR='#BA0042'>* %USERNAME% gives you a hug. *</FONT>",
+				"bearhug":"<FONT COLOR='#BA0042'>* %USERNAME% nearly crushes you with a massive bearhug! *</FONT>",
+				"dance":"<FONT COLOR='#BA0042'>* %USERNAME% and you do a little dance!  *</FONT>",
+				"nod":"<FONT COLOR='#BA0042'>* %USERNAME% nods at you. *</FONT>",
+				"tickle":"<FONT COLOR='#BA0042'>* %USERNAME% tickles your sides until you fall over laughing. *</FONT>",
+				"thumbsup":"<FONT COLOR='#BA0042'>* %USERNAME% gives you an enthusiastic thumbs up. *</FONT>",
+				"shoulderpat":"<FONT COLOR='#BA0042'>* %USERNAME% comfortingly pats you on the shoulder. *</FONT>",
+				"circle":"<FONT COLOR='#BA0042'>* %USERNAME% excitedly runs circles around you causing your head to spin. *</FONT>",
+				"glomp":"<FONT COLOR='#BA0042'>* All of a sudden %USERNAME% tackles you and starts to hug you very tightly! You squeak in surprise! *</FONT>",
+				"beam":"<FONT COLOR='#BA0042'>* %USERNAME% produces one of the biggest, happiest faces you've ever seen towards you!!! Wow, you must have made them happy. *</FONT>",
+				"handshake":"<FONT COLOR='#BA0042'>* %USERNAME% shakes hands with you enthusiastically. *</FONT>",
+				"rofl":"<FONT COLOR='#BA0042'>* You were so funny that %USERNAME% is rolling on the floor from laughing so hard!! *</FONT>",
+				"spin":"<FONT COLOR='#BA0042'>* %USERNAME% playfully spins you in circles.  You are getting quite dizzy. *</FONT>",
+				"sing":"<FONT COLOR='#BA0042'>* %USERNAME% sings you a silly song.  You burst out laughing.   *</FONT>",
+				"flail":"<FONT COLOR='#BA0042'>* You must have done something exciting, because %USERNAME% is flailing at you wildly! *</FONT>"
+			},
+			"unfriendly":{
+				"frown":"<FONT COLOR='#BA0042'>* Upon your behavior, %USERNAME% frowns deeply. *</FONT>",
+				"poke":"<FONT COLOR='#BA0042'>* %USERNAME% has poked you right in the ribs! *</FONT>",
+				"ignore":"<FONT COLOR='#BA0042'>* %USERNAME% sticks their nose in the air ignoring your childish behavior! *</FONT>",
+				"growl":"<FONT COLOR='#BA0042'>* You are frightened by a deep growl! It's directed at you from %USERNAME%! *</FONT>",
+				"point":"<FONT COLOR='#BA0042'>* %USERNAME% points jokingly at you! *</FONT>",
+				"burp":"<FONT COLOR='#BA0042'>* Buuurrrp! You can't believe %USERNAME% just did that towards you! *</FONT>",
+				"cry":"<FONT COLOR='#BA0042'>* %USERNAME% is crying like a little baby because of you now! *</FONT>",
+				"yell":"<FONT COLOR='#BA0042'>* %USERNAME% is yelling at you!  You must have done something wrong. *</FONT>",
+				"nudge":"<FONT COLOR='#BA0042'>* %USERNAME% gives you a careful nudge out of the way. *</FONT>",
+				"yawn":"<FONT COLOR='#BA0042'>* YYYAAAWWWNN...  you are boring %USERNAME%! *</FONT>",
+				"tease":"<FONT COLOR='#BA0042'>* %USERNAME% laughingly teases you about your silly shoes. *</FONT>",
+				"quack":"<FONT COLOR='#BA0042'>* %USERNAME% makes weird animal noises at you.  Was that a duck? *</FONT>",
+				"snore":"<FONT COLOR='#BA0042'>* ZZzzzzz....   You have bored %USERNAME% to the point of SNORING!!  Ooops!  *</FONT>",
+				"scream":"<FONT COLOR='#BA0042'>* AAAAAAAAAAAAAHHH!!!!  %USERNAME% screams loudly at you.. .   overreacting a bit!? *</FONT>",
+				"hide":"<FONT COLOR='#BA0042'>* %USERNAME% quickly hides in the shadows,  hoping you do not see them. . . *</FONT>",
+				"trip":"<FONT COLOR='#BA0042'>* You tripped over %USERNAME%'s giant hobbitty feet!!  Poor you! *</FONT>",
+				"roar":"<FONT COLOR='#BA0042'>* From the bottom of %USERNAME%'s being they release the loudest roar possible towards you!. .  Only. . on its way out,  their voice squeaks a little,  and that takes away from the intimidation. . .  *</FONT>",
+				"boo":"<FONT COLOR='#BA0042'>* BOOOOOOOO!  %USERNAME% frightens you really bad!  You did not see that coming! *</FONT>"
+			},
+			"horse":{
+				"wink":"<FONT COLOR='#BA0042'>* %USERNAME%'s horse winks at you! *</FONT>",
+				"neigh":"<FONT COLOR='#BA0042'>* %USERNAME%'s horse neighs loudly at you. *</FONT>",
+				"whinny":"<FONT COLOR='#BA0042'>* %USERNAME%'s horse whinnies softly and happily towards you. *</FONT>",
+				"snort":" <FONT COLOR='#BA0042'>* %USERNAME%'s horse rudely snorts towards you! *</FONT>",
+				"buck":"<FONT COLOR='#BA0042'>* %USERNAME%'s horse bucks lightly.  Must have been excited to see you. *</FONT>"
+			}
+		}
+	},
 	"chat":{
 		"for_others":{
 			"global_format":"<FONT COLOR='#880000'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
@@ -37,8 +154,11 @@
 			"admin_format":"<FONT COLOR='#800000'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
 			"ads_format":"<FONT COLOR='#550055'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
 			"friend_format":"<FONT COLOR='#CC00CC'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
+			"here_format":"<FONT COLOR='#222222'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
+			"near_format":"<B>%USERNAME%:</B> %MESSAGE%",
+			"isle_format":"<B>%USERNAME%:</B> %MESSAGE%",
 			"dm_format":"<FONT COLOR='#0000FF'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
-			"dm_format)moderator":"<FONT COLOR='#0000FF'><B>%USERNAME%[<FONT COLOR='#880000'>mod</FONT>:</B> %MESSAGE%</FONT>"
+			"dm_format_moderator":"<FONT COLOR='#0000FF'><B>%USERNAME%[<FONT COLOR='#880000'>mod</FONT>:</B> %MESSAGE%</FONT>"
 		},
 		
 		"for_sender":{
@@ -88,13 +208,16 @@
 			{"word":"my phone","reason_type":"personal_info","match_all":true},
 			{"word":"phone number","reason_type":"personal_info","match_all":true},
 			{"word":"home address","reason_type":"personal_info","match_all":true},
+			{"word":"http","reason_type":"personal_info","match_all":true},
 			{"word":"40lb","reason_type":"personal_info","match_all":true}
 		],
 		"correct":[
 			{"word":"lol","new_word":"*laughing out loud!*"},
 			{"word":"lmao","new_word":"*laughing my horse's rump off*"},
 			{"word":"lmfao","new_word":"*laughing my horse's rump off*"},
+			{"word":"rofl","new_word":"*rolling on floor laughing*"},
 			{"word":"ppp","new_word":"*petting a pretty pony*"},
+			{"word":"wtf","new_word":"what the horse poo!"},
 			{"word":"asl","new_word":"how are you"},
 			{"word":"omg","new_word":"oh my gosh"},
 			{"word":"god","new_word":"unicorns"},
@@ -112,11 +235,13 @@
 			{"name":"personal_info","message":"No giving out personal info/websites."}
 		],
 		"violation_points_required":10,
-		"violation_format":"<FONT COLOR='#880000'><B>Your last chat was flagged as a possible violation of chat rules to be reviewed by an admin. If it is severe or you have many violations your account may be suspended.  We require at least %AMOUNT% violation points before examining an account, so if it was a simple misspelling do not worry. Remember this is a family friendly game!  Thanks for keeping it as such! (REASON: %REASON%)</B></FONT>"
+		"violation_format":"<FONT COLOR='#880000'><B>Your last chat was flagged as a possible violation of chat rules to be reviewed by an admin. If it is severe or you have many violations your account may be suspended.  We require at least %AMOUNT% violation points before examining an account, so if it was a simple misspelling do not worry. Remember this is a family friendly game!  Thanks for keeping it as such! (REASON: %REASON%)</B></FONT>",
+		"password_included":"Your Password was included in the chat you attempted to send!  DO NOT Give ANYONE your password!  If someone was asking for your password,  please report them immediately!",
+		"caps_notice":"Please <B>do not use all CAPS</B>, it looks as if you are yelling."
 	}
  },
  "mod_splatterball_game":{
-	"hit_message":"SMACK!! %USERNAME% hit you with a Mod Splatterball, slimy goop exploded and dripped on you.",
+	"hit_message":"SMACK!! %USERNAME% hit you with a Mod Splatterball, slimy goop exploded and dripped on you."
  },
  "water_balloon_game":{
 	"money_prize":20000,
