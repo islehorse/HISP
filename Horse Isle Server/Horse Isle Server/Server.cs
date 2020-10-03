@@ -17,16 +17,16 @@ namespace Horse_Isle_Server
 
 
         public static Client[] ConnectedClients // Done to prevent Enumerator Changed errors.
-        { 
+        {
             get {
-                    return connectedClients.ToArray();
-                } 
+                return connectedClients.ToArray();
+            }
         }
 
         public static int IdleTimeout;
         public static int IdleWarning;
 
-        
+
 
         // used for world time,
         private static int gameTickSpeed = 4320; // Changing this to ANYTHING else will cause desync with the client.
@@ -71,17 +71,21 @@ namespace Horse_Isle_Server
             byte[] AreaMessage = PacketBuilder.CreateAreaMessage(user.X, user.Y);
             sender.SendPacket(AreaMessage);
 
-            foreach(Client client in ConnectedClients)
+            foreach (Client client in ConnectedClients)
             {
                 if (client.LoggedIn)
                 {
-                    if(client.LoggedinUser.Id != user.Id)
+                    if (client.LoggedinUser.Id != user.Id)
                     {
                         byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.Facing, client.LoggedinUser.CharacterId, client.LoggedinUser.Username);
                         sender.SendPacket(PlayerInfo);
                     }
                 }
             }
+
+            foreach (User nearbyUser in Server.GetNearbyUsers(sender.LoggedinUser.X, sender.LoggedinUser.Y, false, false))
+                if (nearbyUser.Id != sender.LoggedinUser.Id)
+                    UpdateArea(nearbyUser.LoggedinClient);
 
             byte[] IsleData = PacketBuilder.CreatePlaceData(World.Isles.ToArray(), World.Towns.ToArray(), World.Areas.ToArray());
             sender.SendPacket(IsleData);
@@ -94,7 +98,7 @@ namespace Horse_Isle_Server
 
 
         }
-        
+
         public static void OnKeepAlive(Client sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -108,9 +112,9 @@ namespace Horse_Isle_Server
                 return;
             }
 
-            if(packet[1] == PacketBuilder.PACKET_CLIENT_TERMINATOR)
+            if (packet[1] == PacketBuilder.PACKET_CLIENT_TERMINATOR)
             {
-                Logger.DebugPrint("Sending "+ sender.LoggedinUser.Username +" updated info...");
+                Logger.DebugPrint("Sending " + sender.LoggedinUser.Username + " updated info...");
                 UpdatePlayer(sender);
             }
         }
@@ -121,19 +125,19 @@ namespace Horse_Isle_Server
                 Logger.ErrorPrint(sender.RemoteIp + " Requested to change profile page when not logged in.");
                 return;
             }
-            if(packet.Length < 2)
+            if (packet.Length < 2)
             {
                 Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid Profile Packet");
                 return;
             }
-            
+
             byte method = packet[1];
-            if(method == PacketBuilder.VIEW_PROFILE)
+            if (method == PacketBuilder.VIEW_PROFILE)
             {
                 byte[] profilePacket = PacketBuilder.CreateProfilePacket(sender.LoggedinUser.ProfilePage);
                 sender.SendPacket(profilePacket);
             }
-            else if(method == PacketBuilder.SAVE_PROFILE)
+            else if (method == PacketBuilder.SAVE_PROFILE)
             {
 
                 string packetStr = Encoding.UTF8.GetString(packet);
@@ -173,7 +177,7 @@ namespace Horse_Isle_Server
             User loggedInUser = sender.LoggedinUser;
             byte movementDirection = packet[1];
 
-            if(movementDirection == PacketBuilder.MOVE_UP)
+            if (movementDirection == PacketBuilder.MOVE_UP)
             {
                 loggedInUser.Facing = PacketBuilder.DIRECTION_UP;
                 if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y - 1))
@@ -189,7 +193,7 @@ namespace Horse_Isle_Server
                     sender.SendPacket(moveUpResponse);
                 }
             }
-            else if(movementDirection == PacketBuilder.MOVE_LEFT)
+            else if (movementDirection == PacketBuilder.MOVE_LEFT)
             {
                 loggedInUser.Facing = PacketBuilder.DIRECTION_LEFT;
                 if (Map.CheckPassable(loggedInUser.X - 1, loggedInUser.Y))
@@ -204,7 +208,7 @@ namespace Horse_Isle_Server
                     sender.SendPacket(moveLeftResponse);
                 }
             }
-            else if(movementDirection == PacketBuilder.MOVE_RIGHT)
+            else if (movementDirection == PacketBuilder.MOVE_RIGHT)
             {
                 loggedInUser.Facing = PacketBuilder.DIRECTION_RIGHT;
                 if (Map.CheckPassable(loggedInUser.X + 1, loggedInUser.Y))
@@ -219,7 +223,7 @@ namespace Horse_Isle_Server
                     sender.SendPacket(moveLeftResponse);
                 }
             }
-            else if(movementDirection == PacketBuilder.MOVE_DOWN)
+            else if (movementDirection == PacketBuilder.MOVE_DOWN)
             {
                 loggedInUser.Facing = PacketBuilder.DIRECTION_DOWN;
                 if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
@@ -239,8 +243,11 @@ namespace Horse_Isle_Server
 
             UpdateUserInfo(sender.LoggedinUser);
             UpdateArea(sender);
+            foreach (User nearbyUser in Server.GetNearbyUsers(sender.LoggedinUser.X, sender.LoggedinUser.Y, false, false))
+                if(nearbyUser.Id != sender.LoggedinUser.Id)
+                    UpdateArea(nearbyUser.LoggedinClient);
         }
-        
+
         public static void OnChatPacket(Client sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -249,7 +256,7 @@ namespace Horse_Isle_Server
                 return;
             }
 
-            if(packet.Length < 4)
+            if (packet.Length < 4)
             {
                 Logger.ErrorPrint(sender.RemoteIp + " Sent an invalid chat packet.");
                 return;
@@ -257,19 +264,25 @@ namespace Horse_Isle_Server
 
 
             string packetStr = Encoding.UTF8.GetString(packet);
-            
+
             Chat.ChatChannel channel = (Chat.ChatChannel)packet[1];
             string message = packetStr.Substring(2, packetStr.Length - 4);
+           
 
             Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to say '" + message + "' in channel: " + channel.ToString());
 
             string nameTo = null;
             if (channel == Chat.ChatChannel.Dm)
+            {
                 nameTo = Chat.GetDmRecipiant(message);
+                message = Chat.GetDmMessage(message);
+            }
 
+            if (message == "")
+                return;
 
             Object violationReason = Chat.FilterMessage(message);
-            if (violationReason != null)  
+            if (violationReason != null)
             {
                 sender.LoggedinUser.ChatViolations += 1;
                 string chatViolationMessage = Messages.FormatGlobalChatViolationMessage((Chat.Reason)violationReason);
@@ -282,7 +295,7 @@ namespace Horse_Isle_Server
             message = Chat.DoCorrections(message);
             message = Chat.EscapeMessage(message);
 
-            
+
             string failedReason = Chat.NonViolationChecks(sender.LoggedinUser, message);
             if (failedReason != null)
             {
@@ -294,20 +307,23 @@ namespace Horse_Isle_Server
             Client[] recipiants = Chat.GetRecipiants(sender.LoggedinUser, channel, nameTo);
 
             // Finally send chat message.
-            string formattedMessage = Chat.FormatChatForOthers(sender.LoggedinUser,channel,message);
-            string formattedMessageSender = Chat.FormatChatForSender(sender.LoggedinUser, channel, message);
+            string formattedMessage = Chat.FormatChatForOthers(sender.LoggedinUser, channel, message);
+            string formattedMessageSender = Chat.FormatChatForSender(sender.LoggedinUser, channel, message, nameTo);
             byte[] chatPacketOthers = PacketBuilder.CreateChat(formattedMessage, chatSide);
             byte[] chatPacketSender = PacketBuilder.CreateChat(formattedMessageSender, chatSide);
+            byte[] playDmSound = PacketBuilder.CreatePlaysoundPacket(Chat.PrivateMessageSound);
             // Send to clients ...
             foreach (Client recipiant in recipiants)
             {
                 recipiant.SendPacket(chatPacketOthers);
+                if (channel == Chat.ChatChannel.Dm)
+                    recipiant.SendPacket(playDmSound);
             }
 
             // Send to sender
             sender.SendPacket(chatPacketSender);
         }
-        
+
         public static void OnLoginRequest(Client sender, byte[] packet)
         {
             Logger.DebugPrint("Login request received from: " + sender.RemoteIp);
@@ -320,7 +336,7 @@ namespace Horse_Isle_Server
                 return;
             }
 
-            if(packet[1] != PacketBuilder.PACKET_CLIENT_TERMINATOR)
+            if (packet[1] != PacketBuilder.PACKET_CLIENT_TERMINATOR)
             {
                 string[] loginParts = loginRequestString.Split('|');
                 if (loginParts.Length < 3)
@@ -345,14 +361,14 @@ namespace Horse_Isle_Server
                     byte[] ResponsePacket = PacketBuilder.CreateLoginPacket(true);
                     sender.SendPacket(ResponsePacket);
 
-                    Logger.DebugPrint(sender.RemoteIp + " Logged into : " + sender.LoggedinUser.Username + " (ADMIN: " + sender.LoggedinUser.Administrator + " MOD: " + sender.LoggedinUser.Moderator+")");
+                    Logger.DebugPrint(sender.RemoteIp + " Logged into : " + sender.LoggedinUser.Username + " (ADMIN: " + sender.LoggedinUser.Administrator + " MOD: " + sender.LoggedinUser.Moderator + ")");
 
                     // Send login message
                     byte[] loginMessageBytes = PacketBuilder.CreateChat(Messages.FormatLoginMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
                     foreach (Client client in ConnectedClients)
                         if (client.LoggedIn)
                             if (!client.LoggedinUser.MuteLogins)
-                                if(client.LoggedinUser.Id != userId)
+                                if (client.LoggedinUser.Id != userId)
                                     client.SendPacket(loginMessageBytes);
 
                     UpdateUserInfo(sender.LoggedinUser);
@@ -370,7 +386,7 @@ namespace Horse_Isle_Server
 
         public static void OnDisconnect(Client sender)
         {
-            if(sender.LoggedIn)
+            if (sender.LoggedIn)
             {
                 // Send disconnect message
                 byte[] logoutMessageBytes = PacketBuilder.CreateChat(Messages.FormatLogoutMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
@@ -387,7 +403,7 @@ namespace Horse_Isle_Server
                             client.SendPacket(playerRemovePacket);
             }
 
-           connectedClients.Remove(sender);
+            connectedClients.Remove(sender);
         }
 
         public static void UpdateArea(Client forClient)
@@ -429,21 +445,91 @@ namespace Horse_Isle_Server
         public static void UpdateUserInfo(User user)
         {
             byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
+
+
+
+            List<User> users = new List<User>();
             foreach (Client client in ConnectedClients)
                 if (client.LoggedIn)
+                {
                     if (client.LoggedinUser.Id != user.Id)
                         client.SendPacket(playerInfoBytes);
+                }
+               
+
         }
 
-        public static int GetNumberOfPlayers()
+
+        public static User[] GetUsersUsersInIsle(World.Isle isle, bool includeStealth = false, bool includeMuted = false)
+        {
+            List<User> usersInIsle = new List<User>();
+            foreach (Client client in ConnectedClients)
+                if (client.LoggedIn)
+                {
+                    if (!includeStealth && client.LoggedinUser.Stealth)
+                        continue;
+                    if (!includeMuted && client.LoggedinUser.MuteIsland)
+                        continue;
+                    if (World.InIsle(client.LoggedinUser.X, client.LoggedinUser.Y))
+                        if (World.GetIsle(client.LoggedinUser.X, client.LoggedinUser.Y).Name == isle.Name)
+                            usersInIsle.Add(client.LoggedinUser);
+                }
+
+            return usersInIsle.ToArray();
+        }
+
+        public static User[] GetUsersAt(int x, int y, bool includeStealth = false, bool includeMuted = false)
+        {
+            List<User> usersHere = new List<User>();
+            foreach(Client client in ConnectedClients)
+            {
+                if(client.LoggedIn)
+                {
+                    if (!includeStealth && client.LoggedinUser.Stealth)
+                        continue;
+                    if (!includeMuted && client.LoggedinUser.MuteNear)
+                        continue;
+                    if (client.LoggedinUser.X == x && client.LoggedinUser.Y == y)
+                        usersHere.Add(client.LoggedinUser);
+                }
+            }
+            return usersHere.ToArray();
+        }
+
+        public static User[] GetNearbyUsers(int x, int y, bool includeStealth=false, bool includeMuted=false)
+        {
+            int startX = x - 15;
+            int endX = x + 15;
+            int startY = y - 19;
+            int endY = y + 19;
+            List<User> usersNearby = new List<User>();
+
+            foreach (Client client in ConnectedClients)
+                if (client.LoggedIn)
+                {
+                    if (!includeStealth && client.LoggedinUser.Stealth)
+                        continue;
+                    if (!includeMuted && client.LoggedinUser.MuteNear)
+                        continue;
+                    if (startX <= client.LoggedinUser.X && endX >= client.LoggedinUser.X && startY <= client.LoggedinUser.Y && endY >= client.LoggedinUser.Y)
+                        usersNearby.Add(client.LoggedinUser);
+                }
+
+            return usersNearby.ToArray();
+        }
+
+        public static int GetNumberOfPlayers(bool includeStealth=false)
         {
             int count = 0;
             foreach(Client client in ConnectedClients)
-            {
                 if (client.LoggedIn)
-                    if(!client.LoggedinUser.Stealth)
+                {
+                    if (!includeStealth && client.LoggedinUser.Stealth)
+                        continue;
+                    if (!client.LoggedinUser.Stealth)
                         count++;
-            }
+                }
+            
             return count;
         }
 

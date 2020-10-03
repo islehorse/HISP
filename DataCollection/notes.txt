@@ -33,4 +33,5 @@ Not implemented:
  admin_format FOR SENDER is unconfirmed.
 
 
+<B>Players Nearby:</B><BR> <B>North:</B> GinoIsLove <BR>
 Near radius is a square, 15x19

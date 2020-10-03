@@ -21,6 +21,7 @@ namespace Horse_Isle_Server
         public const byte PACKET_AREA_DEFS = 0x79;
         public const byte PACKET_ANNOUNCEMENT = 0x7E;
         public const byte PACKET_TILE_FLAGS = 0x75;
+        public const byte PACKET_PLAYSOUND = 0x23;
         public const byte PACKET_KEEP_ALIVE = 0x7C;
         public const byte PACKET_PROFILE = 0x18;
         public const byte PACKET_KICK = 0x80;
@@ -47,7 +48,7 @@ namespace Horse_Isle_Server
 
         public const byte CHAT_BOTTOM_LEFT = 0x14;
         public const byte CHAT_BOTTOM_RIGHT = 0x15;
-        public const byte CHAT_BTMR_W_DM_SFX = 0x16;
+        public const byte CHAT_DM_RIGHT = 0x16;
 
         public const byte LOGIN_INVALID_USER_PASS = 0x15;
         public const byte LOGIN_SUCCESS = 0x14;
@@ -60,6 +61,22 @@ namespace Horse_Isle_Server
         public const byte DIRECTION_NONE = 10;
 
 
+        public static byte[] CreatePlaysoundPacket(string sound)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_PLAYSOUND);
+
+            byte[] strBytes = Encoding.UTF8.GetBytes(sound);
+            ms.Write(strBytes, 0x00, strBytes.Length);
+
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
         public static byte[] CreatePlayerLeavePacket(string username)
         {
             MemoryStream ms = new MemoryStream();
@@ -573,7 +590,7 @@ namespace Horse_Isle_Server
 
         public static byte[] CreateAreaMessage(int x, int y)
         {
-            string locationStr = Messages.FormatLocationData(x, y);
+            string locationStr = Messages.BuildMetaInfo(x, y);
             return CreatePlaceInfo(locationStr);
         }
         public static byte[] CreateMotd()

@@ -23,6 +23,9 @@ namespace Horse_Isle_Server
         public static string GlobalChatFormat;
         public static string AdsChatFormat;
         public static string BuddyChatFormat;
+        public static string NearChatFormat;
+        public static string IsleChatFormat;
+        public static string HereChatFormat;
         public static string DirectChatFormat;
         public static string ModChatFormat;
         public static string AdminChatFormat;
@@ -30,9 +33,9 @@ namespace Horse_Isle_Server
         public static string GlobalChatFormatForModerators;
         public static string DirectChatFormatForModerators;
 
-        public static string HereChatFormatForSender;
         public static string IsleChatFormatForSender;
         public static string NearChatFormatForSender;
+        public static string HereChatFormatForSender;
         public static string BuddyChatFormatForSender;
         public static string DirectChatFormatForSender;
         public static string AdminChatFormatForSender;
@@ -48,6 +51,12 @@ namespace Horse_Isle_Server
         public static string TownFormat;
         public static string AreaFormat;
         public static string LocationFormat;
+
+        public static string NearbyPlayers;
+        public static string North;
+        public static string East;
+        public static string South;
+        public static string West;
 
         public static string TileFormat;
         public static string NothingMessage;
@@ -71,6 +80,21 @@ namespace Horse_Isle_Server
         public static string FormatBuddyChatMessage(string username, string message)
         {
             return BuddyChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
+        }
+
+        public static string FormatIsleChatMessage(string username, string message)
+        {
+            return IsleChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
+        }
+
+        public static string FormatNearbyChatMessage(string username, string message)
+        {
+            return NearChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
+        }
+
+        public static string FormatHereChatMessage(string username, string message)
+        {
+            return HereChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
         }
 
         public static string FormatDirectMessage(string username, string message)
@@ -107,6 +131,18 @@ namespace Horse_Isle_Server
         public static string FormatBuddyChatMessageForSender(int numbBuddies, string username, string message)
         {
             return BuddyChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbBuddies.ToString());
+        }
+        public static string FormatHereChatMessageForSender(int numbHere, string username, string message)
+        {
+            return HereChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbHere.ToString());
+        }
+        public static string FormatNearChatMessageForSender(int numbNear, string username, string message)
+        {
+            return NearChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbNear.ToString());
+        }
+        public static string FormatIsleChatMessageForSender(int numbIsle, string username, string message)
+        {
+            return IsleChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbIsle.ToString());
         }
 
         public static string FormatAdminChatForSender(int numbAdmins, string username, string message)
@@ -152,25 +188,87 @@ namespace Horse_Isle_Server
             return IdleKickMessageFormat.Replace("%KICK%", Server.IdleTimeout.ToString());
         }
         // Meta
-        public static string FormatLocationData(int x, int y)
+
+        private static string buildLocationString(int x, int y)
         {
             string locationString = "";
-            string message = "";
-            if(World.InArea(x,y))
+ 
+            if (World.InArea(x, y))
                 locationString += AreaFormat.Replace("%AREA%", World.GetArea(x, y).Name);
             if (World.InTown(x, y))
                 locationString += TownFormat.Replace("%TOWN%", World.GetTown(x, y).Name);
             if (World.InIsle(x, y))
                 locationString += IsleFormat.Replace("%ISLE%", World.GetIsle(x, y).Name);
+            if (locationString != "")
+                locationString = LocationFormat.Replace("%META%", locationString);
+            return locationString;
+        }
 
-            if(locationString != "")
-                message += LocationFormat.Replace("%META%", locationString);
+        private static string buildNearbyString(int x, int y)
+        {
+            string playersNearby = "";
 
+            User[] nearbyUsers = Server.GetNearbyUsers(x, y, true, true);
+            if(nearbyUsers.Length > 1)
+            {
+                playersNearby += NearbyPlayers;
+                playersNearby += Seperator;
+
+                string usersWest = "";
+                string usersNorth = "";
+                string usersEast = "";
+                string usersSouth = "";
+                foreach (User nearbyUser in nearbyUsers)
+                {
+                    if (nearbyUser.X < x)
+                    {
+                        usersWest += " " + nearbyUser.Username + " ";
+                    }
+                    else if(nearbyUser.X > x)
+                    {
+                        usersEast += " " + nearbyUser.Username + " ";
+                    }
+                    else if (nearbyUser.Y > y)
+                    {
+                        usersSouth += " " + nearbyUser.Username + " ";
+                    }
+                    else if (nearbyUser.Y < y)
+                    {
+                        usersNorth += " " + nearbyUser.Username + " ";
+                    }
+                }
+
+                if(usersEast != "")
+                    playersNearby += " " + East + usersEast + Seperator;
+                if (usersWest != "")
+                    playersNearby += " " + West + usersWest + Seperator;
+                if (usersSouth != "")
+                    playersNearby += " " + South + usersSouth + Seperator;
+                if (usersNorth != "")
+                    playersNearby += " " + North + usersNorth + Seperator;
+
+                
+
+            }
+
+            return playersNearby;
+
+        }
+        public static string BuildMetaInfo(int x, int y)
+        {
+            // You are in
+            string message = buildLocationString(x, y);
+
+            // Nearby
+            message += Seperator + buildNearbyString(x, y);
+
+            // Dropped Items
             int[] itemIds = World.GetDroppedItems(x, y);
             if (itemIds.Length == 0)
                 message += NothingMessage;
 
             return message;
         }
+
     }
 }

@@ -31,7 +31,8 @@ namespace Horse_Isle_Server
             Ads = 0x1D,
             Near = 0x15,
             Buddies = 0x17,
-            Isle = 0x24,
+            Here = 0x18,
+            Isle = 0x1A,
             Dm = 0x16,
             Mod = 0x1c,
             Admin  = 0x1b
@@ -95,11 +96,12 @@ namespace Horse_Isle_Server
                 case ChatChannel.Isle:
                     return PacketBuilder.CHAT_BOTTOM_LEFT;
                 case ChatChannel.Buddies:
+                case ChatChannel.Here:
                 case ChatChannel.Admin:
                 case ChatChannel.Mod:
                     return PacketBuilder.CHAT_BOTTOM_RIGHT;
                 case ChatChannel.Dm:
-                    return PacketBuilder.CHAT_BTMR_W_DM_SFX;
+                    return PacketBuilder.CHAT_DM_RIGHT;
                 default:
                     Logger.ErrorPrint("unknown channel: " + (byte)channel);
                     return PacketBuilder.CHAT_BOTTOM_LEFT;
@@ -112,11 +114,24 @@ namespace Horse_Isle_Server
             if(message.Contains('|'))
             {
                 string recipiantName = message.Split('|')[0];
-                return recipiantName.Substring(2);
+                return recipiantName;
             }    
             else
             {
                 return null;
+            }
+        }
+
+        public static string GetDmMessage(string message)
+        {
+            if (message.Contains('|'))
+            {
+                string messageStr = message.Split('|')[1];
+                return messageStr;
+            }
+            else
+            {
+                return message;
             }
         }
 
@@ -158,6 +173,50 @@ namespace Horse_Isle_Server
                             if (client.LoggedinUser.Id != user.Id)
                                 if (client.LoggedinUser.Friends.List.Contains(user.Id)) 
                                     recipiants.Add(client);
+                }
+                return recipiants.ToArray();
+            }
+
+            if (channel == ChatChannel.Isle)
+            {
+                List<Client> recipiants = new List<Client>();
+                if(World.InIsle(user.X,user.Y))
+                {
+                    User[] usersInSile = Server.GetUsersUsersInIsle(World.GetIsle(user.X, user.Y), true, false);
+                    foreach (User userInIsle in usersInSile)
+                    {
+                        if (user.Id != userInIsle.Id)
+                            recipiants.Add(userInIsle.LoggedinClient);
+                    }
+                    return recipiants.ToArray();
+                }
+                else
+                {
+                    return new Client[0];
+                }
+
+            }
+
+            if (channel == ChatChannel.Here)
+            {
+                List<Client> recipiants = new List<Client>();
+                User[] usersHere = Server.GetUsersAt(user.X, user.Y, true, false);
+                foreach (User userHere in usersHere)
+                {
+                    if (user.Id != userHere.Id)
+                        recipiants.Add(userHere.LoggedinClient);
+                }
+                return recipiants.ToArray();
+            }
+
+            if (channel == ChatChannel.Near)
+            {
+                List<Client> recipiants = new List<Client>();
+                User[] nearbyUsers = Server.GetNearbyUsers(user.X, user.Y, true, false);
+                foreach (User nearbyUser in nearbyUsers)
+                {
+                    if (user.Id != nearbyUser.Id)
+                        recipiants.Add(nearbyUser.LoggedinClient);
                 }
                 return recipiants.ToArray();
             }
@@ -210,7 +269,7 @@ namespace Horse_Isle_Server
                     {
                         if (client.LoggedIn)
                             if (!client.LoggedinUser.MutePrivateMessage)
-                                if (client.LoggedinUser.Username != to)
+                                if (client.LoggedinUser.Username == to)
                                     recipiants.Add(client);
                     }
                     return recipiants.ToArray();
@@ -261,22 +320,28 @@ namespace Horse_Isle_Server
                         return Messages.FormatDirectMessageForMod(user.Username, message);
                     else
                         return Messages.FormatDirectMessage(user.Username, message);
+                case ChatChannel.Near:
+                    return Messages.FormatNearbyChatMessage(user.Username, message);
+                case ChatChannel.Isle:
+                    return Messages.FormatIsleChatMessage(user.Username, message);
+                case ChatChannel.Here:
+                    return Messages.FormatHereChatMessage(user.Username, message);
                 case ChatChannel.Mod:
                     if (user.Moderator || user.Administrator)
                         return Messages.FormatModChatMessage(user.Username, message);
                     else
-                        return "Hacker!";
+                        return user.Username+" is a hacker! (Sent in mod channel without being a mod) Maybe ban?";
                 case ChatChannel.Admin:
                     if (user.Administrator)
                         return Messages.FormatAdminChatMessage(user.Username, message);
                     else
-                        return "Hacker!";
+                        return user.Username + " is a hacker! (Sent in admin channel without being a admin) Maybe ban?";
                 default:
                     Logger.ErrorPrint(user.Username + " is trying to end a message in unknown channel " + channel.ToString("X"));
                     return "not implemented yet :(";
             }
         }
-        public static string FormatChatForSender(User user, ChatChannel channel, string message)
+        public static string FormatChatForSender(User user, ChatChannel channel, string message, string dmRecipiant=null)
         {
             switch (channel)
             {
@@ -289,10 +354,25 @@ namespace Horse_Isle_Server
                     return Messages.FormatAdsChatMessage(user.Username, message);
                 case ChatChannel.Buddies:
                     return Messages.FormatBuddyChatMessageForSender(user.Friends.Count, user.Username, message);
+                case ChatChannel.Isle:
+                    int inIsle = 0;
+                    if (World.InIsle(user.X, user.Y))
+                        inIsle = Server.GetUsersUsersInIsle(World.GetIsle(user.X, user.Y), false, false).Length -1;
+                    return Messages.FormatIsleChatMessageForSender(inIsle, user.Username, message);
+                case ChatChannel.Here:
+                    int usersHere = Server.GetUsersAt(user.X, user.Y, false, false).Length -1;
+                    return Messages.FormatHereChatMessageForSender(usersHere, user.Username, message);
+                case ChatChannel.Near:
+                    int nearbyUsers = Server.GetNearbyUsers(user.X, user.Y, false, false).Length -1;
+                    return Messages.FormatNearChatMessageForSender(nearbyUsers, user.Username, message);
                 case ChatChannel.Mod:
-                    return Messages.FormatModChatForSender(Server.GetNumberOfModsOnline(), user.Username, message);
+                    int modsOnline = Server.GetNumberOfModsOnline();
+                    return Messages.FormatModChatForSender(modsOnline, user.Username, message);
                 case ChatChannel.Admin:
-                    return Messages.FormatAdminChatForSender(Server.GetNumberOfAdminsOnline(),user.Username, message);
+                    int adminsOnline = Server.GetNumberOfAdminsOnline();
+                    return Messages.FormatAdminChatForSender(adminsOnline, user.Username, message);
+                case ChatChannel.Dm:
+                    return Messages.FormatDirectChatMessageForSender(user.Username, dmRecipiant, message);
                 default:
                     Logger.ErrorPrint(user.Username + " is trying to end a message in unknown channel " + channel.ToString("X"));
                     return "not implemented yet :(";
@@ -304,22 +384,27 @@ namespace Horse_Isle_Server
 
             // Check if contains password.
             if (message.ToLower().Contains(user.Password.ToLower()))
-            {
                 return Messages.PasswordNotice;
-            }
-
-
+ 
             // Check if ALL CAPS
-            if (message.Contains(' ')) // hi1 apparently doesnt care about caps if its all 1 word?
+            string[] wordsSaid;
+            if (message.Contains(' ')) 
+                wordsSaid = message.Split(' ');
+            else
+                wordsSaid = new string[] { message };
+
+            foreach (string word in wordsSaid)
             {
-                string[] wordsSaid = message.Split(' ');
-                foreach (string word in wordsSaid)
+                string lettersOnly = "";
+                foreach(char c in word)
                 {
-                    if (word.ToUpper() == word)
+                    if((byte)c >= (byte)'A' && (byte)c <= (byte)'z') // is letter
                     {
-                        return Messages.CapsNotice;
+                        lettersOnly += c;
                     }
                 }
+                if (lettersOnly.ToUpper() == lettersOnly && lettersOnly.Length >= 5)
+                    return Messages.CapsNotice;
             }
 
             return null;

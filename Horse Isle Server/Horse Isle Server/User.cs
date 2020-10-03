@@ -10,6 +10,7 @@ namespace Horse_Isle_Server
         public bool Administrator;
         public bool Moderator;
         public bool NewPlayer = false;
+        public Client LoggedinClient;
 
         public bool MuteAds = false;
         public bool MuteGlobal = false;
@@ -148,7 +149,7 @@ namespace Horse_Isle_Server
             return SecCode;
         }
 
-        public User(int UserId)
+        public User(Client baseClient, int UserId)
         {
             if (!Database.CheckUserExist(UserId))
                 throw new KeyNotFoundException("User " + UserId + " not found in database!");
@@ -187,10 +188,11 @@ namespace Horse_Isle_Server
             SecCodeSeeds[2] = (byte)rng.Next(40, 140);
             SecCodeInc = (byte)rng.Next(0, 99);
 
-            
             // Make some friends! (Get a life!)
 
             Friends = new Friends(this);
+
+            LoggedinClient = baseClient;
         }
     }
 }
