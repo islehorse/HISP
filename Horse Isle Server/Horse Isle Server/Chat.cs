@@ -37,6 +37,7 @@ namespace Horse_Isle_Server
             Mod = 0x1c,
             Admin  = 0x1b
         }
+        public static string PrivateMessageSound;
 
         public static List<Filter> FilteredWords = new List<Filter>();
         public static List<Correction> CorrectedWords = new List<Correction>();
@@ -366,10 +367,10 @@ namespace Horse_Isle_Server
                     int nearbyUsers = Server.GetNearbyUsers(user.X, user.Y, false, false).Length -1;
                     return Messages.FormatNearChatMessageForSender(nearbyUsers, user.Username, message);
                 case ChatChannel.Mod:
-                    int modsOnline = Server.GetNumberOfModsOnline();
+                    int modsOnline = Server.GetNumberOfModsOnline() - 1;
                     return Messages.FormatModChatForSender(modsOnline, user.Username, message);
                 case ChatChannel.Admin:
-                    int adminsOnline = Server.GetNumberOfAdminsOnline();
+                    int adminsOnline = Server.GetNumberOfAdminsOnline() - 1;
                     return Messages.FormatAdminChatForSender(adminsOnline, user.Username, message);
                 case ChatChannel.Dm:
                     return Messages.FormatDirectChatMessageForSender(user.Username, dmRecipiant, message);
