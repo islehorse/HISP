@@ -35,6 +35,13 @@
 		"location_format":"                <I>You are%META% </I>",
 		"tile_format":"<B>%TILENAME%</B>",
 		"nothing_message":"^LYou see nothing on the ground of interest.^R1",
+		"nearby":{
+			"players_nearby":"<B>Players Nearby:</B>",
+			"east":"<B>East:</B>",
+			"west":"<B>West:</B>",
+			"south":"<B>South:</B>",
+			"north":"<B>North:</B>"
+		},
 		"seperator":"<BR>",
 		"areas":{
 			"bridge_text":"A bridge crosses over the water to another isle. That'll save you some travel costs!"
@@ -158,7 +165,7 @@
 			"near_format":"<B>%USERNAME%:</B> %MESSAGE%",
 			"isle_format":"<B>%USERNAME%:</B> %MESSAGE%",
 			"dm_format":"<FONT COLOR='#0000FF'><B>%USERNAME%:</B> %MESSAGE%</FONT>",
-			"dm_format_moderator":"<FONT COLOR='#0000FF'><B>%USERNAME%[<FONT COLOR='#880000'>mod</FONT>:</B> %MESSAGE%</FONT>"
+			"dm_format_moderator":"<FONT COLOR='#0000FF'><B>%USERNAME%[<FONT COLOR='#006600'>mod</FONT>]:</B> %MESSAGE%</FONT>"
 		},
 		
 		"for_sender":{
@@ -237,7 +244,8 @@
 		"violation_points_required":10,
 		"violation_format":"<FONT COLOR='#880000'><B>Your last chat was flagged as a possible violation of chat rules to be reviewed by an admin. If it is severe or you have many violations your account may be suspended.  We require at least %AMOUNT% violation points before examining an account, so if it was a simple misspelling do not worry. Remember this is a family friendly game!  Thanks for keeping it as such! (REASON: %REASON%)</B></FONT>",
 		"password_included":"Your Password was included in the chat you attempted to send!  DO NOT Give ANYONE your password!  If someone was asking for your password,  please report them immediately!",
-		"caps_notice":"Please <B>do not use all CAPS</B>, it looks as if you are yelling."
+		"caps_notice":"Please <B>do not use all CAPS</B>, it looks as if you are yelling.",
+		"pm_sound":"PM"
 	}
  },
  "mod_splatterball_game":{

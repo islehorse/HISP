@@ -131,6 +131,10 @@ namespace Horse_Isle_Server
             Messages.GlobalChatFormatForModerators = gameData.messages.chat.for_others.global_format_moderator;
             Messages.DirectChatFormatForModerators = gameData.messages.chat.for_others.dm_format_moderator;
 
+
+            Messages.HereChatFormat = gameData.messages.chat.for_others.here_format;
+            Messages.IsleChatFormat = gameData.messages.chat.for_others.isle_format;
+            Messages.NearChatFormat = gameData.messages.chat.for_others.near_format;
             Messages.GlobalChatFormat = gameData.messages.chat.for_others.global_format;
             Messages.AdsChatFormat = gameData.messages.chat.for_others.ads_format;
             Messages.DirectChatFormat = gameData.messages.chat.for_others.dm_format;
@@ -159,6 +163,12 @@ namespace Horse_Isle_Server
             Messages.TileFormat = gameData.messages.meta.tile_format;
             Messages.NothingMessage = gameData.messages.meta.nothing_message;
 
+            Messages.NearbyPlayers = gameData.messages.meta.nearby.players_nearby;
+            Messages.North = gameData.messages.meta.nearby.north;
+            Messages.East = gameData.messages.meta.nearby.east;
+            Messages.South = gameData.messages.meta.nearby.south;
+            Messages.West = gameData.messages.meta.nearby.west;
+
             // Map Data
 
             Map.OverlayTileDepth = gameData.tile_paramaters.overlay_tiles.tile_depth.ToObject<int[]>();
@@ -171,6 +181,7 @@ namespace Horse_Isle_Server
             Messages.IdleKickMessageFormat = gameData.messages.disconnect.client_timeout.kick_message;
             Messages.IdleWarningFormat = gameData.messages.disconnect.client_timeout.warn_message;
 
+            Chat.PrivateMessageSound = gameData.messages.chat.pm_sound;
 
             Server.IdleWarning = gameData.messages.disconnect.client_timeout.warn_after;
             Server.IdleTimeout = gameData.messages.disconnect.client_timeout.kick_after;

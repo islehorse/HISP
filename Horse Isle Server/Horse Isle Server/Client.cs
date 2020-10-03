@@ -55,7 +55,7 @@ namespace Horse_Isle_Server
         }
         public void Login(int id)
         {
-            LoggedinUser = new User(id);
+            LoggedinUser = new User(this,id);
             LoggedIn = true;
 
             updateTimer = new Timer(new TimerCallback(updateTimerTick), null, updateInterval, updateInterval);
