@@ -20,6 +20,7 @@ namespace Horse_Isle_Server
         public static string MapFile;
         public static string GameDataFile;
         public static string NpcDataFile;
+        public static string QuestDataFile;
         public static string CrossDomainPolicyFile;
         public static bool Debug;
 
@@ -90,6 +91,9 @@ namespace Horse_Isle_Server
                         break;
                     case "npc":
                         NpcDataFile = data;
+                        break;
+                    case "quest":
+                        QuestDataFile = data;
                         break;
                     case "crossdomain":
                         CrossDomainPolicyFile = data;
