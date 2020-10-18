@@ -43,12 +43,27 @@ namespace Horse_Isle_Server
             public int Years;
         }
 
+        public struct SpecialTile
+        {
+            public int X;
+            public int Y;
+            
+            public string Title;
+            public string Description;
+
+            public string Code;
+            public int ExitX;
+            public int ExitY;
+            
+            public string AutoplaySwf;
+            public string TypeFlag;
+        }
         public static Time ServerTime = new Time();
 
         public static List<Isle> Isles = new List<Isle>();
         public static List<Town> Towns = new List<Town>();
         public static List<Area> Areas = new List<Area>();
-
+        public static List<SpecialTile> SpecialTiles = new List<SpecialTile>();
         public static void TickWorldClock() 
         {
             ServerTime.Minutes += 1;
@@ -107,6 +122,18 @@ namespace Horse_Isle_Server
             }
         }
 
+        public static bool InSpecialTile(int x, int y)
+        {
+            try
+            {
+                GetSpecialTile(x, y);
+                return true;
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+        }
 
         public static bool InIsle(int x, int y)
         {
@@ -119,6 +146,17 @@ namespace Horse_Isle_Server
             {
                 return false;
             }
+        }
+        public static SpecialTile GetSpecialTile(int x, int y)
+        {
+            foreach(SpecialTile specialTile in SpecialTiles)
+            {
+                if(specialTile.X == x && specialTile.Y == y)
+                {
+                    return specialTile;
+                }
+            }
+            throw new KeyNotFoundException("x,y not in a special tile!");
         }
         public static Isle GetIsle(int x, int y)
         {

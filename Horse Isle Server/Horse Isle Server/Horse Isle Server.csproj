@@ -70,6 +70,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Action.cs" />
     <Compile Include="Authentication.cs" />
     <Compile Include="Chat.cs" />
     <Compile Include="Client.cs" />
@@ -83,6 +84,8 @@
     <Compile Include="Mailbox.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Messages.cs" />
+    <Compile Include="ItemObject.cs" />
+    <Compile Include="Meta.cs" />
     <Compile Include="PacketBuilder.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
