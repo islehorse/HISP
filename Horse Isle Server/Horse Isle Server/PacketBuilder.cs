@@ -46,7 +46,7 @@ namespace Horse_Isle_Server
         public const byte MOVE_RIGHT = 0x16;
         public const byte MOVE_LEFT = 0x17;
         public const byte MOVE_ESCAPE = 0x18;
-        public const byte MOVE_EXIT = 0x10;
+        public const byte MOVE_UPDATE = 0x0A;
 
         public const byte CHAT_BOTTOM_LEFT = 0x14;
         public const byte CHAT_BOTTOM_RIGHT = 0x15;

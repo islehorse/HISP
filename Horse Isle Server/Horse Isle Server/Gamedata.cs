@@ -81,8 +81,10 @@ namespace Horse_Isle_Server
                 specialTile.Title = gameData.places.special_tiles[i].title;
                 specialTile.Description = gameData.places.special_tiles[i].description;
                 specialTile.Code = gameData.places.special_tiles[i].code;
-                specialTile.ExitX = gameData.places.special_tiles[i].exit_x;
-                specialTile.ExitY = gameData.places.special_tiles[i].exit_y;
+                if(gameData.places.special_tiles[i].exit_x != null)
+                    specialTile.ExitX = gameData.places.special_tiles[i].exit_x;
+                if(gameData.places.special_tiles[i].exit_x != null)
+                    specialTile.ExitY = gameData.places.special_tiles[i].exit_y;
                 specialTile.AutoplaySwf = gameData.places.special_tiles[i].autoplay_swf;
                 specialTile.TypeFlag = gameData.places.special_tiles[i].type_flag;
 
@@ -181,6 +183,8 @@ namespace Horse_Isle_Server
             Messages.Seperator = gameData.messages.meta.seperator;
             Messages.TileFormat = gameData.messages.meta.tile_format;
             Messages.NothingMessage = gameData.messages.meta.nothing_message;
+            Messages.ExitThisPlace = gameData.messages.meta.exit_this_place;
+            Messages.MetaTerminator = gameData.messages.meta.end_of_meta;
 
             Messages.NearbyPlayers = gameData.messages.meta.nearby.players_nearby;
             Messages.North = gameData.messages.meta.nearby.north;

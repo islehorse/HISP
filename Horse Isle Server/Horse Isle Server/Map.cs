@@ -39,27 +39,36 @@ namespace Horse_Isle_Server
         }
         public static bool CheckPassable(int x, int y)
         {
-            int tileId = GetTileId(x, y, false);
-            int otileId = GetTileId(x, y, true);
+            int tileId = GetTileId(x, y, false) - 1;
+            int otileId = GetTileId(x, y, true) - 1;
 
-            bool terrainPassable = TerrainTiles[tileId - 1].Passable;
+            bool terrainPassable = TerrainTiles[tileId].Passable;
             int tileset = 0;
 
-            if (otileId > 190)
+
+            if (otileId > 192)
             {
-                otileId -= 192;
                 if (World.InIsle(x, y))
-                    tileset = World.GetIsle(x, y).Tileset+1;
+                    tileset = World.GetIsle(x, y).Tileset;
+                otileId = otileId + 64 * tileset;
             }
             
-            otileId = (otileId - 1) * (tileset+1);
 
-            bool overlayPassable = OverlayTilesetPassibility[otileId];
+            int tileDepth = OverlayTileDepth[otileId];
+            bool overlayPassable = false;
+            if (tileDepth == 0)
+                overlayPassable = false;
+            if (tileDepth == 1)
+                overlayPassable = false;
+            if (tileDepth == 2)
+                overlayPassable = true;
+            if (tileDepth == 3)
+                overlayPassable = true;
 
             bool tilePassable = false;
             if (terrainPassable || overlayPassable)
                 tilePassable = true;
-            if (!overlayPassable && otileId != 1)
+            if (!overlayPassable && otileId != 0)
                 tilePassable = false;
 
 

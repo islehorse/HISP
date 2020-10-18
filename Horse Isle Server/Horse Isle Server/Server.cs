@@ -174,9 +174,60 @@ namespace Horse_Isle_Server
             }
 
             User loggedInUser = sender.LoggedinUser;
-            byte movementDirection = packet[1];
+            byte movementDirection = packet[1]; 
 
-            if (movementDirection == PacketBuilder.MOVE_UP)
+            if (movementDirection == PacketBuilder.MOVE_ESCAPE)
+            {
+
+                byte Direction;
+                if (World.InSpecialTile(loggedInUser.X, loggedInUser.Y))
+                {
+
+                    int newX = loggedInUser.X;
+                    int newY = loggedInUser.Y;
+
+                    World.SpecialTile tile = World.GetSpecialTile(loggedInUser.X, loggedInUser.Y);
+                    if (tile.ExitX != 0)
+                        newX = tile.ExitX;
+                    if (tile.ExitY != 0)
+                        newY = tile.ExitY;
+                    else
+                        if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
+                            newY += 1;
+
+
+
+                    if (loggedInUser.X + 1 == newX && loggedInUser.Y == newY)
+                        Direction = PacketBuilder.DIRECTION_RIGHT;
+                    else if (loggedInUser.X - 1 == newX && loggedInUser.Y == newY)
+                        Direction = PacketBuilder.DIRECTION_LEFT;
+                    else if (loggedInUser.Y + 1 == newY && loggedInUser.X == newX)
+                        Direction = PacketBuilder.DIRECTION_DOWN;
+                    else if (loggedInUser.Y - 1 == newY && loggedInUser.X == newX)
+                        Direction = PacketBuilder.DIRECTION_UP;
+                    else
+                        Direction = PacketBuilder.DIRECTION_TELEPORT;
+
+                    loggedInUser.X = newX;
+                    loggedInUser.Y = newY;
+
+
+                }
+                else
+                {
+                    if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
+                        loggedInUser.Y += 1;
+
+                    Direction = PacketBuilder.DIRECTION_DOWN;
+                }
+                if (loggedInUser.X == 0 && loggedInUser.Y == 0)
+                    Logger.ErrorPrint("Impossible bug occured.");
+                Logger.DebugPrint("Exiting player: " + loggedInUser.Username + " to: " + loggedInUser.X + "," + loggedInUser.Y);
+                byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, Direction, Direction, true);
+                sender.SendPacket(moveResponse);
+            }
+
+                if (movementDirection == PacketBuilder.MOVE_UP)
             {
                 loggedInUser.Facing = PacketBuilder.DIRECTION_UP;
                 if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y - 1))
@@ -222,7 +273,7 @@ namespace Horse_Isle_Server
                     sender.SendPacket(moveLeftResponse);
                 }
             }
-            else if (movementDirection == PacketBuilder.MOVE_DOWN || movementDirection == PacketBuilder.MOVE_ESCAPE)
+            else if (movementDirection == PacketBuilder.MOVE_DOWN)
             {
                 loggedInUser.Facing = PacketBuilder.DIRECTION_DOWN;
                 if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
@@ -237,6 +288,11 @@ namespace Horse_Isle_Server
                     sender.SendPacket(moveDownResponse);
                 }
 
+            }
+            else if(movementDirection == PacketBuilder.MOVE_UPDATE)
+            {
+                Update(sender, true);
+                return;
             }
 
 
@@ -401,7 +457,7 @@ namespace Horse_Isle_Server
             connectedClients.Remove(sender);
         }
 
-        public static void UpdateArea(Client forClient)
+        public static void UpdateArea(Client forClient, bool justArea=false)
         {
             if (!forClient.LoggedIn)
             {
@@ -417,12 +473,12 @@ namespace Horse_Isle_Server
             else
             {
                 World.SpecialTile specialTile = World.GetSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
-                if(specialTile.AutoplaySwf != null && specialTile.AutoplaySwf != "")
+                if(specialTile.AutoplaySwf != null && specialTile.AutoplaySwf != "" && !justArea)
                 {
                     byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(specialTile.AutoplaySwf);
                     forClient.SendPacket(swfModulePacket);
                 }
-                if(specialTile.Code != null)
+                if(specialTile.Code != null && !justArea)
                     if (!ProcessMapCode(forClient, specialTile.Code))
                         return;
                 LocationStr = Meta.BuildSpecialTileInfo(specialTile);
@@ -572,13 +628,14 @@ namespace Horse_Isle_Server
             Update(client);
 
         }
-        public static void Update(Client client)
+        public static void Update(Client client, bool justArea = false)
         {
-            UpdateUserInfo(client.LoggedinUser);
-            UpdateArea(client);
+            UpdateArea(client, justArea);
             foreach (User nearbyUser in Server.GetNearbyUsers(client.LoggedinUser.X, client.LoggedinUser.Y, false, false))
                 if (nearbyUser.Id != client.LoggedinUser.Id)
-                    UpdateArea(nearbyUser.LoggedinClient);
+                    UpdateArea(nearbyUser.LoggedinClient, justArea);
+
+            UpdateUserInfo(client.LoggedinUser);
         }
 
         public static bool ProcessMapCode(Client forClient, string mapCode)

@@ -137,6 +137,7 @@ namespace Horse_Isle_Server
         }
         public static string GetWorldWeather()
         {
+
             MySqlCommand sqlCommand = db.CreateCommand();
             sqlCommand.CommandText = "SELECT Weather FROM World";
             string Weather = sqlCommand.ExecuteScalar().ToString();
