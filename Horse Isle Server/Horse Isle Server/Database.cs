@@ -115,6 +115,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "UPDATE World SET Time=@time,Day=@day,Year=@year";
                 sqlCommand.Parameters.AddWithValue("@time", time);
@@ -130,6 +131,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT Time FROM World";
                 int serverTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -142,6 +144,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT Day FROM World";
                 int serverTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -154,6 +157,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT Year FROM World";
                 int creationTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -165,6 +169,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT Weather FROM World";
                 string Weather = sqlCommand.ExecuteScalar().ToString();
@@ -190,6 +195,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(username))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -211,6 +217,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT COUNT(1) FROM Mailbox WHERE IdTo=@id";
                 sqlCommand.Parameters.AddWithValue("@id", id);
@@ -226,6 +233,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 int epoch = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
@@ -246,6 +254,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT COUNT(1) FROM Users WHERE Id=@id";
                 sqlCommand.Parameters.AddWithValue("@id", id);
@@ -261,6 +270,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT COUNT(1) FROM Users WHERE Username=@name";
                 sqlCommand.Parameters.AddWithValue("@name", username);
@@ -276,6 +286,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT COUNT(1) FROM UserExt WHERE Id=@id";
                 sqlCommand.Parameters.AddWithValue("@id", id);
@@ -293,6 +304,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(username))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -316,6 +328,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(username))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -338,6 +351,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE Id=@id OR IdFriend=@id AND Pending=false";
                 sqlCommand.Parameters.AddWithValue("@id", id);
@@ -354,6 +368,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (GetBuddyCount(id) <= 0)
                     return new int[0];      // user is forever alone.
 
@@ -384,6 +399,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id) AND Pending=true";
                 sqlCommand.Parameters.AddWithValue("@id", id);
@@ -400,6 +416,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "DELETE FROM BuddyList WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id)";
                 sqlCommand.Parameters.AddWithValue("@id", id);
@@ -413,6 +430,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "UPDATE BuddyList SET Pending=false WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id)";
                 sqlCommand.Parameters.AddWithValue("@id", id);
@@ -426,6 +444,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "INSERT INTO BuddyList VALUES(@id,@friendId,true)";
                 sqlCommand.Parameters.AddWithValue("@id", id);
@@ -440,6 +459,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExtExists(id)) // user allready exists!
                     throw new Exception("Userid " + id + " Allready in userext.");
 
@@ -459,6 +479,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(username))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -481,6 +502,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExtExists(userId))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -503,6 +525,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(id))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -525,6 +548,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExtExists(userId))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -547,6 +571,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(id))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -569,6 +594,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExtExists(userId))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -591,6 +617,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExtExists(userId))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -614,6 +641,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(id))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -635,6 +663,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(id))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -657,6 +686,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(id))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -678,6 +708,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExtExists(userId))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -700,6 +731,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExtExists(userId))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -722,6 +754,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(id))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -744,6 +777,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(id))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -766,6 +800,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(id))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -789,6 +824,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(userId))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -810,6 +846,7 @@ namespace Horse_Isle_Server
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
+                db.Open();
                 if (CheckUserExist(username))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
