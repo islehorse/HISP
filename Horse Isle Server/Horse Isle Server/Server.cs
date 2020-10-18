@@ -68,8 +68,7 @@ namespace Horse_Isle_Server
             byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(user.Money, Server.GetNumberOfPlayers(), user.MailBox.MailCount);
             sender.SendPacket(BaseStatsPacketData);
 
-            byte[] AreaMessage = PacketBuilder.CreateAreaMessage(user.X, user.Y);
-            sender.SendPacket(AreaMessage);
+            UpdateArea(sender);
 
             foreach (Client client in ConnectedClients)
             {
@@ -223,7 +222,7 @@ namespace Horse_Isle_Server
                     sender.SendPacket(moveLeftResponse);
                 }
             }
-            else if (movementDirection == PacketBuilder.MOVE_DOWN)
+            else if (movementDirection == PacketBuilder.MOVE_DOWN || movementDirection == PacketBuilder.MOVE_ESCAPE)
             {
                 loggedInUser.Facing = PacketBuilder.DIRECTION_DOWN;
                 if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
@@ -241,11 +240,7 @@ namespace Horse_Isle_Server
             }
 
 
-            UpdateUserInfo(sender.LoggedinUser);
-            UpdateArea(sender);
-            foreach (User nearbyUser in Server.GetNearbyUsers(sender.LoggedinUser.X, sender.LoggedinUser.Y, false, false))
-                if(nearbyUser.Id != sender.LoggedinUser.Id)
-                    UpdateArea(nearbyUser.LoggedinClient);
+            Update(sender);
         }
 
         public static void OnChatPacket(Client sender, byte[] packet)
@@ -414,8 +409,26 @@ namespace Horse_Isle_Server
                 return;
             }
 
-            byte[] areaData = PacketBuilder.CreateAreaMessage(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
-            forClient.SendPacket(areaData);
+            string LocationStr = "";
+            if (!World.InSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y))
+            {
+                LocationStr = Meta.BuildMetaInfo(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
+            }
+            else
+            {
+                World.SpecialTile specialTile = World.GetSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
+                if(specialTile.AutoplaySwf != null && specialTile.AutoplaySwf != "")
+                {
+                    byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(specialTile.AutoplaySwf);
+                    forClient.SendPacket(swfModulePacket);
+                }
+                if(specialTile.Code != null)
+                    if (!ProcessMapCode(forClient, specialTile.Code))
+                        return;
+                LocationStr = Meta.BuildSpecialTileInfo(specialTile);
+            }
+            byte[] AreaMessage = PacketBuilder.CreatePlaceInfo(LocationStr);
+            forClient.SendPacket(AreaMessage);
 
         }
 
@@ -544,6 +557,60 @@ namespace Horse_Isle_Server
             }
             return count;
         }
+
+        public static void Teleport(Client client, int newX, int newY)
+        {
+            if (!client.LoggedIn)
+                return;
+            Logger.DebugPrint("Teleporting: " + client.LoggedinUser.Username + " to: " + newX.ToString() + "," + newY.ToString());
+
+            client.LoggedinUser.X = newX;
+            client.LoggedinUser.Y = newY;
+
+            byte[] MovementPacket = PacketBuilder.CreateMovementPacket(client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.CharacterId, client.LoggedinUser.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+            client.SendPacket(MovementPacket);
+            Update(client);
+
+        }
+        public static void Update(Client client)
+        {
+            UpdateUserInfo(client.LoggedinUser);
+            UpdateArea(client);
+            foreach (User nearbyUser in Server.GetNearbyUsers(client.LoggedinUser.X, client.LoggedinUser.Y, false, false))
+                if (nearbyUser.Id != client.LoggedinUser.Id)
+                    UpdateArea(nearbyUser.LoggedinClient);
+        }
+
+        public static bool ProcessMapCode(Client forClient, string mapCode)
+        {
+            if(mapCode.Contains('-'))
+            {
+                string[] codeInfo = mapCode.Split('-');
+                string command = codeInfo[0];
+                string paramaters = codeInfo[1];
+
+                if(command == "JUMP")
+                {
+                    if(paramaters.Contains(','))
+                    {
+                        string[] args = paramaters.Split(',');
+                        try
+                        {
+                            int newX = int.Parse(args[0]);
+                            int newY = int.Parse(args[1]);
+                            Teleport(forClient, newX, newY);
+                            return false;
+                        }
+                        catch(Exception)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
 
         public static int GetNumberOfAdminsOnline()
         {

@@ -70,6 +70,25 @@ namespace Horse_Isle_Server
                 World.Isles.Add(isle);
             }
 
+            // Register Special Tiles
+            int totalSpecialTiles = gameData.places.special_tiles.Count;
+            for (int i = 0; i < totalSpecialTiles; i++)
+            {
+
+                World.SpecialTile specialTile = new World.SpecialTile();
+                specialTile.X = gameData.places.special_tiles[i].x;
+                specialTile.Y = gameData.places.special_tiles[i].y;
+                specialTile.Title = gameData.places.special_tiles[i].title;
+                specialTile.Description = gameData.places.special_tiles[i].description;
+                specialTile.Code = gameData.places.special_tiles[i].code;
+                specialTile.ExitX = gameData.places.special_tiles[i].exit_x;
+                specialTile.ExitY = gameData.places.special_tiles[i].exit_y;
+                specialTile.AutoplaySwf = gameData.places.special_tiles[i].autoplay_swf;
+                specialTile.TypeFlag = gameData.places.special_tiles[i].type_flag;
+
+                Logger.DebugPrint("Registered Special Tile: " + specialTile.Title + " X " + specialTile.X + " Y: " + specialTile.Y);
+                World.SpecialTiles.Add(specialTile);
+            }
 
             // Register Filter Reasons
             int totalReasons = gameData.messages.chat.reason_messages.Count;
@@ -172,9 +191,19 @@ namespace Horse_Isle_Server
             // Map Data
 
             Map.OverlayTileDepth = gameData.tile_paramaters.overlay_tiles.tile_depth.ToObject<int[]>();
-            Map.OverlayTilesetPassibility = gameData.tile_paramaters.overlay_tiles.passibility.ToObject<bool[][]>();
-            Map.TerrainTilePassibility = gameData.tile_paramaters.terrain_tiles.passibility.ToObject<bool[]>();
+            Map.OverlayTilesetPassibility = gameData.tile_paramaters.overlay_tiles.passibility.ToObject<bool[]>();
 
+            List<Map.TerrainTile> terrainTiles = new List<Map.TerrainTile>();
+            int totalTerrainTiles = gameData.tile_paramaters.terrain_tiles.Count;
+            for(int i = 0; i < totalTerrainTiles; i++)
+            {
+                Map.TerrainTile tile = new Map.TerrainTile();
+                tile.Passable = gameData.tile_paramaters.terrain_tiles[i].passable;
+                tile.Type = gameData.tile_paramaters.terrain_tiles[i].passable;
+                terrainTiles.Add(tile);
+            }
+            Map.TerrainTiles = terrainTiles.ToArray();
+            
             // Disconnect Reasons
 
             Messages.BanMessage = gameData.messages.disconnect.banned;

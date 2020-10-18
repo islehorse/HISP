@@ -10,12 +10,19 @@ namespace Horse_Isle_Server
 {
     class Map
     {
+        public struct TerrainTile
+        {
+            public bool Passable;
+            public string Type;
+        }
+
         public static int[] OverlayTileDepth;
 
-        public static bool[] TerrainTilePassibility;
-        public static bool[][] OverlayTilesetPassibility;
+        public static TerrainTile[] TerrainTiles;
+        public static bool[] OverlayTilesetPassibility;
 
         public static Bitmap MapData;
+        
 
         public static int NewUserStartX;
         public static int NewUserStartY;
@@ -35,7 +42,7 @@ namespace Horse_Isle_Server
             int tileId = GetTileId(x, y, false);
             int otileId = GetTileId(x, y, true);
 
-            bool terrainPassable = TerrainTilePassibility[tileId - 1];
+            bool terrainPassable = TerrainTiles[tileId - 1].Passable;
             int tileset = 0;
 
             if (otileId > 190)
@@ -44,8 +51,10 @@ namespace Horse_Isle_Server
                 if (World.InIsle(x, y))
                     tileset = World.GetIsle(x, y).Tileset+1;
             }
+            
+            otileId = (otileId - 1) * (tileset+1);
 
-            bool overlayPassable = OverlayTilesetPassibility[tileset][otileId - 1];
+            bool overlayPassable = OverlayTilesetPassibility[otileId];
 
             bool tilePassable = false;
             if (terrainPassable || overlayPassable)
@@ -54,7 +63,7 @@ namespace Horse_Isle_Server
                 tilePassable = false;
 
 
-            Logger.DebugPrint("Checking tile passibility for tileid: " + tileId + " and overlay tileid " + otileId + " on tileset " + tileset + " at " + x + "," + y);
+            Logger.DebugPrint("Checking tile passibility for tileid: " + tileId + " and overlay tileid " + otileId + " at " + x + "," + y);
             return tilePassable;
         }
 
