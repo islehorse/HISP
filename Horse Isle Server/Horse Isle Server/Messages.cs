@@ -61,6 +61,8 @@ namespace Horse_Isle_Server
         public static string TileFormat;
         public static string NothingMessage;
         public static string Seperator;
+        public static string ExitThisPlace;
+        public static string MetaTerminator;
 
         // Disconnect Messages
         public static string BanMessage;
