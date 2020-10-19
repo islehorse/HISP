@@ -51,6 +51,7 @@ namespace Horse_Isle_Server
         public static string TownFormat;
         public static string AreaFormat;
         public static string LocationFormat;
+        public static string TransportFormat;
 
         public static string NearbyPlayers;
         public static string North;
@@ -68,11 +69,31 @@ namespace Horse_Isle_Server
         public static string BanMessage;
         public static string IdleKickMessageFormat;
 
+        // Swf
+        public static string BoatCutscene;
+        public static string WagonCutscene;
+        public static string BallonCutscene;
+
         public static string FormatGlobalChatViolationMessage(Chat.Reason violationReason)
         {
             return ChatViolationMessageFormat.Replace("%AMOUNT%", RequiredChatViolations.ToString()).Replace("%REASON%", violationReason.Message);
         }
 
+        // Meta
+        public static string FormatTransportMessage(string method, string place, int cost, int id, int x, int y)
+        {
+            byte[] xy = new byte[4];
+            xy[0] = (byte)(((x - 4) / 64) + 20);
+            xy[1] = (byte)(((x - 4) % 64) + 20);
+
+            xy[2] = (byte)(((y - 1) / 64) + 20);
+            xy[3] = (byte)(((y - 1) % 64) + 20);
+
+            int iconId = 253;
+            if(method == "WAGON")
+                iconId = 254;
+            return TransportFormat.Replace("%METHOD%", method).Replace("%PLACE%", place).Replace("%COST%", cost.ToString()).Replace("%ID%", id.ToString()).Replace("%ICON%",iconId.ToString()).Replace(" % XY%",Encoding.UTF8.GetString(xy));
+        }
         // For all
         public static string FormatGlobalChatMessage(string username, string message)
         {

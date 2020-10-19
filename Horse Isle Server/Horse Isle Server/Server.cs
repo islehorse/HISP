@@ -299,6 +299,55 @@ namespace Horse_Isle_Server
             Update(sender);
         }
 
+        public static void OnTransportUsed(Client sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent transport packet when not logged in.");
+                return;
+            }
+            if (packet.Length < 3)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent an invalid transport packet.");
+                return;
+            }
+
+
+            string packetStr = Encoding.UTF8.GetString(packet);
+            string number = packetStr.Substring(1, packetStr.Length - 3);
+
+            int transportid;
+            try
+            {
+                transportid =  Int32.Parse(number);
+            }
+            catch(InvalidOperationException)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Tried to use a transport with id that is NaN.");
+                return;
+            }
+
+            Transport.TransportLocation transportLocation = Transport.GetTransportLocation(transportid);
+            if (sender.LoggedinUser.Money >= transportLocation.Cost)
+            {
+
+                string swfToLoad = Messages.BoatCutscene;
+                if (transportLocation.Type == "WAGON")
+                    swfToLoad = Messages.WagonCutscene;
+
+                if (transportLocation.Type != "ROWBOAT")
+                {
+                    byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(swfToLoad, PacketBuilder.PACKET_SWF_CUTSCENE);
+                    sender.SendPacket(swfModulePacket);
+                }
+
+                Teleport(sender, transportLocation.GotoX, transportLocation.GotoY);
+
+                sender.LoggedinUser.Money -= transportLocation.Cost;
+                
+            }
+            
+        }
         public static void OnChatPacket(Client sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -435,6 +484,8 @@ namespace Horse_Isle_Server
 
         }
 
+
+
         public static void OnDisconnect(Client sender)
         {
             if (sender.LoggedIn)
@@ -455,77 +506,6 @@ namespace Horse_Isle_Server
             }
 
             connectedClients.Remove(sender);
-        }
-
-        public static void UpdateArea(Client forClient, bool justArea=false)
-        {
-            if (!forClient.LoggedIn)
-            {
-                Logger.ErrorPrint(forClient.RemoteIp + "tried to update tile information when not logged in.");
-                return;
-            }
-
-            string LocationStr = "";
-            if (!World.InSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y))
-            {
-                LocationStr = Meta.BuildMetaInfo(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
-            }
-            else
-            {
-                World.SpecialTile specialTile = World.GetSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
-                if(specialTile.AutoplaySwf != null && specialTile.AutoplaySwf != "" && !justArea)
-                {
-                    byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(specialTile.AutoplaySwf);
-                    forClient.SendPacket(swfModulePacket);
-                }
-                if(specialTile.Code != null && !justArea)
-                    if (!ProcessMapCode(forClient, specialTile.Code))
-                        return;
-                LocationStr = Meta.BuildSpecialTileInfo(specialTile);
-            }
-            byte[] AreaMessage = PacketBuilder.CreatePlaceInfo(LocationStr);
-            forClient.SendPacket(AreaMessage);
-
-        }
-
-        public static void UpdateWorld(Client forClient)
-        {
-            if (!forClient.LoggedIn)
-            {
-                Logger.ErrorPrint(forClient.RemoteIp + "tried to update world information when not logged in.");
-                return;
-            }
-
-            byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, World.GetWeather());
-            forClient.SendPacket(WorldData);
-        }
-
-        public static void UpdatePlayer(Client forClient)
-        {
-            if (!forClient.LoggedIn)
-            {
-                Logger.ErrorPrint(forClient.RemoteIp + "tried to update player information when not logged in.");
-                return;
-            }
-            byte[] PlayerData = PacketBuilder.CreatePlayerData(forClient.LoggedinUser.Money, Server.GetNumberOfPlayers(), forClient.LoggedinUser.MailBox.MailCount);
-            forClient.SendPacket(PlayerData);
-        }
-
-        public static void UpdateUserInfo(User user)
-        {
-            byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
-
-
-
-            List<User> users = new List<User>();
-            foreach (Client client in ConnectedClients)
-                if (client.LoggedIn)
-                {
-                    if (client.LoggedinUser.Id != user.Id)
-                        client.SendPacket(playerInfoBytes);
-                }
-               
-
         }
 
 
@@ -638,7 +618,81 @@ namespace Horse_Isle_Server
             UpdateUserInfo(client.LoggedinUser);
         }
 
-        public static bool ProcessMapCode(Client forClient, string mapCode)
+
+
+        public static void UpdateWorld(Client forClient)
+        {
+            if (!forClient.LoggedIn)
+            {
+                Logger.ErrorPrint(forClient.RemoteIp + "tried to update world information when not logged in.");
+                return;
+            }
+
+            byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, World.GetWeather());
+            forClient.SendPacket(WorldData);
+        }
+
+        public static void UpdatePlayer(Client forClient)
+        {
+            if (!forClient.LoggedIn)
+            {
+                Logger.ErrorPrint(forClient.RemoteIp + "tried to update player information when not logged in.");
+                return;
+            }
+            byte[] PlayerData = PacketBuilder.CreatePlayerData(forClient.LoggedinUser.Money, Server.GetNumberOfPlayers(), forClient.LoggedinUser.MailBox.MailCount);
+            forClient.SendPacket(PlayerData);
+        }
+
+        public static void UpdateUserInfo(User user)
+        {
+            byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
+
+
+
+            List<User> users = new List<User>();
+            foreach (Client client in ConnectedClients)
+                if (client.LoggedIn)
+                {
+                    if (client.LoggedinUser.Id != user.Id)
+                        client.SendPacket(playerInfoBytes);
+                }
+
+
+        }
+
+
+        public static void UpdateArea(Client forClient, bool justArea = false)
+        {
+            if (!forClient.LoggedIn)
+            {
+                Logger.ErrorPrint(forClient.RemoteIp + "tried to update tile information when not logged in.");
+                return;
+            }
+
+            string LocationStr = "";
+            if (!World.InSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y))
+            {
+                LocationStr = Meta.BuildMetaInfo(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
+            }
+            else
+            {
+                World.SpecialTile specialTile = World.GetSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
+                if (specialTile.AutoplaySwf != null && specialTile.AutoplaySwf != "" && !justArea)
+                {
+                    byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(specialTile.AutoplaySwf,PacketBuilder.PACKET_SWF_MODULE_GENTLE);
+                    forClient.SendPacket(swfModulePacket);
+                }
+                if (specialTile.Code != null && !justArea)
+                    if (!ProcessMapCodeWithArg(forClient, specialTile.Code))
+                        return;
+                LocationStr = Meta.BuildSpecialTileInfo(specialTile);
+            }
+            byte[] AreaMessage = PacketBuilder.CreatePlaceInfo(LocationStr);
+            forClient.SendPacket(AreaMessage);
+
+        }
+
+        public static bool ProcessMapCodeWithArg(Client forClient, string mapCode)
         {
             if(mapCode.Contains('-'))
             {

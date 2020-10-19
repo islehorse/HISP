@@ -19,7 +19,6 @@ namespace Horse_Isle_Server
         public static int[] OverlayTileDepth;
 
         public static TerrainTile[] TerrainTiles;
-        public static bool[] OverlayTilesetPassibility;
 
         public static Bitmap MapData;
         

@@ -95,6 +95,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Server.cs" />
+    <Compile Include="Transport.cs" />
     <Compile Include="User.cs" />
     <Compile Include="World.cs" />
   </ItemGroup>
