@@ -17,7 +17,8 @@ namespace Horse_Isle_Server
         public const byte PACKET_USERINFO = 0x81;
         public const byte PACKET_WORLD = 0x7A;
         public const byte PACKET_BASE_STATS = 0x7B;
-        public const byte PACKET_SWF_MODULE = 0x2A;
+        public const byte PACKET_SWF_CUTSCENE = 0x29;
+        public const byte PACKET_SWF_MODULE_GENTLE = 0x2A;
         public const byte PACKET_PLACE_INFO = 0x1E;
         public const byte PACKET_AREA_DEFS = 0x79;
         public const byte PACKET_ANNOUNCEMENT = 0x7E;
@@ -25,6 +26,7 @@ namespace Horse_Isle_Server
         public const byte PACKET_PLAYSOUND = 0x23;
         public const byte PACKET_KEEP_ALIVE = 0x7C;
         public const byte PACKET_PROFILE = 0x18;
+        public const byte PACKET_TRANSPORT = 0x29;
         public const byte PACKET_KICK = 0x80;
         public const byte PACKET_LEAVE = 0x7D;
 
@@ -560,10 +562,10 @@ namespace Horse_Isle_Server
 
             return Packet;
         }
-        public static byte[] CreateSwfModulePacket(string swf)
+        public static byte[] CreateSwfModulePacket(string swf,byte type)
         {
             MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_SWF_MODULE);
+            ms.WriteByte(type);
             byte[] strBytes = Encoding.UTF8.GetBytes(swf);
             ms.Write(strBytes, 0x00, strBytes.Length);
             ms.WriteByte(PACKET_TERMINATOR);

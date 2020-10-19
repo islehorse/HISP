@@ -61,7 +61,8 @@ namespace Horse_Isle_Server
             }
             set
             {
-                Database.SetPlayerBankMoney(value, Id);
+                Database.SetPlayerMoney(value, Id);
+                Server.UpdatePlayer(LoggedinClient);
                 money = value;
             }
         }

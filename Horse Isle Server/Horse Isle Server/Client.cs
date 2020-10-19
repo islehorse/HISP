@@ -155,6 +155,9 @@ namespace Horse_Isle_Server
                     case PacketBuilder.PACKET_KEEP_ALIVE:
                         Server.OnKeepAlive(this, Packet);
                         break;
+                    case PacketBuilder.PACKET_TRANSPORT:
+                        Server.OnTransportUsed(this, Packet);
+                        break;
                     default:
                         Logger.ErrorPrint("Unimplemented Packet: " + BitConverter.ToString(Packet).Replace('-', ' '));
                         break;

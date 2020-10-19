@@ -129,6 +129,35 @@ namespace Horse_Isle_Server
                 Logger.DebugPrint("Registered Word Correction: " + correction.FilteredWord + " to "+correction.ReplacedWord);
             }
 
+            // Register Transports
+
+            int totalTransportPoints = gameData.transport.transport_points.Count;
+            for (int i = 0; i < totalTransportPoints; i++)
+            {
+                Transport.TransportPoint transportPoint = new Transport.TransportPoint();
+                transportPoint.X = gameData.transport.transport_points[i].x;
+                transportPoint.Y = gameData.transport.transport_points[i].y;
+                transportPoint.Locations = gameData.transport.transport_points[i].places.ToObject<int[]>();
+                Transport.TransportPoints.Add(transportPoint);
+
+                Logger.DebugPrint("Registered Transport Point: At X: " + transportPoint.X + " Y: " + transportPoint.Y);
+            }
+
+            int totalTransportPlaces = gameData.transport.transport_places.Count;
+            for (int i = 0; i < totalTransportPlaces; i++)
+            {
+                Transport.TransportLocation transportPlace = new Transport.TransportLocation();
+                transportPlace.Id = gameData.transport.transport_places[i].id;
+                transportPlace.Cost = gameData.transport.transport_places[i].cost;
+                transportPlace.GotoX = gameData.transport.transport_places[i].goto_x;
+                transportPlace.GotoY = gameData.transport.transport_places[i].goto_y;
+                transportPlace.Type = gameData.transport.transport_places[i].type;
+                transportPlace.LocationTitle = gameData.transport.transport_places[i].place_title;
+                Transport.TransportLocations.Add(transportPlace);
+
+                Logger.DebugPrint("Registered Transport Location: "+ transportPlace.LocationTitle+" To Goto X: " + transportPlace.GotoX + " Y: " + transportPlace.GotoY);
+            }
+
 
 
             // New Users
@@ -182,6 +211,7 @@ namespace Horse_Isle_Server
             Messages.AreaFormat = gameData.messages.meta.area_format;
             Messages.Seperator = gameData.messages.meta.seperator;
             Messages.TileFormat = gameData.messages.meta.tile_format;
+            Messages.TransportFormat = gameData.messages.meta.transport_format;
             Messages.NothingMessage = gameData.messages.meta.nothing_message;
             Messages.ExitThisPlace = gameData.messages.meta.exit_this_place;
             Messages.MetaTerminator = gameData.messages.meta.end_of_meta;
@@ -195,7 +225,6 @@ namespace Horse_Isle_Server
             // Map Data
 
             Map.OverlayTileDepth = gameData.tile_paramaters.overlay_tiles.tile_depth.ToObject<int[]>();
-            Map.OverlayTilesetPassibility = gameData.tile_paramaters.overlay_tiles.passibility.ToObject<bool[]>();
 
             List<Map.TerrainTile> terrainTiles = new List<Map.TerrainTile>();
             int totalTerrainTiles = gameData.tile_paramaters.terrain_tiles.Count;
@@ -218,6 +247,11 @@ namespace Horse_Isle_Server
 
             Server.IdleWarning = gameData.messages.disconnect.client_timeout.warn_after;
             Server.IdleTimeout = gameData.messages.disconnect.client_timeout.kick_after;
+
+            // Swf
+            Messages.WagonCutscene = gameData.transport.wagon_cutscene;
+            Messages.BoatCutscene = gameData.transport.boat_cutscene;
+            Messages.BallonCutscene = gameData.transport.ballon_cutscene;
 
         }
 
