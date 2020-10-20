@@ -66,6 +66,7 @@
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.3.0\lib\portable-net45+win8+wp8+wpa81\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -84,7 +85,7 @@
     <Compile Include="Mailbox.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="Messages.cs" />
-    <Compile Include="ItemObject.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="Meta.cs" />
     <Compile Include="PacketBuilder.cs" />
     <Compile Include="Program.cs" />

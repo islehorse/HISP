@@ -488,6 +488,8 @@ namespace Horse_Isle_Server
 
         public static void OnDisconnect(Client sender)
         {
+            connectedClients.Remove(sender);
+
             if (sender.LoggedIn)
             {
                 // Send disconnect message
@@ -505,7 +507,6 @@ namespace Horse_Isle_Server
                             client.SendPacket(playerRemovePacket);
             }
 
-            connectedClients.Remove(sender);
         }
 
 

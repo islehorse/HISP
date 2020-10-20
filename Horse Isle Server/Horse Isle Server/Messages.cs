@@ -82,17 +82,17 @@ namespace Horse_Isle_Server
         // Meta
         public static string FormatTransportMessage(string method, string place, int cost, int id, int x, int y)
         {
-            byte[] xy = new byte[4];
-            xy[0] = (byte)(((x - 4) / 64) + 20);
-            xy[1] = (byte)(((x - 4) % 64) + 20);
+            string xy = "";
+            xy += (char)(((x - 4) / 64) + 20);
+            xy += (char)(((x - 4) % 64) + 20);
 
-            xy[2] = (byte)(((y - 1) / 64) + 20);
-            xy[3] = (byte)(((y - 1) % 64) + 20);
+            xy += (char)(((y - 1) / 64) + 20);
+            xy += (char)(((y - 1) % 64) + 20);
 
             int iconId = 253;
             if(method == "WAGON")
                 iconId = 254;
-            return TransportFormat.Replace("%METHOD%", method).Replace("%PLACE%", place).Replace("%COST%", cost.ToString()).Replace("%ID%", id.ToString()).Replace("%ICON%",iconId.ToString()).Replace(" % XY%",Encoding.UTF8.GetString(xy));
+            return TransportFormat.Replace("%METHOD%", method).Replace("%PLACE%", place).Replace("%COST%", cost.ToString()).Replace("%ID%", id.ToString()).Replace("%ICON%",iconId.ToString()).Replace("%XY%", xy);
         }
         // For all
         public static string FormatGlobalChatMessage(string username, string message)
