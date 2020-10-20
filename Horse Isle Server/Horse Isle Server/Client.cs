@@ -200,9 +200,9 @@ namespace Horse_Isle_Server
             {
                 ClientSocket.Send(PacketData);
             }
-            catch (SocketException e)
+            catch (Exception e)
             {
-                Logger.ErrorPrint("Socket exception occured: " + e.Message);
+                Logger.ErrorPrint("Exception occured: " + e.Message);
                 Disconnect();
             }
         }

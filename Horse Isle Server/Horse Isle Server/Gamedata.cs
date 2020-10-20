@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace Horse_Isle_Server
 {
@@ -35,7 +34,7 @@ namespace Horse_Isle_Server
 
                 Logger.DebugPrint("Registered Town: " + town.Name + " X " + town.StartX + "-" + town.EndX + " Y " + town.StartY + "-" + town.EndY);
                 World.Towns.Add(town);
-            }
+            }   
 
             // Register Areas
             int totalAreas = gameData.places.towns.Count;
@@ -158,6 +157,43 @@ namespace Horse_Isle_Server
                 Logger.DebugPrint("Registered Transport Location: "+ transportPlace.LocationTitle+" To Goto X: " + transportPlace.GotoX + " Y: " + transportPlace.GotoY);
             }
 
+
+            int totalItems = gameData.item.item_list.Count;
+            for (int i = 0; i < totalItems; i++)
+            {
+                Item.ItemInformation item = new Item.ItemInformation();
+                item.Id = gameData.item.item_list[i].id;
+                item.Name = gameData.item.item_list[i].name;
+                item.PluralName = gameData.item.item_list[i].plural_name;
+                item.Description = gameData.item.item_list[i].description;
+                item.IconId = gameData.item.item_list[i].icon_id;
+                item.SortBy = gameData.item.item_list[i].sort_by;
+                item.SellPrice = gameData.item.item_list[i].sell_price;
+                item.EmbedSwf = gameData.item.item_list[i].embed_swf;
+                item.WishingWell = gameData.item.item_list[i].wishing_well;
+                item.Type = gameData.item.item_list[i].type;
+                item.MiscFlags = gameData.item.item_list[i].misc_flags.ToObject<int[]>();
+                int effectsCount = gameData.item.item_list[i].effects.Count;
+
+                Item.Effects[] effectsList = new Item.Effects[effectsCount];
+                for(int ii = 0; ii < effectsCount; ii++)
+                {
+                    effectsList[ii] = new Item.Effects();
+                    effectsList[ii].EffectsWhat = gameData.item.item_list[i].effects[ii].effect_what;
+                    effectsList[ii].EffectsWhat = gameData.item.item_list[i].effects[ii].effect_amount;
+                }
+
+                item.Effects = effectsList;
+                item.SpawnParamaters = new Item.SpawnRules();
+                item.SpawnParamaters.SpawnCap = gameData.item.item_list[i].spawn_parameters.spawn_cap;
+                item.SpawnParamaters.SpawnInArea = gameData.item.item_list[i].spawn_in_area;
+                item.SpawnParamaters.SpawnOnTileType = gameData.item.item_list[i].spawn_on_tile_type;
+                item.SpawnParamaters.SpawnOnSpecialTile = gameData.item.item_list[i].spawn_on_special_tile;
+                item.SpawnParamaters.SpawnNearSpecialTile = gameData.item.item_list[i].spawn_near_special_tile;
+
+                Logger.DebugPrint("Registered Item ID: " + item.Id + " Name: " + item.Name);
+                Item.Items.Add(item);
+            }
 
 
             // New Users
