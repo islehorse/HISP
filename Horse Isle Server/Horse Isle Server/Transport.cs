@@ -38,7 +38,7 @@ namespace Horse_Isle_Server
                     return transportPoint;
                 }
             }
-            throw new KeyNotFoundException("Cannot find transport port at x:" + x + "y:" + y);
+            throw new KeyNotFoundException("Cannot find transport point at x:" + x + "y:" + y);
         }
 
         public static TransportLocation GetTransportLocation(int id)

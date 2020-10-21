@@ -14,7 +14,7 @@ namespace Horse_Isle_Server
     {
 
         public static Socket ServerSocket;
-
+        private static Timer serverTimer;
 
         public static Client[] ConnectedClients // Done to prevent Enumerator Changed errors.
         {
@@ -26,12 +26,11 @@ namespace Horse_Isle_Server
         public static int IdleTimeout;
         public static int IdleWarning;
 
-
+        public static Random RandomNumberGenerator = new Random();
 
         // used for world time,
         private static int gameTickSpeed = 4320; // Changing this to ANYTHING else will cause desync with the client.
-        private static Timer serverTimer;
-
+        
         private static List<Client> connectedClients = new List<Client>();
         public static void OnCrossdomainPolicyRequest(Client sender) // When a cross-domain-policy request is received.
         {
@@ -326,27 +325,43 @@ namespace Horse_Isle_Server
                 Logger.ErrorPrint(sender.RemoteIp + " Tried to use a transport with id that is NaN.");
                 return;
             }
-
-            Transport.TransportLocation transportLocation = Transport.GetTransportLocation(transportid);
-            if (sender.LoggedinUser.Money >= transportLocation.Cost)
+            try
             {
-
-                string swfToLoad = Messages.BoatCutscene;
-                if (transportLocation.Type == "WAGON")
-                    swfToLoad = Messages.WagonCutscene;
-
-                if (transportLocation.Type != "ROWBOAT")
+                Transport.TransportPoint transportPoint = Transport.GetTransportPoint(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                if (transportPoint.X != sender.LoggedinUser.X && transportPoint.Y != sender.LoggedinUser.Y)
                 {
-                    byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(swfToLoad, PacketBuilder.PACKET_SWF_CUTSCENE);
-                    sender.SendPacket(swfModulePacket);
+                    Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to use transport id: " + transportid.ToString() + " while not the correct transport point!");
+                    return;
                 }
 
-                Teleport(sender, transportLocation.GotoX, transportLocation.GotoY);
+                Transport.TransportLocation transportLocation = Transport.GetTransportLocation(transportid);
 
-                sender.LoggedinUser.Money -= transportLocation.Cost;
-                
+
+                if (sender.LoggedinUser.Money >= transportLocation.Cost)
+                {
+
+
+                    string swfToLoad = Messages.BoatCutscene;
+                    if (transportLocation.Type == "WAGON")
+                        swfToLoad = Messages.WagonCutscene;
+
+                    if (transportLocation.Type != "ROWBOAT")
+                    {
+                        byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(swfToLoad, PacketBuilder.PACKET_SWF_CUTSCENE);
+                        sender.SendPacket(swfModulePacket);
+                    }
+
+                    Teleport(sender, transportLocation.GotoX, transportLocation.GotoY);
+
+                    sender.LoggedinUser.Money -= transportLocation.Cost;
+                }
             }
-            
+            catch (KeyNotFoundException)
+            {
+                Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to use transport id: " + transportid.ToString() + " while not on a transport point!");
+            }
+
+         
         }
         public static void OnChatPacket(Client sender, byte[] packet)
         {
@@ -424,6 +439,59 @@ namespace Horse_Isle_Server
             sender.SendPacket(chatPacketSender);
         }
 
+        public static void OnItemInteraction(Client sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent object interaction packet when not logged in.");
+                return;
+            }
+            if (packet.Length < 3)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                return;
+            }
+
+            byte action = packet[1];
+            switch(action)
+            {
+                case PacketBuilder.PICKUP_OBJECT:
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    int randomId = 0;
+
+                    try
+                    {
+                        randomId = Int32.Parse(randomIdStr);
+                    }
+                    catch(InvalidOperationException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        return;
+                    }
+
+                    try
+                    {
+                        DroppedItems.DroppedItem item = DroppedItems.GetDroppedItemById(randomId);
+                        sender.LoggedinUser.Inventory.Add(item.instance);
+                        DroppedItems.RemoveDroppedItem(item);
+
+                        UpdateAreaForAll(item.X, item.Y);
+
+                        byte[] chatMessage = PacketBuilder.CreateChat(Messages.GrabbedItemMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(chatMessage);
+                    }
+                    catch(KeyNotFoundException)
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to grab a non existing object.");
+                        return;
+                    }
+
+                    break;
+            }
+
+        }
+
         public static void OnInventoryRequested(Client sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -434,11 +502,11 @@ namespace Horse_Isle_Server
 
             if (packet.Length < 2)
             {
-                Logger.ErrorPrint(sender.RemoteIp + " Sent an invalid chat packet.");
+                Logger.ErrorPrint(sender.RemoteIp + " Sent an invalid inventory request packet.");
                 return;
             }
 
-            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildInventoryInfo(sender.LoggedinUser.ItemInventory));
+            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildInventoryInfo(sender.LoggedinUser.Inventory));
             sender.SendPacket(metaPacket);
         }
         public static void OnLoginRequest(Client sender, byte[] packet)
@@ -678,7 +746,15 @@ namespace Horse_Isle_Server
 
         }
 
-
+        public static void UpdateAreaForAll(int x, int y)
+        {
+            foreach(Client client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                    if (client.LoggedinUser.X == x && client.LoggedinUser.Y == y)
+                        UpdateArea(client, true);
+            }
+        }
         public static void UpdateArea(Client forClient, bool justArea = false)
         {
             if (!forClient.LoggedIn)
@@ -756,6 +832,11 @@ namespace Horse_Isle_Server
         private static void onTick(object state)
         {
             World.TickWorldClock();
+
+            if(World.ServerTime.Minutes % 20 == 0)
+            {
+                DroppedItems.Update();
+            }
         }
         public static void StartServer()
         {

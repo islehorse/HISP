@@ -8,6 +8,9 @@ namespace Horse_Isle_Server
 {
     class Messages
     {
+        public static int RequiredChatViolations;
+        public static int DefaultInventoryMax;
+
         // Announcements
         public static string NewUserMessage;
         public static string WelcomeFormat;
@@ -41,10 +44,18 @@ namespace Horse_Isle_Server
         public static string AdminChatFormatForSender;
         public static string ModChatFormatForSender;
 
-        public static int RequiredChatViolations;
         public static string ChatViolationMessageFormat;
         public static string PasswordNotice;
         public static string CapsNotice;
+
+        //Dropped Items
+
+        public static string NothingMessage;
+        public static string ItemsOnGroundMessage;
+        public static string GrabItemFormat;
+        public static string GrabAllItemsMessage;
+        public static string GrabbedItemMessage;
+        public static string GrabbedAllObjectsMessage;
 
         // Meta
         public static string IsleFormat;
@@ -60,12 +71,12 @@ namespace Horse_Isle_Server
         public static string West;
 
         public static string TileFormat;
-        public static string NothingMessage;
         public static string Seperator;
         public static string InventoryFormat;
 
         public static string ExitThisPlace;
         public static string BackToMap;
+        public static string LongFullLine;
         public static string MetaTerminator;
 
         // Disconnect Messages
@@ -82,11 +93,15 @@ namespace Horse_Isle_Server
             return ChatViolationMessageFormat.Replace("%AMOUNT%", RequiredChatViolations.ToString()).Replace("%REASON%", violationReason.Message);
         }
 
-        public static string FormatInventoryMeta(int itemCount, int maxItems)
+        public static string FormatPlayerInventoryHeaderMeta(int itemCount, int maxItems)
         {
             return InventoryFormat.Replace("%ITEMCOUNT%", itemCount.ToString()).Replace("%MAXITEMS%", maxItems.ToString());
         }
         // Meta
+        public static string FormatGrabItemMessage(string name, int randomid, int iconid)
+        {
+            return GrabItemFormat.Replace("%ICONID%",iconid.ToString()).Replace("%ITEMNAME%", name).Replace("%RANDOMID%", randomid.ToString());
+        }
         public static string FormatTransportMessage(string method, string place, int cost, int id, int x, int y)
         {
             string xy = "";

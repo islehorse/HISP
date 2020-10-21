@@ -19,7 +19,8 @@ namespace Horse_Isle_Server
                 string MailTable = "CREATE TABLE Mailbox(IdTo INT, PlayerFrom TEXT(16),Subject TEXT(128), Message Text(1028), TimeSent INT)";
                 string BuddyTable = "CREATE TABLE BuddyList(Id INT, IdFriend INT, Pending BOOL)";
                 string WorldTable = "CREATE TABLE World(Time INT,Day INT, Year INT, Weather TEXT(64))";
-                string DroppedTable = "CREATE TABLE DroppedItems(X INT, Y INT, ItemID INT)";
+                string InventoryTable = "CREATE TABLE Inventory(PlayerID INT, RandomID INT, ItemID INT)";
+                string DroppedItems = "CREATE TABLE DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT)";
 
                 try
                 {
@@ -72,11 +73,25 @@ namespace Horse_Isle_Server
                     Logger.WarnPrint(e.Message);
                 };
 
+
                 try
                 {
 
                     MySqlCommand sqlCommand = db.CreateCommand();
-                    sqlCommand.CommandText = DroppedTable;
+                    sqlCommand.CommandText = DroppedItems;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = InventoryTable;
                     sqlCommand.ExecuteNonQuery();
                     sqlCommand.Dispose();
                 }
@@ -229,6 +244,129 @@ namespace Horse_Isle_Server
             }
         }
 
+        public static List<ItemInstance> GetPlayerInventory(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT ItemId,RandomId FROM Inventory WHERE PlayerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                List<ItemInstance> instances = new List<ItemInstance>();
+
+                while(reader.Read())
+                {
+                    instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1)));
+                }
+                sqlCommand.Dispose();
+                return instances;
+            }
+        }
+        public static void AddItemToInventory(int playerId, ItemInstance instance)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                
+                sqlCommand.CommandText = "INSERT INTO Inventory VALUES(@playerId,@randomId,@itemId)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomID);
+                sqlCommand.Parameters.AddWithValue("@itemId", instance.ItemID);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void RemoveItemFromInventory(int playerId, ItemInstance instance)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "DELETE FROM Inventory WHERE (PlayerId=@id AND RandomId=@randomId)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomID);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void RemoveDroppedItem(int randomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "DELETE FROM Inventory WHERE (RandomId=@randomId)";
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static DroppedItems.DroppedItem[] GetDroppedItems()
+        {
+            List<DroppedItems.DroppedItem> itemList = new List<DroppedItems.DroppedItem>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM DroppedItems";
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while(reader.Read())
+                {
+                    DroppedItems.DroppedItem droppedItem = new DroppedItems.DroppedItem();
+                    droppedItem.X = reader.GetInt32(0);
+                    droppedItem.Y = reader.GetInt32(1);
+                    droppedItem.DespawnTimer = reader.GetInt32(4);
+                    ItemInstance instance = new ItemInstance(reader.GetInt32(3),reader.GetInt32(4));
+                    droppedItem.instance = instance;
+                    itemList.Add(droppedItem);
+                }
+                sqlCommand.Dispose();
+
+            }
+            return itemList.ToArray();
+        }
+        public static void AddDroppedItems(DroppedItems.DroppedItem[] items)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlTransaction transaction = db.BeginTransaction();
+
+
+                foreach (DroppedItems.DroppedItem item in items)
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.Transaction = transaction;
+                    sqlCommand.CommandText = "INSERT INTO DroppedItems VALUES(@x, @y, @randomId, @itemId, @despawnTimer)";
+                    sqlCommand.Parameters.AddWithValue("@x", item.X);
+                    sqlCommand.Parameters.AddWithValue("@y", item.Y);
+                    sqlCommand.Parameters.AddWithValue("@randomId", item.instance.RandomID);
+                    sqlCommand.Parameters.AddWithValue("@itemId", item.instance.ItemID);
+                    sqlCommand.Parameters.AddWithValue("@despawnTimer", item.DespawnTimer);
+                    sqlCommand.Prepare();
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+
+                }
+
+                transaction.Commit();
+            }
+
+        }
         public static void AddMail(int toId, string fromName, string subject, string message)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

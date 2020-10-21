@@ -81,12 +81,22 @@ namespace Horse_Isle_Server
             string message = "";
 
             message += Messages.Seperator + buildNearbyString(x, y);
+
             // Dropped Items
-            int[] itemIds = World.GetDroppedItems(x, y);
-            if (itemIds.Length == 0)
+            DroppedItems.DroppedItem[] Items = DroppedItems.GetItemsAt(x, y);
+            if (Items.Length == 0)
                 message += Messages.NothingMessage;
-
-
+            else
+            {
+                message += Messages.ItemsOnGroundMessage;
+                foreach(DroppedItems.DroppedItem item in Items)
+                {
+                    Item.ItemInformation itemInfo = item.instance.GetItemInfo();
+                    message += Messages.FormatGrabItemMessage(itemInfo.Name, item.instance.RandomID, itemInfo.IconId);
+                }
+                message += Messages.GrabAllItemsMessage;
+            }
+            Logger.DebugPrint(message);
             return message;
         }
         public static string BuildTransportInfo(Transport.TransportPoint transportPoint)
@@ -126,11 +136,10 @@ namespace Horse_Isle_Server
             return message;
         }
 
-        public static string BuildInventoryInfo(Inventory inv)
+        public static string BuildInventoryInfo(IInventory inv)
         {
             string message = "";
-            message += Messages.FormatInventoryMeta(inv.ItemList.Count, inv.MaxItems);
-
+            message += Messages.FormatPlayerInventoryHeaderMeta(inv.Count, Messages.DefaultInventoryMax);
             return message;
         }
         public static string BuildMetaInfo(int x, int y)

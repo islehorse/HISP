@@ -154,7 +154,7 @@ namespace Horse_Isle_Server
                 Logger.DebugPrint("Registered Transport Location: "+ transportPlace.LocationTitle+" To Goto X: " + transportPlace.GotoX + " Y: " + transportPlace.GotoY);
             }
 
-
+            // Register Items
             int totalItems = gameData.item.item_list.Count;
             for (int i = 0; i < totalItems; i++)
             {
@@ -183,12 +183,12 @@ namespace Horse_Isle_Server
                 item.Effects = effectsList;
                 item.SpawnParamaters = new Item.SpawnRules();
                 item.SpawnParamaters.SpawnCap = gameData.item.item_list[i].spawn_parameters.spawn_cap;
-                item.SpawnParamaters.SpawnInArea = gameData.item.item_list[i].spawn_in_area;
-                item.SpawnParamaters.SpawnOnTileType = gameData.item.item_list[i].spawn_on_tile_type;
-                item.SpawnParamaters.SpawnOnSpecialTile = gameData.item.item_list[i].spawn_on_special_tile;
-                item.SpawnParamaters.SpawnNearSpecialTile = gameData.item.item_list[i].spawn_near_special_tile;
+                item.SpawnParamaters.SpawnInArea = gameData.item.item_list[i].spawn_parameters.spawn_in_area;
+                item.SpawnParamaters.SpawnOnTileType = gameData.item.item_list[i].spawn_parameters.spawn_on_tile_type;
+                item.SpawnParamaters.SpawnOnSpecialTile = gameData.item.item_list[i].spawn_parameters.spawn_on_special_tile;
+                item.SpawnParamaters.SpawnNearSpecialTile = gameData.item.item_list[i].spawn_parameters.spawn_near_special_tile;
 
-                Logger.DebugPrint("Registered Item ID: " + item.Id + " Name: " + item.Name);
+                Logger.DebugPrint("Registered Item ID: " + item.Id + " Name: " + item.Name + " spawns on: "+item.SpawnParamaters.SpawnOnTileType);
                 Item.Items.Add(item);
             }
 
@@ -247,10 +247,16 @@ namespace Horse_Isle_Server
             Messages.TileFormat = gameData.messages.meta.tile_format;
             Messages.TransportFormat = gameData.messages.meta.transport_format;
             Messages.InventoryFormat = gameData.messages.meta.inventory_format;
-            Messages.NothingMessage = gameData.messages.meta.nothing_message;
             Messages.ExitThisPlace = gameData.messages.meta.exit_this_place;
             Messages.BackToMap = gameData.messages.meta.back_to_map;
+            Messages.LongFullLine = gameData.messages.meta.long_full_line;
             Messages.MetaTerminator = gameData.messages.meta.end_of_meta;
+
+            Messages.NothingMessage = gameData.messages.meta.dropped_items.nothing_message;
+            Messages.ItemsOnGroundMessage = gameData.messages.meta.dropped_items.items_message;
+            Messages.GrabItemFormat = gameData.messages.meta.dropped_items.item_format;
+            Messages.GrabbedItemMessage = gameData.messages.grab_message;
+            Messages.GrabAllItemsMessage = gameData.messages.grab_all_message;
 
             Messages.NearbyPlayers = gameData.messages.meta.nearby.players_nearby;
             Messages.North = gameData.messages.meta.nearby.north;
@@ -268,7 +274,8 @@ namespace Horse_Isle_Server
             {
                 Map.TerrainTile tile = new Map.TerrainTile();
                 tile.Passable = gameData.tile_paramaters.terrain_tiles[i].passable;
-                tile.Type = gameData.tile_paramaters.terrain_tiles[i].passable;
+                tile.Type = gameData.tile_paramaters.terrain_tiles[i].tile_type;
+                Logger.DebugPrint("Registered Tile: " + i + " Passable: " + tile.Passable + " Type: " + tile.Type);
                 terrainTiles.Add(tile);
             }
             Map.TerrainTiles = terrainTiles.ToArray();
@@ -286,7 +293,7 @@ namespace Horse_Isle_Server
 
             // Inventory
 
-            Inventory.DefaultInventoryMax = gameData.item.max_carryable;
+            Messages.DefaultInventoryMax = gameData.item.max_carryable;
 
             // Swf
             Messages.WagonCutscene = gameData.transport.wagon_cutscene;

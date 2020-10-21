@@ -21,6 +21,7 @@ namespace Horse_Isle_Server
         public const byte PACKET_SWF_MODULE_GENTLE = 0x2A;
         public const byte PACKET_PLACE_INFO = 0x1E;
         public const byte PACKET_AREA_DEFS = 0x79;
+        public const byte PACKET_ITEM_INTERACTION = 0x1E;
         public const byte PACKET_ANNOUNCEMENT = 0x7E;
         public const byte PACKET_TILE_FLAGS = 0x75;
         public const byte PACKET_PLAYSOUND = 0x23;
@@ -32,10 +33,12 @@ namespace Horse_Isle_Server
         public const byte PACKET_LEAVE = 0x7D;
 
         public const byte PACKET_PLAYERINFO = 0x16;
+        
+        public const byte PICKUP_OBJECT = 0x14;
 
         public const byte PLAYERINFO_LEAVE = 0x16;
         public const byte PLAYERINFO_UPDATE_OR_CREATE = 0x15;
-
+        
         public const byte VIEW_PROFILE = 0x14;
         public const byte SAVE_PROFILE = 0x15;
 

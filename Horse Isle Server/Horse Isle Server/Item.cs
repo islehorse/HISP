@@ -44,5 +44,17 @@ namespace Horse_Isle_Server
         }
 
         public static List<ItemInformation> Items = new List<ItemInformation>();
+
+        public static ItemInformation GetItemById(int id)
+        {
+            foreach(ItemInformation item in Items)
+            {
+                if(item.Id == id)
+                {
+                    return item;
+                }
+            }
+            throw new KeyNotFoundException("Item id " + id + " Not found!");
+        }
     }
 }
