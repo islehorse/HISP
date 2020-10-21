@@ -57,14 +57,22 @@ namespace Horse_Isle_Server
             int epoch_new = (Int32)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
             DespawnItems(epoch, epoch_new);
-            epoch = epoch_new;
 
             GenerateItems();
         }
         public static void RemoveDroppedItem(DroppedItem item)
         {
-            Database.RemoveDroppedItem(item.instance.RandomID);
-            droppedItemsList.Remove(item);
+            int randomId = item.instance.RandomID;
+            Database.RemoveDroppedItem(randomId);
+            for (int i = 0; i < droppedItemsList.Count; i++) 
+            {
+                if(droppedItemsList[i].instance.RandomID == randomId)
+                {
+                    droppedItemsList.RemoveAt(i);
+                    
+                }
+            }
+            
         }
         public static DroppedItem GetDroppedItemById(int randomId)
         {
@@ -84,17 +92,21 @@ namespace Horse_Isle_Server
         }
         public static void DespawnItems(int old_epoch, int new_epoch)
         {
+            int removedCount = 0;
             DroppedItem[] items = droppedItemsList.ToArray();
             foreach (DroppedItem item in items)
             {
-                if(old_epoch + item.DespawnTimer < new_epoch)
+                if(new_epoch + item.DespawnTimer < old_epoch)
                 {
                     if(Server.GetUsersAt(item.X, item.Y,true,true).Length == 0)
                     {
                         RemoveDroppedItem(item);
+                        removedCount++;
                     }
                 }
             }
+            if(removedCount > 0)
+                epoch = new_epoch;
         }
         public static void GenerateItems()
         {
@@ -176,7 +188,9 @@ namespace Horse_Isle_Server
 
             }
             if(newItems > 0)
+            {
                 Database.AddDroppedItems(droppedItemsList.ToArray());
+            }
         }
 
         public static void Init()

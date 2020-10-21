@@ -18,23 +18,28 @@ namespace Horse_Isle_Server
 
         public static int[] OverlayTileDepth;
 
-        public static TerrainTile[] TerrainTiles;
+        public static int Width;
+        public static int Height;
 
-        public static Bitmap MapData;
+        public static byte[] MapData;
+        public static byte[] oMapData;
+
+        public static TerrainTile[] TerrainTiles;
         
 
         public static int NewUserStartX;
         public static int NewUserStartY;
         public static int GetTileId(int x, int y, bool overlay)
         {
-            if ((x > MapData.Width || x < 0) || (y > MapData.Height || y < 0)) // Outside map?
+            if ((x > Width || x < 0) || (y > Height || y < 0)) // Outside map?
                 return 0x1;
-                
+
+            int pos = ((x * Height) + y);
 
             if (overlay)
-                return MapData.GetPixel(x, y).R;
+                return oMapData[pos];
             else
-                return MapData.GetPixel(x, y).B;
+                return MapData[pos];
         }
         public static bool CheckPassable(int x, int y)
         {
@@ -83,7 +88,26 @@ namespace Horse_Isle_Server
                 return;
             }
 
-            MapData = new Bitmap(ConfigReader.MapFile);
+
+            byte[] worldMap = File.ReadAllBytes(ConfigReader.MapFile);
+
+            Width = BitConverter.ToInt32(worldMap, 0);
+            Height = BitConverter.ToInt32(worldMap, 4);
+            
+            MapData = new byte[Width * Height];
+            oMapData = new byte[Width * Height];
+            int ii = 8;
+
+            for (int i = 0; i < MapData.Length; i++)
+            {
+                
+                oMapData[i] = worldMap[ii];
+                MapData[i] = worldMap[ii+ 1];
+                ii += 2;
+            }
+
+            worldMap = null;
+
         }
     }
 }

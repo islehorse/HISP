@@ -476,7 +476,7 @@ namespace Horse_Isle_Server
                         sender.LoggedinUser.Inventory.Add(item.instance);
                         DroppedItems.RemoveDroppedItem(item);
 
-                        UpdateAreaForAll(item.X, item.Y);
+                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
 
                         byte[] chatMessage = PacketBuilder.CreateChat(Messages.GrabbedItemMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(chatMessage);
