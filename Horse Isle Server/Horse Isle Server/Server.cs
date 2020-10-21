@@ -424,6 +424,23 @@ namespace Horse_Isle_Server
             sender.SendPacket(chatPacketSender);
         }
 
+        public static void OnInventoryRequested(Client sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent chat packet when not logged in.");
+                return;
+            }
+
+            if (packet.Length < 2)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent an invalid chat packet.");
+                return;
+            }
+
+            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildInventoryInfo(sender.LoggedinUser.ItemInventory));
+            sender.SendPacket(metaPacket);
+        }
         public static void OnLoginRequest(Client sender, byte[] packet)
         {
             Logger.DebugPrint("Login request received from: " + sender.RemoteIp);
@@ -688,7 +705,7 @@ namespace Horse_Isle_Server
                         return;
                 LocationStr = Meta.BuildSpecialTileInfo(specialTile);
             }
-            byte[] AreaMessage = PacketBuilder.CreatePlaceInfo(LocationStr);
+            byte[] AreaMessage = PacketBuilder.CreateMetaPacket(LocationStr);
             forClient.SendPacket(AreaMessage);
 
         }

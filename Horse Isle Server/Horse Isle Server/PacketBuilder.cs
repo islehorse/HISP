@@ -26,6 +26,7 @@ namespace Horse_Isle_Server
         public const byte PACKET_PLAYSOUND = 0x23;
         public const byte PACKET_KEEP_ALIVE = 0x7C;
         public const byte PACKET_PROFILE = 0x18;
+        public const byte PACKET_INVENTORY = 0x17;
         public const byte PACKET_TRANSPORT = 0x29;
         public const byte PACKET_KICK = 0x80;
         public const byte PACKET_LEAVE = 0x7D;
@@ -329,7 +330,7 @@ namespace Horse_Isle_Server
             return Packet;
         }
 
-        public static byte[] CreatePlaceInfo(string formattedText)
+        public static byte[] CreateMetaPacket(string formattedText)
         {
             byte[] strBytes = Encoding.UTF8.GetBytes(formattedText);
 

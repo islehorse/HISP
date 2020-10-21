@@ -38,6 +38,8 @@
 		"transport_format":"^LTransport via %METHOD% to %PLACE%^R1^I%ICON%^T4Trip Costs $%COST% one way. ^B1M%XY%^BY%ID%",
 		"exit_this_place":"^X",
 		"end_of_meta":"^Z",
+		"back_to_map":"^M",
+		"inventory_format":"^ATYour Inventory^H<B>You are carrying the following %ITEMCOUNT% different items:</B> (%MAXITEMS% max)",
 		"nearby":{
 			"players_nearby":"<B>Players Nearby:</B>",
 			"east":"<B>East:</B>",
@@ -494,6 +496,7 @@
 	 }
  },
  "item":{
+	"max_carryable":40,
 	"item_list":[
 	  {
 		"id": 1,

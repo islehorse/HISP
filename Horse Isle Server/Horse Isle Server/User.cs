@@ -29,6 +29,7 @@ namespace Horse_Isle_Server
         public Mailbox MailBox;
         public Friends Friends;
         public string Password; // For chat filter.
+        public Inventory ItemInventory;
         public int ChatViolations
         {
             get
@@ -160,6 +161,8 @@ namespace Horse_Isle_Server
                 Database.CreateUserExt(UserId);
                 NewPlayer = true;
             }
+
+            ItemInventory = new Inventory();
 
             Id = UserId;
             Username = Database.GetUsername(UserId);

@@ -79,6 +79,7 @@
     <Compile Include="Database.cs" />
     <Compile Include="Friends.cs" />
     <Compile Include="Gamedata.cs" />
+    <Compile Include="Inventory.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ConfigReader.cs" />
     <Compile Include="CrossDomainPolicy.cs" />
