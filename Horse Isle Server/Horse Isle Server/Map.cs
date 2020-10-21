@@ -67,11 +67,11 @@ namespace Horse_Isle_Server
             bool tilePassable = false;
             if (terrainPassable || overlayPassable)
                 tilePassable = true;
-            if (!overlayPassable && otileId != 0)
+            if (!overlayPassable && (tileId != 0 && otileId != 0))
                 tilePassable = false;
 
 
-            Logger.DebugPrint("Checking tile passibility for tileid: " + tileId + " and overlay tileid " + otileId + " at " + x + "," + y);
+           
             return tilePassable;
         }
 

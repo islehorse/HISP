@@ -197,10 +197,6 @@ namespace Horse_Isle_Server
             throw new KeyNotFoundException("x,y not in a town!");
         }
 
-        public static int[] GetDroppedItems(int x, int y)
-        {
-            return new int[] { }; // Not implemented yet.
-        }
         public static string GetWeather()
         {
             return Database.GetWorldWeather();

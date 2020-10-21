@@ -331,12 +331,18 @@ namespace Horse_Isle_Server
                     if (user.Moderator || user.Administrator)
                         return Messages.FormatModChatMessage(user.Username, message);
                     else
-                        return user.Username+" is a hacker! (Sent in mod channel without being a mod) Maybe ban?";
+                    {
+                        Logger.HackerPrint(user.Username + " Tried to send in mod chat without being a moderator. (Hack/Code Attempt)");
+                        return user.Username + " is a hacker! (Sent in mod channel without being a mod) Maybe ban?";
+                    }
                 case ChatChannel.Admin:
                     if (user.Administrator)
                         return Messages.FormatAdminChatMessage(user.Username, message);
                     else
+                    {
+                        Logger.HackerPrint(user.Username + " Tried to send in mod chat without being a moderator. (Hack/Code Attempt)");
                         return user.Username + " is a hacker! (Sent in admin channel without being a admin) Maybe ban?";
+                    }
                 default:
                     Logger.ErrorPrint(user.Username + " is trying to end a message in unknown channel " + channel.ToString("X"));
                     return "not implemented yet :(";

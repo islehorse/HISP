@@ -18,6 +18,7 @@ namespace Horse_Isle_Server
             Map.OpenMap();
             Gamedata.ReadGamedata();
             World.ReadWorldData();
+            DroppedItems.Init();
             Server.StartServer();
 
         }

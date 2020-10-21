@@ -79,7 +79,9 @@
     <Compile Include="Database.cs" />
     <Compile Include="Friends.cs" />
     <Compile Include="Gamedata.cs" />
-    <Compile Include="Inventory.cs" />
+    <Compile Include="IInventory.cs" />
+    <Compile Include="DroppedItems.cs" />
+    <Compile Include="ItemInstance.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ConfigReader.cs" />
     <Compile Include="CrossDomainPolicy.cs" />
@@ -89,6 +91,7 @@
     <Compile Include="Item.cs" />
     <Compile Include="Meta.cs" />
     <Compile Include="PacketBuilder.cs" />
+    <Compile Include="PlayerInventory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">

@@ -7,6 +7,8 @@
 	"profile_save":"Your profile changes were saved.",
 	"buddy_request":"Attempting to Add Buddy.  The other player must click ADD BUDDY as well. (Many players reserve this for just a couple players so don't feel insulted if they do not).",
 	"drawing_notice":"Drawing not sent to other players when you are not a subscriber.",
+	"grab_message":"You grabbed an object off the ground.",
+	"grab_all_message":"You grabbed all objects off the ground.",
 	"tag":{
 		"for_sender":"<B>TAG!!</B> %USERNAME% is now it! (tagged by %TAGGER%) [%AMOUNT% buds]",
 		"for_others":"<B>TAG!!</B> %USERNAME% is now it! (tagged by %TAGGER%)"
@@ -34,12 +36,19 @@
 		"area_format":" in %AREA%",
 		"location_format":"                <I>You are%META% </I>",
 		"tile_format":"<B>%TILENAME%</B>",
-		"nothing_message":"^LYou see nothing on the ground of interest.^R1",
-		"transport_format":"^LTransport via %METHOD% to %PLACE%^R1^I%ICON%^T4Trip Costs $%COST% one way. ^B1M%XY%^BY%ID%",
+
+		"transport_format":"^R1^LTransport via %METHOD% to %PLACE%^R1^I%ICON%^T4Trip Costs $%COST% one way. ^B1M%XY%^BY%ID%",
 		"exit_this_place":"^X",
 		"end_of_meta":"^Z",
 		"back_to_map":"^M",
-		"inventory_format":"^ATYour Inventory^H<B>You are carrying the following %ITEMCOUNT% different items:</B> (%MAXITEMS% max)",
+		"long_full_line":"^L",
+		"inventory_format":"^ATYour Inventory^H<B>You are carrying the following %ITEMCOUNT% different items:</B> (%% max)",
+		"dropped_items":{
+			"nothing_message":"^LYou see nothing on the ground of interest.^R1",
+			"items_message":"^LYou see the following on the ground:^R1",
+			"item_format":"^I%ICONID%^T3%ITEMNAME%^B4G%RANDOMID%^B4LE%RANDOMID%^R1",
+			"grab_all":"^T3^B4R^R1"
+		},
 		"nearby":{
 			"players_nearby":"<B>Players Nearby:</B>",
 			"east":"<B>East:</B>",
@@ -197,6 +206,7 @@
 			{"word":"shit","reason_type":"profanity","match_all":true},
 			{"word":"cunt","reason_type":"profanity","match_all":true},
 			{"word":"nigger","reason_type":"profanity","match_all":true},
+			{"word":"stfu","reason_type":"profanity","match_all":false},
 			{"word":"nigga","reason_type":"profanity","match_all":true},
 			{"word":"homo","reason_type":"profanity","match_all":false},
 			{"word":"homosexual","reason_type":"profanity","match_all":true},

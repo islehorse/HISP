@@ -8,6 +8,10 @@ namespace Horse_Isle_Server
 {
     class Logger
     {
+        public static void HackerPrint(string text) // When someone is obviously cheating.
+        {
+            Console.WriteLine("[HACK] " + text);
+        }
         public static void DebugPrint(string text)
         {
             if (ConfigReader.Debug)
@@ -17,7 +21,7 @@ namespace Horse_Isle_Server
         {
             Console.WriteLine("[WARN] " + text);
         }
-        public static void ErrorPrint(string text)
+        public static void ErrorPrint(string text) 
         {
             Console.WriteLine("[ERROR] " + text);
         }
