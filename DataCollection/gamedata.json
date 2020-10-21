@@ -42,7 +42,7 @@
 		"end_of_meta":"^Z",
 		"back_to_map":"^M",
 		"long_full_line":"^L",
-		"inventory_format":"^ATYour Inventory^H<B>You are carrying the following %ITEMCOUNT% different items:</B> (%% max)",
+		"inventory_format":"^ATYour Inventory^H<B>You are carrying the following %ITEMCOUNT% different items:</B> (%MAX%)",
 		"dropped_items":{
 			"nothing_message":"^LYou see nothing on the ground of interest.^R1",
 			"items_message":"^LYou see the following on the ground:^R1",

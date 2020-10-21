@@ -305,7 +305,7 @@ namespace Horse_Isle_Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "DELETE FROM Inventory WHERE (RandomId=@randomId)";
+                sqlCommand.CommandText = "DELETE FROM DroppedItems WHERE (RandomId=@randomId)";
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
