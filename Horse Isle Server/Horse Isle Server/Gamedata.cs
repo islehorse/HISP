@@ -4,9 +4,6 @@ using Newtonsoft.Json;
 
 namespace Horse_Isle_Server
 {
-
-
-
     class Gamedata
     {
         
@@ -235,6 +232,7 @@ namespace Horse_Isle_Server
             Messages.DirectChatFormatForSender = gameData.messages.chat.for_sender.dm_format;
             Messages.ModChatFormatForSender = gameData.messages.chat.for_sender.mod_format;
             Messages.AdminChatFormatForSender = gameData.messages.chat.for_sender.admin_format;
+            
 
             Messages.PasswordNotice = gameData.messages.chat.password_included;
             Messages.CapsNotice = gameData.messages.chat.caps_notice;
@@ -248,8 +246,10 @@ namespace Horse_Isle_Server
             Messages.Seperator = gameData.messages.meta.seperator;
             Messages.TileFormat = gameData.messages.meta.tile_format;
             Messages.TransportFormat = gameData.messages.meta.transport_format;
+            Messages.InventoryFormat = gameData.messages.meta.inventory_format;
             Messages.NothingMessage = gameData.messages.meta.nothing_message;
             Messages.ExitThisPlace = gameData.messages.meta.exit_this_place;
+            Messages.BackToMap = gameData.messages.meta.back_to_map;
             Messages.MetaTerminator = gameData.messages.meta.end_of_meta;
 
             Messages.NearbyPlayers = gameData.messages.meta.nearby.players_nearby;
@@ -283,6 +283,10 @@ namespace Horse_Isle_Server
 
             Server.IdleWarning = gameData.messages.disconnect.client_timeout.warn_after;
             Server.IdleTimeout = gameData.messages.disconnect.client_timeout.kick_after;
+
+            // Inventory
+
+            Inventory.DefaultInventoryMax = gameData.item.max_carryable;
 
             // Swf
             Messages.WagonCutscene = gameData.transport.wagon_cutscene;

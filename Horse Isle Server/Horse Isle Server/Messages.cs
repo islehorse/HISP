@@ -41,8 +41,8 @@ namespace Horse_Isle_Server
         public static string AdminChatFormatForSender;
         public static string ModChatFormatForSender;
 
-        public static string ChatViolationMessageFormat;
         public static int RequiredChatViolations;
+        public static string ChatViolationMessageFormat;
         public static string PasswordNotice;
         public static string CapsNotice;
 
@@ -62,7 +62,10 @@ namespace Horse_Isle_Server
         public static string TileFormat;
         public static string NothingMessage;
         public static string Seperator;
+        public static string InventoryFormat;
+
         public static string ExitThisPlace;
+        public static string BackToMap;
         public static string MetaTerminator;
 
         // Disconnect Messages
@@ -79,6 +82,10 @@ namespace Horse_Isle_Server
             return ChatViolationMessageFormat.Replace("%AMOUNT%", RequiredChatViolations.ToString()).Replace("%REASON%", violationReason.Message);
         }
 
+        public static string FormatInventoryMeta(int itemCount, int maxItems)
+        {
+            return InventoryFormat.Replace("%ITEMCOUNT%", itemCount.ToString()).Replace("%MAXITEMS%", maxItems.ToString());
+        }
         // Meta
         public static string FormatTransportMessage(string method, string place, int cost, int id, int x, int y)
         {

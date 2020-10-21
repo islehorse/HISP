@@ -158,6 +158,9 @@ namespace Horse_Isle_Server
                     case PacketBuilder.PACKET_TRANSPORT:
                         Server.OnTransportUsed(this, Packet);
                         break;
+                    case PacketBuilder.PACKET_INVENTORY:
+                        Server.OnInventoryRequested(this, Packet);
+                        break;
                     default:
                         Logger.ErrorPrint("Unimplemented Packet: " + BitConverter.ToString(Packet).Replace('-', ' '));
                         break;

@@ -125,6 +125,14 @@ namespace Horse_Isle_Server
 
             return message;
         }
+
+        public static string BuildInventoryInfo(Inventory inv)
+        {
+            string message = "";
+            message += Messages.FormatInventoryMeta(inv.ItemList.Count, inv.MaxItems);
+
+            return message;
+        }
         public static string BuildMetaInfo(int x, int y)
         {
             string message = "";
