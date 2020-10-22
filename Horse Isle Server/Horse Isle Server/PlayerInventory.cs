@@ -9,37 +9,74 @@ namespace Horse_Isle_Server
     class PlayerInventory : IInventory
     {
         private User baseUser;
-        private List<ItemInstance> instances = new List<ItemInstance>();
-
+        private List<InventoryItem> inventoryItems;
         public PlayerInventory(User forUser)
         {
+            inventoryItems = new List<InventoryItem>();
+
             baseUser = forUser;
-            instances = Database.GetPlayerInventory(baseUser.Id);
+            ItemInstance[] instances = Database.GetPlayerInventory(baseUser.Id).ToArray();
+            foreach(ItemInstance instance in instances)
+            {
+                Add(instance);
+            }
         }
         
         public int Count
         {
             get
             {
-                return instances.Count;
+                return inventoryItems.Count;
             }
         }
-
+        
         public void Add(ItemInstance item)
         {
-            instances.Add(item);
             Database.AddItemToInventory(baseUser.Id, item);
+
+            foreach (InventoryItem invetoryItem in inventoryItems)
+            {
+                if (invetoryItem.ItemId == item.ItemID)
+                {
+                    invetoryItem.ItemInstances.Add(item);
+                    return;
+                }
+            }
+
+            InventoryItem inventoryItem = new InventoryItem();
+
+            inventoryItem.ItemId = item.ItemID;
+            inventoryItem.ItemInstances.Add(item);
+            inventoryItems.Add(inventoryItem);
         }
 
-        public ItemInstance[] GetItemList()
+        public InventoryItem[] GetItemList()
         {
-            return instances.ToArray();
+            return inventoryItems.OrderBy(o => o.ItemInstances[0].GetItemInfo().SortBy).ToArray();
         }
 
         public void Remove(ItemInstance item)
         {
-            instances.Remove(item);
+
             Database.RemoveItemFromInventory(baseUser.Id, item);
+
+            foreach (InventoryItem inventoryItem in inventoryItems)
+            {
+                if(item.ItemID == inventoryItem.ItemId)
+                {
+                    foreach(ItemInstance instance in inventoryItem.ItemInstances)
+                    {
+                        if(instance.RandomID == item.RandomID)
+                        {
+                            inventoryItem.ItemInstances.Remove(instance);
+                            return;
+                        }
+                    }
+                }
+            }
+
+            Logger.ErrorPrint("Tried to remove item : " + item.RandomID + " from inventory when it was not in it");
         }
+
     }
 }

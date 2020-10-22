@@ -206,6 +206,11 @@ namespace Horse_Isle_Server
             Messages.LoginMessageForamt = gameData.messages.login_format;
             Messages.LogoutMessageFormat = gameData.messages.logout_format;
 
+            // Transport
+
+            Messages.CantAffordTransport = gameData.messages.transport.not_enough_money;
+            Messages.WelcomeToAreaFormat = gameData.messages.transport.welcome_to_format;
+
             // Chat
 
             Messages.ChatViolationMessageFormat = gameData.messages.chat.violation_format;
@@ -246,7 +251,6 @@ namespace Horse_Isle_Server
             Messages.Seperator = gameData.messages.meta.seperator;
             Messages.TileFormat = gameData.messages.meta.tile_format;
             Messages.TransportFormat = gameData.messages.meta.transport_format;
-            Messages.InventoryFormat = gameData.messages.meta.inventory_format;
             Messages.ExitThisPlace = gameData.messages.meta.exit_this_place;
             Messages.BackToMap = gameData.messages.meta.back_to_map;
             Messages.LongFullLine = gameData.messages.meta.long_full_line;
@@ -255,6 +259,7 @@ namespace Horse_Isle_Server
             Messages.NothingMessage = gameData.messages.meta.dropped_items.nothing_message;
             Messages.ItemsOnGroundMessage = gameData.messages.meta.dropped_items.items_message;
             Messages.GrabItemFormat = gameData.messages.meta.dropped_items.item_format;
+            Messages.GrabAllItemsButton = gameData.messages.meta.dropped_items.grab_all;
             Messages.GrabbedItemMessage = gameData.messages.grab_message;
             Messages.GrabAllItemsMessage = gameData.messages.grab_all_message;
 
@@ -263,6 +268,14 @@ namespace Horse_Isle_Server
             Messages.East = gameData.messages.meta.nearby.east;
             Messages.South = gameData.messages.meta.nearby.south;
             Messages.West = gameData.messages.meta.nearby.west;
+
+            // Inventory
+
+            Messages.InventoryHeaderFormat = gameData.messages.meta.inventory.header_format;
+            Messages.InventoryItemFormat = gameData.messages.meta.inventory.item_entry;
+
+            Messages.ItemInformationButton = gameData.messages.meta.inventory.item_info_button;
+            Messages.ItemDropItemButton = gameData.messages.meta.inventory.item_drop_button;
 
             // Map Data
 
@@ -294,6 +307,7 @@ namespace Horse_Isle_Server
             // Inventory
 
             Messages.DefaultInventoryMax = gameData.item.max_carryable;
+            
 
             // Swf
             Messages.WagonCutscene = gameData.transport.wagon_cutscene;

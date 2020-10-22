@@ -339,7 +339,7 @@ namespace Horse_Isle_Server
 
                 if (sender.LoggedinUser.Money >= transportLocation.Cost)
                 {
-
+                    
 
                     string swfToLoad = Messages.BoatCutscene;
                     if (transportLocation.Type == "WAGON")
@@ -353,7 +353,15 @@ namespace Horse_Isle_Server
 
                     Teleport(sender, transportLocation.GotoX, transportLocation.GotoY);
 
+                    byte[] welcomeToIslePacket = PacketBuilder.CreateChat(Messages.FormatWelcomeToAreaMessage(transportLocation.LocationTitle), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(welcomeToIslePacket);
+
                     sender.LoggedinUser.Money -= transportLocation.Cost;
+                }
+                else
+                {
+                    byte[] cantAfford = PacketBuilder.CreateChat(Messages.FormatWelcomeToAreaMessage(transportLocation.LocationTitle), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(cantAfford);
                 }
             }
             catch (KeyNotFoundException)

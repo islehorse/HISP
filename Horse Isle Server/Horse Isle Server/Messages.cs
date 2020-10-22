@@ -48,14 +48,27 @@ namespace Horse_Isle_Server
         public static string PasswordNotice;
         public static string CapsNotice;
 
+        // Transport
+
+        public static string CantAffordTransport;
+        public static string WelcomeToAreaFormat;
+
         //Dropped Items
 
         public static string NothingMessage;
         public static string ItemsOnGroundMessage;
         public static string GrabItemFormat;
+        public static string GrabAllItemsButton;
         public static string GrabAllItemsMessage;
         public static string GrabbedItemMessage;
         public static string GrabbedAllObjectsMessage;
+
+        // Inventory
+        public static string InventoryItemFormat;
+        public static string InventoryHeaderFormat;
+
+        public static string ItemDropItemButton;
+        public static string ItemInformationButton;
 
         // Meta
         public static string IsleFormat;
@@ -72,8 +85,7 @@ namespace Horse_Isle_Server
 
         public static string TileFormat;
         public static string Seperator;
-        public static string InventoryFormat;
-
+        
         public static string ExitThisPlace;
         public static string BackToMap;
         public static string LongFullLine;
@@ -95,9 +107,30 @@ namespace Horse_Isle_Server
 
         public static string FormatPlayerInventoryHeaderMeta(int itemCount, int maxItems)
         {
-            return InventoryFormat.Replace("%ITEMCOUNT%", itemCount.ToString()).Replace("%MAXITEMS%", maxItems.ToString());
+            return InventoryHeaderFormat.Replace("%ITEMCOUNT%", itemCount.ToString()).Replace("%MAXITEMS%", maxItems.ToString());
         }
+
+        public static string FormatPlayerInventoryItemMeta(int iconid, int count, string name)
+        {
+            return InventoryItemFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count.ToString()).Replace("%TITLE%", name);
+        }
+
+        public static string FormatItemInformationButton(int randomid)
+        {
+            return ItemInformationButton.Replace("%RANDOMID%", randomid.ToString());
+        }
+
+        public static string FormatItemDropItemButton(int randomid)
+        {
+            return ItemDropItemButton.Replace("%RANDOMID%", randomid.ToString());
+        }
+
+
         // Meta
+        public static string FormatTileName(string name)
+        {
+            return Messages.TileFormat.Replace("%TILENAME%", name);
+        }
         public static string FormatGrabItemMessage(string name, int randomid, int iconid)
         {
             return GrabItemFormat.Replace("%ICONID%",iconid.ToString()).Replace("%ITEMNAME%", name).Replace("%RANDOMID%", randomid.ToString());
@@ -225,6 +258,12 @@ namespace Horse_Isle_Server
         public static string FormatWelcomeMessage(string username)
         {
             return WelcomeFormat.Replace("%USERNAME%", username);
+        }
+
+        // Transport
+        public static string FormatWelcomeToAreaMessage(string placeName)
+        {
+            return WelcomeToAreaFormat.Replace("%PLACE%", placeName); 
         }
 
         // Disconnect
