@@ -329,7 +329,7 @@ namespace Horse_Isle_Server
                     droppedItem.X = reader.GetInt32(0);
                     droppedItem.Y = reader.GetInt32(1);
                     droppedItem.DespawnTimer = reader.GetInt32(4);
-                    ItemInstance instance = new ItemInstance(reader.GetInt32(3),reader.GetInt32(4));
+                    ItemInstance instance = new ItemInstance(reader.GetInt32(3),reader.GetInt32(2));
                     droppedItem.instance = instance;
                     itemList.Add(droppedItem);
                 }
@@ -338,35 +338,28 @@ namespace Horse_Isle_Server
             }
             return itemList.ToArray();
         }
-        public static void AddDroppedItems(DroppedItems.DroppedItem[] items)
+
+        public static void AddDroppedItem(DroppedItems.DroppedItem item)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
-                MySqlTransaction transaction = db.BeginTransaction();
 
 
-                foreach (DroppedItems.DroppedItem item in items)
-                {
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO DroppedItems VALUES(@x, @y, @randomId, @itemId, @despawnTimer)";
+                sqlCommand.Parameters.AddWithValue("@x", item.X);
+                sqlCommand.Parameters.AddWithValue("@y", item.Y);
+                sqlCommand.Parameters.AddWithValue("@randomId", item.instance.RandomID);
+                sqlCommand.Parameters.AddWithValue("@itemId", item.instance.ItemID);
+                sqlCommand.Parameters.AddWithValue("@despawnTimer", item.DespawnTimer);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
 
-                    MySqlCommand sqlCommand = db.CreateCommand();
-                    sqlCommand.Transaction = transaction;
-                    sqlCommand.CommandText = "INSERT INTO DroppedItems VALUES(@x, @y, @randomId, @itemId, @despawnTimer)";
-                    sqlCommand.Parameters.AddWithValue("@x", item.X);
-                    sqlCommand.Parameters.AddWithValue("@y", item.Y);
-                    sqlCommand.Parameters.AddWithValue("@randomId", item.instance.RandomID);
-                    sqlCommand.Parameters.AddWithValue("@itemId", item.instance.ItemID);
-                    sqlCommand.Parameters.AddWithValue("@despawnTimer", item.DespawnTimer);
-                    sqlCommand.Prepare();
-                    sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
-
-                }
-
-                transaction.Commit();
             }
-
         }
+
         public static void AddMail(int toId, string fromName, string subject, string message)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

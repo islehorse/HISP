@@ -49,7 +49,6 @@ namespace Horse_Isle_Server
         }
         private void updateTimerTick(object state)
         {
-            Server.UpdateArea(this);
             Server.UpdateWorld(this);
             Server.UpdatePlayer(this);
         }

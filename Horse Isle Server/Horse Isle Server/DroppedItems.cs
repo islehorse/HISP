@@ -69,7 +69,7 @@ namespace Horse_Isle_Server
                 if(droppedItemsList[i].instance.RandomID == randomId)
                 {
                     droppedItemsList.RemoveAt(i);
-                    
+                    return;
                 }
             }
             
@@ -164,6 +164,7 @@ namespace Horse_Isle_Server
                                     droppedItem.DespawnTimer = despawnTimer;
                                     droppedItem.instance = instance;
                                     droppedItemsList.Add(droppedItem);
+                                    Database.AddDroppedItem(droppedItem);
                                     Logger.DebugPrint("Created Item ID: " + instance.ItemID + " in " + isle.Name + " at: X: " + droppedItem.X + " Y: " + droppedItem.Y);
                                     newItems++;
                                     break;
@@ -186,10 +187,6 @@ namespace Horse_Isle_Server
 
                 }
 
-            }
-            if(newItems > 0)
-            {
-                Database.AddDroppedItems(droppedItemsList.ToArray());
             }
         }
 
