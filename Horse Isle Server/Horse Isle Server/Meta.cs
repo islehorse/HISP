@@ -154,7 +154,7 @@ namespace Horse_Isle_Server
                 message += Messages.FormatPlayerInventoryItemMeta(itemInfo.IconId, item.ItemInstances.Count, title);
 
                 int randomId = item.ItemInstances[0].RandomID;
-                int sortBy = itemInfo.SortBy
+                int sortBy = itemInfo.SortBy;
                 if(sortBy == 2) // all items with sort 2 are throwable-
 
                 message += Messages.FormatItemDropItemButton(randomId);
