@@ -43,8 +43,46 @@ namespace Horse_Isle_Server
 
         }
 
-        public static List<ItemInformation> Items = new List<ItemInformation>();
+        public struct ThrowableItem
+        {
+            public int Id;
+            public string Message;
+        }
 
+        public static List<ItemInformation> Items = new List<ItemInformation>();
+        public static List<ThrowableItem> ThrowableItems = new List<ThrowableItem>();
+
+        public static int Present;
+        public static int MailMessage;
+        public static int DorothyShoes;
+        public static int PawneerOrder;
+        public static int Telescope;
+        public static int Pitchfork;
+        
+
+        public static bool IsThrowable(int id)
+        {
+            foreach(ThrowableItem itm in ThrowableItems)
+            {
+                if(itm.Id == id)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public static ThrowableItem GetThrowableItem(int id)
+        {
+            foreach (ThrowableItem itm in ThrowableItems)
+            {
+                if (itm.Id == id)
+                {
+                    return itm;
+                }
+            }
+            throw new KeyNotFoundException("id: " + id + " is not a throwable item.");
+        }
         public static ItemInformation GetItemById(int id)
         {
             foreach(ItemInformation item in Items)

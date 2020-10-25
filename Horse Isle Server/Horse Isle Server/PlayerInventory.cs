@@ -18,7 +18,7 @@ namespace Horse_Isle_Server
             ItemInstance[] instances = Database.GetPlayerInventory(baseUser.Id).ToArray();
             foreach(ItemInstance instance in instances)
             {
-                Add(instance);
+                addItem(instance, false);
             }
         }
         
@@ -29,10 +29,10 @@ namespace Horse_Isle_Server
                 return inventoryItems.Count;
             }
         }
-        
-        public void Add(ItemInstance item)
+        private void addItem(ItemInstance item, bool addToDatabase)
         {
-            Database.AddItemToInventory(baseUser.Id, item);
+            if (addToDatabase)
+                Database.AddItemToInventory(baseUser.Id, item);
 
             foreach (InventoryItem invetoryItem in inventoryItems)
             {
@@ -50,10 +50,19 @@ namespace Horse_Isle_Server
             inventoryItems.Add(inventoryItem);
         }
 
+
+        public void Add(ItemInstance item)
+        {
+            addItem(item, true);
+        }
+
+
         public InventoryItem[] GetItemList()
         {
             return inventoryItems.OrderBy(o => o.ItemInstances[0].GetItemInfo().SortBy).ToArray();
         }
+
+
 
         public void Remove(ItemInstance item)
         {
@@ -69,6 +78,10 @@ namespace Horse_Isle_Server
                         if(instance.RandomID == item.RandomID)
                         {
                             inventoryItem.ItemInstances.Remove(instance);
+
+                            if (inventoryItem.ItemInstances.Count <= 0)
+                                inventoryItems.Remove(inventoryItem);
+
                             return;
                         }
                     }
@@ -76,6 +89,63 @@ namespace Horse_Isle_Server
             }
 
             Logger.ErrorPrint("Tried to remove item : " + item.RandomID + " from inventory when it was not in it");
+        }
+
+        public bool HasItem(int randomId)
+        {
+            InventoryItem[] items = GetItemList();
+            foreach(InventoryItem item in items)
+            {
+                ItemInstance[] instances = item.ItemInstances.ToArray();
+                foreach(ItemInstance instance in instances)
+                {
+                    if (instance.RandomID == randomId)
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public bool HasItemId(int itemId)
+        {
+            InventoryItem[] items = GetItemList();
+            foreach (InventoryItem item in items)
+            {
+                if (item.ItemId == itemId)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+    
+
+        public InventoryItem GetItemByItemId(int itemId)
+        {
+            InventoryItem[] items = GetItemList();
+            foreach (InventoryItem item in items)
+            {
+                if (item.ItemId == itemId)
+                {
+                    return item;
+                }
+            }
+            throw new KeyNotFoundException("id: " + itemId + " not found in inventory");
+        }
+
+        public InventoryItem GetItemByRandomid(int randomId)
+        {
+            InventoryItem[] items = GetItemList();
+            foreach (InventoryItem item in items)
+            {
+                ItemInstance[] instances = item.ItemInstances.ToArray();
+                foreach (ItemInstance instance in instances)
+                {
+                    if (instance.RandomID == randomId)
+                        return item;
+                }
+            }
+            throw new KeyNotFoundException("random id: " + randomId + " not found in inventory");
         }
 
     }

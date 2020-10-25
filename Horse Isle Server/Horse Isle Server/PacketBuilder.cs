@@ -33,8 +33,7 @@ namespace Horse_Isle_Server
         public const byte PACKET_LEAVE = 0x7D;
 
         public const byte PACKET_PLAYERINFO = 0x16;
-        
-        public const byte PICKUP_OBJECT = 0x14;
+
 
         public const byte PLAYERINFO_LEAVE = 0x16;
         public const byte PLAYERINFO_UPDATE_OR_CREATE = 0x15;
@@ -57,6 +56,9 @@ namespace Horse_Isle_Server
         public const byte CHAT_BOTTOM_LEFT = 0x14;
         public const byte CHAT_BOTTOM_RIGHT = 0x15;
         public const byte CHAT_DM_RIGHT = 0x16;
+
+        public const byte ITEM_DROP = 0x1E;
+        public const byte ITEM_PICKUP = 0x14;
 
         public const byte LOGIN_INVALID_USER_PASS = 0x15;
         public const byte LOGIN_SUCCESS = 0x14;

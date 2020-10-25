@@ -62,13 +62,18 @@ namespace Horse_Isle_Server
         public static string GrabAllItemsMessage;
         public static string GrabbedItemMessage;
         public static string GrabbedAllObjectsMessage;
+        public static string DroppedAnItemMessage;
 
         // Inventory
         public static string InventoryItemFormat;
         public static string InventoryHeaderFormat;
 
-        public static string ItemDropItemButton;
+        public static string ItemDropButton;
         public static string ItemInformationButton;
+        public static string ItemConsumeButton;
+        public static string ItemThrowButton;
+        public static string ItemUseButton;
+        public static string ItemReadButton;
 
         // Meta
         public static string IsleFormat;
@@ -115,16 +120,31 @@ namespace Horse_Isle_Server
             return InventoryItemFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count.ToString()).Replace("%TITLE%", name);
         }
 
+        public static string FormatItemThrowButton(int randomid)
+        {
+            return ItemThrowButton.Replace("%RANDOMID%", randomid.ToString());
+        }
+        public static string FormatItemConsumeButton(int randomid)
+        {
+            return ItemConsumeButton.Replace("%RANDOMID%", randomid.ToString());
+        }
         public static string FormatItemInformationButton(int randomid)
         {
             return ItemInformationButton.Replace("%RANDOMID%", randomid.ToString());
         }
 
-        public static string FormatItemDropItemButton(int randomid)
+        public static string FormatItemDropButton(int randomid)
         {
-            return ItemDropItemButton.Replace("%RANDOMID%", randomid.ToString());
+            return ItemDropButton.Replace("%RANDOMID%", randomid.ToString());
         }
-
+        public static string FormatItemUseButton(int randomid)
+        {
+            return ItemUseButton.Replace("%RANDOMID%", randomid.ToString());
+        }
+        public static string FormatItemReadButton(int randomid)
+        {
+            return ItemReadButton.Replace("%RANDOMID%", randomid.ToString());
+        }
 
         // Meta
         public static string FormatTileName(string name)

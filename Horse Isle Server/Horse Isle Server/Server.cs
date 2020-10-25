@@ -463,7 +463,7 @@ namespace Horse_Isle_Server
             byte action = packet[1];
             switch(action)
             {
-                case PacketBuilder.PICKUP_OBJECT:
+                case PacketBuilder.ITEM_PICKUP:
                     string packetStr = Encoding.UTF8.GetString(packet);
                     string randomIdStr = packetStr.Substring(2, packet.Length - 2);
                     int randomId = 0;
@@ -496,6 +496,40 @@ namespace Horse_Isle_Server
                     }
 
                     break;
+                case PacketBuilder.ITEM_DROP:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    randomId = 0;
+
+                    try
+                    {
+                        randomId = Int32.Parse(randomIdStr);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        return;
+                    }
+
+                    if(sender.LoggedinUser.Inventory.HasItem(randomId))
+                    {
+                        InventoryItem itm = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
+                        ItemInstance instance = itm.ItemInstances[0];
+                        DroppedItems.AddItem(instance, sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        sender.LoggedinUser.Inventory.Remove(instance);
+                        byte[] chatPacket = PacketBuilder.CreateChat(Messages.DroppedAnItemMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(chatPacket);
+                        UpdateInventory(sender);
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to drop an item they did not have.");
+                    }
+                    break;
+
+                default:
+                    Logger.WarnPrint(sender.LoggedinUser.Username + " Sent an unknown Item Interaction Packet type: " + action.ToString() + ", Packet Dump: " + BitConverter.ToString(packet).Replace('-', ' '));
+                    break;
             }
 
         }
@@ -514,8 +548,7 @@ namespace Horse_Isle_Server
                 return;
             }
 
-            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildInventoryInfo(sender.LoggedinUser.Inventory));
-            sender.SendPacket(metaPacket);
+            UpdateInventory(sender);
         }
         public static void OnLoginRequest(Client sender, byte[] packet)
         {
@@ -712,8 +745,13 @@ namespace Horse_Isle_Server
             UpdateUserInfo(client.LoggedinUser);
         }
 
-
-
+        public static void UpdateInventory(Client forClient)
+        {
+            if (!forClient.LoggedIn)
+                return;
+            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildInventoryInfo(forClient.LoggedinUser.Inventory));
+            forClient.SendPacket(metaPacket);
+        }
         public static void UpdateWorld(Client forClient)
         {
             if (!forClient.LoggedIn)
