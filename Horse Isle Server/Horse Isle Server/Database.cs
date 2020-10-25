@@ -289,7 +289,7 @@ namespace Horse_Isle_Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "DELETE FROM Inventory WHERE (PlayerId=@id AND RandomId=@randomId)";
+                sqlCommand.CommandText = "DELETE FROM Inventory WHERE (PlayerId=@playerId AND RandomId=@randomId)";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomID);
                 sqlCommand.Prepare();

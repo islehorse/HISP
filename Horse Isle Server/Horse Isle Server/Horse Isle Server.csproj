@@ -9,6 +9,7 @@
     <RootNamespace>Horse_Isle_Server</RootNamespace>
     <AssemblyName>Horse Isle Server</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <LangVersion>8.0</LangVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>

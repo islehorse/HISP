@@ -108,6 +108,16 @@ namespace Horse_Isle_Server
             if(removedCount > 0)
                 epoch = new_epoch;
         }
+
+        public static void AddItem(ItemInstance item, int x, int y)
+        {
+            DroppedItem droppedItem = new DroppedItem();
+            droppedItem.X = x;
+            droppedItem.Y = y;
+            droppedItem.DespawnTimer = 1500;
+            droppedItem.instance = item;
+            droppedItemsList.Add(droppedItem);
+        }
         public static void GenerateItems()
         {
             int newItems = 0;

@@ -9,7 +9,7 @@
 	"drawing_notice":"Drawing not sent to other players when you are not a subscriber.",
 	"grab_message":"You grabbed an object off the ground.",
 	"grab_all_message":"You grabbed all objects off the ground.",
-	"toss_tomato":"You toss the Rotten Tomato high into the air!  SMACK!  It comes back down and hits you on the head, bright red chunks are covering you.",
+	"dropped_item_message":"You dropped an item on the ground.",
 	"transport":{
 		"not_enough_money":"You cannot afford this trip!",
 		"welcome_to_format":"Welcome to %PLACE%."
@@ -53,7 +53,9 @@
 			"item_drop_button":"^B4D%RANDOMID%",
 			"item_info_button":"^B4LE%RANDOMID%",
 			"item_consume_button":"^B4E%RANDOMID%",
-			"item_throw_button":"^B4D%RANDOMID%"
+			"item_throw_button":"^B4T%RANDOMID%",
+			"item_use_button":"^B4UD%RANDOMID%",
+			"item_read_button":"^B4VL%RANDOMID%"
 		},
 		"dropped_items":{
 			"nothing_message":"^LYou see nothing on the ground of interest.^R1",
@@ -273,14 +275,10 @@
 		"pm_sound":"PM"
 	}
  },
- "mod_splatterball_game":{
-	"hit_message":"SMACK!! %USERNAME% hit you with a Mod Splatterball, slimy goop exploded and dripped on you."
- },
  "water_balloon_game":{
 	"money_prize":20000,
 	"starting_amount":8,
 	"start_message":"<B>WATER BALLOON FIGHT:</B> You have just been given %AMOUNT% Water Balloons. Whoever gets hit the MOST in 5 minutes (60 game minutes) will win a prize (hits on yourself are not counted).",
-	"hit_message":"SMACK!! %USERNAME% hit you with a Water Balloon, soaking you.",
 	"winner_message":"<B>You are a Water Balloon winner!</B> Prize: $%PRIZE%",
 	"end_message_winner":"<B>WATER BALLOON FIGHT OVER:</B> Here were the winners:<BR>%USERNAME% was hit %AMOUNT% times."
  },
@@ -520,6 +518,22 @@
  },
  "item":{
 	"max_carryable":40,
+	"special":{
+		"present":135,
+		"mail_message":183,
+		"dorothy_shoes":260,
+		"pawneer_order":559,
+		"telescope":182,
+		"pitchfork":152
+	},
+	"throwable":[
+		{"id":144,"message":"blanketing wet snow on "},
+		{"id":333,"message":"bright red chunks are covering "},
+		{"id":334,"message":"soaking "},
+		{"id":639,"message":"twinkling magic on "},
+		{"id":640,"message":"lightly bouncing off "},
+		{"id":713,"message":"slimy goop exploded and dripped on "}
+	],
 	"item_list":[
 	  {
 		"id": 1,

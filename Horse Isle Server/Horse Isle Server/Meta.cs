@@ -154,14 +154,27 @@ namespace Horse_Isle_Server
                 message += Messages.FormatPlayerInventoryItemMeta(itemInfo.IconId, item.ItemInstances.Count, title);
 
                 int randomId = item.ItemInstances[0].RandomID;
-                int sortBy = itemInfo.SortBy;
-                if(sortBy == 2) // all items with sort 2 are throwable-
 
-                message += Messages.FormatItemDropItemButton(randomId);
+                if (itemInfo.Id == Item.Present || itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope)
+                    message += Messages.FormatItemUseButton(randomId);
+
+                if (itemInfo.Type == "TEXT")
+                    message += Messages.FormatItemReadButton(randomId);
+
+                if (itemInfo.Type == "PLAYERFOOD")
+                    message += Messages.FormatItemConsumeButton(randomId);
+
+                if (Item.IsThrowable(itemInfo.Id))
+                    message += Messages.FormatItemThrowButton(randomId);
+
+                if(itemInfo.Type != "QUEST" || itemInfo.Type != "TEXT")
+                    message += Messages.FormatItemDropButton(randomId);
                 message += Messages.FormatItemInformationButton(randomId);
                 message += "^R1";
             }
 
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
             Logger.DebugPrint(message);
             return message;
         }

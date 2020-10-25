@@ -192,6 +192,21 @@ namespace Horse_Isle_Server
                 Item.Items.Add(item);
             }
 
+            int totalThrowable = gameData.item.throwable.Count;
+            for(int i = 0; i < totalThrowable; i++)
+            {
+                Item.ThrowableItem throwableItem = new Item.ThrowableItem();
+                throwableItem.Id = gameData.item.throwable[i].id;
+                throwableItem.Message = gameData.item.throwable[i].message;
+                Item.ThrowableItems.Add(throwableItem);
+            }
+
+            Item.Present = gameData.item.special.present;
+            Item.MailMessage = gameData.item.special.mail_message;
+            Item.DorothyShoes = gameData.item.special.dorothy_shoes;
+            Item.PawneerOrder = gameData.item.special.pawneer_order;
+            Item.Telescope = gameData.item.special.telescope;
+            Item.Pitchfork = gameData.item.special.pitchfork;
 
             // New Users
             Messages.NewUserMessage = gameData.new_user.starting_message;
@@ -242,6 +257,14 @@ namespace Horse_Isle_Server
             Messages.PasswordNotice = gameData.messages.chat.password_included;
             Messages.CapsNotice = gameData.messages.chat.caps_notice;
 
+            // Hardcoded messages
+
+            Messages.NothingMessage = gameData.messages.meta.dropped_items.nothing_message;
+            Messages.ItemsOnGroundMessage = gameData.messages.meta.dropped_items.items_message;
+            Messages.GrabItemFormat = gameData.messages.meta.dropped_items.item_format;
+            Messages.GrabAllItemsButton = gameData.messages.meta.dropped_items.grab_all;
+            Messages.DroppedAnItemMessage = gameData.messages.dropped_item_message;
+
             // Meta Format
 
             Messages.LocationFormat = gameData.messages.meta.location_format;
@@ -256,10 +279,6 @@ namespace Horse_Isle_Server
             Messages.LongFullLine = gameData.messages.meta.long_full_line;
             Messages.MetaTerminator = gameData.messages.meta.end_of_meta;
 
-            Messages.NothingMessage = gameData.messages.meta.dropped_items.nothing_message;
-            Messages.ItemsOnGroundMessage = gameData.messages.meta.dropped_items.items_message;
-            Messages.GrabItemFormat = gameData.messages.meta.dropped_items.item_format;
-            Messages.GrabAllItemsButton = gameData.messages.meta.dropped_items.grab_all;
             Messages.GrabbedItemMessage = gameData.messages.grab_message;
             Messages.GrabAllItemsMessage = gameData.messages.grab_all_message;
 
@@ -275,7 +294,12 @@ namespace Horse_Isle_Server
             Messages.InventoryItemFormat = gameData.messages.meta.inventory.item_entry;
 
             Messages.ItemInformationButton = gameData.messages.meta.inventory.item_info_button;
-            Messages.ItemDropItemButton = gameData.messages.meta.inventory.item_drop_button;
+            Messages.ItemDropButton = gameData.messages.meta.inventory.item_drop_button;
+            Messages.ItemThrowButton = gameData.messages.meta.inventory.item_throw_button;
+            Messages.ItemConsumeButton = gameData.messages.meta.inventory.item_consume_button;
+            Messages.ItemUseButton = gameData.messages.meta.inventory.item_use_button;
+            Messages.ItemReadButton = gameData.messages.meta.inventory.item_read_button;
+            
 
             // Map Data
 
