@@ -138,7 +138,7 @@ namespace Horse_Isle_Server
             return message;
         }
 
-        public static string BuildInventoryInfo(IInventory inv)
+        public static string BuildInventoryInfo(PlayerInventory inv)
         {
             string message = "";
             message += Messages.FormatPlayerInventoryHeaderMeta(inv.Count, Messages.DefaultInventoryMax);
@@ -167,7 +167,7 @@ namespace Horse_Isle_Server
                 if (Item.IsThrowable(itemInfo.Id))
                     message += Messages.FormatItemThrowButton(randomId);
 
-                if(itemInfo.Type != "QUEST" || itemInfo.Type != "TEXT")
+                if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" && World.CanDropItems(inv.BaseUser.X, inv.BaseUser.Y))
                     message += Messages.FormatItemDropButton(randomId);
                 message += Messages.FormatItemInformationButton(randomId);
                 message += "^R1";

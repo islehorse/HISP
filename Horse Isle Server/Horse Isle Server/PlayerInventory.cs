@@ -8,14 +8,14 @@ namespace Horse_Isle_Server
 {
     class PlayerInventory : IInventory
     {
-        private User baseUser;
+        public User BaseUser;
         private List<InventoryItem> inventoryItems;
         public PlayerInventory(User forUser)
         {
             inventoryItems = new List<InventoryItem>();
 
-            baseUser = forUser;
-            ItemInstance[] instances = Database.GetPlayerInventory(baseUser.Id).ToArray();
+            BaseUser = forUser;
+            ItemInstance[] instances = Database.GetPlayerInventory(BaseUser.Id).ToArray();
             foreach(ItemInstance instance in instances)
             {
                 addItem(instance, false);
@@ -32,7 +32,7 @@ namespace Horse_Isle_Server
         private void addItem(ItemInstance item, bool addToDatabase)
         {
             if (addToDatabase)
-                Database.AddItemToInventory(baseUser.Id, item);
+                Database.AddItemToInventory(BaseUser.Id, item);
 
             foreach (InventoryItem invetoryItem in inventoryItems)
             {
@@ -51,10 +51,6 @@ namespace Horse_Isle_Server
         }
 
 
-        public void Add(ItemInstance item)
-        {
-            addItem(item, true);
-        }
 
 
         public InventoryItem[] GetItemList()
@@ -67,7 +63,7 @@ namespace Horse_Isle_Server
         public void Remove(ItemInstance item)
         {
 
-            Database.RemoveItemFromInventory(baseUser.Id, item);
+            Database.RemoveItemFromInventory(BaseUser.Id, item);
 
             foreach (InventoryItem inventoryItem in inventoryItems)
             {
@@ -148,5 +144,9 @@ namespace Horse_Isle_Server
             throw new KeyNotFoundException("random id: " + randomId + " not found in inventory");
         }
 
+        public void Add(ItemInstance item)
+        {
+            addItem(item, true);
+        }
     }
 }

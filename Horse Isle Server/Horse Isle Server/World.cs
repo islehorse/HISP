@@ -197,6 +197,17 @@ namespace Horse_Isle_Server
             throw new KeyNotFoundException("x,y not in a town!");
         }
 
+        public static bool CanDropItems(int x, int y)
+        {
+            if (World.InSpecialTile(x, y))
+            {
+                World.SpecialTile tile = World.GetSpecialTile(x, y);
+                if (tile.Code != null)
+                    return false;
+            }
+            return true;
+        }
+
         public static string GetWeather()
         {
             return Database.GetWorldWeather();
