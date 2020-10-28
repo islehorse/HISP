@@ -8,29 +8,22 @@ namespace Horse_Isle_Server
 {
     class ItemInstance 
     {
-        public int RandomID;
-        public int ItemID;
-        private static int prevId = 0;
+        public int RandomId;
+        public int ItemId;
+        
 
 
         public Item.ItemInformation GetItemInfo()
         {
-            return Item.GetItemById(ItemID);
+            return Item.GetItemById(ItemId);
 
         }
 
         public ItemInstance(int id,int randomId = -1)
         {
-            prevId++;
-            if (randomId == -1)
-                RandomID = prevId;
-            else
-                RandomID = randomId;
+            RandomId = RandomID.NextRandomId(randomId);
 
-            if (RandomID > prevId)
-                prevId = RandomID + 1;
-
-            ItemID = id; 
+            ItemId = id; 
 
         }
 

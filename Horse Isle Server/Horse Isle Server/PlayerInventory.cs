@@ -36,7 +36,7 @@ namespace Horse_Isle_Server
 
             foreach (InventoryItem invetoryItem in inventoryItems)
             {
-                if (invetoryItem.ItemId == item.ItemID)
+                if (invetoryItem.ItemId == item.ItemId)
                 {
                     invetoryItem.ItemInstances.Add(item);
                     return;
@@ -45,7 +45,7 @@ namespace Horse_Isle_Server
 
             InventoryItem inventoryItem = new InventoryItem();
 
-            inventoryItem.ItemId = item.ItemID;
+            inventoryItem.ItemId = item.ItemId;
             inventoryItem.ItemInstances.Add(item);
             inventoryItems.Add(inventoryItem);
         }
@@ -67,11 +67,11 @@ namespace Horse_Isle_Server
 
             foreach (InventoryItem inventoryItem in inventoryItems)
             {
-                if(item.ItemID == inventoryItem.ItemId)
+                if(item.ItemId == inventoryItem.ItemId)
                 {
                     foreach(ItemInstance instance in inventoryItem.ItemInstances)
                     {
-                        if(instance.RandomID == item.RandomID)
+                        if(instance.RandomId == item.RandomId)
                         {
                             inventoryItem.ItemInstances.Remove(instance);
 
@@ -84,7 +84,7 @@ namespace Horse_Isle_Server
                 }
             }
 
-            Logger.ErrorPrint("Tried to remove item : " + item.RandomID + " from inventory when it was not in it");
+            Logger.ErrorPrint("Tried to remove item : " + item.RandomId + " from inventory when it was not in it");
         }
 
         public bool HasItem(int randomId)
@@ -95,7 +95,7 @@ namespace Horse_Isle_Server
                 ItemInstance[] instances = item.ItemInstances.ToArray();
                 foreach(ItemInstance instance in instances)
                 {
-                    if (instance.RandomID == randomId)
+                    if (instance.RandomId == randomId)
                         return true;
                 }
             }
@@ -137,7 +137,7 @@ namespace Horse_Isle_Server
                 ItemInstance[] instances = item.ItemInstances.ToArray();
                 foreach (ItemInstance instance in instances)
                 {
-                    if (instance.RandomID == randomId)
+                    if (instance.RandomId == randomId)
                         return item;
                 }
             }
