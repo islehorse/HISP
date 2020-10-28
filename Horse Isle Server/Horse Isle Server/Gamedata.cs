@@ -201,6 +201,74 @@ namespace Horse_Isle_Server
                 Item.ThrowableItems.Add(throwableItem);
             }
 
+            // Register NPCs
+            Logger.DebugPrint("Registering NPCS: ");
+            int totalNpcs = gameData.npc_list.Count;
+            for(int i = 0; i < totalNpcs; i++)
+            {
+                Npc.NpcEntry npcEntry = new Npc.NpcEntry();
+                npcEntry.Id = gameData.npc_list[i].id;
+                npcEntry.Name = gameData.npc_list[i].name;
+                npcEntry.AdminDescription = gameData.npc_list[i].admin_description;
+                npcEntry.ShortDescription = gameData.npc_list[i].short_description;
+                npcEntry.LongDescription = gameData.npc_list[i].long_description;
+                npcEntry.Moves = gameData.npc_list[i].moves;
+                npcEntry.X = gameData.npc_list[i].x;
+                npcEntry.Y = gameData.npc_list[i].y;
+                if (gameData.npc_list[i].stay_on != null)
+                    npcEntry.StayOn = gameData.npc_list[i].stay_on;
+                if (gameData.npc_list[i].requires_questid_completed != null)
+                    npcEntry.RequiresQuestIdCompleted = gameData.npc_list[i].requires_questid_completed;
+                if (gameData.npc_list[i].requires_questid_not_completed != null)
+                    npcEntry.RequiresQuestIdNotCompleted = gameData.npc_list[i].requires_questid_not_completed;
+                if (gameData.npc_list[i].udlr_script != null)
+                    npcEntry.UDLRScript = gameData.npc_list[i].udlr_script;
+                if (gameData.npc_list[i].udlr_start_x != null)
+                    npcEntry.UDLRStartX = gameData.npc_list[i].udlr_start_x;
+                if (gameData.npc_list[i].udlr_start_y != null)
+                    npcEntry.UDLRStartY = gameData.npc_list[i].udlr_start_y;
+                npcEntry.AdminOnly = gameData.npc_list[i].admin_only;
+                npcEntry.LibarySearchable = gameData.npc_list[i].libary_searchable;
+                npcEntry.IconId = gameData.npc_list[i].icon_id;
+
+                Logger.DebugPrint("\tNPC ID:" + npcEntry.Id.ToString() + " NAME: " + npcEntry.Name);
+                List<Npc.NpcChat> chats = new List<Npc.NpcChat>();
+                int totalNpcChat = gameData.npc_list[i].chatpoints.Count;
+                for (int ii = 0; ii < totalNpcChat; ii++)
+                {
+                    Npc.NpcChat npcChat = new Npc.NpcChat();
+                    npcChat.Id = gameData.npc_list[i].chatpoints[ii].chatpoint_id;
+                    npcChat.ChatText = gameData.npc_list[i].chatpoints[ii].chat_text;
+                    npcChat.ActivateQuestId = gameData.npc_list[i].chatpoints[ii].activate_questid;
+
+                    Logger.DebugPrint("\t\tCHATPOINT ID: " + npcChat.Id.ToString() + " TEXT: " + npcChat.ChatText);
+                    int totalNpcReply = gameData.npc_list[i].chatpoints[ii].replies.Count;
+                    List<Npc.NpcReply> replys = new List<Npc.NpcReply>();
+                    for (int iii = 0; iii < totalNpcReply; iii++)
+                    {
+                        Npc.NpcReply npcReply = new Npc.NpcReply();
+                        npcReply.RandomId = RandomID.NextRandomId();
+                        npcReply.Id = gameData.npc_list[i].chatpoints[ii].replies[iii].reply_id;
+                        npcReply.ReplyText = gameData.npc_list[i].chatpoints[ii].replies[iii].reply_text;
+                        npcReply.GotoChatpoint = gameData.npc_list[i].chatpoints[ii].replies[iii].goto_chatpoint;
+
+                        if (gameData.npc_list[i].chatpoints[ii].replies[iii].requires_questid_completed != null)
+                            npcReply.RequiresQuestIdCompleted = gameData.npc_list[i].chatpoints[ii].replies[iii].requires_questid_completed;
+
+                        if (gameData.npc_list[i].chatpoints[ii].replies[iii].requires_questid_not_completed != null)
+                            npcReply.RequiresQuestIdNotCompleted = gameData.npc_list[i].chatpoints[ii].replies[iii].requires_questid_not_completed;
+
+                        Logger.DebugPrint("\t\t\tREPLY ID: " + npcReply.Id.ToString() + " TEXT: " + npcReply.ReplyText);
+                        replys.Add(npcReply);
+
+                    }
+                    npcChat.Replies = replys.ToArray();
+                    chats.Add(npcChat);
+                }
+                npcEntry.Chatpoints = chats.ToArray();
+                Npc.NpcList.Add(npcEntry);
+            }
+
             Item.Present = gameData.item.special.present;
             Item.MailMessage = gameData.item.special.mail_message;
             Item.DorothyShoes = gameData.item.special.dorothy_shoes;

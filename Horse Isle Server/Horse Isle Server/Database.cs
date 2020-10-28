@@ -274,8 +274,8 @@ namespace Horse_Isle_Server
                 
                 sqlCommand.CommandText = "INSERT INTO Inventory VALUES(@playerId,@randomId,@itemId)";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
-                sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomID);
-                sqlCommand.Parameters.AddWithValue("@itemId", instance.ItemID);
+                sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomId);
+                sqlCommand.Parameters.AddWithValue("@itemId", instance.ItemId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
@@ -291,7 +291,7 @@ namespace Horse_Isle_Server
 
                 sqlCommand.CommandText = "DELETE FROM Inventory WHERE (PlayerId=@playerId AND RandomId=@randomId)";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
-                sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomID);
+                sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
@@ -350,8 +350,8 @@ namespace Horse_Isle_Server
                 sqlCommand.CommandText = "INSERT INTO DroppedItems VALUES(@x, @y, @randomId, @itemId, @despawnTimer)";
                 sqlCommand.Parameters.AddWithValue("@x", item.X);
                 sqlCommand.Parameters.AddWithValue("@y", item.Y);
-                sqlCommand.Parameters.AddWithValue("@randomId", item.instance.RandomID);
-                sqlCommand.Parameters.AddWithValue("@itemId", item.instance.ItemID);
+                sqlCommand.Parameters.AddWithValue("@randomId", item.instance.RandomId);
+                sqlCommand.Parameters.AddWithValue("@itemId", item.instance.ItemId);
                 sqlCommand.Parameters.AddWithValue("@despawnTimer", item.DespawnTimer);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();

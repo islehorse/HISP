@@ -92,7 +92,7 @@ namespace Horse_Isle_Server
                 foreach(DroppedItems.DroppedItem item in Items)
                 {
                     Item.ItemInformation itemInfo = item.instance.GetItemInfo();
-                    message += Messages.FormatGrabItemMessage(itemInfo.Name, item.instance.RandomID, itemInfo.IconId);
+                    message += Messages.FormatGrabItemMessage(itemInfo.Name, item.instance.RandomId, itemInfo.IconId);
                 }
                 if(Items.Length > 1)
                     message += Messages.GrabAllItemsButton;
@@ -153,7 +153,7 @@ namespace Horse_Isle_Server
 
                 message += Messages.FormatPlayerInventoryItemMeta(itemInfo.IconId, item.ItemInstances.Count, title);
 
-                int randomId = item.ItemInstances[0].RandomID;
+                int randomId = item.ItemInstances[0].RandomId;
 
                 if (itemInfo.Id == Item.Present || itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope)
                     message += Messages.FormatItemUseButton(randomId);

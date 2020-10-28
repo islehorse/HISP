@@ -24,7 +24,7 @@ namespace Horse_Isle_Server
             int count = 0;
             foreach(DroppedItem droppedItem in dropedItems)
             {
-                if(droppedItem.instance.ItemID == item.Id)
+                if(droppedItem.instance.ItemId == item.Id)
                 {
                     count++;
                 }
@@ -62,11 +62,11 @@ namespace Horse_Isle_Server
         }
         public static void RemoveDroppedItem(DroppedItem item)
         {
-            int randomId = item.instance.RandomID;
+            int randomId = item.instance.RandomId;
             Database.RemoveDroppedItem(randomId);
             for (int i = 0; i < droppedItemsList.Count; i++) 
             {
-                if(droppedItemsList[i].instance.RandomID == randomId)
+                if(droppedItemsList[i].instance.RandomId == randomId)
                 {
                     droppedItemsList.RemoveAt(i);
                     return;
@@ -81,7 +81,7 @@ namespace Horse_Isle_Server
 
             foreach (DroppedItem item in dropedItems)
             {
-                if(item.instance.RandomID == randomId)
+                if(item.instance.RandomId == randomId)
                 {
                     return item;
                 }
@@ -175,7 +175,7 @@ namespace Horse_Isle_Server
                                     droppedItem.instance = instance;
                                     droppedItemsList.Add(droppedItem);
                                     Database.AddDroppedItem(droppedItem);
-                                    Logger.DebugPrint("Created Item ID: " + instance.ItemID + " in " + isle.Name + " at: X: " + droppedItem.X + " Y: " + droppedItem.Y);
+                                    Logger.DebugPrint("Created Item ID: " + instance.ItemId + " in " + isle.Name + " at: X: " + droppedItem.X + " Y: " + droppedItem.Y);
                                     newItems++;
                                     break;
 

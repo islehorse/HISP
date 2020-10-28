@@ -91,6 +91,7 @@
     <Compile Include="Messages.cs" />
     <Compile Include="Item.cs" />
     <Compile Include="Meta.cs" />
+    <Compile Include="Npc.cs" />
     <Compile Include="PacketBuilder.cs" />
     <Compile Include="PlayerInventory.cs" />
     <Compile Include="Program.cs" />
@@ -100,6 +101,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="RandomID.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="Transport.cs" />
     <Compile Include="User.cs" />
