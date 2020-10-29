@@ -30,6 +30,7 @@ namespace Horse_Isle_Server
         public Friends Friends;
         public string Password; // For chat filter.
         public PlayerInventory Inventory;
+        public Npc.NpcEntry LastTalkedToNpc;
         public int ChatViolations
         {
             get

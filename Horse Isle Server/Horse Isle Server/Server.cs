@@ -330,6 +330,8 @@ namespace Horse_Isle_Server
                 string metaInfo = Meta.BuildChatpoint(entry, entry.Chatpoints[0]);
                 byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
                 sender.SendPacket(metaPacket);
+
+                sender.LoggedinUser.LastTalkedToNpc = entry;
             }
             else if (action == PacketBuilder.NPC_CONTINUE_CHAT)
             {
@@ -346,30 +348,30 @@ namespace Horse_Isle_Server
                     return;
                 }
 
-                foreach (Npc.NpcEntry npc in Npc.NpcList)
+                Npc.NpcEntry lastNpc = sender.LoggedinUser.LastTalkedToNpc;
+                Npc.NpcReply reply;
+                try
                 {
-                    foreach (Npc.NpcChat chatpoint in npc.Chatpoints)
-                    {
-                        foreach (Npc.NpcReply reply in chatpoint.Replies)
-                        {
-                            if (reply.Id == replyId)
-                            {
-                                if (reply.GotoChatpoint == -1)
-                                {
-                                    UpdateArea(sender);
-                                    return;
-                                }
-
-                                string metaInfo = Meta.BuildChatpoint(npc,Npc.GetNpcChatpoint(npc, reply.GotoChatpoint));
-                                byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
-                                sender.SendPacket(metaPacket);
-                                return;
-
-                            }
-                        }
-                    }
+                    reply = Npc.GetNpcReply(lastNpc, replyId);
                 }
-                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to reply with replyid that does not exist.");
+                catch(KeyNotFoundException)
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to reply with replyid that does not exist.");
+                    return;
+                }
+
+                if (reply.GotoChatpoint == -1)
+                {
+                    UpdateArea(sender,true);
+                    return;
+                }
+
+                string metaInfo = Meta.BuildChatpoint(npc,Npc.GetNpcChatpoint(lastNpc, reply.GotoChatpoint));
+                byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
+                sender.SendPacket(metaPacket);
+                return;
+
+     
                
             }
         }
