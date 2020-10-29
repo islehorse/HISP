@@ -49,7 +49,7 @@ namespace Horse_Isle_Server
 
         public static List<NpcEntry> NpcList = new List<NpcEntry>();
 
-        public NpcReply GetNpcReply(NpcEntry npc, int id)
+        public static NpcReply GetNpcReply(NpcEntry npc, int id)
         {
 
             foreach (NpcChat chatpoint in npc.Chatpoints)
