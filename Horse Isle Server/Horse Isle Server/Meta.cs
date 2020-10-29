@@ -141,7 +141,6 @@ namespace Horse_Isle_Server
             if (specialTile.ExitX != 0 && specialTile.ExitY != 0)
                 message += Messages.ExitThisPlace + Messages.MetaTerminator;
 
-            Logger.DebugPrint(message);
 
             return message;
         }
@@ -193,6 +192,7 @@ namespace Horse_Isle_Server
             {
                 message += Messages.FormatNpcReply(reply.ReplyText, reply.Id);
             }
+            message += Messages.BackToMap + Messages.MetaTerminator;
             return message;
         }
 

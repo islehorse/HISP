@@ -310,7 +310,7 @@ namespace Horse_Isle_Server
                 return;
             }
             byte action = packet[1];
-            if(action == PacketBuilder.NPC_START_CHAT)
+            if (action == PacketBuilder.NPC_START_CHAT)
             {
 
                 string packetStr = Encoding.UTF8.GetString(packet);
@@ -320,9 +320,9 @@ namespace Horse_Isle_Server
                 {
                     chatId = int.Parse(number);
                 }
-                catch(InvalidOperationException)
+                catch (InvalidOperationException)
                 {
-                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to use a transport with id that is NaN.");
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to start talking to an NPC with id that is NaN.");
                     return;
                 }
 
@@ -331,9 +331,46 @@ namespace Horse_Isle_Server
                 byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
                 sender.SendPacket(metaPacket);
             }
-            else
+            else if (action == PacketBuilder.NPC_CONTINUE_CHAT)
             {
-                Logger.ErrorPrint("Unknown npc interaction! - Packet Dump: " + BitConverter.ToString(packet).Replace('-', ' '));
+                string packetStr = Encoding.UTF8.GetString(packet);
+                string number = packetStr.Substring(2, packetStr.Length - 4);
+                int replyId = 0;
+                try
+                {
+                    replyId = int.Parse(number);
+                }
+                catch (InvalidOperationException)
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to reply to an NPC with replyid that is NaN.");
+                    return;
+                }
+
+                foreach (Npc.NpcEntry npc in Npc.NpcList)
+                {
+                    foreach (Npc.NpcChat chatpoint in npc.Chatpoints)
+                    {
+                        foreach (Npc.NpcReply reply in chatpoint.Replies)
+                        {
+                            if (reply.Id == replyId)
+                            {
+                                if (reply.GotoChatpoint == -1)
+                                {
+                                    UpdateArea(sender);
+                                    return;
+                                }
+
+                                string metaInfo = Meta.BuildChatpoint(npc,Npc.GetNpcChatpoint(npc, reply.GotoChatpoint));
+                                byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
+                                sender.SendPacket(metaPacket);
+                                return;
+
+                            }
+                        }
+                    }
+                }
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to reply with replyid that does not exist.");
+               
             }
         }
         public static void OnTransportUsed(Client sender, byte[] packet)

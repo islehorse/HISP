@@ -35,6 +35,7 @@ namespace Horse_Isle_Server
         public const byte PACKET_PLAYERINFO = 0x16;
 
         public const byte NPC_START_CHAT = 0x14;
+        public const byte NPC_CONTINUE_CHAT = 0x15;
 
         public const byte PLAYERINFO_LEAVE = 0x16;
         public const byte PLAYERINFO_UPDATE_OR_CREATE = 0x15;

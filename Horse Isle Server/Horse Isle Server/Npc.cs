@@ -72,6 +72,18 @@ namespace Horse_Isle_Server
             }
             throw new KeyNotFoundException("Npc reply with " + id + " not found!");
         }
+        public static NpcChat GetNpcChatpoint(NpcEntry npc, int chatpointId)
+        {
+            foreach(Npc.NpcChat chatpoint in npc.Chatpoints)
+            {
+                if(chatpoint.Id == chatpointId)
+                {
+                    return chatpoint;
+                }
+            }
+
+            throw new KeyNotFoundException("Npc chatpoint id: " + chatpointId + " not found!");
+        }
         public static NpcEntry GetNpcById(int id)
         {
             foreach(NpcEntry npc in NpcList)
