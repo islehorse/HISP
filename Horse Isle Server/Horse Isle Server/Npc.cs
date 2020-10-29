@@ -10,7 +10,6 @@ namespace Horse_Isle_Server
     {
         public struct NpcReply
         {
-            public int RandomId;
             public int Id;
             public string ReplyText;
             public int GotoChatpoint;
@@ -50,28 +49,28 @@ namespace Horse_Isle_Server
 
         public static List<NpcEntry> NpcList = new List<NpcEntry>();
 
-        public NpcReply GetNpcReply(NpcEntry npc, int randomid)
+        public NpcReply GetNpcReply(NpcEntry npc, int id)
         {
 
             foreach (NpcChat chatpoint in npc.Chatpoints)
             {
                 foreach (NpcReply reply in chatpoint.Replies)
                 {
-                    if (reply.RandomId == randomid)
+                    if (reply.Id == id)
                         return reply;
                 }
             }
-            throw new KeyNotFoundException("Npc reply with " + randomid + " not found!");
+            throw new KeyNotFoundException("Npc reply with " + id + " not found!");
         }
 
-        public static NpcReply GetNpcReply(NpcChat chatpoint, int randomid)
+        public static NpcReply GetNpcReply(NpcChat chatpoint, int id)
         {
             foreach(NpcReply reply in chatpoint.Replies)
             {
-                if (reply.RandomId == randomid)
+                if (reply.Id == id)
                     return reply;
             }
-            throw new KeyNotFoundException("Npc reply with " + randomid + " not found!");
+            throw new KeyNotFoundException("Npc reply with " + id + " not found!");
         }
         public static NpcEntry GetNpcById(int id)
         {
@@ -83,14 +82,16 @@ namespace Horse_Isle_Server
             throw new KeyNotFoundException("Npc id: " + id + " not found!");
         }
 
-        public static NpcEntry GetNpcByXAndY(int x, int y)
+        public static NpcEntry[] GetNpcByXAndY(int x, int y)
         {
+            List<NpcEntry> npcs = new List<NpcEntry>();
+
             foreach(NpcEntry npc in NpcList)
             {
                 if (npc.X == x && npc.Y == y)
-                    return npc;
+                    npcs.Add(npc);
             }
-            throw new KeyNotFoundException("Npc at X " + x + ", Y " + y + " not found!");
+            return npcs.ToArray();
         }
 
     }

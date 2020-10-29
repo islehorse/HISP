@@ -124,6 +124,12 @@ namespace Horse_Isle_Server
             if (specialTile.Description != null && specialTile.Description != "")
                 message += specialTile.Description;
 
+            Npc.NpcEntry[] entries = Npc.GetNpcByXAndY(specialTile.X, specialTile.Y);
+            if(entries.Length > 0)
+                message += Messages.Seperator;
+            foreach(Npc.NpcEntry ent in entries)
+                message += Messages.FormatNpcStartChatMessage(ent.IconId, ent.Name, ent.ShortDescription, ent.Id);
+
             if (specialTile.Code == null)
                 message += buildCommonInfo(specialTile.X, specialTile.Y);
             if (specialTile.Code == "TRANSPORT")
@@ -134,6 +140,8 @@ namespace Horse_Isle_Server
             
             if (specialTile.ExitX != 0 && specialTile.ExitY != 0)
                 message += Messages.ExitThisPlace + Messages.MetaTerminator;
+
+            Logger.DebugPrint(message);
 
             return message;
         }
@@ -175,13 +183,30 @@ namespace Horse_Isle_Server
 
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
-            Logger.DebugPrint(message);
             return message;
         }
+        public static string BuildChatpoint(Npc.NpcEntry npc, Npc.NpcChat chatpoint)
+        {
+            string message = "";
+            message += Messages.FormatNpcChatpoint(npc.Name, npc.ShortDescription, chatpoint.ChatText);
+            foreach(Npc.NpcReply reply in chatpoint.Replies)
+            {
+                message += Messages.FormatNpcReply(reply.ReplyText, reply.Id);
+            }
+            return message;
+        }
+
         public static string BuildMetaInfo(int x, int y)
         {
             string message = "";
             message += buildLocationString(x, y);
+
+            Npc.NpcEntry[] entries = Npc.GetNpcByXAndY(x, y);
+            if (entries.Length > 0)
+                message += Messages.Seperator;
+            foreach (Npc.NpcEntry ent in entries)
+                message += Messages.FormatNpcStartChatMessage(ent.IconId, ent.Name, ent.ShortDescription, ent.Id);
+
 
             message += buildCommonInfo(x, y);
             return message;

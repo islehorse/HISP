@@ -247,7 +247,6 @@ namespace Horse_Isle_Server
                     for (int iii = 0; iii < totalNpcReply; iii++)
                     {
                         Npc.NpcReply npcReply = new Npc.NpcReply();
-                        npcReply.RandomId = RandomID.NextRandomId();
                         npcReply.Id = gameData.npc_list[i].chatpoints[ii].replies[iii].reply_id;
                         npcReply.ReplyText = gameData.npc_list[i].chatpoints[ii].replies[iii].reply_text;
                         npcReply.GotoChatpoint = gameData.npc_list[i].chatpoints[ii].replies[iii].goto_chatpoint;
@@ -367,7 +366,12 @@ namespace Horse_Isle_Server
             Messages.ItemConsumeButton = gameData.messages.meta.inventory.item_consume_button;
             Messages.ItemUseButton = gameData.messages.meta.inventory.item_use_button;
             Messages.ItemReadButton = gameData.messages.meta.inventory.item_read_button;
-            
+
+            // Npc
+
+            Messages.NpcStartChatFormat = gameData.messages.npc.start_chat_format;
+            Messages.NpcChatpointFormat = gameData.messages.npc.chatpoint_format;
+            Messages.NpcReplyFormat = gameData.messages.npc.reply_format;
 
             // Map Data
 

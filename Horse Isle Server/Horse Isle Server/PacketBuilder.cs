@@ -31,9 +31,10 @@ namespace Horse_Isle_Server
         public const byte PACKET_TRANSPORT = 0x29;
         public const byte PACKET_KICK = 0x80;
         public const byte PACKET_LEAVE = 0x7D;
-
+        public const byte PACKET_NPC = 0x28;
         public const byte PACKET_PLAYERINFO = 0x16;
 
+        public const byte NPC_START_CHAT = 0x14;
 
         public const byte PLAYERINFO_LEAVE = 0x16;
         public const byte PLAYERINFO_UPDATE_OR_CREATE = 0x15;
