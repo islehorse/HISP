@@ -297,7 +297,45 @@ namespace Horse_Isle_Server
 
             Update(sender);
         }
+        public static void OnNpcInteraction(Client sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent npc interaction packet when not logged in.");
+                return;
+            }
+            if (packet.Length < 3)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent an invalid npc interaction packet.");
+                return;
+            }
+            byte action = packet[1];
+            if(action == PacketBuilder.NPC_START_CHAT)
+            {
 
+                string packetStr = Encoding.UTF8.GetString(packet);
+                string number = packetStr.Substring(2, packetStr.Length - 4);
+                int chatId = 0;
+                try
+                {
+                    chatId = int.Parse(number);
+                }
+                catch(InvalidOperationException)
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to use a transport with id that is NaN.");
+                    return;
+                }
+
+                Npc.NpcEntry entry = Npc.GetNpcById(chatId);
+                string metaInfo = Meta.BuildChatpoint(entry, entry.Chatpoints[0]);
+                byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
+                sender.SendPacket(metaPacket);
+            }
+            else
+            {
+                Logger.ErrorPrint("Unknown npc interaction! - Packet Dump: " + BitConverter.ToString(packet).Replace('-', ' '));
+            }
+        }
         public static void OnTransportUsed(Client sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -322,7 +360,7 @@ namespace Horse_Isle_Server
             }
             catch(InvalidOperationException)
             {
-                Logger.ErrorPrint(sender.RemoteIp + " Tried to use a transport with id that is NaN.");
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to use a transport with id that is NaN.");
                 return;
             }
             try

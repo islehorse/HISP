@@ -163,6 +163,9 @@ namespace Horse_Isle_Server
                     case PacketBuilder.PACKET_ITEM_INTERACTION:
                         Server.OnItemInteraction(this,Packet);
                         break;
+                    case PacketBuilder.PACKET_NPC:
+                        Server.OnNpcInteraction(this, Packet);
+                        break;
                     default:
                         Logger.ErrorPrint("Unimplemented Packet: " + BitConverter.ToString(Packet).Replace('-', ' '));
                         break;

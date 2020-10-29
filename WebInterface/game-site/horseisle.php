@@ -1,3 +1,6 @@
+<?php
+	include("config.php");
+?>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />

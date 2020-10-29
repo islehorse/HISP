@@ -75,12 +75,19 @@ namespace Horse_Isle_Server
         public static string ItemUseButton;
         public static string ItemReadButton;
 
+        // Npc
+        public static string NpcStartChatFormat;
+        public static string NpcChatpointFormat;
+        public static string NpcReplyFormat;
+
         // Meta
         public static string IsleFormat;
         public static string TownFormat;
         public static string AreaFormat;
         public static string LocationFormat;
         public static string TransportFormat;
+
+       
 
         public static string NearbyPlayers;
         public static string North;
@@ -104,6 +111,20 @@ namespace Horse_Isle_Server
         public static string BoatCutscene;
         public static string WagonCutscene;
         public static string BallonCutscene;
+        public static string FormatNpcChatpoint(string name, string shortDescription, string chatText)
+        {
+            return NpcChatpointFormat.Replace("%NAME%", name).Replace("%DESCRIPTION%", shortDescription).Replace("%TEXT%", chatText);
+        }
+
+        public static string FormatNpcReply(string replyText, int replyId)
+        {
+            return NpcReplyFormat.Replace("%TEXT%", replyText).Replace("%ID%", replyId.ToString());
+        }
+
+        public static string FormatNpcStartChatMessage(int iconId, string name, string shortDescription, int npcId)
+        {
+            return NpcStartChatFormat.Replace("%ICONID%", iconId.ToString()).Replace("%NAME%", name).Replace("%DESCRIPTION%", shortDescription).Replace("%ID%", npcId.ToString());
+        }
 
         public static string FormatGlobalChatViolationMessage(Chat.Reason violationReason)
         {
