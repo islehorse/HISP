@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Horse_Isle_Server.Properties {
+namespace HISP.Properties {
     using System;
     
     
@@ -39,7 +39,7 @@ namespace Horse_Isle_Server.Properties {
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
-                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("Horse_Isle_Server.Properties.Resources", typeof(Resources).Assembly);
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("HISP.Properties.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
@@ -62,7 +62,7 @@ namespace Horse_Isle_Server.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to &lt;cross-domain-policy&gt;
-        ///	&lt;allow-access-from domain=&quot;*&quot; to-ports=&quot;1080&quot; secure=&quot;false&quot;/&gt;
+        ///	&lt;allow-access-from domain=&quot;*&quot; to-ports=&quot;12321&quot; secure=&quot;false&quot;/&gt;
         ///&lt;/cross-domain-policy&gt;.
         /// </summary>
         internal static string DefaultCrossDomain {
@@ -76,24 +76,28 @@ namespace Horse_Isle_Server.Properties {
         ///
         ///# Ip address the server will bind to (default: 0.0.0.0 ALL INTERFACES)
         ///ip=0.0.0.0
-        ///# Port the server will bind to (default: 1080)
-        ///port=1080
+        ///# Port the server will bind to (default: 12321)
+        ///port=12321
         ///
         ///# MariaDB Database 
         ///db_ip=127.0.0.1
+        ///db_name=beta
         ///db_username=root
         ///db_password=test123
         ///db_port=3306
         ///
         ///# Map Data
-        ///map=MapData.bmp
-        ///overlaymap=oMapData.bmp
+        ///map=HI1.MAP
+        ///
+        ///# JSON Format Data
+        ///
+        ///gamedata=gamedata.json
         ///
         ///# Cross-Domain Policy File
-        ///crossdomain=&quot;CrossDomainPolicy.xml
+        ///crossdomain=CrossDomainPolicy.xml
         ///
-        ///# Should print debug logs
-        ///debug=false.
+        ///# Red Text Stating &quot;Todays Note:&quot;
+        ///motd=April 11, 2020. New breed, C [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string DefaultServerProperties {
             get {

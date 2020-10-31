@@ -6,7 +6,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{C48CBD82-AB30-494A-8FFA-4DE7069B5827}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>Horse_Isle_Server</RootNamespace>
+    <RootNamespace>HISP</RootNamespace>
     <AssemblyName>Horse Isle Server</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <LangVersion>8.0</LangVersion>
@@ -72,40 +72,42 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action.cs" />
-    <Compile Include="Authentication.cs" />
-    <Compile Include="Chat.cs" />
-    <Compile Include="Client.cs" />
-    <Compile Include="Converters.cs" />
-    <Compile Include="Database.cs" />
-    <Compile Include="Friends.cs" />
-    <Compile Include="Gamedata.cs" />
-    <Compile Include="IInventory.cs" />
-    <Compile Include="DroppedItems.cs" />
-    <Compile Include="ItemInstance.cs" />
-    <Compile Include="Logger.cs" />
-    <Compile Include="ConfigReader.cs" />
-    <Compile Include="CrossDomainPolicy.cs" />
-    <Compile Include="Mailbox.cs" />
-    <Compile Include="Map.cs" />
-    <Compile Include="Messages.cs" />
-    <Compile Include="Item.cs" />
-    <Compile Include="Meta.cs" />
-    <Compile Include="Npc.cs" />
-    <Compile Include="PacketBuilder.cs" />
-    <Compile Include="PlayerInventory.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Game\Quest.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="RandomID.cs" />
-    <Compile Include="Server.cs" />
-    <Compile Include="Transport.cs" />
-    <Compile Include="User.cs" />
-    <Compile Include="World.cs" />
+    <Compile Include="Security\Authentication.cs" />
+    <Compile Include="Game\Chat.cs" />
+    <Compile Include="Server\GameClient.cs" />
+    <Compile Include="Server\Converters.cs" />
+    <Compile Include="Server\Database.cs" />
+    <Compile Include="Player\Friends.cs" />
+    <Compile Include="Server\Gamedata.cs" />
+    <Compile Include="Game\IInventory.cs" />
+    <Compile Include="Game\DroppedItems.cs" />
+    <Compile Include="Game\ItemInstance.cs" />
+    <Compile Include="Server\Logger.cs" />
+    <Compile Include="Server\ConfigReader.cs" />
+    <Compile Include="Security\CrossDomainPolicy.cs" />
+    <Compile Include="Player\Mailbox.cs" />
+    <Compile Include="Game\Map.cs" />
+    <Compile Include="Game\Messages.cs" />
+    <Compile Include="Game\Item.cs" />
+    <Compile Include="Game\Meta.cs" />
+    <Compile Include="Game\Npc.cs" />
+    <Compile Include="Server\PacketBuilder.cs" />
+    <Compile Include="Player\PlayerInventory.cs" />
+    <Compile Include="Player\PlayerQuests.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Security\RandomID.cs" />
+    <Compile Include="Server\GameServer.cs" />
+    <Compile Include="Player\TrackedQuest.cs" />
+    <Compile Include="Game\Transport.cs" />
+    <Compile Include="Player\User.cs" />
+    <Compile Include="Game\World.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -114,6 +116,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
