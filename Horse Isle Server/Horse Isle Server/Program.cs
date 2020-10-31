@@ -3,8 +3,10 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
-
-namespace Horse_Isle_Server
+using HISP.Game;
+using HISP.Security;
+using HISP.Server;
+namespace HISP
 {
     class Program
     {
@@ -19,7 +21,7 @@ namespace Horse_Isle_Server
             Gamedata.ReadGamedata();
             World.ReadWorldData();
             DroppedItems.Init();
-            Server.StartServer();
+            GameServer.StartServer();
 
         }
     }
