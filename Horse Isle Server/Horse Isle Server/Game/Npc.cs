@@ -84,6 +84,18 @@ namespace HISP.Game
 
             throw new KeyNotFoundException("Npc chatpoint id: " + chatpointId + " not found!");
         }
+        public static bool NpcExists(int id)
+        {
+            try
+            {
+                GetNpcById(id);
+                return true;
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+        }
         public static NpcEntry GetNpcById(int id)
         {
             foreach(NpcEntry npc in NpcList)

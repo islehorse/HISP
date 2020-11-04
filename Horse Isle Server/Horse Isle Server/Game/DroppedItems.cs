@@ -72,6 +72,20 @@ namespace HISP.Game
             }
             
         }
+
+        public static bool IsDroppedItemExist(int randomId)
+        {
+            try
+            {
+                GetDroppedItemById(randomId);
+                return true;
+
+            }
+            catch(KeyNotFoundException)
+            {
+                return false;
+            }
+        }
         public static DroppedItem GetDroppedItemById(int randomId)
         {
 

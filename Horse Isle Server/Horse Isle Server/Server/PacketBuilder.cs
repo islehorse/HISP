@@ -59,6 +59,10 @@ namespace HISP.Server
         public const byte CHAT_BOTTOM_RIGHT = 0x15;
         public const byte CHAT_DM_RIGHT = 0x16;
 
+        public const byte INFORMATION = 0x28;
+        public const byte ITEM_INFORMATON = 0x14;
+        public const byte NPC_INFORMATION = 0x16;
+
         public const byte ITEM_DROP = 0x1E; 
         public const byte ITEM_PICKUP = 0x14;
         public const byte ITEM_BINOCULARS = 0x5C;
@@ -625,7 +629,7 @@ namespace HISP.Server
         }
         public static byte[] CreateWelcomeMessage(string username)
         {
-            string formattedStr = Messages.FormatLoginMessage(username);
+            string formattedStr = Messages.FormatWelcomeMessage(username);
             return CreateChat(formattedStr, CHAT_BOTTOM_RIGHT);
         }
 

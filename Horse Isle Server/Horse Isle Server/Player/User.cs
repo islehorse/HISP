@@ -24,6 +24,8 @@ namespace HISP.Player
         public bool MuteSocials = false;
         public bool MuteLogins = false;
 
+        public bool MetaPriority = false;
+
         public bool Stealth = false;
 
         public int Facing;
