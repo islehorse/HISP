@@ -163,6 +163,51 @@ namespace HISP.Server
                 UpdateArea(sender);
                 UpdateUserInfo(sender.LoggedinUser);
             }
+            else if(method == PacketBuilder.SECCODE_QUEST)
+            {
+                byte[] SecCode = sender.LoggedinUser.GenerateSecCode();
+                bool correctSecCode = true;
+                for(int i = 0; i < SecCode.Length; i++)
+                {
+                    if (packet[i + 2] != SecCode[i])
+                        correctSecCode = false;
+                }
+                if(correctSecCode)
+                {
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string intStr = packetStr.Substring(8, packetStr.Length - 2);
+                    int value = -1;
+                    try
+                    {
+                        value = int.Parse(intStr);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid value");
+                        return;
+                    }
+
+                    if (packet[3] == PacketBuilder.SECCODE_QUEST)
+                    {
+                        if (Quest.DoesQuestExist(value))
+                        {
+                            Quest.QuestEntry questEntry = Quest.GetQuestById(value);
+                            Quest.ActivateQuest(sender.LoggedinUser, questEntry);
+                        }
+                        else
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " Sent correct sec code, but tried to activate a non existant quest");
+                            return;
+                        }
+                    }
+
+                }
+                else
+                {
+                    Logger.HackerPrint(sender.LoggedinUser.Username + " Sent invalid sec code");
+                    return;
+                }
+            }
 
         }
 
@@ -227,7 +272,7 @@ namespace HISP.Server
                 sender.SendPacket(moveResponse);
             }
 
-                if (movementDirection == PacketBuilder.MOVE_UP)
+            if (movementDirection == PacketBuilder.MOVE_UP)
             {
                 loggedInUser.Facing = PacketBuilder.DIRECTION_UP;
                 if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y - 1))
@@ -435,7 +480,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    byte[] cantAfford = PacketBuilder.CreateChat(Messages.FormatWelcomeToAreaMessage(transportLocation.LocationTitle), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    byte[] cantAfford = PacketBuilder.CreateChat(Messages.CantAffordTransport, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(cantAfford);
                 }
             }

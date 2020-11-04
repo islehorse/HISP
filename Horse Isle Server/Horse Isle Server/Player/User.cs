@@ -151,7 +151,6 @@ namespace HISP.Player
         public  int SecCodeInc = 0;
         public int SecCodeCount = 0;
 
-
         public byte[] GenerateSecCode()
         {
             var i = 0;

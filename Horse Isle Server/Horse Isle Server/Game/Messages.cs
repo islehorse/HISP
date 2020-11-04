@@ -141,7 +141,6 @@ namespace HISP.Game
             return NpcInformationButton.Replace("%ID%", npcId.ToString());
         }
 
-
         public static string FormatNpcReply(string replyText, int replyId)
         {
             return NpcReplyFormat.Replace("%TEXT%", replyText).Replace("%ID%", replyId.ToString());
@@ -202,6 +201,8 @@ namespace HISP.Game
         {
             return GrabItemFormat.Replace("%ICONID%",iconid.ToString()).Replace("%ITEMNAME%", name).Replace("%RANDOMID%", randomid.ToString());
         }
+
+
         public static string FormatTransportMessage(string method, string place, int cost, int id, int x, int y)
         {
             string xy = "";
