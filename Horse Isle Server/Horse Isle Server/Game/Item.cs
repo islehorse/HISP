@@ -83,6 +83,20 @@ namespace HISP.Game
             }
             throw new KeyNotFoundException("id: " + id + " is not a throwable item.");
         }
+
+        public static bool ItemIdExist(int id)
+        {
+            try
+            {
+                GetItemById(id);
+                return true;
+            }
+            catch(KeyNotFoundException)
+            {
+                return false;
+            }
+        }
+
         public static ItemInformation GetItemById(int id)
         {
             foreach(ItemInformation item in Items)

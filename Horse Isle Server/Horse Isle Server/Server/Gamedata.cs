@@ -398,11 +398,12 @@ namespace HISP.Server
             Messages.PasswordNotice = gameData.messages.chat.password_included;
             Messages.CapsNotice = gameData.messages.chat.caps_notice;
 
-            // Hardcoded messages
+            // Dropped Items
 
             Messages.NothingMessage = gameData.messages.meta.dropped_items.nothing_message;
             Messages.ItemsOnGroundMessage = gameData.messages.meta.dropped_items.items_message;
             Messages.GrabItemFormat = gameData.messages.meta.dropped_items.item_format;
+            Messages.ItemInformationFormat = gameData.messages.meta.dropped_items.item_information_format;
             Messages.GrabAllItemsButton = gameData.messages.meta.dropped_items.grab_all;
             Messages.DroppedAnItemMessage = gameData.messages.dropped_item_message;
             Messages.GrabbedAllObjectsMessage = gameData.messages.grab_all_message;
@@ -426,7 +427,7 @@ namespace HISP.Server
             Messages.BackToMap = gameData.messages.meta.back_to_map;
             Messages.LongFullLine = gameData.messages.meta.long_full_line;
             Messages.MetaTerminator = gameData.messages.meta.end_of_meta;
-
+            
             Messages.GrabbedItemMessage = gameData.messages.grab_message;
             Messages.GrabAllItemsMessage = gameData.messages.grab_all_message;
 
@@ -450,11 +451,12 @@ namespace HISP.Server
 
             // Npc
 
-            Messages.NpcStartChatFormat = gameData.messages.npc.start_chat_format;
-            Messages.NpcChatpointFormat = gameData.messages.npc.chatpoint_format;
-            Messages.NpcReplyFormat = gameData.messages.npc.reply_format;
-            Messages.NpcTalkButton = gameData.messages.npc.npc_talk_button;
-            Messages.NpcInformationButton = gameData.messages.npc.npc_information_button;
+            Messages.NpcStartChatFormat = gameData.messages.meta.npc.start_chat_format;
+            Messages.NpcChatpointFormat = gameData.messages.meta.npc.chatpoint_format;
+            Messages.NpcReplyFormat = gameData.messages.meta.npc.reply_format;
+            Messages.NpcTalkButton = gameData.messages.meta.npc.npc_talk_button;
+            Messages.NpcInformationButton = gameData.messages.meta.npc.npc_information_button;
+            Messages.NpcInformationFormat = gameData.messages.meta.npc.npc_information_format;
 
             // Map Data
 

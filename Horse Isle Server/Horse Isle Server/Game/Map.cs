@@ -66,11 +66,10 @@ namespace HISP.Game
                 overlayPassable = true;
 
             bool tilePassable = false;
-            if (terrainPassable || overlayPassable)
+            if (terrainPassable || overlayPassable && otileId != 0)
                 tilePassable = true;
-            if (!overlayPassable && (tileId != 0 && otileId != 0))
-                tilePassable = false;
-
+            
+            Logger.DebugPrint("Overlay: " + otileId + " Terrain: " + tileId);
 
            
             return tilePassable;

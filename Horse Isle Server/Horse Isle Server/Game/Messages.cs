@@ -65,6 +65,8 @@ namespace HISP.Game
         public static string GrabbedItemMessage;
         public static string GrabbedAllObjectsMessage;
         public static string DroppedAnItemMessage;
+        public static string ItemInformationFormat;
+
 
         // Inventory
         public static string InventoryItemFormat;
@@ -83,6 +85,7 @@ namespace HISP.Game
         public static string NpcReplyFormat;
         public static string NpcInformationButton;
         public static string NpcTalkButton;
+        public static string NpcInformationFormat;
 
         // Meta
         public static string IsleFormat;
@@ -115,6 +118,15 @@ namespace HISP.Game
         public static string BoatCutscene;
         public static string WagonCutscene;
         public static string BallonCutscene;
+
+        public static string FormatNpcInformation(string name, string description)
+        {
+            return NpcInformationFormat.Replace("%NAME%", name).Replace("%DESCRIPTION%", description);
+        }
+        public static string FormatItemInformation(string name, string description)
+        {
+            return ItemInformationFormat.Replace("%NAME%", name).Replace("%DESCRIPTION%", description);
+        }
         public static string FormatNpcChatpoint(string name, string shortDescription, string chatText)
         {
             return NpcChatpointFormat.Replace("%NAME%", name).Replace("%DESCRIPTION%", shortDescription).Replace("%TEXT%", chatText);

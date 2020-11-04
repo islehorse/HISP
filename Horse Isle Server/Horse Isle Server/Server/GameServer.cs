@@ -133,6 +133,7 @@ namespace HISP.Server
             byte method = packet[1];
             if (method == PacketBuilder.VIEW_PROFILE)
             {
+                sender.LoggedinUser.MetaPriority = true;
                 byte[] profilePacket = PacketBuilder.CreateProfilePacket(sender.LoggedinUser.ProfilePage);
                 sender.SendPacket(profilePacket);
             }
@@ -325,6 +326,7 @@ namespace HISP.Server
                     Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to start talking to an NPC with id that is NaN.");
                     return;
                 }
+                sender.LoggedinUser.MetaPriority = true;
                 Npc.NpcEntry entry = Npc.GetNpcById(chatId);
                 string metaInfo = Meta.BuildChatpoint(sender.LoggedinUser, entry, entry.Chatpoints[0]);
                 byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
@@ -364,13 +366,11 @@ namespace HISP.Server
                     UpdateArea(sender,true);
                     return;
                 }
+                sender.LoggedinUser.MetaPriority = true;
                 string metaInfo = Meta.BuildChatpoint(sender.LoggedinUser, lastNpc, Npc.GetNpcChatpoint(lastNpc, reply.GotoChatpoint));
                 byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
                 sender.SendPacket(metaPacket);
                 return;
-
-     
-               
             }
         }
         public static void OnTransportUsed(GameClient sender, byte[] packet)
@@ -637,6 +637,58 @@ namespace HISP.Server
                         sender.SendPacket(ChatPacket);
                     }
                     break;
+                case PacketBuilder.INFORMATION:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(3, packet.Length - 3);
+                    randomId = 0;
+
+                    try
+                    {
+                        randomId = Int32.Parse(randomIdStr);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        return;
+                    }
+                    if (packet[2] == PacketBuilder.ITEM_INFORMATON)
+                    {
+
+                        int itemId = -1;
+                        if (sender.LoggedinUser.Inventory.HasItem(randomId))
+                            itemId = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId).ItemId;
+                        else if (DroppedItems.IsDroppedItemExist(randomId))
+                            itemId = DroppedItems.GetDroppedItemById(randomId).instance.ItemId;
+
+                        if (itemId == -1)
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " asked for details of non existiant item.");
+                            return;
+                        }
+                        sender.LoggedinUser.MetaPriority = true;
+                        Item.ItemInformation info = Item.GetItemById(itemId);
+                        string infoMessage = Meta.BuildItemInfo(info);
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(infoMessage);
+                        sender.SendPacket(metaPacket);
+                    }
+                    else if(packet[2] == PacketBuilder.NPC_INFORMATION)
+                    {
+                        if(Npc.NpcExists(randomId))
+                        {
+                            sender.LoggedinUser.MetaPriority = true;
+                            Npc.NpcEntry npc = Npc.GetNpcById(randomId);
+                            string infoMessage = Meta.BuildNpcInfo(npc);
+                            byte[] metaPacket = PacketBuilder.CreateMetaPacket(infoMessage);
+                            sender.SendPacket(metaPacket);
+                        }
+                        else
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " asked for details of non existiant npc.");
+                            return;
+                        }
+                    }
+
+                    break;
                 default:
                     Logger.WarnPrint(sender.LoggedinUser.Username + " Sent an unknown Item Interaction Packet type: " + action.ToString() + ", Packet Dump: " + BitConverter.ToString(packet).Replace('-', ' '));
                     break;
@@ -705,7 +757,7 @@ namespace HISP.Server
                         if (client.LoggedIn)
                             if (!client.LoggedinUser.MuteLogins)
                                 if (client.LoggedinUser.Id != userId)
-                                    client.SendPacket(loginMessageBytes);
+                                        client.SendPacket(loginMessageBytes);
 
                     UpdateUserInfo(sender.LoggedinUser);
 
@@ -850,7 +902,9 @@ namespace HISP.Server
             UpdateArea(client, justArea);
             foreach (User nearbyUser in GameServer.GetNearbyUsers(client.LoggedinUser.X, client.LoggedinUser.Y, false, false))
                 if (nearbyUser.Id != client.LoggedinUser.Id)
-                    UpdateArea(nearbyUser.LoggedinClient, justArea);
+                    if(!nearbyUser.MetaPriority)
+                        UpdateArea(nearbyUser.LoggedinClient, justArea);
+
 
             UpdateUserInfo(client.LoggedinUser);
         }
@@ -859,6 +913,7 @@ namespace HISP.Server
         {
             if (!forClient.LoggedIn)
                 return;
+            forClient.LoggedinUser.MetaPriority = true;
             byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildInventoryInfo(forClient.LoggedinUser.Inventory));
             forClient.SendPacket(metaPacket);
         }
@@ -939,6 +994,7 @@ namespace HISP.Server
             }
             byte[] AreaMessage = PacketBuilder.CreateMetaPacket(LocationStr);
             forClient.SendPacket(AreaMessage);
+            forClient.LoggedinUser.MetaPriority = false;
 
         }
 

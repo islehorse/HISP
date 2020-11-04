@@ -30,6 +30,7 @@ namespace HISP.Game
             User[] nearbyUsers = GameServer.GetNearbyUsers(x, y, true, true);
             if (nearbyUsers.Length > 1)
             {
+                playersNearby += Messages.Seperator;
                 playersNearby += Messages.NearbyPlayers;
                 playersNearby += Messages.Seperator;
 
@@ -76,7 +77,6 @@ namespace HISP.Game
         private static string buildCommonInfo(int x, int y)
         {
             string message = "";
-
             message += buildNearbyString(x, y);
 
             // Dropped Items
@@ -124,6 +124,22 @@ namespace HISP.Game
             }
             return message;
         }
+        public static string BuildNpcInfo(Npc.NpcEntry npcInfo)
+        {
+            string message = "";
+            message += Messages.FormatNpcInformation(npcInfo.Name, npcInfo.LongDescription);
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildItemInfo(Item.ItemInformation itemInfo)
+        {
+            string message = "";
+            message += Messages.FormatItemInformation(itemInfo.Name, itemInfo.Description);
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildTransportInfo(Transport.TransportPoint transportPoint)
         {
             string message = "";
@@ -151,8 +167,9 @@ namespace HISP.Game
 
             if (specialTile.Description != null && specialTile.Description != "")
                 message += specialTile.Description;
-
-            message += buildNpc(user, specialTile.X, specialTile.Y);
+            
+            string npc = buildNpc(user, specialTile.X, specialTile.Y);
+            message += npc;
 
             if (specialTile.Code == null)
                 message += buildCommonInfo(specialTile.X, specialTile.Y);
@@ -258,6 +275,7 @@ namespace HISP.Game
             message += buildLocationString(x, y);
 
             message += buildNpc(user, x, y);
+
 
             message += buildCommonInfo(x, y);
             return message;
