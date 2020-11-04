@@ -167,6 +167,18 @@ namespace HISP.Game
                 return true;
             };
         }
+        public static bool DoesQuestExist(int id)
+        {
+            try
+            {
+                GetQuestById(id);
+                return true;
+            }
+            catch(KeyNotFoundException)
+            {
+                return false;
+            }
+        }
         public static QuestEntry GetQuestById(int id)
         {
             foreach(QuestEntry quest in QuestList)

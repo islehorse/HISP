@@ -65,14 +65,20 @@ namespace HISP.Game
             if (tileDepth == 3)
                 overlayPassable = true;
 
-            bool tilePassable = false;
-            if (terrainPassable || overlayPassable && otileId != 0)
-                tilePassable = true;
+            if ((!terrainPassable && overlayPassable) && otileId == 0)
+                return false;
+
+            if (!overlayPassable)
+                return false;
+            if (!terrainPassable)
+                return false;
+
+
+
             
             Logger.DebugPrint("Overlay: " + otileId + " Terrain: " + tileId);
 
-           
-            return tilePassable;
+            return true;
         }
 
         public static void OpenMap()

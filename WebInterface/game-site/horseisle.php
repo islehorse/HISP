@@ -167,22 +167,24 @@ function DetectFlashVer(reqMajorVer, reqMinorVer, reqRevision)
 -->
 <script language="JavaScript" type="text/javascript">
 <!-- 
-var hasRightVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
+<?php
+echo("var hasRightVersion = DetectFlashVer(requiredMajorVersion, requiredMinorVersion, requiredRevision);
 if(hasRightVersion) {  // if we've detected an acceptable version
-    var oeTags = '<object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000"'
-    + 'width="790" height="500" id="horseisle" name="horseisle"'
-    + 'codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab">'
-    + '<param name="movie" value="horseisle_patched.swf?SERVER=127.0.0.1&PORT=12321&USER=&2158322" /><param name="loop" value="false" /><param name="menu" value="false" /><param name="quality" value="high" /><param name="scale" value="noscale" /><param name="salign" value="t" /><param name="bgcolor" value="#ffffff" />'
-    + '<embed src="horseisle_patched.swf?SERVER=127.0.0.1&PORT=12321&USER=&2158322" loop="false" menu="false" quality="high" scale="noscale" salign="t" bgcolor="#ffffff" '
-    + 'width="790" height="500" name="horseisle" align="top"'
-    + 'play="true"'
-    + 'loop="false"'
-    + 'quality="high"'
-    + 'allowScriptAccess="sameDomain"'
-    + 'type="application/x-shockwave-flash"'
-    + 'pluginspage="http://www.macromedia.com/go/getflashplayer">'
+    var oeTags = '<object classid=\"clsid:D27CDB6E-AE6D-11cf-96B8-444553540000\"'
+    + 'width=\"790\" height=\"500\" id=\"horseisle\" name=\"horseisle\"'
+    + 'codebase=\"http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab\">'
+    + '<param name=\"movie\" value=\"horseisle_patched.swf?SERVER=".$server_ip."&PORT=".$server_port."&USER=&2158322\" /><param name=\"loop\" value=\"false\" /><param name=\"menu\" value=\"false\" /><param name=\"quality\" value=\"high\" /><param name=\"scale\" value=\"noscale\" /><param name=\"salign\" value=\"t\" /><param name=\"bgcolor\" value=\"#ffffff\" />'
+    + '<embed src=\"horseisle_patched.swf?SERVER=".$server_ip."&PORT=".$server_port."&USER=&2158322\" loop=\"false\" menu=\"false\" quality=\"high\" scale=\"noscale\" salign=\"t\" bgcolor=\"#ffffff\" '
+    + 'width=\"790\" height=\"500\" name=\"horseisle\" align=\"top\"'
+    + 'play=\"true\"'
+    + 'loop=\"false\"'
+    + 'quality=\"high\"'
+    + 'allowScriptAccess=\"sameDomain\"'
+    + 'type=\"application/x-shockwave-flash\"'
+    + 'pluginspage=\"http://www.macromedia.com/go/getflashplayer\">'
     + '<\/embed>'
-    + '<\/object>';
+    + '<\/object>';");
+?>
     document.write(oeTags);   // embed the flash movie
   } else {  // flash is too old or we can't detect the plugin
     var alternateContent = 'Alternate HTML content should be placed here.'
