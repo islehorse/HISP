@@ -68,17 +68,21 @@ namespace HISP.Game
             if ((!terrainPassable && overlayPassable) && otileId == 0)
                 return false;
 
+            bool passable = false;
             if (!overlayPassable)
-                return false;
+                passable = false;
             if (!terrainPassable)
-                return false;
+                passable = false;
+
+            if (!passable && overlayPassable)
+                passable = true;
 
 
 
             
             Logger.DebugPrint("Overlay: " + otileId + " Terrain: " + tileId);
 
-            return true;
+            return passable;
         }
 
         public static void OpenMap()
