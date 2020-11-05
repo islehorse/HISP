@@ -165,17 +165,14 @@ namespace HISP.Server
             }
             else if(method == PacketBuilder.SECCODE_QUEST)
             {
-                byte[] SecCode = sender.LoggedinUser.GenerateSecCode();
-                bool correctSecCode = true;
-                for(int i = 0; i < SecCode.Length; i++)
-                {
-                    if (packet[i + 2] != SecCode[i])
-                        correctSecCode = false;
-                }
-                if(correctSecCode)
+                byte[] ExpectedSecCode = sender.LoggedinUser.GenerateSecCode();
+                byte[] GotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
+                Logger.DebugPrint(sender.LoggedinUser.Username+" Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-"," "));
+                if(ExpectedSecCode.SequenceEqual(GotSecCode))
                 {
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string intStr = packetStr.Substring(8, packetStr.Length - 2);
+                    string intStr = packetStr.Substring(6,packetStr.Length - 6 - 2);
                     int value = -1;
                     try
                     {
@@ -187,19 +184,18 @@ namespace HISP.Server
                         return;
                     }
 
-                    if (packet[3] == PacketBuilder.SECCODE_QUEST)
+
+                    if (Quest.DoesQuestExist(value))
                     {
-                        if (Quest.DoesQuestExist(value))
-                        {
-                            Quest.QuestEntry questEntry = Quest.GetQuestById(value);
-                            Quest.ActivateQuest(sender.LoggedinUser, questEntry);
-                        }
-                        else
-                        {
-                            Logger.HackerPrint(sender.LoggedinUser.Username + " Sent correct sec code, but tried to activate a non existant quest");
-                            return;
-                        }
+                        Quest.QuestEntry questEntry = Quest.GetQuestById(value);
+                        Quest.ActivateQuest(sender.LoggedinUser, questEntry);
                     }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Sent correct sec code, but tried to activate a non existant quest");
+                        return;
+                    }
+                    
 
                 }
                 else

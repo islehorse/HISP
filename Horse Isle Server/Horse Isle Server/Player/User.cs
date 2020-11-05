@@ -166,6 +166,7 @@ namespace HISP.Player
             SecCode[1] = (byte)(SecCodeSeeds[1] + 33);
             SecCode[2] = (byte)(SecCodeSeeds[2] + 33);
             SecCode[3] = (byte)(i + 33);
+            Logger.DebugPrint("Expecting "+Username+" To send Sec Code: "+BitConverter.ToString(SecCode).Replace("-", " "));
             return SecCode;
         }
 
@@ -203,11 +204,11 @@ namespace HISP.Player
 
             // Generate SecCodes
 
-            Random rng = new Random();
-            SecCodeSeeds[0] = (byte)rng.Next(40, 140);
-            SecCodeSeeds[1] = (byte)rng.Next(40, 140);
-            SecCodeSeeds[2] = (byte)rng.Next(40, 140);
-            SecCodeInc = (byte)rng.Next(0, 99);
+            
+            SecCodeSeeds[0] = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
+            SecCodeSeeds[1] = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
+            SecCodeSeeds[2] = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
+            SecCodeInc = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
 
             // Make some friends! (Get a life!)
 
