@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HISP.Server;
+using System;
 using System.Collections.Generic;
 
 namespace HISP.Game
@@ -10,14 +11,22 @@ namespace HISP.Game
         public string[] BuysItemTypes;
         public int BuyPricePercentage;
         public int SellPricePercentage;
-        public int[] InfniteStocks;
-        ShopInventory Inventory;
+        public ShopInventory Inventory;
 
-        public Shop()
+        public Shop(int[] infiniteStocks)
         {
-            Id = shopList.Count;
-            Inventory = new ShopInventory(this);
-            shopList.Add(this);
+            Id = ShopList.Count+1;
+            this.Inventory = new ShopInventory(this);
+
+
+            foreach(int stock in infiniteStocks)
+            {
+                if (Item.ItemIdExist(stock))
+                    this.Inventory.AddInfinity(Item.GetItemById(stock));
+                else
+                    Logger.WarnPrint("Item ID: " + stock + " Does not exist.");
+            }
+            Shop.ShopList.Add(this);
         }
         
         public int CalculateBuyCost(Item.ItemInformation item)
@@ -29,13 +38,22 @@ namespace HISP.Game
             return Math.Abs(item.SellPrice * (100 / SellPricePercentage));
         }
 
-
-
+        public bool CanSell(Item.ItemInformation item)
+        {
+            foreach(string ItemType in BuysItemTypes)
+            {
+                if(ItemType == item.Type)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         // Static Functions 
-        private static List<Shop> shopList = new List<Shop>();
+        public static List<Shop> ShopList = new List<Shop>();
         public static Shop GetShopById(int id)
         {
-            return shopList[id];
+            return ShopList[id-1];
         }
 
     }

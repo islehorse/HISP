@@ -342,6 +342,19 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Quest: " + quest.Id);
                 Quest.QuestList.Add(quest);
             }
+
+            int totalShops = gameData.shop_list.Count;
+            for(int i = 0; i < totalShops; i++)
+            {
+
+                Shop shop = new Shop(gameData.shop_list[i].stocks_itemids.ToObject<int[]>());
+                shop.BuyPricePercentage = gameData.shop_list[i].buy_percent;
+                shop.SellPricePercentage = gameData.shop_list[i].sell_percent;
+                shop.BuysItemTypes = gameData.shop_list[i].buys_item_types.ToObject<string[]>();
+                
+                Logger.DebugPrint("Registered Shop ID: "+ shop.Id + " Selling items at " + shop.SellPricePercentage + "% and buying at " + shop.BuyPricePercentage);
+            }
+
             Item.Present = gameData.item.special.present;
             Item.MailMessage = gameData.item.special.mail_message;
             Item.DorothyShoes = gameData.item.special.dorothy_shoes;
@@ -414,6 +427,11 @@ namespace HISP.Server
             Messages.RakeNothing = gameData.messages.tools.rake;
             Messages.ShovelNothing = gameData.messages.tools.shovel;
 
+            // Shop
+            Messages.ThingsIAmSelling = gameData.messages.meta.shop.selling;
+            Messages.ThingsYouSellMe = gameData.messages.meta.shop.sell_me;
+            Messages.InfinitySign = gameData.messages.meta.shop.infinity;
+
             // Meta Format
 
             Messages.LocationFormat = gameData.messages.meta.location_format;
@@ -445,14 +463,22 @@ namespace HISP.Server
 
             Messages.InventoryHeaderFormat = gameData.messages.meta.inventory.header_format;
             Messages.InventoryItemFormat = gameData.messages.meta.inventory.item_entry;
-
+            Messages.ShopEntryFormat = gameData.messages.meta.inventory.shop_entry;
             Messages.ItemInformationButton = gameData.messages.meta.inventory.item_info_button;
+            Messages.ItemInformationByIdButton = gameData.messages.meta.inventory.item_info_itemid_button;
+
             Messages.ItemDropButton = gameData.messages.meta.inventory.item_drop_button;
             Messages.ItemThrowButton = gameData.messages.meta.inventory.item_throw_button;
             Messages.ItemConsumeButton = gameData.messages.meta.inventory.item_consume_button;
             Messages.ItemUseButton = gameData.messages.meta.inventory.item_use_button;
             Messages.ItemReadButton = gameData.messages.meta.inventory.item_read_button;
 
+            Messages.ShopBuyButton = gameData.messages.meta.inventory.buy_button;
+            Messages.ShopBuy5Button = gameData.messages.meta.inventory.buy_5_button;
+            Messages.ShopBuy25Button = gameData.messages.meta.inventory.buy_25_button;
+
+            Messages.SellButton = gameData.messages.meta.inventory.sell_button;
+            Messages.SellAllButton = gameData.messages.meta.inventory.sell_all_button;
             // Npc
 
             Messages.NpcStartChatFormat = gameData.messages.meta.npc.start_chat_format;

@@ -74,6 +74,37 @@ namespace HISP.Game
             return playersNearby;
 
         }
+        private static string buildShopInfo(Shop shop)
+        {
+            string message = "";
+            InventoryItem[] itemList = shop.Inventory.GetItemList();
+
+            message += Messages.ThingsIAmSelling;
+            foreach (InventoryItem item in itemList)
+            {
+                message += "^R1";
+                Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
+
+                int count = item.ItemInstances.Count;
+                string countStr = count.ToString();
+                if (item.Infinite)
+                    countStr = Messages.InfinitySign;
+
+
+                message += Messages.FormatShopEntry(itemInfo.IconId, countStr, itemInfo.Name, shop.CalculateBuyCost(itemInfo));
+
+                message += Messages.FormatBuyItemButton(itemInfo.Id);
+                if (count >= 5)
+                    message += Messages.FormatBuy5ItemButton(itemInfo.Id);
+                if (count >= 25)
+                    message += Messages.FormatBuy25ItemButton(itemInfo.Id);
+
+                message += Messages.FormatItemInformationByIdButton(itemInfo.Id);
+
+            }
+            return message;
+        }
+
         private static string buildCommonInfo(int x, int y)
         {
             string message = "";
@@ -174,34 +205,41 @@ namespace HISP.Game
             if (specialTile.Code == null)
                 message += buildCommonInfo(specialTile.X, specialTile.Y);
             else
+            {
+
                 user.MetaPriority = true;
 
-            string TileCode = specialTile.Code;
-            string TileArg = "";
-            if (TileCode.Contains("-"))
-            {
+                string TileCode = specialTile.Code;
 
-                TileCode = TileCode.Split('-')[0];
-                TileArg = TileCode.Split('-')[1];
-            }
+                string TileArg = "";
+                if (TileCode.Contains("-"))
+                {
+                    TileArg = TileCode.Split('-')[1];
+                    TileCode = TileCode.Split('-')[0];
+                }
 
-            if (TileCode == "TRANSPORT")
-            {
-                Transport.TransportPoint point = Transport.GetTransportPoint(specialTile.X, specialTile.Y);
-                message +=  Meta.BuildTransportInfo(point)+ "^R1";
-            }
-            
-            if (TileCode == "STRAWPILE")
-            {
-                if (user.Inventory.HasItemId(Item.Pitchfork))
-                    message += Messages.HasPitchforkMeta;
-                else
-                    message += Messages.NoPitchforkMeta;
-            }
+                if (TileCode == "TRANSPORT")
+                {
+                    Transport.TransportPoint point = Transport.GetTransportPoint(specialTile.X, specialTile.Y);
+                    message += Meta.BuildTransportInfo(point) + "^R1";
+                }
 
-            if(TileCode == "STORE")
-            {
+                if (TileCode == "STRAWPILE")
+                {
+                    if (user.Inventory.HasItemId(Item.Pitchfork))
+                        message += Messages.HasPitchforkMeta;
+                    else
+                        message += Messages.NoPitchforkMeta;
+                }
 
+                if (TileCode == "STORE")
+                {
+                    int ShopID = int.Parse(TileArg);
+                    Shop shop = Shop.GetShopById(ShopID);
+                    user.LastShoppedAt = shop;
+                    message += buildShopInfo(shop);
+
+                }
             }
              
 

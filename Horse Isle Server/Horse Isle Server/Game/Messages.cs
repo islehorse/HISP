@@ -74,14 +74,29 @@ namespace HISP.Game
 
         // Inventory
         public static string InventoryItemFormat;
+
         public static string InventoryHeaderFormat;
 
         public static string ItemDropButton;
         public static string ItemInformationButton;
+        public static string ItemInformationByIdButton;
         public static string ItemConsumeButton;
         public static string ItemThrowButton;
         public static string ItemUseButton;
         public static string ItemReadButton;
+
+        public static string ShopEntryFormat;
+        public static string ShopBuyButton;
+        public static string ShopBuy5Button;
+        public static string ShopBuy25Button;
+
+        public static string SellButton;
+        public static string SellAllButton;
+
+        // Shop
+        public static string ThingsIAmSelling;
+        public static string ThingsYouSellMe;
+        public static string InfinitySign;
 
         // Npc
         public static string NpcStartChatFormat;
@@ -122,6 +137,38 @@ namespace HISP.Game
         public static string BoatCutscene;
         public static string WagonCutscene;
         public static string BallonCutscene;
+
+
+
+        public static string FormatShopEntry(int iconid, string count, string name, int price)
+        {
+            return ShopEntryFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count).Replace("%TITLE%", name).Replace("%PRICE%", price.ToString());
+        }
+
+        public static string FormatItemInformationByIdButton(int itemId)
+        {
+            return ItemInformationByIdButton.Replace("%ITEMID%", itemId.ToString());
+        }
+        public static string FormatBuyItemButton(int itemId)
+        {
+            return ShopBuyButton.Replace("%ITEMID%", itemId.ToString());
+        }
+        public static string FormatBuy5ItemButton(int itemId)
+        {
+            return ShopBuy5Button.Replace("%ITEMID%", itemId.ToString());
+        }
+        public static string FormatBuy25ItemButton(int itemId)
+        {
+            return ShopBuy25Button.Replace("%ITEMID%", itemId.ToString());
+        }
+        public static string ForamtSellButton(int randomId)
+        {
+            return SellButton.Replace("%RANDOMID%", randomId.ToString());
+        }
+        public static string FormatSellAllButton(int itemId)
+        {
+            return SellAllButton.Replace("%ITEMID%", itemId.ToString());
+        }
 
         public static string FormatNpcInformation(string name, string description)
         {
