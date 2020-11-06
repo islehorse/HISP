@@ -34,6 +34,7 @@ namespace HISP.Player
         public string Password; // For chat filter.
         public PlayerInventory Inventory;
         public Npc.NpcEntry LastTalkedToNpc;
+        public Shop LastShoppedAt;
         public PlayerQuests Quests;
         public int ChatViolations
         {
