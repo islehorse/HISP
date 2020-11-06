@@ -24,6 +24,10 @@ namespace HISP.Game
         // Records
         public static string ProfileSavedMessage;
 
+        // Hay Pile
+        public static string HasPitchforkMeta;
+        public static string NoPitchforkMeta;
+
         // Chat
         public static string GlobalChatFormat;
         public static string AdsChatFormat;

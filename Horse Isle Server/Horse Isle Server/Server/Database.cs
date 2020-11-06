@@ -21,6 +21,7 @@ namespace HISP.Server
                 string BuddyTable = "CREATE TABLE BuddyList(Id INT, IdFriend INT, Pending BOOL)";
                 string WorldTable = "CREATE TABLE World(Time INT,Day INT, Year INT, Weather TEXT(64))";
                 string InventoryTable = "CREATE TABLE Inventory(PlayerID INT, RandomID INT, ItemID INT)";
+                string ShopInventory = "CREATE TABLE ShopInventroy(ShopID INT, RandomID INT, ItemID INT)";
                 string DroppedItems = "CREATE TABLE DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT)";
                 string TrackedQuest = "CREATE TABLE TrackedQuest(playerId INT, questId INT, timesCompleted INT)";
 
@@ -102,10 +103,21 @@ namespace HISP.Server
                     Logger.WarnPrint(e.Message);
                 };
 
-
                 try
                 {
 
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = ShopInventory;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+                try
+                {
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = TrackedQuest;
                     sqlCommand.ExecuteNonQuery();
@@ -259,28 +271,6 @@ namespace HISP.Server
             }
         }
 
-        public static List<ItemInstance> GetPlayerInventory(int playerId)
-        {
-            using (MySqlConnection db = new MySqlConnection(ConnectionString))
-            {
-                db.Open();
-                MySqlCommand sqlCommand = db.CreateCommand();
-
-                sqlCommand.CommandText = "SELECT ItemId,RandomId FROM Inventory WHERE PlayerId=@playerId";
-                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
-                sqlCommand.Prepare();
-                MySqlDataReader reader = sqlCommand.ExecuteReader();
-                List<ItemInstance> instances = new List<ItemInstance>();
-
-                while(reader.Read())
-                {
-                    instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1)));
-                }
-                sqlCommand.Dispose();
-                return instances;
-            }
-        }
-
         public static int GetTrackedQuestCompletedCount(int playerId, int questId)
         {
             if(CheckTrackeQuestExists(playerId,questId))
@@ -389,6 +379,83 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
+        public static List<ItemInstance> GetShopInventory(int shopId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT ItemId,RandomId FROM ShopInventory WHERE ShopID=@shopId";
+                sqlCommand.Parameters.AddWithValue("@shopId", shopId);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                List<ItemInstance> instances = new List<ItemInstance>();
+
+                while (reader.Read())
+                {
+                    instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1)));
+                }
+                sqlCommand.Dispose();
+                return instances;
+            }
+        }
+
+        public static void AddItemToShopInventory(int shopId, ItemInstance instance)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "INSERT INTO ShopInventory VALUES(@shopId,@randomId,@itemId)";
+                sqlCommand.Parameters.AddWithValue("@shopId", shopId);
+                sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomId);
+                sqlCommand.Parameters.AddWithValue("@itemId", instance.ItemId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void RemoveItemFromShopInventory(int shopId, ItemInstance instance)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "DELETE FROM ShopInventory WHERE (ShopID=@shopId AND RandomId=@randomId)";
+                sqlCommand.Parameters.AddWithValue("@shopId", shopId);
+                sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static List<ItemInstance> GetPlayerInventory(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT ItemId,RandomId FROM Inventory WHERE PlayerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                List<ItemInstance> instances = new List<ItemInstance>();
+
+                while (reader.Read())
+                {
+                    instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1)));
+                }
+                sqlCommand.Dispose();
+                return instances;
+            }
+        }
+
         public static void AddItemToInventory(int playerId, ItemInstance instance)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
