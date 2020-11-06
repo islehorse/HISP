@@ -4,16 +4,6 @@ using System.Collections.Generic;
 
 namespace HISP.Game
 {
-    class InventoryItem
-    {
-        public InventoryItem() 
-        {
-            ItemInstances = new List<ItemInstance>();
-        }
-
-        public int ItemId;
-        public List<ItemInstance> ItemInstances;
-    }
 
     interface IInventory
     {

@@ -437,6 +437,10 @@ namespace HISP.Server
             Messages.South = gameData.messages.meta.nearby.south;
             Messages.West = gameData.messages.meta.nearby.west;
 
+            Messages.NoPitchforkMeta = gameData.messages.meta.hay_pile.no_pitchfork;
+            Messages.HasPitchforkMeta = gameData.messages.meta.hay_pile.pitchfork;
+
+
             // Inventory
 
             Messages.InventoryHeaderFormat = gameData.messages.meta.inventory.header_format;

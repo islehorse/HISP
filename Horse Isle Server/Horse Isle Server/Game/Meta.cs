@@ -173,14 +173,37 @@ namespace HISP.Game
 
             if (specialTile.Code == null)
                 message += buildCommonInfo(specialTile.X, specialTile.Y);
-            if (specialTile.Code == "TRANSPORT")
+            else
+                user.MetaPriority = true;
+
+            string TileCode = specialTile.Code;
+            string TileArg = "";
+            if (TileCode.Contains("-"))
+            {
+
+                TileCode = TileCode.Split('-')[0];
+                TileArg = TileCode.Split('-')[1];
+            }
+
+            if (TileCode == "TRANSPORT")
             {
                 Transport.TransportPoint point = Transport.GetTransportPoint(specialTile.X, specialTile.Y);
                 message +=  Meta.BuildTransportInfo(point)+ "^R1";
             }
             
-            if (specialTile.ExitX != 0 && specialTile.ExitY != 0)
-                message += Messages.ExitThisPlace + Messages.MetaTerminator;
+            if (TileCode == "STRAWPILE")
+            {
+                if (user.Inventory.HasItemId(Item.Pitchfork))
+                    message += Messages.HasPitchforkMeta;
+                else
+                    message += Messages.NoPitchforkMeta;
+            }
+
+            if(TileCode == "STORE")
+            {
+
+            }
+             
 
 
             return message;
@@ -233,6 +256,7 @@ namespace HISP.Game
                 Quest.QuestEntry quest = Quest.GetQuestById(chatpoint.ActivateQuestId);
                 if (Quest.ActivateQuest(user, quest, true))
                 {
+                    user.MetaPriority = true;
                     if(quest.GotoNpcChatpoint != -1)
                         chatpoint = Npc.GetNpcChatpoint(npc,quest.GotoNpcChatpoint);
                     if (quest.SuccessNpcChat != null)
