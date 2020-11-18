@@ -135,7 +135,7 @@ namespace HISP.Game
                     for (int i = 0; i < itemInfo.Quantity; i++)
                     {
                         ItemInstance itm = new ItemInstance(itemInfo.ItemId);
-                        user.Inventory.Add(itm);
+                        user.Inventory.AddIgnoringFull(itm);
                     }
                 }
                 if (quest.WarpX != 0 && quest.WarpY != 0)

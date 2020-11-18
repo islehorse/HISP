@@ -598,7 +598,18 @@ namespace HISP.Server
                     try
                     {
                         DroppedItems.DroppedItem item = DroppedItems.GetDroppedItemById(randomId);
-                        sender.LoggedinUser.Inventory.Add(item.instance);
+                        try
+                        {
+                            sender.LoggedinUser.Inventory.Add(item.instance);
+                        }
+                        catch (InventoryException)
+                        {
+                            byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.GrabbedItemButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(inventoryFullMessage);
+                            break;
+                        }
+
+                        
                         DroppedItems.RemoveDroppedItem(item);
 
                         UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
@@ -679,6 +690,67 @@ namespace HISP.Server
                         sender.SendPacket(ChatPacket);
                     }
                     break;
+                case PacketBuilder.ITEM_BUY: // Handles buying an item.
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    string itemIdStr = packetStr.Substring(2, packet.Length - 2);
+                    int itemId = 0;
+                    // Prevent crashing on non-int string.
+                    try 
+                    {
+                        itemId = Int32.Parse(itemIdStr);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object buy packet.");
+                        return;
+                    }
+
+                    Item.ItemInformation itemInfo = Item.GetItemById(itemId);
+                    Shop shop = sender.LoggedinUser.LastShoppedAt;
+                    if(shop != null)
+                    {
+                        int buyCost = shop.CalculateBuyCost(itemInfo);
+                        if (sender.LoggedinUser.Money < buyCost)
+                        {
+                            byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.CantAfford1, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantAffordMessage);
+                            break;
+                        }
+                        sender.LoggedinUser.Money -= buyCost;
+                        if (shop.Inventory.HasItemId(itemId))
+                        {
+                            ItemInstance itemInstance = shop.Inventory.GetItemByItemId(itemId).ItemInstances[0];
+
+                            try
+                            {
+                                sender.LoggedinUser.Inventory.Add(itemInstance);
+                            }
+                            catch(InventoryException)
+                            {
+                                byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.Brought1ButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(inventoryFullMessage);
+                                break;
+                            }
+
+                            shop.Inventory.Remove(itemInstance);
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            // Send chat message to client.
+                            byte[] broughtItemMessage = PacketBuilder.CreateChat(Messages.FormatBuyMessage(itemInfo.Name,buyCost), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(broughtItemMessage);
+
+                        }
+                        else
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to buy a item that was not for sale.");
+                        }
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to buy an item while not in a store.");
+                    }
+
+                    break;
+
                 case PacketBuilder.INFORMATION:
                     packetStr = Encoding.UTF8.GetString(packet);
                     randomIdStr = packetStr.Substring(3, packet.Length - 3);
@@ -696,7 +768,7 @@ namespace HISP.Server
                     if (packet[2] == PacketBuilder.ITEM_INFORMATON)
                     {
 
-                        int itemId = -1;
+                        itemId = -1;
                         if (sender.LoggedinUser.Inventory.HasItem(randomId))
                             itemId = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId).ItemId;
                         else if (DroppedItems.IsDroppedItemExist(randomId))

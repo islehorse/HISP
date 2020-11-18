@@ -5,8 +5,11 @@ using HISP.Server;
 
 namespace HISP.Player
 {
+    
     class PlayerInventory : IInventory
     {
+        
+
         public User BaseUser;
         private List<InventoryItem> inventoryItems;
         public PlayerInventory(User forUser)
@@ -143,8 +146,27 @@ namespace HISP.Player
             throw new KeyNotFoundException("random id: " + randomId + " not found in inventory");
         }
 
+        public void AddIgnoringFull(ItemInstance item)
+        {
+            addItem(item, true);
+        }
         public void Add(ItemInstance item)
         {
+            // Check if has max allready
+            if(HasItemId(item.ItemId))
+            {
+                InventoryItem items = GetItemByItemId(item.ItemId);
+                if (items.ItemInstances.Count >= ConfigReader.MAX_STACK)
+                {
+                    throw new InventoryMaxStackException();
+                }
+                else if (Count >= Messages.DefaultInventoryMax)
+                {
+                    throw new InventoryFullException();
+                }
+            }
+
+
             addItem(item, true);
         }
     }

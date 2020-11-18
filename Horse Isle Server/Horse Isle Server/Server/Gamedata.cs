@@ -418,8 +418,12 @@ namespace HISP.Server
             Messages.GrabItemFormat = gameData.messages.meta.dropped_items.item_format;
             Messages.ItemInformationFormat = gameData.messages.meta.dropped_items.item_information_format;
             Messages.GrabAllItemsButton = gameData.messages.meta.dropped_items.grab_all;
-            Messages.DroppedAnItemMessage = gameData.messages.dropped_item_message;
-            Messages.GrabbedAllObjectsMessage = gameData.messages.grab_all_message;
+            Messages.DroppedAnItemMessage = gameData.messages.dropped_items.dropped_item_message;
+            Messages.GrabbedAllObjectsMessage = gameData.messages.dropped_items.grab_all_message;
+            Messages.GrabbedItemMessage = gameData.messages.dropped_items.grab_message;
+            Messages.GrabAllItemsMessage = gameData.messages.dropped_items.grab_all_message;
+
+            Messages.GrabbedItemButInventoryFull = gameData.messages.dropped_items.grab_but_inv_full;
 
             // Tools
             Messages.BinocularsNothing = gameData.messages.tools.binoculars;
@@ -431,6 +435,13 @@ namespace HISP.Server
             Messages.ThingsIAmSelling = gameData.messages.meta.shop.selling;
             Messages.ThingsYouSellMe = gameData.messages.meta.shop.sell_me;
             Messages.InfinitySign = gameData.messages.meta.shop.infinity;
+
+            Messages.CantAfford1 = gameData.messages.shop.cant_afford_1;
+            Messages.CantAfford5 = gameData.messages.shop.cant_afford_5;
+            Messages.CantAfford25 = gameData.messages.shop.cant_afford_25;
+            Messages.Brought1Format = gameData.messages.shop.brought_1;
+
+            Messages.Brought1ButInventoryFull = gameData.messages.shop.brought_1_but_inv_full;
 
             // Meta Format
 
@@ -446,8 +457,6 @@ namespace HISP.Server
             Messages.LongFullLine = gameData.messages.meta.long_full_line;
             Messages.MetaTerminator = gameData.messages.meta.end_of_meta;
             
-            Messages.GrabbedItemMessage = gameData.messages.grab_message;
-            Messages.GrabAllItemsMessage = gameData.messages.grab_all_message;
 
             Messages.NearbyPlayers = gameData.messages.meta.nearby.players_nearby;
             Messages.North = gameData.messages.meta.nearby.north;

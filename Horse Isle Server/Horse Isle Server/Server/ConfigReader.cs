@@ -24,6 +24,8 @@ namespace HISP.Server
         public static bool BadWords;
         public static bool DoCorrections;
 
+        public const int MAX_STACK = 40;
+
         private static string ConfigurationFileName = "server.properties";
         public static void OpenConfig()
         {
