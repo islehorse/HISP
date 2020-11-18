@@ -67,6 +67,7 @@ namespace HISP.Game
         public static string GrabAllItemsButton;
         public static string GrabAllItemsMessage;
         public static string GrabbedItemMessage;
+        public static string GrabbedItemButInventoryFull;
         public static string GrabbedAllObjectsMessage;
         public static string DroppedAnItemMessage;
         public static string ItemInformationFormat;
@@ -97,6 +98,13 @@ namespace HISP.Game
         public static string ThingsIAmSelling;
         public static string ThingsYouSellMe;
         public static string InfinitySign;
+        public static string CantAfford1;
+        public static string CantAfford5;
+        public static string CantAfford25;
+        public static string Brought1Format;
+        public static string Brought1ButInventoryFull;
+        public static string Brought5;
+        public static string Brought25;
 
         // Npc
         public static string NpcStartChatFormat;
@@ -139,7 +147,10 @@ namespace HISP.Game
         public static string BallonCutscene;
 
 
-
+        public static string FormatBuyMessage(string itemName, int price)
+        {
+            return Brought1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
+        }
         public static string FormatShopEntry(int iconid, string count, string name, int price)
         {
             return ShopEntryFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count).Replace("%TITLE%", name).Replace("%PRICE%", price.ToString());

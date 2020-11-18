@@ -72,6 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\GameExceptions.cs" />
     <Compile Include="Game\InventoryItem.cs" />
     <Compile Include="Game\Quest.cs" />
     <Compile Include="Game\Shop.cs" />
