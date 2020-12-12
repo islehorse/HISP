@@ -691,7 +691,9 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.ITEM_SELL: // Handles selling an item.
+                    int totalSold = 1;
                     int message = 1;
+
                     packetStr = Encoding.UTF8.GetString(packet);
                     randomIdStr = packetStr.Substring(2, packet.Length - 2);
                     randomId = 0;
@@ -702,7 +704,7 @@ namespace HISP.Server
                     }
                     catch (InvalidOperationException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object buy packet.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object sell packet.");
                         return;
                     }
 
@@ -712,27 +714,65 @@ namespace HISP.Server
                         return;
                     }
 
-                    InventoryItem thisItem = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
-                    int itemId = thisItem.ItemId;
+                    InventoryItem invItem = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
+                    int itemId = invItem.ItemId;
+                    goto doSell;
+                case PacketBuilder.ITEM_SELL_ALL:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    string itemIdStr = packetStr.Substring(2, packet.Length - 2);
+                    itemId = 0;
+                    // Prevent crashing on non-int string.
+                    try
+                    {
+                        itemId = Int32.Parse(itemIdStr);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object sell packet.");
+                        return;
+                    }
+
+                    if (!sender.LoggedinUser.Inventory.HasItemId(itemId))
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to sell a item that they doesnt have in there inventory");
+                        return;
+                    }
+                    invItem = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
+
+                    totalSold = invItem.ItemInstances.Count;
+                    message = 2;
+                    goto doSell;
+                doSell:;
 
                     Item.ItemInformation itemInfo = Item.GetItemById(itemId);
                     Shop shop = sender.LoggedinUser.LastShoppedAt;
                     if (shop != null)
                     {
-                        int sellPrice = shop.CalculateSellCost(itemInfo);
+                        int sellPrice = shop.CalculateSellCost(itemInfo) * totalSold;
                         if (shop.CanSell(itemInfo))
                         {
+                            for(int i = 0; i < totalSold; i++)
+                            {
+                                ItemInstance itemInstance = invItem.ItemInstances[0];
+                                sender.LoggedinUser.Inventory.Remove(itemInstance);
+                                shop.Inventory.Add(itemInstance);
+                            }
+
                             sender.LoggedinUser.Money += sellPrice;
 
-                            ItemInstance itemInstance = thisItem.ItemInstances[0];
-                            sender.LoggedinUser.Inventory.Remove(itemInstance);
-                            shop.Inventory.Add(itemInstance);
-
                             UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
-                            if (message == 1)
+                            if(message == 1)
                             {
-                                // Send chat message to client.
                                 byte[] soldItemMessage = PacketBuilder.CreateChat(Messages.FormatSellMessage(itemInfo.Name, sellPrice), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(soldItemMessage);
+                            }
+                            if(message == 2)
+                            {
+                                string name = itemInfo.Name;
+                                if (totalSold > 1)
+                                    name = itemInfo.PluralName;
+
+                                byte[] soldItemMessage = PacketBuilder.CreateChat(Messages.FormatSellAllMessage(name, sellPrice,totalSold), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(soldItemMessage);
                             }
 
@@ -743,6 +783,8 @@ namespace HISP.Server
                         }
                     }
                     break;
+
+
                 case PacketBuilder.ITEM_BUY: // Handles buying an item.
                     message = 1;
                     int count = 1;
@@ -751,10 +793,12 @@ namespace HISP.Server
                     message = 2;
                     count = 5;
                     goto doPurchase;
-
+                case PacketBuilder.ITEM_BUY_25:
+                    message = 3;
+                    count = 25;
                 doPurchase:;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    string itemIdStr = packetStr.Substring(2, packet.Length - 2);
+                    itemIdStr = packetStr.Substring(2, packet.Length - 2);
                     itemId = 0;
                     // Prevent crashing on non-int string.
                     try
@@ -787,36 +831,20 @@ namespace HISP.Server
                             }
 
 
-
-                            if (sender.LoggedinUser.Inventory.HasItemId(itemId))
+                            // Check we wont overflow the inventory
+                            if (sender.LoggedinUser.Inventory.HasItemId(itemId)) 
                             {
                                 InventoryItem items = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
-                                if (items.ItemInstances.Count + count > ConfigReader.MAX_STACK || sender.LoggedinUser.Inventory.Count >= Messages.DefaultInventoryMax)
+                                if (items.ItemInstances.Count + count > ConfigReader.MAX_STACK)
                                 {
-                                    if (message == 1)
-                                    {
-                                        byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.Brought1ButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(inventoryFullMessage);
-                                    }
-                                    else if (message == 2)
-                                    {
-
-                                        byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.Brought5ButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(inventoryFullMessage);
-                                    }
-                                    else if (message == 3)
-                                    {
-
-                                        byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.Brought25ButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(inventoryFullMessage);
-                                    }
-                                    break;
+                                    goto showError;
                                 }
 
                             }
-
-
-
+                            else if(sender.LoggedinUser.Inventory.Count + 1 > Messages.DefaultInventoryMax)
+                            {
+                                goto showError;
+                            }
 
                             for (int i = 0; i < count; i++)
                             {
@@ -827,6 +855,7 @@ namespace HISP.Server
                                 }
                                 catch (InventoryException)
                                 {
+                                    Logger.ErrorPrint("Failed to add: " + itemInfo.Name + " to " + sender.LoggedinUser.Username + " inventory.");
                                     break;
                                 }
                                 shop.Inventory.Remove(itemInstance);
@@ -866,14 +895,33 @@ namespace HISP.Server
 
                     break;
 
-                case PacketBuilder.INFORMATION:
-                    packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(3, packet.Length - 3);
-                    randomId = 0;
+                showError:;
+                    if (message == 1)
+                    {
+                        byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.Brought1ButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(inventoryFullMessage);
+                    }
+                    else if (message == 2)
+                    {
 
+                        byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.Brought5ButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(inventoryFullMessage);
+                    }
+                    else if (message == 3)
+                    {
+
+                        byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.Brought25ButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(inventoryFullMessage);
+                    }
+                    break;
+
+                case PacketBuilder.PACKET_INFORMATION:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    string valueStr = packetStr.Substring(3, packet.Length - 3);
+                    int value = 0;
                     try
                     {
-                        randomId = Int32.Parse(randomIdStr);
+                        value = Int32.Parse(valueStr);
                     }
                     catch (InvalidOperationException)
                     {
@@ -882,13 +930,11 @@ namespace HISP.Server
                     }
                     if (packet[2] == PacketBuilder.ITEM_INFORMATON)
                     {
-
                         itemId = -1;
-                        if (sender.LoggedinUser.Inventory.HasItem(randomId))
-                            itemId = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId).ItemId;
-                        else if (DroppedItems.IsDroppedItemExist(randomId))
-                            itemId = DroppedItems.GetDroppedItemById(randomId).instance.ItemId;
-
+                        if (sender.LoggedinUser.Inventory.HasItem(value))
+                            itemId = sender.LoggedinUser.Inventory.GetItemByRandomid(value).ItemId;
+                        else if (DroppedItems.IsDroppedItemExist(value))
+                            itemId = DroppedItems.GetDroppedItemById(value).instance.ItemId;
                         if (itemId == -1)
                         {
                             Logger.HackerPrint(sender.LoggedinUser.Username + " asked for details of non existiant item.");
@@ -900,12 +946,26 @@ namespace HISP.Server
                         byte[] metaPacket = PacketBuilder.CreateMetaPacket(infoMessage);
                         sender.SendPacket(metaPacket);
                     }
+                    if (packet[2] == PacketBuilder.ITEM_INFORMATON_ID)
+                    {
+                        sender.LoggedinUser.MetaPriority = true;
+                        if (!Item.ItemIdExist(value))
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " asked for details of non existiant item.");
+                            return;
+                        }
+
+                        Item.ItemInformation info = Item.GetItemById(value);
+                        string infoMessage = Meta.BuildItemInfo(info);
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(infoMessage);
+                        sender.SendPacket(metaPacket);
+                    }
                     else if(packet[2] == PacketBuilder.NPC_INFORMATION)
                     {
-                        if(Npc.NpcExists(randomId))
+                        if(Npc.NpcExists(value))
                         {
                             sender.LoggedinUser.MetaPriority = true;
-                            Npc.NpcEntry npc = Npc.GetNpcById(randomId);
+                            Npc.NpcEntry npc = Npc.GetNpcById(value);
                             string infoMessage = Meta.BuildNpcInfo(npc);
                             byte[] metaPacket = PacketBuilder.CreateMetaPacket(infoMessage);
                             sender.SendPacket(metaPacket);
