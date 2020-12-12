@@ -74,11 +74,12 @@ namespace HISP.Game
             return playersNearby;
 
         }
-        private static string buildShopInfo(Shop shop)
+        private static string buildShopInfo(Shop shop, IInventory shopperInventory)
         {
             string message = "";
             InventoryItem[] itemList = shop.Inventory.GetItemList();
 
+            // Get shops stock
             message += Messages.ThingsIAmSelling;
             foreach (InventoryItem item in itemList)
             {
@@ -102,6 +103,32 @@ namespace HISP.Game
                 message += Messages.FormatItemInformationByIdButton(itemInfo.Id);
 
             }
+
+            // Check whats avalilble to be sold
+            message += "^R1" + Messages.ThingsYouSellMe;
+            InventoryItem[] shopperItemList = shopperInventory.GetItemList();
+
+            foreach(InventoryItem shopperitem in shopperItemList)
+            {
+                Item.ItemInformation itemInfo = Item.GetItemById(shopperitem.ItemId);
+                
+                // Prevent items that cannot be sold to this shopkeeper.
+                if (!shop.CanSell(itemInfo))
+                    continue;
+
+
+                int count = shopperitem.ItemInstances.Count;
+                string countStr = count.ToString();
+
+
+                message += "^R1";
+                message += Messages.FormatShopEntry(itemInfo.IconId, countStr, itemInfo.Name, shop.CalculateSellCost(itemInfo));
+                message += Messages.FormatSellButton(shopperitem.ItemInstances[0].RandomId);
+                message += Messages.FormatSellAllButton(itemInfo.Id);
+                message += Messages.FormatItemInformationButton(shopperitem.ItemInstances[0].RandomId);
+            }
+
+            message += "^R1" + Messages.ExitThisPlace;
             return message;
         }
 
@@ -237,7 +264,7 @@ namespace HISP.Game
                     int ShopID = int.Parse(TileArg);
                     Shop shop = Shop.GetShopById(ShopID);
                     user.LastShoppedAt = shop;
-                    message += buildShopInfo(shop);
+                    message += buildShopInfo(shop,user.Inventory);
 
                 }
             }

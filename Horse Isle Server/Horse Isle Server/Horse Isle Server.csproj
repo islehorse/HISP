@@ -73,10 +73,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Game\GameExceptions.cs" />
-    <Compile Include="Game\InventoryItem.cs" />
+    <Compile Include="Game\Inventory\InventoryItem.cs" />
     <Compile Include="Game\Quest.cs" />
     <Compile Include="Game\Shop.cs" />
-    <Compile Include="Game\ShopInventory.cs" />
+    <Compile Include="Game\Inventory\ShopInventory.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -89,7 +89,7 @@
     <Compile Include="Server\Database.cs" />
     <Compile Include="Player\Friends.cs" />
     <Compile Include="Server\Gamedata.cs" />
-    <Compile Include="Game\IInventory.cs" />
+    <Compile Include="Game\Inventory\IInventory.cs" />
     <Compile Include="Game\DroppedItems.cs" />
     <Compile Include="Game\ItemInstance.cs" />
     <Compile Include="Server\Logger.cs" />
@@ -102,7 +102,7 @@
     <Compile Include="Game\Meta.cs" />
     <Compile Include="Game\Npc.cs" />
     <Compile Include="Server\PacketBuilder.cs" />
-    <Compile Include="Player\PlayerInventory.cs" />
+    <Compile Include="Game\Inventory\PlayerInventory.cs" />
     <Compile Include="Player\PlayerQuests.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
