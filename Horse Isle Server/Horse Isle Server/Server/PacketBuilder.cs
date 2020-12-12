@@ -36,6 +36,7 @@ namespace HISP.Server
         public const byte PACKET_INFORMATION = 0x28;
 
         public const byte SECCODE_QUEST = 0x32;
+        public const byte SECCODE_ITEM = 0x28;
 
         public const byte NPC_START_CHAT = 0x14;
         public const byte NPC_CONTINUE_CHAT = 0x15;

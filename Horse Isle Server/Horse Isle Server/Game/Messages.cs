@@ -118,15 +118,16 @@ namespace HISP.Game
         public static string NpcTalkButton;
         public static string NpcInformationFormat;
 
+        // Sec Codes
+        public static string InvalidSecCodeError;
+        public static string YouEarnedAnItemFormat;
+
         // Meta
         public static string IsleFormat;
         public static string TownFormat;
         public static string AreaFormat;
         public static string LocationFormat;
         public static string TransportFormat;
-
-       
-
         public static string NearbyPlayers;
         public static string North;
         public static string East;
@@ -150,7 +151,10 @@ namespace HISP.Game
         public static string WagonCutscene;
         public static string BallonCutscene;
 
-
+        public static string FormatYouEarnedAnItemMessage(string itemName)
+        {
+            return YouEarnedAnItemFormat.Replace("%ITEM%", itemName);
+        }
         public static string FormatSellMessage(string itemName, int price)
         {
             return Sold1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
