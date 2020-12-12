@@ -440,10 +440,14 @@ namespace HISP.Server
             Messages.CantAfford5 = gameData.messages.shop.cant_afford_5;
             Messages.CantAfford25 = gameData.messages.shop.cant_afford_25;
             Messages.Brought1Format = gameData.messages.shop.brought_1;
+            Messages.Brought5Format = gameData.messages.shop.brought_5;
+            Messages.Brought25Format = gameData.messages.shop.brought_25;
             Messages.Sold1Format = gameData.messages.shop.sold_1;
             Messages.SoldAllFormat = gameData.messages.shop.sold_all;
 
             Messages.Brought1ButInventoryFull = gameData.messages.shop.brought_1_but_inv_full;
+            Messages.Brought5ButInventoryFull = gameData.messages.shop.brought_5_but_inv_full;
+            Messages.Brought25ButInventoryFull = gameData.messages.shop.brought_25_but_inv_full;
 
             // Meta Format
 

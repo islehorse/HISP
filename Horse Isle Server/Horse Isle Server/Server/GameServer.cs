@@ -691,6 +691,7 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.ITEM_SELL: // Handles selling an item.
+                    int message = 1;
                     packetStr = Encoding.UTF8.GetString(packet);
                     randomIdStr = packetStr.Substring(2, packet.Length - 2);
                     randomId = 0;
@@ -705,7 +706,7 @@ namespace HISP.Server
                         return;
                     }
 
-                    if(!sender.LoggedinUser.Inventory.HasItem(randomId))
+                    if (!sender.LoggedinUser.Inventory.HasItem(randomId))
                     {
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to sell a item that they doesnt have in there inventory");
                         return;
@@ -722,16 +723,18 @@ namespace HISP.Server
                         if (shop.CanSell(itemInfo))
                         {
                             sender.LoggedinUser.Money += sellPrice;
-                            
+
                             ItemInstance itemInstance = thisItem.ItemInstances[0];
                             sender.LoggedinUser.Inventory.Remove(itemInstance);
                             shop.Inventory.Add(itemInstance);
-                            
-                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
 
-                            // Send chat message to client.
-                            byte[] broughtItemMessage = PacketBuilder.CreateChat(Messages.FormatSellMessage(itemInfo.Name, sellPrice), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(broughtItemMessage);
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            if (message == 1)
+                            {
+                                // Send chat message to client.
+                                byte[] soldItemMessage = PacketBuilder.CreateChat(Messages.FormatSellMessage(itemInfo.Name, sellPrice), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(soldItemMessage);
+                            }
 
                         }
                         else
@@ -741,11 +744,20 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.ITEM_BUY: // Handles buying an item.
+                    message = 1;
+                    int count = 1;
+                    goto doPurchase;
+                case PacketBuilder.ITEM_BUY_5:
+                    message = 2;
+                    count = 5;
+                    goto doPurchase;
+
+                doPurchase:;
                     packetStr = Encoding.UTF8.GetString(packet);
                     string itemIdStr = packetStr.Substring(2, packet.Length - 2);
                     itemId = 0;
                     // Prevent crashing on non-int string.
-                    try 
+                    try
                     {
                         itemId = Int32.Parse(itemIdStr);
                     }
@@ -757,37 +769,89 @@ namespace HISP.Server
 
                     itemInfo = Item.GetItemById(itemId);
                     shop = sender.LoggedinUser.LastShoppedAt;
-                    if(shop != null)
+                    if (shop != null)
                     {
-                        int buyCost = shop.CalculateBuyCost(itemInfo);
+                        int buyCost = shop.CalculateBuyCost(itemInfo) * count;
                         if (sender.LoggedinUser.Money < buyCost)
                         {
                             byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.CantAfford1, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(cantAffordMessage);
-                            break;
+                            return;
                         }
                         if (shop.Inventory.HasItemId(itemId))
                         {
-                            sender.LoggedinUser.Money -= buyCost;
-                            ItemInstance itemInstance = shop.Inventory.GetItemByItemId(itemId).ItemInstances[0];
-
-                            try
+                            if (shop.Inventory.GetItemByItemId(itemId).ItemInstances.Count < count)
                             {
-                                sender.LoggedinUser.Inventory.Add(itemInstance);
-                            }
-                            catch(InventoryException)
-                            {
-                                byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.Brought1ButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                sender.SendPacket(inventoryFullMessage);
+                                Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to buy more of an item than is in stock.");
                                 break;
                             }
 
-                            shop.Inventory.Remove(itemInstance);
-                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
-                            // Send chat message to client.
-                            byte[] broughtItemMessage = PacketBuilder.CreateChat(Messages.FormatBuyMessage(itemInfo.Name,buyCost), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(broughtItemMessage);
 
+
+                            if (sender.LoggedinUser.Inventory.HasItemId(itemId))
+                            {
+                                InventoryItem items = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
+                                if (items.ItemInstances.Count + count > ConfigReader.MAX_STACK || sender.LoggedinUser.Inventory.Count >= Messages.DefaultInventoryMax)
+                                {
+                                    if (message == 1)
+                                    {
+                                        byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.Brought1ButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(inventoryFullMessage);
+                                    }
+                                    else if (message == 2)
+                                    {
+
+                                        byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.Brought5ButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(inventoryFullMessage);
+                                    }
+                                    else if (message == 3)
+                                    {
+
+                                        byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.Brought25ButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(inventoryFullMessage);
+                                    }
+                                    break;
+                                }
+
+                            }
+
+
+
+
+                            for (int i = 0; i < count; i++)
+                            {
+                                ItemInstance itemInstance = shop.Inventory.GetItemByItemId(itemId).ItemInstances[0];
+                                try
+                                {
+                                    sender.LoggedinUser.Inventory.Add(itemInstance);
+                                }
+                                catch (InventoryException)
+                                {
+                                    break;
+                                }
+                                shop.Inventory.Remove(itemInstance);
+                            }
+
+                            sender.LoggedinUser.Money -= buyCost;
+
+
+                            // Send chat message to client.
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            if (message == 1)
+                            {
+                                byte[] broughtItemMessage = PacketBuilder.CreateChat(Messages.FormatBuyMessage(itemInfo.Name, buyCost), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(broughtItemMessage);
+                            }
+                            else if (message == 2)
+                            {
+                                byte[] broughtItemMessage = PacketBuilder.CreateChat(Messages.FormatBuy5Message(itemInfo.PluralName, buyCost), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(broughtItemMessage);
+                            }
+                            else if (message == 3)
+                            {
+                                byte[] broughtItemMessage = PacketBuilder.CreateChat(Messages.FormatBuy25Message(itemInfo.PluralName, buyCost), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(broughtItemMessage);
+                            }
                         }
                         else
                         {
@@ -798,6 +862,7 @@ namespace HISP.Server
                     {
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to buy an item while not in a store.");
                     }
+
 
                     break;
 

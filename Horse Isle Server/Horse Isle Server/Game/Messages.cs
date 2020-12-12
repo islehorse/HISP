@@ -103,8 +103,10 @@ namespace HISP.Game
         public static string CantAfford25;
         public static string Brought1Format;
         public static string Brought1ButInventoryFull;
-        public static string Brought5;
-        public static string Brought25;
+        public static string Brought5ButInventoryFull;
+        public static string Brought25ButInventoryFull;
+        public static string Brought5Format;
+        public static string Brought25Format;
         public static string Sold1Format;
         public static string SoldAllFormat;
 
@@ -152,6 +154,14 @@ namespace HISP.Game
         public static string FormatSellMessage(string itemName, int price)
         {
             return Sold1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
+        }
+        public static string FormatBuy25Message(string itemName, int price)
+        {
+            return Brought25Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
+        }
+        public static string FormatBuy5Message(string itemName, int price)
+        {
+            return Brought5Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
         }
         public static string FormatBuyMessage(string itemName, int price)
         {
