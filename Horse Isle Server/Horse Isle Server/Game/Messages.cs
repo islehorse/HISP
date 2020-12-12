@@ -155,6 +155,10 @@ namespace HISP.Game
         {
             return Sold1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
         }
+        public static string FormatSellAllMessage(string itemName, int price, int sellAmount)
+        {
+            return SoldAllFormat.Replace("%AMOUNT%",sellAmount.ToString()).Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
+        }
         public static string FormatBuy25Message(string itemName, int price)
         {
             return Brought25Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());

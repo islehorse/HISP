@@ -33,6 +33,7 @@ namespace HISP.Server
         public const byte PACKET_LEAVE = 0x7D;
         public const byte PACKET_NPC = 0x28;
         public const byte PACKET_PLAYERINFO = 0x16;
+        public const byte PACKET_INFORMATION = 0x28;
 
         public const byte SECCODE_QUEST = 0x32;
 
@@ -61,15 +62,17 @@ namespace HISP.Server
         public const byte CHAT_BOTTOM_RIGHT = 0x15;
         public const byte CHAT_DM_RIGHT = 0x16;
 
-        public const byte INFORMATION = 0x28;
         public const byte ITEM_INFORMATON = 0x14;
+        public const byte ITEM_INFORMATON_ID = 0x15;
         public const byte NPC_INFORMATION = 0x16;
 
         public const byte ITEM_DROP = 0x1E; 
         public const byte ITEM_PICKUP = 0x14;
         public const byte ITEM_BUY = 0x33;
         public const byte ITEM_BUY_5 = 0x35;
+        public const byte ITEM_BUY_25 = 0x37;
         public const byte ITEM_SELL = 0x3C;
+        public const byte ITEM_SELL_ALL = 0x3D;
         public const byte ITEM_BINOCULARS = 0x5C;
         public const byte ITEM_MAGNIFYING = 0x5D;
         public const byte ITEM_RAKE = 0x5B;
