@@ -105,6 +105,8 @@ namespace HISP.Game
         public static string Brought1ButInventoryFull;
         public static string Brought5;
         public static string Brought25;
+        public static string Sold1Format;
+        public static string SoldAllFormat;
 
         // Npc
         public static string NpcStartChatFormat;
@@ -147,6 +149,10 @@ namespace HISP.Game
         public static string BallonCutscene;
 
 
+        public static string FormatSellMessage(string itemName, int price)
+        {
+            return Sold1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
+        }
         public static string FormatBuyMessage(string itemName, int price)
         {
             return Brought1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());

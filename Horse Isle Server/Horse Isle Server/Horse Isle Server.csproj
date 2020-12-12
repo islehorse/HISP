@@ -88,7 +88,7 @@
     <Compile Include="Server\Converters.cs" />
     <Compile Include="Server\Database.cs" />
     <Compile Include="Player\Friends.cs" />
-    <Compile Include="Server\Gamedata.cs" />
+    <Compile Include="Server\GameDataJson.cs" />
     <Compile Include="Game\Inventory\IInventory.cs" />
     <Compile Include="Game\DroppedItems.cs" />
     <Compile Include="Game\ItemInstance.cs" />
