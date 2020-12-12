@@ -163,16 +163,61 @@ namespace HISP.Server
                 UpdateArea(sender);
                 UpdateUserInfo(sender.LoggedinUser);
             }
-            else if(method == PacketBuilder.SECCODE_QUEST)
+            else if (method == PacketBuilder.SECCODE_ITEM)
             {
                 byte[] ExpectedSecCode = sender.LoggedinUser.GenerateSecCode();
                 byte[] GotSecCode = new byte[4];
                 Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
-                Logger.DebugPrint(sender.LoggedinUser.Username+" Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-"," "));
-                if(ExpectedSecCode.SequenceEqual(GotSecCode))
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
+                if (ExpectedSecCode.SequenceEqual(GotSecCode))
                 {
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string intStr = packetStr.Substring(6,packetStr.Length - 6 - 2);
+                    string intStr = packetStr.Substring(6, packetStr.Length - 6 - 2);
+                    int value = -1;
+                    try
+                    {
+                        value = int.Parse(intStr);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid value");
+                        return;
+                    }
+
+
+                    if (Item.ItemIdExist(value))
+                    {
+                        ItemInstance itm = new ItemInstance(value);
+                        sender.LoggedinUser.Inventory.Add(itm);
+                        Item.ItemInformation itemInfo = Item.GetItemById(value);
+                        byte[] earnedItemMessage = PacketBuilder.CreateChat(Messages.FormatYouEarnedAnItemMessage(itemInfo.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(earnedItemMessage);
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Sent correct sec code, but tried to give an non existant item");
+                        return;
+                    }
+
+                }
+                else
+                {
+                    byte[] errorMessage = PacketBuilder.CreateChat(Messages.InvalidSecCodeError, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(errorMessage);
+                    Logger.HackerPrint(sender.LoggedinUser.Username + " Sent invalid sec code");
+                    return;
+                }
+            }
+            else if (method == PacketBuilder.SECCODE_QUEST)
+            {
+                byte[] ExpectedSecCode = sender.LoggedinUser.GenerateSecCode();
+                byte[] GotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
+                if (ExpectedSecCode.SequenceEqual(GotSecCode))
+                {
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string intStr = packetStr.Substring(6, packetStr.Length - 6 - 2);
                     int value = -1;
                     try
                     {
@@ -195,11 +240,13 @@ namespace HISP.Server
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Sent correct sec code, but tried to activate a non existant quest");
                         return;
                     }
-                    
+
 
                 }
                 else
                 {
+                    byte[] errorMessage = PacketBuilder.CreateChat(Messages.InvalidSecCodeError,PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(errorMessage);
                     Logger.HackerPrint(sender.LoggedinUser.Username + " Sent invalid sec code");
                     return;
                 }

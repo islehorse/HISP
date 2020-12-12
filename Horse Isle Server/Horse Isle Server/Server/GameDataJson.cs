@@ -462,7 +462,6 @@ namespace HISP.Server
             Messages.BackToMap = gameData.messages.meta.back_to_map;
             Messages.LongFullLine = gameData.messages.meta.long_full_line;
             Messages.MetaTerminator = gameData.messages.meta.end_of_meta;
-            
 
             Messages.NearbyPlayers = gameData.messages.meta.nearby.players_nearby;
             Messages.North = gameData.messages.meta.nearby.north;
@@ -473,6 +472,11 @@ namespace HISP.Server
             Messages.NoPitchforkMeta = gameData.messages.meta.hay_pile.no_pitchfork;
             Messages.HasPitchforkMeta = gameData.messages.meta.hay_pile.pitchfork;
 
+
+            // Sec Codes
+
+            Messages.InvalidSecCodeError = gameData.messages.sec_code.invalid_sec_code;
+            Messages.YouEarnedAnItemFormat = gameData.messages.sec_code.item_earned;
 
             // Inventory
 
