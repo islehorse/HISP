@@ -172,7 +172,7 @@ namespace HISP.Game
         {
             return ShopBuy25Button.Replace("%ITEMID%", itemId.ToString());
         }
-        public static string ForamtSellButton(int randomId)
+        public static string FormatSellButton(int randomId)
         {
             return SellButton.Replace("%RANDOMID%", randomId.ToString());
         }
