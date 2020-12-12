@@ -68,6 +68,7 @@ namespace HISP.Server
         public const byte ITEM_DROP = 0x1E; 
         public const byte ITEM_PICKUP = 0x14;
         public const byte ITEM_BUY = 0x33;
+        public const byte ITEM_SELL = 0x3C;
         public const byte ITEM_BINOCULARS = 0x5C;
         public const byte ITEM_MAGNIFYING = 0x5D;
         public const byte ITEM_RAKE = 0x5B;

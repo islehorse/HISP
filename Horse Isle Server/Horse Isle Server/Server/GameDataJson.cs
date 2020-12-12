@@ -5,7 +5,7 @@ using HISP.Game;
 
 namespace HISP.Server
 {
-    class Gamedata
+    class GameDataJson
     {
         
         public static void ReadGamedata()
@@ -440,6 +440,8 @@ namespace HISP.Server
             Messages.CantAfford5 = gameData.messages.shop.cant_afford_5;
             Messages.CantAfford25 = gameData.messages.shop.cant_afford_25;
             Messages.Brought1Format = gameData.messages.shop.brought_1;
+            Messages.Sold1Format = gameData.messages.shop.sold_1;
+            Messages.SoldAllFormat = gameData.messages.shop.sold_all;
 
             Messages.Brought1ButInventoryFull = gameData.messages.shop.brought_1_but_inv_full;
 

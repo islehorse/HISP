@@ -690,10 +690,60 @@ namespace HISP.Server
                         sender.SendPacket(ChatPacket);
                     }
                     break;
+                case PacketBuilder.ITEM_SELL: // Handles selling an item.
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    randomId = 0;
+                    // Prevent crashing on non-int string.
+                    try
+                    {
+                        randomId = Int32.Parse(randomIdStr);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object buy packet.");
+                        return;
+                    }
+
+                    if(!sender.LoggedinUser.Inventory.HasItem(randomId))
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to sell a item that they doesnt have in there inventory");
+                        return;
+                    }
+
+                    InventoryItem thisItem = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
+                    int itemId = thisItem.ItemId;
+
+                    Item.ItemInformation itemInfo = Item.GetItemById(itemId);
+                    Shop shop = sender.LoggedinUser.LastShoppedAt;
+                    if (shop != null)
+                    {
+                        int sellPrice = shop.CalculateSellCost(itemInfo);
+                        if (shop.CanSell(itemInfo))
+                        {
+                            sender.LoggedinUser.Money += sellPrice;
+                            
+                            ItemInstance itemInstance = thisItem.ItemInstances[0];
+                            sender.LoggedinUser.Inventory.Remove(itemInstance);
+                            shop.Inventory.Add(itemInstance);
+                            
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+
+                            // Send chat message to client.
+                            byte[] broughtItemMessage = PacketBuilder.CreateChat(Messages.FormatSellMessage(itemInfo.Name, sellPrice), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(broughtItemMessage);
+
+                        }
+                        else
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to sell a item that was not avalible to be sold.");
+                        }
+                    }
+                    break;
                 case PacketBuilder.ITEM_BUY: // Handles buying an item.
                     packetStr = Encoding.UTF8.GetString(packet);
                     string itemIdStr = packetStr.Substring(2, packet.Length - 2);
-                    int itemId = 0;
+                    itemId = 0;
                     // Prevent crashing on non-int string.
                     try 
                     {
@@ -705,8 +755,8 @@ namespace HISP.Server
                         return;
                     }
 
-                    Item.ItemInformation itemInfo = Item.GetItemById(itemId);
-                    Shop shop = sender.LoggedinUser.LastShoppedAt;
+                    itemInfo = Item.GetItemById(itemId);
+                    shop = sender.LoggedinUser.LastShoppedAt;
                     if(shop != null)
                     {
                         int buyCost = shop.CalculateBuyCost(itemInfo);
@@ -716,9 +766,9 @@ namespace HISP.Server
                             sender.SendPacket(cantAffordMessage);
                             break;
                         }
-                        sender.LoggedinUser.Money -= buyCost;
                         if (shop.Inventory.HasItemId(itemId))
                         {
+                            sender.LoggedinUser.Money -= buyCost;
                             ItemInstance itemInstance = shop.Inventory.GetItemByItemId(itemId).ItemInstances[0];
 
                             try

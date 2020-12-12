@@ -18,7 +18,7 @@ namespace HISP
             CrossDomainPolicy.GetPolicy();
             Database.OpenDatabase();
             Map.OpenMap();
-            Gamedata.ReadGamedata();
+            GameDataJson.ReadGamedata();
             World.ReadWorldData();
             DroppedItems.Init();
             GameServer.StartServer();
