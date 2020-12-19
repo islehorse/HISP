@@ -32,10 +32,26 @@ namespace HISP.Server
 
                 Logger.DebugPrint("Registered Town: " + town.Name + " X " + town.StartX + "-" + town.EndX + " Y " + town.StartY + "-" + town.EndY);
                 World.Towns.Add(town);
-            }   
+            }
+
+            // Register Zones
+            int totalZones = gameData.places.zones.Count;
+            for (int i = 0; i < totalZones; i++)
+            {
+
+                World.Zone zone = new World.Zone();
+                zone.StartX = gameData.places.zones[i].start_x;
+                zone.StartY = gameData.places.zones[i].start_y;
+                zone.EndX = gameData.places.zones[i].end_x;
+                zone.EndY = gameData.places.zones[i].end_y;
+                zone.Name = gameData.places.zones[i].name;
+
+                Logger.DebugPrint("Registered Zone: " + zone.Name + " X " + zone.StartX + "-" + zone.EndX + " Y " + zone.StartY + "-" + zone.EndY);
+                World.Zones.Add(zone);
+            }
 
             // Register Areas
-            int totalAreas = gameData.places.towns.Count;
+            int totalAreas = gameData.places.areas.Count;
             for (int i = 0; i < totalAreas; i++)
             {
 
@@ -184,7 +200,7 @@ namespace HISP.Server
                 item.Effects = effectsList;
                 item.SpawnParamaters = new Item.SpawnRules();
                 item.SpawnParamaters.SpawnCap = gameData.item.item_list[i].spawn_parameters.spawn_cap;
-                item.SpawnParamaters.SpawnInArea = gameData.item.item_list[i].spawn_parameters.spawn_in_area;
+                item.SpawnParamaters.SpawnInZone = gameData.item.item_list[i].spawn_parameters.spawn_in_area;
                 item.SpawnParamaters.SpawnOnTileType = gameData.item.item_list[i].spawn_parameters.spawn_on_tile_type;
                 item.SpawnParamaters.SpawnOnSpecialTile = gameData.item.item_list[i].spawn_parameters.spawn_on_special_tile;
                 item.SpawnParamaters.SpawnNearSpecialTile = gameData.item.item_list[i].spawn_parameters.spawn_near_special_tile;
@@ -528,6 +544,7 @@ namespace HISP.Server
             Messages.BanMessage = gameData.messages.disconnect.banned;
             Messages.IdleKickMessageFormat = gameData.messages.disconnect.client_timeout.kick_message;
             Messages.IdleWarningFormat = gameData.messages.disconnect.client_timeout.warn_message;
+            Messages.DuplicateLogin = gameData.messages.disconnect.dupe_login;
 
             Chat.PrivateMessageSound = gameData.messages.chat.pm_sound;
 

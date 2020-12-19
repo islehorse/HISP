@@ -41,6 +41,7 @@ namespace HISP.Server
 
         private void warnTimerTick(object state)
         {
+            warnTimer.Change(0, 0);
             Logger.DebugPrint("Sending inactivity warning to: " + RemoteIp);
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatIdleWarningMessage(), PacketBuilder.CHAT_BOTTOM_RIGHT);
             SendPacket(chatPacket);
@@ -57,6 +58,16 @@ namespace HISP.Server
         }
         public void Login(int id)
         {
+            // Check for duplicate
+            foreach(GameClient Client in GameServer.ConnectedClients)
+            {
+                if(Client.LoggedIn)
+                {
+                    if (Client.LoggedinUser.Id == id)
+                        Client.Kick(Messages.DuplicateLogin);
+                }
+            }
+
             LoggedinUser = new User(this,id);
             LoggedIn = true;
 

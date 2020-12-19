@@ -79,8 +79,6 @@ namespace HISP.Game
 
 
 
-            
-            Logger.DebugPrint("Overlay: " + otileId + " Terrain: " + tileId);
 
             return passable;
         }
