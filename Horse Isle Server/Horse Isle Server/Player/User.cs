@@ -68,8 +68,8 @@ namespace HISP.Player
             }
             set
             {
-                Database.SetPlayerMoney(value, Id);
                 money = value;
+                Database.SetPlayerMoney(value, Id);
                 GameServer.UpdatePlayer(LoggedinClient);
             }
         }

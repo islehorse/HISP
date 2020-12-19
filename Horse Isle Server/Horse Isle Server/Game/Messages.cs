@@ -144,6 +144,7 @@ namespace HISP.Game
 
         // Disconnect Messages
         public static string BanMessage;
+        public static string DuplicateLogin;
         public static string IdleKickMessageFormat;
 
         // Swf

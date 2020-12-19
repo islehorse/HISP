@@ -13,7 +13,7 @@ namespace HISP.Game
         public struct SpawnRules
         {
             public int SpawnCap;
-            public string SpawnInArea;
+            public string SpawnInZone;
             public string SpawnOnTileType;
             public string SpawnOnSpecialTile;
             public string SpawnNearSpecialTile;
