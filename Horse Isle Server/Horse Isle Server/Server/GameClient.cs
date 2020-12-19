@@ -41,10 +41,13 @@ namespace HISP.Server
 
         private void warnTimerTick(object state)
         {
-            warnTimer.Change(0, 0);
             Logger.DebugPrint("Sending inactivity warning to: " + RemoteIp);
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatIdleWarningMessage(), PacketBuilder.CHAT_BOTTOM_RIGHT);
             SendPacket(chatPacket);
+            
+            warnTimer.Dispose();
+            warnTimer = null;
+
         }
 
         private void kickTimerTick(object state)
@@ -131,10 +134,10 @@ namespace HISP.Server
 
            
             if (kickTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
-                kickTimer.Change(kickInterval, kickInterval);
+                kickTimer = new Timer(new TimerCallback(kickTimerTick), null, kickInterval, kickInterval);
 
             if (warnTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
-                warnTimer.Change(warnInterval, warnInterval);
+                warnTimer = new Timer(new TimerCallback(warnTimerTick), null, warnInterval, warnInterval);
 
             if (!LoggedIn) // Must be either login or policy-file-request
             {
