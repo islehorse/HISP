@@ -192,7 +192,6 @@ namespace HISP.Server
 
        public void Disconnect()
         {
-            Logger.DebugPrint(ClientSocket.RemoteEndPoint + " has Disconnected.");
             recvPackets.Abort();
             if(updateTimer != null)
                 updateTimer.Dispose();
