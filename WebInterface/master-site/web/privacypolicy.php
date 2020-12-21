@@ -170,6 +170,29 @@ individual.&nbsp; NEVER make any attempt to find out where another player lives
 or any personally identifiable information.<br/>
 <br/>
 
+
+<?php 
+
+if (isset($_GET["ACCEPT"])) {
+  if ($_GET["ACCEPT"] === "1") {
+    echo '<br/>
+    <br/>
+    
+    <center><br>
+    In order to play Horse Isle,  you must Read, Understand,  and Accept the Privacy Policy Above.<br>
+    <br>
+    Answer honestly here. You will still get to play if you are 12 or younger.<br>
+    <font size="+1"><b>[ <a href="newuser.php?A=1">I ACCEPT AND I AM 12 OR YOUNGER</a> ]</b><br>
+    <b>[ <a href="newuser.php?A=2">I ACCEPT AND I AM 13 OR OLDER</a> ]</b><br>
+    <b>[ <a href="/">I DO NOT ACCEPT</a> ]</b><br>
+    </font></center>
+    <br/>
+    <br/>';
+  }
+}
+
+?>
+
 </TD></TR></TABLE>
 <TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100%>
 <TR>
