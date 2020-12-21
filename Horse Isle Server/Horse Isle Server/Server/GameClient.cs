@@ -198,7 +198,7 @@ namespace HISP.Server
 
        public void Disconnect()
         {
-            recvPackets.Abort();
+            
             if(updateTimer != null)
                 updateTimer.Dispose();
             if(inactivityTimer != null)
@@ -213,6 +213,7 @@ namespace HISP.Server
             LoggedinUser = null;
             ClientSocket.Close();
             ClientSocket.Dispose();
+            recvPackets.Abort();
         }
 
        public void Kick(string Reason)

@@ -65,6 +65,7 @@ namespace HISP.Server
                 Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
                 return;
             }
+            Database.AddOnlineUser(sender.LoggedinUser.Id, sender.LoggedinUser.Administrator, sender.LoggedinUser.Moderator);
             Logger.DebugPrint(sender.LoggedinUser.Username + " Requested user information.");
 
             User user = sender.LoggedinUser;
@@ -1205,9 +1206,10 @@ namespace HISP.Server
         public static void OnDisconnect(GameClient sender)
         {
             connectedClients.Remove(sender);
-
+            Logger.DebugPrint("owoo disconnect");
             if (sender.LoggedIn)
             {
+                Database.RemoveOnlineUser(sender.LoggedinUser.Id);
                 // Send disconnect message
                 byte[] logoutMessageBytes = PacketBuilder.CreateChat(Messages.FormatLogoutMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
                 foreach (GameClient client in ConnectedClients)
