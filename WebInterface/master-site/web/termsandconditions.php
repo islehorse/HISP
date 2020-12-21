@@ -327,6 +327,22 @@ control of, or a national or resident of, any such country or on any such
 list.<br/>
 <br/>
 
+
+<?php 
+
+if (isset($_GET["ACCEPT"])) {
+  if ($_GET["ACCEPT"] === "1") {
+    echo '<hr color="#000000" size="1" width="75%">
+    <center><br><font size="+1">
+    In order to play Horse Isle,  you must Read, Understand,  and Agree to follow the Rules Above.<br>
+    <b>[ <a href="newuserquiz.php">I WILL FOLLOW THE RULES</a> ] [ <a href="/">I WILL NOT</a> ]</b><br>
+    </font><br>
+    </center>';
+  }
+}
+
+?>
+
 </TD></TR></TABLE>
 <TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100%>
 <TR>
@@ -334,6 +350,7 @@ list.<br/>
 <TD WIDTH=100% BACKGROUND=/web/hoilgui11.gif></TD>
 <TD><IMG SRC=/web/hoilgui12.gif></TD>
 </TR></TABLE>
+
 <CENTER><B>
 [ <A HREF=//master.horseisle.com/beginnerguide/>New Player Guide</A> ]<BR>
 [ <A HREF=/web/rules.php>Rules</A> ]
