@@ -168,6 +168,9 @@ namespace HISP.Server
                     case PacketBuilder.PACKET_CHAT:
                         GameServer.OnChatPacket(this, Packet);
                         break;
+                    case PacketBuilder.PACKET_CLICK:
+                        GameServer.OnClickPacket(this, Packet);
+                        break;
                     case PacketBuilder.PACKET_KEEP_ALIVE:
                         GameServer.OnKeepAlive(this, Packet);
                         break;
