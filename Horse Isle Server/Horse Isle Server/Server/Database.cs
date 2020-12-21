@@ -24,6 +24,9 @@ namespace HISP.Server
                 string ShopInventory = "CREATE TABLE ShopInventory(ShopID INT, RandomID INT, ItemID INT)";
                 string DroppedItems = "CREATE TABLE DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT)";
                 string TrackedQuest = "CREATE TABLE TrackedQuest(playerId INT, questId INT, timesCompleted INT)";
+                string OnlineUsers = "CREATE TABLE OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3))";
+                string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+
 
                 try
                 {
@@ -142,6 +145,29 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+                try
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = OnlineUsers;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = DeleteOnlineUsers;
+                    sqlCommand.ExecuteNonQuery();
                     sqlCommand.Dispose();
                 }
                 catch (Exception e)
@@ -374,6 +400,36 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@questId", questId);
                 sqlCommand.Parameters.AddWithValue("@timesCompleted", timesCompleted);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void AddOnlineUser(int playerId, bool Admin, bool Moderator)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "INSERT INTO OnlineUsers VALUES(@playerId, @admin, @moderator)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@admin", Admin ? "YES" : "NO");
+                sqlCommand.Parameters.AddWithValue("@moderator", Moderator ? "YES" : "NO");
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void RemoveOnlineUser(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "DELETE FROM OnlineUsers WHERE (playerId=@playerId)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
