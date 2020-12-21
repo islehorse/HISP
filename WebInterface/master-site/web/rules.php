@@ -223,8 +223,12 @@ the first two situations and if you agree to a trade, even if the player said
 they would give the item/horse back, be willing to lose that item/horse in case
 they are lying.&nbsp; <B>DO NOT file a fake/non-serious abuse report as you will be penalized
 instead of the person you had a problem with!</B> - Abuse reports take a lot of time and effort to deal with, And while we appreciate and manage the serious ones, the non-serious ones waste way too much of our time.  The ABUSE REPORT system is a SERIOUS tool, please treat it as such.<br/>
-
-
+<hr color="#000000" size="1" width="75%">
+<center><br><font size="+1">
+In order to play Horse Isle,  you must Read, Understand,  and Agree to follow the Rules Above.<br>
+<b>[ <a href="newuserquiz.php">I WILL FOLLOW THE RULES</a> ] [ <a href="/">I WILL NOT</a> ]</b><br>
+</font><br>
+</center>
 </TD></TR></TABLE>
 <TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100%>
 <TR>
