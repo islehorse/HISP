@@ -1,4 +1,4 @@
-*bin/*
-*obj/*
+Horse Isle Server/Horse Isle Server/bin/*
+Horse Isle Server/Horse Isle Server/obj/*
 *.log
-*.vs/*
+*.suo
