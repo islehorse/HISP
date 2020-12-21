@@ -15,8 +15,7 @@ namespace HISP.Server
     {
 
         public static Socket ServerSocket;
-        private static Timer serverTimer;
-
+        
         public static GameClient[] ConnectedClients // Done to prevent Enumerator Changed errors.
         {
             get {
@@ -29,10 +28,22 @@ namespace HISP.Server
 
         public static Random RandomNumberGenerator = new Random();
 
-        // used for world time,
+        /*
+         *  Private stuff 
+         */
         private static int gameTickSpeed = 4320; // Changing this to ANYTHING else will cause desync with the client.
-        
         private static List<GameClient> connectedClients = new List<GameClient>();
+        private static Timer serverTimer;
+        private static void onTick(object state)
+        {
+            World.TickWorldClock();
+
+            if (World.ServerTime.Minutes % 30 == 0)
+            {
+                DroppedItems.Update();
+            }
+            serverTimer.Change(gameTickSpeed, gameTickSpeed);
+        }
 
         /*
          * This section is where all the event handlers live, 
@@ -1451,9 +1462,7 @@ namespace HISP.Server
             ServerSocket.Bind(ep);
             Logger.InfoPrint("Binding to ip: " + ConfigReader.BindIP + " On port: " + ConfigReader.Port.ToString());
             ServerSocket.Listen(10000);
-
             serverTimer = new Timer(new TimerCallback(onTick), null, gameTickSpeed, gameTickSpeed);
-
             while (true)
             {
                 Logger.InfoPrint("Waiting for new connections...");
@@ -1464,20 +1473,8 @@ namespace HISP.Server
             }
         }
 
-        /*
-         *  Private methods..
-         */
-
-        private static void onTick(object state)
-        {
-            World.TickWorldClock();
-
-            if(World.ServerTime.Minutes % 20 == 0)
-            {
-                DroppedItems.Update();
-            }
-        }
-
+        
+        
 
     }
 }
