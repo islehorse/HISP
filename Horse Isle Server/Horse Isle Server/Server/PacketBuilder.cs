@@ -14,6 +14,7 @@ namespace HISP.Server
         public const byte PACKET_LOGIN = 0x7F;
         public const byte PACKET_CHAT = 0x14;
         public const byte PACKET_MOVE = 0x15;
+        public const byte PACKET_CLICK = 0x77;
         public const byte PACKET_USERINFO = 0x81;
         public const byte PACKET_WORLD = 0x7A;
         public const byte PACKET_BASE_STATS = 0x7B;
@@ -354,6 +355,21 @@ namespace HISP.Server
             return Packet;
         }
 
+        public static byte[] CreateClickTileInfoPacket(string text)
+        {
+            byte[] strBytes = Encoding.UTF8.GetBytes(text);
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_CLICK);
+            ms.Write(strBytes, 0x00, strBytes.Length);
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
+
         public static byte[] CreateMetaPacket(string formattedText)
         {
             byte[] strBytes = Encoding.UTF8.GetBytes(formattedText);
@@ -361,9 +377,7 @@ namespace HISP.Server
             MemoryStream ms = new MemoryStream();
 
             ms.WriteByte(PACKET_PLACE_INFO);
-
             ms.Write(strBytes, 0x00, strBytes.Length);
-            
             ms.WriteByte(PACKET_TERMINATOR);
 
             ms.Seek(0x00, SeekOrigin.Begin);

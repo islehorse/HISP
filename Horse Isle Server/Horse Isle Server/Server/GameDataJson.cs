@@ -13,7 +13,7 @@ namespace HISP.Server
             if(!File.Exists(ConfigReader.GameDataFile))
             {
                 Logger.ErrorPrint("Game Data JSON File: " + ConfigReader.GameDataFile + " Does not exist!");
-                return;
+                throw new FileNotFoundException(ConfigReader.GameDataFile + " Not found :(");
             }
             string jsonData = File.ReadAllText(ConfigReader.GameDataFile);
             dynamic gameData = JsonConvert.DeserializeObject(jsonData);
@@ -554,7 +554,9 @@ namespace HISP.Server
             // Inventory
 
             Messages.DefaultInventoryMax = gameData.item.max_carryable;
-            
+
+            // Click
+            Messages.NothingInterestingHere = gameData.messages.click_nothing_message;
 
             // Swf
             Messages.WagonCutscene = gameData.transport.wagon_cutscene;

@@ -152,6 +152,17 @@ namespace HISP.Player
         public  int SecCodeInc = 0;
         public int SecCodeCount = 0;
 
+        public void Teleport(int newX, int newY)
+        {
+            Logger.DebugPrint("Teleporting: " + Username + " to: " + newX.ToString() + "," + newY.ToString());
+
+            X = newX;
+            Y = newY;
+
+            byte[] MovementPacket = PacketBuilder.CreateMovementPacket(X, Y, CharacterId, Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+            LoggedinClient.SendPacket(MovementPacket);
+            GameServer.Update(LoggedinClient);
+        }
         public byte[] GenerateSecCode()
         {
             var i = 0;
