@@ -686,8 +686,6 @@ namespace HISP.Server
                         }
                         catch (InventoryException)
                         {
-                            byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.GrabbedItemButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(inventoryFullMessage);
                             chatMsg = Messages.GrabbedAllItemsButInventoryFull;
                             break;
                         }
