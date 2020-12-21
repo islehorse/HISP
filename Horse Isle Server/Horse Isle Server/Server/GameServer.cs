@@ -734,7 +734,7 @@ namespace HISP.Server
 
                         UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
 
-                        byte[] chatMessage = PacketBuilder.CreateChat(Messages.GrabbedItemMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        chatMessage = PacketBuilder.CreateChat(Messages.GrabbedItemMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(chatMessage);
                     }
                     catch(KeyNotFoundException)
