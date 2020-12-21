@@ -621,7 +621,7 @@ namespace HISP.Server
                 Logger.ErrorPrint(sender.RemoteIp + " Send click packet when not logged in.");
                 return;
             }
-            if (packet.Length < 4)
+            if (packet.Length < 6)
             {
                 Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid Click Packet");
                 return;
@@ -630,15 +630,15 @@ namespace HISP.Server
             string packetStr = Encoding.UTF8.GetString(packet);
             if(packetStr.Contains("|"))
             {
-                string packetContents = packetStr.Substring(0, packetStr.Length - 3);
+                string packetContents = packetStr.Substring(1, packetStr.Length - 3);
                 string[] xy = packetContents.Split('|');
                 int x = 0;
                 int y = 0;
 
                 try
                 {
-                    x = int.Parse(xy[0]);
-                    y = int.Parse(xy[1]);
+                    x = int.Parse(xy[0])+4;
+                    y = int.Parse(xy[1])+1;
                 }
                 catch(FormatException)
                 {
@@ -675,9 +675,34 @@ namespace HISP.Server
             byte action = packet[1];
             switch(action)
             {
+                case PacketBuilder.ITEM_PICKUP_ALL:
+                    string chatMsg = Messages.GrabAllItemsMessage;
+                    DroppedItems.DroppedItem[] droppedItems = DroppedItems.GetItemsAt(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                    foreach(DroppedItems.DroppedItem item in droppedItems)
+                    {
+                        try
+                        {
+                            sender.LoggedinUser.Inventory.Add(item.instance);
+                        }
+                        catch (InventoryException)
+                        {
+                            byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.GrabbedItemButInventoryFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(inventoryFullMessage);
+                            chatMsg = Messages.GrabbedAllItemsButInventoryFull;
+                            break;
+                        }
+                            
+                        DroppedItems.RemoveDroppedItem(item);
+                    }
+                    UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+
+                    byte[] chatMessage = PacketBuilder.CreateChat(chatMsg, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(chatMessage);
+
+                    break;
                 case PacketBuilder.ITEM_PICKUP:
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    string randomIdStr = packetStr.Substring(2, packet.Length - 4);
                     int randomId = 0;
 
                     try
