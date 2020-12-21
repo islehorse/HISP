@@ -33,6 +33,7 @@ namespace HISP.Server
         public const byte PACKET_KICK = 0x80;
         public const byte PACKET_LEAVE = 0x7D;
         public const byte PACKET_NPC = 0x28;
+        public const byte PACKET_QUIT = 0x7D;
         public const byte PACKET_PLAYERINFO = 0x16;
         public const byte PACKET_INFORMATION = 0x28;
 

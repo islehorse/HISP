@@ -183,6 +183,9 @@ namespace HISP.Server
                     case PacketBuilder.PACKET_ITEM_INTERACTION:
                         GameServer.OnItemInteraction(this,Packet);
                         break;
+                    case PacketBuilder.PACKET_QUIT:
+                        GameServer.OnQuitPacket(this, Packet);
+                        break;
                     case PacketBuilder.PACKET_NPC:
                         GameServer.OnNpcInteraction(this, Packet);
                         break;
