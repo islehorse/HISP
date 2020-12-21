@@ -16,7 +16,7 @@ namespace HISP.Server
             {
                 db.Open();
                 string UserTable = "CREATE TABLE Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
-                string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, Money INT, QuestPoints INT, BankBalance BIGINT,ProfilePage Text(1028), CharId INT, ChatViolations INT)";
+                string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, Money INT, QuestPoints INT, BankBalance BIGINT,ProfilePage Text(1028), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT)";
                 string MailTable = "CREATE TABLE Mailbox(IdTo INT, PlayerFrom TEXT(16),Subject TEXT(128), Message Text(1028), TimeSent INT)";
                 string BuddyTable = "CREATE TABLE BuddyList(Id INT, IdFriend INT, Pending BOOL)";
                 string WorldTable = "CREATE TABLE World(Time INT,Day INT, Year INT, Weather TEXT(64))";
@@ -24,7 +24,7 @@ namespace HISP.Server
                 string ShopInventory = "CREATE TABLE ShopInventory(ShopID INT, RandomID INT, ItemID INT)";
                 string DroppedItems = "CREATE TABLE DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT)";
                 string TrackedQuest = "CREATE TABLE TrackedQuest(playerId INT, questId INT, timesCompleted INT)";
-                string OnlineUsers = "CREATE TABLE OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3))";
+                string OnlineUsers = "CREATE TABLE OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3))";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
 
@@ -389,6 +389,56 @@ namespace HISP.Server
             }
 
         }
+        public static bool SetUserSubscriptionStatus(int playerId, bool subscribed)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE userExt SET Subscriber=@subscribed WHERE Id=@playerId";
+                sqlCommand.Parameters.AddWithValue("@subscribed", subscribed ? "YES" : "NO");
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+
+                return subscribed;
+            }
+        }
+        public static int GetUserSubscriptionExpireDate(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT SubscribedUntil FROM userExt WHERE Id=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int subscribedUntil = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+
+                return subscribedUntil;
+            }
+        }
+        public static bool IsUserSubscribed(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT Subscriber FROM userExt WHERE Id=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                bool subscribed = (string)(sqlCommand.ExecuteScalar()) == "YES";
+                sqlCommand.Dispose();
+
+                return subscribed; 
+            }
+        }
         public static void AddNewTrackedQuest(int playerId, int questId, int timesCompleted)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -405,17 +455,18 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
-        public static void AddOnlineUser(int playerId, bool Admin, bool Moderator)
+        public static void AddOnlineUser(int playerId, bool Admin, bool Moderator, bool Subscribed)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "INSERT INTO OnlineUsers VALUES(@playerId, @admin, @moderator)";
+                sqlCommand.CommandText = "INSERT INTO OnlineUsers VALUES(@playerId, @admin, @moderator, @subscribed)";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@admin", Admin ? "YES" : "NO");
                 sqlCommand.Parameters.AddWithValue("@moderator", Moderator ? "YES" : "NO");
+                sqlCommand.Parameters.AddWithValue("@subscribed", Subscribed ? "YES" : "NO");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
@@ -842,7 +893,7 @@ namespace HISP.Server
                     throw new Exception("Userid " + id + " Allready in userext.");
 
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,0,0,0,'',0,0)";
+                sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,0,0,0,'',0,0,'NO',0,0,1000,1000,1000, 360)";
                 sqlCommand.Parameters.AddWithValue("@id", id);
                 sqlCommand.Parameters.AddWithValue("@x", Map.NewUserStartX);
                 sqlCommand.Parameters.AddWithValue("@y", Map.NewUserStartY);
