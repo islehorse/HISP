@@ -139,7 +139,7 @@ namespace HISP.Game
                     }
                 }
                 if (quest.WarpX != 0 && quest.WarpY != 0)
-                    GameServer.Teleport(user.LoggedinClient, quest.WarpX, quest.WarpY);
+                    user.Teleport(quest.WarpX, quest.WarpY);
 
                 // Give quest points
                 user.QuestPoints += quest.QuestPointsEarned;

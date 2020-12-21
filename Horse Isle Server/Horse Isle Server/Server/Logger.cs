@@ -6,7 +6,10 @@ namespace HISP.Server
     {
         public static void HackerPrint(string text) // When someone is obviously cheating.
         {
+            ConsoleColor prevColor = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine("[HACK] " + text);
+            Console.ForegroundColor = prevColor;
         }
         public static void DebugPrint(string text)
         {

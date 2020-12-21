@@ -152,6 +152,9 @@ namespace HISP.Game
         public static string WagonCutscene;
         public static string BallonCutscene;
 
+        // Click
+        public static string NothingInterestingHere;
+
         public static string FormatYouEarnedAnItemMessage(string itemName)
         {
             return YouEarnedAnItemFormat.Replace("%ITEM%", itemName);

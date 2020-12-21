@@ -31,8 +31,9 @@ namespace HISP.Server
         {
             if (!File.Exists(ConfigurationFileName))
             {
-                Logger.ErrorPrint(ConfigurationFileName+" not found! writing default.");
+                Logger.WarnPrint(ConfigurationFileName+" not found! writing default.");
                 File.WriteAllText(ConfigurationFileName,Resources.DefaultServerProperties);
+                Logger.InfoPrint("! Its very likely database connection will fail...");
             }
 
             string[] configFile = File.ReadAllLines(ConfigurationFileName);

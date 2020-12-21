@@ -33,6 +33,12 @@ namespace HISP.Server
         private static int gameTickSpeed = 4320; // Changing this to ANYTHING else will cause desync with the client.
         
         private static List<GameClient> connectedClients = new List<GameClient>();
+
+        /*
+         * This section is where all the event handlers live, 
+         * eg: OnMovementPacket is whenever the server receies a movement request from the client.
+         */
+
         public static void OnCrossdomainPolicyRequest(GameClient sender) // When a cross-domain-policy request is received.
         {
             Logger.DebugPrint("Cross-Domain-Policy request received from: " + sender.RemoteIp);
@@ -41,7 +47,6 @@ namespace HISP.Server
 
             sender.SendPacket(crossDomainPolicyResponse); // Send to client.
         }
-
         public static void OnUserInfoRequest(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -97,7 +102,6 @@ namespace HISP.Server
 
 
         }
-
         public static void OnKeepAlive(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -254,7 +258,6 @@ namespace HISP.Server
             
 
         }
-
         public static void OnMovementPacket(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -380,7 +383,7 @@ namespace HISP.Server
             }
             else if(movementDirection == PacketBuilder.MOVE_UPDATE)
             {
-                Update(sender, true);
+                Update(sender);
                 return;
             }
 
@@ -452,7 +455,7 @@ namespace HISP.Server
 
                 if (reply.GotoChatpoint == -1)
                 {
-                    UpdateArea(sender,true);
+                    UpdateArea(sender);
                     return;
                 }
                 sender.LoggedinUser.MetaPriority = true;
@@ -515,7 +518,7 @@ namespace HISP.Server
                         sender.SendPacket(swfModulePacket);
                     }
 
-                    Teleport(sender, transportLocation.GotoX, transportLocation.GotoY);
+                    sender.LoggedinUser.Teleport(transportLocation.GotoX, transportLocation.GotoY);
 
                     byte[] welcomeToIslePacket = PacketBuilder.CreateChat(Messages.FormatWelcomeToAreaMessage(transportLocation.LocationTitle), PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(welcomeToIslePacket);
@@ -610,7 +613,52 @@ namespace HISP.Server
             // Send to sender
             sender.SendPacket(chatPacketSender);
         }
+        public static void OnClickPacket(GameClient sender, byte[] packet)
+        {
 
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Send click packet when not logged in.");
+                return;
+            }
+            if (packet.Length < 4)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid Click Packet");
+                return;
+            }
+            
+            string packetStr = Encoding.UTF8.GetString(packet);
+            if(packetStr.Contains("|"))
+            {
+                string packetContents = packetStr.Substring(0, packetStr.Length - 3);
+                string[] xy = packetContents.Split('|');
+                int x = 0;
+                int y = 0;
+
+                try
+                {
+                    x = int.Parse(xy[0]);
+                    y = int.Parse(xy[1]);
+                }
+                catch(FormatException)
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a click packet with non-string xy value.");
+                    return;
+                }
+
+                // Get description of tile 
+                string returnedMsg = Messages.NothingInterestingHere;
+                if(World.InSpecialTile(x, y))
+                {
+                    World.SpecialTile tile = World.GetSpecialTile(x, y);
+                    if (tile.Title != null)
+                        returnedMsg = tile.Title;
+                }
+
+                byte[] tileInfoPacket = PacketBuilder.CreateClickTileInfoPacket(returnedMsg);
+                sender.SendPacket(tileInfoPacket);
+            }
+        }
         public static void OnItemInteraction(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -1031,7 +1079,6 @@ namespace HISP.Server
             }
 
         }
-
         public static void OnInventoryRequested(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -1107,9 +1154,6 @@ namespace HISP.Server
             }
 
         }
-
-
-
         public static void OnDisconnect(GameClient sender)
         {
             connectedClients.Remove(sender);
@@ -1133,6 +1177,9 @@ namespace HISP.Server
 
         }
 
+        /*
+         *  Get(Some Information)
+         */
 
         public static User[] GetUsersUsersInIsle(World.Isle isle, bool includeStealth = false, bool includeMuted = false)
         {
@@ -1151,7 +1198,6 @@ namespace HISP.Server
 
             return usersInIsle.ToArray();
         }
-
         public static User[] GetUsersAt(int x, int y, bool includeStealth = false, bool includeMuted = false)
         {
             List<User> usersHere = new List<User>();
@@ -1169,7 +1215,6 @@ namespace HISP.Server
             }
             return usersHere.ToArray();
         }
-
         public static User[] GetNearbyUsers(int x, int y, bool includeStealth=false, bool includeMuted=false)
         {
             int startX = x - 15;
@@ -1191,7 +1236,6 @@ namespace HISP.Server
 
             return usersNearby.ToArray();
         }
-
         public static int GetNumberOfPlayers(bool includeStealth=false)
         {
             int count = 0;
@@ -1206,7 +1250,6 @@ namespace HISP.Server
             
             return count;
         }
-
         public static int GetNumberOfModsOnline()
         {
             int count = 0;
@@ -1218,33 +1261,33 @@ namespace HISP.Server
             }
             return count;
         }
-
-        public static void Teleport(GameClient client, int newX, int newY)
+        public static int GetNumberOfAdminsOnline()
         {
-            if (!client.LoggedIn)
-                return;
-            Logger.DebugPrint("Teleporting: " + client.LoggedinUser.Username + " to: " + newX.ToString() + "," + newY.ToString());
-
-            client.LoggedinUser.X = newX;
-            client.LoggedinUser.Y = newY;
-
-            byte[] MovementPacket = PacketBuilder.CreateMovementPacket(client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.CharacterId, client.LoggedinUser.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
-            client.SendPacket(MovementPacket);
-            Update(client);
-
+            int count = 0;
+            foreach (GameClient client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                    if (client.LoggedinUser.Administrator)
+                        count++;
+            }
+            return count;
         }
-        public static void Update(GameClient client, bool justArea = false)
+
+        /*
+         *  Update game state functions.
+         */
+
+        public static void Update(GameClient client)
         {
-            UpdateArea(client, justArea);
+            UpdateArea(client);
             foreach (User nearbyUser in GameServer.GetNearbyUsers(client.LoggedinUser.X, client.LoggedinUser.Y, false, false))
                 if (nearbyUser.Id != client.LoggedinUser.Id)
                     if(!nearbyUser.MetaPriority)
-                        UpdateArea(nearbyUser.LoggedinClient, justArea);
+                        UpdateArea(nearbyUser.LoggedinClient);
 
 
             UpdateUserInfo(client.LoggedinUser);
         }
-
         public static void UpdateInventory(GameClient forClient)
         {
             if (!forClient.LoggedIn)
@@ -1264,7 +1307,6 @@ namespace HISP.Server
             byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, World.GetWeather());
             forClient.SendPacket(WorldData);
         }
-
         public static void UpdatePlayer(GameClient forClient)
         {
             if (!forClient.LoggedIn)
@@ -1275,7 +1317,6 @@ namespace HISP.Server
             byte[] PlayerData = PacketBuilder.CreatePlayerData(forClient.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), forClient.LoggedinUser.MailBox.MailCount);
             forClient.SendPacket(PlayerData);
         }
-
         public static void UpdateUserInfo(User user)
         {
             byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
@@ -1292,17 +1333,16 @@ namespace HISP.Server
 
 
         }
-
         public static void UpdateAreaForAll(int x, int y)
         {
             foreach(GameClient client in ConnectedClients)
             {
                 if (client.LoggedIn)
                     if (client.LoggedinUser.X == x && client.LoggedinUser.Y == y)
-                        UpdateArea(client, true);
+                        UpdateArea(client);
             }
         }
-        public static void UpdateArea(GameClient forClient, bool justArea = false)
+        public static void UpdateArea(GameClient forClient)
         {
             if (!forClient.LoggedIn)
             {
@@ -1318,12 +1358,12 @@ namespace HISP.Server
             else
             {
                 World.SpecialTile specialTile = World.GetSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
-                if (specialTile.AutoplaySwf != null && specialTile.AutoplaySwf != "" && !justArea)
+                if (specialTile.AutoplaySwf != null && specialTile.AutoplaySwf != "")
                 {
                     byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(specialTile.AutoplaySwf,PacketBuilder.PACKET_SWF_MODULE_GENTLE);
                     forClient.SendPacket(swfModulePacket);
                 }
-                if (specialTile.Code != null && !justArea)
+                if (specialTile.Code != null)
                     if (!ProcessMapCodeWithArg(forClient, specialTile.Code))
                         return;
                 LocationStr = Meta.BuildSpecialTileInfo(forClient.LoggedinUser, specialTile);
@@ -1334,6 +1374,9 @@ namespace HISP.Server
 
         }
 
+        /*
+         *   Other...
+         */
         public static bool ProcessMapCodeWithArg(GameClient forClient, string mapCode)
         {
             if(mapCode.Contains('-'))
@@ -1351,7 +1394,7 @@ namespace HISP.Server
                         {
                             int newX = int.Parse(args[0]);
                             int newY = int.Parse(args[1]);
-                            Teleport(forClient, newX, newY);
+                            forClient.LoggedinUser.Teleport(newX, newY);
                             return false;
                         }
                         catch(Exception)
@@ -1363,31 +1406,6 @@ namespace HISP.Server
             }
             return true;
         }
-
-
-        public static int GetNumberOfAdminsOnline()
-        {
-            int count = 0;
-            foreach (GameClient client in ConnectedClients)
-            {
-                if (client.LoggedIn)
-                    if (client.LoggedinUser.Administrator)
-                        count++;
-            }
-            return count;
-        }
-
-        private static void onTick(object state)
-        {
-            World.TickWorldClock();
-
-            if(World.ServerTime.Minutes % 20 == 0)
-            {
-                DroppedItems.Update();
-            }
-        }
-
-
         public static void StartServer()
         {
             ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -1408,5 +1426,21 @@ namespace HISP.Server
                 connectedClients.Add(client);
             }
         }
+
+        /*
+         *  Private methods..
+         */
+
+        private static void onTick(object state)
+        {
+            World.TickWorldClock();
+
+            if(World.ServerTime.Minutes % 20 == 0)
+            {
+                DroppedItems.Update();
+            }
+        }
+
+
     }
 }
