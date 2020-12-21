@@ -39,13 +39,13 @@ namespace HISP.Server
          * eg: OnMovementPacket is whenever the server receies a movement request from the client.
          */
 
-        public static void OnCrossdomainPolicyRequest(GameClient sender) // When a cross-domain-policy request is received.
+        public static void OnCrossdomainPolicyRequest(GameClient sender)
         {
             Logger.DebugPrint("Cross-Domain-Policy request received from: " + sender.RemoteIp);
 
-            byte[] crossDomainPolicyResponse = CrossDomainPolicy.GetPolicy(); // Generate response packet
+            byte[] crossDomainPolicyResponse = CrossDomainPolicy.GetPolicy(); 
 
-            sender.SendPacket(crossDomainPolicyResponse); // Send to client.
+            sender.SendPacket(crossDomainPolicyResponse);
         }
         public static void OnUserInfoRequest(GameClient sender, byte[] packet)
         {
@@ -138,7 +138,10 @@ namespace HISP.Server
             if (method == PacketBuilder.VIEW_PROFILE)
             {
                 sender.LoggedinUser.MetaPriority = true;
-                byte[] profilePacket = PacketBuilder.CreateProfilePacket(sender.LoggedinUser.ProfilePage);
+                string profilePage = sender.LoggedinUser.ProfilePage;
+                profilePage = profilePage.Replace("<", "[");
+                profilePage = profilePage.Replace(">", "]");
+                byte[] profilePacket = PacketBuilder.CreateProfilePacket(profilePage);
                 sender.SendPacket(profilePacket);
             }
             else if (method == PacketBuilder.SAVE_PROFILE)
@@ -155,7 +158,8 @@ namespace HISP.Server
 
                 string profilePage = packetStr.Split('|')[1];
                 profilePage = profilePage.Substring(0, profilePage.Length - 2);
-
+                profilePage = profilePage.Replace("[", "<");
+                profilePage = profilePage.Replace("]", ">");
                 sender.LoggedinUser.CharacterId = characterId;
                 sender.LoggedinUser.ProfilePage = profilePage;
 
