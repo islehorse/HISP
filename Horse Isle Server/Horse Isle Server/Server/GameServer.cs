@@ -65,7 +65,8 @@ namespace HISP.Server
                 Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
                 return;
             }
-            Database.AddOnlineUser(sender.LoggedinUser.Id, sender.LoggedinUser.Administrator, sender.LoggedinUser.Moderator);
+            Database.AddOnlineUser(sender.LoggedinUser.Id, sender.LoggedinUser.Administrator, sender.LoggedinUser.Moderator, sender.LoggedinUser.Subscribed);
+            
             Logger.DebugPrint(sender.LoggedinUser.Username + " Requested user information.");
 
             User user = sender.LoggedinUser;

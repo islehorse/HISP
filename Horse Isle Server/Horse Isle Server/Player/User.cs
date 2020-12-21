@@ -35,6 +35,25 @@ namespace HISP.Player
         public Npc.NpcEntry LastTalkedToNpc;
         public Shop LastShoppedAt;
         public PlayerQuests Quests;
+        public bool Subscribed
+        { 
+            get
+            {
+                int Timestamp = Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds());
+                if(Timestamp > subscribedUntil) // sub expired.
+                {
+                    Logger.InfoPrint(Username + "'s Subscription expired. (timestamp now: " + Timestamp + " exp date: " + subscribedUntil+" )");
+                    Database.SetUserSubscriptionStatus(this.Id, false);
+                    subscribed = false;
+                }
+
+                return subscribed;
+            }
+            set
+            {
+                Database.SetUserSubscriptionStatus(this.Id, value);
+            }
+        }
         public bool Stealth
         {
             get
@@ -46,7 +65,7 @@ namespace HISP.Player
                 if (value)
                     Database.RemoveOnlineUser(this.Id);
                 else
-                    Database.AddOnlineUser(this.Id, this.Administrator, this.Moderator);
+                    Database.AddOnlineUser(this.Id, this.Administrator, this.Moderator, this.Subscribed);
 
                 stealth = value;
             }
@@ -156,6 +175,8 @@ namespace HISP.Player
 
         private int chatViolations;
         private int charId;
+        private int subscribedUntil;
+        private bool subscribed;
         private string profilePage;
         private int x;
         private bool stealth = false;
@@ -225,7 +246,8 @@ namespace HISP.Player
             money = Database.GetPlayerMoney(UserId);
             bankMoney = Database.GetPlayerBankMoney(UserId);
             questPoints = Database.GetPlayerQuestPoints(UserId);
-            
+            subscribed = Database.IsUserSubscribed(UserId);
+            subscribedUntil = Database.GetUserSubscriptionExpireDate(UserId);
             profilePage = Database.GetPlayerProfile(UserId);
 
             MailBox = new Mailbox(this);
