@@ -435,10 +435,11 @@ namespace HISP.Server
             Messages.ItemInformationFormat = gameData.messages.meta.dropped_items.item_information_format;
             Messages.GrabAllItemsButton = gameData.messages.meta.dropped_items.grab_all;
             Messages.DroppedAnItemMessage = gameData.messages.dropped_items.dropped_item_message;
-            Messages.GrabbedAllObjectsMessage = gameData.messages.dropped_items.grab_all_message;
+            Messages.GrabbedAllItemsMessage = gameData.messages.dropped_items.grab_all_message;
             Messages.GrabbedItemMessage = gameData.messages.dropped_items.grab_message;
             Messages.GrabAllItemsMessage = gameData.messages.dropped_items.grab_all_message;
 
+            Messages.GrabbedAllItemsButInventoryFull = gameData.messages.dropped_items.grab_all_but_inv_full;
             Messages.GrabbedItemButInventoryFull = gameData.messages.dropped_items.grab_but_inv_full;
 
             // Tools

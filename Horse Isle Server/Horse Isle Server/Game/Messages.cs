@@ -68,7 +68,8 @@ namespace HISP.Game
         public static string GrabAllItemsMessage;
         public static string GrabbedItemMessage;
         public static string GrabbedItemButInventoryFull;
-        public static string GrabbedAllObjectsMessage;
+        public static string GrabbedAllItemsButInventoryFull;
+        public static string GrabbedAllItemsMessage;
         public static string DroppedAnItemMessage;
         public static string ItemInformationFormat;
 
