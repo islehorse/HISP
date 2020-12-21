@@ -334,8 +334,8 @@ if (isset($_GET["ACCEPT"])) {
   if ($_GET["ACCEPT"] === "1") {
     echo '<hr color="#000000" size="1" width="75%">
     <center><br><font size="+1">
-    In order to play Horse Isle,  you must Read, Understand,  and Agree to follow the Rules Above.<br>
-    <b>[ <a href="newuserquiz.php">I WILL FOLLOW THE RULES</a> ] [ <a href="/">I WILL NOT</a> ]</b><br>
+    In order to play Horse Isle, you must Read, Understand, and Accept the Terms Above.<br>
+    <b>[ <a href="privacypolicy.php?ACCEPT=1">I ACCEPT</a> ] [ <a href="/">I DO NOT ACCEPT</a> ]</b><br>
     </font><br>
     </center>';
   }
