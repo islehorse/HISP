@@ -394,6 +394,16 @@ namespace HISP.Server
 
             Update(sender);
         }
+        public static void OnQuitPacket(GameClient sender, byte[] packet)
+        {
+            if(!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent quit packet when not logged in.");
+                return;    
+            }
+            Logger.InfoPrint(sender.LoggedinUser.Username + " Clicked \"Quit Game\".. Disconnecting");
+            sender.Disconnect();
+        }
         public static void OnNpcInteraction(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
