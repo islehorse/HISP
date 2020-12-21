@@ -1,0 +1,101 @@
+{
+    "questions": [
+        {
+            "title": "Great! We are glad you would like to play Horse Isle! For your safety, we have a few questions.",
+            "answers": [
+                {"title": "Okay sure. Go ahead and start the questions.", "chatpoint": 2},
+                {"title": "I do not want to answer any questions right now.", "chatpoint": 1}
+            ]
+        },
+        {
+            "title": "Well, please come back and take the time later! We'd love to have you join.",
+            "answers": [
+                {"title": "Okay. Bye.", "chatpoint": -1}
+            ]
+        },
+        {
+            "title": "First off, is it safe to give out your real name and address to another player AFTER you have gotten to know them well?",
+            "answers": [
+                {"title": "Yes, It is perfectly safe once you have chatted with them enough.", "chatpoint": 3},
+                {"title": "Sometimes. It depends on the situation.", "chatpoint": 3},
+                {"title": "Nope. It is never safe, nor is it permitted on Horse Isle.", "chatpoint": 4}
+            ]
+        },
+        {
+            "title": "WRONG! The internet is a very dangerous place, anyone can pretend to be anyone. Someone whom you have gotten to 'know' very well could be very creepy and we just will not take the chance. Come back again once you read our Rules. Thanks much!",
+            "answers": [
+                {"title": "Okay. Bye.", "chatpoint": -1}
+            ]
+        },
+        {
+            "title": "RIGHT! Good Job. Someone can pretend to be anyone. Someone whom you believe to have gotten to 'know' very well could actually be someone completely different. Now for the next question: Someone has just insulted you in the chat. What should you do?",
+            "answers": [
+                {"title": "Reply back to them and insult them back.", "chatpoint": 5},
+                {"title": "Reply back to them and explain how they were wrong.", "chatpoint": 5},
+                {"title": "Ignore the player and, if it was very mean, report it to Horse Isle Staff.", "chatpoint": 6}
+            ]
+        },
+        {
+            "title": "WRONG! You should always just ignore a trouble maker. There are MUTE buttons and if it gets real bad, you can report the player. Do not reply to the insult because it just makes the situation worse. Please go read the Game RULES and then come back.",
+            "answers": [
+                {"title": "Okay. Bye.", "chatpoint": -1}
+            ]
+        },
+        {
+            "title": "CORRECT! It only makes the situation worse when you respond to an insult. Now, what will happen to you if you break the rules, by harassing a player, cheating, obsenities, etc?",
+            "answers": [
+                {"title": "Nothing. I can talk as I like.", "chatpoint": 7},
+                {"title": "My account can be closed if what I did was severe or repeated, and proper authorities will be notified if possibly criminal.", "chatpoint": 8},
+                {"title": "I might get yelled at.", "chatpoint": 7}
+            ]
+        },
+        {
+            "title": "WRONG! There are real and swift penalties for behavior which takes away from other's enjoyment of the game. Please go read the Rules and come back after. Thanks!",
+            "answers": [
+                {"title": "Okay. Bye.", "chatpoint": -1}
+            ]
+        },
+        {
+            "title": "CORRECT! There are real and swift penalties for bad behavior.Now, this game is?",
+            "answers": [
+                {"title": "Just for fun! I won't take it too seriously.", "chatpoint": 9}
+            ]
+        },
+        {
+            "title": "GREAT! Now, if you have trouble making money in the game, should you beg for it?",
+            "answers": [
+                {"title": "No! That would be annoying to others in the game. I might ask for help learning how to earn money though.", "chatpoint": 10},
+                {"title": "Yes! That's the best way to get money and items.", "chatpoint": 13},
+                {"title": "As long as I don't do it all the time, it's all right.", "chatpoint": 13}
+            ]
+        },
+        {
+            "title": "GREAT! You will feel more accomplishment if you earn your own money and you won't annoy other players. Now, if you are under 13 you will do what?",
+            "answers": [
+                {"title": "Be sure my parent/guardian looks over the parental information on this site and have them decide whether I can play this game.", "chatpoint": 11},
+                {"title": "Try and sign up for the game myself without talking to my parents.", "chatpoint": 14}
+            ]
+        },
+        {
+            "title": "GREAT! You are just the type of player we want to welcome to Horse Isle! Just a couple more steps now.",
+            "answers": [
+                {"title": "Okay. Thanks!", "chatpoint": 12}
+            ]
+        },
+        {
+            "redirect": "termsandconditions.php?ACCEPT=1"
+        },
+        {
+            "title": "WRONG! Begging takes away from the game's enjoyment for others and for yourself. It is best to earn money on your own. Feel free to ask for help if you're not sure how to earn money. Come back again once you read our Rules. Thanks much!",
+            "answers": [
+                {"title": "Okay. Bye.", "chatpoint": -1}
+            ]
+        },
+        {
+            "title": "WRONG! You MUST have parent/guardian permission to play this game if you are under 13. It is important that the parent/guardian goes through the parental information and then decides whether you can play. Come back again once you read our Rules. Thanks much!",
+            "answers": [
+                {"title": "Okay. Bye.", "chatpoint": -1}
+            ]
+        }
+    ]
+}
