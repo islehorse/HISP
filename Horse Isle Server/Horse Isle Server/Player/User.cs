@@ -26,8 +26,7 @@ namespace HISP.Player
 
         public bool MetaPriority = false;
 
-        public bool Stealth = false;
-
+        
         public int Facing;
         public Mailbox MailBox;
         public Friends Friends;
@@ -36,6 +35,22 @@ namespace HISP.Player
         public Npc.NpcEntry LastTalkedToNpc;
         public Shop LastShoppedAt;
         public PlayerQuests Quests;
+        public bool Stealth
+        {
+            get
+            {
+                return stealth;
+            }
+            set
+            {
+                if (value)
+                    Database.RemoveOnlineUser(this.Id);
+                else
+                    Database.AddOnlineUser(this.Id, this.Administrator, this.Moderator);
+
+                stealth = value;
+            }
+        }
         public int ChatViolations
         {
             get
@@ -143,6 +158,7 @@ namespace HISP.Player
         private int charId;
         private string profilePage;
         private int x;
+        private bool stealth = false;
         private int y;
         private int money;
         private int questPoints;
