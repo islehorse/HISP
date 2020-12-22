@@ -8,6 +8,7 @@ using System.Threading;
 using HISP.Player;
 using HISP.Game;
 using HISP.Security;
+using HISP.Game.Chat;
 
 namespace HISP.Server
 {
@@ -605,6 +606,12 @@ namespace HISP.Server
 
             Chat.ChatChannel channel = (Chat.ChatChannel)packet[1];
             string message = packetStr.Substring(2, packetStr.Length - 4);
+
+            if (Chat.ProcessCommand(sender.LoggedinUser, message))
+            {
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to run command '" + message + "' in channel: " + channel.ToString());
+                return;
+            }
            
 
             Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to say '" + message + "' in channel: " + channel.ToString());
