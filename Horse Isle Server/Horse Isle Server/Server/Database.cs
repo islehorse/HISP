@@ -407,6 +407,84 @@ namespace HISP.Server
                 return subscribed;
             }
         }
+        public static string GetGender(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT Gender FROM users WHERE Id=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                string gender = (string)(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+
+                return gender;
+            }
+        }
+        public static int GetExperience(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT Experience FROM userExt WHERE Id=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int xp = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+
+                return xp;
+            }
+        }
+        public static void SetExperience(int playerId, int exp)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE userExt SET Experience=@xp WHERE Id=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@xp", exp);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetFreeTime(int playerId, int minutes)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE userExt SET FreeMinutes=@minutes WHERE Id=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@minutes", minutes);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static int GetFreeTime(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT FreeMinutes FROM userExt WHERE Id=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int freeMinutes = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+
+                return freeMinutes;
+            }
+        }
         public static int GetUserSubscriptionExpireDate(int playerId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

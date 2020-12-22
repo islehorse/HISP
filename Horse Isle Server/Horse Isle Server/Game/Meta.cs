@@ -9,6 +9,13 @@ namespace HISP.Game
 
         private static string buildLocationString(int x, int y)
         {
+            string areaString = buildAreaString(x, y);
+            if (areaString != "")
+                areaString = Messages.LocationFormat.Replace("%META%", areaString);
+            return areaString;
+        }
+        private static string buildAreaString(int x, int y)
+        {
             string locationString = "";
 
             if (World.InArea(x, y))
@@ -17,8 +24,6 @@ namespace HISP.Game
                 locationString += Messages.TownFormat.Replace("%TOWN%", World.GetTown(x, y).Name);
             if (World.InIsle(x, y))
                 locationString += Messages.IsleFormat.Replace("%ISLE%", World.GetIsle(x, y).Name);
-            if (locationString != "")
-                locationString = Messages.LocationFormat.Replace("%META%", locationString);
             return locationString;
         }
 
@@ -210,6 +215,43 @@ namespace HISP.Game
                 if(i + 1 != transportPoint.Locations.Length)
                     message += "^R1";
             }
+            return message;
+        }
+        public static string BuildWornJewelery(User user)
+        {
+            return Messages.NoJewerlyEquipped;
+        }
+        public static string BuildWornCompaionEquip(User user)
+        {
+            return Messages.NoCompetitionGear;
+        }
+        public static string BuildStatsMenu(User user)
+        {
+            string message = Messages.FormatStatsBar(user.Username);
+
+            string areaString = buildAreaString(user.X, user.Y);
+            if (areaString != "")
+                message += Messages.FormatStatsArea(areaString);
+            message += Messages.FormatMoneyStat(user.Money);
+            if(!user.Subscribed)
+                message += Messages.FormatFreeTime(user.FreeMinutes);
+            message += Messages.FormatPlayerDescriptionForStatsMenu(user.ProfilePage);
+            message += Messages.FormatExperience(user.Experience);
+            message += Messages.FormatHungryStat("Not implemented yet :3");
+            message += Messages.FormatThirstStat("Not implemented yet :3");
+            message += Messages.FormatTiredStat("Not implemented yet :3");
+            message += Messages.FormatGenderStat(user.Gender);
+            message += Messages.FormatJewelryStat(BuildWornJewelery(user));
+            message += Messages.FormatCompetitionGearStat(BuildWornCompaionEquip(user));
+            message += Messages.StatsPrivateNotes;
+            message += Messages.StatsQuests;
+            message += Messages.StatsMinigameRanking;
+            message += Messages.StatsAwards;
+            message += Messages.StatsMisc;
+
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+
             return message;
         }
         public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)

@@ -13,6 +13,35 @@ namespace HISP.Game
         public static string RakeNothing;
         public static string ShovelNothing;
 
+        // Stats Page
+        public static string StatsBarFormat;
+        public static string StatsAreaFormat;
+        public static string StatsMoneyFormat;
+        public static string StatsFreeTimeFormat;
+        public static string StatsDescriptionFormat;
+        public static string StatsExpFormat;
+        public static string StatsQuestpointsFormat;
+        public static string StatsHungerFormat;
+        public static string StatsThirstFormat;
+        public static string StatsTiredFormat;
+        public static string StatsGenderFormat;
+        public static string StatsJewelFormat;
+        public static string StatsCompetitionGearFormat;
+
+        public static string CompetitionGearHeadFormat;
+        public static string CompetitionGearBodyFormat;
+        public static string CompetitionGearLegsFormat;
+        public static string CompetitionGearFeetFormat;
+
+        public static string StatsPrivateNotes;
+        public static string StatsQuests;
+        public static string StatsMinigameRanking;
+        public static string StatsAwards;
+        public static string StatsMisc;
+
+        public static string NoJewerlyEquipped;
+        public static string NoCompetitionGear;
+
         // Announcements
         public static string NewUserMessage;
         public static string WelcomeFormat;
@@ -155,6 +184,62 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatStatsBar(string username)
+        {
+            return StatsBarFormat.Replace("%USERNAME%", username);
+        }
+        public static string FormatStatsArea(string area)
+        {
+            return StatsAreaFormat.Replace("%AREA%", area);
+        }
+        public static string FormatMoneyStat(int money)
+        {
+            return StatsMoneyFormat.Replace("%MONEY%", money.ToString("N0"));
+        }
+        public static string FormatFreeTime(int freeMinutes)
+        {
+            return StatsFreeTimeFormat.Replace("%FREEMINUTES%", freeMinutes.ToString("N0"));
+        }
+        public static string FormatPlayerDescriptionForStatsMenu(string description)
+        {
+            return StatsDescriptionFormat.Replace("%PLAYERDESC%", description);
+        }
+
+        public static string FormatExperience(int expPoints)
+        {
+            return StatsExpFormat.Replace("%EXPPOINTS%", expPoints.ToString("N0"));
+        }
+        public static string FormatQuestPoints(int questPoints)
+        {
+            return StatsQuestpointsFormat.Replace("%QUESTPOINTS%", questPoints.ToString("N0"));
+        }
+        public static string FormatHungryStat(string status)
+        {
+            return StatsHungerFormat.Replace("%HUNGER%", status);
+        }
+        public static string FormatThirstStat(string status)
+        {
+            return StatsThirstFormat.Replace("%THIRST%", status);
+        }
+        public static string FormatTiredStat(string status)
+        {
+            return StatsTiredFormat.Replace("%TIRED%", status);
+        }
+        public static string FormatGenderStat(string gender)
+        {
+            return StatsGenderFormat.Replace("%GENDER%", gender);
+        }
+        public static string FormatJewelryStat(string jewelformat)
+        {
+            return StatsJewelFormat.Replace("%JEWELFORMAT%", jewelformat);
+        }
+        public static string FormatCompetitionGearStat(string competitonGearFormat)
+        {
+            return StatsCompetitionGearFormat.Replace("%GEARFORMAT%", competitonGearFormat);
+        }
+
+
 
         public static string FormatYouEarnedAnItemMessage(string itemName)
         {

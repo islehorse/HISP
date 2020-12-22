@@ -162,7 +162,7 @@ namespace HISP.Server
                     case PacketBuilder.PACKET_MOVE:
                         GameServer.OnMovementPacket(this, Packet);
                         break;
-                    case PacketBuilder.PACKET_PROFILE:
+                    case PacketBuilder.PACKET_PLAYER:
                         GameServer.OnProfilePacket(this, Packet);
                         break;
                     case PacketBuilder.PACKET_CHAT:

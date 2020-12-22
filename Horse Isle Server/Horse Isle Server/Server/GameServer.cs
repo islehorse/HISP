@@ -134,6 +134,21 @@ namespace HISP.Server
                 UpdatePlayer(sender);
             }
         }
+        public static void OnStatsPacket(GameClient sender, byte[] packet)
+        {
+            if(!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Requested stats when not logged in.");
+                return;
+            }
+            if(packet.Length < 3)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + "Sent an invalid Stats Packet");
+                return;
+            }
+
+
+        }
         public static void OnProfilePacket(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -148,6 +163,12 @@ namespace HISP.Server
             }
 
             byte method = packet[1];
+            if(method == PacketBuilder.PACKET_CLIENT_TERMINATOR)
+            {
+                string metaWind = Meta.BuildStatsMenu(sender.LoggedinUser);
+                byte[] statsPacket = PacketBuilder.CreateMetaPacket(metaWind);
+                sender.SendPacket(statsPacket);
+            }
             if (method == PacketBuilder.VIEW_PROFILE)
             {
                 sender.LoggedinUser.MetaPriority = true;
