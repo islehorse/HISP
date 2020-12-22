@@ -68,6 +68,8 @@ namespace HISP.Game
         public static string ModChatFormat;
         public static string AdminChatFormat;
 
+        public static string CommandFormat;
+
         public static string GlobalChatFormatForModerators;
         public static string DirectChatFormatForModerators;
 
@@ -238,7 +240,10 @@ namespace HISP.Game
         {
             return StatsCompetitionGearFormat.Replace("%GEARFORMAT%", competitonGearFormat);
         }
-
+        public static string FormatCommandComplete(string command)
+        {
+            return CommandFormat.Replace("%COMMAND%", command);
+        }
 
 
         public static string FormatYouEarnedAnItemMessage(string itemName)
@@ -327,7 +332,7 @@ namespace HISP.Game
             return NpcStartChatFormat.Replace("%ICONID%", iconId.ToString()).Replace("%NAME%", name).Replace("%DESCRIPTION%", shortDescription).Replace("%ID%", npcId.ToString());
         }
 
-        public static string FormatGlobalChatViolationMessage(Chat.Reason violationReason)
+        public static string FormatGlobalChatViolationMessage(Chat.Chat.Reason violationReason)
         {
             return ChatViolationMessageFormat.Replace("%AMOUNT%", RequiredChatViolations.ToString()).Replace("%REASON%", violationReason.Message);
         }
