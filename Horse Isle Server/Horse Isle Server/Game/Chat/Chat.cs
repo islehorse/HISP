@@ -4,7 +4,7 @@ using System.Linq;
 using HISP.Player;
 using HISP.Server;
 
-namespace HISP.Game
+namespace HISP.Game.Chat
 {
     class Chat
     {
@@ -49,13 +49,19 @@ namespace HISP.Game
             if (message.Length < 1)
                 return false;
 
+            string[] args = message.Split(' ').Skip(1).ToArray();
+
             if (user.Administrator || user.Moderator)
                 if (message[0] == '%')
-                    return true;
+                    return false;
             if (message[0] == '!')
-                return true;
+            {
+                if (message.StartsWith("!MUTE"))
+                {
+                    return Command.Mute(message, args, user);
+                }
+            }
             return false;
- 
         }
         public static Object FilterMessage(string message) // Handles chat filtering and violation stuffs returns
         {
