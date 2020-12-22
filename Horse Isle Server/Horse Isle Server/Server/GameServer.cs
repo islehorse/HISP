@@ -166,9 +166,7 @@ namespace HISP.Server
             byte method = packet[1];
             if(method == PacketBuilder.PACKET_CLIENT_TERMINATOR)
             {
-                string metaWind = Meta.BuildStatsMenu(sender.LoggedinUser);
-                byte[] statsPacket = PacketBuilder.CreateMetaPacket(metaWind);
-                sender.SendPacket(statsPacket);
+                UpdateStats(sender);
             }
             if (method == PacketBuilder.VIEW_PROFILE)
             {
@@ -797,12 +795,68 @@ namespace HISP.Server
                     }
 
                     break;
+                case PacketBuilder.ITEM_REMOVE:
+                    char toRemove = (char)packet[2];
+                    switch(toRemove)
+                    {
+                        case '1':
+                            if(sender.LoggedinUser.EquipedCompetitionGear.Head != null)
+                            {
+                                ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Head.Id);
+                                sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                sender.LoggedinUser.EquipedCompetitionGear.Head = null;
+                            }
+                            else
+                            {
+                                Logger.HackerPrint(sender.LoggedinUser.Username + " Attempted to remove competition gear when none was equipped.");
+                            }
+                            break;
+                        case '2':
+                            if (sender.LoggedinUser.EquipedCompetitionGear.Body != null)
+                            {
+                                ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Body.Id);
+                                sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                sender.LoggedinUser.EquipedCompetitionGear.Body = null;
+                            }
+                            else
+                            {
+                                Logger.HackerPrint(sender.LoggedinUser.Username + " Attempted to remove competition gear when none was equipped.");
+                            }
+                            break;
+                        case '3':
+                            if (sender.LoggedinUser.EquipedCompetitionGear.Legs != null)
+                            {
+                                ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Legs.Id);
+                                sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                sender.LoggedinUser.EquipedCompetitionGear.Legs = null;
+                            }
+                            else
+                            {
+                                Logger.HackerPrint(sender.LoggedinUser.Username + " Attempted to remove competition gear when none was equipped.");
+                            }
+                            break;
+                        case '4':
+                            if (sender.LoggedinUser.EquipedCompetitionGear.Feet != null)
+                            {
+                                ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Feet.Id);
+                                sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                sender.LoggedinUser.EquipedCompetitionGear.Feet = null;
+                            }
+                            else
+                            {
+                                Logger.HackerPrint(sender.LoggedinUser.Username + " Attempted to remove competition gear when none was equipped.");
+                            }
+                            break;
+                        default:
+                            Logger.InfoPrint(sender.LoggedinUser.Username + "Unimplemented  \"remove worn item\" ItemInteraction packet: " + BitConverter.ToString(packet).Replace("-", " "));
+                            break;
+                    }
+                    
+                    byte[] itemRemovedMessage = PacketBuilder.CreateChat(Messages.UnequipItem, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(itemRemovedMessage);
+                    UpdateStats(sender);
+                    break;
                 case PacketBuilder.ITEM_WEAR:
-                    const int MISC_FLAG_HEAD = 1;
-                    const int MISC_FLAG_BODY = 2;
-                    const int MISC_FLAG_LEGS = 3;
-                    const int MISC_FLAG_FEET = 4;
-
                     packetStr = Encoding.UTF8.GetString(packet);
                     randomIdStr = packetStr.Substring(2, packet.Length - 2);
                     randomId = 0;
@@ -829,7 +883,7 @@ namespace HISP.Server
                         }    
                         switch(itemInf.MiscFlags[0])
                         {
-                            case MISC_FLAG_HEAD:
+                            case CompetitionGear.MISC_FLAG_HEAD:
                                 if(sender.LoggedinUser.EquipedCompetitionGear.Head == null)
                                     sender.LoggedinUser.EquipedCompetitionGear.Head = itemInf;
                                 else
@@ -839,7 +893,7 @@ namespace HISP.Server
                                     sender.LoggedinUser.EquipedCompetitionGear.Head = itemInf;
                                 }
                                 break;
-                            case MISC_FLAG_BODY:
+                            case CompetitionGear.MISC_FLAG_BODY:
                                 if (sender.LoggedinUser.EquipedCompetitionGear.Body == null)
                                     sender.LoggedinUser.EquipedCompetitionGear.Body = itemInf;
                                 else
@@ -849,7 +903,7 @@ namespace HISP.Server
                                     sender.LoggedinUser.EquipedCompetitionGear.Body = itemInf;
                                 }
                                 break;
-                            case MISC_FLAG_LEGS:
+                            case CompetitionGear.MISC_FLAG_LEGS:
                                 if (sender.LoggedinUser.EquipedCompetitionGear.Legs == null)
                                     sender.LoggedinUser.EquipedCompetitionGear.Legs = itemInf;
                                 else
@@ -859,7 +913,7 @@ namespace HISP.Server
                                     sender.LoggedinUser.EquipedCompetitionGear.Legs = itemInf;
                                 }
                                 break;
-                            case MISC_FLAG_FEET:
+                            case CompetitionGear.MISC_FLAG_FEET:
                                 if (sender.LoggedinUser.EquipedCompetitionGear.Feet == null)
                                     sender.LoggedinUser.EquipedCompetitionGear.Feet = itemInf;
                                 else
@@ -1428,6 +1482,7 @@ namespace HISP.Server
             }
             return count;
         }
+
         public static int GetNumberOfAdminsOnline()
         {
             int count = 0;
@@ -1538,6 +1593,17 @@ namespace HISP.Server
             byte[] AreaMessage = PacketBuilder.CreateMetaPacket(LocationStr);
             forClient.SendPacket(AreaMessage);
             forClient.LoggedinUser.MetaPriority = false;
+
+        }
+        public static void UpdateStats(GameClient client)
+        {
+            if (!client.LoggedIn)
+                return;
+
+            client.LoggedinUser.MetaPriority = true;
+            string metaWind = Meta.BuildStatsMenu(client.LoggedinUser);
+            byte[] statsPacket = PacketBuilder.CreateMetaPacket(metaWind);
+            client.SendPacket(statsPacket);
 
         }
 

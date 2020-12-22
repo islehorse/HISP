@@ -221,9 +221,23 @@ namespace HISP.Game
         {
             return Messages.NoJewerlyEquipped;
         }
-        public static string BuildWornCompaionEquip(User user)
+        public static string BuildEquippedCompetitionGear(User user)
         {
-            return Messages.NoCompetitionGear;
+            string message = Messages.CompetitionGearSelected;
+            if (user.EquipedCompetitionGear.Head != null)
+                message += Messages.FormatCompetitionGearHead(user.EquipedCompetitionGear.Head.Name, user.EquipedCompetitionGear.Head.IconId);
+            if (user.EquipedCompetitionGear.Body != null)
+                message += Messages.FormatCompetitionGearBody(user.EquipedCompetitionGear.Body.Name, user.EquipedCompetitionGear.Body.IconId);
+            if (user.EquipedCompetitionGear.Legs != null)
+                message += Messages.FormatCompetitionGearLegs(user.EquipedCompetitionGear.Legs.Name, user.EquipedCompetitionGear.Legs.IconId);
+            if (user.EquipedCompetitionGear.Feet != null)
+                message += Messages.FormatCompetitionGearFeet(user.EquipedCompetitionGear.Feet.Name, user.EquipedCompetitionGear.Feet.IconId);
+
+            if (message == Messages.CompetitionGearSelected)
+                message = Messages.NoCompetitionGear;
+
+            return message;
+
         }
         public static string BuildStatsMenu(User user)
         {
@@ -242,7 +256,7 @@ namespace HISP.Game
             message += Messages.FormatTiredStat("Not implemented yet :3");
             message += Messages.FormatGenderStat(user.Gender);
             message += Messages.FormatJewelryStat(BuildWornJewelery(user));
-            message += Messages.FormatCompetitionGearStat(BuildWornCompaionEquip(user));
+            message += Messages.FormatCompetitionGearStat(BuildEquippedCompetitionGear(user));
             message += Messages.StatsPrivateNotes;
             message += Messages.StatsQuests;
             message += Messages.StatsMinigameRanking;

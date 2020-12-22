@@ -10,6 +10,11 @@ namespace HISP.Player
 {
     class CompetitionGear
     {
+        public const int MISC_FLAG_HEAD = 1;
+        public const int MISC_FLAG_BODY = 2;
+        public const int MISC_FLAG_LEGS = 3;
+        public const int MISC_FLAG_FEET = 4;
+
         private int playerId;
         public CompetitionGear(int PlayerId)
         {
@@ -41,6 +46,12 @@ namespace HISP.Player
             }
             set
             {
+                if (value == null)
+                {
+                    head = null;
+                    Database.SetCompetitionGearHeadPeice(playerId, 0);
+                    return;
+                }
                 Database.SetCompetitionGearHeadPeice(playerId, value.Id);
                 head = value;
             }
@@ -53,6 +64,12 @@ namespace HISP.Player
             }
             set
             {
+                if (value == null)
+                {
+                    body = null;
+                    Database.SetCompetitionGearBodyPeice(playerId, 0);
+                    return;
+                }
                 Database.SetCompetitionGearBodyPeice(playerId, value.Id);
                 body = value;
             }
@@ -65,6 +82,12 @@ namespace HISP.Player
             }
             set
             {
+                if (value == null)
+                {
+                    legs = null;
+                    Database.SetCompetitionGearLegPeice(playerId, 0);
+                    return;
+                }
                 Database.SetCompetitionGearLegPeice(playerId, value.Id);
                 legs = value;
             }
@@ -77,6 +100,12 @@ namespace HISP.Player
             }
             set
             {
+                if (value == null)
+                {
+                    feet = null;
+                    Database.SetCompetitionGearFeetPeice(playerId, 0);
+                    return;
+                }
                 Database.SetCompetitionGearFeetPeice(playerId, value.Id);
                 feet = value;
             }
