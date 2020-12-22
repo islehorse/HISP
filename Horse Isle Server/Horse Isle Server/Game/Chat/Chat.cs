@@ -53,13 +53,43 @@ namespace HISP.Game.Chat
 
             if (user.Administrator || user.Moderator)
                 if (message[0] == '%')
+                {
+                    if(message.StartsWith("%STICKBUG"))
+                    {
+                        return Command.Stickbug(message, args, user);
+                    }
                     return false;
+                }
             if (message[0] == '!')
             {
-                if (message.StartsWith("!MUTE"))
-                {
+                // Alias for !MUTE
+                if (message.StartsWith("!MUTEALL"))
+                    return Command.Mute(message, new string[] { "ALL" }, user);
+                else if (message.StartsWith("!MUTEADS"))
+                    return Command.Mute(message, new string[] { "ADS" }, user);
+                else if (message.StartsWith("!MUTEGLOBAL"))
+                    return Command.Mute(message, new string[] { "GLOBAL" }, user);
+                else if (message.StartsWith("!MUTEISLAND"))
+                    return Command.Mute(message, new string[] { "ISLAND" }, user);
+                else if (message.StartsWith("!MUTENEAR"))
+                    return Command.Mute(message, new string[] { "NEAR" }, user);
+                else if (message.StartsWith("!MUTEHERE"))
+                    return Command.Mute(message, new string[] { "HERE" }, user);
+                else if (message.StartsWith("!MUTEBUDDY"))
+                    return Command.Mute(message, new string[] { "BUDDY" }, user);
+                else if (message.StartsWith("!MUTEPM"))
+                    return Command.Mute(message, new string[] { "PM" }, user);
+                else if (message.StartsWith("!MUTEPM"))
+                    return Command.Mute(message, new string[] { "PM" }, user);
+                else if (message.StartsWith("!MUTEBR"))
+                    return Command.Mute(message, new string[] { "BR" }, user);
+                else if (message.StartsWith("!MUTESOCIALS"))
+                    return Command.Mute(message, new string[] { "SOCIALS" }, user);
+                else if (message.StartsWith("!MUTELOGINS"))
+                    return Command.Mute(message, new string[] { "LOGINS" }, user);
+
+                else if (message.StartsWith("!MUTE"))
                     return Command.Mute(message, args, user);
-                }
             }
             return false;
         }

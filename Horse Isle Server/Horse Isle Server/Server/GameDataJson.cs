@@ -455,7 +455,10 @@ namespace HISP.Server
             Messages.ModChatFormatForSender = gameData.messages.chat.for_sender.mod_format;
             Messages.AdminChatFormatForSender = gameData.messages.chat.for_sender.admin_format;
 
-            Messages.CommandFormat = gameData.messages.commands.command_completed;
+            Messages.AdminCommandFormat = gameData.messages.commands.admin_command_completed;
+            Messages.PlayerCommandFormat = gameData.messages.commands.player_command_completed;
+            Messages.MuteHelp = gameData.messages.commands.mute_help;
+
 
             Messages.PasswordNotice = gameData.messages.chat.password_included;
             Messages.CapsNotice = gameData.messages.chat.caps_notice;

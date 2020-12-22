@@ -1437,6 +1437,20 @@ namespace HISP.Server
             }
             return usersHere.ToArray();
         }
+
+        public static User GetUserByName(string username)
+        {
+            foreach(GameClient client in ConnectedClients)
+            {
+                if(client.LoggedIn)
+                {
+                    if (client.LoggedinUser.Username == username)
+                        return client.LoggedinUser;
+                }
+            }
+            throw new KeyNotFoundException("User was not found.");
+        }
+
         public static User[] GetNearbyUsers(int x, int y, bool includeStealth=false, bool includeMuted=false)
         {
             int startX = x - 15;

@@ -69,7 +69,9 @@ namespace HISP.Game
         public static string ModChatFormat;
         public static string AdminChatFormat;
 
-        public static string CommandFormat;
+        public static string AdminCommandFormat;
+        public static string PlayerCommandFormat;
+        public static string MuteHelp;
 
         public static string GlobalChatFormatForModerators;
         public static string DirectChatFormatForModerators;
@@ -261,9 +263,14 @@ namespace HISP.Game
         {
             return StatsCompetitionGearFormat.Replace("%GEARFORMAT%", competitonGearFormat);
         }
-        public static string FormatCommandComplete(string command)
+        public static string FormatAdminCommandCompleteMessage(string command)
         {
-            return CommandFormat.Replace("%COMMAND%", command);
+            return AdminCommandFormat.Replace("%COMMAND%", command);
+        }
+
+        public static string FormatPlayerCommandCompleteMessage(string command)
+        {
+            return PlayerCommandFormat.Replace("%COMMAND%", command);
         }
 
         public static string FormatEquipItemMessage(string name)
