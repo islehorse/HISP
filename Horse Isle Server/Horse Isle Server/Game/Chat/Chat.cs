@@ -152,7 +152,7 @@ namespace HISP.Game.Chat
                 foreach (GameClient client in GameServer.ConnectedClients)
                 {
                     if (client.LoggedIn)
-                        if (!client.LoggedinUser.MuteGlobal)
+                        if (!client.LoggedinUser.MuteGlobal && !client.LoggedinUser.MuteAll)
                             if (client.LoggedinUser.Id != user.Id)
                                 recipiants.Add(client);
                 }
@@ -165,7 +165,7 @@ namespace HISP.Game.Chat
                 foreach (GameClient client in GameServer.ConnectedClients)
                 {
                     if (client.LoggedIn)
-                        if (!client.LoggedinUser.MuteAds)
+                        if (!client.LoggedinUser.MuteAds && !client.LoggedinUser.MuteAll)
                             if (client.LoggedinUser.Id != user.Id)
                                 recipiants.Add(client);
                 }
@@ -178,7 +178,7 @@ namespace HISP.Game.Chat
                 foreach (GameClient client in GameServer.ConnectedClients)
                 {
                     if (client.LoggedIn)
-                        if (!client.LoggedinUser.MuteBuddy)
+                        if (!client.LoggedinUser.MuteBuddy && !client.LoggedinUser.MuteAll)
                             if (client.LoggedinUser.Id != user.Id)
                                 if (client.LoggedinUser.Friends.List.Contains(user.Id)) 
                                     recipiants.Add(client);
@@ -195,7 +195,8 @@ namespace HISP.Game.Chat
                     foreach (User userInIsle in usersInSile)
                     {
                         if (user.Id != userInIsle.Id)
-                            recipiants.Add(userInIsle.LoggedinClient);
+                            if(!user.MuteAll)
+                                recipiants.Add(userInIsle.LoggedinClient);
                     }
                     return recipiants.ToArray();
                 }
@@ -213,7 +214,8 @@ namespace HISP.Game.Chat
                 foreach (User userHere in usersHere)
                 {
                     if (user.Id != userHere.Id)
-                        recipiants.Add(userHere.LoggedinClient);
+                        if (!user.MuteAll)
+                            recipiants.Add(userHere.LoggedinClient);
                 }
                 return recipiants.ToArray();
             }
@@ -225,7 +227,8 @@ namespace HISP.Game.Chat
                 foreach (User nearbyUser in nearbyUsers)
                 {
                     if (user.Id != nearbyUser.Id)
-                        recipiants.Add(nearbyUser.LoggedinClient);
+                        if (!user.MuteAll)
+                            recipiants.Add(nearbyUser.LoggedinClient);
                 }
                 return recipiants.ToArray();
             }
@@ -277,7 +280,7 @@ namespace HISP.Game.Chat
                     foreach (GameClient client in GameServer.ConnectedClients)
                     {
                         if (client.LoggedIn)
-                            if (!client.LoggedinUser.MutePrivateMessage)
+                            if (!client.LoggedinUser.MutePrivateMessage && !client.LoggedinUser.MuteAll)
                                 if (client.LoggedinUser.Username == to)
                                     recipiants.Add(client);
                     }
