@@ -851,10 +851,11 @@ namespace HISP.Server
                             Logger.InfoPrint(sender.LoggedinUser.Username + "Unimplemented  \"remove worn item\" ItemInteraction packet: " + BitConverter.ToString(packet).Replace("-", " "));
                             break;
                     }
-                    
+
+                    UpdateStats(sender);
                     byte[] itemRemovedMessage = PacketBuilder.CreateChat(Messages.UnequipItem, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(itemRemovedMessage);
-                    UpdateStats(sender);
+                    
                     break;
                 case PacketBuilder.ITEM_WEAR:
                     packetStr = Encoding.UTF8.GetString(packet);
