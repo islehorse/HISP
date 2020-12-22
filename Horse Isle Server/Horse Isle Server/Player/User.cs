@@ -23,6 +23,7 @@ namespace HISP.Player
         public bool MutePrivateMessage = false;
         public bool MuteBuddyRequests = false;
         public bool MuteSocials = false;
+        public bool MuteAll = false;
         public bool MuteLogins = false;
         public string Gender;
         public bool MetaPriority = false;

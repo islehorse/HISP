@@ -2,6 +2,7 @@
 using System.IO;
 using Newtonsoft.Json;
 using HISP.Game;
+using HISP.Game.Chat;
 
 namespace HISP.Server
 {
@@ -452,7 +453,8 @@ namespace HISP.Server
             Messages.DirectChatFormatForSender = gameData.messages.chat.for_sender.dm_format;
             Messages.ModChatFormatForSender = gameData.messages.chat.for_sender.mod_format;
             Messages.AdminChatFormatForSender = gameData.messages.chat.for_sender.admin_format;
-            
+
+            Messages.CommandFormat = gameData.messages.commands.command_completed;
 
             Messages.PasswordNotice = gameData.messages.chat.password_included;
             Messages.CapsNotice = gameData.messages.chat.caps_notice;
