@@ -1359,7 +1359,7 @@ namespace HISP.Server
                     byte[] loginMessageBytes = PacketBuilder.CreateChat(Messages.FormatLoginMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
                     foreach (GameClient client in ConnectedClients)
                         if (client.LoggedIn)
-                            if (!client.LoggedinUser.MuteLogins)
+                            if (!client.LoggedinUser.MuteLogins || client.LoggedinUser.MuteAll)
                                 if (client.LoggedinUser.Id != userId)
                                         client.SendPacket(loginMessageBytes);
 

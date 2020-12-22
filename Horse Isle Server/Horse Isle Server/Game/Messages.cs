@@ -48,7 +48,7 @@ namespace HISP.Game
         public static string WelcomeFormat;
         public static string MotdFormat;
         public static string IdleWarningFormat;
-        public static string LoginMessageForamt;
+        public static string LoginMessageFormat;
         public static string LogoutMessageFormat;
 
         // Records
@@ -519,7 +519,7 @@ namespace HISP.Game
 
         public static string FormatLoginMessage(string username)
         {
-            return LoginMessageForamt.Replace("%USERNAME%", username);
+            return LoginMessageFormat.Replace("%USERNAME%", username);
         }
 
         public static string FormatLogoutMessage(string username)

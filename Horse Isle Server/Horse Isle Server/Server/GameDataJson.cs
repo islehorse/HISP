@@ -389,7 +389,7 @@ namespace HISP.Server
             Messages.WelcomeFormat = gameData.messages.welcome_format;
             Messages.MotdFormat = gameData.messages.motd_format;
             Messages.ProfileSavedMessage = gameData.messages.profile_save;
-            Messages.LoginMessageForamt = gameData.messages.login_format;
+            Messages.LoginMessageFormat = gameData.messages.login_format;
             Messages.LogoutMessageFormat = gameData.messages.logout_format;
 
             // Stats
