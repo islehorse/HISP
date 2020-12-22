@@ -27,7 +27,7 @@ namespace HISP.Server
         public const byte PACKET_TILE_FLAGS = 0x75;
         public const byte PACKET_PLAYSOUND = 0x23;
         public const byte PACKET_KEEP_ALIVE = 0x7C;
-        public const byte PACKET_PROFILE = 0x18;
+        public const byte PACKET_PLAYER = 0x18;
         public const byte PACKET_INVENTORY = 0x17;
         public const byte PACKET_TRANSPORT = 0x29;
         public const byte PACKET_KICK = 0x80;
@@ -179,7 +179,7 @@ namespace HISP.Server
         {
             MemoryStream ms = new MemoryStream();
 
-            ms.WriteByte(PACKET_PROFILE);
+            ms.WriteByte(PACKET_PLAYER);
 
             byte[] strBytes = Encoding.UTF8.GetBytes(userProfile);
             ms.Write(strBytes, 0x00, strBytes.Length);

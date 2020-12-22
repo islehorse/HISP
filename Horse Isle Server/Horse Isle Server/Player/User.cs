@@ -23,10 +23,9 @@ namespace HISP.Player
         public bool MuteBuddyRequests = false;
         public bool MuteSocials = false;
         public bool MuteLogins = false;
-
+        public string Gender;
         public bool MetaPriority = false;
 
-        
         public int Facing;
         public Mailbox MailBox;
         public Friends Friends;
@@ -35,6 +34,18 @@ namespace HISP.Player
         public Npc.NpcEntry LastTalkedToNpc;
         public Shop LastShoppedAt;
         public PlayerQuests Quests;
+        public int FreeMinutes
+        {
+            get
+            {
+                return freeMinutes;
+            }
+            set
+            {
+                Database.SetFreeTime(Id, value);
+                freeMinutes = value;
+            }
+        }
         public bool Subscribed
         { 
             get
@@ -108,6 +119,18 @@ namespace HISP.Player
             }
         }
 
+        public int Experience
+        {
+            get
+            {
+                return experience;
+            }
+            set
+            {
+                Database.SetExperience(Id, value);
+                experience = value;
+            }
+        }
         public int QuestPoints
         {
             get
@@ -182,8 +205,10 @@ namespace HISP.Player
         private bool stealth = false;
         private int y;
         private int money;
+        private int freeMinutes;
         private int questPoints;
         private int bankMoney;
+        private int experience; 
 
         public byte[] SecCodeSeeds = new byte[3];
         public  int SecCodeInc = 0;
@@ -242,7 +267,8 @@ namespace HISP.Player
             charId = Database.GetPlayerCharId(UserId);
 
             Facing = PacketBuilder.DIRECTION_DOWN;
-
+            freeMinutes = Database.GetFreeTime(UserId);
+            experience = Database.GetExperience(UserId);
             money = Database.GetPlayerMoney(UserId);
             bankMoney = Database.GetPlayerBankMoney(UserId);
             questPoints = Database.GetPlayerQuestPoints(UserId);
@@ -250,6 +276,7 @@ namespace HISP.Player
             subscribedUntil = Database.GetUserSubscriptionExpireDate(UserId);
             profilePage = Database.GetPlayerProfile(UserId);
 
+            Gender = Database.GetGender(UserId);
             MailBox = new Mailbox(this);
 
             // Generate SecCodes

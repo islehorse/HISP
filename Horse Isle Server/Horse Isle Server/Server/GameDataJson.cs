@@ -391,6 +391,36 @@ namespace HISP.Server
             Messages.LoginMessageForamt = gameData.messages.login_format;
             Messages.LogoutMessageFormat = gameData.messages.logout_format;
 
+            // Stats
+            Messages.StatsBarFormat = gameData.messages.meta.stats_page.stats_bar_format;
+            Messages.StatsAreaFormat = gameData.messages.meta.stats_page.stats_area_format;
+            Messages.StatsMoneyFormat = gameData.messages.meta.stats_page.stats_money_format;
+            Messages.StatsFreeTimeFormat = gameData.messages.meta.stats_page.stats_freetime_format;
+            Messages.StatsDescriptionFormat = gameData.messages.meta.stats_page.stats_description_format;
+            Messages.StatsExpFormat = gameData.messages.meta.stats_page.stats_experience;
+            Messages.StatsQuestpointsFormat = gameData.messages.meta.stats_page.stats_questpoints;
+            Messages.StatsHungerFormat = gameData.messages.meta.stats_page.stats_hunger;
+            Messages.StatsThirstFormat = gameData.messages.meta.stats_page.stats_thisrt;
+            Messages.StatsTiredFormat = gameData.messages.meta.stats_page.stats_tiredness;
+            Messages.StatsGenderFormat = gameData.messages.meta.stats_page.stats_gender;
+            Messages.StatsJewelFormat = gameData.messages.meta.stats_page.stats_equipped;
+            Messages.StatsCompetitionGearFormat = gameData.messages.meta.stats_page.stats_competion_gear;
+
+            Messages.CompetitionGearHeadFormat = gameData.messages.meta.stats_page.competition_gear.head_format;
+            Messages.CompetitionGearBodyFormat = gameData.messages.meta.stats_page.competition_gear.body_format;
+            Messages.CompetitionGearLegsFormat = gameData.messages.meta.stats_page.competition_gear.legs_format;
+            Messages.CompetitionGearFeetFormat = gameData.messages.meta.stats_page.competition_gear.feet_format;
+
+            Messages.StatsPrivateNotes = gameData.messages.meta.stats_page.stats_private_notes;
+            Messages.StatsQuests = gameData.messages.meta.stats_page.stats_quests;
+            Messages.StatsMinigameRanking = gameData.messages.meta.stats_page.stats_minigame_ranking;
+            Messages.StatsAwards = gameData.messages.meta.stats_page.stats_awards;
+            Messages.StatsMisc = gameData.messages.meta.stats_page.stats_misc;
+
+
+            Messages.NoJewerlyEquipped = gameData.messages.meta.stats_page.msg.no_jewelry_equipped;
+            Messages.NoCompetitionGear = gameData.messages.meta.stats_page.msg.no_competition_gear;
+
             // Transport
 
             Messages.CantAffordTransport = gameData.messages.transport.not_enough_money;
