@@ -6,13 +6,14 @@ namespace HISP.Player
 {
     class User
     {
+
         public int Id;
         public string Username;
         public bool Administrator;
         public bool Moderator;
         public bool NewPlayer = false;
         public GameClient LoggedinClient;
-
+        public CompetitionGear EquipedCompetitionGear;
         public bool MuteAds = false;
         public bool MuteGlobal = false;
         public bool MuteIsland = false;
@@ -258,6 +259,9 @@ namespace HISP.Player
                 NewPlayer = true;
             }
 
+
+            EquipedCompetitionGear = new CompetitionGear(UserId);
+
             Id = UserId;
             Username = Database.GetUsername(UserId);
             
@@ -278,13 +282,14 @@ namespace HISP.Player
             subscribed = Database.IsUserSubscribed(UserId);
             subscribedUntil = Database.GetUserSubscriptionExpireDate(UserId);
             profilePage = Database.GetPlayerProfile(UserId);
-
             Gender = Database.GetGender(UserId);
             MailBox = new Mailbox(this);
 
+
+
             // Generate SecCodes
 
-            
+
             SecCodeSeeds[0] = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
             SecCodeSeeds[1] = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
             SecCodeSeeds[2] = (byte)GameServer.RandomNumberGenerator.Next(40, 60);

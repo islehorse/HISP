@@ -18,7 +18,7 @@ namespace HISP.Game
             public string SpawnOnSpecialTile;
             public string SpawnNearSpecialTile;
         }
-        public struct ItemInformation
+        public class ItemInformation
         {
             public int Id;
             public string Name;
@@ -55,7 +55,6 @@ namespace HISP.Game
         public static int Telescope;
         public static int Pitchfork;
         
-
         public static bool IsThrowable(int id)
         {
             foreach(ThrowableItem itm in ThrowableItems)

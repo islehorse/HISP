@@ -537,6 +537,7 @@ namespace HISP.Server
             Messages.ItemThrowButton = gameData.messages.meta.inventory.item_throw_button;
             Messages.ItemConsumeButton = gameData.messages.meta.inventory.item_consume_button;
             Messages.ItemUseButton = gameData.messages.meta.inventory.item_use_button;
+            Messages.ItemWearButton = gameData.messages.meta.inventory.item_wear_button;
             Messages.ItemReadButton = gameData.messages.meta.inventory.item_read_button;
 
             Messages.ShopBuyButton = gameData.messages.meta.inventory.buy_button;
@@ -585,6 +586,7 @@ namespace HISP.Server
             // Inventory
 
             Messages.DefaultInventoryMax = gameData.item.max_carryable;
+            Messages.EquipItemFormat = gameData.messages.meta.inventory.equip_format;
 
             // Click
             Messages.NothingInterestingHere = gameData.messages.click_nothing_message;

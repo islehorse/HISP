@@ -790,6 +790,90 @@ namespace HISP.Server
                     }
 
                     break;
+                case PacketBuilder.ITEM_WEAR:
+                    const int MISC_FLAG_HEAD = 1;
+                    const int MISC_FLAG_BODY = 2;
+                    const int MISC_FLAG_LEGS = 3;
+                    const int MISC_FLAG_FEET = 4;
+
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    randomId = 0;
+
+                    try
+                    {
+                        randomId = Int32.Parse(randomIdStr);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        return;
+                    }
+                    if (sender.LoggedinUser.Inventory.HasItem(randomId))
+                    {
+                        InventoryItem itm = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
+                        ItemInstance instance = itm.ItemInstances[0];
+                        sender.LoggedinUser.Inventory.Remove(instance);
+
+                        Item.ItemInformation itemInf = instance.GetItemInfo();
+                        switch(itemInf.MiscFlags[0])
+                        {
+                            case MISC_FLAG_HEAD:
+                                if(sender.LoggedinUser.EquipedCompetitionGear.Head == null)
+                                    sender.LoggedinUser.EquipedCompetitionGear.Head = itemInf;
+                                else
+                                {
+                                    ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Head.Id);
+                                    sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                    sender.LoggedinUser.EquipedCompetitionGear.Head = itemInf;
+                                }
+                                break;
+                            case MISC_FLAG_BODY:
+                                if (sender.LoggedinUser.EquipedCompetitionGear.Body == null)
+                                    sender.LoggedinUser.EquipedCompetitionGear.Body = itemInf;
+                                else
+                                {
+                                    ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Body.Id);
+                                    sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                    sender.LoggedinUser.EquipedCompetitionGear.Body = itemInf;
+                                }
+                                break;
+                            case MISC_FLAG_LEGS:
+                                if (sender.LoggedinUser.EquipedCompetitionGear.Legs == null)
+                                    sender.LoggedinUser.EquipedCompetitionGear.Legs = itemInf;
+                                else
+                                {
+                                    ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Legs.Id);
+                                    sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                    sender.LoggedinUser.EquipedCompetitionGear.Legs = itemInf;
+                                }
+                                break;
+                            case MISC_FLAG_FEET:
+                                if (sender.LoggedinUser.EquipedCompetitionGear.Feet == null)
+                                    sender.LoggedinUser.EquipedCompetitionGear.Feet = itemInf;
+                                else
+                                {
+                                    ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Feet.Id);
+                                    sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                    sender.LoggedinUser.EquipedCompetitionGear.Feet = itemInf;
+                                }
+                                break;
+                        }
+
+
+
+
+                        byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatEquipItemMessage(itemInf.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(chatPacket);
+                        UpdateInventory(sender);
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to wear an item they did not have.");
+                    }
+                    break;
+
+
                 case PacketBuilder.ITEM_DROP:
                     packetStr = Encoding.UTF8.GetString(packet);
                     randomIdStr = packetStr.Substring(2, packet.Length - 2);

@@ -336,6 +336,9 @@ namespace HISP.Game
                 if (itemInfo.Id == Item.Present || itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope)
                     message += Messages.FormatItemUseButton(randomId);
 
+                if (itemInfo.Type == "CLOTHES")
+                    message += Messages.FormatWearButton(randomId);
+
                 if (itemInfo.Type == "TEXT")
                     message += Messages.FormatItemReadButton(randomId);
 
