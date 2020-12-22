@@ -56,7 +56,7 @@ namespace HISP.Player
                     return true;
                 
                 int Timestamp = Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds());
-                if(Timestamp > subscribedUntil) // sub expired.
+                if(Timestamp > subscribedUntil && subscribed) // sub expired.
                 {
                     Logger.InfoPrint(Username + "'s Subscription expired. (timestamp now: " + Timestamp + " exp date: " + subscribedUntil+" )");
                     Database.SetUserSubscriptionStatus(this.Id, false);

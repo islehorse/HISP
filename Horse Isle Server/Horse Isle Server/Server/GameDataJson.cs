@@ -421,6 +421,7 @@ namespace HISP.Server
 
             Messages.NoJewerlyEquipped = gameData.messages.meta.stats_page.msg.no_jewelry_equipped;
             Messages.NoCompetitionGear = gameData.messages.meta.stats_page.msg.no_competition_gear;
+            Messages.CompetitionGearSelected = gameData.messages.meta.stats_page.msg.competition_gear_selected;
 
             // Transport
 
@@ -588,7 +589,11 @@ namespace HISP.Server
             // Inventory
 
             Messages.DefaultInventoryMax = gameData.item.max_carryable;
-            Messages.EquipItemFormat = gameData.messages.meta.inventory.equip_format;
+
+            // Competition Gear
+
+            Messages.EquipItemFormat = gameData.messages.competition_gear.equip_competition_gear_format;
+            Messages.UnequipItem = gameData.messages.competition_gear.removed_competition_gear;
 
             // Click
             Messages.NothingInterestingHere = gameData.messages.click_nothing_message;

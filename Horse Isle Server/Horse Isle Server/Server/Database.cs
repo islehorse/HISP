@@ -593,7 +593,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "SELECT Gender FROM users WHERE Id=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
-                string gender = (string)(sqlCommand.ExecuteScalar());
+                string gender = sqlCommand.ExecuteScalar().ToString();
                 sqlCommand.Dispose();
 
                 return gender;
@@ -687,7 +687,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "SELECT Subscriber FROM userExt WHERE Id=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
-                bool subscribed = (string)(sqlCommand.ExecuteScalar()) == "YES";
+                bool subscribed = sqlCommand.ExecuteScalar().ToString() == "YES";
                 sqlCommand.Dispose();
 
                 return subscribed; 

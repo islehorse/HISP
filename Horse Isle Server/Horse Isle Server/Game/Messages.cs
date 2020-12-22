@@ -41,6 +41,7 @@ namespace HISP.Game
 
         public static string NoJewerlyEquipped;
         public static string NoCompetitionGear;
+        public static string CompetitionGearSelected;
 
         // Announcements
         public static string NewUserMessage;
@@ -105,9 +106,12 @@ namespace HISP.Game
         public static string ItemInformationFormat;
 
 
+        // Competition Gear
+        public static string EquipItemFormat;
+        public static string UnequipItem;
+
         // Inventory
         public static string InventoryItemFormat;
-        public static string EquipItemFormat;
         public static string InventoryHeaderFormat;
 
         public static string ItemDropButton;
@@ -188,6 +192,22 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatCompetitionGearHead(string itemName, int icon)
+        {
+            return CompetitionGearHeadFormat.Replace("%ITEM%", itemName).Replace("%ICON%",icon.ToString());
+        }
+        public static string FormatCompetitionGearBody(string itemName, int icon)
+        {
+            return CompetitionGearBodyFormat.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+        }
+        public static string FormatCompetitionGearLegs(string itemName, int icon)
+        {
+            return CompetitionGearLegsFormat.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+        }
+        public static string FormatCompetitionGearFeet(string itemName, int icon)
+        {
+            return CompetitionGearFeetFormat.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+        }
         public static string FormatStatsBar(string username)
         {
             return StatsBarFormat.Replace("%USERNAME%", username);
