@@ -21,6 +21,7 @@ namespace HISP.Server
         public static string CrossDomainPolicyFile;
         public static bool Debug;
 
+        public static bool AllUsersSubbed;
         public static bool BadWords;
         public static bool DoCorrections;
 
@@ -91,6 +92,9 @@ namespace HISP.Server
                         break;
                     case "crossdomain":
                         CrossDomainPolicyFile = data;
+                        break;
+                    case "all_users_subscribed":
+                        AllUsersSubbed = data == "true";
                         break;
                     case "enable_corrections":
                         BadWords = data == "true";
