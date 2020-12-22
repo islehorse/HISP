@@ -72,6 +72,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\Chat\Command.cs" />
     <Compile Include="Game\GameExceptions.cs" />
     <Compile Include="Game\Inventory\InventoryItem.cs" />
     <Compile Include="Game\Quest.cs" />
@@ -83,7 +84,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Security\Authentication.cs" />
-    <Compile Include="Game\Chat.cs" />
+    <Compile Include="Game\Chat\Chat.cs" />
     <Compile Include="Server\GameClient.cs" />
     <Compile Include="Server\Converters.cs" />
     <Compile Include="Server\Database.cs" />
