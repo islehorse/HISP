@@ -29,6 +29,7 @@ namespace HISP.Server
         public const byte PACKET_KEEP_ALIVE = 0x7C;
         public const byte PACKET_PLAYER = 0x18;
         public const byte PACKET_INVENTORY = 0x17;
+        public const byte ITEM_WEAR = 0x46;
         public const byte PACKET_TRANSPORT = 0x29;
         public const byte PACKET_KICK = 0x80;
         public const byte PACKET_LEAVE = 0x7D;

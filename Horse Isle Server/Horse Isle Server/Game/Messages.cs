@@ -105,7 +105,7 @@ namespace HISP.Game
 
         // Inventory
         public static string InventoryItemFormat;
-
+        public static string EquipItemFormat;
         public static string InventoryHeaderFormat;
 
         public static string ItemDropButton;
@@ -114,6 +114,7 @@ namespace HISP.Game
         public static string ItemConsumeButton;
         public static string ItemThrowButton;
         public static string ItemUseButton;
+        public static string ItemWearButton;
         public static string ItemReadButton;
 
         public static string ShopEntryFormat;
@@ -240,7 +241,10 @@ namespace HISP.Game
         }
 
 
-
+        public static string FormatEquipItemMessage(string name)
+        {
+            return EquipItemFormat.Replace("%ITEM%", name);
+        }
         public static string FormatYouEarnedAnItemMessage(string itemName)
         {
             return YouEarnedAnItemFormat.Replace("%ITEM%", itemName);
@@ -269,7 +273,10 @@ namespace HISP.Game
         {
             return ShopEntryFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count).Replace("%TITLE%", name).Replace("%PRICE%", price.ToString());
         }
-
+        public static string FormatWearButton(int randomId)
+        {
+            return ItemWearButton.Replace("%RANDOMID%", randomId.ToString());
+        }
         public static string FormatItemInformationByIdButton(int itemId)
         {
             return ItemInformationByIdButton.Replace("%ITEMID%", itemId.ToString());
