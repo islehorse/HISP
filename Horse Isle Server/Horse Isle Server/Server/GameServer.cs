@@ -823,6 +823,10 @@ namespace HISP.Server
                         sender.LoggedinUser.Inventory.Remove(instance);
 
                         Item.ItemInformation itemInf = instance.GetItemInfo();
+                        if(itemInf.MiscFlags.Length <= 0)
+                        {
+                            Logger.ErrorPrint(itemInf.Name + " Has no misc flags.");
+                        }    
                         switch(itemInf.MiscFlags[0])
                         {
                             case MISC_FLAG_HEAD:
