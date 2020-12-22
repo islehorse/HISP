@@ -1,18 +1,60 @@
 ﻿using HISP.Player;
 using HISP.Server;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HISP.Game.Chat
 {
     class Command
     {
 
+        public static bool Stickbug(string message, string[] args, User user)
+        {
+            if (args.Length <= 0)
+                return false;
+            if (!user.Administrator)
+                return false;
+
+            if(args[0] == "ALL")
+            {
+                foreach(GameClient client in GameServer.ConnectedClients)
+                {
+                    if(client.LoggedIn)
+                    {
+                        byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket("fun/stickbug.swf", PacketBuilder.PACKET_SWF_MODULE_GENTLE);
+                        client.SendPacket(swfModulePacket);
+                    }    
+                }
+            }
+            else
+            {
+                try
+                {
+                    User victimUser = GameServer.GetUserByName(args[0]);
+                    byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket("fun/stickbug.swf", PacketBuilder.PACKET_SWF_MODULE_GENTLE);
+                    victimUser.LoggedinClient.SendPacket(swfModulePacket);
+                }
+                catch(KeyNotFoundException)
+                {
+                    return false;
+                }
+            }
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+
+            
+            return true;
+        }
         public static bool Mute(string message, string[] args, User user)
         {
+            string mesasge = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+
+            if (args.Length <= 0)
+            {
+                message += Messages.MuteHelp;
+                goto leave;
+            }
+            
             string muteType = args[0];
 
             if (muteType == "GLOBAL")
@@ -33,18 +75,32 @@ namespace HISP.Game.Chat
             } else if (muteType == "SOCIALS")
             {
                 user.MuteSocials = true;
-            } else if (muteType == "ALL")
+            }
+            else if (muteType == "PM")
+            {
+                user.MutePrivateMessage = true;
+            }
+            else if (muteType == "BR")
+            {
+                user.MuteBuddyRequests = true;
+            }
+            else if (muteType == "LOGINS")
+            {
+                user.MuteLogins = true;
+            }
+            else if (muteType == "ALL")
             {
                 user.MuteAll = true;
             } else
             {
-                return false;
+                message += Messages.MuteHelp;
+                goto leave;
             }
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatCommandComplete(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
-
+        leave:;
+            
+            byte[] chatPacket = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
-
 
             return true;
         }
