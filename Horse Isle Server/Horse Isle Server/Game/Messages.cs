@@ -40,11 +40,11 @@ namespace HISP.Game
         public static string CompetitionGearLegsFormat;
         public static string CompetitionGearFeetFormat;
 
-        public static string StatsPrivateNotes;
-        public static string StatsQuests;
-        public static string StatsMinigameRanking;
-        public static string StatsAwards;
-        public static string StatsMisc;
+        public static string StatsPrivateNotesButton;
+        public static string StatsQuestsButton;
+        public static string StatsMinigameRankingButton;
+        public static string StatsAwardsButton;
+        public static string StatsMiscButton;
 
         public static string NoJewerlyEquipped;
         public static string NoCompetitionGear;
@@ -67,6 +67,8 @@ namespace HISP.Game
 
         // Records
         public static string ProfileSavedMessage;
+        public static string PrivateNotesSavedMessage;
+        public static string PrivateNotesMetaFormat;
 
         // Hay Pile
         public static string HasPitchforkMeta;
@@ -214,7 +216,10 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
-
+        public static string FormatPrivateNotes(string privateNotes)
+        {
+            return PrivateNotesMetaFormat.Replace("%PRIVATENOTES%", privateNotes);
+        }
         public static string FormatRandomMovementMessage(string statName)
         {
             return RandomMovement.Replace("%STAT%", statName);

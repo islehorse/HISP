@@ -1,0 +1,469 @@
+[ ] Wiches, or Wizards, or Pirates for us to choose from. CHARS
+[ ] Add Server-specific forums in-game? or out?
+[ ] Make more volehole levels and release (+ art)
+[ ] PM auto reply
+[ ] Muting of channels (Global, etc)
+[ ] POSSIBLY raise pawneer for trained horses
+[ ] List of all "Counted" Stats
+[ ] And adding more horse quizes/games.
+[ ] A circus competition, where it requires intelligence and personality, so there is something that the smaller and less talented breeds can excel in =].
+[ ] goat companion
+
+[ ] Clear Rules and Violation Values, Clear moderaotr guidelines
+[ ] Gold Mine
+[X] option to resend auth email?
+[ ] Parental controls via email?
+[X] track last server connected to
+[X] ADD AUCTION HOusE
+[X] Profiles filters/rules??  Players are stating their ages, etc.
+[X] Add a BUY 5 or BUY 10 buttons in shops
+[ ] Mark stuff you can craft and those you cant.??
+[X] Top 10
+[X] BestHorseGames.com
+[ ] Throwa quest referencing the silver brumbi character (jessielala loves it)
+                http://www.hotkey.net.au/~sasami/brumby/tree/thowra.html
+
+[X] Add a change password system for players
+[X] Add random SIckness/health problems for horses TWISTED ANCKLES /COLDS? etc...
+[X] Remove Button Disable for CRAFT ing
+[ ] Add a password to checkgateway.php
+[ ] Add Max - wrong passwords detection
+[ ] Add a Max number of packets per minute to Clients in server?
+[X] Add a cached object table?
+[X] Use Cached MAPTABLE everywhere in place of sql
+[ ] Add SPLAT sfx for tomato etc.
+[ ] Put up a dialog box:  Are  you playing? Disconnect in 1 minute...
+[X] If chatin is focused, then new chat should scroll boxes
+[X] Build a check entering system
+[X] Horses spawning does not check exteneded tiles properly...
+[ ] Show ranch locations on autosell lists
+[X] Put a limit on Crafting items when inventory full
+[X] Fix Basketball game network code errors
+[X] test ban / trade system on beta
+[X] Lieffrings do cash/checks???  PO BOX??
+[X] Remove tools from inventory make eternal
+[X] Allow BBCODE in descriptions?
+[X] Fix Arenas??   Racing arena not doing proper player updates?!!?
+[X] Allow commas in numbers!!!   4,000 = 4000 NOT 4!!!
+[X] Add /buddy /all /near chat shortcuts
+[X] get support mail properly labeled
+[X] See about proper reply addressing,  what does gmail offer?
+
+SOON NOW THAT LIVE:
+[X] Moderator Abilities /Positions
+[X] Moderator Application
+[X] Moderators and Admins different colored chat for recognition
+[X] Make CHAT ADMIN to allow mods to chat with each other
+[ ] Have an easy way for players to be able to chat with a moderator
+[X] Why Subscribe?
+[X] Game Manual / Tech Tips (knowledge base)
+[X] CLeanup scripts - (remove new accounts when not verified for??? 2 days?) 50 hours
+[X] Cleanup accounts after 30days+number of logins of inactivity
+[X] Limit global chat text length
+[ ] Fix admin commands up some,  none do enough error checking.. .
+
+
+BEFORE GOING LIVE:
+[X] snow weather
+[X] darken fog
+[X] Playtime limits enforced
+[X] Admin silence Function
+[X] IP Blocking?
+[X] Get a server online
+[X] Get New User SIgnup system
+[X] Clear rules/policies
+[ ] Parental COntrols System
+[/] Migrate Betas to live server that want credit.
+[X] Horse ISle Logo?  Remake site?
+[X] Competition clothes
+[X] 200+ Quests
+[X] Pirate Isle + Tiles
+[X] FLower Isle Redone
+[X] Security Enhancement
+[X] Fix Telescope extended tiles
+[X] Player ghosts once in a while...
+[X] Other weather FX  - weather system
+
+
+Anyone TODO:
+[ ] Make up more Pictionary Random Words for Drawing room
+[ ] Make up Riddle Room Horse RIddles
+[ ] Make up more generic riddles
+[ ] Make up More Poetry room word lists?
+[ ] COme up with slick minigame ideas
+[ ] Report bugs
+
+Miranda TODO:
+[X] Work on RULES
+[X] Work on TECHNICAL POINTS 
+[X] Work on GAME MANUAL for horse isle
+[X]  TItle forest areas
+[ ] more horse specific games
+[ ] Make 1-2 quests per day :)   -  Clean up other quests
+[/] Re Build new competition clothes in stead of normal clothes
+[X] Sound Effects for games
+[X] Develop a list of CLient sound effects actvated by server (Slap, rip, break, hit,Growl) for some socials, and also for other random events.
+[X] Proof Riddles / add riddles
+[X] Map colorings #1 Snow whiter green
+[X] add objects to better balance spawning over larger world now
+[X] Add map areas for new islands
+[X] Assign existing icons to all the objects with iconid 1 that you can. And then tell jo to draw rest.
+[X] Fala painting too hard.
+[X] Tuttle Painting - Too hard?!?!  I cant get it?  (Onlooker) too
+[X] Arica Offered to make the different color versions of pixel horse?!  Do we want?
+[X] Think about/plan workshops
+[X] 3 More music quests
+[X] Jornak: And with the T-Rex quest, I don't get a reminder in the right text box, just something to note.
+[X] convert charla mae to a collecting oranges additional step
+[X] Add playerextendeds for all
+[X] Muzzle forest is pretty 'gappy'
+[X] Add a fish cooker :   accepts any sized fish and exchanges an eatable version big/med/small
+[X] Help topic: HOw Can I Improve my HOrses Abilities?
+[X] Help topic: Ranches?
+[X] Sort order objects better
+[X] maybe add some more breed description detail
+[X] Ricardo painting too hard? (momma)
+[X] Decide whether games should show just horses,  or rider+horse
+[X] Work on documentation
+[/] Add more overlay proper coloring (Bridges, etc)
+[X] Normalize Object Pricing at 10x real world
+[/] Design a Jumping game,  top view like 3d one
+[/] Design some more horse-centric games
+[X] Welcome signs/Direction signs/ Turn buildings on  
+[X] Submit website to search engines (joe worked on this)
+[X] Make a list of Minigames and locations (joe built into library)
+[X] Maybe have her build horse-versions of chars
+[X] Proofread website / beta tester application
+[X] Abigails skates are too hard to find without another clue. . .
+[X] Fix twig back to 1000 (momma) says but not gives
+[X] Tobias offers the quest again after completion? (momma found)
+[X] Is my "Playthis song quest" cool?  If so,  devise several tunes playablae in single octave sharpless
+[X] Scatter mudholes around the planet
+[X] put a space in between checkers/chess
+[X] Have welcome willy give out the various quest tools! and explain them.
+[X] enter in all Tack objects, and proper price/benefits
+[X] add pet stores
+[X] Add breed Descriptions
+[X] Add new objects into database (non quest specific)
+[X] Think of other tack items
+[X] Design a Barrel racing game
+[X] Design conformation arena
+[X] Add wagon transport setup for near horseshoe..  from???  Appleton?? 
+[X] Get proper values in for all of the Horse breed base stats
+[X] Make more "areas" defined
+
+
+JOE TODO:
+[ ] Check on Horse Run, when you get over 100 orbs
+[X] Redirect horseisle.net to horseisle.com
+[X] WEATHER:  Birds / Bats / Flys? / Rainbows 
+[X] GAME IDEA: Rock Mine --  Rocks with numbers on them - click proper rock to chip away (even, odd,  multiple of 4, 3 5 , 7 ,8,9,10,2
+[ ] Boat Multipass type object for travelling.
+[ ] Add a simple typing game. .   maybe have to type the horse descriptions out :)
+[/] Add Phrases to ban including swears such as:   "phone number" "What town"  "how old"
+[ ] Funny horsie FOrtune cookies?
+[ ] Make a geo-hunt US States / Canada provinces
+[ ] Alternative to paying $$ for sub
+[ ] double?  word path payout
+[ ] 1 player Whats different in these 2 scenes Quest game??
+[ ] Possibly do MAX object Spot Culling:  SELECT *,COunt(*) as C from objects WHERE playerid=0 AND storeid=0 GROUP BY X, Y ORDER by C DESC LIMIT 5
+[ ] Likely DO Max Object Store Culling: SELECT *,COunt(*) as C from objects WHERE playerid=0 AND storeid!=0 GROUP BY storeid ORDER by C DESC LIMIT 5
+[ ] 2 Player Team work games?!?!
+[ ] Simonish 1 player mini game
+[ ] Join WOrds that have been cut in half and mixed around
+[ ] Goup Game: ShapeForms (ColorFOrms) Dynamic shape producing, and then move them around (minet)
+[ ] BUG: Treasue hunter still lags some players?
+[X] BUG: Racing aarena AIYA button buggy?
+[ ] BUG: IE6 wont let you view parent page from game?!
+[ ] CRITICAL: FIX ANNOYING SPACING IN MAC CHAT TEXT!!!!   Off = O ff?!?!?!  etc..
+[ ] remake my old TONG game
+[ ] Air hockey game :)
+[ ] tipping cows game???
+[ ] Integrate Message in a bottle with FLotsam!  . . .. A Message in a bottle is something you bring to city hall for a reward???  i donno yet. . .
+[ ] 1v1 Bommerman clone..  Horsebombs!  They shoot out in 4 directions eating something in path, usually apple/players.
+[ ] Hide and seek multiuser room?  Take turns clicking things to hide under/behind in a house?
+[ ] Pony Express Some sort of delivery system within the game??????????????
+[ ] Ring Jousting -  first person fake 3d   Guuide stick into oncomming ring while gighting random movements
+[ ] Ice skating game Multiplayer??
+[ ] make a pin the tail on the horse game.
+[ ] allow key objects to open certain buildings
+[ ] Tetherball game, Frisbee, bean bag toss
+[ ] fish shadow swimming around water?
+[ ] multiplayer synonyms game??  Tried long time finding a nnice sysnonyms list.. 
+[ ] Jumping arena Hold Down up arrow for bigger jump,  let go to activate jump
+[ ] Scorpions can bite a horse!
+[ ] snowballs melt in inventory
+[ ] IDEAS: Memory game, slingshot game, squish bug game
+[ ] depending on terrain, player and horses get more thirsty! (desert)
+[ ] Update player views when a same tile player GRABS/DROPS objects
+[ ] wandering horses gain experience!  so longer they wander,  more valuable :)
+[ ] Add Game/help Info to Flash Menu
+[ ] GFX: Move chat bubbles when multiple
+[/] (objects removed in 12 hours) Store object limit
+[/] CRITICAL: FIGURE OUT WHY SOUND EFFECTS DELAYED IN MINIGAMES!!!  ??  Just up the FPS of that game???
+[/] Get Login and signup webpage portions done.
+[/] Make screenshots,  and fix verbage, meta/keywords.. 
+[/] mouse,gerbil,Genet,Servel, Fennec Fox, Kinkajou, parrot, pidgeon,ferret, rabbitt,rat,hampster,gecko,toad,treefrog,turtle, spider,  pig, lots of dogs
+[/] PET: KITTENS: Black,Calico,Brown Tabby,Orange Tabby,Tuxedo Kitty,White,Bengal,Himalayan,Persian,Siamese
+[/] MARBLE BUG: i didnt get player updates at all?!?!   - may be transient
+[/] CHESS BUGS:  sits on grabber frame - & Sometimes not dropped at a snap point for opponent!?  could not duplicate?
+[?] Find javascript to Set game as 'focused' so no need to click it when switching windows. - LOooked for a while..  onblur, onload not cutting it..
+[/] Put limits on # of different objects in player inventory, and quantity.
+[/] Don't Allow horses to spawn/wander into towns
+[?] Cactus can injure a horse!
+[/] parental controls - Disable chat option? - Email chat logs?
+[/] Make sure server cannot "bunch" up packets sent to client!
+[/] Make sure server waits to send client welcome packets until client ready
+[/] get all horse breeds drawn 
+[/] (dressup mod)Build a "build a snowman" game :) -sara
+[/] Snowman Dressup/Doll/horse dressup?
+[/] add town center building - Allows mail sent/receive  And community messages
+[/] First Person Cave Exploration module/garden hedge????
+[/] get game assets professionally drawn
+[X] sara suggested allowing the socials to make noises when you hit someone :)
+[X] Horse Whisperer - Building of info where you can locate a certain breed
+[X] CRITICAL: Server Lockup 12 players online, :59 locked at end of minute.
+[X] CRITICAL: Server Crash March 1st - 15 players - middle of minute - Looks like a Player Disconnected right before??
+[X] Maybe a Pirate Treasue Award.
+[X] Make a Geo-hunt Style HOrse Parts/Bones?
+[X] Crash happened 14 people online - 5 person races possibly on startup
+[X] BUG: Huge Server Lockup problem!  >7 people online???
+[X] Some sort of a Horse Running with other horses..  Maybe your horse runs around finding other horses and then they follow??
+[X] Players get a first place 2 star ribbon when they beat 2 other opponents  4star when 4opponents, etc
+[X] (single) multiplayer baloon game,  shoot same colors
+[X] Frog Jumping on Twigs up waterfall game
+[X] setup a subscription/payment system
+[X] boggle game - server checks dictionary file
+[X] Pasture Free place to sit and let your horses stand in pasture for free, but they all gain moo+food slowly over time
+[X] Stop making players invisibile on MapCoded spots..  Leave it to the overlay tile definitions instead.
+[X] What happens when player you are private chatting with leaves???
+[X] NOPE Objects change into something else after so long a time in inventory. . .
+[X] Only spawn objects on walkable terrain NOT inside buildings,etc
+[X] Create server timeouts, close connections during login after 5 minutes of no login,
+[X] title graphic
+[X] Fix arrow keys while editing profile!!
+[X] 15 minute inactivity logoff
+[X] Add an exit button either shortcut or key to exit back to main page. .
+[X] Fix char 32 bug, Stop covering Chat Boxes on Disconnect, Add X button, add dynamic errors
+[X] DONT Possibly rent barn space from other players??  ack. . .  too hard..
+[X] riding a low-experience horse will BUCK you every once in a while :)
+[X] Add Geo Hunt Award  -- 
+[X] DO BY HAND Random presents given on CHristmas/ newyears?? maybe birthdays?
+[X] Add an Awards system
+[X] Add a Session Log? IP, ID,  Username Logon, logoff
+[X] Allow a QUANTITY in item trading
+[X] Backwards BOGGLE find a word placed in a boggle type setup
+[X] Workshops: ex. jeweler - combines 20 pearls + necklace chain = pearl necklace
+      Need Tiles and lots more objects
+[X] Add conditions to send player to Prison :)  (starving horse)
+[X] LONG TERM:  Switch to EXTENDED Tileset (64 tiles) Selectable by Island TYPE!  Maybe "Cloud" other islands of different type in view....
+[?] CLIENT: BLock Chat boxes while on welcome isle
+[X] Maybe cant move (fails once in a while )  when hungry thirsty?
+[X] NOPE! COnsider horses starting as FOALS  as a percentage restriction on height and abilities
+[X] Limit Trading when inventory full
+[X] Limit Number of objects in a GRAB ALL
+[X] sending list of overlays which hide player, and then hiding player on client side whenever character is "rounded" into a hiding one. in this way you'll be able to see movement into shops, etc!
+[X] Extend the time before race end!  SOme racers get cutoff!!
+[X] GFX: Cutoff legs in bushes/grass
+[X] Horse Game:  Riding bull - stay on bull
+[X] QUEST GAME: tangrams :)
+[X] Add rotten tomatoes
+[X] BUG: Wishing Well, too many items (purplemuffin)
+[X] Reward for completing all quests  - nice set of tack?   (Onlooker)
+[X] CLIENT: Dont close arenas on ^MM even!
+[X] CLIENT: Add a clear chat boxes again?
+[X] CLIENT: Switch WEAR buttons for clothes to SELECT?
+[X] BUG: if a person you are private chatting with leaves,  remove them from chat box
+[X] BUG:  a certain char cauases everything to go water..  . screws up maps ???
+[X] BUG: Encode < as &lt;
+[X] BUG: Money being added to accounts?!?!  Goingcrazy=22000 firechild=11000?!?  windmill?
+[X] Add a quantity requirement for first object on actions :)
+[X] Add a bonus/$? of somekind for beating the top score on any game. (onlooker)
+[X] BUG: Private Chat messes up
+[X] BUG: dont allow entering an arena more than once!!
+[X] Allow researching Quests/minigames at library???
+[X] Finish up Ranch Functionality trainer, garden , etc..
+[X] HOt air balloon game
+[X] CRITICAL: FIx ARENA startup bugs (when looking at horses, etc..) 
+[X] fix private chat bug,  when a player leaves?
+[X] get characters professionally drawn
+[X] disable back button???? (just force new window)
+[X] (prolly not) COnsider switching to a quantity based inventory,  rather than individual objects..  .
+[X] Switch gaia varialbles to global table (# horses, # buried treasure, etc.)
+[X] When riding horse have players move FASTER to locations rather than Jumping 2 spots...
+[X] Show characters actually riding a generic horse
+[X] Fix PROFILE page being blank upon clicking off it.  It's a ScrollPane + ComboBox Flash bug!!!  aike. . 
+[X] force full map sends on diagonal movement.  or expand the array shift widths.. (prolly best)
+[X] Fix Arena Timing Bug!??!?
+[X] Fix rainbowstreasures so they disappear now somehow. . . .
+[X] Get Player Timeouts working.  Make sure no "ghosts"  are left behind.
+[X] Get Barns To Work
+[X] Allow an action to trigger consuming objects?  ex. nap for Sera
+[X] Add yellow daiseys to daisey terrain
+[X] 1v1 Game of Making boxes,  take turns making segments, if you make a box, its yours + go again. winner has most boxes
+[X] Switch clothing to be "Competiton Gear"
+[X] Fatten EXIT THIS PLACE button
+[X] Adding Tack list and Pet list to Library?
+[X] Add code to Deamonize Server
+[X] CRITICAL: Switch competitions to happen every minute MULTIPLE rather than tracking start/end times...
+[X] Limit # Horses & # Items!!
+[X] Add a simple - play this song Quest(s)
+[X] Coloring Book??
+[X] bug: buddies list bug?  People marked as buddies appeard offline when not?!  (not really a bug) database was modified indirectly)
+[X] bug: fix exiting feed or profile to close horse view - OR show horse details instead
+[X] bug: If moving while arena start-up sent to you, you might receive a move code after,  and thus stat back up map view below. . . 
+[X] make orange trees
+[X] Trail Riding MiniGame
+       Top view/control like Maze game... but timed and random?   something about something jumping out
+[X] Stable - place to pay to keep your horses fed,drunk,slept for $/day (dont bother,  jsut use barn)
+[X] add dates? to messages
+[X] Add Effects Table, Which positions chimney smoke, and Door Paths under buildings.
+[X] multiplayer music room?!?!?
+[X] Horses tired/hungry/shoes worn after competition
+[X] get external module storfronts professionaly drawn
+[X] Build new Terrain tiles
+[X] Build new Overlay tiles
+[X] Enter breed data
+[/] Make Horse module views
+[/] design bunch of items - get them drawn
+[X] Solve disconnect problems tim was having! (didn't happen anymore?!)
+[/] light grass to dark forest grass transition
+[/] implement Settings (sound volume, graphics detail, ??)
+[X] make list of tiles needed online for emma
+[/] Main game loader - sub game loader
+[/] CutScenes,  sleeping/Wagon ride/boat ride, quick swf's
+[X] multiplayer games ideas:  Snowball/coconut Toss (old monkey and banaana game)
+[/] fix chat text not bolding ??  not sure its a problem
+[X] brighten darkness a little more..
+[X] Track compettion highscores!
+[X] Have other players "walk" to locations,  rather than "jump"
+[X] Bug: reid noticed you can move faster holding down diagonals.
+[X] Wrap objects and they become presents!
+[X] Bug: Private chat not available until an existing player moves upon login..
+[X] 2player game ideas: battle ship,
+[X] Remake water so less "busy"
+[X] Dont allow dropping on the ground when at a shop, etc..
+[X] figure out trades system
+[X] Make binoc water solid blue
+[X] Add compass to map view
+[X] figure out what white thing in on login page upper left corner!
+[X] Fix Players Idle being disconnected?!?!
+[X] PLace "CLick anywhwere to return" on Binoc page
+[X] Fix strange Wishingwell appearance during login in earton bug
+[X] add a UpdateVolume Function for parent to call in modules when volume hit
+[X] allow module games to activate quests.. 
+[X] add buddy chat
+[X] add emmas new icons,  send her back some ideas
+[X] Dont reset views at all locations when another player enters.. screws up npc, etc..
+[X] Fixed BUG: allow admin commands from buddy and NEAR chat
+[X] SELL all items on a stack of same item (client ready)
+[X] GRAB all items function off ground (client ready)
+[X] Allow horses to drink from pond.... Randomly get sick! (client ready)
+[X] do not allow dropping quest items
+[X] Add a library,  that allows you to view all the different horses.
+[X] Switch binoculars to telescope, allow binoculars for something else?
+[X] Allow Searching with Magnifying glass
+[X] Allow Uncovering with a Rake
+[X] CHECKERS BUG: Game close not recognized by other player?
+[X] Herd Cattle - wow.  thats all i got ta say.
+[X] build module gui buttons X ? ! +
+[X] COnsider removing betting system????  complicated and may not be for kids?
+[X] Multiuser Fridge Magnets
+[X] Rebuild old Pushblock game. .  maybe make one level per town, etc.
+[X] Buddies can TAG eachother.
+[X] Horses can eat carrots and apples too
+[X] Add ability to click on tiles to identify (mouseover)
+[X] fix stuck in store bug when login/logout from store
+[X] Implement social commands?  !hit joe
+[X] Map not reloading newest changes on restart...
+[X] Get MAPD/T to allow apostrophes
+[X] Add shadows to all Overlay objects that need it!
+[X] when look at players,  allow looking at horses
+[X] make sure all modules have an EXITMODULE() function which destroys intervals..
+[X] allow ENTER key to do LOGIN on login page
+[X] Add CHAT HERE option forchatting in same room only
+[X] BUG: MAP bttons on player list duplicate when players at same spot!! duh.
+[X] Get NPC's to move around if they should. (certain terrain?)
+[X] send time/weather on login
+[X] institute game time
+[X] Get admin to SendInfo to self after jumping?
+[X] Clear Game intervals for certain! whackamole/math
+[X] Shovel,  Allows DIG ,  finds BURIED objects!
+[X] fishing shop guy takes a strong branch and converts to pole...
+[X] Make a 2+ player drawing game (emma)
+[X] Move Modules into mod folder on server and client
+[X] Implement NPC static points,  so that Quests can set a different conversation point for npc
+[X] VIEW <player> STATS/INVENTORY admin commands
+[X] See if possible to return to same place on a store item display instead of top.
+[X] BUG:  when logging in, and player is at a store,  they will be visible.
+[X] Build a game music Volume/mute button
+[X] Buiild a goto Player admin function
+[X] build a terrain tile floodfill! (recursive functions)  limit recursion to 100 deep though in php!
+[X] go through sql selects and make sure limited *'s!
+[X] Allow apple trees to spawn apples around it, etc.
+[X] Allow Other players shown on map
+[X] figure out solution for tiles in SQL (terrain/orverlay in tiles table)
+[X] Redo GUI buttons
+[X] chat language filter
+[X] implement player Eatable items
+[X] Make GIVE server command $ or object to player
+[X] Send location of players when logging in
+[X] Quests can give you a new location (NPC's bring you places?)
+[X] Get map button to show world map.
+[X] View Worn items in inventory, and allow disrobing 
+[X] Add LOOK at player buttons to Who's online view
+[X] Implement player wearable items
+[X] implement farrier
+[X] implement vet
+[X] implement groomer
+[X] Figure out method for passing data to/from external modules
+[X] Move Documentation online
+[X] Redo demo stores/map locations
+[X] Make npc scripting more flexible
+[X] Send mary info on making npc scripts
+[X] build povray demo fence/well/pen
+[X] Allow editing Player Details
+[X] Allow editing Horse Details
+[X] NPC's can activate quests
+[X] Buddy List
+[X] Build GAIA script
+[X] Wagon transports
+[X] Boat Transports
+[X] Click on players on map for name/description
+[X] Get chat bubbles to work.
+[X] BUG: When player exits ,  client chatlist is reset,  and player loses current private chat
+[X] have the Quest COmpleted text changed to tell you exactly what transactions took place.
+[X] BUG Ooops   you can feed and Etc. . other peoples horses at arena!!!  :)
+[X] dont allow horses/npcs/objects to spawn/move on unwalkable overlays..
+[X] BUG: it kept saying emma was logging in every time she  said something?!
+[X] Probably Build the NPC chat scripting into database. .. 
+[X] Make daisy overlay
+[X] Fix training MAX's
+[X] snowballs can be thrown
+[X] allow some games to track scores scores table: playerid:gamename:wins:loses
+[X] Build a compute tack bonus' function -return assoc array
+[X] BUG:  when in drawing room and view map, background goes bubye.
+[X] BUG: When player disconnects Clear the OPPONENTS  OPPONENT setting!
+[X] View a 50% tile size View of area in addition to map
+[X] Add detailed island/town info to client map display
+[X] Add socials: shoulder pat, nod , tickle , yell, push, thumbsup, kick
+[X] allow riding your horse to move 2 tiles quicker
+[X] Hay tile!  Use a pitch fork to make own haybales. for free.
+[X] Add random game tip to loading screen
+
+
+LONG TERM
+security prior to going beta
+[ ] Check for possible SQL injection attacks!
+[ ] Set Database Passwords
+[ ] Web Server Read only Server
+[ ] Password protect dev site
+[X] Encode username along with password encoding
+[ ] complicate flash cryptor
+[ ] Add a packet per second max on client using interval  (and server?)
+
+
+LONG TERM
+maybe someday
+[ ] Get a life
+[ ] Character displayed as IN water on first depth terrain

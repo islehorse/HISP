@@ -107,6 +107,19 @@ namespace HISP.Player
             }
         }
 
+        public string PrivateNotes
+        {
+            get
+            {
+                return privateNotes;
+            }
+            set
+            {
+
+                Database.SetPlayerNotes(Id, value);
+                privateNotes = value;
+            }
+        }
         public string ProfilePage { 
             get 
             { 
@@ -269,6 +282,7 @@ namespace HISP.Player
         private int subscribedUntil;
         private bool subscribed;
         private string profilePage;
+        private string privateNotes;
         private int x;
         private bool stealth = false;
         private int y;
@@ -351,7 +365,7 @@ namespace HISP.Player
             subscribed = Database.IsUserSubscribed(UserId);
             subscribedUntil = Database.GetUserSubscriptionExpireDate(UserId);
             profilePage = Database.GetPlayerProfile(UserId);
-            
+            privateNotes = Database.GetPlayerNotes(UserId);
             hunger = Database.GetPlayerHunger(UserId);
             thirst = Database.GetPlayerThirst(UserId);
             tired = Database.GetPlayerTiredness(UserId);

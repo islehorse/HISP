@@ -17,7 +17,7 @@ namespace HISP.Server
     {
 
         public static Socket ServerSocket;
-        
+
         public static GameClient[] ConnectedClients // Done to prevent Enumerator Changed errors.
         {
             get {
@@ -35,7 +35,7 @@ namespace HISP.Server
          */
         private static int gameTickSpeed = 4320; // Changing this to ANYTHING else will cause desync with the client.
         private static int totalMinutesElapsed = 0;
-        private static int oneMinute = 1000 * 60; 
+        private static int oneMinute = 1000 * 60;
         private static List<GameClient> connectedClients = new List<GameClient>();
         private static Timer gameTimer; // Controls in-game time.
         private static Timer minuteTimer; // ticks every real world minute.
@@ -49,7 +49,7 @@ namespace HISP.Server
         {
             totalMinutesElapsed++;
 
-            if(totalMinutesElapsed % 8 == 0)
+            if (totalMinutesElapsed % 8 == 0)
             {
                 Database.IncAllUsersFreeTime(1);
             }
@@ -62,14 +62,95 @@ namespace HISP.Server
          * This section is where all the event handlers live, 
          * eg: OnMovementPacket is whenever the server receies a movement request from the client.
          */
-
         public static void OnCrossdomainPolicyRequest(GameClient sender)
         {
             Logger.DebugPrint("Cross-Domain-Policy request received from: " + sender.RemoteIp);
 
-            byte[] crossDomainPolicyResponse = CrossDomainPolicy.GetPolicy(); 
+            byte[] crossDomainPolicyResponse = CrossDomainPolicy.GetPolicy();
 
             sender.SendPacket(crossDomainPolicyResponse);
+        }
+
+        public static void OnDynamicInputReceived(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent dyamic input when not logged in.");
+                return;
+            }
+            string packetStr = Encoding.UTF8.GetString(packet);
+            string dynamicInputStr = packetStr.Substring(1, packetStr.Length - 2);
+            if(dynamicInputStr.Contains("|"))
+            {
+                string[] dynamicInput = dynamicInputStr.Split('|');
+                if(dynamicInput.Length >= 1)
+                {
+                    int inputId = 0;
+                    try
+                    {
+                        inputId = int.Parse(dynamicInput[0]);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input ");
+                        return;
+                    }
+
+                    if(inputId == 7) // Private Notes
+                    {
+                        if(dynamicInput.Length >= 2)
+                        {
+                            sender.LoggedinUser.PrivateNotes = dynamicInput[1];
+                            byte[] chatPacket = PacketBuilder.CreateChat(Messages.PrivateNotesSavedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(chatPacket);
+                            return;
+                        }
+                        else
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
+                            return;
+                        }
+
+                    }
+
+
+                }
+                else
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (wrong size)");
+                    return;
+                }
+            }
+            
+
+        }
+        public static void OnDynamicButtonPressed(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Clicked dyamic button when not logged in.");
+                return;
+            }
+            string packetStr = Encoding.UTF8.GetString(packet);
+
+            // Determine which button it is
+            int buttonId = 0;
+            string buttonIdStr = packetStr.Substring(1, packetStr.Length - 2);
+            try
+            {
+                buttonId = int.Parse(buttonIdStr);
+            }
+            catch (FormatException)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to click a invalid dynamic button");
+                return;
+            }
+
+            if(buttonId == 21) // Private Notes
+            {
+                byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPrivateNotes(sender.LoggedinUser));
+                sender.SendPacket(metaPacket);
+            }
         }
         public static void OnUserInfoRequest(GameClient sender, byte[] packet)
         {

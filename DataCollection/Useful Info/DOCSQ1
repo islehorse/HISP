@@ -1,0 +1,480 @@
+TECHNICAL DOCUMENTATON:
+
+ALL SERVER CONTROL COMMANDS:
+NOTE!: Use no exclamation marks or quotes, etc. 
+./controlservers "MESSAGE Hi to everyone on horse isle."
+./controlservers "MODMESSAGE Hi all mods on Horse Isle"
+./controlservers "KICK BadPlayer"
+./controlservers "MOTD Set the message of the day on all servers."
+./controlservers RESET
+Publish Beta Content to other servers:
+./Propagatebeta.sh
+-----------------------------------------------------------------------------
+=================[ IN-GAME SERVER COMMAND FOR ADMINS ]=======================
+-----------------------------------------------------------------------------
+%% <text>        Sends chat text to Just ADMINS 
+% BEEP           makes a beep on the server end in case either jor or miranda is watching console
+% RESET QUESTS   resets your list of completed quests,  and quest points.  allows you to try threm over again for testing.
+% CALL HORSE     randomply grabs a horse to you
+% PRISON <name>  Sends Player to prison isle
+% KICK <name>    kicks player immediately off server, can log back in
+% MUTE <name> <minutes>  Mutes a player for a certain number of minutes
+% UNMUTE <name>  Unmutes player
+% DROP <#>       Create a new object id at current location
+% DROP <name>    Create a new object name at current location
+% GIVE <player> MONEY <num>  Server Gives player num money 
+% GIVE <player> OBJECT <num>  Server Gives player object num
+% GIVE <player> OBJECT <name>  Server Gives player object with name 
+% VIEW <user> STATS/INVENTORY shows other players inventory/stats (ITEMS NOT clickable)
+% ? <user>       show users Current XY IP Location, no user=show YOUR xy
+% GOTO NPC <name> jumps you to the named computer character.
+% GOTO AREA earton,appleton,treeton,flipperton,santa,santon,shellton,wington,chillton etc..  Jumps admin to city or Island center
+% ^ <place>      shorthand alias for '%GOTO AREA' 
+% GOTO <x>,<y>   Jump to map location
+% GOTO <user>    Jump to players location
+% JUMP <user> HERE Jumps player to your location! (good for getting the player "unstuck"!)
+% MESSAGE ALL    Send a server notice to everyone connected
+% SAVE MAP       Save any changes to the world map
+% DRAW MAP       Rebuild the pixel game map
+SHIFT + UP/DOWN Change Terrain Tile +1/-1
+SHIFT + RIGHT/LEFT Change Overlay Tile +1/-1
+SHIFT + CTRL     Toggle "Footpainting" Walking duplicates tile you are on
+% !<#>           Set terrain tile to #
+% @<#>           Set overlay tile to #
+% MAPT <title>   Change the title of the current location map info
+% MAPD <text>    Set the description of the current locations map info
+% MAPE <UP/DOWN/RIGHT/LEFT> Set the Exit direction for building 
+% MAPC <text>    Set the CODE of the current locations map info
+% REFRESH MAPTABLE Reloads all of the map titles/etc off database.
+% FILL <terrainid> Does a contiguous flood fill over tile you are on with new tileid
+%ROADON          Enable Walking roads!  Does not handle intersections
+%ROADOFF         Disable Walking Roads!
+% SHUTDOWN NOW   shuts server down - does NOT save map
+----------------------SUPER ADMIN COMMANDS ----------------------
+% DELETE PLAYERID #    Complete removes all players info from many tables in database.
+% LOAD MAP     reLoad the world map
+% BUILD MAP    Build Terrain from map image
+% BUILD MODE     Allows  editing of map tiles using shiftarrows and following
+% TILERANDOM     Randomizes all of the terrain that is good to randomize (the duplicate plain terrains)
+% AUTOGENFOREST  Randomly builds all forests on map
+------------------------------------------------------------------
+==================[ SQL MAP LOCATION CODES: ]=====================
+------------------------------------------------------------------
+JUMP-xx,yy     Jumps to new x,y use for multi-tile buildings. all players should be in one tile per building
+STORE-id       Display Store id
+FARRIER-id     Display Farrier id
+VET-id         Display Vet id
+GROOMER-id     Display Groomer id
+TRAINER-id     Display Trainer id
+INN-id         Display INN id
+ARENA-id       Display ARENA id
+POND           Display pond location
+BANK           Display generic banking services
+TRANSPORT      Display all of the available routes in the transport table
+MUDHOLE        Display a mud hole location
+WISHINGWELL    Wishing well functionality
+2PLAYER-Game   2 Player Game Setup
+MULTIROOM      multiplayer structureless setup
+HORSE-Game     Allow selecting horse to play minigame with, sends all stats to game.
+RIDDLER        Riddler display
+WORKSHOP       Display any crafts available at location
+EXITABLE       Simply Adds an Exit at the botton
+HORSEWHISPERER Horse Whisperer
+PASSWORD-SECRETWORD!444   Password required to activate the Action ID
+------------------------------------------------------------------
+=========================[ META CODES: ]==========================
+------------------------------------------------------------------
+^I43 -   Display Icon #43
+^T1Apple Tree - Display Text Label SIZe 1=small 2=medium 3=big: Apple Tree 
+^R# - Next Line (1= jump 24 pixels down, 2=28,3=32, etc..
+^BD2345     - Button Second letter = mode 
+  A=startnpc + npc id
+  H=replynpc + npc conversation point
+  M=load the swf + movie name
+  SW=showscores + Game identifier - Show top wins
+  SH=showscores + Game identifier - Show high score
+  ST=showscores + Game identifier - Show best times
+  N=wish + 1=money, 2=things, 3=world peace  :)
+  Y=buytrans + transport id
+  Z=exittomap - for npc reply
+  1 + extended player button functions follow
+    A=tradeaccept + trade id
+    J=tradereject + trade id
+    O=tradeobj + objects id
+    T=tradeplyr + player id
+    L=lookplyr + player id
+    B=addbuddy + player id
+    R=removebuddy + player id
+    W=showplyrmap + XXYY Show xy location on map!
+    S=socialsplyr + player id
+    D=drinkfountain
+    X=tag + buddy id
+    I=ignoreplyr + playerid
+    H=unignoreplyr + playerid
+    P=privatemessage + player name
+  2 + extended multi-player game functions follow
+    I=Invite to game +player id
+    A=Accept game + player id
+  3 + horse functions
+    B=barnhrs + horse id
+    E=hrsprofile + horse id 
+    C=cleanhrs + horse id
+    F=feedhrs + horse id
+    G=groomhrs + horse id
+    JI=shodhrs + (IRON) horse id 
+    JS=shodhrs + (STEEL) horse id
+    I=feedobj + ojects id
+    K=tackobj + objectid tack object on horse
+    N=unmounthrs + horseid
+    O=mounthrs + horseid
+    M=removetack 
+    O=lookhrs + horse id
+    P=pethrs + horse id
+    R=trainhrs + horse id
+    T=tackhrs + horse id
+    U=capturehrs+ horse id
+    V=vethrs + horse id
+    X=releasehrs + horse id
+  4 + object functions
+    A=obj                  Sell All
+    BF=buyobj + objects id   buy FIVE existing objects
+    BE=buyobj + objects id  buy existing object
+    BN=buyobj + object id  buy new object
+    BE=buyobj + object id  buy and consume new object (INN)
+    B5=buyobj + object id  Buy 5 objects at once
+    C=craftobj + crafts id
+    D=dropobj + objects id
+    E=eatobj + objects id
+    G=grabobj + objects id
+    R=graball + object id
+    //I=dig 
+    UR=userake        UNCOVER
+    UB=usebinocs      SEARCH
+    UM=usemagnify     SEARCH
+    US=useshovel      DIG
+    UT=usetelescope   USE
+    K=drinkobj + objects id 
+    LO=lookobj + objects id  look at existing object
+    LN=lookobj + object id  look at a new object
+    LC=lookobj + npc ID Look at NPC
+    O=openobj + objects id
+    V=readobj + R=read  L=listall objects id
+    S=sellobj + objects id
+    T=throwobj + objects id
+    W=wearobj + objects id
+    X=removeobj + body part
+    Z=ripupobj + objects id
+  5 + Socials!  xnay on the rest,  make dynamic!
+  6 + Ranch functions
+    P=purchaseranch + ranch id             BUY
+    U=upgraderanch                        UPGRADE
+    B=buildspot + building id + position  BUILD
+    R=sellspot + position		   SELL
+    S=sell ranch + ranch id                SELL
+    E=ranchprofile                         PROFILE
+    L=lookbuilding + building id           ?
+
+^A+ Stats Box
+  B+ stat;stat;stat;etc... - Create basic stat graph
+  A+ SP base;SP companion;SP tack; SP max; +etc.. - Create advanced stat graph
+^P+ Input codes
+  L+ title | contents   - Input line with title and contents settable
+  M+ title | contents   - money Input line with title and contents settable (only numbers!)
+  B+ vpixsize | contents - Input box with vertical size and contents settable
+  S+ id | button label - Input Submission Button with id and label settable
+^S+ Dynamic submission box codes
+^D + code | label - Dynamic Button
+^Lthis is a long line -full line of text
+^H  - header full multilines
+^N - NPC Multiline text box, that leaves room for sigle button on bottom right
+^M - back to map button
+^MM - back to map button AND close module!!  (used when looking at horses)
+^X - Exit Building button
+^Z - end of MetaCodes
+----------------------------------------------------------------------------
+=============================[ NETWORK CODES: ]=============================
+----------------------------------------------------------------------------
+TO SERVER: (bytes)
+(20)+ : Chat code 
+  (20)+text : Global Chat
+  (21)+text : Local Chat
+  (22)+name|text : Private Chat
+  (23)+text : Buddy Chat
+  (24)+text : HERE Chat
+(21)+ : Movement Code (alone means, just update info screen!)
+  (20) : Move Up
+  (21) : Move Down
+  (22) : Move Right
+  (23) : Move Left
+  (24) : Exit Building
+(22)+ : Who's online?
+  (20) : Who's online global info display
+  (21) : Local Players ** Not Implemented **
+  (22) : who's online global program call
+  (23) : Local Players program ** Not Implemented **
+(23) : Inventory List Request
+(24) : Player Status Request (blank=list status)
+  (20) : Send just Description, for editing
+  (21) : Save the following as player description!
+  (30)+amount : Earned money 
+  (40)+id     : Earned Object id
+  (41)+id     : Lost Object id
+  (50)+id     : Activate Quest id (for pyramidmaze module, etc)
+  (51)+id     : Activate AWARD id (for awardable scores module, etc)
+  (55)+id|amount : Horse id Gains amount experience
+  (60)+(20)+gameid : Won Game
+  (60)+(21)+gameid : Lost Game
+  (61)+gameid|score : game score result for tracking high scores
+  (62)+gameid|time : game time result for tracking best times
+  (80)+gameid : show top winners
+  (81)+gameid : show top scores
+  (82)+gameid : show top times
+(25)+ : Horse Stats Request (blank = list horses)
+  (20)+id : Look at horse
+  (21)+id : Feed Horse
+  (22)+id : Tack Horse **
+  (23)+id : Clean Horse **
+  (24)+id : Pet Horse 
+  (25)+id : Release Horse 
+  (26)+id : Train hrs 
+  (27)+id : Feed Object to horse
+  (28)+id : try to Capture a horse
+  (29)+id : Captured horse
+  (30)+id : Horse Escaped
+  (40)+id : Shod Iron on horse id
+  (41)+id : Shod steel on horse id
+  (42)+id : Cure horse on horse id 
+  (43)+id  : Horse Drink Pond Water (1/20 get sick)
+  (44)+(20)+id : Edit horse profile
+  (44)+(21)+id : Save horse profile
+  (50)+id : Groom horse id
+  (55)+id : Barn rest horse id
+  (60)+id : Tack object on horse
+  (61)+part : Remove tack off horse part
+  (70)+id : ride horse
+  (71)+id : stop ride horse
+(30) + : Object modification codes
+  (20) + id : Grab Object with id
+  (21) : grab all!
+  (22) + id : open object with id
+  (30) + id : Drop Object with id
+  (31) + id : Throw object id
+  (40)(20) + id : Look at Objects id  (exisiting object)
+      (21) + id : Look at Object id (new object)
+      (22) + id : Look at NPC id 
+  (42) + id : Read Objects
+  (43) + id : Rip Up message
+  (50) + id : Buy Existing Object
+  (51) + id : Buy new Object
+  (52) + id : Consume object and buy
+  (53) + id : Buy 5 of the object
+  (54) + id : Buy 5 of existing objects
+  (60) + id : Sell Object
+  (61) + id : Sell all object of same obbject id
+  (70) + id : Wear object
+  (71) + part : remove object
+  (80) + id : drink object
+  (81) + id : eat object
+  (82) + id : drink from fountain
+  (90) : Dig at current location
+  (91) : Use binoculars
+  (92) : Use Magnifying Lens
+  (93) : Use Lantern
+  (100)+ id : Craft Object (crafts id)
+(35) + : Ranch Ownership Modification Codes
+  (20) + id : Buy Ranch id
+  (21) + id : Sell Ranch id
+  (22) + id : Look at building id
+  (23) + id : Click Codes   +0= cabin   +1=buildspot #1,etc.
+  (24) + id : Updrade Ranch home
+  (25) + id : Build at position id
+  (26) + id : destroy building at position id
+  (27) + id : Edit Ranch Profile
+(36) + : Auction House Codes
+  (40) + id : Bid $10 more on horse
+  (41) + id : Bid $100 more on horse
+  (42) + id : Bid $1000 more on horse
+  (43) + id : Bid $10000 more on horse
+(40) + : NPC
+  (20) + id : Start COnversation with NPC ID
+  (21) + code : COntinue conversation with npc at code
+(41) + id : Activate Transport id
+(42) + : Inter-Player Function Codes
+  (20) + id : look at player id
+  (30) + id : add player to buddy list
+  (31) + id : remove player from buddy list
+  (35) + id : TAG!  buddy is it..
+  (40) + id : Begin trade procedure with player id
+  (50) + id : IGNORE playerid
+  (51) + id : unIGNORE playerid
+(44) + wish :  Wishing well Wish
+(45) + score : Report Arena Competition Score result
+(46) + gamecode : Show HighScores
+(69) + code : Coded Dynamic Button Click with
+(70) + code + input contents in order |+  : Coded Input Submission
+   #1 : Bank transactions
+(79) + : Single player Module Requests
+(80) + : Inter-Module Communication
+  (20) + id : Invite player id to play game
+  (21) + id : Accept game invitation with player id
+  (80) + data : send data to opponent
+  (81) + data : send data to everyone in room
+(90) + 
+  (20) + player id : Socials request
+  (21) + code : Dynamic Social Code Activated
+(118) : Bird Eye Map request
+(119) + X | Y : Client Map Click for info
+(120) + : Builder Codes
+  (20) : +1 Ground Tile ID
+  (21) : -1 Ground Tile ID
+  (22) : +1 Overlay Tile ID
+  (23) : -1 Overlay Tile ID
+(124) : Keep ALive Packet, ping-ponged after 1 min inactivity
+(125) : CLient notification that player is quitting
+(126) : MOTD Requested
+(127)+user|pass : login
+(127) (after login) ready for data, send all welcome packets
+
+FROM SERVER: (bytes)
+(20)+ : Chat code 
+  (20)+text : Global Chat
+  (21)+text : Local Chat
+  (22)+text : Private Chat
+(21)+XX+YY+DATA : Map Data    includes a flag byte8 to determine whether to reset movie
+(22) : System Whois Reply
+(24)+description : Edit Player Profile
+(25)+id|name|description : Edit horse profile
+(30) : Meta Codes for dynamically building InfoPane
+(35) : SFX Codes
+(40)+filename : Display external swf
+(41)+filename : Display external swf in protected mode (Map transmissions do not close movie) for cutscenes
+(42)+filename : Display external swf gently.. (dont load if one exists)
+(80)+data : Pass data straight to module buffer: DATARECEIVE
+(117)+overlay data : Overlay Data on which tiles to hide player when on
+(118)+map data :  bird eye map data
+(119)+text : Mouseclick Location info
+(120)+update tile at location from build mode
+(121)+areas data : send info on all areas for map viewer at login
+(122)+time|day|weather  //update every minute
+(122)+(19)+WEATHER   // sudden non transitionsed weather change
+(123)+money|mail|players  // status bar update
+(124) : Keep ALive Reply
+(126) : MOTD
+(127)+ :  Login Attempt
+      (20): Successful
+      (21): Incorrect user/pass
+      (22): Failked + message
+(128)+ message : Disconnect with message.
+(129)+ Byte Codes for packet checking + Admin Flag
+
+------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------
+HOMEMADE LIGHTWEGIHT PACKET ENCRYPTION:
+Use a server Function to Check Code,  and make code.
+Use on all Packets which should be verified (Money earned in module, etc)
+X= chr(40)-chr(140)  the CODES
+Y= chr(40)-chr(140)  the checksum
+i= a random increment value 1-99
+p= coded packet number
+Server sends random original code:  [60][45][80][100][ i ]
+[ X1 ][ X2 ][ X3 ][ Y ]
+
+X(p%4)+=Y
+X%100
+Y=(X1+(X2*X3)-X2)%100
+-----------------------------------------------------------------------------------------
+
+
+
+
+
+FLASH MODULES: 
+0,0 at upper left
+416pixel wide x 288pixel high
+make a EXITMODULE() function!  clear intervals and DO NOT set EXIT=true  in it!!!
+set DATASEND= whatever datastring should be sent to server. include trailing newline!
+read DATARECEIVE often to receive data from server/other clients
+set ALLOWMOVE=true to allow player to use arrows to leave place
+set RELOADABLE=true to allow mod reloading Clicking OK again, etc.. (default to mods started with button code)
+set DONOTDISTRUD=true to mods that CANNOT be overwritten. . (arenas)
+set module music/sound volume to _parent.VOLUME periodically?  to adjust to vol control.
+set PLAYMUSIC=true to shutoff Main Game music (for store submusic)
+_parent.PLAYERNAME = players username string
+IF YOU START AN INTERVAL IN Module,  you MUST remove it also!!
+
+
+================MODULE MUSIC CODE EXAMPLE:
+PLAYMUSIC=true; //shutoff Main game music for own music
+if (MUSIC==undefined) {
+	MUSIC=new Sound(this);
+	MUSIC.attachSound("MUSIC");
+	MUSIC.start(0,9999);
+}
+if (_parent.VOLUME!=undefined) MUSIC.setVolume(_parent.VOLUME);  //set volume to parent
+function AdjustVolume() {	MUSIC.setVolume(_parent.VOLUME);  }   ///callable function
+====================END MUSIC CODE
+
+===================EXAMPLE HEADER CODE:
+
+_root.SendData(str); // send data to server
+var DATASEND:String="";    //data to send to server
+var DATARECEIVE:String="";   //data sent by server
+var EXIT:Boolean=false;  // kill this movie when true
+var ALLOWMOVE:Boolean=false; //can player leave this movie by walking?
+var DONOTDISTURB:Boolean=true;  // DOnt allow loading a movie on top of this one.
+=======================END HEADER
+
+==================EXAMPLE EXIT CODE:
+
+bEXIT.onPress= function() {
+  EXITMODULE();
+  EXIT=true;
+}
+function EXITMODULE() {
+  clearInterval(INTERVAL);
+  Key.removeListener(oKeyListener);
+}
+
+==============================END EXIT CODE
+
+
+////// EXAMPLE EARN PLAYER MONEY CODE
+DATASEND+=chr(24)+chr(30)+reward+"\n";  //send reward
+
+////// EXAMPLE SEND BEST TIME CODE
+DATASEND+=chr(24)+chr(62)+"Barrel Racing|"+Math.round(Timer*100)+"\n"; //send highscore
+
+////// EXAMPLE SEND HIGH SCORE CODE
+DATASEND+=chr(24)+chr(61)+"SLEIGHRIDE|"+Math.round(DISTANCE)+"\n"; //send highscore
+
+
+
+//SQL Queiries
+// Users with highes bad pass attempts
+SELECT * , count( * ) AS c FROM `badpassattempts` WHERE 1 GROUP BY user ORDER BY c DESC ;
+
+// USers that need removal
+SELECT player.id,player.username, DATEDIFF(NOW(),GREATEST(FROM_UNIXTIME(player.loggedoff),FROM_UNIXTIME(playerextended.signedup),FROM_UNIXTIME(playerextended.subscribedtill))) AS timeoff, 30+playerextended.timesonline AS minimum FROM `player` LEFT JOIN playerextended ON player.id=playerextended.playerid WHERE 1 ORDER BY timeoff DESC;
+
+// Refferals by players
+SELECT count(*) AS referrals,SUM(totalpayments),referredby FROM playerextended WHERE referredby!="" AND activationcode="" GROUP BY referredby ORDER by referrals DESC;
+
+// Income
+SELECT type,MONTH(FROM_UNIXTIME(time)) AS RevenueMonth,SUM(fee) AS TotalFees,SUM(amount)-SUM(fee) AS TotalRevenue FROM payments where 1 GROUP BY MONTH(FROM_UNIXTIME(time)),type;
+
+// End of month income
+SELECT TYPE , server, MONTH( FROM_UNIXTIME( time ) ) AS RevenueMonth, SUM( fee ) AS TotalFees, SUM( amount ) - SUM( fee ) AS TotalRevenue FROM payments WHERE TYPE != 'HORSEBUCKS' GROUP BY MONTH( FROM_UNIXTIME( time ) ) , server;
+
+// Particular Month Income for each server:
+SELECT TYPE , server, MONTH( FROM_UNIXTIME( time ) ) AS RevenueMonth, SUM( fee ) AS TotalFees, SUM( amount ) - SUM( fee ) AS TotalRevenue FROM payments WHERE TYPE != 'HORSEBUCKS' AND MONTH( FROM_UNIXTIME( time ) )=4 AND YEAR(FROM_UNIXTIME( time ) )=2008 GROUP BY MONTH( FROM_UNIXTIME( time ) ) , server;
+
+// VERIFY TOTAL MONTH INCOME for each month:
+SELECT TYPE , server, MONTH( FROM_UNIXTIME( time ) ) AS RevenueMonth, SUM( fee ) AS TotalFees, SUM( amount ) - SUM( fee ) AS TotalRevenue FROM payments WHERE TYPE != 'HORSEBUCKS' AND YEAR(FROM_UNIXTIME( time ) )=2008 GROUP BY MONTH( FROM_UNIXTIME( time ) ) ;
+
+
+/// List all current Subscribers
+SELECT username, playerid FROM `playerextended` WHERE FROM_UNIXTIME( subscribedtill ) > NOW( );
+
+
+//Find mods?
+SELECT masterplayer.username, masterplayer.lastserver, masterplayer.age, masterplayer.email, sum( payments.amount ) AS payments, sum( ruleviolations.points ) AS vios FROM masterplayer LEFT JOIN payments ON payments.playerid = masterplayer.id LEFT JOIN ruleviolations ON ruleviolations.playerid = masterplayer.id WHERE masterplayer.age >17 AND masterplayer.lastserver = 'bay' AND masterplayer.moderator = 'NO' GROUP BY payments.playerid, ruleviolations.playerid ORDER BY vios, payments DESC 

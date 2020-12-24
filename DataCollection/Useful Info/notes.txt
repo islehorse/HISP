@@ -1,0 +1,37 @@
+Mail: <I>Reading a Mail Message from Player <BR> By: SilicaAndPina  (DATE:Sep 29, 2020 6:19am) :</I><BR><BR><CENTER><B>Noire</B></CENTER><BR>hi!<BR><BR>^T5To get rid of message:^B4Z248835242^R5^M^Z"
+Earton Town Hall: <B>Earton Town Hall</B><BR>The little post office here can deliver a message to someone on Horse Isle.  Postage is $3 per message.^T5Write a message to another player?^D2|COMPOSE^R1^LAlso, the hall has records on several subjects:^R1^T4View current Horses up for Sale^D29|AUTOSELL HORSES^R1^T4View top valued ranches^D14|RANCH RECORDS^R1^T4View richest players^D15|MONEY RECORDS^R1^T4View top spoiled horses^D61|SPOILED HORSES^R1^T4View most adventurous players^D16|QUEST RECORDS^R1^T4View most experienced players^D17|EXPER RECORDS^R1^T4View most active minigamers^D18|GAMES RECORDS^R1^T4View top players' horses^D19|HORSE RECORDS^R1^X^Z
+
+
+Not implemented:
+"login":{
+"banned":"Your account has been banned. This occurs when too many rules have been broken",
+"ip_banned":"Your IP address has been blocked (%IP%)"
+"areas":{
+"bridge_text":"A bridge crosses over the water to another isle. That'll save you some travel costs!"
+
+"login_message":"Player %USERNAME% has logged in",
+"logout_message":"Player %USERNAME% has disconnected",
+
+"disconnect":{
+"banned":"Your account has been BANNED. You will no longer be able to login"
+},
+
+"starting_message":"<B>Welcome Newest Rider of Horse Isle!</B><BR>Start by talking to Welcome Willy in the cabin. Click the TALK button by his name in the right hand window. He will know the location of a buried treasure on this island! Move to the spot he describes using the arrow keys. Then Click the WRENCH Icon at the lower right.",
+
+ "water_balloon_game":{
+	"money_prize":20000,
+	"starting_amount":8,
+	"start_message":"<B>WATER BALLOON FIGHT:</B> You have just been given %AMOUNT% Water Balloons. Whoever gets hit the MOST in 5 minutes (60 game minutes) will win a prize (hits on yourself are not counted).",
+	"hit_message":"SMACK!! %USERNAME% hit you with a Water Balloon, soaking you.",
+	"winner_message":"<B>You are a Water Balloon winner!</B> Prize: $%PRIZE%",
+	"end_message_winner":"<B>WATER BALLOON FIGHT OVER:</B> Here were the winners:<BR>%USERNAME% was hit %AMOUNT% times."
+ },
+ 
+ mod_format FOR SENDER is unconfirmed
+ mod_format is unconfirmed
+ admin_format is unconfirmed
+ admin_format FOR SENDER is unconfirmed.
+
+
+<B>Players Nearby:</B><BR> <B>North:</B> GinoIsLove <BR>
+Near radius is a square, 15x19
