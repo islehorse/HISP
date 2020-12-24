@@ -101,6 +101,7 @@ namespace HISP.Server
                         if(dynamicInput.Length >= 2)
                         {
                             sender.LoggedinUser.PrivateNotes = dynamicInput[1];
+                            UpdateStats(sender);
                             byte[] chatPacket = PacketBuilder.CreateChat(Messages.PrivateNotesSavedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(chatPacket);
                             return;

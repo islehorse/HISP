@@ -245,7 +245,7 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.FormatPrivateNotes(user.PrivateNotes);
-            message += Messages.ExitThisPlace;
+            message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;
         }
