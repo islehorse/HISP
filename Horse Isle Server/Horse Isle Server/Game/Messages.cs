@@ -7,6 +7,8 @@ namespace HISP.Game
         public static int RequiredChatViolations;
         public static int DefaultInventoryMax;
 
+        
+
         // Tools
         public static string BinocularsNothing;
         public static string MagnifyNothing;
@@ -28,6 +30,11 @@ namespace HISP.Game
         public static string StatsJewelFormat;
         public static string StatsCompetitionGearFormat;
 
+        public static string JewelrySlot1Format;
+        public static string JewelrySlot2Format;
+        public static string JewelrySlot3Format;
+        public static string JewelrySlot4Format;
+
         public static string CompetitionGearHeadFormat;
         public static string CompetitionGearBodyFormat;
         public static string CompetitionGearLegsFormat;
@@ -41,7 +48,14 @@ namespace HISP.Game
 
         public static string NoJewerlyEquipped;
         public static string NoCompetitionGear;
+        public static string JewelrySelected;
         public static string CompetitionGearSelected;
+
+        public static string StatHunger;
+        public static string StatThirst;
+        public static string StatTired;
+
+        public static string[] StatPlayerFormats;
 
         // Announcements
         public static string NewUserMessage;
@@ -87,6 +101,7 @@ namespace HISP.Game
         public static string ChatViolationMessageFormat;
         public static string PasswordNotice;
         public static string CapsNotice;
+        public static string RandomMovement;
 
         // Transport
 
@@ -109,8 +124,13 @@ namespace HISP.Game
 
 
         // Competition Gear
-        public static string EquipItemFormat;
-        public static string UnequipItem;
+        public static string EquipCompetitionGearFormat;
+        public static string RemoveCompetitionGear;
+
+        // Jewelry
+        public static string EquipJewelryFormat;
+        public static string MaxJewelryMessage;
+        public static string RemoveJewelry;
 
         // Inventory
         public static string InventoryItemFormat;
@@ -182,9 +202,10 @@ namespace HISP.Game
         public static string MetaTerminator;
 
         // Disconnect Messages
-        public static string BanMessage;
-        public static string DuplicateLogin;
-        public static string IdleKickMessageFormat;
+        public static string KickReasonBanned;
+        public static string KickReasonDuplicateLogin;
+        public static string KickReasonIdleFormat;
+        public static string KickReasonNoTime;
 
         // Swf
         public static string BoatCutscene;
@@ -193,6 +214,41 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatRandomMovementMessage(string statName)
+        {
+            return RandomMovement.Replace("%STAT%", statName);
+        }
+
+        public static string FormatJewerlyEquipMessage(string itemName)
+        {
+            return EquipJewelryFormat.Replace("%ITEM%", itemName);
+        }
+        public static string FormatEquipCompetitionGearMessage(string name)
+        {
+            return EquipCompetitionGearFormat.Replace("%ITEM%", name);
+        }
+
+        public static string FormatPlayerStat(string statFormat, string statName)
+        {
+            return statFormat.Replace("%STAT%", statName);
+        }
+        public static string FormatJewelrySlot1(string itemName, int icon)
+        {
+            return JewelrySlot1Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+        }
+        public static string FormatJewelrySlot2(string itemName, int icon)
+        {
+            return JewelrySlot2Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+        }
+        public static string FormatJewelrySlot3(string itemName, int icon)
+        {
+            return JewelrySlot3Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+        }
+        public static string FormatJewelrySlot4(string itemName, int icon)
+        {
+            return JewelrySlot4Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+        }
 
         public static string FormatCompetitionGearHead(string itemName, int icon)
         {
@@ -273,10 +329,6 @@ namespace HISP.Game
             return PlayerCommandFormat.Replace("%COMMAND%", command);
         }
 
-        public static string FormatEquipItemMessage(string name)
-        {
-            return EquipItemFormat.Replace("%ITEM%", name);
-        }
         public static string FormatYouEarnedAnItemMessage(string itemName)
         {
             return YouEarnedAnItemFormat.Replace("%ITEM%", itemName);
@@ -552,7 +604,7 @@ namespace HISP.Game
         // Disconnect
         public static string FormatIdleKickMessage()
         {
-            return IdleKickMessageFormat.Replace("%KICK%", GameServer.IdleTimeout.ToString());
+            return KickReasonIdleFormat.Replace("%KICK%", GameServer.IdleTimeout.ToString());
         }
  
     }

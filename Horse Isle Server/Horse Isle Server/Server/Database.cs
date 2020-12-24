@@ -26,6 +26,7 @@ namespace HISP.Server
                 string TrackedQuest = "CREATE TABLE TrackedQuest(playerId INT, questId INT, timesCompleted INT)";
                 string OnlineUsers = "CREATE TABLE OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3))";
                 string CompetitionGear = "CREATE TABLE CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)";
+                string Jewelry = "CREATE TABLE Jewelry(playerId INT, slot1 INT, slot2 INT, slot3 INT, slot4 INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
 
@@ -73,6 +74,19 @@ namespace HISP.Server
 
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = BuddyTable;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = Jewelry;
                     sqlCommand.ExecuteNonQuery();
                     sqlCommand.Dispose();
                 }
@@ -309,6 +323,168 @@ namespace HISP.Server
 
                 sqlCommand.Dispose();
                 return count;
+            }
+        }
+
+        public static bool HasJewelry(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM jewelry WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+
+                sqlCommand.Prepare();
+                int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return timesComplete > 0;
+            }
+        }
+
+        public static void InitJewelry(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "INSERT INTO jewelry VALUES(@playerId,0,0,0,0)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetJewelrySlot1(int playerId, int itemId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE jewelry SET slot1=@itemId WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@itemId", itemId);
+
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static int GetJewelrySlot1(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT slot1 FROM jewelry WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return timesComplete;
+            }
+        }
+
+        public static void SetJewelrySlot2(int playerId, int itemId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE jewelry SET slot2=@itemId WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@itemId", itemId);
+
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static int GetJewelrySlot2(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT slot2 FROM jewelry WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return timesComplete;
+            }
+        }
+
+
+        public static void SetJewelrySlot3(int playerId, int itemId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE jewelry SET slot3=@itemId WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@itemId", itemId);
+
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static int GetJewelrySlot3(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT slot3 FROM jewelry WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return timesComplete;
+            }
+        }
+
+        public static void SetJewelrySlot4(int playerId, int itemId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE jewelry SET slot4=@itemId WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@itemId", itemId);
+
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static int GetJewelrySlot4(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT slot4 FROM jewelry WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return timesComplete;
             }
         }
 
@@ -625,6 +801,20 @@ namespace HISP.Server
                 sqlCommand.CommandText = "UPDATE userExt SET Experience=@xp WHERE Id=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@xp", exp);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void IncAllUsersFreeTime(int minutes)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE userExt SET FreeMinutes=FreeMinutes+@minutes";
+                sqlCommand.Parameters.AddWithValue("@minutes", minutes);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
@@ -1432,6 +1622,148 @@ namespace HISP.Server
                 }
             }
         }
+
+
+        public static int GetPlayerTiredness(int userId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                if (CheckUserExtExists(userId))
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "SELECT Tiredness FROM UserExt WHERE Id=@id";
+                    sqlCommand.Parameters.AddWithValue("@id", userId);
+                    sqlCommand.Prepare();
+                    int tiredness = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                    sqlCommand.Dispose();
+                    return tiredness;
+                }
+                else
+                {
+                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                }
+            }
+        }
+
+        public static void SetPlayerTiredness(int id, int tiredness)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                if (CheckUserExist(id))
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "UPDATE UserExt SET Tiredness=@tiredness WHERE Id=@id";
+                    sqlCommand.Parameters.AddWithValue("@tiredness", tiredness);
+                    sqlCommand.Parameters.AddWithValue("@id", id);
+                    sqlCommand.Prepare();
+                    sqlCommand.ExecuteNonQuery();
+
+                    sqlCommand.Dispose();
+                }
+                else
+                {
+                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                }
+            }
+        }
+
+        public static void SetPlayerHunger(int id, int hunger)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                if (CheckUserExist(id))
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "UPDATE UserExt SET Hunger=@hunger WHERE Id=@id";
+                    sqlCommand.Parameters.AddWithValue("@Hunger", hunger);
+                    sqlCommand.Parameters.AddWithValue("@id", id);
+                    sqlCommand.Prepare();
+                    sqlCommand.ExecuteNonQuery();
+
+                    sqlCommand.Dispose();
+                }
+                else
+                {
+                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                }
+            }
+        }
+
+
+
+        public static int GetPlayerHunger(int userId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                if (CheckUserExtExists(userId))
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "SELECT Hunger FROM UserExt WHERE Id=@id";
+                    sqlCommand.Parameters.AddWithValue("@id", userId);
+                    sqlCommand.Prepare();
+                    int hunger = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                    sqlCommand.Dispose();
+                    return hunger;
+                }
+                else
+                {
+                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                }
+            }
+        }
+
+        public static void SetPlayerThirst(int id, int thirst)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                if (CheckUserExist(id))
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "UPDATE UserExt SET Thirst=@thirst WHERE Id=@id";
+                    sqlCommand.Parameters.AddWithValue("@thirst", thirst);
+                    sqlCommand.Parameters.AddWithValue("@id", id);
+                    sqlCommand.Prepare();
+                    sqlCommand.ExecuteNonQuery();
+
+                    sqlCommand.Dispose();
+                }
+                else
+                {
+                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                }
+            }
+        }
+
+        public static int GetPlayerThirst(int userId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                if (CheckUserExtExists(userId))
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "SELECT Thirst FROM UserExt WHERE Id=@id";
+                    sqlCommand.Parameters.AddWithValue("@id", userId);
+                    sqlCommand.Prepare();
+                    int tiredness = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                    sqlCommand.Dispose();
+                    return tiredness;
+                }
+                else
+                {
+                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                }
+            }
+        }
+
         public static int GetPlayerMoney(int userId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -1455,7 +1787,7 @@ namespace HISP.Server
             }
         }
 
-        public static int GetPlayerBankMoney(int userId)
+        public static UInt64 GetPlayerBankMoney(int userId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
@@ -1466,7 +1798,7 @@ namespace HISP.Server
                     sqlCommand.CommandText = "SELECT BankBalance FROM UserExt WHERE Id=@id";
                     sqlCommand.Parameters.AddWithValue("@id", userId);
                     sqlCommand.Prepare();
-                    int BankMoney = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                    UInt64 BankMoney = Convert.ToUInt64(sqlCommand.ExecuteScalar());
 
                     sqlCommand.Dispose();
                     return BankMoney;
@@ -1478,7 +1810,7 @@ namespace HISP.Server
             }
         }
 
-        public static void SetPlayerBankMoney(int bankMoney, int id)
+        public static void SetPlayerBankMoney(UInt64 bankMoney, int id)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {

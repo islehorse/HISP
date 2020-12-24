@@ -55,9 +55,9 @@ namespace HISP.Game.Chat
                 if (message[0] == '%')
                 {
                     if(message.StartsWith("%STICKBUG"))
-                    {
                         return Command.Stickbug(message, args, user);
-                    }
+                    if (message.StartsWith("%GIVE"))
+                        return Command.Give(message, args, user); ;
                     return false;
                 }
             if (message[0] == '!')

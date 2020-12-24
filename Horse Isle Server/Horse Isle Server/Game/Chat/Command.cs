@@ -1,5 +1,6 @@
 ﻿using HISP.Player;
 using HISP.Server;
+using System;
 using System.Collections.Generic;
 
 namespace HISP.Game.Chat
@@ -7,6 +8,46 @@ namespace HISP.Game.Chat
     class Command
     {
 
+        public static bool Give(string message, string[] args, User user)
+        {
+            if (args.Length <= 0)
+                return false;
+            if (!user.Administrator)
+                return false;
+            if(args[0] == "OBJECT")
+            {
+                int itemId = 0;
+                try
+                {
+                    itemId = int.Parse(args[1]);
+                    Item.GetItemById(itemId);
+                    ItemInstance newItemInstance = new ItemInstance(itemId);
+                    user.Inventory.AddIgnoringFull(newItemInstance);
+                    
+                }
+                catch(Exception)
+                {
+                    return false;
+                }
+            }
+            if (args[0] == "MONEY")
+            {
+                int money = 0;
+                try
+                {
+                    money = int.Parse(args[1]);
+                    user.Money += money;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+        }
         public static bool Stickbug(string message, string[] args, User user)
         {
             if (args.Length <= 0)
