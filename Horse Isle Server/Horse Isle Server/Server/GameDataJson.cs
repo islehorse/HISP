@@ -384,11 +384,15 @@ namespace HISP.Server
             Map.NewUserStartX = gameData.new_user.starting_x;
             Map.NewUserStartY = gameData.new_user.starting_y;
 
+            // Records
+            Messages.ProfileSavedMessage = gameData.messages.profile_save;
+            Messages.PrivateNotesSavedMessage = gameData.messages.private_notes_save;
+            Messages.PrivateNotesMetaFormat = gameData.messages.meta.private_notes_format;
+
             // Announcements
 
             Messages.WelcomeFormat = gameData.messages.welcome_format;
             Messages.MotdFormat = gameData.messages.motd_format;
-            Messages.ProfileSavedMessage = gameData.messages.profile_save;
             Messages.LoginMessageFormat = gameData.messages.login_format;
             Messages.LogoutMessageFormat = gameData.messages.logout_format;
 
@@ -417,11 +421,11 @@ namespace HISP.Server
             Messages.CompetitionGearLegsFormat = gameData.messages.meta.stats_page.competition_gear.legs_format;
             Messages.CompetitionGearFeetFormat = gameData.messages.meta.stats_page.competition_gear.feet_format;
 
-            Messages.StatsPrivateNotes = gameData.messages.meta.stats_page.stats_private_notes;
-            Messages.StatsQuests = gameData.messages.meta.stats_page.stats_quests;
-            Messages.StatsMinigameRanking = gameData.messages.meta.stats_page.stats_minigame_ranking;
-            Messages.StatsAwards = gameData.messages.meta.stats_page.stats_awards;
-            Messages.StatsMisc = gameData.messages.meta.stats_page.stats_misc;
+            Messages.StatsPrivateNotesButton = gameData.messages.meta.stats_page.stats_private_notes;
+            Messages.StatsQuestsButton = gameData.messages.meta.stats_page.stats_quests;
+            Messages.StatsMinigameRankingButton = gameData.messages.meta.stats_page.stats_minigame_ranking;
+            Messages.StatsAwardsButton = gameData.messages.meta.stats_page.stats_awards;
+            Messages.StatsMiscButton = gameData.messages.meta.stats_page.stats_misc;
 
             Messages.JewelrySelected = gameData.messages.meta.stats_page.msg.jewelry_selected;
             Messages.NoJewerlyEquipped = gameData.messages.meta.stats_page.msg.no_jewelry_equipped;

@@ -218,6 +218,12 @@ namespace HISP.Server
                     case PacketBuilder.PACKET_INVENTORY:
                         GameServer.OnInventoryRequested(this, Packet);
                         break;
+                    case PacketBuilder.PACKET_DYNAMIC_BUTTON:
+                        GameServer.OnDynamicButtonPressed(this, Packet);
+                        break;
+                    case PacketBuilder.PACKET_DYNAMIC_INPUT:
+                        GameServer.OnDynamicInputReceived(this, Packet);
+                        break;
                     case PacketBuilder.PACKET_ITEM_INTERACTION:
                         GameServer.OnItemInteraction(this,Packet);
                         break;

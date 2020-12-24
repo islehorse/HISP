@@ -1,0 +1,414 @@
+[ ] Think about adding characters: Unicorn, Zorro, Pegasus, Lone Ranger, Shadowfax, Hidalgo,
+     BLack Beauty, Black Stallion, Misty of chincoteague, Seabiscuit, Manowar, Tornado,
+     Fatty Lumpkin, Flicka, Mr Ed, Epona
+
+Cooperative Games: Capture the flag? (bonsai)
+                   Maze, need two people to get through it.
+--------- PARENTAL CONTROL IDEAS --------------------------------------------
+USer can set up an account,  and then a parental control account can be added.
+This account can do the following:
+  Set CHILDNOCHAT to Yes/No,  Which disables all chat to this player.
+
+  Set playtimeper Multiple.  Every this many minutes, they get to play online,
+  So, that effectively sets the following limits:
+  1= unlimited
+  2=12 hours per day
+  3= 8 hours per day
+  4= 6 hours
+  6 = 4 hours
+  8 = 3 hours
+  12 = 2 hours
+  16 = 1.5 hours
+  24 = 1 hours
+  48 = .5 hours
+
+  playtime can store up to a MAX of double the multiple production.
+  i.e.  If parent sets playtimeper to 16 - and child stays logged off 2 days, they will have 3 hours of playable time. (Actual time would be 3 hours and 11 muinutes! cause they would earn some playtime WHILE playing...)
+
+  parental disable - temporarily disable the account.
+
+  Art ROom Disable?  - dont allow art room use for player.
+
+  Session logs?
+
+-------- WORLD LAYOUT AND STANDARDIZATION ----------------------------------------
+
+MONEY: 
+   Objects should be standardized as Being worth 10x their REAL WORLD value.  
+   i.e. bluejeans, maybe($30.00us)=$300 game
+
+QUESTS:
+  Please see detailed quest manual on top of Quest Editor!  
+  
+TIME PERIOD:
+  No electricity, No Engines, No gadgets, loosely modeled after american west, but also a FEW modern 
+  things will trickle in...  Say bluejeans?  Doubt they were around in pre-engine.   
+  So this land is, Kind of Modern Day, BUT cutoff from all tecnological advances.
+  I.E.  We use wagons for transport,  not trains. etc.
+
+CHARACTERS:
+  Unique Single First Named characters (a baby names site is great) for all characters EXCEPT storeowners
+  Storeowners Two names, first name with last name relating to store:
+   FISHING SHOP LASTNAMES: Jim Fisher, Jim Hook, Jim Bobber
+   FOOD STORE LAST NAME EXAMPLES: Jim Applecore, John Fig, Jim Peel.
+   VETS: Jim Sutre, Bob Stitch
+   etc...
+
+CONVERSATIONS:
+ * Characters can give directions, etc.. But lets NOT have them Leave character and tell the player to "CLICK HORSES"
+   or anythign game specific,  lets leave the characters completely in the game, (they do not know its a game)
+ * Actions should be placed in ( )'s   Whether it's describing an action that took place, or allowing you to perform an action.
+ * Allow a response to exit every chat point, don't leave them blank (pretend there is no exit button at bottom, because there may not be in future)
+
+LOCATION DESCRIPTIONS:
+   Descriptions should be First-person-this is what-you-see descriptive text
+   Good Examples:
+      * This building is a mess,  there are actually Anthills on the floors out of all the dust.. 
+      * In looking at this Rock, you notice a Small Drawing, Looks like it's telling you to Dig?
+      * This building looks like it's ready to collapse onto you..  whoever owns it must not take care of it.
+   Poor Examples:
+      * I see a rock and a tree here.  (dont use 'I')
+      * BUY STUFF HERE (lets not command a player)
+      * Small Rocks.  (Lets prefix it with "You See some small rocks.")
+   HTML Formatting: <B>,<I>,<BR>
+      Go ahead and use the following codes:
+      to bold something just do it like <B>This</B> that was bolded.
+      For Italics, Do <I>This</I>.
+      And for new lines, use<BR>newline!
+      Directions Example:
+          %MAPD <B>NORTH:</B> Business District<BR><B>SOUTH:</B> Residential District      
+   Formatting Guildelines:
+      DOnt over use it,  Use it when structure will help the description..  I.e. A note text, Or Multiple items described, etc.   
+
+BUILDINGS:  
+   On average,  twice as many cabins as Shops per town.
+   MOST(2/3rds) Cabins should have an NPC,  All Stores Should.
+   All buildings should have description text.  describe what you see inside the building with a couple lines.   
+   Most buildings should be spaced with one non-building tile between each
+
+   CLothes shops:  One different set of clothing stocked per town.
+   Equipment shops: One Set of saddle/bridle/pad per town
+   Groomer Vary in quality from 500-1000
+
+TOWN STRUCTURE
+Cities named after the islands they are on
+Streets named after the cities they are in
+Northsouth= Avenues
+EastWest=Streets
+Title Conventions:  Intersection of Bla Avenue and Blee Street / Blee Street / Bla Avenue
+
+NEW ISLANDS ============================================================================
+ISLAND:  ART Isle
+COMMUNITY?: Maybe a town of paintton? brushton? easleton?
+STYLE:  Maybe Several Art rooms close to eachother for drawing contests!!
+----------------------------------------------------------------------------------
+ISLAND: Cat Isle
+COMMUNITY?: Small Town in center for forest? Whiskerton.
+STYLE: 
+----------------------------------------------------------------------------------
+ISLAND: Flower Isle 
+COMMUNITY?: Small tiny shop-less village Petal Meadow?
+STYLE: Small village protected by a huge forest maze.
+----------------------------------------------------------------------------------
+ISLAND: Tail Isle
+COMMUNITY?: Ranches,  Lots of Ranches
+STYLE: Ranches spread down the length of tail isle
+----------------------------------------------------------------------------------
+ISLAND: HARE Isle
+COMMUNITY?: TOwn Caroton? 
+STYLE: 
+----------------------------------------------------------------------------------
+ISLAND: PIRATE ISLE - Wait for Pirate Tiles
+COMMUNITY?:
+STYLE:
+----------------------------------------------------------------------------------
+ISLAND: Saddle Isle
+COMMUNITY?:
+STYLE: Huge Forest Maze(s) 
+----------------------------------------------------------------------------------
+ISLAND: 
+COMMUNITY?:
+STYLE:
+----------------------------------------------------------------------------------
+
+========================================================================================
+
+
+CITIES/TOWNS:
+Horse Isle Earton:
+  COMMUNITY: Big Town - First town new players see, Simple Layout, and Very Few Cabins, mostly stores.
+  GENERAL: Lots of Signs, Good descriptions.  
+  TRAINER: SPEED
+  ARENA: Jumping Arena
+  GAMES: 
+  STREET NAMES: Cochlea Canal Drum Wax Lobe 
+Horse Isle Treeton:
+  COMMUNITY: Biggest Town in game.   LOTS of NPC's
+  GENERAL:  Some of the quests in this town,  Jump you to several of the tiny islands off the shore.
+  TRAINER: AGILITY
+  ARENA: Conformation Arena
+  GAMES: ** Memory match tree game
+  STREET NAMES: Maple Oak Aspen Elm Linden(smile) Cedar Pine Birch Spruce 
+Horse Isle Appleton:
+  COMMUNITY: Big Town, community full of Major horselovers, its why they grow so many apples.
+  GENERAL: 
+  TRAINER: STRENGTH
+  ARENA: Racing Arena
+  GAMES: ** Apple bobbing, ** catch apples falling from trees ,make cider
+  STREET NAMES: Red Green Braeburn Golden Fuji McIntosh
+SnowIsle Chillton:
+  COMMUNITY: Medium Town
+  GENERAL: Lots of Really nice people.  Several will pay good$ for logs for their fires :)
+      A Few Delievery quests to people in  Hotton
+  TRAINER: CONFORMATION 
+  ARENA: 
+  GAMES: SNowball fight, **Ice Skating, **snowflake catching, **ice skulptures, **snowman game
+  STREET NAMES: IceCube SnowFlake Wind Brisk Freeze Blizzard Frost Cold Chilly Nippy
+DesertIsle Santon:
+  COMMUNITY: Tiny Desert Community,  just a few desert huts,  with a FEW NPCS..
+     Maybe one general store.
+  GENERAL: 
+  TRAINER: 
+  ARENA: 
+  GAMES: Some sort of search for water game, Colored sand in bottles? sand castles?
+DesertIsle Hotton:
+  COMMUNITY:  Medium Town
+  GENERAL: 
+  TRAINER: ENDURANCE
+  ARENA: 
+  GAMES:Message in a bottle **coconut bowling
+  STREET NAMES: Sizzle HeatWave SunBurn Humid Arid Tropical Sticky
+DolphinIsle Flipperton:
+  COMMUNITY: Small Retirement commmunity
+  GENERAL: lots of Characters and Quests, few stores
+  TRAINER: None
+  ARENA: None
+  GAMES: None
+  STREET NAMES: Blubber Aquatic Dorsal Lagoon Marine Sonar 
+BirdIsle Wington:
+  COMMUNITY: Small Town, More of a younger community,  a lot of parents and children
+  GENERAL:   Maybe some lost kids quests,  Grow thier own food, Bookstores?
+  TRAINER: 
+  ARENA: 
+  GAMES: some sort of bird game. .  fly as a bird? Hunt for feathers to get prize, make a birdhouse, paint by number bird scene?, bird shooting game 
+  STREET NAMES: Nest Quill Span Feather Hatch Egg Migration Clutch Crest Flock Perch 
+  NOTES: No stumps,  they dont cut trees , dense forests
+TurtleIsle Shellton:
+  COMMUNITY: Medium Town, Very Pretty and girlie , lots of girlie girl stuff.. .   hmmm  let sara and autumn figure this out :)
+  GENERAL: 
+  TRAINER: 
+  ARENA: 
+  GAMES:  **Capture butterfly game, **Flower match game **junk hidden under turtle shells
+  STREET NAMES: Turtle Carapace Scute Sea Box Painted Lady Spiny Snap Green Wood 
+Hoof Isle Horseshoe Village:
+  COMMUNITY: Small village. more secretive people.  Kind of a "hidden community"  lots of Secrets.. 
+  GENERAL: 
+  TRAINER: None
+  ARENA: None
+  GAMES: **Throw Horseshoes game **another tetris type game with rocks
+  STREET NAMES: Anvil Iron Steel Alloy 
+
+
+----------------TACK STANDARDIZATION AND IDEAS:------------------------------------------------------
+BONUS's Range from 0-500  for saddle, 0-200 for pad & 0-300 for bridle
+AND ONLY for strength,speed,endurance,conformation,agility,intelligence,personality
+(the last 2 probably unused??)
+
+The Most basic Gear will do nothing.  it is cheap,  and simply allows for riding/competitions.
+
+More advanced gear should be priced as follows:
+no bonus            =$500 saddle, $250 pad/bridle
+bonus' of around 50 = $1,500
+bonus' of around 100 = $2,000
+bonus' of around 200 = $10,000
+bonus' of around 300 = $100,000
+bonus' of around 400 = $1,000,000
+bonus' of around 500 = $10,000,000
+
+example bonuses are 250 speed, 100 endurance,   lets price it roughly: 50k for speed +5k for endurance=$55k
+
+Tack Ideas:
+Simple Set = no bonus's
+
+
+Simple    $5k saddle   3k bridle    2k pad    +10 in somethine
+improved  $50k saddle  30k bridle   20k pad   +100 in something +50 something else
+awesome   $500k saddle $300k bridle $200k pad  +300 in something  +150 something else
+magical   $5M saddle  $3M bridle $2M pad       +500 in something +250 something else
+
+
+//conformation enhancers
+Fancy Set    = SADDLE(100con)$50K         PAD(40con)$20k         BRIDLE(60con)$30K
+Beautiful Set= SADDLE(300con+150per)$500k PAD(100con+50per)$200k BRIDLE(200con+100per)$300K
+Glorious Set = SADDLE(500con+250per)$5M   PAD(200con+100per)$2M  BRIDLE(300con+150per)$3M
+
+//Racetrack enhancers
+Racing Set   = SADDLE(100spd)$50K         PAD( 40spd)$20k         BRIDLE(60spd)$30K
+FireBall Set = SADDLE(300spd+150end)$500k PAD(100spd+ 50end)$200k BRIDLE(200spd+100end)$300K
+Icarus Set   = SADDLE(500spd+250end)$5M   PAD(200spd+100end)$2M   BRIDLE(300spd+150end)$3M
+
+//Jumping enhancers
+Jumping Set    = SADDLE(100str)$50K         PAD(40str)$20k         BRIDLE(60str)$30K
+Jackrabbitt Set= SADDLE(300str+150spd)$500k PAD(100str+50spd)$200k BRIDLE(200str+100spd)$300K
+Pegasus Set    = SADDLE(500str+250spd)$5M   PAD(200str+100spd)$2M  BRIDLE(300str+150spd)$3M
+
+//Agility enhancers
+Smooth Set = 
+Graceful Set =
+Nimble Set   = 
+
+
+
+==========================================RANCH SYSTEM THOUGHTS==============================
+Ranch houses are scattered around the empty lands of horseisle.
+
+Either a single tile?  Or a center tile with options to build out around it.
+They have a set Value,  and then an Adjustable Market Value based on Number of open ranches?
+A Subscribed player can Buy a ranch.  Once bought,  they can TItle it,  write adescriptions for it
+and Even Decorate it. (generic FLash Background, allow positioning Couch, chair, painting, etc.)
+These do nothing other than look cozy.
+
+At your ranch house,  you can receive mail, and send mail
+You can also Build new structures:
+
+Training Pen:  Allows you to train one horse/for free/day 5 points in anything!
+Barn: Allows you to Own 2 more horses!  in addition to base # of 3?
+Shed: Allows you to store Items here. STORE button, and GRAB button.. 
+
+Different ranches have a different number of expandable slots.
+Some cheap ones only have 1.  so a player could only build a shed for instance.
+Others could have All Around for a max of 7 buildings (need an entrance)
+    that would allow 3 barns (6+3 horses) 2 trainers and 2 sheds for lotsa junk
+
+example ranch layout: H=house, B=barns, Shed,Trainer
+BSS
+BH===
+BTT
+Once built, a building can be torn down, but only 1/4 cost salvaged?
+
+
+
+
+
+
+-------------------------------------------------------------------------------
+==================================[ RANDOM IDEAS ]====================================
+-------------------------------------------------------------------------------
+WORLD:
+CatIsle - Whiskerton
+TigerIsle - Stripeton
+
+
+MARY:
+search for the golden horse shoe,and a saloon Add buterflies
+
+GENERAL:
+Horse can be put to work at the Wagon transport office!
+After a certain nnumber of OTHERplayer trips,  you get paid,  and horse sent back!
+Horse is broken/unbroken??
+Add a horse aging system??
+Adda highscores System..   View RIchest players, Landowners, Most compets one, most winning horse..
+Arena Loudspeaker, does "localchat" to everyone nearby announcing start of races, etc.
+Pack horse competition, see if your horse can carry all the gear...
+Pasture =  free place to let a horse roam around,  gets happy and tired
+
+
+GRAPHICS: 
+
+ animated birds flying overhead
+ blended clouds hovering/moving above
+
+ITEMS:
+
+ RANDOM WORLD ITEMS:
+  Iron Ore / Copper / gold nugget 
+  Clams /coral 
+  snails
+  
+ TO BUY:
+  Saddle  (types: racing, dressage, western, english) / Bridle / Horse Blanket 
+  Oats / Hay
+  Brush
+
+ 
+Allow players to make "books" at a printer shop. and also make "copies"
+
+GAMES:
+  Sleigh ride in snow area...
+  water tank stop leak
+  Wishing well,  fins a wishing well coin, and then wish for "money" or "things" or "world peace" and get a random return
+
+  Horse Jumping
+  Horse Racing  (how player make faster??)
+  Barrel racing
+  Horse Show (FFR style )
+  Quests to find things
+[X] Capture wild horse!! (throw rope loop)
+  throw horseshoes
+  cow tipping??!!?!?  if you do it,  someone can turn you in to police for reward!
+  fishing  sideview requires fishing pole and lure or bait
+  construction - laying bricks (tetris)
+  count sheep while sleeping
+  digging with a shovel out in map..  ore veins hidden about...
+  Disturb a bee's nest - Avoid bee's while picking up honey combs...
+  Slider puzzle game.
+
+MODULES:
+  Farrier, see guy banging on horseshoes blacksmith style...
+  Flowershop..  Bunch of flowers all around.. accidentally break a vase if 
+    click on something , have to pay!  :) 
+  
+  
+STORES:
+  fishing store
+  Vetrinarian
+  ferrier / blacksmith
+  trainers = speed / strength / conformation / endurance
+  arenas - jumping /racing /dodgeing/ conformation
+  Human food
+  Horse Feed
+  Human Drink Store
+  Rock Store
+  flower Shop
+  MIsc Store
+  clothes store
+  horse equipment store
+  Realtors office
+  police station - test horse for doping
+  mail station
+  wagon station (warp)  
+  
+
+
+
+/////////////////////  FROM OLD HTML VERSION OF GAME DEVELOPMENT ////////////////////
+idea: offer to email parents Chat logs for sessions.???
+
+
+soon: 
+player buyable/ownable estates 
+
+ESTATES:
+House - Free Sleeping / Rent Beds
+Pen - House 2 horses / Rent 2 stalls
+Barn - House 6 horses / Rent 6 stalls
+Ferrier - Shod / Buy wood/metal
+Vet - Medicalize
+Workshop - Craft Junk
+Kitchen - Cook Junk
+
+WAYS TO MAKE MONEY:
+Add a postal mail system
+Add a newspaper system
+Add a Garbage Collection Job. (MIRANDA SAYS NO)
+Groom horses for money
+win competitions
+rent barnspace
+craft and sell stuff??
+rent beds inhouses?
+do ferriation
+do vet work
+Find Wild horses
+Allow cooking
+
+

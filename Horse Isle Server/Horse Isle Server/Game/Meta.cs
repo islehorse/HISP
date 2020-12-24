@@ -226,7 +226,7 @@ namespace HISP.Game
         }
 
 
-        public static string EvenUserStatDistribution(int statValue)
+        public static string SelectPlayerStatFormat(int statValue)
         {
             int curValue = 1000;
             int devisibleBy = Convert.ToInt32(Math.Floor((decimal)curValue / Messages.StatPlayerFormats.Length));
@@ -240,6 +240,16 @@ namespace HISP.Game
             }
             throw new Exception("A mathematically impossible error occured. please check wether the laws of physics still apply.");
         }
+        
+        public static string BuildPrivateNotes(User user)
+        {
+            string message = "";
+            message += Messages.FormatPrivateNotes(user.PrivateNotes);
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+
         public static string BuildNpcInfo(Npc.NpcEntry npcInfo)
         {
             string message = "";
@@ -282,17 +292,17 @@ namespace HISP.Game
                 message += Messages.FormatFreeTime(user.FreeMinutes);
             message += Messages.FormatPlayerDescriptionForStatsMenu(user.ProfilePage);
             message += Messages.FormatExperience(user.Experience);
-            message += Messages.FormatHungryStat(Messages.FormatPlayerStat(EvenUserStatDistribution(user.Hunger), Messages.StatHunger));
-            message += Messages.FormatThirstStat(Messages.FormatPlayerStat(EvenUserStatDistribution(user.Thirst), Messages.StatThirst));
-            message += Messages.FormatTiredStat(Messages.FormatPlayerStat(EvenUserStatDistribution(user.Thirst), Messages.StatTired));
+            message += Messages.FormatHungryStat(Messages.FormatPlayerStat(SelectPlayerStatFormat(user.Hunger), Messages.StatHunger));
+            message += Messages.FormatThirstStat(Messages.FormatPlayerStat(SelectPlayerStatFormat(user.Thirst), Messages.StatThirst));
+            message += Messages.FormatTiredStat(Messages.FormatPlayerStat(SelectPlayerStatFormat(user.Thirst), Messages.StatTired));
             message += Messages.FormatGenderStat(user.Gender);
             message += Messages.FormatJewelryStat(buildWornJewelery(user));
             message += Messages.FormatCompetitionGearStat(buildEquippedCompetitionGear(user));
-            message += Messages.StatsPrivateNotes;
-            message += Messages.StatsQuests;
-            message += Messages.StatsMinigameRanking;
-            message += Messages.StatsAwards;
-            message += Messages.StatsMisc;
+            message += Messages.StatsPrivateNotesButton;
+            message += Messages.StatsQuestsButton;
+            message += Messages.StatsMinigameRankingButton;
+            message += Messages.StatsAwardsButton;
+            message += Messages.StatsMiscButton;
 
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;

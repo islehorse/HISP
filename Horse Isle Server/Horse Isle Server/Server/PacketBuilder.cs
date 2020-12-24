@@ -27,6 +27,8 @@ namespace HISP.Server
         public const byte PACKET_TILE_FLAGS = 0x75;
         public const byte PACKET_PLAYSOUND = 0x23;
         public const byte PACKET_KEEP_ALIVE = 0x7C;
+        public const byte PACKET_DYNAMIC_BUTTON = 0x45;
+        public const byte PACKET_DYNAMIC_INPUT = 0x46;
         public const byte PACKET_PLAYER = 0x18;
         public const byte PACKET_INVENTORY = 0x17;
         public const byte PACKET_TRANSPORT = 0x29;

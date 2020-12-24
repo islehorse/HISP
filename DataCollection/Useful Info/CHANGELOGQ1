@@ -1,0 +1,2834 @@
+
+October 15th Started Flash Version of Horse Isle
+
+October 17th:
+  Coverted to BInary Map Sending (quicker bandwidth & processing)
+  Fixed the multi-movement bug
+  Converted COmmunication Codes to binary in client and server
+  Added user/password authentication
+  split chat to local/global
+  Added Text coloring (ug..)  
+  Added Main Character (stolen gfx)
+  CLient now tracks players and displays them
+
+October 20th:
+  Verified PNG copypixels does Alpha BLending!  Cool.  (add clouds, smoke,etc.)
+  Converted Side Panel to ScrollPane (Big pain!)  
+  Figured out Dynamic object addressing _root["object"] == _root.object !!
+  Got Dynamic Buttons on scroll pane to work  
+  Login and more interfaced with SQL
+  Started work on Inventory Display and Side buttons QUIT/INV/WHO/etc..
+
+October 21st:
+  Got Demo Icons to display on map locations
+  Created Keepalive functionality and 2 minute server timeout
+  Rebuilt simpler music system and had Miranda make guitar samples
+  Server allows/disallows movement now
+  Players can view Inventory 
+  Players can grab and drop map items
+  
+October 22nd:
+  Worked on GUI format a little, cleaned it up
+ 
+October 23rd:
+  Bought horseisle.com and put it online.
+  Made a "reconnect" button in case server down
+  Built a demo external game swf
+
+October 24th: 
+  Got the external game to display & destroy in main game
+  Got the external game to send and receive variables
+
+October 25th:
+  Finally Figured out external game loaded swf's masking problem
+  Masked the main swf also
+  Built a development page on website
+  Textual Percentage Loader for External Games  
+  Redid a lot of communication code
+    Switched to a Meta-commands scripting system for building dynamic objects on the scrollpane
+    Rebuilt the dynamic button system to accomodate new communication codes.
+    Client simply displays what it is told to by server now.  no need to interpret
+    Map data and location data  functions split  (send one/other/both now)
+  Fully Implemented Stores buy/sell/look
+
+October 26th:
+  Noticed server had a 1sec listen delay, changed it to .01 sec
+  Wrote up an investment page  
+  Enabled STATS, HORSES, and WHOS ONLINE Buttons
+  Enabled a bunch of additional buttons in metacodes  
+  Built custom html errors for website, and protected server.php from web-execution via .htaccess
+  Can look at your horses, and look at feed
+
+October 27th:
+  Worked hard at finding server daemon memory leak?! Failed..  unsetting and mysql_free's up the wazoo!?!?!
+  Players now disappear upon entering a building
+  Now must click "exit building" to leave, arrow keys disabled while in building
+  Got the trainers fully implemented
+  Other buildings have placeholder notifications now.
+  Got NPC's to work
+  Added Server Running Status to Dev Page
+  Added Ability for the horse to consume objects when fed  
+  Dynamic Movies Load Directly off SQL building locations now (and unload)
+  
+October 28th:
+  Local Chat ouput when buying/selling/grabing
+  
+October 29th:
+  Setup ADMIN status for select users.
+  Implemented Server Commands via !Server: Prefix (Kick user, shutdown, reloadnpcs)
+  Implemented Ability to capture wild horses via external module
+  Other Nearby players names shown in location info
+
+October 30th:
+  Implemented a Custom Password Cryptography On CLient & Server, so that pass is not Transfered Clear-text
+  implemented releasing a horse
+  Implemented Horse Successful Capture 
+  Implemented Horse running away upon failed capture
+  Fixed Tab-order on login screen
+  Worked on final tileset layout
+  Added dual layerd scrolling water!
+
+October 31st:
+  Looked for artist on Deviantart.com 
+  Made another demo game: wackdamole 
+
+November 1st:
+  Added sound effects and got them to work in external module.
+  Added a Pre Loader built into Main movie
+  Moved most of the content to a hidden 4th frame so that preloader *works* now 190k for preload..
+  Added buttons to start external movies
+  
+November 3rd:
+  Player can now edit profile description.
+  Made demo building objects
+
+November 4th:
+  Redid terrain tiles
+  Allowed admin to edit tilemap from within game
+  Enlarged world map to 1000x500 tiles
+  Sent Artist Emma details for making demo tiles
+  
+November 5th:
+  Found option to reduce first frame from 190k to 16k or so!!!  (export classes 4th frame)
+  Allowed "footpainting" of tiles for builder admin SHIFT + CONTROL
+  Sent Artist Emma more tile work
+  Server GOTO command implemented
+  Switched to ~ for server command prefix
+  Started Drawing Overlay Layer SHIFT + right/left for editing overlay    
+  Added emmas 3 tiles to overlay tiles
+  Graphic bugfixes (now show top of hidden overlays on bottom)
+
+November 6th:
+  Cleaned up Server Commands
+  Added ~! and ~@ to change tile to specific terrain/overlay id.
+  Made Grass -> Sand Transitions Terrain    
+  Finally figured out tile-graphics problem!  (was converting tiles to jpeg!)
+  Fixed water display problem (when the scrollx went below zero, messed up)
+  Server command added to create objects at admin location
+
+November 7th:
+  redid some example database entries
+  Rebuilt Overlay tiles with Emmas Additions
+  Put docs and more online in DEV center.
+
+November 8th:
+  Allowed duplicate targets in NPC scripts
+  Made server commands to change map spot titles and descriptions (MAPT MAPD)
+  Fixed up terrain tiles and overlay tile a bit.
+  Got Quest system mostly implemented
+  Added ? admin command to print current xy location
+  Sent emma a link to the TILES list,  and some sketches
+
+November 9th:
+  Paid Emma for previous tiles (didn't press send last time!)
+  Fixed some bugs: Petting limits, Walking bounds
+  Fixed NPC chat display so replies can be multi-line
+  ^R now takes a number indicating additional spacing*4 +20
+  Expanded Server Command ? to show any online users xy
+  Added HELP NPC and set button to activate it 
+  Added demo quest (twig & rare red pine cone)
+  Fixed Quests so that they can require an object & money. 
+  Got main movieMask working again,  but i think it slows framerate!
+
+November 10th:
+  Paid emma for 3rd batch of tiles
+  Got new buildins into game and updated SQL
+  made a demo horse equipment module
+  farrier mostly implemented  
+
+November 11th:
+  Added transports table for boats and wagons?
+  Implemented Vet completely
+  Fixed a bunch of money-bugs
+  Added terminal beep when players attempt login  
+  built NPC Script Editor
+  Finished implementing Farrier
+  finished simple demo map island
+
+November 12th:
+  Added Eat & wear buttons
+  Fixed inventory to display after dropping items
+  Made a SendInventory and LocalChat Function
+  Implemented player consuming objects.
+  Updated overlay tiles and edited world map with emmas new tiles
+  Troubleshot and Fixed major network bug.. (Packets could bunch together!)
+  Added crossdomain.xml to fix the embedded game connecting!!!
+
+November 13th:
+  Fixed the players nearby displaying
+  Added Date Stamps to server log
+  Fixed Who's online not displaying pre-loggedin connections
+  cleaned up npc script editor  
+  Built drawmap.php program to build map.png from map data & tile colors
+  Showed mary how to edit npc scripts and demod game
+  Allowed viewing of world map from inside client..  Ugly right now.
+  Worked on a new-windowing javascript client opener.  needs testing in browsers and resolutions and cleanup 
+  Changed all tiles outside of demo island to water
+  integrated map drawing directly into server, occurs whenever map saved
+
+November 14th:
+  Made 10x10 button icons for new gui - sent off to emma to have fixed up
+  Cleaned up map overlay a little bit
+  Added JUMP- Code for Buildings to force players to all be on one tile.
+  Implemented Tranports!  (no buildings yet to look at though)
+  Changed exits to be defined in map tables rather than individual stores - much more flexible.
+  Fixed map image not loading by adding ?1 to url
+  Built demo boat dock tiles, put them in game,  and sent example to emma
+  Worked on inter-player functions
+  who's online now shows players time online
+  You can now look at other players from whos online and when they are on same tile
+  Trade button placed when at same tile as another player
+  RESTART DATABASE admin command tested to see if it drops ram usage.
+  Tried to get demo mole game to give player money....  no go yet.
+  added blank robots.txt  to avoid web log errors
+  made a lovely favicon :)  (bookmark/link icon)  got it to work in ie & firefox
+  fixed timestamp and added # of users to Server Displays
+
+November 15th:
+  Fixed being able to use apostophes in NPC script editor 
+  Server now logs to file and command line output.
+  Cleaned up Server logging, made log-types, logging chat text
+  Went through SQL database and set all correct INT-sizes for space savings
+  Added jumpx/jumpy to Quest action  so you can warp the player.
+  Fixed a bunch of QuestActivation Bugs
+  Added a demo Quest jump on tiny island NPC billy boatman
+  Implemented admin GIVE command, can GIVE player MONEY or OBJECTS
+  Built Chat Language Filter
+  Emma Sent New Tiles Worked on getting those in game fixed up dock and flowershop
+  Fixed wardrobe bug.  now you can put clothes on.
+  Implemented chat filter in game.  Stars out obscene words.  
+  setup global table for motd and weather, etc..  
+  admin command SHUTDOWN NOW now cleanly quits everyone, and logs.
+  Got a server function to run Exactly once/minute.
+
+November 16th:
+  Fixed up tiles a little.
+  Made a demo boat animation
+  Added Overlay Animation Support in CLient
+  Added Flower Item Type and a few demo objects along with setting up flower shop
+  Posted Job Offer for flash artist on deviant art
+  Built New Gui Buttons
+  rearranged Layout and built a new background
+  Fixed Bug: Warped to 0,0 on missing exits
+  Fixed Bug: Store prices reported and actual messed up
+  Contacted a bunch of artists..  hoping for a scene artist... wasted a ton of time at this.
+
+November 17th:
+  Worked on Finding artist
+  Worked on terrain tiles (found out how to Paste into masks on photoshop) (channels)
+  Built a Tile FLood Fill Admin function!!
+  Added Admin command GOTO ability to goto playername in addition to x,y
+  Redid Gui background Again, simple lavender this time
+  REDID Terrain Tiles, 2 different water depts with full transitions!
+  Worked on fixing terrain on corrupted test island now.
+  Added Emmas newest overlay tiles 
+  Added ability to look at "new" objects in stores
+  FULLY ADDED INN functionality, various meals and rest offered!  consumed immeadiately only!
+  Showed melissa around,  new flash artist!
+  Fixed the map tile colors for proper auto-map generation, also fixed the other tile-db values.
+ 
+November 18th:
+  Built a tiny Volume Control Button and got it to work for game music
+  Wishing well Implemented!  Random object or money.
+  Fixed logon-players missing bug
+  Fixed logon-in building player visible bug.
+  GAIA World Updater Integrated and Activated.  logged in players now get tired/hungry/thirsty over time.
+  Track total time players logged in,  and number of logins now.
+  Fixed Waterdepths more  
+  GAIA Now automatically Creates Objects at random locations on desired terrain
+  GAIA Now Automatically Destroys objects left on ground for 24 hours
+  GAIA Now Manages wild horses! Spawns them on GRASS, Moves them once/minute and maintains 10 wild in world.
+  GAIA as a process is Forked Prior to running to not slow down main process
+  ELimintaed MySQL persistent connections hoping to help RAM.
+  Built Random Terrain Tile Function to automatically eliminate repeat patterns on plain grass/sand
+  Stopped allowing Water-walking (Unless in build mode!)
+  Added Forest Terrain, Brightened up the Water Depth tiles a bit 45/90/256 instead of 32/64/256
+  Added Tiles data for forest
+ 
+November 19th:
+  Fixed a wishing well bug
+  Brainstormed objects with Miranda
+  Added Melissa's first Flash module (Horse Equipment store!)
+  Miranda Added Berry objects,  found an object-congregating bug
+  switched from rand() function to mt_rand() which hopefully fixes above GAIA bug  
+  Added Snow Terrain
+  Added Emmas latest tiles.
+  Added Test Vertical shadows to all overlay tiles (trees mostly)  
+  Implemented ability to Show another location on map.
+  Showing players allows for displaying other players location
+  Prior to Taking a transport allows viewing destination on map.
+
+November 20th:
+  Added a Snowcapped Demo Christmas Island
+  Added a random number After image loader for map, ?###  hoping it will force map updating
+  Added addslashes() function to server for MAPT,MAPD and Player Profile (Now apostophes work!..)
+  Went through and made sure all SQL selects weren't bloated.  fixed a few.
+  Found a buggy sql select on selling objects.  Fixed it.
+  FINALLY!  developed a mechanism for passing packets from mini games to server
+  Updated docs with new Module commands 
+  Shrunk the mouse on melissas horse equipment module 
+  Welcome packets are held until client asks for them now. Hoping to fix Melissa's Nothing-but-water problem...
+  Converted the MOTD to run off database.  Added admin Command to change it in-game.
+  Can now click HorseIsle Logo to get MOTD resent.
+  Made a DEmo Horse View Breed Module
+  When looking at horse, a movie loads now.  Lots of work to make it go away after!!
+ 
+November 21st:
+  Working on 2player minigame capability
+  Fixed Bug emma found where stuck in a store on login
+  Worked on Xoom payments...  FInally got it to Go!
+  Got most of the Setup Opponent Ability Built
+  HOLY CRIPE!!  built a free-form checkers game to test game commuinication..  WORKS!!!
+  Got 30 of emma's item art online  
+  Made item icons appear on almost every view
+  Built another minigame example "accounting"  
+
+November 22nd:
+  Added Accounting MiniGame in to Maggies demo cabin
+  Cant sell Valueless objects anymore
+  Spaced textfields in various windows better
+  Added Buddy Database,  and ability to add/remove buddies..  no use for buddys yet.  
+  Added CHAT BUDDY option to client chat options
+  Implemented NEAR CHAT and CHAT BUDDYS in Server.  Added coloring for each type.
+  Implemented Map CLickablity for info!  :) needs lots of work yet..  
+  Force Updateing with client filesize changes!! in horseisle.php
+  Added colors to Server Output log
+  Added info when player clicks on tiles and players
+  Searched some for a horse artist
+
+November 23rd:
+  Sent Flash Horse Artists Notes offering work.
+  Added npcstatic table for tracking quest-set current npc conversation points
+  Added experiencegained and setnpcpoint fields to quest table
+  Added ability to Track NPC conversation points via Quest completions!!
+  Added Chatty Cathy Example at the intersection near wishing well!..  She remembers you were mean to her :)
+  Added Admin VIEW command functionality 
+  Fixed Admin commands being allowedd from other chat types (except private)
+  Fixed auto-info updates for players when someone leaves/exits same tile
+  Setup INFOMODE player variables.   records the current InfoPane event they are viewing..
+  ADMINs can now Jump other players TO themselves..
+
+November 24th:
+  Interviewing 3 possible horse artists, Having them all make examples
+  Implemented Game time & date!
+  Added feature toan requested, Info Window returns to previous scroll point upon reload!
+  moved external modules to subfolder mod so that cleaner
+  Redid META button names into categories
+  Implemented nighttime and daylight brightness!  between 10pm-5am it's dark!
+  Implemented 2 player chess example
+  fixed bug matt found where admin teleports player to their location.  
+  Fully Implemented Pond functionality for horse drinking (1/20th chance of getting sick!)
+  Fixed server sending exact tweened Game time on login
+  Added GRAB ALL functionality per Toans request
+  
+November 25th:
+  New Artist Jenny submitted first breed, sent her info.
+  Worked on getting Breedviewing system built
+  Emma sent 35 items and some snow tiles!
+  Put new items/tiles into client
+  Fixed Dusk bug!!  (MEGABRIGHT!) 
+  Also made the darkest time, 20% lighter  .5 -> .6 
+  Gave Jenny the game tour,  and gave her the job of "BreedMaster" :)
+  Fixed Breedviewer, Looks ready to go!
+  Server now allows a relogin by username, kicks previous session.
+  Server now Disconnects Remote client after 2 minutes of no packets.. (Nevermind!, see 5 down)
+  Wild horses now spawn on their breed-defined terrain type (grass,forest,snow)
+  NPC chracters now can wander if they are supposed to. . . 
+  horses maybe get thirsty/hungry now when logged in...
+  Sent Jenny some more horse breeds
+  Tried to add some content ideas for INN for melissa.. .  I'm no help. . . 
+  Several Bug fixes...  NPC's now roam correctly,  horses now get hungry/thirsty
+  Stopped trying to disconnect players after 2 min of no packets,  client is no longer sending keepalives!!  
+
+November 26th:
+  Implemented Sell All Button at shops,  to sell all of a specific item type.
+  Fixed a bug where shop owners did not delete objects they stock when sold to them.
+  Now you can Edit Horse's Profile!  (name and description!)  whew!
+  Put a new guitar loop by Miranda  in.
+  Made Beach sand Browner
+  Added Desert Terrain )grass to sesert transition)
+  Added Snow to Beach Transition Terrain
+  Added Object Spawning AT and NEAR Certain Map Titles.  A la Coconuts near Palm trees!
+  Redid color definitions for map to have more detail,  and added new entries for new terrain 
+  Added Icons to display what is being worn in player details
+  Miranda addded a bunch of clothing objects
+  I invited a bunch of friends to try out system tomorrow night. .. .
+
+November 27th:
+  Built a Multi-user Drawing Room!  Made Broadcast Module Funcitonality.
+  I added mirandas footwear objects and let emma know they are there.
+  Added GIVE ALL server function  
+  Added some meal conceptual objects
+  Added Melissas INN scene
+
+November 28th:
+  Send Players location immeadiately upon login to others
+  Worked on Arena Set-up code -  mostly done.
+  Built a new Jumping competition demo game.
+
+November 29th:
+  Fixed Arena timing Bug at midnight
+  Fixed game modules messing up!  Added EXITMODULE function to each mod.  Stop Intervals!!  
+  Fixed "I think" the unique Map buttons bug.
+  Mostly completed Jumping Competiton Arena!  (no betting yet, and probably buggy)
+  Arena Betting works!  Winners take proportion of all winnings based on bet amount
+  Now you can see a players horses when you look at the player details
+  added CHAT HERE functionality to client and server
+  added ability to REMOVE clothing 
+  cleaned up text some, added code comments
+
+November 30th:
+  Added a demo farrier to help give melissa ideas
+  Added another demo game Honeycomb Steal!!    
+  Emma sent items and tile art - put both into game
+  Added Fishing store,  built npc and a fishing pole quest!
+  Added fish objects,  and FISHING type
+  Built a demo Fishing game!  Fully works!! 
+  Fishing fully implemented!!!  cool.
+  reorganized all object communication codes
+  Added Buttons for future functions THROW,OPEN,DIG
+  Added Throwing snowball ability!  Randomly hits someone in your same place
+  Added Ability to Dig with a shovel and activate quests!
+  Added an example buried treasure quest...   Talk to Crazy lady. shutup, then give her flowers for clue!
+
+December 1st:
+  Completely redid NPC system.  Database driven now,  rather than text file.. .  Built Slick Editor too
+  Added $ signs to a lot of tranactions that were missing them.
+  Built Map importer!  Reads in Image and Automatically smoothes it!!!  Admin: Build Map
+
+December 2nd:
+  Removed all horses from the System.  Only allow horses with jenny's artwork to generate
+  When looking at horses you now See YOUR HORSE BREED,  in Your horses COLOR, on the TERRAIN you are on!!!
+  Switched from a 33 char offset in game Map Data to a 1 char!.. .   need those extra 32 tiles!!  :)
+  Finished work on MAP!!!  Planning on Wiping entire world today!!!
+  Wiped entire world.. . Set all players to start on welcome isle
+  Rearanged entire overlay tile set for permanent places
+  Added an Areas Database table.  Miranda filled it with island names and town names.
+  Fixed TileRandom Admin command to randomize new terrains
+  Added overlays tile database table to specify whether walkable
+  Can no longer walk through trees. . . etc.. 
+  Ug!  Completely lost first 4 hours of map building. . .. had to start over.   oops.
+  Miranda built dock system to all major islands!
+  Built Welcome Willy NPC
+  Setup Welcome Isle
+  Miranda started work on Earton the northern City of horseisle
+  Fixed a major netowkring bug?!  FLash socket cant accept chars > 190?!?  So I built a kludge to hash them.
+  Added %ROADON %ROADOFF Admin functions to paint roads by walking!!!
+  Built most of normal town buldings in Earton
+  Fixed a bug where 6000 items were created at 127,127!!
+  Added Location Text to tell you what island, town you are at
+  Added Melissas wishing well! (added scrolling clouds and rose wobbles)
+  
+December 3rd:
+  Added a bunch of new tiles,  some placeholder for emma work,  others quality variations. added shadows
+  Added Client support for GROOM DRESS REMOVE horse buttons
+  Miranda built wagon transports for 3 cities on horseisle
+  Implemented Groomer!
+  Implemented Tack! You can dress / undress horses.     
+  Miranda Built a forest
+  Appleton example built
+  Fixed tack to be more useable
+  Added GOTO admin commands for every city "GOTO APPLETON",etc.
+  
+December 4th:
+  Built %AUTOGENFOREST admin command. .  works pretty nice!
+  Added buriedtreasure system!  Random X marks the spots are scattered on beachs
+  Added some more demo overlays for emma to fix up
+  Allow ENTER key on login to activate login
+  When % is pressed it forces chatbox selection to Ease admin functions
+  Fixed a tilemap overlays bug
+  terrain-spawning objects only spawn on spaces WITHOUT Overlay tiles.
+  Horses now do NOT wander onto NON-WALKABLE tiles
+  NPC's now do NOT WANDER onto NON-WALKABLE tiles
+  Fixed walking animation so that default stance is flatfeet and now it goes left-center-right-center  instead of 123123123
+  Added Emmas new Items and Tiles!  (fish, fishing pole, shovel! + )
+  Added a Demo Boat transport Cutscene.  Had to add a "protected" movietype in client.
+  Fixed ENTER key bug from earlier in the day. . .
+  Miranda Entered map colors for all the overlay tiles 
+  Got the Map To Show Overlay tiles (docks and roads and buildings!,  it's blurry,  but works..)
+  Built a Socials system!!!!   
+  Built a "prefixana" function to properly use "a" or "an" allover the game.
+
+December 5th:
+  Converted socials system to database table,  added several
+  Made a new 2 player snowballslingshot game.
+
+December 6th:
+  Finished snowballslingshot demo game
+  rebuilt animated overlay system
+  finished animating all trainers
+  added a wishing well anim
+  Added chimney smoke effect ability Tacked to blacksmiths and inns right now.  
+  Added a Detail level client toggle  Shuts off chiney,water, and light anims
+  Added a %CALL HORSE  admin function to pop a wild horse to your location
+  Set A 1 game day timer on training each horse
+  Built some of flipperton
+  Sara worked on shellton
+  Autumn offered to make Hoofisle
+  Made bridge tile #69 allow walking over water
+  added bridge and boat service to hoofisle
+  
+December 7th:
+  built a new 2 player basketshoot game
+  Added score tracking table and code for games
+  worked on a pong game.. .  gave up  :)  latency and mirroring issues too messy
+  Added some flowers to terrain..
+
+December 8th:
+  Fixed some basketshoot bugs
+  worked on loader demo  
+  Added a gazebo and Playground
+  Added 8 tiles of Wildflowers to terrain
+  Finished 2 characters/cabins in flipperton along with quests.  
+  Overlay table can now define whether to show player or not on that tile.
+  Fixed socials to only show to people on same tile
+  Worked on Horseshoe village with autumn
+  Added Emmas new tiles
+  Posted Work Offer on deviantart for 3 more positions flash,music,writing.
+  
+December 9th:
+  Added ability to ride horses to move faster!  (mount/unmount buttons)
+  Moved the Various horse buttons to the LOOK page
+  Adjusted the volume control so that first click MUTE's  instead of 4th. . .
+  Must have horse fully tacked prior to mounting now
+  Built a Pitchfork Gatherable Straw System!  pitchfork icon, straw tile,  server and module functionality
+  Improved Horse Feeding system
+  Miranda added autumns suggested socials (5)
+  Miranda fixed coloring and Showplayers settings in overlays
+  Implemented prerequisite Quests
+  Fixed npcstatic table to not create duplicate rows
+  Worked on finding new artists,  posted on Gamedev.net and emailed a few people
+  Miranda proofread NPC's and Socials
+  Miranda went through all item descriptions!
+  Added Melissa's new Sign Scene
+  
+December 10th:
+  Worked on User-friendly Quest Editor
+  Started "marbles" minigame
+
+December 11th:
+  Mostly Finished Marbles minigame  
+  Worked on World-guildelines with miranda and autumn
+  Talked to interested composers/writers
+  ugly Hack for Chat bubbles to work
+  
+December 12th:
+  Made a demo vet & clothes shop for melissa
+  Fixed Losing Chat Select Value on player logout bug 
+  Added select chat box rows
+  fixed chat bubbles a bit
+  Worked on player ghosts?  fixed?
+  Fixed Jumping bugs - players show immeadiately
+  viewing players screen,  and plain screens now updats /once/minute
+  Working on same-spot update bugs..
+  client now shows OtherPlayer on top, and no longer stepping on legs :)   
+  Finally after 4 or so hourse figured out a strange php behavior with foreach loops... Cannot NET same array!!!!!
+  Fixed 2player-game room updates for bystanders
+  Redid info-click code,  now it shows both players and map titles,  rather than just one.
+  Now Clearing OPPONENT setting when a player QUITS During a 2 player game!
+  
+December 13th:
+  Gave possible writer laurie tour of game.
+  Client map display now tells you what AREAS you are pointing at, straight from database! cool.
+  Worked on Racing arena module  %50 complete
+  Built racing arena Gaia setup code
+
+  
+December 14th:
+  Finished Alpha version of Racing Arena! - up to 6 racers, see all opponents realtime!
+  Added Broadcast to Competitor Server function 80+82
+  Fixed bugs in racing code.
+  setup arena in appleton
+  You can no longer see the action buttons of another players horse when looking at horses
+  The stats now says how a horse is tacked when looking at them.
+  Added a bunch of Tack ideas and standardization to IDEAS
+  A competition now wears out a horse in many ways
+  In order to compete in competition horse now needs tack,  and minimum requirements.
+  Added a simple daisey drop game to shellton and helped sara rebuild a bit.
+  Added a simple counting sheep game..   not sure on purpose yet..
+  Worked on appleton with autumn a bit
+
+
+December 15th:
+  Fixed INN bug where things were not actually consumed
+  Worked on melissa's Farrier
+  fixed some drawing room bugs
+  Added Autumns Street suggestioons to IDEAS
+  Miranda and sara worked on shellton a lot.
+  Worked on getting tack to dynamically display...  Man...  bridles are a pain!
+  Tack now dynamically displays!  example tack is ugly,  but works.
+
+December 16th:
+  Tested out music room concept. Pretty laggy.  not sure if should finish.
+  Enabled arrows while viewing signs and other SWF without FACING=4
+  Tried a bunch of stuff to standardize frame rate. ..  Wow..   Flash is
+       chunky when it comes to this. . . Not sure what to do yet.
+
+December 17th:
+  Melissa submitted Vet, Added some anims
+  Emma submitted 20 objects
+  Did ALOT of item work.  Re-layed out items
+  made a new iconid field for object and miranda re-mapped every object to new item tile map
+  Added a bunch of new color variations on Items 
+  Added a PArk animation
+  made a water fountain with animation
+  Added a sub module property ALLOWMOVE which a module can set to true to allow arrow movement out
+  Miranda added a bunch of objects based on variations (clothing mostly)
+  Autumn and I added lots of  NPC's and scripts
+  Italicized , Colored,  and spaced NPC chat to make it easier to look at.
+  Made a demo fountain scene
+  Added MAPC admin command
+
+December 18th:
+  Worked half the day on a Hedge-maze module.   failed..
+  Added Second object required and Gained's So that quests can be more involved.
+  Added Successinfo to quests to send a custom localchat message to record transaction.
+  Added a quest points Player score.  use this for completeing quests rather than experience
+  Sara and I worked on Christmas Isle
+  Implemented simple Fountain drinkability
+  Sara/Autumn/miranda and i added some content in a couple-hour blitz!
+  
+December 19th:
+  Autumn Worked 8a-10a On shellton character setups
+  Moved mouse-info-clicks to game window popup
+  Added Bird Eye-View Display!
+  Added object binoculars to game, Tied the Bird-Eye view to Using!
+  Antialiased the bird eye view a bit. . . Had to blur a copy of original tiles to do it!?!?
+  Fixed the Mouse-info so that the box displays nicely on game screen.
+  fudged mousclick 6 pixels down so that it feels a little more honest..  With the overlays.
+  Added FLute and Guitar to music room
+  Added Random Loading Game tips  
+  Allowed snowballs to hit random people within 3 tiles
+  Added Santa workshop Tiles!!  and 2 lit trees
+  Added a sort field to object table.  Now handy tools are at top, and clothes at bottom of inventory.
+  Started SLeigh ride game  
+
+December 20th:
+  Added Sleigh ride to chirstmas Isle
+  Added puzzle1 difficult to make! puzzle game.  Works good. could make the pices a little more random.
+  Autumn worked some on Building Descriptions.
+  
+December 21st:
+  Got a Dynamic Input box system to work!.. whew.. now can make email/messaging/message in bottle/bank systems. . . . 
+  Worked on Maze game
+  Implemented Present System.  
+  Added a little present icon and Binocular icon
+
+December 22nd:
+  Added Banking System,  Along with reported interest!
+  Stoped reporting player left if they never actually logged in.
+  worked on client fonts a bit
+  Worked with composer To setup MUSIC file,  and get him started.
+  Composer Joe made music for wishing well
+  Added the music to wishing well, found a mechanism to pass volume to modules music.
+  
+December 23rd:
+  Miranda & Joe's Anniversary...   I spose I'll take a few minutes off today...
+
+December 24th:
+  Added some GameTIps
+  Created mouseover and mouseclick graphics for GUI buttons (INVENTORY, MAP, etc)
+
+December 25th: 
+  *Squattle*
+
+December 26th:
+  Built Dynamic Button Client Ability for seldom used buttons
+  Worked on Townhall Messaging System  
+
+
+December 27th:
+  Done with christmas breaks. . .  Time to get some work done!
+  Worked more on READing system
+  Town hall messaging system now works.  
+  Now you can "Rip Up"  messages
+  Reduced bank interest rate
+  Changed bankbalance and interest to float numbers, rather than integers...
+  Emma submitted some new art.  12 quest objects, and several tile fixups (clothes store)  
+  Fixed up Carpentry Puzzle a bit.  Added my own temporary music,  and the pieces are more random shaped now.
+
+December 28th:
+  Built a AdjustVolume Function to push current game volume to modules when player adjusts parent volume.
+  Don't allow horses to wander into a town anymore
+  Jenny Submitted Belgian breed
+  Fixed BreedViewer to scale horses based on thier actual height!
+  All horses now shown to scale. . .Although small horses look too small. . .   19 hands max.
+  fixed Diagonal Bug reid had noticed  
+  WooHoo Other players now "walk" animatedly to places instead of chunky "jumping"
+  Emma Submitted some more Tiles and objects, nice sand dunes and a willow tree
+  Stopped bank from refreshing
+  stopped allowing DROP for messages
+  Allowed colons and dashes in input boxes now
+  Client Version 0.29
+  Added Scissor icons to groomer options
+  Updated dev page to show existing modules for info only
+    
+December 29th:
+  Worked on dev Text files
+  Worked on marbles game  built startup delay,  and notify of WIn now.  Also added column crush!
+  Fixed Directional sign to only show directions that are set dynamically.  boards missing otherwise
+  Built HighScore Code so that different games can track player highscores.    
+  Jenny Submitted Azteca
+  Emma submitted Male char form   - built new client using char to test
+  
+December 30th:
+  Melissa Submitted Clothes store, animated and installed it
+  Emma submitted male char and female char
+  I built char selection code into profile page.  It resets on logout,  but works!!! Now you can look different..  finally.
+  Made the numbers prettier in bank, Only 2 decimals on interest,  none on bank balance.
+  Added Pyramid Maze Demo Game In Santon
+  Added code to allow Games to activate Quests!! The pyramid treasure can only be rewarded once!    
+  Worked on santon with Sara - added names to buildings for chars
+  Sara ran around decorating desert
+  Miranda setup wagons to santon
+  Miranda fixed walkability for desert terrain
+  Jenny Sent another breed- cleveland bay
+  MusicJoe Sent 2 Tracks for sampling for horseisle island!
+  
+December 31st:
+  Selected Character should remain after Logout now.
+  Worked on character Art: BLond boy, baby diaper, alien , red dress girl
+  Worked On Overlay Art: Sand Dune Variations, snow rock variations, snow stump,Trails,desert bush alt, Elf cottage
+  Installed MusicJoe's First Music Track
+  Worked on paths in chillton,santon,christmas isle  Also worked on appleton a bit.
+  Fixed Missing overlay entry
+  Worked on Profile not clearing bug!!  Long time,  no luck!!
+  FInally fixed Mystery well appearing suring startup for a second.  Turned out to be a bug in chimney smoke code   
+
+January 1st 2007:
+  Melissa sent Boat cutscene,  I animated it some more and uploaded.
+  Implemented Money and Mail Status Updated wheenever a transaction is made!
+  BOlded most of the Info pages' titles
+  Moved the Profile buttons down a bit.
+  Added players online to status bar    
+  No longer allow horses to spawn in a town. 
+  Fixed horses wandering into town bug.
+  Miranda found a map-color bug  -  I fixed it,  Was using a palette image! switched to true color
+  Added %MAPE Server command
+  Miranda updated Map colors
+  Miranda Adjusted Horse-breed stats
+  I built Severel NPC's and quests Around the Islands Right of treeton. Talk to cabin in East Treeton forrest to start adventure.
+  Emma submitted character fixes.
+  I fixed NPCEditor so that it goes to  edit char after adding it.
+  Fixed the Keepalive Logging players out bug.
+  Client Version 0.31  (810kb client)
+  Finally Redid water - Changed from PNG's using 353k to a single 3.8kb png!!!  Much simpler water effect..  still good tho???..
+  Updated Emma's Character fixes into game
+  Fixed up Overlay Trails a bit more random, along with other shading work.
+  Fixed NPCEditor Bug caused earlier today. . . .
+  Added All NPC's To Santon (unscripted)
+  Brightened Darkness at night 25%
+
+January 2nd:
+  No longer attempt to move npc's at 0,0 (generated errors)
+  Added scriptless NPC's to Flipperton and chillton, and christmas Isle (14 residents)
+  Added a Wandering Scripted Reindeer to Christmas Isle.  
+  Added 12 scriptless NPC's to Treeton
+  Fixed Looping Keepalives bug!
+  Added an SCRIPTED/unscripted display to the NPC Editor, so it's easy to tell which ones need scripting.
+  Added unscripted cabin NPC's in Appleton and did some construction
+  Worked a lot on Wington 
+  Fixed infoview box showing at upper right during login
+  Fixed Binoc Water Not erasing
+  Fixed am/pm showing for time status
+  Added Compass to map/birdeye views
+  Added Click to Exit to Birdeye view  
+  Removed TALK button from NPC's that do not have chatpoints yet!
+  Added unscripted NPC's to Wington Cabins
+  Autumn Worked on Adding Shop Owners to Wington Shops  
+  
+January 3rd:
+  Gave Jim and Karl tour of game
+  Emma submitted 2 kid chars, and some overlays
+  Made alt versions of chars and got the new graphics into new client version.
+  CLient v.32
+  Worked on alternate Water Textures. .  Gave to emma to play with also.
+  Adjusted Sandcastle to MAtch beach colors
+  Jenny Submitted Chinconteage pony
+  SERVER: Updated chillton jump location, Fixed minor viewing char bug    
+  Fit the Chintoteague pony and Cleveland bay for Tack,  And uploaded both  breeeds
+  Fixed several Bugs that surfaced while Jims kids playing
+  added MUDHOLE functionality   --  just randomly dirties a horse...
+  Built a demo Gardening game!!  how dumb :)
+
+January 4th:
+  MElissa submitted Pyramid Minigame fixups!  
+  I worked on final touchups for pyramid game Final Version of game online :)
+  Melissa submitted fountain..  Needs work....  Put it online as is for now.
+  Emma submitted two new Chubby characters.
+  Got the characters and Built a new Water Texture into New Client
+  Allow Apples and carrots to be eaten by people and horses now
+  Worked on TRADE system. .  big ball of mess :)  75% done.
+  More work on Trades %85 done, just need to do transaction and check validitiy    
+  Autumn And I Wrote descriptions for all buildings in treeton, did roads, and a char  :)
+
+January 5th:
+  Jenny submitted Clydesdale breed
+  Autumn finished most descriptions in Wington!
+  Autumn and I worked on Appleton descriptions
+  Sorted Quest Editor Items alphabetically now.
+  Fixed quest entries to -1 for setnpcpoint's
+  Added a required quest feature for every possible reply, reply is only shown if quest has been completed.  
+  Added a Complex Quest Example: Adrianna's Quest in Appleton :) 2 npcs' and 3 quest id's
+  Added Quest Titles to be used for in-game tracking of important Quests
+  Fixed bug- remove open trades when a player missing
+  Completed initial Trades System (Still need to Do verification checks)  
+  Autumn and I did MAPD's in Chillton and Horseshoe
+  Implemennted a ADVENTURE Status Viewer!  Slick!   On bottom of stats page, click it!
+  Sara worked a little on tiles
+  Miranda fixed overlay player showing and added some objects
+
+January 6th:
+  Autumn Added MAPD's in Earton
+  Brainstormed a bit on Quests (autumn helped)
+  Built Several more ways to Activate Quest Actions: Rake to uncover stuff/Binocs to search/Magnifying glass to search!
+  Switched Previous Binocular behavior to telescope
+  Miranda Activated many of the Treeton Buildings
+  I built 2 New Full Simple Quests in Wington Zamora and Dominique
+  Added Feltons Dino Bone Quest #1 to Flipeprton  
+  Miranda Activated most of the Wington Buildings
+  Added Simple TAG system between Buddies  
+  Extended Feltons Dino Bone Another Quest. (#2)
+  Extended Feltons Dino Bone One more Quest!(#3)  whew...
+  removed old digx/digy
+  Miranda and I added and prettified a bunch of Direction Signs
+  Miranda worked on Lots of building Exits
+
+January 7th:
+  MusicJoe Sent a PuzzleGame Music
+  Fixed Capture horse bug, need to clear interval!  (momma noticed)
+  Allow admins to view players adventure logs  
+  Started work on Library
+  Added NPC Search function in Library!!!
+  Added Basic Breed Viewer in Library.. .   no way to select colors?. . .
+  Miranda Added some more breed descriptions
+  Added 5 Different Pyramid Maze's Ranging in difficulty and reward from 1 to 5
+  Shut off mouse control for Pyramid maze,  tooo awkward... 
+  Disallowed Dropping and Trading Quest Items
+  Worked on old PushBLock Game
+  Worked with MusicJoe on music submissions
+  Melissa submitted pretty-tised Breed Viewer.
+  Miranda proofread a lot of content
+  Miranda added most building Exits in game
+
+January 8th:
+  Added SNowflakes, fixed clouds, Added Dust and tumbleweed on breedviewer
+  Added A Loader,  Now the breedviewer properly displays terrain! finally.
+  Completed AntHill Game good enough for now.   Added 1 set of 3 puzzles for anthill #1, along with quest  
+  Finished a second set of 3 AntHill LEvels.
+  Miranda And I Built a Multi-user Server-controlled Brick Poetry room!  It works perfect :)
+  Music Joe Submitted a perfect horse shop music
+  Redid my Checkers Game.  Final Version! Good enough!  Queening enabled by simple reaching other end of board
+
+January 9th:
+  Built GameModule Standard Buttons  EXIT/HELP
+  Updated Checkers with Help and new buttons
+  Updated AntHill with Help and new buttons
+  Updated Pyramid Maze with Help and new buttons and New Compass
+  Created Chess 2 Player game.  Final Version Quality.. 
+  Worked on construction Puzzle.  Added MusicJoe's puzzlemusic#1 to it,  and gave it new buttons, win screen and ability to play again without exiting.
+  Added multi color blocks, and touched up a few things on constuction puzzle.
+  MARBLES: Added Music And Help menu, and Fixed down arrow cleaned up a few things too.
+  updated horse equipment store with music
+  tweaked equipment store into feed store
+  Fixed checkers bugs
+  Fixed more checkers bugs
+  Added Auto-junking of jumped chess pieces!  and fixed some drag bugs  
+  Lara noticed welcome boat was broke!!  MAN HARD to figure out that miranda broke it by adding ^X^Z to end!!
+  DRAWING ROOM: Worked on Caching Drawing Room Image for newcomers,  and returning
+  DRAWING ROOM: Fixed up a bunch of stuff with drawing room. Drawing bounds, All positive now, Caching fully works with animated refresh 10x per sec/ drawing 4x per sec
+  DRAWING ROOM: Added 2 grey colors to Drawing Room, And added 3 bigger line widths
+  DRAWING ROOM: Added Random Pictionary Word Button.   Prepped it with ~30 things,  need lots more.....  
+
+January 10th:
+  Melissa submitted Library, uploaded!
+  changed bank scene around,  uploaded!
+  Switched server to track an array of drawing rooms,  Now there can be multiple individual rooms.
+  Autumn did descriptions for rest of buildings santon,flipperton,shellton!!
+  Wow!  Added 3 save slots to drawing room!!   Ug.. .  wasted 3 hours on this!!....   Need to find a way to limit data size though. . .. .
+  added a 100k byte code limit per drawing room! maybe could be 30 or 50 instead.  
+  Added Separate Poetry room functionality with separate word lists  started exmaple bird room in wington
+  Added some to SCENES and TILES files
+  Tweaked Drawing room:  Extended random box, Added current color cursor, added SAVE and LOAD popups
+  CLIENT: Fixed CLient bug where it wouldn't close out previous module when opening on top of.
+  Made A Final Version Quality Breed Viewer Background for library, Complete With color selector!!!
+  Put MusicJoe's second part of horseisle music online.  now 2 distinct tracks play for main bacgrund music
+  Fixed GOTO admin jump locations so less annoying
+  wiggled flowers on welcome sign and with it and direction sign added X buttons
+  CLIENT: Dropped the keepalive rate from 1 per second ,  down to 1 per 5 seconds.  and gave 65 seconds instead of 61 prior to sending
+  Added BreedViewer Loading Horseshoe anim :)  and cleaned up intro.  Library is super sweet now.
+  
+January 11th:
+  Added Quest Editor manual to top of Quest Editor
+  Worked a while on converting Objects in inventory to quantity based-rather than individual..  But if i do that,   we can't have them havetheir own timers, etc..   no converting/etc in inventory. . .   rotting fruit???   ug.. .
+  Worked on 2 player TreasureHunter Game
+  Jenny submitted Dales Pony,  Added it to game!
+  Got Treasure hunter probably good enough for final graphics draft
+  Played with switching the breed fla's tails to Reusing them with tints instead of copys.  Saved 75kb on chincoteague.. .  But,  lot of work,  and tough to match color exactly. . .   Option if needed though.
+
+January 12th:
+  updated miranda's todo list - we brainstormed on some stuff 
+  Fixed anthill sound delay by changing sfx type to mp3 from the wav's??????  
+  miranda finished horse stats
+  Fixed client map areas buggie
+  Worked on conformation arena
+  Sara N built Hotton city
+  Miranda activated buildings in Hotton
+  Miranda did a bunch of work on breed descriptions, etc
+  Miranda added min and max heights for breeds  - as an imporved system over random +/- 1 hand
+  Fixed an arena bug
+  Added conformation arena code to server
+  Sara and miranda added Shellton Poetry room
+  Worked on making poetry room words a little smaller & caps
+
+January 13th:
+  Sara worked on Learning scripting/Quest system.  started with a great first one "Karina's Blankie"
+  Built a new admin command %RESET QUESTS    to remove all quest completion tracking from yourself ,  so you can do one over again ( for testing)
+  Removed all Competition Betting functionality from server.
+  Fixed an arena bug where only one arena was judged at a time.. .
+  Fixed a lot more arena and conformation game bugs
+  Fixed up Poetry room a bit (smaller bricks)
+  Conformation Arena works now :)
+  Got melissas wagon cutscene online. . .  Horse still needs trot animation!
+  Jenny submitted norwegianfjord breed -it's online  look in library
+  Miranda added a bunch of words to wington poetry room
+  Miranda added a bunch of words to Drawing room random pictionary words   
+  Sara Worked on beautifying Desert Tiles
+  Worked on ringjoust and horse herding demo's
+
+January 14th:
+  Finished Cattle Herding game demo - it's in Appleton :)  Great idea miranda.
+  Miranda worked at relocating a bunch of earton games to proper towns.
+  Miranda built her first NPC and quest :) Up in Wington, Evelyn.  buys honeycombs
+  Updates CatchHorse Module a bit..   fixed a few buggies
+  Worked on Anthill level tester. might be ready.  
+  miranda named hotton forests and added maggie NPC    
+  Worked on fixing some client-module bugs,  where sometimes a module get's "lost" loaded,
+      but unloadable..   Going through and fixing EVER module with a code change!!!
+  MusicJoe Dropped of Bank music :)   great elevator tune.
+  Lauries stopped by and worked on belinda buckle a bit.  
+  Published bank scene with music and eyes now blink randomly
+  Redid pitchfork code
+  Added custom help/exit buttons to almost all modules now
+  Miranda added a Dixie's Oranges quest  nice jorb!!
+  Added a little more psycadelica to Construction puzzle
+  Added More words to Drawing room pictionary list
+
+January 15th:
+  Took receipt on 2 finished mini-game songs from julien.
+  Worked on a Static-Romm-Multiplayer Dress-up system (horses/Doll?/snowman?)
+  Completed Dressup Multiuser static server and client code..  UGLY example in Treeton :)  
+  Added Auto-Changelog display on Dev Page
+  I tried to fix the non-selection of game at startup, and tried to build a timer to select 
+     it often.  but no luck.
+  I found a nasty masking bug in client.  And worked on perfecting the Module masking/placement. 
+     (1pixel off right and bottom)
+  worked on prettying up dressup module a bit.
+  Jenny submitted Quarterhorse, not in game yet.
+  Gave jenny horse doll dressup details :)
+  
+January 16th:
+  Added Quarter Horse Breed into game
+  No longer allow dropping items at map locations!
+  Fixed music starting back up after quitting bug  
+  Made the dressup interface work a little better.  now you drag object right away. 
+  Added a new player field 'childnochat' which if true, disables all chat sent to player. (for kids parental option) 
+  Added MESSAGE ALL admin command
+  fixed a few minor server bugs
+  Worked on Trail Riding mod. .  Ug..  was stumped over dumb little silly bugs... . 
+
+January 17th: 
+  Added a "BACK TO HORSE"   button when feeding/tacking/and profiling a horse,  rather than all the way back.
+  Replaced horse-profile client code with server code instead.
+  Worked on trail riding module
+  Added some horse treats and feed objects
+  Got Jennys awesome Horsie Dressup Online :) It's in treeton near town hall!!!
+  Miranda and I did a little work in hotton
+  Built demo Barrel Racer  
+  Ug...  wow... .   Discovered VirtualHorseRanch 2?!?!  3D MMORPG for Horses!!!  hmmm.. 
+      It is also in beta,  and looks as buggy as all heck...  It's going to be more
+      important that the game is fun and playable.. .   So,  We might be o.k.. . .  So long
+      As they dont get their act together :)  - or as long as i get mine together. . . .
+
+January 18th:
+  Autumn added characters to hotton
+  I worked on searching deviantArt for another couple artists. . . . flash & writer
+  COmmunicated with several artists..  still working
+  Worked on barrel racing a bit
+  Thought about Ranch Ownership system
+  Thought about Horse Pet system
+  Jenny submitted thoroughbred,  got it in game
+  Autumn worked on hotton descriptions
+  Showed Jenn, a new recrit off DA, around.
+
+January 19th:
+  Worked on Companion server code (decided to just treat like tack)
+  Helped jenn learn the ropes
+  Added a simple quest object adder to Quest editor
+  helped jenn create a large first quest!  Daltons Medicine!
+  Jenn did another small quest on her own
+  Worked on companion bugs
+  Worked on drawing some quest item tiles        
+  worked on tiles, added orange tree, fixed up treasure X and beehives
+  added a question mark for items without an icon
+  Finish Companion Server code. need flash and icon art now, and pet stores.. .
+
+January 20th:
+  Melissa sent sleighride.  Worked on finalizing that game.
+  Incorporated musicjoe's BLacksmith music
+  BUG FIX: stopped giving quest objects at wishing well (miranda)
+  Miranda finished horse breed descriptions
+  Jenn worked on Abigale Scripts
+  Added NOT: to every script reply, If an action is listed, it will not show if thats been completed.
+  Miranda added 40 horse pets to database. ..  now we need them drawn :)  and pet stores built
+  Worked a lot on figuring out ranch system.   Ug.  big mess.
+  
+January 21th:
+  worked on Ranch system 
+  Miranda proofread and bug-fixed quests
+  Miranda Built Sabellas Quest!!!  Super involved!!!  Great job :)
+  Miranda Built Veronicas Ballon quest.
+  Joe still working on dangnabbit ranch system.. . . 
+  Holy cripe.. . Ranch system. . .   works!!!  wow cool.   
+  Melissa redid Bee's game :)  cute.
+  Emma submitted several building tiles
+  Mike Built a puzzle for anthill game
+
+January 22nd:
+  Melissa's Bees and Pitchfork Games have been redone and Put online
+  Jenny Submitted friesian breed,  and A Top View Rider animation.
+  Jenn did another adventure in FLipperton for Waverly
+  Gave jenny pets job :)
+  Worked on Overlay Tiles
+  Julien sent another minigame song  
+  Added %GOTO NPC <name>  Admin Command
+  Added Admin Command %GIVE <user> OBJECT <name>  so no need for ID!
+  Added Dorothy's Shoes!!!!  ehehehhe  When you USE them,  they warp a plaer back to their ranch
+  Uploaded new client version with emmas 10 new tile buildings
+  Added library and arena to treeton
+  Added server-code ability to Sell Ranches
+  Dorothy's shoes are now given to players when they buy a ranch,  and taken back when they sell.
+
+January 23rd:
+  Added MAPM admin command to set scene
+  Ranch water wells and feed silos work, barns tell you a horse max.. 
+  fixed up anthills game a little bit.
+  Jenn finished ryland #2 Adventure
+  Joe WASTED hours of Autumn's precious,  precious, time!
+  Autumn And I fully constructed a small Seaside community "Sunshine Meadows"
+
+January 24th:
+  Did a TON of graphics touchups: removed purple overlay flowers, Added bushes, added rocks,made game buildings
+     Fixed berry farm roof, Added another stone cottage, Built pot of gold+anim, added conformation arena anims, library animns
+     Darkened bee's nest,  Added yellow daiseys to white daisey patches,  added blue to wildflowers
+     Added all snow cabins, and half of normal cabins chimney smoke.
+  Fixed up game intro hints a bit.
+  Helped Autumn Finish her cool "Autumn" Script
+  Worked on fixing up tiles in towns. . . Sara helped.
+  Added 8 large purple/pink floweres to terrain tiles
+  Added Pot-of-gold functionality!!  There are 2 random pot-of-golds in ther world, walking over time gets you HUGE money :)  10k-100k  
+  Pirate Treasures now max out at 10k  and respawn + there are now 20 instead of 10
+  Autumn and I added A new small community "Soaring Meadows" fully populated with 6 cottages
+  I added Sun & Storms marital strife Quest :)
+  Autum worked on dialogs
+  Autumn added Harmony's Quest
+  Emma previewed char-horse!  its gonna be nice.
+  Melissa submitted rock store
+  Put Rock shop Scene  online     
+
+January 25th:
+  Worked on public Horseisle.com webpage
+  Jenn did a few scripts for Nolan
+  Sara worked on Sera script
+  Autumn and I added cabins and characters to Earton
+  Miranda did some script proofreading
+  Jenny Submitted tennessee breed
+  Finalized Tack templates and sent them to Jenny along with list of tack
+  Fixed breedviewer and the breeds whose colors were called paint instead of pinto  
+  Worked on server performance tracking bugs. .  finally fixed it. . so simple ug.
+
+January 26th:
+  Added Border to Main Web Page (Reid sugg), + few other tweaks
+  Worked on performance improvements...  No luck so far!  Moving 20 spots consumes .230sec Server!
+    Cached SQL tables: area,tiles,overlays   And redid isWalkable,SendMap,setLocation functions.
+    Redid SendMap Function, COnverting Globals to locals, and removing inline comparisons, and removing wasted chr(ord()) calls!
+    Redid lots of functions for performance tuning..   very little if any improvement.
+    ADDED indexes to objects database!!  Doubled performance for walking around!  :) whew. .   now if we can squeeze some more. . . . .
+    Indexed all tables properly.
+  Jenny submitted 8 pets and First set of Tack!
+  Worked on breedviewer to display pets and new tack.
+  Miranda fitted all of the breeds with custom tack positioning.
+  Got new pets and tack online  
+
+January  27th:  
+  Spent most of the day on sightseeing road trip...
+  Jenn finished a final Nolan Adventure
+  Jenny built a horse running animation,  but i need to think on what we need more before finishing it.
+  Added a settings table with key/value pairs for server settings that will be tweakable while running.
+  Added a Timer to Wild Horses,  they are now replaced with new ones if not caught within 2days real time. This will balance out breeds and locations now.
+
+January 28th:
+  Added Performace tracking for Once/minute Update Loop (UTime)
+  I believe The server now only send player-movemnt updates to nearby players! X(+/-9) Y(+/-7)
+  Melissa submitted general store and food store
+  Worked on finalizing both stores
+  Miranda Proof Read Server Text  
+  Miranda added general store/food store / and rock stores to the respective buildings
+  Miranda proof read game tips and added afew
+  karl found ranch buy-back bug!  FIXED
+  Added BARN functionality and table
+  Changed barn and Groomer to use localchat responses instead of new info screens.
+  Ranch Barns now Eliminate tiredness of all your horses (upon ranch visit)
+  Added Ranch Wagon Functionality, takes you to nearest station!
+  Miranda Proof read several Quests
+  I added a New Quest Mini-Game  --  Painting!  heehhe  One Example up at FIN's cabin.
+  Worked on website- Account status page  and login ability on main page
+  Did weekly backups  
+
+January 29th:
+  began setting real passwords for accounts.
+  Username now automatically appears when run client off Account page.
+  Tried a new water texture . .. . .   ug.  i think i like the old one better...
+  Autumn added some MAPD's in Earton
+  Jenn Added a cedric quest and Kele quest  
+  Fixed norwegian fjord so it shows up (Jenn)
+  Added detailed stats and some touchups to the players Adventure Log
+  Emma submitted base horse riding char and another character
+  Worked on adding horsechar view while riding
+  Emma worked on Paint Quest Frames
+  Put 6 screenshots up. .  need better ones later...
+  Got horsechar anims to mostly work - pretty buggy..  
+  MusicJoe dropped off second 2 parts of horseisle sountrack.  might get them in game tomorrow.
+  Working on ReDoing Entire Client Graphics System...  Too sloppy to get horse anim proper.
+
+January 30th:
+  Jenn did Dakota and Octavio scripting
+  Autumn finished up her Hazel adventure
+  Working on Redoing Map Transmisions faster- Only sending new rows rather than whole map
+  Map Transmissions fixed.  now average 32 bytes per move sent rather than 268bytes
+  Working on redoing Graphics system now
+  Completely redid client graphics programming (Draw function)  Now all horse riding bugs are gone, and hopefully all is well.  
+  Complete HorseIsle SOuntrack now in Game!   It has first part built in,  and downloads other 3 parts while you play.
+  Built a Music Download Monitor Spinning white arrows at bottom right stop spinning once all 3 downloaded!! (turns into 4 tiny  boxes)
+  Added Volume COntrol And BGM loading icon to Login screen
+  Miranda Colored in and coded all of Emma's "Painting Panels" And finished one of the quests (2 of 10 setup)  
+
+January 31st:
+  Built a mini-forums system for horeisle users
+  Built a session tracked login for account info and launching game.
+  Moved development page to only display for admins after logging in on main webpage  
+  Added some more server stats and forum fixes to Account page.
+  Fixed Graphics when jumping around as an admin closeby.
+  FOund solution to CLickability bug! Fixed voluem and detail buttons by setting focus to them when clicked.
+  worked on some css for simple forums and fixed some formatting. . . still needs lots work... 
+  fixed forum slashes
+  Miranda Completed entering all Painting Quests
+  Worked on server tracking last packet timeouts. .   to find ghost players whose systems must have crashed?
+  Fiddled with website a bunch more.
+  Got Trail Riding Minigame online..    
+
+February 1st:
+  Melissa Sent Barn Scene,  I added some candle anim and Put it online, adding it to existing barns.
+  Got Server Forking of GAIA to Work without generating Zombies!  So now the 2.5 second "freeze" once a minute  no longer happens 
+  Noticed there are still Map issues when "Jumped" Around. 
+  Fixed Another Graphics Bug when stores jumping you around. Believe Thats it now! 
+  Jenn Worked on Some Scripting - Larissa.
+  Switched arenas to send Mini-game startup in protected mode!  to fix movement-get-arena-bug :)
+  Added a timer to show how long a buddy has been offline.
+  Fixed it so an Actions First Object given can be "Conceptual" i.e. a Nap  And then it's consumed instantly.
+  Added Object Type info and Value to Actions Editor.
+  Julien submitted another minigame music
+  Miranda Proofread and fixed up Quests
+  Jenny Submitted tack and 4 more pets :)
+  Working on a simple 2 player minigame
+  Added the raccoon,gerbil,gecko,orange tabby
+  Added the Beautiful Tack Set To Wington Tack shop! NICE.
+  Matt noticed stange spacing on his mac os x - I am trying to switch to Text Area COmponent instead of plain text box...
+  Still problems with text area companent that need fixing. . . .  (font size, and scrolling)
+
+February 2nd:
+  Melissa Submitted townhall,  worked on that and uploaded.
+  Jenn added to Larissa scripting
+  Worked on stupid font sizes half the day!  gave up embedding a font, just use systems!  they are nice enough.
+  finally figured out how to set the system font size.. 
+  Sara decorated Desert Isle
+  Put up beta of ORBITAL two player turn game. in northern wington.  
+
+February 3rd:
+  Polished up Orbital 2 player game in wington.
+  Miranda worked on fixing western saddle,  and donkey placement, etc.
+  Miranda worked on adding Pet Stores.
+  Jenny submitted 4 sets of tack!   Got all of them uploaded
+  Miranda worked on entering all saddles into database,  and correcting stats
+  Several Minor Server Fixups:
+    Treasures and Rainbow pots now disappear properly after collected
+    Horses now move only ONE spot the first time in any direction!  makes it possible to get onto certain tiles :)
+    When you mount or dismount,  it now shows that happen immeadiately
+    When your path is blocked,  it no longer send the map and INFO screens
+    ADMIN Builder Terrain FOOTPAINTING has been disabled.  too dangerous,  and not needed much anymore.
+  Fixed Childnochat bug not allowing messages to be sent
+  Sara/miranda/i built Sandy Meadows
+    
+February 4th:
+  Sara beautified some more cities
+  Miranda finished last painting quest
+  Worked on Chat-spaces-MACs bug!!!!
+  Improved inventory display speed :) (fixed dumb bug)
+  Miranda Proofread Quests
+  Sent autumn list of cabins missing MAPD she started working on it
+  Jenn did a quest for Muffins
+
+February 5th:
+  Autumn did a ton of Mapd's around various places missing descriptions + sandy meadows
+  Autumn Helped me determine the Spacing on Mac's is a flaw with the Helvetica Font at point size 11.. 
+      Not sure if finding a way to turn off kerning would help.. . or else need to finally get a different font to work.  
+      Ignoring it for now, per autumns instructions!
+  Moved Player-Update COde to Forked GAIA Process - Sped up Server Update time if busy server!
+  Switched arenas to Run Every MULTIPLE of minutes instead of time tracking.
+    This also ened up fixing the Arena Time-tracking bugs.
+  Fixed Band-hall instrument clickability
+  Fixed anthill sound effects delay by upping Frames per Second to 50 from 20???  It still only plays at parents speed??  
+  Tried publishing new client with Kerning disabled and letterspacing=0 for autumn to test
+  Julien previewed another song
+  Emma sent 2 chars and a  horse anim touchup
+  Changed account page to auto-refresh once/minute  
+  Removed &lt;BR&gt;'s from localchats that had them,  now that they are added by default (was getting double spaced)
+  Added InventoryFull checks to grabbing items.. .   Max items=40 unless 1shed=60 2shed=80 (totalmax= 80)
+  
+February 6th:
+  Miranda added mudholes
+  Added Horse Limits  and inventory limits to buying
+  switched account page to update every 5 minutes
+  Melissa Submitted fishing shop
+  gave melissa ranch scenes
+  sara did tons of island work over the last few days - plopping trees/decor around all shores
+  Julien sent 7th minigame music
+
+February 7th:
+  full backups
+  worked on horse pixel animation
+  Jenn completed a nice Lajita Quest    
+  Converted Server to run as a daemon now. (wont die when my internet dies)
+  Worked on Setting up beta server - Ug.  php doesn't support pcntl and mysql is OLD!   erg.
+  Worked on SQL optimization  NULL => NOT NULL   ,  and a couple VARCHAR => CHAR  
+  Emma sent new chars   
+  Worked on getting new chars and variations finalized.
+
+February 8th:
+  built a new Character Selector- this makes for easier maintainance, and Avoids the Combo-box+Scrollpane bug!
+  melissa sent new fountian
+  Jenn did a small addition
+  Autumn Completed mapd's and chars for all buildings missing descriptions!
+  I more than doubled the number of character variations and got them online.
+  Disallowed wrapping Companions/pets at santa (autumn)
+  Worked on switching from "wearing" clothes to "Selecting" competition gear.
+  Worked on new stat system plan...
+  
+February 9th:
+  HUGE JOB: Built new Stat Bars for horse stats!  slick
+  Added ' & " to punctiation list for languagefilter (autumn)
+  Fixed training Max (Almost completely) (momma)
+  added experience note back to horse view
+  added fancy graphs to feed info screen  
+  Switched training to all be done on one infoscreen,  instead of having to go back and forth to little update screen.
+  added horse icons to trainer,  and players horse list
+  Made a second screen to verify player wants to release a horse
+  Added LOOK AT Buttons for horse tack & companions
+  Horses Height now set off of Mirandas minheight/maxheight fields
+  A Few minor bug fixes
+  Gave the racing Bridle Reins a gentle swing motion...  Should all reins have it?
+  Built high score viewing system - put in place for SLeigh ride and Trail riding games :)
+  Added Besttime tracking and top 20 listing systems - Barrelracing setup as example
+  Added Top winner listing system - Basketshoot setup as example
+  Started work on Beta Tester Signup form
+
+February 10th:
+  Fixed Website user/pass bug.
+  Finished up Beta Tester Application Form.
+  Miranda proofread Website
+  Jenn did some scripting
+  First Beta Tester Submitted application!
+  Miranda fixed some script bugs
+  CONCEPTUAL objects are allowed in secondary given item in actions now
+  Started work on HORSES games,  where you can select one of your horses to play the game.
+  Miranda made all bridle reins swaygently..  
+  FInally found the sneaky PAINT-PINTO bug thats been giving grief  :) hehehehe
+  Fixed VET so all single-screen usage.
+  HORSES game types now implemented.  They can pass all of horses stats to game.
+  Jenny submitted FIREBALL Tack :)
+  Got fireball tack online
+  Added TACK viewer to Library!
+  Added COMPANION viewer to Library!
+  Added Wikipedia Entry for Horse Isle :)  and linked from a few other pages.  
+  Built PIANIST Quest Minigame!  Characters can ask you to play a certain tune for them.  Once successfully played, you complete quest.
+  Miranda added piano Quest for Jasper in Earton and elaina in wington!
+  Added a Random Horse name generator to Horse Profile editor.
+  Miranda built half of horse char graphics, should be online tomorrow.
+  Received 6 Beta tester applications today :)
+  Fixed up fishing shop and got it online (wiggling worms)
+
+February 11th:
+  Compiled a list of roughly 10,000 horse names for game :)
+  Miranda Finished Horse Chars!  GREAT WORK!
+  Uploaded Client version .45 With Animated HorseChars for all Chars
+  Added Playback/Demo [!] button for PianoPlay Quests
+  Added TODO's to get done prior to beta
+  Added Ability to add experience to horses in minigames.
+  Built riddle database tables
+  Added a In-Game Riddler And made up Several horse riddles.  Placed it in FLipperton Northwest shack for now.
+
+February 12th:
+  rearranged tiles, added 5 bush tiles,  and 3 tileable swamp grass tiles  TERRAIN TILE:#152 for bushes
+  Added some more riddles.  people all say they are too hard.
+  Emma sent 10 items and petstore
+  Jenny submitted icarus tack, got it online
+  Fixed up earton and flipperton bush-tiles
+  Now scored games track number of times played also  
+  Fixed up cattle herding a bit  Added best time tracking.  
+  Posted site to several search engines,  and hand submitted to a few popular horse indexes.
+
+February 13th:
+  Jenn added a couple quests
+  Added MINI-GAMES Directory to Libraries
+  Fixed timesplayed tracking code for highscores
+  Added BUTTERFLY CATCH Single Player Game
+  Jenny submitted jackrabbitt tack set, got it online. (after REALLY WIERD FLASH BUGS!)
+  Fixed arenas to Use Tack bonus' in Calculations
+  Added dates to in-game messages
+  Jenny submitted 3 new pets - got them online
+  Added QUEST Minigames to Library minigames listing,  and added some descriptive text for each category.
+  Built icons off tack & pet images
+
+February 14th:
+  Set all Tack and companions to proper IconID
+  added saddle icons to tack view in library
+  Put the new Horse Names list (9000 names!) online
+  jenn added a huge mystery quest
+  found a big quest bug and fixed
+  Redid Island Entry Demo
+  Miranda added companion stats and formatted gear stats nicely
+
+February 15th:
+  Added RELOADABLE flag for minigames to allow reloading?
+  Made RELOADABLE automatic for games started with OK! button.
+  Added DONOTDISTURB flag for arenas to prevent loading movies over them,  or being removed on map sending
+  Added Score tracking to Construction Job
+  Miranda cleaned up the Old UPPERCASE score trackers
+  Miranda removed all the clothes from system,  to begin replacing with riding gear only.
+  Did a bunch of "prettying" up on login screen text/layout
+  Added Players ranking in minigames to STATS and Looking at other players
+  Fixed some minor server bugs   (several from 'momma')
+  WOrked on wikipedia entry a bit more, tried to get some more linkage
+  Switched intro animation to exponentially speed up in the approach to islands, so that it looks more realistic  
+
+February 16th:
+  Fixed up Orbital Minigame  - added win/loss tracking / BGM / and touchups
+  Fixed up Anthill game again with melissas art,  and Score Tracking! + etc.  
+  added stream anim and uploaded new fountain
+  display max and # of items in inventory
+  Jenny submitted 5 pets,  miranda got them online, along with icons.
+  miranda put remaining tack and new pets in stores
+  miranda/momma added to pet descriptions
+  
+February 17th:
+  added horse guess word game
+  sara cleaned up towns a bit
+  TILE FIXES: darkeded swamp grass,  windows on pet shop, sign on horse games, 
+       additional game rooms, Ranch icons redone.   
+  Fixed bird anim on leader, and gradiented islands.
+  removed old ranches
+  fixed up ranch upgrade pricing
+  Sara worked on adding new ranches
+  Miranda worked on adding longer descriptions
+  Miranda worked on Sort Order for Objects
+  Miranda worked Tack Descriptions
+  Miranda worked on clothes a bit
+  Worked on hot air balloon game
+  GOt jennys homepage Intro FLash fixed up and online - awesome
+  
+February 18th:
+  Got Melissas Ranch system online!
+  Look at ranch building added
+  Added WIndmill Giving player money twice-game-daily (once/hour)
+  Added number formatting to all ranch costs 
+  Updates Ranch Icon for anyone nearby when ranch upgraded.
+  Fixed wagon text fitting (momma)
+  Miranda worked on help system text!
+  Miranda fixed various layout bugs (momma)
+  Melissa added ranch decorations,  worked on randomizing those, and some other tweaks. its online.
+  Added BGM Music For FOOD and GENERAL Stores
+  Added BGM Music for INN  
+  Added BGM Music for FLOWER SHOP   
+  Miranda Got Emma's Dressup Cactus online
+  Put Demo HOt air balloon online (no point to it yet)    
+  Miranda worked on breed descriptions  
+  Added extended player data table
+  Added Asterisks next to Admin Names on Players Online Listing
+  Disallowed Releasing horses in town
+  Added asterisks to yourself iff admin
+  Rebuilt Horse animation using some of jenny's frontpage horse for island loader
+  Fixed bank balance rounding on account page (momma)
+  I believe i fixed Ranchid not exiting errors
+  Fixed Time off line reporting bug.
+  Miranda and momma worked on finishing tack descriptions
+  Musicjoe sent an alternate WebPage music - great fit.  Added it to Jennys web scene
+  Added a Percentage Loader to Web Scene, and a few touchups.
+  Fixed Inventory Item Maximums
+  Gave Riddle solvers a Bonus for solving
+  Moved riddles to Appleton, Display reasoning after they solve it. reset all riddle records.
+  
+February 19th:
+  Fixed remaining Ranch sql errors
+  Few minor bugfixes to eliminate errors
+  I believe an Admin can now private chat to a Player with NOCHAT set.
+  Upgraded Racing Arena with music and better anim, and highscores
+  Upgraded dressage arena eith music, better tick marks, and highscores.
+  Fixed some small server bugs
+  added some words to chat filter  (momma)
+  Worked on capture horse minigame! NEW vversion is online,  with jennys run & turn animation better lasso
+  Fixed recently caused bugs in INN/foods/flower shop graphics
+  Got new clothes store version online along wiht music
+  Got fountain to have webpage music
+  jenny fixed up HOrse Capture background      online
+  jenny fixed up cattle for cattle herding!!  online  
+  Fixedup Racing arena again,  with jennys new decoration graphics added lots of polishes.
+
+February 20th:
+  Fixed up Jumping Arena,  jennys jumper/cantering horse, lots of decorations,  new obstacle, music , new format
+  raised quest rewards 10-2x for all quests
+  cleaned up beta accounts,  added a beta tester account splash text
+  Sent out beta tester welcome emails.
+  Lots of minor fixes and welcoming betatesters all day.
+  sped up jennys butterfly game and got it online.
+  HUGE BUG: server locked up several times.  Tried changing main while loop to a single loop in case it's getting locked there..
+     -also put in packet tracker so every single incomming packet can be displayed
+  
+February 21st:
+  Added Main Packet Handler Enless loop protection,  maximum 20 packets are dealt with from single socket
+  FIXED MAJOR BUG:  private chat was sending to other people sometimes :)  FIXED (removed going off a temp ID in client..  instead just use name)
+  FIXED WINDMILL BUG:  It was randomly giving people money instead of the proper accounts.
+  Added packet display back into corrected server loop.
+  fixed a drawing room warning on server (loading non-saved drawings)
+  Removed all geldings from system  Why Have these?!  they are wild horses :)  (Amaya)
+  Fixed mail bug
+  Finished hot air balloon game
+  Added custom web refferal/simple stats to main page
+  Allowed multiple answers to be giveable in riddle room?
+
+February 22nd:
+  Added DELETE ability to forum posts
+  Changed SORT of forum posts to Newest On top.
+  Fixed up beta test form
+  automatically inserting player and player exteneded entries now on betaform
+  added message about network troubles
+  fixed fancy reins
+  fixed some in-game tiles and titles
+  Private chat should now allow admin commands finally!
+  betatester extra info added to notes in table,  and form input verified with addslashes    
+  new table for server performance tracking.
+  A bunch of tables cleaned up when a player exits now: arenaentry, trades, gameinvites
+  fixed players list updating the list rather than exiting  
+  Converted the farrier to single screen use and removed unneccessary lines
+  Added Arenas charging entry fee's finally 
+  fixed ability to Do admin commands while in private chat
+  %% should chat only to admins now
+  Added a simple serverperf grapher - needs lotsa work. .  but helpful for now.   
+
+February 23rd:
+  Added an Optional QUANTITY Requirement for Objects in quests! SO now, you could need 10 honeycombs,  or 5 ???? quest objects. . etc.
+  Fixed up Performance Graph
+  Fixed up NPC Hazel errors
+  Fixed up Double clicks on Selling items.
+  Added ! at end of New Users names in player list
+  Converted hands from decimal to hands.inches
+  FIxed many bugs where did not exit function on error
+  Fixed CHAR selection bug,  rather server-protected against it
+  fixed multiple-entries into arenas
+  
+February 24th:
+  Upped arena Timeouts to 3 minutes from 2
+  Arenas should now properly judge when all competitors are done...
+  NightMary Made a ton of AntHills :)
+  Fixed wishing well giving out empty presents
+  Fixed new users id not showing
+  Fixed new quantity based quest requirements  
+  Fixed quests after breaking them :)
+  Added Store Objects Timing Out after a SETTINGS timeout.
+  Miranda - another missing horse problem and fixed
+  Lots of minor bug fixes
+  Fixed up Ant hill game
+  Miranda Added Chillton AND hotton Poetry rooms!!   (NightMary's word list)
+  Added a PlayerID Additional Reference pointer in Server, redid 20% of server code with it.
+  
+February 25th:
+  Tried to figure out new PlayerID problems UG - wasted long time
+  Added number formatiing to ~20 point and $ displays
+  Trainer should now work....  maybe  
+  Miranda Added player extendeds for those signed up prior to automatic
+  Miranda added to help systtem a lot
+  Miranda several minor bugfixes
+  Fixed wishing well bug
+  Added Trainer button
+  Changed arena timeout from 2 minutes to 3 minutes this time for real :)
+  Spawning Around titles should now avoid overlays..  (apples,etc)   
+  Refunds for tearing down ranch buildings now.. .  Maybe. . 
+  Check for FullInventory before allowing Trading
+  Added 2 throwable objects - waterballoons and tomatoes -  NEED to add waterballoons to a store? or minigame?
+  Player MINET gave me 5 new horse riddles :)
+  
+February 26th:
+  Fixed Little Girl Painting pixel gaps (jornak)
+  Found & fixed INFINITE gaia SERVER LOOP!!  Matt got mad at me :(
+  Found out $PlayerID[$id]['SOCK'] Reference DOES work :)    That will help clean up code ALOT.
+  Rewrote admin chat and player list with $PlayerID references for speedup.
+  ADDED Horse and Money Trading
+  Added Quest BOnuses!  50% QP  and 100% QP Cash bonuses   (onlooker)
+  Added 4 more Anthills using NIGHT MARY's Puzzles
+  NightMary Added 50% more works to word guess game
+  Buddy Chat PlayerID'd
+  High Score Bonus Implemented  (onlooker)
+  Miranda: Lots of minor fixes
+  
+February 27th:
+  fixed all player counts to not count people sitting at login
+  Max players to send logins/disconnects to everyone SETTING added
+  ChatViolations function and db table added
+  ChatSwap function added
+  Arena startup PlayerID'd
+  Added a whole bunch of acronyms to be translated via chatswap
+  Added a Browser close intercept for firefox at least.
+  Trained in Minet some for quests
+  Jenn, minet, and miranda all made one quest
+  Fixed up browser intercept TO NOT BUG when closing using QUIT button,  or Error page :)
+  Several bugfixes,  and Several function Rewrites for PlayerID improvment.
+  
+February 28th:
+  Cached ranchID for minor speedup
+  Inventory now allows MAX 50 or single item,  and should allow you to add an existing item to full inventory now.
+  GRAB ALL - individual items now checked for inventory addability
+  Editing horse profile SHOULD have description in progress if you generate new name
+  Rewrote SOCIAL function
+  ReWrtoe PlayerQuit
+  Rewrote Update Map
+  Several minor server bug fixes.
+  CLIENT:
+  Built Overlay Show table sender,  + client code, to handle invisibility instead of server.
+  Sharacters now go invisible half-way into cabins, etc..   hopefully looking more relaistic.
+  Private Chat Bug fixed,  When player quits , private chat is reset to CHAT all for those using it.
+  Added CLEAR CHAT HISTORY button
+  Changed WEAR button to SELECT
+  Chop off legs when walking in bushes/swamp grass
+  DOnt close arenas on Horse EXIT TO MAIN  button
+  I added a kinda big unicorn quest to sunshine meadows
+
+March 1st:
+  Added Melissa's Groomer scene
+  Added 'invested' tacking to ranches: it tracks how much player sent to buy/upgrade/build on a ranch.  Seleling a ranch resets this to 0, selling a building, removes the entire building cost.
+  Added ranch value lister in City hall
+  Adde Top Money list to city hall
+  Added Top Adventureres to city hall
+  CLIENT:
+    Fixed Overlay hiding (offset by 1)
+    Added F1-F4 tool shortcuts?
+    Dont move character if typing chat. . 
+  
+March 2nd:
+  Helped minet with spider quest
+  Worked on island expansion
+  added server MERGE MAP function
+  added areainfo table
+  added %GOTO AREA  admin command and it will find location from table
+  Merged Island Expansion!
+
+March 3rd:
+  Worked on Adding competition experience   FUNCTION: rounddown(((numentrys+1-yourplace)^2)/2) (minimum=1)
+  Added town hall top 25 experiece list
+  Miranda defined new island areas
+  Jenny submitted 2 new breeds! lippizan and shire
+  miranda added breeds to game.
+  Jenny submitted another breed
+  Joe Added 100% original Gem SLider Puzzle Game
+  Minet did a quest
+  Sara Worked on Art Isle
+
+March 4th:
+  touched up gemslider
+  Added Vegetable garden to ranches - to feed player
+  Worked on Rainboku original puzzle game concept. . . .
+  Added Checks for player having the tool needed if shortcut used.
+  Server Crash :(
+  Fixed gemslider bug
+  Jenny submitted new breed and 3 pets
+  Miranda worked on items icons
+  Joe worked on items icons
+   
+March 5th:
+  ChatSwap now works with punctuation,etc.
+  Emma submitted snowman dressup,  passed to miranda.
+  Many hours bugfixing chatswap...
+  Many other bugfixes
+  Error catching on socket_read now..  in case that can hang.
+
+March 6th:
+  PlayerID  optimizations
+  Built new quest minigame - tanagrama
+
+March 7th:
+  Trades canceled when move from same spot
+  Miranda got jennys new akhal teke version online
+  Joe worked on server canceling trades when move
+  Joe Worked on Prison module
+  Miranda got 8 Tanagrama quest puzzles online
+  Joe got prison isle barebones up and running.
+  Miranda fixed up artemis's Tack-full quest
+  Joe finished making missing quest icons,  miranda put them up.
+  
+March 8th:
+  Joe made a bronc riding game demo
+  Miranda Mule added to breed database fixeded some quests
+  Miranda balanced item quantitys for bigger landmass  
+  Joe worked on finishing rainboku puzzle up.. . .  UG. ..  still no win condition...
+  Got New MUSIC BG for library/townhall and petshop  
+  Added a fifth BGM mini track (30 seconds)  cause it seemed like a nice break 
+  Miranda worked on getting Snowman Dressup online
+  
+March 9th:
+  Server speedup for 2Player and Arena Inter-game Codes
+  Miranda fixed a couple tanagrama puzzles
+  Joe worked on Rainboku solvability. .   only module setup left. . .
+  jenny sent wackamole
+  Joe worked on and got jenny's version of wackamole online  - top score added  
+  a few minor server bug tweaks
+  miranda proofread riddles
+  Got Rainboku online
+    
+March 10th:
+  Built a new Quest MiniGame  "Sand Castle Moats"  -- final version quality 
+  Miranda worked on Moat puzzles for moat game
+  Server Crashing MAY have to do with writing to files/sockets simultaneously from 2 processes
+  Checked for log opening error,  and exited logging if so
+  FIxed a couple of minor gaia buggies
+  Jenny submitted mule
+  miranda got mule online and tacked
+  Miranda got the 10 Sandcastles quests online!   (some are on unreachable islands)
+  Joe Created forest maze on flower isle
+
+March 11th:
+  Miranda worked on Pegasus quest
+  Joe Worked on flower isle overlays  built another meadows village.
+  Got the Sign and welcomsign modules setup with snow and desert scenes
+  Worked on another puzzle minigame idea  
+  Disabled players cannot log into game
+  Minet added a Holly Quest
+  Miranda finished pegasus quest
+  Miranda added access to flower isle
+
+March 12th:
+  Finished Ice Sculpture quest minigame Placed 10 in game
+  artemis made a gandalf quest
+  Repaired Nolan bugs
+  Activated prison for horse health <=0
+  Got Jennys new bronc riding game online
+  Miranda added a Thorne Quest
+  Worked on tool bar gui???  
+
+March 13th:
+  Switched to using ajax for refreshing player listing on web page  (no more reloads)  
+  Miranda worked on a quest for Quinn
+  WOrked on auto-reset system long time....
+  Miranda lots of quest bugfixing
+
+March 14th:
+  FInally got auto-reset system to work :)  Server can be down max: 2.5 minutes.
+
+March 15th:
+  Minor Bugfixes 
+
+March 16th:
+  Welsh cob Entered and tacked
+  Weeding game fixed up.
+  Worked on a follow-the-shell game
+  Miranda found a serious Jumping Bug - fixed it.
+  Miranda and Sara worked on Cat Isle  
+   
+March 18th:
+  Worked on Shell Shifter
+  Fixed bug with releasing horse while riding
+  
+March 19th:
+  fixed up sign and welcome mods with loaders
+
+March 22nd:
+  Fixed missing 5th BG Music Chunk
+  FIxed Ranch Well to Water Player also
+  Limited Number of earnable objects to inventory
+  Worked on Jump'N'Frog
+  Miranda got Paso Fino Tacked and online
+  Fixed some minor bugs
+  Added Player Private Notes to STATS
+  Moved minigame rankings to it's own STATS Page
+  Scaled pet opposite of horse so it retains size
+  Worked on Tail Isle and added ranches
+  Scaled pets 150% in library
+  Added a username entry in playerexteneded table for ease
+  Added a existing username check in signup,  and set playerextended username.
+
+March 23rd:
+  Changed SOcials to auto-wrap themselves
+  Added Horse Socials and a few more player ones
+  Miranda proofed Artemis8a's Easter Bunny Quest
+  Miranda made some berry bushes,  and Rock Piles for Ores
+  Worked on implementing WORKSHOPS - built crafts table, and server code
+  FInished WORKSHOPS functionality!!
+  Worked on a World Map Module some.. 50% traced
+  Worked on a turtle guard game idea. . 
+  Miranda Made ore objects spawn
+  Miranda worked on a large quest 
+  Emma submitted Pirate Tiles  
+ 
+March 24th:
+  Worked on Countries module
+  Miranda finished large wington tack quest
+  Made new arcade minigame - balloon pop
+  fixed western saddle=5000 from 1000
+
+March 25th:
+  Miranda worked on Countries module
+  Miranda Put American paint breed online tacked
+  Worked on Char graphics  added several of arica's chars
+  Added Piano percentage indicator
+  Got Geo Hunt Minigame online
+  Worked on pixel horse graphics from arica!
+  Got new automatic pixel horse with layered char graphics support in client
+  Got new pixel horse graphics support in server
+  Miranda worked on a quest  and helped minet with one.
+  New chars and pixel horses online!!
+  Sara worked on tail island
+
+March 26th:
+  Added Admin commands:
+    DROP #/name creates new object on ground
+    PRISON name  - sends player to prisn isle
+    %^ alias of %GOTO AREA
+    Removed GOTO EARTON, etc..
+  Miranda worked on some quests
+  Worked on Carrot Run New Quest puzzle/action game
+  Miranda fixed several quest bugs, etc.
+
+March 27th:
+  Added Quantity Trading support of object trades.
+  Worked on finishing Carrot Run Quest Minigame - 10 setup on Hare Isle
+  Miranda worked on Workshops and objects  
+
+March 28th:
+  If you remove tack off horse you are riding,  you stop riding it.
+  Improved bee game so they are randomly swarming bees.
+  NightMary Proofread all Cabin Descriptions
+  Fixed a gem slider bug (hold down arrow at win for unlimited points)
+  Fixed Object trades after being busted from quantity fixes.
+  fixed present loops
+  new breed added and tacked- Hanoverian
+  Miranda finished a quest that included 2 new islands
+
+March 29th:
+  Moved player.description into playerextended table to speed up player table
+  distinguished superadmin commands vs normal admin commands for safety
+  Added a DELETE PlayerID #  superadmin command
+  added winter and desert background for wagonstation
+  built and put new word path game online
+  Worked on object icons
+  Nightmary worked on proofreading map descriptions.
+  
+March 30th:
+  Built new client with objects and overlay art new versions
+  Possibly fixed CLient map area gap bug (rounded mouse positions)
+  Added a donation system to AccountPage   changed to  paypal@horseisle.com 
+  Added Game Credits to Account page
+  Miranda added 4 Pyramid Quests
+  Miranda added 3 Piano QUests
+  adding wishingwell boolean to object table and server code support
+  GAIA HUGE BUGFIX: Objects stopped spawning after a successful titles object creation  
+  Miranda fixed up object sort order
+  Added a Server Max CLients setting,  and Server Notifies client that server is full on login if so.  
+  Added automatic client pre-notification of Map Saves
+  Moved drawingbytelimit to settings table from hard coded server
+  Switched PlayerQuit Server function to use an array copy of PlayerID for protection from doubling foreach on admin shutdown
+  Might have found a foreach doubling corruption with admin jumps, MAY be a cause of player GHOSTS - Fixed.
+  Miranda made a feed Workshop with 4 crafts  
+
+March 31st:
+  Miranda made 5 new sandcastle moat quests
+  Added Infinite loop detection??  Using Ticks and debug tracing!  - hope it works!
+  Added Original WORD LOCK GAME   With COLORS WOrd Set.
+  Many proofread fixups
+  8 New horseriddles added from players
+  
+April 1st:
+  added pcntl_signal(SIGPIPE, SIG_IGN);  -- thinking hang may be on socketwrite being blocked...
+  Also considered setting non-blocking on sockets.. not sure what that will cause tho...  one thing at a time..
+  Added a CLient SOCK max protector
+  Added socket_shutdown($sock, 2);   to player quit,  supposedly cleaner
+  Added Protection to not allow a player to send multiple login codes, hopefully fixes the duplicate login messages
+  got Melissas Trainer Scene Online
+  got Melissas Oasis Scene Online
+  melissa redid frog game art,  got it online
+  melissa redid bandhall art,  it's online
+  Added ~10 real time riddles
+  Converted to Custom BUTTONS for client, 3-4x Inventory list render speedup!!!  Plus they match color :)
+
+April 2nd:
+  Put new client online,  and fixed several bugs with it.
+  Added a sessions table, to record ips and when online
+  Added player vertigo,  when hungry/thirsty move in random direction 10% of time
+  WOrked on a new simple minigame "Hold Your HOrses"
+  Worked on Paypal Membership system/setup.
+  New breed added and tacked - Haflinger.
+  Miranda designated forest areas for tail, hare and flower isles. 
+  Miranda trained Bonsaiwolf to do quests.
+  Miranda added more to the feed workshop.
+
+April 3rd:
+  New breed added and tacked - Percheron.
+  Paypal Subscription integration - automatic subscription management
+  playtime handling support added
+  
+
+April 4th:
+  Finished paypal transactions and horsebucks exchange
+  Worked on subscription info for betatesters
+  Ranches now Rest You
+  Added AWARD tables,  and replaced Quest completion Bonus's with Awards.  Rest of award system undone.
+  Added Show Locations Option in Library  
+  Added Show Awards Option in Library
+  Added VIEW AWARDS option in player STATS to view own awards.
+  Added 6 Arena Awards,  Good and Great for each depending on a WIN with a certain number of opponents
+  Added Chat FIlter Rater Tool
+  Added SOme Icons Arica Worked on
+  New breed added and tacked-Hackney
+
+April 5th:
+  Added chat violations to account view 
+  Added [TACK]  marker to horses in a trade that have tack on them
+  Changed BUDDY system to require reciprical buddies ONLY.
+  Implemented Extended TileSets NORM/SNOW/SAND/PIRT/etc.
+  Implemented GLobal Chat MUTE
+  Miranda And I WOrked on RULES and TECHNICALS web pages. . . 
+  Worked on tileset Ideas
+  Added Horse bucking you off 1% of time on a horse with <25 experience.
+
+  
+April 6th:
+  Switched horses to only move one sppotin towns.
+  FIxed horse word guess (MARI)
+  Added melissas Workshop scene
+
+April 7th:
+  Miranda got Jenny's Exmoor pony in game tacked up
+  Cleaned up playerquit code DURIGN shutdowns (no need to message eachother!)
+  FIXED Players "warped" to previous login original location bug!!!  (foreach interference)
+  Maybe cleaned up Shutdown sequence by moving it  out of signal handler! 
+  Horse AUTOSELL System COmpleted!
+  CLick on a barn in a players ranch to view their horses,  offline also.  and buy horses.
+  Miranda added a blacksmith workshop
+  Miranda added cotton plants all over to generate cotton
+
+April 8th:
+  Ranch Description Editable/Viewable
+  Queued messages for offline messaging setup (entry side)
+  display queued messages on login
+  disallow blank horse names.
+  bug noted with char 32 being sent for player chars.  (need to wait for clietn update) 
+  cleaned up ranch description display
+  added 1pt exp for horse every time it bucks you off
+  Added mail delivery to ranches
+  Added buyer's name to autosell queued messages. . . 
+  Added 5 GROUP socials and functionality that appear below 3 people at same spot.
+   
+April 9th:
+  Fixed a bunch of bugs
+  fixed Child no chat to not allow THEM to chat either.  and restricted private chatting with admins.
+  Miranda added homemade clothes to the Sewing Workshop
+  Worked on a new Maze Cave 
+ 
+April 10th:
+  Added Player Ranch Lookup  (library)
+  Added Editable Ranch Titles  
+  Added Auto Sell Horses Lookup (town hall)
+  Added Ranch title/desc text limits
+  Fixed bank balance bug by switching to Set Decimal size of 999billion and 4 decimals.
+  ChatViolations Check player profile/horse profile&name/ranch desc&title
+  Check for max lengths on horse profile submission
+  Check for max lengths on player profile submission..
+  CLeaned up Actions COmpletion COde,  As there is no longer a need to worry about 2 identical required objects with the quantity setting now. 
+  Disallowed Dorothy shoes off prison isle :)
+  Added 5 Awards involving Minigames and riddles
+  Fixed several mopney bugs where exact change was not enough (ARICA)
+  Disconnect player on socket_write error
+  Added plural field to object table (nightmary fill)
+
+April 11th:
+  Fixed Minutes sinceData counter, was put in GAIA?!
+  Added IDLE minutes counter. . . . 
+  Added module awardable Awards
+  Added IDLE Kicking and Warning timeouts -  idle now warns at 10min and kicks at 15 min
+
+April 12th:
+  Stop covering chat boxes on server disconnect
+  Logon Dynamic Fail Message
+  Tiny X button added to exit any place any time
+  Dynamic CLient Server CLose error messages
+  Char char32 bug fixed.
+  Fixed arena packet error loop
+  Fixed nasty playerquit error packet sending Loop  (new bug made today tho)
+  M- added and tacked new breed-Dutch Warmblood
+  M- made Spider's Treasure
+  M- added saddle and saddle pad making to sewing workshop  
+  M- made Palila's Boxes quest
+  Updated Geo Hunt game with better controls and Awards Award
+  M- made Palila's Delivery quests
+  Added Horses List at the bottom of horse info view
+  
+April 13th:
+  Removed extra Child creation at beginning of server,  no need when using NOHUP unix deamonizer
+  Caught SIGPIPE more clearly. . .  need to see if this feature is helping!!!
+  Moved Player Updates to a second timeslice update of one second after main minute-update
+  Moved Arena Management routines to 1 sec deleayed timeslice updater also.
+  Both previous were removed out of GAIA update in case there are issues with socketwriting from different threads
+  Worked on adding 4 pieces of wearable jewelry support. Works.
+  M- Floria's Gift quest
+  Cleaned Player QUIT shutdown code a bit..
+  Used Plurals in inventory and workshops
+  COndensed workshop code
+  NIghtmary converted jewelry items to jewelry title
+  M- Added Jewelry for sale at Rock shops
+
+April 14:
+  Miranda & Sara got Rider and Saddle Isles opened
+  M- put mudholes and rockiles all over the new isles
+  M- activated the buildings in Witherton
+  M- added Allaire's Feathers Quest
+  Worked on Horse Run Multiplayer Game Demo -- added orb object to find
+  Worked on forest maze on rider Isle
+
+April 15th:
+  Worked on Horse Run Multiplayer game
+  Worked on Unicorn/Ogre Quests for saddle isle
+  Added Ability to show/HIDE NPCS via   REQ and NOT action requirements
+  Added ADMIN NOTES to NPCS
+  Added Detailed Descriptions to NPC's  for adding LOOK AT NPC feature later
+  Added UDLR movement scripts for NPC's  and gaia movement code
+  Saving an action now tells you what it's ID is.
+  Option to add new action from inside an action in Editor.  
+  Added QUANTITY for Given Objects on an Action
+  Finished Saddle Isle forest maze,  and Myths 1 & 2
+  Fixed some bugs
+  M- made Rhianna's Son Quest
+  M- defined Mystic Forest
+  M- quest editing
+  M- added new breed and tacked-Standardbred
+
+April 16th:
+  Worked on Horse Whisperer
+  Added ability to "hide" NPC's to everyone other than admins (ARICA)
+  M- worked on riddle quests 
+
+April 17th:
+  Added NPC look Ability
+  Finished Horse Whisperer
+  Added a start-up ServerPerf entry.
+  Removed CAPS from admin command reply
+  Added searchability flag to npc editor and server Library search for hiding some npcs that lib shoudld not know about.
+  added clothes bonus to Horse Startup Points  (TackBonus function)  
+  Added Code to Force "RegisteringGLobals" TO all Admin Scripts...
+  M- added Dieter's Scavenger Hunt quest 
+  Added full error reporting to server.php
+  Added real-time riddle automatic riddling and rewarding by server
+  Added map description to npc char script editor to ease detailed description editing.
+  Added reqquest field to quest table, to track UNAVAILABLE quests so players knows those that require others.. (ARICA)
+
+April 18th:
+  M- Worked on snow cave mazes
+  Worked on fixing some bugs from yesterday
+  Attempted to add weather system to client -- clouds kinda working..
+  Disabled client buttons on disconnect
+  Worked on client sound effects
+  Fixed a update-Infomode bug...!
+  a few minor webbsite fixes
+  Added breed names and color to autosell display at town halls (a911jule)
+  Added several realtimeriddles
+  Fixed a action editor bug (arica)
+  
+April 19th:
+  Added CLient SOund Effects Support
+  Worked on HorseRun bugfix
+  Worked on Temp HorseIsle Server
+  Added more client sound effects
+  Fixed some client bugs (weather on birdeye, missing sfx, updated some pixels)
+  M- added snow cave quest game to Ice Isle
+  M-extended some breed desc
+  Tested Linux running game.  worked great :)
+  Fixed Group Social SOund Effects
+  
+April 20th:
+  Encoded Usernames
+  M- Rebuiilt all minigames using direct datasends rather than DATASEND strings
+  Implementeed a minimum Horseisle client build version
+  Protected module packets where player is given something..  CLient sends a code to server to verify it.
+  M-added a bunch of arica's realtime riddles  
+  Added new IncrementCounting System
+  Added Many new Awards tracked in new counter table.
+  upped idle timeout to 25 minutes
+
+April 21st:
+  Added View All HOrses Base Stats
+  Added View All HOrses ALL Stats
+  Global chats now limited to a certain number per minute
+  Players awards now listed below their horses when look at a player.
+  Horse gains experience in a competiton as well as player
+  Changed global chats, players earn one global chat per minute, 30 max
+  switched chat nearby to go on left side, and global is now red
+  Added Private chat code shortcut  "/Joe " private chats to joe
+  Cleaned up MESSAGE command so that it shows in BOTH windows and is more noticeable
+  Nightmary added 100 RealtimeRiddles!
+  Worked on logo options
+  Hide map till loaded now when conencting
+  Client knows if player is an admion now
+  Admin Chat Selection option
+  Chat history Shortcut!  CTRL-UP/DOWN
+  MS-Got Ice Isle decorated and Crystalton buildings activated
+  Added more Ranches to Tail Isle with some decorations
+
+April 22nd:
+  Worked on Logo Ideas
+  FIxed up fishing module a bit.   Hopefully fixed the - update-killgame problem.
+  Split View Players Into Separate Lists
+  Added optional viewing MULTIPLE players/things at a time on map
+  Tweaked player icon on client map viewer
+  Allow horsewhisperer to show multiple horses of one breed
+  Server bugfixes
+  Change private chat to show who you chatting at
+  Worked on abuse reviewer
+  M-opened Ice Isle and added more to it
+  Sara added a lot of descriptions to Crystalton Cabins
+  M- added 2 piano quests
+  M-added Linnea's quests
+  Switched to using misc to mark a mail sent rather than getting rid of toid (need to keep that info!)
+
+April 23rd:
+  M-defined horse parts for new game
+  Worked on pirate tiles
+  Worked on extended overlay animation and chimney smoke support.
+  Reworked pirate tiles
+  Worked on Pirate Isle Tile Layout
+  M-Worked on pirate tile definitions
+  Nightmary added almost another 100 chat riddles  
+
+April 24th:
+  Finished up Miranda's Horse Anatomy Game
+  Worked  on Pirate Isle Tiles
+  Got New Flower TIles, Tweaked tileset and added to game
+  Redid flower isle with new tileset
+  Added rowboat transport
+  Added hammock resting support
+  Added ability to walk on walkable overlays even if on unwalkable terrain
+  M-added Karl's Gems quest
+
+April 25th:
+  Fixed +1 showing on MAp Bug
+  M-added manifesto quest
+  M-added password to rider/saddle bridge
+  Worked on rules/parents/technicals documents using Google documents
+  Added a chat filter BLOCKING sending your own password over the chat
+  Added 6 more sound effects including mail notice
+  made lighthouse taller 2 tile building.
+  Allow walking behind double tall trees and light house. . .  looks ok?
+  Worked on create new accounts code  
+  M-added cap'n solomon's chest quest
+  M-added passwords to pirate isle bridges
+  M-fixed some overlays
+
+April 26th:
+  M-added Maddog Robert's Hat quest
+  M-fixed a wordguess bug
+  M-finished extended breed descriptions
+  M-added a 2 breeds to database
+  Autumn added a bunch of NPC's and a couple descriptions to Pirate Isle
+  Setup a NEw Physical Dedicated Server At Access - foal.horseisle.com
+  Tested horseisle install on foal,  looks good.  Lots of cleanup required!
+
+April 27th:
+  Worked on Cleanup for Allowing Beta -> Production Server Auto Updates
+    Moved ip/port out of server.php  (chdir also out)
+    switch to single dbconnect
+  M-added a new breed to database
+  M-added One Eyed Bill Doomsday Quest
+  M-set up transports for Pirate Isle    
+  CLeaned up nnormal tileset
+  FIxed bugs with mail sfx
+  Tested MEMORY SQL Table Types. . .  WILL NOT WORK FOR MAP!!   cant work with tables with TEXT fields. 
+  Autumn added more building descriptions to pirate isle  
+
+
+April 28th:
+  M-added zebra to database,put in game and tacked
+  M-tacked the standardbred
+  M-added new breed, POA, and tacked
+  M-added Black Bart's Collection quest
+  M-set up and put Deck Swabbing quest game in
+  M-added a bunch of random descriptions
+  Added Spawnarea support for horses and objects
+  Built a new Quest minigame - deck swabbing for pirate isle
+  COmpleted New User SIgnup system. 
+  Added Break reminders every 2 hours  
+
+April 29th:
+  M-put new pirate ship scenes on pirate ships
+  M-added Britt's Cate Treats quest
+  Improved horse Isle Mini-forums
+  M-added Mikko's Lost Friend quest
+  Added Original Educational Math Mine Minigames
+
+April 30th:
+  Fixed Telescope View for ALL exteneded tilesets!!  Even if you can see another set!
+  Redid Weather System In CLient.  Added support for clouds,rain,fog,butterflies
+  Added NPC Head icons from emma with server support
+  Made NPC head variations
+  Added weather unique to each island with server/client support
+  Fixed some server buggies
+  Fixed Presents from double wrapping!  Bad bug :)  Also disallowd texts
+  Worked on converting beta server to beta.horseisle.com  and separating content from live server
+  Added arica's Zebra Horse Coloring    
+  M-added Squalid Nathaniel's Note quest
+  M-Rules and Parent's Guide are finished
+  M-worked on Terms and Conditions
+  M-start puttin new NPC heads into game
+
+MAy 1st:
+  Quick weather transitions for jumps
+  Added snowing weather
+  Darkened the Fog Weather
+  Added Arica's appaloosa pixel horse
+  Added PlayTime Enforcement in server  With boolean setting
+  M-finished NPC heads, until I get more special ones
+  Added Mute admin commands
+  Worked on Ghost problem. ..   Might have fixed it..
+  Fixed Weather spilling into other windows bug. . .
+  Cleaned up client frame layout.. .  Added a simple pre-preloader
+  Added Random Weather Changing based on available weathers for each invidual Isle (once per hour)
+  Worked on Live Website Page Structures and signup system
+
+May 2nd:
+  CLeaned up playerquits with is_resource checks
+  Added non movieresetting map sends support
+  Removed double-map send on login
+  Upped read buffer size from 4096 to 16386
+  cleaned up client intro a bit
+  Fixed Mail to show authors again
+  Added bad password tracking for Website and Game
+  Added a max unsubscribers block support
+  M-finishes Penelope's Distraction quests
+  M-added butterflies spawning on flower isle
+  Separated out Draw Map function and Fixed it to show extended overlays properly
+  Limited socials to only those in same location even if the got away unnoticed
+  Put SELF back on ALL PLAYERS list
+  Disabled Ranch Purchasing for SUBSCRIBERS ONLY
+  Limited wagons to only providing FREE wagon transport!!
+  Lots of Bug fixes,  went of server.php and looked at every BUG comment Fixed all important ones
+  When fully rested say so,  instead of "could not finish it all"  :)
+  Cleaned up Beta Players List  removed all older ones,  and never used ones
+
+May 3rd:
+  NPC Chars added 
+  Sec Code Possible fix!!  (out of range chars due to negative modulous
+  Rainbows Weather Added.
+  Whitened the clouds a lot.
+  Figured out white-box bugs on some games!  (Update flash)
+  Added quest support for RequiredAwards (i.e.  50% quests done prior to being able to travel to pirate isle.)
+  Release horses only exist for one hour now.  to prevent "herds" from being created which prevent new horses from being generated
+  Separated ranch and ranchs tables so that it's more transferable..
+  Switched ranches to reset to teepee when sold.
+  Track the servers Bytes sent/received per minute
+  M-finished adding npc heads to game
+  M-changed over clothes to new comp. clothes, added them to the shops
+  M-fixed buggy Penelope quest
+  M-proofread/edited the server
+  Lots of bug fixes
+  Trouble shot new server mail config problems  and IP problems
+  Made all legal info pages, etc.  Got them on site
+  Setup smoothe signup process
+  Added Password recovery question and hidden password entry
+  Made Server LIVE!!  Woo Hooo  10ish PM
+
+May 4th:
+  Fixed racing arena AIYA buttons
+  Fixed massive paypal gateway problems. . .  (new server security) SElinux
+  uploaded new horserun game
+  put up new screenshots
+  made fancier buttons for webpage,  new acocunt,  run horseisle
+  PlayTimPer converted to a server setting for unsubscribers
+  Automatic eestart keepalive script pout up
+  Fixed up forums
+  Wrote some on why to subscribe
+  Cleaned up email system  SPF records and REVERSE dns?  and email warnings apache
+  Silenced crontab
+  Fixed minor ranch bug
+  Found gaps in tilemap areas and M fixed
+  Fixed playtime+=2 when you subscribe or convert HorseBucks, incase someone was out of time at the time.
+  Adjusted Players Nearby List so its an html box instead of line,   player names were not wrapping around.
+  Fixed client - adding loadinganimated periods, moved compass down, prevented movies from getting stuck on?!?!
+  
+May 5th:
+  Added Rangenet.com Mini Ad  
+  FIxed Abuse report chat log being sent??
+  Fixed textual nearby players not showin new bug..  
+  Posted on a bunch of game websites
+  M- Lots of account cleanups
+  M - Minor tile bug, etc little bugs
+
+May 6th:
+  Added Stars to identify subscribers
+  Added a Reasons to subscribe web page
+  Added A Select box for purchasing Horse Isle Money. (to hopefully limit the $1 ones)
+  Added Moderator Limited Functions 
+  Added Chat Length Limits
+  Added some links to Admin functions on foal to beta admin center.
+  Added a ContactUs Page to live website
+  Added Wikipedia Page
+
+May 7th:
+  Added moderatoractions table to track actuions moderators take, added recording code in server
+  Added BECAUSE additional argument in moderator commands
+  Traded horses reset thier autosell value
+  Fixed email message list missing FROM name
+
+May 8th:
+  Found The Arena COmpetitor Corruption Problem.  (Stop copying arena table over from beta!!)
+  Added Cleaning up un-activated accounts after 50 hours  system/hourlycleanup.php
+  Added Admin commands to Live Server account page
+  Added Moderator Actions Review Tool And Rater
+  Removed Donations info off account page moved it to credits
+  Added a New Credits page on live server (needs work)
+  Started an Adwords Campaign..  $40/day......
+
+May 9th:
+  added realtimeriddle tracking.  A player can only answer each one ONCE
+  unpublished client changes:
+    Switched to default of CHAT ALL
+    Tweaked Scroll Code a bit so it hopefully scrolls automatically
+    Limited Chat Text box to ascii chars 32-126
+
+May 10th:
+  Added / shortcuts for all chat methods (arica)  /buddy & /b  etc.
+  
+May 11th:
+  Added Arica's new icons
+  Fixed award icons
+  Added player list icons instead of asterisk/exclamation
+  Added book icon for viewing books
+  added melissas new rowboat scene
+  Added melissa's new fishing scene fixes.
+  Added a pre-emptive walking packet send of 2 Animation Frames. Might smoothe out walking a bit.
+  Made Horsewhisperer charge 250 when there arent any horses.
+  M- Entered a bunch of riddles we came up with.
+
+May 12th:
+  Cleaned up map click-point code a little.
+  Added EXITABLE building code,  to simply add an exit button at the bottom. . . . 
+  Cleaned up the wington and saddle Pirate ships with exitable codes and descriptions.
+  Removed all slog's in GAIA that were not writing to GAIA - Possibly simultaneous thread filewrites?
+  Subscribers can train horses Twice as soon 1hr vs 2hr 2 new settings
+  Stopped logging to files with a new settings flag
+  Searched for cause of Server Hang . . . Server Hung 3 Times today!!   arg!!
+        Didn't hang for 3 days,   then hangs 3 times in one day. . .
+ 
+May 13th:
+  Converted entire server to non-blocking mode
+    switched to caching Datasends until a socketselect for writing
+  Worked on a knowledgebase system
+  Fixed several minor server bugs
+  Cleaned up the trade system a little
+  M- added knowledge base content
+
+May 14th:
+  No crashes yet!
+  Put Knowledge base up and purtied it up.
+  Built password recoveery system
+  Fixed up some include path bugs
+
+May 15th:
+  Worked on BAN code - BAN PLAYERID ??  Adds players email/username and IP into ban table
+  Scroll Position retained on script editor
+  Got a PO BOX
+  Removed tools existing requirement
+  Fixed invalid Login - prettied and explanatory
+  Added Po Box Payment Info!
+  Switched to one chat every 2 min (1 for subscribers)
+  Switched to moderator chat instead of admin chat
+  Cut off legs in water a bit
+  All caps in chat blocked
+  Added an ISLAND CHAT Mode  
+  76 Max Players Today :)
+  
+May 16th:
+  Made forum and help center anchored at top when using
+  Made CHAT Moderator and CHAT Admin real functions and separate
+  Added new player identifiers to web playerlist
+  Sorted Help Center Entries, added a couple
+  Converted Server Logging to keep log files open,  rather than open/closing every write.
+  Moved socket write function to Main loop to get a miniscule performace boost.
+  minor Movement Optimizations:
+    Stopped Checking For Trades If player is MOVING to a new spot
+    Moved CheckJail to once/minute slice rather than every move.
+    Switched chats to directly write OUTBUF instead of socketwrites
+    few other places,  directly do OUTBUF's
+  Convert 1 to i etc.  in chat vulgarity check
+  Added inventory Full check for crafting
+  91 Max Players Today!
+     
+May 17th:
+  Chat bugfixes
+  Trade bugfixes
+  Found a Ghost Player tracking bug  
+  Fixed arenas not sending data!?
+  Switched arenas to use ACTIVEARENA flag for  datasends rather than SQL query.
+  Fixed Basketball MiniGame
+  Add Win/loss tracking to Treasure Hunter
+  100 Max Players Today.
+  Send current chat riddles when connecting
+  Setup a backup of live server to rangenet
+
+May 18th:
+  Added some more connection problems solutions to help center
+
+May 20th:
+  Added an integrated XML Flash Policy server into server.
+  Adjusted foal to possibly work on https port  to ease firewall problems
+  Added Logging for all horse transactions
+  Added Text boxes scrolled to bottom on selecting chatin box
+  Moderators can now talk to childnochats instead of just admins
+  MUTES ignore all forms of chat from another player now.
+  Moderators get One additional Global chat per minute  
+  Moderator MUTEing now generates an abuse report at same time
+  Reveresed Player Ignore System So it makes more sense.
+  Added policy server support, and published new client version 71
+  
+May 21th:
+  Fixed admin chat Ignorable
+  Added ID to %?
+  Added Client forced scrolling when chatbox selected
+  Fixed Ignore bug
+  Added a Google Desktop Module for Horse Isle
+  Fixed showing proper current location of player being looked at
+    
+May 22nd:
+  Fixed OBSCENE not getting logged
+  Added simple phone number chat block
+  Update player status on horse autosell
+  Players keep array of other arena competitors
+  Tested Caching the MAP table
+  Tested Switching to objects RAM table
+  Switched chat-all to direct buffer writes
+
+May 23rd:
+  Added fee tracking to payments table
+  M- went back and entered fee's for all previous transactions
+  Tracked PAyment Types now
+  Track payment names now
+  Added Check/Cash Entering System.
+  Worked on a seahorse game beta
+  Added PirateHeadquarters scene
+  Added Reasons for blockage to chatfilter
+  Logged and timed SQL Queries for bottleneck detection
+  Cache NPC Locations for minor speedup - update through a ChildDeath signal handler
+  Cache Object table for minor speedup - especially on stats list
+  minor speedup to inventory list
+  objects at location minor speedup
+  added 15 standard html color codes to BBCODES
+
+May 24th:
+  Added Referral System (Link Via:  http://www.horseisle.com/?R=Miranda )
+  Added Referral Bonus Payment when subs paid for via paypal
+
+May 25th:
+  Fixed CHLDWAIT to not Hang the program!
+  Fixed the reset messages, when server it reset
+  Added BBCode Instructions to Help Center  
+  Added Global setting to determine whether LIVE server --  if not,  dont run off maptable cache ,etc
+  Added SQLLogging setting,  boolean whether to log all sql queries and timing of them.
+  Added ruleviolations table to track all rule violations with reportable reasons
+  Fixed up chat and abuse reviewer tools 
+  Worked on Sea Horse Game
+
+May 26th:
+  Added A Account page News System
+  Fixed SeaHorse Game
+  Fixed pot of gold award
+  Added a Neverending store quest with charicons
+  fixed extended tile walkability for NPC's and Horses
+  Fixed horses being able to wander in their native terrain (previously only grass!)
+
+MAy 27th:
+  Fixed rebuying same existing object
+  Tested disabling buttons once clicked
+  Worked on simpleslider puzzle logic
+  Added some Ranches
+  Fixed news system
+  Switched DNS to godaddy
+  Worked on tweaking MySQL server Settings
+  
+May 28th:
+  Switched email forwarding to godaddy
+  Switched GAIA to insert delayed and update low_priority
+  Fixed Numbers looking like ALL CAPS in chat
+  Switched to INSERT DELAYED where possible in server.php
+  Added 20 new player characters And fixed adjustments of all existings
+
+May 29th:
+  Bug fixed character displays
+  Fix clicking map tiles
+  Upped ranch upgrade costs
+  Added cattail icon
+  Upped horse whisperer cost /made it a SETTINGS
+
+
+  Made BAN command Kick/disable/ban(ip+email+username) - requires 2 mods!
+  Added additional SQL deletes when deleteing playerid
+  fixed horse legs in water
+  Added alphabetical player list
+  Added banned ip blocking in server
+  Muted players cannot use art rooms
+  MUTE command now requires minutes parameter
+
+May 30th:
+
+May 31st:
+  Worked on coconut Bounce minigame
+  Paid out may bonuses
+  Cleaned up dev files
+  M-wrote Leuko's Missing Egg Quest
+  M-Edited and added pirate flags  
+
+June 1st:
+  Fixed player symbols when at same spot
+  Fixed auto-refresh for allplayerlist alphabetical
+  Unsuccessfull at tracking Negative Money Bug
+  (painted our house, gona all day)
+
+June 2nd:
+  Fixed Craft money update (leesa)
+
+June 3rd: 
+  Found Horse Whisperer Bug negative money bug.
+  worked on AmeriBrit Game
+  
+June 4th: (day off for visiting, maintenance only)
+
+June 5th: (traveling to billings via greyhound)
+  Worked on emoving BETA-only functions from live server based on SETTINGS LiveServer Value.
+  Jenny Sent in a new breed!
+  
+June 6th:
+  published 2 more breeds to live server
+
+June 7th:
+  Added brumby and vanner breeds
+  Few minor Bug fixes
+
+June 8th:
+  Sent Jenny Coconut bounce game after working on it a bit more
+  Added password change tool
+  Added moderator function notes
+  Minor tweaks
+  Added moderator guidelines notes
+  Switched trading money to GIVE money instead of REQUEST
+
+
+June 9th:
+  Added Draft Arena Demo to wington
+  Jenny Sent Coconut bounce back
+  Reduced non-paying player time to 4 hours per day from 6
+  Completed Coconut Bounce minigame
+  Added coconut bounce minigame award and Draft Arena Awards
+  published AmeriBrit Minigame - not satisfied with current wordlist though. . .
+  Added duluth,mn to check payment info
+  Added Server Status to front page (# on,  signed up)
+    
+June 10th:
+  Fixed trade system so it shows things YOU are trading as well
+  Fixed trade system bugs
+
+June 11th:
+  M - Added a ton of Help Center Entries
+
+June 12th:
+  M - added a quest
+  Worked on racing arena - buggy for silver forest, upped start delay to 10 sec,and removed START packets 
+
+June 14th:
+  Built a synonyms game
+
+June 15th:
+  Switched propagate script to archive files and send instead of one at a time.
+  Setup Daily account Cleanup - Removing accounts 30days + number of logins old
+  M-Leuko's Stolen Egg quest  
+
+June 16th:
+  Disabled Ranches when sub runs out.
+  Ignoring players disables socials from them also
+  prefixana rewrite
+  ignoring sendmaps where no movement
+
+June 17th:
+  Changed Autosell entry to number blank
+  published synonymous game 
+  fixed no movement bug
+  Disabled building counts when unsubscribed
+  Disabled dorothy shoes when unsubscribed  
+
+June 19th:
+  Added 6 new chars (cowboy variations)
+  Added Another soundtrack (mildly oriental)
+  
+June 20th:
+  Decided on a final logo
+  Designed new page headers/footers
+  Worked on new cari.net Server
+  Worked on new website frontend
+  Fixed Disconnect messages bug
+  Fixed playtimeper bug
+
+June 21-23rd:
+  Worked on Getting Second Live Server "Roan"  online and working
+     Very Buggy and awkward setup right now. 
+     Decided to get an additional dedicated server for beta and website hosting.
+  Moderators now have unlimited playtime.
+
+June 24th:
+  Built New Master Server on Cari.net with Dual IP's for Beta and Master Serving
+    Moved beta.horseisle.com to it
+    Moved horseisle.net and other personal domains
+
+June 26th:
+  Backups Implemented
+  Error pages fixed
+  Welcome Quick start instructions added to welcome email
+  Keepalive setup for ROAN
+  Google Gadgets fixed and setup for each server
+  Switch art room so it's only usable by subscribers.
+  Chat filter word replacement when repeated fixed
+  Added overlay 0 definition to remove errors
+  Script Editor and Action Editor PHP_SELF bug fixed.
+
+June 27th:
+  Added Server-horse icons for master list
+  Fixed 4 missing e-check entries from PINTO server transition 
+  Worked on some test-cafepress products
+
+June 28th:
+  Added Password Change System
+  Switch to MySQL_Fetch_Assoc instead of Array  for minor speedup in server
+  Added a ranch community in southeast horseisle
+  Added Homepage Player Stats
+  Fixed quotes on npceditor & questeditor
+  
+June 29th:
+  attempted wikipedia entry again,  along with some newsgroup postings.
+  Fixed PM button off players here display
+  Removed slap and kick socialsreplacd with less offensive ignore and yawn
+  fixed add quest item tool.
+  Added Trading Cards real time trading game
+
+June 30th:
+  Worked on new jungle concepts
+  worked on advertising
+  updated servers  
+  Fixed Arena -over max slots entries bug
+  Fixed Moving from trade - messages going to just one player
+
+July 1st:
+  Peruvian Paso Added
+  Bug fixes
+
+July 2nd:
+  Dartmoor pony added
+  Fixed up snow caves
+  Fixed broken help center (NPC ID wasnt 0)
+  Worked on minigames for jungle - jungle temple
+  Limited one account per adult
+  Finished jungle tiles
+  Worked on adding camel to game along with tack and name server exceptions
+  Added camel tack
+
+July 3rd:
+  Fixed Mail block problems by using a Cari.net mailer
+  Worked on playtime replication accross servers.
+  Bought new PALOMINO server
+  Configured new palomino server
+  Dropped extra tables on servers (news, forums, knowledgebase, webstats)
+  Advertising management
+
+July 4th:
+  Palomino Ads
+  **blur**
+
+July 5th:
+  Began work on Jungle Isle
+  Did an interview by http://www.indiegamepod.com
+  Palomino Ads  
+  Pets Added
+  
+July 6th:
+  Palomino Ads
+  Fixes GFX - temples/flowers/jungle door
+  Added BIRDS and BATS Weather types
+  
+  *blur*
+
+July 9th:
+  Added admin messaging
+  fixed check payment server info
+  Worked on several jungle quests
+  miri finished huge witherton jones quest
+  Added server limitation for children
+  Removed tiles/overlays/areas from being recached once/minute
+  Switched areas-send to use cached version rather than SQL  
+
+July 10th:
+  Buried secret Ancient Stone treasures
+  Finished Nilans Quests
+  Added venus flytrap code
+  Added Ghost Ship BGM
+  Added Pirate ship BGM
+  Added 5 buttons for buying 5 at once
+  Fixed quest title apostrophe bug
+  Dismount from a traded horse fixed
+  F7 = dismount shortcut
+  F8 = Grab all shortcut
+  Fixed horse bucks crediting bug
+  Fixed up abuse reports code
+  Sara built tropicton
+
+July 11th:
+  Propagating bans system in place
+  Added Banned ip and username blocks and messahes to main page
+  Moved bird wings forward
+  Jungle temple put online after fixing fire anim
+  Llama added into game
+  Tropicton Buildings turned on
+  BUG: santa will no longer wrap trading cards :)   tricky players :)
+
+July 12th:
+  Added violation review to char rater
+  Fixed horse bucking
+  Added last DRAWER tracking to art rooms
+  track masterplayer last server connected to and time
+  Fixed up abuse and action editors formats a bit
+  Added HIDEREPLYONFAIL Action Editor Option and server support
+  Added samora Science Quiz Quest
+  Added a ranch community above appleton
+
+July 13th:
+  Finishing touches o Jungle
+  Published jungle
+
+July 14th:
+  Auction System
+  Huge Network Problems at Cari.net
+  Fixed up the Update scripts some.
+
+July 15th:
+  Auction House Fixups
+  Published auction house
+  More auction house bug fixes
+  Added a message for unverified accounts to email us
+  Added a delete off all servers script
+
+July 16th:
+  Added Bans that time-out
+  Positioned last-connected server at top.
+  Sorted auction horses as most recent at bottom
+
+*blur*
+
+  Switched auction system to ebay-style.
+  disallow presents over max stack
+  fixed training pens to not go over limits.  
+
+July 22nd:
+  Thowing objects not seen by those nearby
+  Muted- cannot request buddy
+  Moderator private chat highlighted
+  Banned usernames blocked now
+  stopped disabling accounts after a ban
+
+July 27th:
+  Update Server with following
+  Horse Stat Degredation 5 pts if over 100%  1 point if over 50% per day
+  Disallow DOuble-buddy adding
+  Grabbing objects at same time message
+  Card game disqualifiy if over 4 cards
+  cannot trade a horse while entered in arena
+  Disallow major money transactions while participating in arena
+  Added Random Special Events which occer ~5 min to one random player
+
+*UNDOCUMENTED*
+
+August 3rd:
+  Rules Clarified/Addtitions
+  COntact us page disclaimered with please save our time.
+  Abuse Reports Weeded out with common reasons NOT to file.
+  Added the PAWNEER to "dispose" of horses
+  Added New Horse Breed
+  Added 3 new pets monkey/owl/peacock
+  Added <BR>'s to forum posts
+  Added Number of moderators online to server lists
+  Disallow trades while either player is bidding on horses    
+  Released horses now record who released them in description
+
+August 4th:
+  Added Player info viewer for admins + notes editor
+  big game update
+
+August 5th:
+  Fixed Activation system to resend Activations
+  Added timeout notes for temporary bans
+  Added partial name matches for pm /
+  
+August 6th:
+  Added char variations
+  built tools for mods to remove descriptions
+  Fixed up User management tool a bit
+  Game update
+
+August 7th:
+  BAY.horseisle.com Added
+
+August 8th:
+  Put bay online
+  Referral system added to and moved to server page
+  Added Google ads to bhg
+  Completed work on Cloud Isle Support
+
+August 10th:
+  Worked on new quest minigame vole-holes
+  
+August 11th:
+  Added !AUTOREPLY command
+  Added !MUTE GLOBAL etc.  & !HEAR GLOBAL etc.
+  Added Pawneer Horse Ordering system - not for usd sale yet.
+  Fixed Profile bugs when HTML codes end on profile length boundary
+
+August 12th:
+  Fixed buy-ojects-for-free nasty exploited bug
+
+August 13th:
+  added much more logging detail.
+  verified all queries handle no-result sets
+
+August 16th:
+  Game update
+  Put Pawneer Online
+
+August 17th:
+  fixed pawneer Pricing
+
+August 18th:
+  Game update
+  Fixed ban abuse report bug
+  Added Lusitana
+
+August 19th:
+  Added Connemara
+  Added horse "tags" and marked as such/sorted
+  
+August 20th:
+  Added Gold Ore minigame
+
+August 21st:
+  Added new server Dun
+
+August 22nd:
+  Dance
+  Mute Socials
+  Playerlist added
+  Ban Password Attempts
+
+August 23rd:
+  Vole Hole Minigames
+
+August 24th:
+  Big Game Update
+
+August 25th:
+  CLoud Coin Minigame demo
+  Mod Stealth
+  Cloud isle teleports setup
+  New pets
+
+August 26th:
+  Master Mind Built
+
+August 27th:
+  Water and knights logic minigames made
+
+August 28th:
+  Frog logic minigame
+
+August 29th:
+  new chars added in
+  page title bars added
+  new ranch community
+  Big Game Update
+
+August 30th:
+  Switched Direction lists to be more honest, instead of Directly up and down being just n/s
+  Added EXPECTED BEHAVIOR to bottom of footers
+  Built new logic puzzle ShiningStars
+
+*Lazyness for daily updates*
+
+October 21st:
+  Rebuilt 62 day account timeout system on each server
+  Removed the built up expired accounts by hand from each server.
+  Added 30 day Ranch timeout system
+  Touched up Subscription Panel on servers
+  
+October 22nd:
+  Added Automatic Master server account timeout 65 days after no logins or subscription
+
+October 23rd:
+
+October 24th:
+  Fixed char spcae bug
+  Rebuilt client
+  game update including foals
+  Added Horse Giveaway
+  Tagged mod banned abuse reports as such
+
+October 25th:
+  Added Mods Revenge server game
+
+October 26th:
+  Added music to cloud coins
+  Game Update
+
