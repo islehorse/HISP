@@ -35,7 +35,7 @@ namespace HISP.Server
          */
         private static int gameTickSpeed = 4320; // Changing this to ANYTHING else will cause desync with the client.
         private static int totalMinutesElapsed = 0;
-        private static int oneMinute = 1000 * 60; // Change ONLY if you want minutely events to happen more frequently.
+        private static int oneMinute = 1000 * 60; 
         private static List<GameClient> connectedClients = new List<GameClient>();
         private static Timer gameTimer; // Controls in-game time.
         private static Timer minuteTimer; // ticks every real world minute.
@@ -45,7 +45,6 @@ namespace HISP.Server
 
             gameTimer.Change(gameTickSpeed, gameTickSpeed);
         }
-
         private static void onMinuteTick(object state)
         {
             totalMinutesElapsed++;

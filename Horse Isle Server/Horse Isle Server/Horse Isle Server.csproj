@@ -131,4 +131,8 @@
     <None Include="Resources\default_cross_domain.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(SolutionDir)..\DataCollection\GameData.json" "$(TargetDir)GameData.json" /Y
+copy "$(SolutionDir)..\DataCollection\HI1.MAP" "$(TargetDir)HI1.MAP" /Y</PostBuildEvent>
+  </PropertyGroup>
 </Project>
