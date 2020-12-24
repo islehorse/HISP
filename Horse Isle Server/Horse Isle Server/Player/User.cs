@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using HISP.Game;
 using HISP.Server;
+using HISP.Player.Equips;
+
 namespace HISP.Player
 {
     class User
@@ -14,6 +16,7 @@ namespace HISP.Player
         public bool NewPlayer = false;
         public GameClient LoggedinClient;
         public CompetitionGear EquipedCompetitionGear;
+        public Jewelry EquipedJewelry;
         public bool MuteAds = false;
         public bool MuteGlobal = false;
         public bool MuteIsland = false;
@@ -40,12 +43,17 @@ namespace HISP.Player
         {
             get
             {
-                return freeMinutes;
+                int freeTime = Database.GetFreeTime(Id);
+                if(freeTime > 360)
+                {
+                    Database.SetFreeTime(Id, 360);
+                    return 360;
+                }
+                return freeTime;
             }
             set
             {
                 Database.SetFreeTime(Id, value);
-                freeMinutes = value;
             }
         }
         public bool Subscribed
@@ -98,6 +106,7 @@ namespace HISP.Player
                 chatViolations = value;
             }
         }
+
         public string ProfilePage { 
             get 
             { 
@@ -105,6 +114,7 @@ namespace HISP.Player
             }
             set 
             { 
+                
                 Database.SetPlayerProfile(value, Id);
                 profilePage = value;
             } 
@@ -149,7 +159,7 @@ namespace HISP.Player
             }
         }
 
-        public int BankMoney
+        public UInt64 BankMoney
         {
             get
             {
@@ -201,6 +211,59 @@ namespace HISP.Player
             }
         }
 
+
+        public int Hunger
+        {
+            get
+            {
+                return hunger;
+            }
+            set
+            {
+                if (value >= 1000)
+                    value = 1000;
+                if (value <= 0)
+                    value = 0;
+                Database.SetPlayerHunger(Id, value);
+                hunger = value;
+            }
+        }
+
+        public int Thirst
+        {
+            get
+            {
+                return thirst;
+            }
+            set
+            {
+                if (value >= 1000)
+                    value = 1000;
+                if (value <= 0)
+                    value = 0;
+                Database.SetPlayerHunger(Id, value);
+                thirst = value;
+            }
+        }
+
+        public int Tiredness
+        {
+            get
+            {
+                return tired;
+            }
+            set
+            {
+                if (value >= 1000)
+                    value = 1000;
+                if (value <= 0)
+                    value = 0;
+                Database.SetPlayerTiredness(Id, value);
+                tired = value;
+            }
+        }
+
+
         private int chatViolations;
         private int charId;
         private int subscribedUntil;
@@ -210,10 +273,13 @@ namespace HISP.Player
         private bool stealth = false;
         private int y;
         private int money;
-        private int freeMinutes;
         private int questPoints;
-        private int bankMoney;
-        private int experience; 
+        private UInt64 bankMoney;
+        private int experience;
+        private int hunger;
+        private int thirst;
+        private int tired;
+
 
         public byte[] SecCodeSeeds = new byte[3];
         public  int SecCodeInc = 0;
@@ -230,6 +296,7 @@ namespace HISP.Player
             LoggedinClient.SendPacket(MovementPacket);
             GameServer.Update(LoggedinClient);
         }
+
         public byte[] GenerateSecCode()
         {
             var i = 0;
@@ -249,6 +316,7 @@ namespace HISP.Player
             return SecCode;
         }
 
+
         public User(GameClient baseClient, int UserId)
         {
             if (!Database.CheckUserExist(UserId))
@@ -262,6 +330,7 @@ namespace HISP.Player
 
 
             EquipedCompetitionGear = new CompetitionGear(UserId);
+            EquipedJewelry = new Jewelry(UserId);
 
             Id = UserId;
             Username = Database.GetUsername(UserId);
@@ -275,7 +344,6 @@ namespace HISP.Player
             charId = Database.GetPlayerCharId(UserId);
 
             Facing = PacketBuilder.DIRECTION_DOWN;
-            freeMinutes = Database.GetFreeTime(UserId);
             experience = Database.GetExperience(UserId);
             money = Database.GetPlayerMoney(UserId);
             bankMoney = Database.GetPlayerBankMoney(UserId);
@@ -283,6 +351,11 @@ namespace HISP.Player
             subscribed = Database.IsUserSubscribed(UserId);
             subscribedUntil = Database.GetUserSubscriptionExpireDate(UserId);
             profilePage = Database.GetPlayerProfile(UserId);
+            
+            hunger = Database.GetPlayerHunger(UserId);
+            thirst = Database.GetPlayerThirst(UserId);
+            tired = Database.GetPlayerTiredness(UserId);
+
             Gender = Database.GetGender(UserId);
             MailBox = new Mailbox(this);
 

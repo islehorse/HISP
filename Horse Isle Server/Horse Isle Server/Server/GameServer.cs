@@ -9,6 +9,7 @@ using HISP.Player;
 using HISP.Game;
 using HISP.Security;
 using HISP.Game.Chat;
+using HISP.Player.Equips;
 
 namespace HISP.Server
 {
@@ -33,17 +34,29 @@ namespace HISP.Server
          *  Private stuff 
          */
         private static int gameTickSpeed = 4320; // Changing this to ANYTHING else will cause desync with the client.
+        private static int totalMinutesElapsed = 0;
+        private static int oneMinute = 1000 * 60; // Change ONLY if you want minutely events to happen more frequently.
         private static List<GameClient> connectedClients = new List<GameClient>();
-        private static Timer serverTimer;
-        private static void onTick(object state)
+        private static Timer gameTimer; // Controls in-game time.
+        private static Timer minuteTimer; // ticks every real world minute.
+        private static void onGameTick(object state)
         {
             World.TickWorldClock();
 
-            if (World.ServerTime.Minutes % 30 == 0)
+            gameTimer.Change(gameTickSpeed, gameTickSpeed);
+        }
+
+        private static void onMinuteTick(object state)
+        {
+            totalMinutesElapsed++;
+
+            if(totalMinutesElapsed % 8 == 0)
             {
-                DroppedItems.Update();
+                Database.IncAllUsersFreeTime(1);
             }
-            serverTimer.Change(gameTickSpeed, gameTickSpeed);
+
+            DroppedItems.Update();
+            minuteTimer.Change(oneMinute, oneMinute);
         }
 
         /*
@@ -304,7 +317,42 @@ namespace HISP.Server
             }
 
             User loggedInUser = sender.LoggedinUser;
-            byte movementDirection = packet[1]; 
+            byte movementDirection = packet[1];
+
+            if (loggedInUser.Thirst <= 25 || loggedInUser.Hunger == 25 || loggedInUser.Tiredness == 25)
+            {
+                if (RandomNumberGenerator.Next(0, 15) == 10)
+                {
+                    byte[] possibleDirections = new byte[] { PacketBuilder.MOVE_UP, PacketBuilder.MOVE_DOWN, PacketBuilder.MOVE_RIGHT, PacketBuilder.MOVE_LEFT };
+
+                    if (possibleDirections.Contains(movementDirection))
+                    {
+                        byte newDirection = possibleDirections[RandomNumberGenerator.Next(0, possibleDirections.Length)];
+                        if (newDirection != movementDirection)
+                        {
+                            movementDirection = newDirection;
+                            if (loggedInUser.Thirst <= 25)
+                            {
+                                byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatThirst.ToUpper()), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(chatMessage);
+                            }
+                            else if (loggedInUser.Hunger <= 25)
+                            {
+                                byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatHunger.ToUpper()), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(chatMessage);
+                            }
+                            else if (loggedInUser.Tiredness <= 25)
+                            {
+                                byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatTired.ToUpper()), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(chatMessage);
+                            }
+
+                        }
+                    }
+                }
+            }
+
+
 
             if (movementDirection == PacketBuilder.MOVE_ESCAPE)
             {
@@ -358,6 +406,8 @@ namespace HISP.Server
 
             if (movementDirection == PacketBuilder.MOVE_UP)
             {
+
+
                 loggedInUser.Facing = PacketBuilder.DIRECTION_UP;
                 if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y - 1))
                 {
@@ -847,14 +897,70 @@ namespace HISP.Server
                                 Logger.HackerPrint(sender.LoggedinUser.Username + " Attempted to remove competition gear when none was equipped.");
                             }
                             break;
+                        case '5':
+                            if (sender.LoggedinUser.EquipedJewelry.Slot1 != null)
+                            {
+                                ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedJewelry.Slot1.Id);
+                                sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                sender.LoggedinUser.EquipedJewelry.Slot1 = null;
+                            }
+                            else
+                            {
+                                Logger.HackerPrint(sender.LoggedinUser.Username + " Attempted to remove jewery when none was equipped.");
+                            }
+                            break;
+                        case '6':
+                            if (sender.LoggedinUser.EquipedJewelry.Slot2 != null)
+                            {
+                                ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedJewelry.Slot2.Id);
+                                sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                sender.LoggedinUser.EquipedJewelry.Slot2 = null;
+                            }
+                            else
+                            {
+                                Logger.HackerPrint(sender.LoggedinUser.Username + " Attempted to remove jewery when none was equipped.");
+                            }
+                            break;
+                        case '7':
+                            if (sender.LoggedinUser.EquipedJewelry.Slot3 != null)
+                            {
+                                ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedJewelry.Slot3.Id);
+                                sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                sender.LoggedinUser.EquipedJewelry.Slot3 = null;
+                            }
+                            else
+                            {
+                                Logger.HackerPrint(sender.LoggedinUser.Username + " Attempted to remove jewery when none was equipped.");
+                            }
+                            break;
+                        case '8':
+                            if (sender.LoggedinUser.EquipedJewelry.Slot4 != null)
+                            {
+                                ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedJewelry.Slot4.Id);
+                                sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                sender.LoggedinUser.EquipedJewelry.Slot4 = null;
+                            }
+                            else
+                            {
+                                Logger.HackerPrint(sender.LoggedinUser.Username + " Attempted to remove jewery when none was equipped.");
+                            }
+                            break;
                         default:
                             Logger.InfoPrint(sender.LoggedinUser.Username + "Unimplemented  \"remove worn item\" ItemInteraction packet: " + BitConverter.ToString(packet).Replace("-", " "));
                             break;
                     }
 
                     UpdateStats(sender);
-                    byte[] itemRemovedMessage = PacketBuilder.CreateChat(Messages.UnequipItem, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    sender.SendPacket(itemRemovedMessage);
+                    if(toRemove >= '1' && toRemove <= '4')
+                    {
+                        byte[] itemRemovedMessage = PacketBuilder.CreateChat(Messages.RemoveCompetitionGear, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(itemRemovedMessage);
+                    }
+                    else if (toRemove >= '5' && toRemove <= '8')
+                    {
+                        byte[] itemRemovedMessage = PacketBuilder.CreateChat(Messages.RemoveJewelry, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(itemRemovedMessage);
+                    }
                     
                     break;
                 case PacketBuilder.ITEM_WEAR:
@@ -875,62 +981,100 @@ namespace HISP.Server
                     {
                         InventoryItem itm = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
                         ItemInstance instance = itm.ItemInstances[0];
-                        sender.LoggedinUser.Inventory.Remove(instance);
-
+                     
                         Item.ItemInformation itemInf = instance.GetItemInfo();
-                        if(itemInf.MiscFlags.Length <= 0)
+                        if(itemInf.Type == "CLOTHES")
                         {
-                            Logger.ErrorPrint(itemInf.Name + " Has no misc flags.");
-                        }    
-                        switch(itemInf.MiscFlags[0])
+                            if (itemInf.MiscFlags.Length <= 0)
+                            {
+                                Logger.ErrorPrint(itemInf.Name + " Has no misc flags.");
+                                return;
+                            }
+
+                            switch (itemInf.MiscFlags[0])
+                            {
+                                case CompetitionGear.MISC_FLAG_HEAD:
+                                    if (sender.LoggedinUser.EquipedCompetitionGear.Head == null)
+                                        sender.LoggedinUser.EquipedCompetitionGear.Head = itemInf;
+                                    else
+                                    {
+                                        ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Head.Id);
+                                        sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                        sender.LoggedinUser.EquipedCompetitionGear.Head = itemInf;
+                                    }
+                                    break;
+                                case CompetitionGear.MISC_FLAG_BODY:
+                                    if (sender.LoggedinUser.EquipedCompetitionGear.Body == null)
+                                        sender.LoggedinUser.EquipedCompetitionGear.Body = itemInf;
+                                    else
+                                    {
+                                        ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Body.Id);
+                                        sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                        sender.LoggedinUser.EquipedCompetitionGear.Body = itemInf;
+                                    }
+                                    break;
+                                case CompetitionGear.MISC_FLAG_LEGS:
+                                    if (sender.LoggedinUser.EquipedCompetitionGear.Legs == null)
+                                        sender.LoggedinUser.EquipedCompetitionGear.Legs = itemInf;
+                                    else
+                                    {
+                                        ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Legs.Id);
+                                        sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                        sender.LoggedinUser.EquipedCompetitionGear.Legs = itemInf;
+                                    }
+                                    break;
+                                case CompetitionGear.MISC_FLAG_FEET:
+                                    if (sender.LoggedinUser.EquipedCompetitionGear.Feet == null)
+                                        sender.LoggedinUser.EquipedCompetitionGear.Feet = itemInf;
+                                    else
+                                    {
+                                        ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Feet.Id);
+                                        sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
+                                        sender.LoggedinUser.EquipedCompetitionGear.Feet = itemInf;
+                                    }
+                                    break;
+                            }
+                            sender.LoggedinUser.Inventory.Remove(instance);
+                            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatEquipCompetitionGearMessage(itemInf.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(chatPacket);
+                        }
+                        else if(itemInf.Type == "JEWELRY")
                         {
-                            case CompetitionGear.MISC_FLAG_HEAD:
-                                if(sender.LoggedinUser.EquipedCompetitionGear.Head == null)
-                                    sender.LoggedinUser.EquipedCompetitionGear.Head = itemInf;
-                                else
-                                {
-                                    ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Head.Id);
-                                    sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
-                                    sender.LoggedinUser.EquipedCompetitionGear.Head = itemInf;
-                                }
-                                break;
-                            case CompetitionGear.MISC_FLAG_BODY:
-                                if (sender.LoggedinUser.EquipedCompetitionGear.Body == null)
-                                    sender.LoggedinUser.EquipedCompetitionGear.Body = itemInf;
-                                else
-                                {
-                                    ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Body.Id);
-                                    sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
-                                    sender.LoggedinUser.EquipedCompetitionGear.Body = itemInf;
-                                }
-                                break;
-                            case CompetitionGear.MISC_FLAG_LEGS:
-                                if (sender.LoggedinUser.EquipedCompetitionGear.Legs == null)
-                                    sender.LoggedinUser.EquipedCompetitionGear.Legs = itemInf;
-                                else
-                                {
-                                    ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Legs.Id);
-                                    sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
-                                    sender.LoggedinUser.EquipedCompetitionGear.Legs = itemInf;
-                                }
-                                break;
-                            case CompetitionGear.MISC_FLAG_FEET:
-                                if (sender.LoggedinUser.EquipedCompetitionGear.Feet == null)
-                                    sender.LoggedinUser.EquipedCompetitionGear.Feet = itemInf;
-                                else
-                                {
-                                    ItemInstance itemInstance = new ItemInstance(sender.LoggedinUser.EquipedCompetitionGear.Feet.Id);
-                                    sender.LoggedinUser.Inventory.AddIgnoringFull(itemInstance);
-                                    sender.LoggedinUser.EquipedCompetitionGear.Feet = itemInf;
-                                }
-                                break;
+                            bool addedJewelry = false;
+                            if (sender.LoggedinUser.EquipedJewelry.Slot1 == null)
+                            {
+                                sender.LoggedinUser.EquipedJewelry.Slot1 = itemInf;
+                                addedJewelry = true;
+                            }
+                            else if (sender.LoggedinUser.EquipedJewelry.Slot2 == null)
+                            {
+                                sender.LoggedinUser.EquipedJewelry.Slot2 = itemInf;
+                                addedJewelry = true;
+                            }
+                            else if (sender.LoggedinUser.EquipedJewelry.Slot3 == null)
+                            {
+                                sender.LoggedinUser.EquipedJewelry.Slot3 = itemInf;
+                                addedJewelry = true;
+                            }
+                            else if (sender.LoggedinUser.EquipedJewelry.Slot4 == null)
+                            {
+                                sender.LoggedinUser.EquipedJewelry.Slot4 = itemInf;
+                                addedJewelry = true;
+                            }
+
+                            if(addedJewelry)
+                            {
+                                sender.LoggedinUser.Inventory.Remove(instance);
+                                byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatJewerlyEquipMessage(itemInf.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(chatPacket);
+                            }
+                            else
+                            {
+                                byte[] chatPacket = PacketBuilder.CreateChat(Messages.MaxJewelryMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(chatPacket);
+                            }
                         }
 
-
-
-
-                        byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatEquipItemMessage(itemInf.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        sender.SendPacket(chatPacket);
                         UpdateInventory(sender);
                     }
                     else
@@ -1437,7 +1581,6 @@ namespace HISP.Server
             }
             return usersHere.ToArray();
         }
-
         public static User GetUserByName(string username)
         {
             foreach(GameClient client in ConnectedClients)
@@ -1450,7 +1593,6 @@ namespace HISP.Server
             }
             throw new KeyNotFoundException("User was not found.");
         }
-
         public static User[] GetNearbyUsers(int x, int y, bool includeStealth=false, bool includeMuted=false)
         {
             int startX = x - 15;
@@ -1497,7 +1639,6 @@ namespace HISP.Server
             }
             return count;
         }
-
         public static int GetNumberOfAdminsOnline()
         {
             int count = 0;
@@ -1662,7 +1803,8 @@ namespace HISP.Server
             ServerSocket.Bind(ep);
             Logger.InfoPrint("Binding to ip: " + ConfigReader.BindIP + " On port: " + ConfigReader.Port.ToString());
             ServerSocket.Listen(10000);
-            serverTimer = new Timer(new TimerCallback(onTick), null, gameTickSpeed, gameTickSpeed);
+            gameTimer = new Timer(new TimerCallback(onGameTick), null, gameTickSpeed, gameTickSpeed);
+            minuteTimer = new Timer(new TimerCallback(onMinuteTick), null, oneMinute, oneMinute);
             while (true)
             {
                 Logger.InfoPrint("Waiting for new connections...");

@@ -78,7 +78,8 @@
     <Compile Include="Game\Quest.cs" />
     <Compile Include="Game\Shop.cs" />
     <Compile Include="Game\Inventory\ShopInventory.cs" />
-    <Compile Include="Player\CompetitionGear.cs" />
+    <Compile Include="Player\Equips\Jewelry.cs" />
+    <Compile Include="Player\Equips\CompetitionGear.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

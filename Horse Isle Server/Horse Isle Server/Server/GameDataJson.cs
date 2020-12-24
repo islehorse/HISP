@@ -407,6 +407,11 @@ namespace HISP.Server
             Messages.StatsJewelFormat = gameData.messages.meta.stats_page.stats_equipped;
             Messages.StatsCompetitionGearFormat = gameData.messages.meta.stats_page.stats_competion_gear;
 
+            Messages.JewelrySlot1Format = gameData.messages.meta.stats_page.jewelry.slot_1;
+            Messages.JewelrySlot2Format = gameData.messages.meta.stats_page.jewelry.slot_2;
+            Messages.JewelrySlot3Format = gameData.messages.meta.stats_page.jewelry.slot_3;
+            Messages.JewelrySlot4Format = gameData.messages.meta.stats_page.jewelry.slot_4;
+
             Messages.CompetitionGearHeadFormat = gameData.messages.meta.stats_page.competition_gear.head_format;
             Messages.CompetitionGearBodyFormat = gameData.messages.meta.stats_page.competition_gear.body_format;
             Messages.CompetitionGearLegsFormat = gameData.messages.meta.stats_page.competition_gear.legs_format;
@@ -418,11 +423,17 @@ namespace HISP.Server
             Messages.StatsAwards = gameData.messages.meta.stats_page.stats_awards;
             Messages.StatsMisc = gameData.messages.meta.stats_page.stats_misc;
 
-
+            Messages.JewelrySelected = gameData.messages.meta.stats_page.msg.jewelry_selected;
             Messages.NoJewerlyEquipped = gameData.messages.meta.stats_page.msg.no_jewelry_equipped;
             Messages.NoCompetitionGear = gameData.messages.meta.stats_page.msg.no_competition_gear;
             Messages.CompetitionGearSelected = gameData.messages.meta.stats_page.msg.competition_gear_selected;
 
+            Messages.StatHunger = gameData.messages.meta.stats_page.hunger_stat_name;
+            Messages.StatThirst = gameData.messages.meta.stats_page.thirst_stat_name;
+            Messages.StatTired = gameData.messages.meta.stats_page.tired_stat_name;
+
+            Messages.StatPlayerFormats = gameData.messages.meta.stats_page.player_stats.ToObject<string[]>();
+            Messages.RandomMovement = gameData.messages.random_movement;
             // Transport
 
             Messages.CantAffordTransport = gameData.messages.transport.not_enough_money;
@@ -579,10 +590,11 @@ namespace HISP.Server
             
             // Disconnect Reasons
 
-            Messages.BanMessage = gameData.messages.disconnect.banned;
-            Messages.IdleKickMessageFormat = gameData.messages.disconnect.client_timeout.kick_message;
+            Messages.KickReasonBanned = gameData.messages.disconnect.banned;
+            Messages.KickReasonIdleFormat = gameData.messages.disconnect.client_timeout.kick_message;
+            Messages.KickReasonNoTime = gameData.messages.disconnect.no_playtime;
             Messages.IdleWarningFormat = gameData.messages.disconnect.client_timeout.warn_message;
-            Messages.DuplicateLogin = gameData.messages.disconnect.dupe_login;
+            Messages.KickReasonDuplicateLogin = gameData.messages.disconnect.dupe_login;
 
             Chat.PrivateMessageSound = gameData.messages.chat.pm_sound;
 
@@ -595,8 +607,13 @@ namespace HISP.Server
 
             // Competition Gear
 
-            Messages.EquipItemFormat = gameData.messages.competition_gear.equip_competition_gear_format;
-            Messages.UnequipItem = gameData.messages.competition_gear.removed_competition_gear;
+            Messages.EquipCompetitionGearFormat = gameData.messages.equips.equip_competition_gear_format;
+            Messages.RemoveCompetitionGear = gameData.messages.equips.removed_competition_gear;
+
+            // Jewerly
+            Messages.EquipJewelryFormat = gameData.messages.equips.equip_jewelry;
+            Messages.MaxJewelryMessage = gameData.messages.equips.max_jewelry;
+            Messages.RemoveJewelry = gameData.messages.equips.removed_jewelry;
 
             // Click
             Messages.NothingInterestingHere = gameData.messages.click_nothing_message;

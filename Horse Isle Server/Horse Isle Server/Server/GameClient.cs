@@ -23,15 +23,53 @@ namespace HISP.Server
 
         private Timer warnTimer;
         private Timer kickTimer;
+        private Timer minuteTimer;
 
 
         private int keepAliveInterval = 60 * 1000;
         private int updateInterval = 60 * 1000;
 
+        private int totalMinutesElapsed = 0;
+        private int oneMinute = 60 * 1000;
         private int warnInterval = GameServer.IdleWarning * 60 * 1000;
         private int kickInterval = GameServer.IdleTimeout * 60 * 1000;
 
-        
+        private void minuteTimerTick(object state)
+        {
+            totalMinutesElapsed++;
+            if (LoggedIn)
+            {
+                LoggedinUser.FreeMinutes -= 1;
+                if (LoggedinUser.FreeMinutes <= 0)
+                {
+                    LoggedinUser.FreeMinutes = 0;
+                    if (!LoggedinUser.Subscribed && !LoggedinUser.Moderator && !LoggedinUser.Administrator)
+                        Kick(Messages.KickReasonNoTime);
+                }
+
+                // unsure of actural timings, would be more or less impossible to know
+                // without the original source code :(
+                // From testing hunger seemed to go down fastest, then thirst, and finally tiredness.
+
+
+                if(totalMinutesElapsed % 1 == 0)
+                {
+                    LoggedinUser.Hunger -= 1;
+                }
+
+                if (totalMinutesElapsed % 5 == 0)
+                {
+                    LoggedinUser.Thirst -= 1;
+                }
+
+                if (totalMinutesElapsed % 10 == 0)
+                {
+                    LoggedinUser.Tiredness -= 1;
+                }
+            }
+
+            minuteTimer.Change(oneMinute, oneMinute);
+        }
         private void keepAliveTimerTick(object state)
         {
             Logger.DebugPrint("Sending keep-alive packet to "+ LoggedinUser.Username);
@@ -67,7 +105,7 @@ namespace HISP.Server
                 if(Client.LoggedIn)
                 {
                     if (Client.LoggedinUser.Id == id)
-                        Client.Kick(Messages.DuplicateLogin);
+                        Client.Kick(Messages.KickReasonDuplicateLogin);
                 }
             }
 
@@ -247,6 +285,7 @@ namespace HISP.Server
 
             kickTimer = new Timer(new TimerCallback(kickTimerTick), null, kickInterval, kickInterval);
             warnTimer = new Timer(new TimerCallback(warnTimerTick), null, warnInterval, warnInterval);
+            minuteTimer = new Timer(new TimerCallback(minuteTimerTick), null, oneMinute, oneMinute);
 
             recvPackets = new Thread(() =>
             {

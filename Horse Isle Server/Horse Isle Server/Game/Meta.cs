@@ -1,5 +1,6 @@
 ﻿using HISP.Player;
 using HISP.Server;
+using System;
 
 namespace HISP.Game
 {
@@ -160,7 +161,43 @@ namespace HISP.Game
             return message;
         }
 
-        public static string buildNpc(User user, int x, int y)
+        private static string buildWornJewelery(User user)
+        {
+            string message = Messages.JewelrySelected;
+            if (user.EquipedJewelry.Slot1 != null)
+                message += Messages.FormatJewelrySlot1(user.EquipedJewelry.Slot1.Name, user.EquipedJewelry.Slot1.IconId);
+            if (user.EquipedJewelry.Slot2 != null)
+                message += Messages.FormatJewelrySlot2(user.EquipedJewelry.Slot2.Name, user.EquipedJewelry.Slot2.IconId);
+            if (user.EquipedJewelry.Slot3 != null)
+                message += Messages.FormatJewelrySlot3(user.EquipedJewelry.Slot3.Name, user.EquipedJewelry.Slot3.IconId);
+            if (user.EquipedJewelry.Slot4 != null)
+                message += Messages.FormatJewelrySlot4(user.EquipedJewelry.Slot4.Name, user.EquipedJewelry.Slot4.IconId);
+
+            if (message == Messages.JewelrySelected)
+                message = Messages.NoJewerlyEquipped;
+
+            return message;
+        }
+        private static string buildEquippedCompetitionGear(User user)
+        {
+            string message = Messages.CompetitionGearSelected;
+            if (user.EquipedCompetitionGear.Head != null)
+                message += Messages.FormatCompetitionGearHead(user.EquipedCompetitionGear.Head.Name, user.EquipedCompetitionGear.Head.IconId);
+            if (user.EquipedCompetitionGear.Body != null)
+                message += Messages.FormatCompetitionGearBody(user.EquipedCompetitionGear.Body.Name, user.EquipedCompetitionGear.Body.IconId);
+            if (user.EquipedCompetitionGear.Legs != null)
+                message += Messages.FormatCompetitionGearLegs(user.EquipedCompetitionGear.Legs.Name, user.EquipedCompetitionGear.Legs.IconId);
+            if (user.EquipedCompetitionGear.Feet != null)
+                message += Messages.FormatCompetitionGearFeet(user.EquipedCompetitionGear.Feet.Name, user.EquipedCompetitionGear.Feet.IconId);
+
+            if (message == Messages.CompetitionGearSelected)
+                message = Messages.NoCompetitionGear;
+
+            return message;
+
+        }
+
+        private static string buildNpc(User user, int x, int y)
         {
             string message = "";
             Npc.NpcEntry[] entries = Npc.GetNpcByXAndY(x, y);
@@ -186,6 +223,22 @@ namespace HISP.Game
                 message += "^R1";
             }
             return message;
+        }
+
+
+        public static string EvenUserStatDistribution(int statValue)
+        {
+            int curValue = 1000;
+            int devisibleBy = Convert.ToInt32(Math.Floor((decimal)curValue / Messages.StatPlayerFormats.Length));
+
+            for (int i = 0; i < Messages.StatPlayerFormats.Length; i++)
+            {
+                curValue -= devisibleBy;
+                if (statValue >= curValue)
+                    return Messages.StatPlayerFormats[i];
+
+            }
+            throw new Exception("A mathematically impossible error occured. please check wether the laws of physics still apply.");
         }
         public static string BuildNpcInfo(Npc.NpcEntry npcInfo)
         {
@@ -217,28 +270,6 @@ namespace HISP.Game
             }
             return message;
         }
-        public static string BuildWornJewelery(User user)
-        {
-            return Messages.NoJewerlyEquipped;
-        }
-        public static string BuildEquippedCompetitionGear(User user)
-        {
-            string message = Messages.CompetitionGearSelected;
-            if (user.EquipedCompetitionGear.Head != null)
-                message += Messages.FormatCompetitionGearHead(user.EquipedCompetitionGear.Head.Name, user.EquipedCompetitionGear.Head.IconId);
-            if (user.EquipedCompetitionGear.Body != null)
-                message += Messages.FormatCompetitionGearBody(user.EquipedCompetitionGear.Body.Name, user.EquipedCompetitionGear.Body.IconId);
-            if (user.EquipedCompetitionGear.Legs != null)
-                message += Messages.FormatCompetitionGearLegs(user.EquipedCompetitionGear.Legs.Name, user.EquipedCompetitionGear.Legs.IconId);
-            if (user.EquipedCompetitionGear.Feet != null)
-                message += Messages.FormatCompetitionGearFeet(user.EquipedCompetitionGear.Feet.Name, user.EquipedCompetitionGear.Feet.IconId);
-
-            if (message == Messages.CompetitionGearSelected)
-                message = Messages.NoCompetitionGear;
-
-            return message;
-
-        }
         public static string BuildStatsMenu(User user)
         {
             string message = Messages.FormatStatsBar(user.Username);
@@ -251,12 +282,12 @@ namespace HISP.Game
                 message += Messages.FormatFreeTime(user.FreeMinutes);
             message += Messages.FormatPlayerDescriptionForStatsMenu(user.ProfilePage);
             message += Messages.FormatExperience(user.Experience);
-            message += Messages.FormatHungryStat("Not implemented yet :3");
-            message += Messages.FormatThirstStat("Not implemented yet :3");
-            message += Messages.FormatTiredStat("Not implemented yet :3");
+            message += Messages.FormatHungryStat(Messages.FormatPlayerStat(EvenUserStatDistribution(user.Hunger), Messages.StatHunger));
+            message += Messages.FormatThirstStat(Messages.FormatPlayerStat(EvenUserStatDistribution(user.Thirst), Messages.StatThirst));
+            message += Messages.FormatTiredStat(Messages.FormatPlayerStat(EvenUserStatDistribution(user.Thirst), Messages.StatTired));
             message += Messages.FormatGenderStat(user.Gender);
-            message += Messages.FormatJewelryStat(BuildWornJewelery(user));
-            message += Messages.FormatCompetitionGearStat(BuildEquippedCompetitionGear(user));
+            message += Messages.FormatJewelryStat(buildWornJewelery(user));
+            message += Messages.FormatCompetitionGearStat(buildEquippedCompetitionGear(user));
             message += Messages.StatsPrivateNotes;
             message += Messages.StatsQuests;
             message += Messages.StatsMinigameRanking;
@@ -346,11 +377,13 @@ namespace HISP.Game
                 message += Messages.FormatPlayerInventoryItemMeta(itemInfo.IconId, item.ItemInstances.Count, title);
 
                 int randomId = item.ItemInstances[0].RandomId;
+                if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" && World.CanDropItems(inv.BaseUser.X, inv.BaseUser.Y))
+                    message += Messages.FormatItemDropButton(randomId);
 
                 if (itemInfo.Id == Item.Present || itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope)
                     message += Messages.FormatItemUseButton(randomId);
 
-                if (itemInfo.Type == "CLOTHES")
+                if (itemInfo.Type == "CLOTHES" || itemInfo.Type == "JEWELRY")
                     message += Messages.FormatWearButton(randomId);
 
                 if (itemInfo.Type == "TEXT")
@@ -362,8 +395,6 @@ namespace HISP.Game
                 if (Item.IsThrowable(itemInfo.Id))
                     message += Messages.FormatItemThrowButton(randomId);
 
-                if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" && World.CanDropItems(inv.BaseUser.X, inv.BaseUser.Y))
-                    message += Messages.FormatItemDropButton(randomId);
                 message += Messages.FormatItemInformationButton(randomId);
                 message += "^R1";
             }
