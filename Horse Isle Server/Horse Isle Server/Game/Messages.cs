@@ -7,8 +7,6 @@ namespace HISP.Game
         public static int RequiredChatViolations;
         public static int DefaultInventoryMax;
 
-        
-
         // Tools
         public static string BinocularsNothing;
         public static string MagnifyNothing;
@@ -56,6 +54,16 @@ namespace HISP.Game
         public static string StatTired;
 
         public static string[] StatPlayerFormats;
+
+        // Quests Completed Page
+        public static string QuestLogHeader;
+        public static string QuestFormat;
+
+        public static string QuestNotCompleted;
+        public static string QuestNotAvalible;
+        public static string QuestCompleted;
+
+        public static string QuestFooterFormat;
 
         // Announcements
         public static string NewUserMessage;
@@ -216,6 +224,16 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatQuestFooter(int totalQuestsComplete, int totalQuests, int questPoints, int totalQuestPoints)
+        {
+            return QuestFooterFormat.Replace("%TOTALCOMPLETED%", totalQuestsComplete.ToString("N0")).Replace("%TOTALQUESTS%", totalQuests.ToString("N0")).Replace("%TOTALPERCENT%", ((totalQuestsComplete / totalQuests) * 100).ToString()).Replace("%YOURQP%", questPoints.ToString("N0")).Replace("%YOURQP%", totalQuestPoints.ToString("N0")).Replace("%QPERCENT%", ((totalQuestsComplete / totalQuests) * 100).ToString());
+        }
+        public static string FormatQuestLogQuest(string questTitle, int questPoints, string difficulty, string completionStatus)
+        {
+            return QuestFormat.Replace("%TITLE%", questTitle).Replace("%QUESTPOINTS%", questPoints.ToString("N0")).Replace("%DIFFICULTY%", difficulty).Replace("%COMPLETION%", completionStatus);
+        }
+
         public static string FormatPrivateNotes(string privateNotes)
         {
             return PrivateNotesMetaFormat.Replace("%PRIVATENOTES%", privateNotes);
