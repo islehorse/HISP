@@ -309,6 +309,15 @@ namespace HISP.Game
 
             return message;
         }
+
+        public static string BuildQuestLog(User user)
+        {
+            string message = "";
+            message += Messages.QuestLogHeader;
+            Quest.QuestEntry[] questList = Quest.GetPublicQuestList();
+            foreach (Quest.QuestEntry quest in questList)
+        }
+
         public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)
         {
             string message = "";

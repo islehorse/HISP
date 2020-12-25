@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 using HISP.Player;
 using HISP.Server;
 
@@ -60,6 +60,27 @@ namespace HISP.Game
 
         public static List<QuestEntry> QuestList = new List<QuestEntry>();
 
+        public static int GetTotalQuestPoints()
+        {
+            int totalQp = 0;
+            QuestEntry[] quests = GetPublicQuestList();
+            foreach(QuestEntry quest in quests)
+            {
+                totalQp += quest.QuestPointsEarned;
+            }
+            return totalQp;
+        }
+        public static QuestEntry[] GetPublicQuestList()
+        {
+            List<QuestEntry> quests = QuestList.OrderBy(o => o.Title).ToList();
+            foreach(QuestEntry quest in quests)
+            {
+                if (quest.Title == null)
+                    quests.Remove(quest);
+
+            }
+            return quests.ToArray();
+        }
 
         public static bool ActivateQuest(User user, QuestEntry quest, bool npcActivation = false)
         {

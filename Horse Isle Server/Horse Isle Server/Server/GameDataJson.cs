@@ -438,6 +438,16 @@ namespace HISP.Server
 
             Messages.StatPlayerFormats = gameData.messages.meta.stats_page.player_stats.ToObject<string[]>();
             Messages.RandomMovement = gameData.messages.random_movement;
+
+            // Quests Log
+            Messages.QuestLogHeader = gameData.messages.meta.quest_log.meta.header_meta;
+            Messages.QuestFormat = gameData.messages.meta.quest_log.meta.quest_format;
+
+            Messages.QuestNotCompleted = gameData.messages.meta.quest_log.not_complete;
+            Messages.QuestNotAvalible = gameData.messages.meta.quest_log.not_avalible;
+            Messages.QuestCompleted = gameData.messages.meta.quest_log.completed;
+
+            Messages.QuestFooterFormat = gameData.messages.meta.quest_log.footer_format;
             // Transport
 
             Messages.CantAffordTransport = gameData.messages.transport.not_enough_money;
