@@ -440,8 +440,8 @@ namespace HISP.Server
             Messages.RandomMovement = gameData.messages.random_movement;
 
             // Quests Log
-            Messages.QuestLogHeader = gameData.messages.meta.quest_log.meta.header_meta;
-            Messages.QuestFormat = gameData.messages.meta.quest_log.meta.quest_format;
+            Messages.QuestLogHeader = gameData.messages.meta.quest_log.header_meta;
+            Messages.QuestFormat = gameData.messages.meta.quest_log.quest_format;
 
             Messages.QuestNotCompleted = gameData.messages.meta.quest_log.not_complete;
             Messages.QuestNotAvalible = gameData.messages.meta.quest_log.not_avalible;

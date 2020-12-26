@@ -147,10 +147,19 @@ namespace HISP.Server
                 return;
             }
 
-            if(buttonId == 21) // Private Notes
+            switch(buttonId)
             {
-                byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPrivateNotes(sender.LoggedinUser));
-                sender.SendPacket(metaPacket);
+                case 3:
+                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildQuestLog(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
+                case 21:
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPrivateNotes(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
+                default:
+                    Logger.ErrorPrint("Dynamic button #" + buttonId + " unknown...");
+                    break;
             }
         }
         public static void OnUserInfoRequest(GameClient sender, byte[] packet)
