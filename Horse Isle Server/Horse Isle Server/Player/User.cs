@@ -383,7 +383,6 @@ namespace HISP.Player
             SecCodeSeeds[2] = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
             SecCodeInc = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
 
-            // Make some friends! (Get a life!)
 
             Friends = new Friends(this);
 
