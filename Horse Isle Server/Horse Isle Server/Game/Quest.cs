@@ -72,14 +72,30 @@ namespace HISP.Game
         }
         public static QuestEntry[] GetPublicQuestList()
         {
-            List<QuestEntry> quests = QuestList.OrderBy(o => o.Title).ToList();
-            foreach(QuestEntry quest in quests)
+            QuestEntry[] quests = QuestList.OrderBy(o => o.Title).ToArray();
+            List<QuestEntry> sortedQuests = new List<QuestEntry>();
+            foreach (QuestEntry quest in quests)
             {
-                if (quest.Title == null)
-                    quests.Remove(quest);
+                if (quest.Title != null)
+                    sortedQuests.Add(quest);
 
             }
-            return quests.ToArray();
+            return sortedQuests.ToArray();
+        }
+
+        public static bool IsQuestAvalible(User user, QuestEntry quest)
+        {
+            // Has completed other required quests?
+            foreach (int questId in quest.RequiresQuestIdCompleted)
+                if (user.Quests.GetTrackedQuestAmount(quest.Id) < 1)
+                    return false;
+
+            // Has NOT competed other MUST NOT BE required quests
+            foreach (int questId in quest.RequiresQuestIdNotCompleted)
+                if (user.Quests.GetTrackedQuestAmount(quest.Id) > 1)
+                    return false;
+
+            return true;
         }
 
         public static bool ActivateQuest(User user, QuestEntry quest, bool npcActivation = false)
@@ -87,15 +103,9 @@ namespace HISP.Game
             
             if (quest.Tracked)
             {
-                // Has completed other required quests?
-                foreach (int questId in quest.RequiresQuestIdCompleted)
-                    if (user.Quests.GetTrackedQuestAmount(quest.Id) < 1)
-                        goto Fail;
+                if (!IsQuestAvalible(user, quest))
+                    goto Fail;
 
-                // Has NOT competed other MUST NOT BE required quests
-                foreach (int questId in quest.RequiresQuestIdNotCompleted)
-                    if (user.Quests.GetTrackedQuestAmount(quest.Id) > 1)
-                        goto Fail;
                 // Has allready tracked this quest?
                 if (user.Quests.GetTrackedQuestAmount(quest.Id) >= quest.MaxRepeats)
                     goto Fail;

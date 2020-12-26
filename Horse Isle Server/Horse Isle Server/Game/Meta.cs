@@ -316,6 +316,33 @@ namespace HISP.Game
             message += Messages.QuestLogHeader;
             Quest.QuestEntry[] questList = Quest.GetPublicQuestList();
             foreach (Quest.QuestEntry quest in questList)
+            {
+                string fmsg = "";
+                if (user.Quests.GetTrackedQuestAmount(quest.Id) > 0)
+                    fmsg = Messages.QuestCompleted;
+                else
+                    fmsg = Messages.QuestNotCompleted;
+
+                if (Quest.IsQuestAvalible(user,quest))
+                    fmsg = Messages.QuestNotAvalible;
+                
+                message += Messages.FormatQuestLogQuest(quest.Title, quest.QuestPointsEarned, quest.Difficulty, fmsg);
+            }
+
+            int totalComplete = 0;
+            int totalQuestPoints = 0;
+            foreach(Quest.QuestEntry quest in questList)
+            {
+                if(user.Quests.GetTrackedQuestAmount(quest.Id) > 0)
+                        totalComplete++;
+                totalQuestPoints += quest.QuestPointsEarned;
+            }
+
+            message += Messages.FormatQuestFooter(totalComplete, questList.Length, user.QuestPoints, totalQuestPoints);
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+
+            return message;
         }
 
         public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)
