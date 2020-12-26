@@ -53,6 +53,7 @@ namespace HISP.Server
             {
                 Database.IncAllUsersFreeTime(1);
             }
+            Database.IncPlayerTirednessForOfflineUsers();
 
             DroppedItems.Update();
             minuteTimer.Change(oneMinute, oneMinute);
@@ -267,7 +268,7 @@ namespace HISP.Server
             }
 
             byte method = packet[1];
-            if(method == PacketBuilder.PACKET_CLIENT_TERMINATOR)
+            if (method == PacketBuilder.PACKET_CLIENT_TERMINATOR)
             {
                 UpdateStats(sender);
             }
@@ -307,6 +308,130 @@ namespace HISP.Server
                 UpdateArea(sender);
                 UpdateUserInfo(sender.LoggedinUser);
             }
+            else if (method == PacketBuilder.SECCODE_SCORE || method == PacketBuilder.SECCODE_TIME)
+            {
+                bool time = (method == PacketBuilder.SECCODE_TIME);
+
+                byte[] ExpectedSecCode = sender.LoggedinUser.GenerateSecCode();
+                byte[] GotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
+                if (ExpectedSecCode.SequenceEqual(GotSecCode))
+                {
+                    if (packet.Length < 6)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a seccode score request with invalid size");
+                        return;
+                    }
+
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string gameInfoStr = packetStr.Substring(6, packetStr.Length - 6 - 2);
+                    if(gameInfoStr.Contains("|"))
+                    {
+                        string[] gameInfo = gameInfoStr.Split('|');
+                        if(gameInfo.Length < 2)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a invalid seccode score request");
+                            return;
+                        }
+
+                        string gameTitle = gameInfo[0];
+                        string gameScoreStr = gameInfo[1];
+                        
+                        int value = -1;
+                        try
+                        {
+                            value = int.Parse(gameScoreStr);
+                        }
+                        catch (FormatException)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid score value");
+                            return;
+                        }
+
+                        bool newHighscore = Highscore.RegisterHighscore(sender.LoggedinUser.Id, gameTitle, value, time);
+                        if (newHighscore && !time)
+                        {
+                            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatHighscoreBeatenMessage(value), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(chatPacket);
+                        }
+                        else
+                        {
+                            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatTimeBeatenMessage(value), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(chatPacket);
+                        }
+                    }
+                    else
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " didnt send a game name AND a score.");
+                        return;
+                    }
+
+                }
+                else
+                {
+                    byte[] errorMessage = PacketBuilder.CreateChat(Messages.InvalidSecCodeError, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(errorMessage);
+                    Logger.HackerPrint(sender.LoggedinUser.Username + " Sent invalid sec code");
+                    return;
+                }
+            } 
+            else if (method == PacketBuilder.SECCODE_MONEY)
+            {
+
+                byte[] ExpectedSecCode = sender.LoggedinUser.GenerateSecCode();
+                byte[] GotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
+                if (ExpectedSecCode.SequenceEqual(GotSecCode))
+                {
+                    if (packet.Length < 6)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a seccode money request with invalid size");
+                        return;
+                    }
+
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string gameInfoStr = packetStr.Substring(6, packetStr.Length - 6 - 2);
+                    if (gameInfoStr.Contains("|"))
+                    {
+                        string[] moneyInfo = gameInfoStr.Split('|');
+                        if (moneyInfo.Length < 2)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a invalid money score request");
+                            return;
+                        }
+
+                        string id = moneyInfo[0]; // not sure what this is for?
+
+                        string moneyStr = moneyInfo[1];
+                        int value = -1;
+                        try
+                        {
+                            value = int.Parse(moneyStr);
+                        }
+                        catch (FormatException)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid money value");
+                            return;
+                        }
+
+                        int moneyEarned = value * 10;
+                        Logger.InfoPrint(sender.LoggedinUser.Username + " Earned $" + moneyEarned + " In: " + id);
+
+                        sender.LoggedinUser.Money += moneyEarned;
+                        byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatMoneyEarnedMessage(moneyEarned), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(chatPacket);
+
+                    }
+                    else
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " didnt send a game name AND a score.");
+                        return;
+                    }
+
+                }
+            }
             else if (method == PacketBuilder.SECCODE_ITEM)
             {
                 byte[] ExpectedSecCode = sender.LoggedinUser.GenerateSecCode();
@@ -315,6 +440,11 @@ namespace HISP.Server
                 Logger.DebugPrint(sender.LoggedinUser.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
                 if (ExpectedSecCode.SequenceEqual(GotSecCode))
                 {
+                    if (packet.Length < 6)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a seccode item request with invalid size");
+                        return;
+                    }
                     string packetStr = Encoding.UTF8.GetString(packet);
                     string intStr = packetStr.Substring(6, packetStr.Length - 6 - 2);
                     int value = -1;
@@ -322,9 +452,9 @@ namespace HISP.Server
                     {
                         value = int.Parse(intStr);
                     }
-                    catch (InvalidOperationException)
+                    catch (FormatException)
                     {
-                        Logger.HackerPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid value");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid value");
                         return;
                     }
 
@@ -360,6 +490,11 @@ namespace HISP.Server
                 Logger.DebugPrint(sender.LoggedinUser.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
                 if (ExpectedSecCode.SequenceEqual(GotSecCode))
                 {
+                    if (packet.Length < 6)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a seccode quest request with invalid size");
+                        return;
+                    }
                     string packetStr = Encoding.UTF8.GetString(packet);
                     string intStr = packetStr.Substring(6, packetStr.Length - 6 - 2);
                     int value = -1;
@@ -367,7 +502,7 @@ namespace HISP.Server
                     {
                         value = int.Parse(intStr);
                     }
-                    catch (InvalidOperationException)
+                    catch (FormatException)
                     {
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid value");
                         return;
@@ -389,7 +524,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    byte[] errorMessage = PacketBuilder.CreateChat(Messages.InvalidSecCodeError,PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    byte[] errorMessage = PacketBuilder.CreateChat(Messages.InvalidSecCodeError, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(errorMessage);
                     Logger.HackerPrint(sender.LoggedinUser.Username + " Sent invalid sec code");
                     return;
@@ -409,9 +544,9 @@ namespace HISP.Server
             User loggedInUser = sender.LoggedinUser;
             byte movementDirection = packet[1];
 
-            if (loggedInUser.Thirst <= 25 || loggedInUser.Hunger == 25 || loggedInUser.Tiredness == 25)
+            if (loggedInUser.Thirst <= 25 || loggedInUser.Hunger <= 25 || loggedInUser.Tiredness <= 25)
             {
-                if (RandomNumberGenerator.Next(0, 15) == 10)
+                if (RandomNumberGenerator.Next(0, 10) == 7)
                 {
                     byte[] possibleDirections = new byte[] { PacketBuilder.MOVE_UP, PacketBuilder.MOVE_DOWN, PacketBuilder.MOVE_RIGHT, PacketBuilder.MOVE_LEFT };
 
@@ -600,7 +735,7 @@ namespace HISP.Server
                 {
                     chatId = int.Parse(number);
                 }
-                catch (InvalidOperationException)
+                catch (FormatException)
                 {
                     Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to start talking to an NPC with id that is NaN.");
                     return;
@@ -622,7 +757,7 @@ namespace HISP.Server
                 {
                     replyId = int.Parse(number);
                 }
-                catch (InvalidOperationException)
+                catch (FormatException)
                 {
                     Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to reply to an NPC with replyid that is NaN.");
                     return;
@@ -674,7 +809,7 @@ namespace HISP.Server
             {
                 transportid =  Int32.Parse(number);
             }
-            catch(InvalidOperationException)
+            catch(FormatException)
             {
                 Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to use a transport with id that is NaN.");
                 return;
@@ -900,7 +1035,7 @@ namespace HISP.Server
                     {
                         randomId = Int32.Parse(randomIdStr);
                     }
-                    catch(InvalidOperationException)
+                    catch(FormatException)
                     {
                         Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
                         return;
@@ -1062,7 +1197,7 @@ namespace HISP.Server
                     {
                         randomId = Int32.Parse(randomIdStr);
                     }
-                    catch (InvalidOperationException)
+                    catch (FormatException)
                     {
                         Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
                         return;
@@ -1183,7 +1318,7 @@ namespace HISP.Server
                     {
                         randomId = Int32.Parse(randomIdStr);
                     }
-                    catch (InvalidOperationException)
+                    catch (FormatException)
                     {
                         Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
                         return;
@@ -1252,7 +1387,7 @@ namespace HISP.Server
                     {
                         randomId = Int32.Parse(randomIdStr);
                     }
-                    catch (InvalidOperationException)
+                    catch (FormatException)
                     {
                         Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object sell packet.");
                         return;
@@ -1276,7 +1411,7 @@ namespace HISP.Server
                     {
                         itemId = Int32.Parse(itemIdStr);
                     }
-                    catch (InvalidOperationException)
+                    catch (FormatException)
                     {
                         Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object sell packet.");
                         return;
@@ -1355,7 +1490,7 @@ namespace HISP.Server
                     {
                         itemId = Int32.Parse(itemIdStr);
                     }
-                    catch (InvalidOperationException)
+                    catch (FormatException)
                     {
                         Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object buy packet.");
                         return;
@@ -1473,7 +1608,7 @@ namespace HISP.Server
                     {
                         value = Int32.Parse(valueStr);
                     }
-                    catch (InvalidOperationException)
+                    catch (FormatException)
                     {
                         Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
                         return;

@@ -29,6 +29,7 @@ namespace HISP.Server
         public const byte PACKET_KEEP_ALIVE = 0x7C;
         public const byte PACKET_DYNAMIC_BUTTON = 0x45;
         public const byte PACKET_DYNAMIC_INPUT = 0x46;
+        
         public const byte PACKET_PLAYER = 0x18;
         public const byte PACKET_INVENTORY = 0x17;
         public const byte PACKET_TRANSPORT = 0x29;
@@ -41,6 +42,9 @@ namespace HISP.Server
 
         public const byte SECCODE_QUEST = 0x32;
         public const byte SECCODE_ITEM = 0x28;
+        public const byte SECCODE_SCORE = 0x3D;
+        public const byte SECCODE_TIME = 0x3E;
+        public const byte SECCODE_MONEY = 0x1E; 
 
         public const byte NPC_START_CHAT = 0x14;
         public const byte NPC_CONTINUE_CHAT = 0x15;

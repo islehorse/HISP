@@ -190,6 +190,10 @@ namespace HISP.Game
         // Sec Codes
         public static string InvalidSecCodeError;
         public static string YouEarnedAnItemFormat;
+        public static string YouEarnedMoneyFormat;
+        public static string BeatHighscoreFormat;
+        public static string BeatBestTimeFormat;
+
 
         // Meta
         public static string IsleFormat;
@@ -225,6 +229,18 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatMoneyEarnedMessage(int money)
+        {
+            return YouEarnedMoneyFormat.Replace("%MONEY%", money.ToString("N0"));
+        }
+        public static string FormatTimeBeatenMessage(int time)
+        {
+            return BeatBestTimeFormat.Replace("%TIME%", time.ToString());
+        }
+        public static string FormatHighscoreBeatenMessage(int score)
+        {
+            return BeatHighscoreFormat.Replace("%SCORE%", score.ToString());
+        }
         public static string FormatQuestFooter(int totalQuestsComplete, int totalQuests, int questPoints, int totalQuestPoints)
         {
             return QuestFooterFormat.Replace("%TOTALCOMPLETED%", totalQuestsComplete.ToString("N0")).Replace("%TOTALQUESTS%", totalQuests.ToString("N0")).Replace("%TOTALPERCENT%", ((totalQuestsComplete / totalQuests) * 100).ToString()).Replace("%YOURQP%", questPoints.ToString("N0")).Replace("%YOURQP%", totalQuestPoints.ToString("N0")).Replace("%QPERCENT%", ((totalQuestsComplete / totalQuests) * 100).ToString()).Replace("%MAXQP%", totalQuestPoints.ToString("N0"));

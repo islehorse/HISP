@@ -27,6 +27,7 @@ namespace HISP.Server
                 string OnlineUsers = "CREATE TABLE OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3))";
                 string CompetitionGear = "CREATE TABLE CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)";
                 string Jewelry = "CREATE TABLE Jewelry(playerId INT, slot1 INT, slot2 INT, slot3 INT, slot4 INT)";
+                string Leaderboards = "CREATE TABLE Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
 
@@ -191,6 +192,20 @@ namespace HISP.Server
                 {
                     Logger.WarnPrint(e.Message);
                 };
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = Leaderboards;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
                 try
                 {
 
@@ -816,7 +831,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE userExt SET FreeMinutes=FreeMinutes+@minutes";
+                sqlCommand.CommandText = "UPDATE userExt SET FreeMinutes=FreeMinutes+@minutes WHERE NOT FreeMinutes+@minutes > 360";
                 sqlCommand.Parameters.AddWithValue("@minutes", minutes);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -1673,6 +1688,92 @@ namespace HISP.Server
             }
         }
 
+        public static bool PlayerHasHighscore(int playerId, string gameTitle)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM Leaderboards WHERE playerId=@playerId AND minigame=@gameTitle";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                sqlCommand.Dispose();
+                return count >= 1;
+            }
+        }
+        public static void AddNewHighscore(int playerId, string gameTitle, int score, string type)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO Leaderboards VALUES(@playerId,@gameTitle,0,0,1,@score,@type)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
+                sqlCommand.Parameters.AddWithValue("@score", score);
+                sqlCommand.Parameters.AddWithValue("@type", type);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+                return;
+            }
+        }
+
+        public static int GetHighscore(int playerId, string gameTitle)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT score FROM Leaderboards WHERE playerId=@playerId AND minigame=@gameTitle";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
+                sqlCommand.Prepare();
+                int score = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                sqlCommand.Dispose();
+                return score;
+            }
+        }
+        public static void UpdateHighscore(int playerId, string gameTitle, int score)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Leaderboards SET score=@score, timesplayed=timesplayed+1 WHERE playerId=@playerId AND minigame=@gameTitle";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
+                sqlCommand.Parameters.AddWithValue("@score", score);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+                return;
+            }
+        }
+
+
+        public static void IncPlayerTirednessForOfflineUsers()
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE userext SET tiredness = tiredness + 1 WHERE id NOT IN (SELECT playerId FROM onlineusers) AND NOT tiredness +1 > 1000";
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+                return;
+            }
+        }
 
         public static int GetPlayerTiredness(int userId)
         {
