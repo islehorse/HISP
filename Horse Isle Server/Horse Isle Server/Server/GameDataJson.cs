@@ -297,7 +297,7 @@ namespace HISP.Server
                 quest.Notes = gameData.quest_list[i].notes;
                 if(gameData.quest_list[i].title != null)
                     quest.Title = gameData.quest_list[i].title;
-                quest.RequiresQuestIdComplete = gameData.quest_list[i].requires_questid_npc.ToObject<int[]>();
+                quest.RequiresQuestIdCompleteStatsMenu = gameData.quest_list[i].requires_questid_statsmenu.ToObject<int[]>();
                 if (gameData.quest_list[i].alt_activation != null)
                 {
                     quest.AltActivation = new Quest.QuestAltActivation();

@@ -29,7 +29,7 @@ namespace HISP.Game
             public string Notes;
             public string Title;
 
-            public int[] RequiresQuestIdComplete; // Not sure what this is for.
+            public int[] RequiresQuestIdCompleteStatsMenu; // Not sure what this is for.
             public QuestAltActivation AltActivation;
             public bool Tracked; // Should we track how many times the player has completed this quest.
             // Fail Settings
@@ -83,32 +83,24 @@ namespace HISP.Game
             return sortedQuests.ToArray();
         }
 
-        public static bool IsQuestAvalible(User user, QuestEntry quest)
+        public static bool CanComplete(User user, QuestEntry quest)
         {
-            // Has completed other required quests?
-            foreach (int questId in quest.RequiresQuestIdCompleted)
+            if (quest.Tracked)
+            {
+
+                // Has completed other required quests?
+                foreach (int questId in quest.RequiresQuestIdCompleted)
                 if (user.Quests.GetTrackedQuestAmount(quest.Id) < 1)
                     return false;
 
-            // Has NOT competed other MUST NOT BE required quests
-            foreach (int questId in quest.RequiresQuestIdNotCompleted)
-                if (user.Quests.GetTrackedQuestAmount(quest.Id) > 1)
-                    return false;
-
-            return true;
-        }
-
-        public static bool ActivateQuest(User user, QuestEntry quest, bool npcActivation = false)
-        {
-            
-            if (quest.Tracked)
-            {
-                if (!IsQuestAvalible(user, quest))
-                    goto Fail;
+                // Has NOT competed other MUST NOT BE required quests
+                foreach (int questId in quest.RequiresQuestIdNotCompleted)
+                    if (user.Quests.GetTrackedQuestAmount(quest.Id) > 1)
+                        return false;
 
                 // Has allready tracked this quest?
                 if (user.Quests.GetTrackedQuestAmount(quest.Id) >= quest.MaxRepeats)
-                    goto Fail;
+                    return false; 
 
             }
 
@@ -126,34 +118,27 @@ namespace HISP.Game
                     }
                 }
                 if (!hasThisItem)
-                    goto Fail;
+                    return false;
             }
 
             // Have enough money?
             if (user.Money < quest.MoneyCost)
-                goto Fail;
-
-            // Have required award (unimplemented)
-
-            goto Success;
-
-            Fail: {
-                if(quest.FailNpcChat != null)
-                {
-                    if(!npcActivation)
-                    {
-                        byte[] ChatPacket = PacketBuilder.CreateChat(quest.FailNpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        user.LoggedinClient.SendPacket(ChatPacket);
-                    }
-                }
                 return false;
-            };
-            Success: {
+
+
+            return true;
+        }
+
+        public static bool ActivateQuest(User user, QuestEntry quest, bool npcActivation = false)
+        {
+
+            if(CanComplete(user, quest))
+            {
                 // Take Items
-                foreach(QuestItemInfo itemInfo in quest.ItemsRequired)
+                foreach (QuestItemInfo itemInfo in quest.ItemsRequired)
                 {
                     InventoryItem itm = user.Inventory.GetItemByItemId(itemInfo.ItemId);
-                    for(int i = 0; i < itemInfo.Quantity; i++)
+                    for (int i = 0; i < itemInfo.Quantity; i++)
                         user.Inventory.Remove(itm.ItemInstances[0]);
 
                 }
@@ -178,10 +163,10 @@ namespace HISP.Game
                 if (quest.ChainedQuestId != 0)
                     ActivateQuest(user, GetQuestById(quest.ChainedQuestId));
 
-                if(quest.Tracked)
+                if (quest.Tracked)
                     user.Quests.TrackQuest(quest.Id);
 
-                if(quest.SuccessNpcChat != null)
+                if (quest.SuccessNpcChat != null)
                 {
                     if (!npcActivation)
                     {
@@ -190,12 +175,23 @@ namespace HISP.Game
                     }
                 }
 
-                if(quest.SuccessMessage != null)
+                if (quest.SuccessMessage != null)
                 {
                     byte[] ChatPacket = PacketBuilder.CreateChat(quest.SuccessMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     user.LoggedinClient.SendPacket(ChatPacket);
                 }
                 return true;
+            }
+            else {
+                if(quest.FailNpcChat != null)
+                {
+                    if(!npcActivation)
+                    {
+                        byte[] ChatPacket = PacketBuilder.CreateChat(quest.FailNpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        user.LoggedinClient.SendPacket(ChatPacket);
+                    }
+                }
+                return false;
             };
         }
         public static bool DoesQuestExist(int id)
