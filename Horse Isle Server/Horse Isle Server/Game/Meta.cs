@@ -323,9 +323,14 @@ namespace HISP.Game
                 else
                     fmsg = Messages.QuestNotCompleted;
 
-                if (!Quest.IsQuestAvalible(user,quest))
+                foreach(int questId in quest.RequiresQuestIdCompleteStatsMenu)
+                {
+                    if (user.Quests.GetTrackedQuestAmount(questId) > 0)
+                        continue;
                     fmsg = Messages.QuestNotAvalible;
-                
+                    break;
+                }
+
                 message += Messages.FormatQuestLogQuest(quest.Title, quest.QuestPointsEarned, quest.Difficulty, fmsg);
             }
 
