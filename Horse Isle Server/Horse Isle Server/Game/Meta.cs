@@ -323,7 +323,7 @@ namespace HISP.Game
                 else
                     fmsg = Messages.QuestNotCompleted;
 
-                if (Quest.IsQuestAvalible(user,quest))
+                if (!Quest.IsQuestAvalible(user,quest))
                     fmsg = Messages.QuestNotAvalible;
                 
                 message += Messages.FormatQuestLogQuest(quest.Title, quest.QuestPointsEarned, quest.Difficulty, fmsg);
