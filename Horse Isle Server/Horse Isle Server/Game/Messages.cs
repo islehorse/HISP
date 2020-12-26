@@ -227,7 +227,7 @@ namespace HISP.Game
 
         public static string FormatQuestFooter(int totalQuestsComplete, int totalQuests, int questPoints, int totalQuestPoints)
         {
-            return QuestFooterFormat.Replace("%TOTALCOMPLETED%", totalQuestsComplete.ToString("N0")).Replace("%TOTALQUESTS%", totalQuests.ToString("N0")).Replace("%TOTALPERCENT%", ((totalQuestsComplete / totalQuests) * 100).ToString()).Replace("%YOURQP%", questPoints.ToString("N0")).Replace("%YOURQP%", totalQuestPoints.ToString("N0")).Replace("%QPERCENT%", ((totalQuestsComplete / totalQuests) * 100).ToString());
+            return QuestFooterFormat.Replace("%TOTALCOMPLETED%", totalQuestsComplete.ToString("N0")).Replace("%TOTALQUESTS%", totalQuests.ToString("N0")).Replace("%TOTALPERCENT%", ((totalQuestsComplete / totalQuests) * 100).ToString()).Replace("%YOURQP%", questPoints.ToString("N0")).Replace("%YOURQP%", totalQuestPoints.ToString("N0")).Replace("%QPERCENT%", ((totalQuestsComplete / totalQuests) * 100).ToString()).Replace("%MAXQP%", totalQuestPoints.ToString("N0"));
         }
         public static string FormatQuestLogQuest(string questTitle, int questPoints, string difficulty, string completionStatus)
         {
