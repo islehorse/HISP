@@ -62,14 +62,7 @@ namespace HISP.Game
         {
             int randomId = item.instance.RandomId;
             Database.RemoveDroppedItem(randomId);
-            for (int i = 0; i < droppedItemsList.Count; i++) 
-            {
-                if(droppedItemsList[i].instance.RandomId == randomId)
-                {
-                    droppedItemsList.RemoveAt(i);
-                    return;
-                }
-            }
+            droppedItemsList.Remove(item);
             
         }
 

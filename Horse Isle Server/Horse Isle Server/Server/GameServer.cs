@@ -54,7 +54,6 @@ namespace HISP.Server
                 Database.IncAllUsersFreeTime(1);
             }
             Database.IncPlayerTirednessForOfflineUsers();
-
             DroppedItems.Update();
             minuteTimer.Change(oneMinute, oneMinute);
         }
