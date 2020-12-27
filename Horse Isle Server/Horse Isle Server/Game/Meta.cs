@@ -225,7 +225,6 @@ namespace HISP.Game
             return message;
         }
 
-
         public static string SelectPlayerStatFormat(int statValue)
         {
             int curValue = 1000;
@@ -240,7 +239,55 @@ namespace HISP.Game
             }
             throw new Exception("A mathematically impossible error occured. please check wether the laws of physics still apply.");
         }
-        
+
+        public static string BuildTopHighscores(string gameName)
+        {
+            Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameName, 20);
+            if (scores.Length <= 0)
+                return "No scores recorded.";
+            string message = "";
+
+            message += Messages.FormatHighscoreHeader(gameName);
+
+            for (int i = 0; i < scores.Length; i++)
+            {
+                message += Messages.FormatHighscoreListEntry(i+1, scores[i].Score, Database.GetUsername(scores[i].UserId), scores[i].TimesPlayed);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildTopTimes(string gameName)
+        {
+            Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameName, 20);
+            if (scores.Length <= 0)
+                return "No times recorded.";
+            string message = "";
+            
+            message += Messages.FormatBestTimeHeader(gameName);
+
+            for (int i = 0; i < scores.Length; i++)
+            {
+                message += Messages.FormatBestTimeListEntry(i+1, scores[i].Score, Database.GetUsername(scores[i].UserId), scores[i].TimesPlayed);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildMinigameRankingsForUser(User user)
+        {
+            string message = Messages.HighscoreHeaderMeta;
+            foreach(Highscore.HighscoreTableEntry highscore in user.Highscores.HighscoreList)
+            {
+                if (highscore.Type == "SCORE")
+                    message += Messages.FormatHighscoreStat(highscore.GameName, Database.GetRanking(highscore.Score, highscore.GameName), highscore.Score, highscore.TimesPlayed);
+                else if(highscore.Type == "TIME")
+                    message += Messages.FormatBestTimeStat(highscore.GameName, Database.GetRanking(highscore.Score, highscore.GameName), highscore.Score, highscore.TimesPlayed);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildPrivateNotes(User user)
         {
             string message = "";

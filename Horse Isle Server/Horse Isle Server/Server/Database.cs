@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MySqlConnector;
 using HISP.Game;
+using HISP.Player;
 
 namespace HISP.Server
 {
@@ -1688,22 +1689,6 @@ namespace HISP.Server
             }
         }
 
-        public static bool PlayerHasHighscore(int playerId, string gameTitle)
-        {
-            using (MySqlConnection db = new MySqlConnection(ConnectionString))
-            {
-                db.Open();
-                MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM Leaderboards WHERE playerId=@playerId AND minigame=@gameTitle";
-                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
-                sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
-                sqlCommand.Prepare();
-                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-
-                sqlCommand.Dispose();
-                return count >= 1;
-            }
-        }
         public static void AddNewHighscore(int playerId, string gameTitle, int score, string type)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -1724,20 +1709,90 @@ namespace HISP.Server
             }
         }
 
-        public static int GetHighscore(int playerId, string gameTitle)
+        public static Highscore.HighscoreTableEntry[] GetPlayerHighScores(int playerId)
         {
+            List<Highscore.HighscoreTableEntry> entires = new List<Highscore.HighscoreTableEntry>();
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT score FROM Leaderboards WHERE playerId=@playerId AND minigame=@gameTitle";
+                sqlCommand.CommandText = "SELECT * FROM leaderboards WHERE playerId=@playerId ORDER BY score ASC";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
-                sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
                 sqlCommand.Prepare();
-                int score = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    Highscore.HighscoreTableEntry highscoreEntry = new Highscore.HighscoreTableEntry();
+                    highscoreEntry.UserId = reader.GetInt32(0);
+                    highscoreEntry.GameName = reader.GetString(1);
+                    highscoreEntry.Wins = reader.GetInt32(2);
+                    highscoreEntry.Looses = reader.GetInt32(3);
+                    highscoreEntry.TimesPlayed = reader.GetInt32(4);
+                    highscoreEntry.Score = reader.GetInt32(5);
+                    highscoreEntry.Type = reader.GetString(6);
+                    entires.Add(highscoreEntry);
+                }
+
 
                 sqlCommand.Dispose();
-                return score;
+                return entires.ToArray();
+            }
+        }
+
+        public static Highscore.HighscoreTableEntry[] GetTopScores(string gameTitle, int limit)
+        {
+            List<Highscore.HighscoreTableEntry> entires = new List<Highscore.HighscoreTableEntry>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM leaderboards WHERE minigame=@gameTitle ORDER BY score ASC LIMIT @limit";
+                sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
+                sqlCommand.Parameters.AddWithValue("@limit", limit);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                
+                while(reader.Read())
+                {
+                    Highscore.HighscoreTableEntry highscoreEntry = new Highscore.HighscoreTableEntry();
+                    highscoreEntry.UserId = reader.GetInt32(0);
+                    highscoreEntry.GameName = gameTitle;
+                    highscoreEntry.Wins = reader.GetInt32(2);
+                    highscoreEntry.Looses = reader.GetInt32(3);
+                    highscoreEntry.TimesPlayed = reader.GetInt32(4);
+                    highscoreEntry.Score = reader.GetInt32(5);
+                    highscoreEntry.Type = reader.GetString(6);
+                    entires.Add(highscoreEntry);
+                }
+
+
+                sqlCommand.Dispose();
+                return entires.ToArray();
+            }
+        }
+
+        public static int GetRanking(int score, string gameTitle)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT DISTINCT score FROM leaderboards WHERE minigame=@gameTitle ORDER BY score ASC";
+                sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                int i = 1;
+                while(reader.Read())
+                {
+                    if (reader.GetInt32(0) == score)
+                        break;
+                    i++;
+                }
+
+                sqlCommand.Dispose();
+                return i;
             }
         }
         public static void UpdateHighscore(int playerId, string gameTitle, int score)

@@ -163,6 +163,17 @@ namespace HISP.Game
         public static string SellButton;
         public static string SellAllButton;
 
+        // Highscore List
+        public static string HighscoreHeaderMeta;
+        public static string HighscoreFormat;
+        public static string BestTimeFormat;
+
+        public static string GameBestTimeFormat;
+        public static string GameBestTimeHeaderFormat;
+        public static string GameHighScoreHeaderFormat;
+        public static string GameHighScoreFormat;
+
+
         // Shop
         public static string ThingsIAmSelling;
         public static string ThingsYouSellMe;
@@ -229,6 +240,30 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatBestTimeHeader(string gameName)
+        {
+            return GameBestTimeHeaderFormat.Replace("%GAMETITLE%", gameName);
+        }
+        public static string FormatBestTimeListEntry(int ranking, int score, string username, int totalplays)
+        {
+            return GameBestTimeFormat.Replace("%RANKING%", ranking.ToString("N0")).Replace("%SCORE%", score.ToString().Insert(score.ToString().Length - 2, ".")).Replace("%USERNAME%", username).Replace("%TOTALPLAYS%", totalplays.ToString("N0"));
+        }
+        public static string FormatHighscoreHeader(string gameName)
+        {
+            return GameHighScoreHeaderFormat.Replace("%GAMETITLE%", gameName);
+        }
+        public static string FormatHighscoreListEntry(int ranking, int score, string username, int totalplays)
+        {
+            return GameHighScoreFormat.Replace("%RANKING%", ranking.ToString("N0")).Replace("%SCORE%", score.ToString("N0")).Replace("%USERNAME%", username).Replace("%TOTALPLAYS%", totalplays.ToString("N0"));
+        }
+        public static string FormatHighscoreStat(string gameTitle, int ranking, int score, int totalplays)
+        {
+            return HighscoreFormat.Replace("%GAMETITLE%", gameTitle).Replace("%RANKING%", ranking.ToString("N0")).Replace("%SCORE%", score.ToString("N0")).Replace("%TOTALPLAYS%", totalplays.ToString("N0"));
+        }
+        public static string FormatBestTimeStat(string gameTitle, int ranking, int score, int totalplays)
+        {
+            return BestTimeFormat.Replace("%GAMETITLE%", gameTitle).Replace("%RANKING%", ranking.ToString("N0")).Replace("%SCORE%", score.ToString()).Replace("%TOTALPLAYS%", totalplays.ToString("N0"));
+        }
         public static string FormatMoneyEarnedMessage(int money)
         {
             return YouEarnedMoneyFormat.Replace("%MONEY%", money.ToString("N0"));

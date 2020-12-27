@@ -39,6 +39,7 @@ namespace HISP.Player
         public Npc.NpcEntry LastTalkedToNpc;
         public Shop LastShoppedAt;
         public PlayerQuests Quests;
+        public Highscore Highscores;
         public int FreeMinutes
         {
             get
@@ -372,7 +373,7 @@ namespace HISP.Player
 
             Gender = Database.GetGender(UserId);
             MailBox = new Mailbox(this);
-
+            Highscores = new Highscore(this);
 
 
             // Generate SecCodes
