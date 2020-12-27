@@ -96,7 +96,7 @@ namespace HISP.Game.Chat
 
             try
             {
-                User teleportTo = GameServer.GetUserByName(args[1]);
+                User teleportTo = GameServer.GetUserByName(args[0]);
                 user.Teleport(teleportTo.X, teleportTo.Y);
             }
             catch (KeyNotFoundException)
