@@ -550,6 +550,17 @@ namespace HISP.Server
             Messages.NoPitchforkMeta = gameData.messages.meta.hay_pile.no_pitchfork;
             Messages.HasPitchforkMeta = gameData.messages.meta.hay_pile.pitchfork;
 
+            // Highscore
+
+            Messages.HighscoreHeaderMeta = gameData.messages.meta.highscores.header_meta;
+            Messages.HighscoreFormat = gameData.messages.meta.highscores.highscore_format;
+            Messages.BestTimeFormat = gameData.messages.meta.highscores.besttime_format;
+
+            Messages.GameHighScoreHeaderFormat = gameData.messages.meta.highscores.game_highscore_header;
+            Messages.GameHighScoreFormat = gameData.messages.meta.highscores.game_highscore_format;
+
+            Messages.GameBestTimeHeaderFormat = gameData.messages.meta.highscores.game_besttime_header;
+            Messages.GameBestTimeFormat = gameData.messages.meta.highscores.game_besttime_format;
 
             // Sec Codes
 

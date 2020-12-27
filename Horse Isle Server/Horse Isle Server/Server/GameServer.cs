@@ -158,6 +158,10 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPrivateNotes(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
+                case 20:
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigameRankingsForUser(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
                 default:
                     Logger.ErrorPrint("Dynamic button #" + buttonId + " unknown...");
                     break;
@@ -349,7 +353,7 @@ namespace HISP.Server
                             return;
                         }
 
-                        bool newHighscore = Highscore.RegisterHighscore(sender.LoggedinUser.Id, gameTitle, value, time);
+                        bool newHighscore = sender.LoggedinUser.Highscores.UpdateHighscore(gameTitle, value, time);
                         if (newHighscore && !time)
                         {
                             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatHighscoreBeatenMessage(value), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -530,7 +534,21 @@ namespace HISP.Server
                     return;
                 }
             }
-            
+            else if(method == PacketBuilder.PLAYERINFO_HIGHSCORES_LIST)
+            {
+                string packetStr = Encoding.UTF8.GetString(packet);
+                string gameName = packetStr.Substring(2, packetStr.Length - 4);
+                byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildTopHighscores(gameName));
+                sender.SendPacket(metaTag);
+            }
+            else if (method == PacketBuilder.PLAYERINFO_BESTTIMES_LIST)
+            {
+                string packetStr = Encoding.UTF8.GetString(packet);
+                string gameName = packetStr.Substring(2, packetStr.Length - 4);
+                byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildTopTimes(gameName));
+                sender.SendPacket(metaTag);
+            }
+
 
         }
         public static void OnMovementPacket(GameClient sender, byte[] packet)
@@ -1728,7 +1746,7 @@ namespace HISP.Server
                     byte[] loginMessageBytes = PacketBuilder.CreateChat(Messages.FormatLoginMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
                     foreach (GameClient client in ConnectedClients)
                         if (client.LoggedIn)
-                            if (!client.LoggedinUser.MuteLogins || client.LoggedinUser.MuteAll)
+                            if (!client.LoggedinUser.MuteLogins && !client.LoggedinUser.MuteAll)
                                 if (client.LoggedinUser.Id != userId)
                                         client.SendPacket(loginMessageBytes);
 
@@ -1747,7 +1765,6 @@ namespace HISP.Server
         public static void OnDisconnect(GameClient sender)
         {
             connectedClients.Remove(sender);
-            Logger.DebugPrint("owoo disconnect");
             if (sender.LoggedIn)
             {
                 Database.RemoveOnlineUser(sender.LoggedinUser.Id);
@@ -1755,7 +1772,7 @@ namespace HISP.Server
                 byte[] logoutMessageBytes = PacketBuilder.CreateChat(Messages.FormatLogoutMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
                 foreach (GameClient client in ConnectedClients)
                     if (client.LoggedIn)
-                        if (!client.LoggedinUser.MuteLogins)
+                        if (!client.LoggedinUser.MuteLogins && !client.LoggedinUser.MuteAll)
                             if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
                                 client.SendPacket(logoutMessageBytes);
                 // Tell clients of diconnect (remove from chat)

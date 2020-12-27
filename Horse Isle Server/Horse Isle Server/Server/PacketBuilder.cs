@@ -40,18 +40,22 @@ namespace HISP.Server
         public const byte PACKET_PLAYERINFO = 0x16;
         public const byte PACKET_INFORMATION = 0x28;
 
+
         public const byte SECCODE_QUEST = 0x32;
         public const byte SECCODE_ITEM = 0x28;
         public const byte SECCODE_SCORE = 0x3D;
         public const byte SECCODE_TIME = 0x3E;
-        public const byte SECCODE_MONEY = 0x1E; 
+        public const byte SECCODE_MONEY = 0x1E;
+
 
         public const byte NPC_START_CHAT = 0x14;
         public const byte NPC_CONTINUE_CHAT = 0x15;
 
         public const byte PLAYERINFO_LEAVE = 0x16;
         public const byte PLAYERINFO_UPDATE_OR_CREATE = 0x15;
-        
+        public const byte PLAYERINFO_HIGHSCORES_LIST = 0x51;
+        public const byte PLAYERINFO_BESTTIMES_LIST = 0x52;
+
         public const byte VIEW_PROFILE = 0x14;
         public const byte SAVE_PROFILE = 0x15;
 
