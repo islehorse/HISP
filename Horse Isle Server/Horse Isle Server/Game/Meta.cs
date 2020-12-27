@@ -322,9 +322,10 @@ namespace HISP.Game
                 int transportLocationId = transportPoint.Locations[i];
                 Transport.TransportLocation transportLocation = Transport.GetTransportLocation(transportLocationId);
                 message += Messages.FormatTransportMessage(transportLocation.Type, transportLocation.LocationTitle, transportLocation.Cost, transportLocation.Id, transportLocation.GotoX, transportLocation.GotoY);
-                if(i + 1 != transportPoint.Locations.Length)
-                    message += "^R1";
             }
+            message += "^R1";
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
             return message;
         }
         public static string BuildStatsMenu(User user)
