@@ -86,6 +86,31 @@ namespace HISP.Game.Chat
             
             return true;
         }
+
+        public static bool Goto(string message, string[] args, User user)
+        {
+            if (args.Length <= 0)
+                return false;
+            if (!user.Administrator)
+                return false;
+
+            try
+            {
+                User teleportTo = GameServer.GetUserByName(args[1]);
+                user.Teleport(teleportTo.X, teleportTo.Y);
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+        
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+
+            
+            return true;
+        }
         public static bool Mute(string message, string[] args, User user)
         {
             string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
