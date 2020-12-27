@@ -88,11 +88,11 @@ namespace HISP.Game.Chat
         }
         public static bool Mute(string message, string[] args, User user)
         {
-            string mesasge = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
 
             if (args.Length <= 0)
             {
-                message += Messages.MuteHelp;
+                formattedmessage += Messages.MuteHelp;
                 goto leave;
             }
             
@@ -134,13 +134,13 @@ namespace HISP.Game.Chat
                 user.MuteAll = true;
             } else
             {
-                message += Messages.MuteHelp;
+                formattedmessage += Messages.MuteHelp;
                 goto leave;
             }
 
         leave:;
             
-            byte[] chatPacket = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
 
             return true;

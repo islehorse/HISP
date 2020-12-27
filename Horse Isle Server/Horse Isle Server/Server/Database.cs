@@ -1716,7 +1716,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM leaderboards WHERE playerId=@playerId ORDER BY score ASC";
+                sqlCommand.CommandText = "SELECT * FROM leaderboards WHERE playerId=@playerId ORDER BY score DESC";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
@@ -1747,7 +1747,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM leaderboards WHERE minigame=@gameTitle ORDER BY score ASC LIMIT @limit";
+                sqlCommand.CommandText = "SELECT * FROM leaderboards WHERE minigame=@gameTitle ORDER BY score DESC LIMIT @limit";
                 sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
                 sqlCommand.Parameters.AddWithValue("@limit", limit);
                 sqlCommand.Prepare();
@@ -1779,7 +1779,7 @@ namespace HISP.Server
 
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT DISTINCT score FROM leaderboards WHERE minigame=@gameTitle ORDER BY score ASC";
+                sqlCommand.CommandText = "SELECT DISTINCT score FROM leaderboards WHERE minigame=@gameTitle ORDER BY score DESC";
                 sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
