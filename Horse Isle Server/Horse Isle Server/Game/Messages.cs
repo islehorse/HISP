@@ -1,5 +1,6 @@
 ﻿using HISP.Server;
 using System;
+using System.Drawing;
 
 namespace HISP.Game
 {
@@ -80,10 +81,12 @@ namespace HISP.Game
         public static string PrivateNotesMetaFormat;
 
         // Hay Pile
+
         public static string HasPitchforkMeta;
         public static string NoPitchforkMeta;
 
         // Chat
+
         public static string GlobalChatFormat;
         public static string AdsChatFormat;
         public static string BuddyChatFormat;
@@ -218,6 +221,17 @@ namespace HISP.Game
         public static string BeatHighscoreFormat;
         public static string BeatBestTimeFormat;
 
+        // Player List
+        public static string PlayerListHeader;
+        public static string PlayerListSelectFromFollowing;
+        public static string PlayerListOfBuddiesFormat;
+        public static string PlayerListOfNearby;
+        public static string PlayerListOfPlayersFormat;
+        public static string PlayerListOfPlayersAlphabetically;
+        public static string PlayerListMapAllBuddiesForamt;
+        public static string PlayerListMapAllPlayersFormat;
+        public static string PlayerListAbuseReport;
+        
 
         // Meta
         public static string IsleFormat;
@@ -567,8 +581,35 @@ namespace HISP.Game
             return GrabItemFormat.Replace("%ICONID%",iconid.ToString()).Replace("%ITEMNAME%", name).Replace("%RANDOMID%", randomid.ToString());
         }
 
+        public static string FormatPlayerBuddyList(int amount)
+        {
+            return PlayerListOfBuddiesFormat.Replace("%AMOUNT%", amount.ToString("N0"));
+        }
+        public static string FormatPlayerList(int amount)
+        {
+            return PlayerListOfPlayersFormat.Replace("%AMOUNT%", amount.ToString("N0"));
+        }
 
-        public static string FormatTransportMessage(string method, string place, int cost, int id, int x, int y)
+        public static string FormatMapAllBuddiesList(string buddyxys)
+        {
+            return PlayerListMapAllBuddiesForamt.Replace("%BUDDYXYLIST%", buddyxys);
+        }
+
+        public static string FormatMapAllPlayersList(string playerxys)
+        {
+            return PlayerListMapAllPlayersFormat.Replace("%ALLXYLIST%", playerxys);
+        }
+
+        public static string FormatMapLocations(Point[] xys)
+        {
+            string allXys = "";
+            foreach(Point xy in xys)
+            {
+                allXys += FormatMapLocation(xy.X, xy.Y);
+            }
+            return allXys;
+        }
+        public static string FormatMapLocation(int x, int y)
         {
             string xy = "";
             xy += (char)(((x - 4) / 64) + 20);
@@ -576,6 +617,12 @@ namespace HISP.Game
 
             xy += (char)(((y - 1) / 64) + 20);
             xy += (char)(((y - 1) % 64) + 20);
+            return xy;
+        }
+
+        public static string FormatTransportMessage(string method, string place, int cost, int id, int x, int y)
+        {
+            string xy = FormatMapLocation(x, y);
 
             int iconId = 253;
             if(method == "WAGON")

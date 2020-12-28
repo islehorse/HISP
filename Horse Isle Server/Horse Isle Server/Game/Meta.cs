@@ -469,6 +469,25 @@ namespace HISP.Game
             return message;
         }
 
+        public static string BuildPlayerList(User user)
+        {
+            string message = "";
+            message += Messages.PlayerListHeader;
+            message += Messages.PlayerListSelectFromFollowing;
+            message += Messages.FormatPlayerBuddyList(user.Friends.Count);
+            message += Messages.PlayerListOfNearby;
+            message += Messages.FormatPlayerList(GameServer.GetNumberOfPlayers() - 1);
+            message += Messages.PlayerListOfPlayersAlphabetically;
+
+            message += Messages.FormatMapAllBuddiesList(Messages.FormatMapLocations(GameServer.GetAllBuddyLocations(user)));
+            message += Messages.FormatMapAllPlayersList(Messages.FormatMapLocations(GameServer.GetAllPlayerLocations(user)));
+
+            message += Messages.PlayerListAbuseReport;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+
+            return message;
+        }
         public static string BuildInventoryInfo(PlayerInventory inv)
         {
             string message = "";
