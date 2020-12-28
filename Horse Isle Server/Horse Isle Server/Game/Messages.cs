@@ -104,6 +104,7 @@ namespace HISP.Game
         public static string IsleChatFormatForSender;
         public static string NearChatFormatForSender;
         public static string HereChatFormatForSender;
+        public static string AdsChatFormatForSender;
         public static string BuddyChatFormatForSender;
         public static string DirectChatFormatForSender;
         public static string AdminChatFormatForSender;
@@ -142,6 +143,11 @@ namespace HISP.Game
         public static string EquipJewelryFormat;
         public static string MaxJewelryMessage;
         public static string RemoveJewelry;
+
+        // Consume
+
+        public static string ConsumeItemFormat;
+        public static string ConsumedButMaxReached;
 
         // Inventory
         public static string InventoryItemFormat;
@@ -247,6 +253,10 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatConsumeItemMessaege(string itemName)
+        {
+            return ConsumeItemFormat.Replace("%ITEM%", itemName);
+        }
         public static string FormatAwardEntry(int iconId, string title, int moneyBonus)
         {
             return AwardFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", title).Replace("%BONUS%", moneyBonus.ToString("N0"));
@@ -631,29 +641,34 @@ namespace HISP.Game
         // For Sender
         public static string FormatBuddyChatMessageForSender(int numbBuddies, string username, string message)
         {
-            return BuddyChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbBuddies.ToString());
+            return BuddyChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbBuddies.ToString("N0"));
         }
         public static string FormatHereChatMessageForSender(int numbHere, string username, string message)
         {
-            return HereChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbHere.ToString());
+            return HereChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbHere.ToString("N0"));
         }
         public static string FormatNearChatMessageForSender(int numbNear, string username, string message)
         {
-            return NearChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbNear.ToString());
+            return NearChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbNear.ToString("N0"));
         }
         public static string FormatIsleChatMessageForSender(int numbIsle, string username, string message)
         {
-            return IsleChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbIsle.ToString());
+            return IsleChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbIsle.ToString("N0"));
         }
 
         public static string FormatAdminChatForSender(int numbAdmins, string username, string message)
         {
-            return AdminChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbAdmins.ToString());
+            return AdminChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbAdmins.ToString("N0"));
+        }
+
+        public static string FormatAdsChatForSender(int numbListening, string username, string message)
+        {
+            return AdsChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbListening.ToString("N0"));
         }
 
         public static string FormatModChatForSender(int numbMods, string username, string message)
         {
-            return ModChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbMods.ToString());
+            return ModChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbMods.ToString("N0"));
         }
         public static string FormatDirectChatMessageForSender(string username,string toUsername, string message)
         {

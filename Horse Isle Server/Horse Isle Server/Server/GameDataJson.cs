@@ -500,6 +500,7 @@ namespace HISP.Server
             Messages.BuddyChatFormatForSender = gameData.messages.chat.for_sender.friend_format;
             Messages.DirectChatFormatForSender = gameData.messages.chat.for_sender.dm_format;
             Messages.ModChatFormatForSender = gameData.messages.chat.for_sender.mod_format;
+            Messages.AdsChatFormatForSender = gameData.messages.chat.for_sender.ads_format;
             Messages.AdminChatFormatForSender = gameData.messages.chat.for_sender.admin_format;
 
             Messages.AdminCommandFormat = gameData.messages.commands.admin_command_completed;
@@ -548,6 +549,11 @@ namespace HISP.Server
             Messages.Brought1ButInventoryFull = gameData.messages.shop.brought_1_but_inv_full;
             Messages.Brought5ButInventoryFull = gameData.messages.shop.brought_5_but_inv_full;
             Messages.Brought25ButInventoryFull = gameData.messages.shop.brought_25_but_inv_full;
+
+            // Consume
+
+            Messages.ConsumeItemFormat = gameData.messages.consume.consumed_item_format;
+            Messages.ConsumedButMaxReached = gameData.messages.consume.consumed_but_max_reached;
 
             // Meta Format
 

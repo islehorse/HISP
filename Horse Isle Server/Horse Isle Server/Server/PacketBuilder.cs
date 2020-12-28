@@ -89,6 +89,7 @@ namespace HISP.Server
         public const byte ITEM_SELL_ALL = 0x3D;
         public const byte ITEM_WEAR = 0x46;
         public const byte ITEM_REMOVE = 0x47;
+        public const byte ITEM_CONSUME = 0x51;
         public const byte ITEM_BINOCULARS = 0x5C;
         public const byte ITEM_MAGNIFYING = 0x5D;
         public const byte ITEM_RAKE = 0x5B;
