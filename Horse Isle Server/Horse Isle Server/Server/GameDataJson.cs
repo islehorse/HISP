@@ -550,6 +550,19 @@ namespace HISP.Server
             Messages.Brought5ButInventoryFull = gameData.messages.shop.brought_5_but_inv_full;
             Messages.Brought25ButInventoryFull = gameData.messages.shop.brought_25_but_inv_full;
 
+            // Player List
+
+            Messages.PlayerListHeader = gameData.messages.meta.player_list.playerlist_header;
+            Messages.PlayerListSelectFromFollowing = gameData.messages.meta.player_list.select_from_following;
+            Messages.PlayerListOfBuddiesFormat = gameData.messages.meta.player_list.list_of_buddies_format;
+            Messages.PlayerListOfNearby = gameData.messages.meta.player_list.list_of_players_nearby;
+            Messages.PlayerListOfPlayersFormat = gameData.messages.meta.player_list.list_of_all_players_format;
+            Messages.PlayerListOfPlayersAlphabetically = gameData.messages.meta.player_list.list_of_all_players_alphabetically;
+            Messages.PlayerListMapAllBuddiesForamt = gameData.messages.meta.player_list.map_all_buddies_format;
+            Messages.PlayerListMapAllPlayersFormat = gameData.messages.meta.player_list.map_all_players_format;
+            Messages.PlayerListAbuseReport = gameData.messages.meta.player_list.abuse_report;
+
+
             // Consume
 
             Messages.ConsumeItemFormat = gameData.messages.consume.consumed_item_format;

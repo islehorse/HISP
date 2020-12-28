@@ -28,13 +28,17 @@ namespace HISP.Player
             }
 
         }
+
+ 
         public void AddFriend(User userToFriend)
         {
             bool pendingRequest = Database.IsPendingBuddyRequestExist(baseUser.Id, userToFriend.Id);
             if (pendingRequest)
             {
                 Database.AcceptBuddyRequest(baseUser.Id, userToFriend.Id);
+
                 List.Add(userToFriend.Id);
+                userToFriend.Friends.List.Add(baseUser.Id);
             }
             else
             {

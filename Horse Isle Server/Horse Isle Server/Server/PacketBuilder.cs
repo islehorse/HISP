@@ -29,7 +29,6 @@ namespace HISP.Server
         public const byte PACKET_KEEP_ALIVE = 0x7C;
         public const byte PACKET_DYNAMIC_BUTTON = 0x45;
         public const byte PACKET_DYNAMIC_INPUT = 0x46;
-        
         public const byte PACKET_PLAYER = 0x18;
         public const byte PACKET_INVENTORY = 0x17;
         public const byte PACKET_TRANSPORT = 0x29;
@@ -53,8 +52,10 @@ namespace HISP.Server
 
         public const byte PLAYERINFO_LEAVE = 0x16;
         public const byte PLAYERINFO_UPDATE_OR_CREATE = 0x15;
-        public const byte PLAYERINFO_HIGHSCORES_LIST = 0x51;
-        public const byte PLAYERINFO_BESTTIMES_LIST = 0x52;
+        public const byte PLAYERINFO_PLAYER_LIST = 0x14;
+
+        public const byte PROFILE_HIGHSCORES_LIST = 0x51;
+        public const byte PROFILE_BESTTIMES_LIST = 0x52;
 
         public const byte VIEW_PROFILE = 0x14;
         public const byte SAVE_PROFILE = 0x15;

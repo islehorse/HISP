@@ -10,6 +10,7 @@ using HISP.Game;
 using HISP.Security;
 using HISP.Game.Chat;
 using HISP.Player.Equips;
+using System.Drawing;
 
 namespace HISP.Server
 {
@@ -125,6 +126,30 @@ namespace HISP.Server
             
 
         }
+
+        public static void OnPlayerInfoPacket(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Requests player info when not logged in.");
+                return;
+            }
+            if(packet.Length < 3)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent playerinfo packet of wrong size");
+            }
+
+            byte method = packet[1];
+            switch(method)
+            {
+                case PacketBuilder.PLAYERINFO_PLAYER_LIST:
+                    sender.LoggedinUser.MetaPriority = true;
+                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerList(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
+            }
+
+        }
         public static void OnDynamicButtonPressed(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -150,18 +175,22 @@ namespace HISP.Server
             switch(buttonId)
             {
                 case 3:
+                    sender.LoggedinUser.MetaPriority = true;
                     byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildQuestLog(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case 21:
+                    sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPrivateNotes(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case 20:
+                    sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigameRankingsForUser(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case 24:
+                    sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAwardList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
@@ -576,15 +605,17 @@ namespace HISP.Server
                     return;
                 }
             }
-            else if (method == PacketBuilder.PLAYERINFO_HIGHSCORES_LIST)
+            else if (method == PacketBuilder.PROFILE_HIGHSCORES_LIST)
             {
+                sender.LoggedinUser.MetaPriority = true;
                 string packetStr = Encoding.UTF8.GetString(packet);
                 string gameName = packetStr.Substring(2, packetStr.Length - 4);
                 byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildTopHighscores(gameName));
                 sender.SendPacket(metaTag);
             }
-            else if (method == PacketBuilder.PLAYERINFO_BESTTIMES_LIST)
+            else if (method == PacketBuilder.PROFILE_BESTTIMES_LIST)
             {
+                sender.LoggedinUser.MetaPriority = true;
                 string packetStr = Encoding.UTF8.GetString(packet);
                 string gameName = packetStr.Substring(2, packetStr.Length - 4);
                 byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildTopTimes(gameName));
@@ -1977,6 +2008,49 @@ namespace HISP.Server
             return count;
         }
 
+        public static Point[] GetAllBuddyLocations(User caller)
+        {
+            List<Point> allLocations = new List<Point>();
+
+            foreach (GameClient client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                {
+
+                    if (!caller.Friends.List.Contains(client.LoggedinUser.Id))
+                        continue;
+                    
+
+                    if (!client.LoggedinUser.Stealth)
+                        allLocations.Add(new Point(client.LoggedinUser.X, client.LoggedinUser.Y));
+
+                }
+            }
+
+            return allLocations.ToArray();
+        }
+
+        public static Point[] GetAllPlayerLocations(User caller)
+        {
+            List<Point> allLocations = new List<Point>();
+            
+            foreach (GameClient client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                {
+
+                    if (client.LoggedinUser.Id == caller.Id) 
+                        continue;
+                    
+                    if (!client.LoggedinUser.Stealth)
+                        allLocations.Add(new Point(client.LoggedinUser.X, client.LoggedinUser.Y));
+                    
+                }
+
+                        
+            }
+            return allLocations.ToArray();
+        }
         public static int GetNumberOfPlayersListeningToAdsChat()
         {
             int count = 0;
