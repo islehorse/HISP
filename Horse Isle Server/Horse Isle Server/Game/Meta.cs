@@ -439,6 +439,8 @@ namespace HISP.Game
                     TileArg = TileCode.Split('-')[1];
                     TileCode = TileCode.Split('-')[0];
                 }
+                if (TileCode == "EXITABLE")
+                    message += Messages.ExitThisPlace;
 
                 if (TileCode == "TRANSPORT")
                 {
