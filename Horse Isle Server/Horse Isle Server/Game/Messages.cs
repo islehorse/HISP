@@ -1,4 +1,5 @@
 ﻿using HISP.Server;
+using System;
 
 namespace HISP.Game
 {
@@ -173,6 +174,12 @@ namespace HISP.Game
         public static string GameHighScoreHeaderFormat;
         public static string GameHighScoreFormat;
 
+        // Awards
+
+        public static string AwardHeader;
+        public static string NoAwards;
+        public static string AwardFormat;
+        
 
         // Shop
         public static string ThingsIAmSelling;
@@ -240,6 +247,11 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatAwardEntry(int iconId, string title, int moneyBonus)
+        {
+            return AwardFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", title).Replace("%BONUS%", moneyBonus.ToString("N0"));
+        }
+
         public static string FormatBestTimeHeader(string gameName)
         {
             return GameBestTimeHeaderFormat.Replace("%GAMETITLE%", gameName);
@@ -278,7 +290,9 @@ namespace HISP.Game
         }
         public static string FormatQuestFooter(int totalQuestsComplete, int totalQuests, int questPoints, int totalQuestPoints)
         {
-            return QuestFooterFormat.Replace("%TOTALCOMPLETED%", totalQuestsComplete.ToString("N0")).Replace("%TOTALQUESTS%", totalQuests.ToString("N0")).Replace("%TOTALPERCENT%", ((totalQuestsComplete / totalQuests) * 100).ToString()).Replace("%YOURQP%", questPoints.ToString("N0")).Replace("%YOURQP%", totalQuestPoints.ToString("N0")).Replace("%QPERCENT%", ((totalQuestsComplete / totalQuests) * 100).ToString()).Replace("%MAXQP%", totalQuestPoints.ToString("N0"));
+            int questsComplete = Convert.ToInt32(Math.Floor(((decimal)totalQuestsComplete / (decimal)totalQuests) * (decimal)100.0));
+            int questPointsComplete = Convert.ToInt32(Math.Floor(((decimal)questPoints / (decimal)totalQuestPoints) * (decimal)100.0));
+            return QuestFooterFormat.Replace("%TOTALCOMPLETED%", totalQuestsComplete.ToString("N0")).Replace("%TOTALQUESTS%", totalQuests.ToString("N0")).Replace("%TOTALPERCENT%", questsComplete.ToString()).Replace("%YOURQP%", questPoints.ToString("N0")).Replace("%YOURQP%", totalQuestPoints.ToString("N0")).Replace("%QPERCENT%", questPointsComplete.ToString()).Replace("%MAXQP%", totalQuestPoints.ToString("N0"));
         }
         public static string FormatQuestLogQuest(string questTitle, int questPoints, string difficulty, string completionStatus)
         {
@@ -429,7 +443,7 @@ namespace HISP.Game
         }
         public static string FormatShopEntry(int iconid, string count, string name, int price)
         {
-            return ShopEntryFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count).Replace("%TITLE%", name).Replace("%PRICE%", price.ToString());
+            return ShopEntryFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count).Replace("%TITLE%", name).Replace("%PRICE%", price.ToString("N0"));
         }
         public static string FormatWearButton(int randomId)
         {

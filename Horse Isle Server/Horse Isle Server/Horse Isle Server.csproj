@@ -81,6 +81,7 @@
     <Compile Include="Game\Quest.cs" />
     <Compile Include="Game\Shop.cs" />
     <Compile Include="Game\Inventory\ShopInventory.cs" />
+    <Compile Include="Player\Award.cs" />
     <Compile Include="Player\Equips\Jewelry.cs" />
     <Compile Include="Player\Equips\CompetitionGear.cs" />
     <Compile Include="Player\Highscore.cs" />

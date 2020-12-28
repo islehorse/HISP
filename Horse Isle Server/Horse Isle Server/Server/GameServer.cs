@@ -161,6 +161,10 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigameRankingsForUser(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
+                case 24:
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAwardList(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
                 default:
                     Logger.ErrorPrint("Dynamic button #" + buttonId + " unknown...");
                     break;
@@ -311,6 +315,45 @@ namespace HISP.Server
                 UpdateArea(sender);
                 UpdateUserInfo(sender.LoggedinUser);
             }
+            else if (method == PacketBuilder.SECCODE_AWARD)
+            {
+                byte[] ExpectedSecCode = sender.LoggedinUser.GenerateSecCode();
+                byte[] GotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
+                if (ExpectedSecCode.SequenceEqual(GotSecCode))
+                {
+                    if (packet.Length < 6)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a seccode AWARD request with invalid size");
+                        return;
+                    }
+
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string awardIdStr = packetStr.Substring(6, packetStr.Length - 6 - 2);
+
+                    int value = -1;
+                    try
+                    {
+                        value = int.Parse(awardIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid awardid value");
+                        return;
+                    }
+
+                    sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(value));
+                    return;
+                }
+                else
+                {
+                    byte[] errorMessage = PacketBuilder.CreateChat(Messages.InvalidSecCodeError, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(errorMessage);
+                    Logger.HackerPrint(sender.LoggedinUser.Username + " Sent invalid sec code");
+                    return;
+                }
+            }
             else if (method == PacketBuilder.SECCODE_SCORE || method == PacketBuilder.SECCODE_TIME)
             {
                 bool time = (method == PacketBuilder.SECCODE_TIME);
@@ -329,10 +372,10 @@ namespace HISP.Server
 
                     string packetStr = Encoding.UTF8.GetString(packet);
                     string gameInfoStr = packetStr.Substring(6, packetStr.Length - 6 - 2);
-                    if(gameInfoStr.Contains("|"))
+                    if (gameInfoStr.Contains("|"))
                     {
                         string[] gameInfo = gameInfoStr.Split('|');
-                        if(gameInfo.Length < 2)
+                        if (gameInfo.Length < 2)
                         {
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a invalid seccode score request");
                             return;
@@ -340,7 +383,7 @@ namespace HISP.Server
 
                         string gameTitle = gameInfo[0];
                         string gameScoreStr = gameInfo[1];
-                        
+
                         int value = -1;
                         try
                         {
@@ -378,7 +421,7 @@ namespace HISP.Server
                     Logger.HackerPrint(sender.LoggedinUser.Username + " Sent invalid sec code");
                     return;
                 }
-            } 
+            }
             else if (method == PacketBuilder.SECCODE_MONEY)
             {
 
@@ -533,7 +576,7 @@ namespace HISP.Server
                     return;
                 }
             }
-            else if(method == PacketBuilder.PLAYERINFO_HIGHSCORES_LIST)
+            else if (method == PacketBuilder.PLAYERINFO_HIGHSCORES_LIST)
             {
                 string packetStr = Encoding.UTF8.GetString(packet);
                 string gameName = packetStr.Substring(2, packetStr.Length - 4);

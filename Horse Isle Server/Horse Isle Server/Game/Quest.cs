@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using HISP.Player;
 using HISP.Server;
@@ -70,6 +71,21 @@ namespace HISP.Game
             }
             return totalQp;
         }
+
+
+        public static int GetTotalQuestsComplete(User user)
+        {
+            QuestEntry[] questList = GetPublicQuestList();
+            int totalComplete = 0;
+            foreach (QuestEntry quest in questList)
+            {
+                if (user.Quests.GetTrackedQuestAmount(quest.Id) > 0)
+                    totalComplete++;
+            }
+            return totalComplete;
+        }
+
+
         public static QuestEntry[] GetPublicQuestList()
         {
             QuestEntry[] quests = QuestList.OrderBy(o => o.Title).ToArray();
@@ -103,6 +119,11 @@ namespace HISP.Game
                     return false; 
 
             }
+
+            // Check if user has award unlocked
+            if(quest.AwardRequired != 0)
+                if (!user.Awards.HasAward(Award.GetAwardById(quest.AwardRequired)))
+                    return false;
 
             // Check if i have required items
             foreach (QuestItemInfo itemInfo in quest.ItemsRequired)
@@ -180,6 +201,26 @@ namespace HISP.Game
                     byte[] ChatPacket = PacketBuilder.CreateChat(quest.SuccessMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     user.LoggedinClient.SendPacket(ChatPacket);
                 }
+
+
+                // Check if award unlocked
+                int questPointsPercent = Convert.ToInt32(Math.Floor(((decimal)user.QuestPoints / (decimal)GetTotalQuestPoints()) * (decimal)100.0));
+                if (questPointsPercent >= 25)
+                    user.Awards.AddAward(Award.GetAwardById(1)); // 25% Quest Completion Award.
+                if (questPointsPercent >= 50)
+                    user.Awards.AddAward(Award.GetAwardById(2)); // 50% Quest Completion Award.
+                if (questPointsPercent >= 75)
+                    user.Awards.AddAward(Award.GetAwardById(3)); // 75% Quest Completion Award.
+                if (questPointsPercent >= 100)
+                    user.Awards.AddAward(Award.GetAwardById(4)); // 100% Quest Completion Award.
+
+                // Is cloud isles quest?
+                if(quest.Id == 1373)
+                {
+                    byte[] swfLoadPacket = PacketBuilder.CreateSwfModulePacket("ballooncutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
+                    user.LoggedinClient.SendPacket(swfLoadPacket);
+                }    
+
                 return true;
             }
             else {
@@ -193,6 +234,7 @@ namespace HISP.Game
                 }
                 return false;
             };
+
         }
         public static bool DoesQuestExist(int id)
         {

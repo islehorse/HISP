@@ -46,7 +46,7 @@ namespace HISP.Server
         public const byte SECCODE_SCORE = 0x3D;
         public const byte SECCODE_TIME = 0x3E;
         public const byte SECCODE_MONEY = 0x1E;
-
+        public const byte SECCODE_AWARD = 0x33;
 
         public const byte NPC_START_CHAT = 0x14;
         public const byte NPC_CONTINUE_CHAT = 0x15;
@@ -550,9 +550,9 @@ namespace HISP.Server
 
         public static byte[] CreatePlayerData(int money, int playerCount, int mail)
         {
-            byte[] moneyStrBytes = Encoding.UTF8.GetBytes(money.ToString());
-            byte[] playerStrBytes = Encoding.UTF8.GetBytes(playerCount.ToString());
-            byte[] mailStrBytes = Encoding.UTF8.GetBytes(mail.ToString());
+            byte[] moneyStrBytes = Encoding.UTF8.GetBytes(money.ToString("N0"));
+            byte[] playerStrBytes = Encoding.UTF8.GetBytes(playerCount.ToString("N0"));
+            byte[] mailStrBytes = Encoding.UTF8.GetBytes(mail.ToString("N0"));
 
             MemoryStream ms = new MemoryStream();
             ms.WriteByte(PACKET_BASE_STATS);

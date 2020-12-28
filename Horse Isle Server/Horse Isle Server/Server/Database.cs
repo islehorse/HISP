@@ -27,6 +27,7 @@ namespace HISP.Server
                 string TrackedQuest = "CREATE TABLE TrackedQuest(playerId INT, questId INT, timesCompleted INT)";
                 string OnlineUsers = "CREATE TABLE OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3))";
                 string CompetitionGear = "CREATE TABLE CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)";
+                string Awards = "CREATE TABLE Awards(playerId INT, awardId INT)";
                 string Jewelry = "CREATE TABLE Jewelry(playerId INT, slot1 INT, slot2 INT, slot3 INT, slot4 INT)";
                 string Leaderboards = "CREATE TABLE Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
@@ -89,6 +90,19 @@ namespace HISP.Server
 
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = Jewelry;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = Awards;
                     sqlCommand.ExecuteNonQuery();
                     sqlCommand.Dispose();
                 }
@@ -506,6 +520,48 @@ namespace HISP.Server
                 return timesComplete;
             }
         }
+        
+
+
+        public static int[] GetAwards(int playerId)
+        {
+            List<int> awards = new List<int>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT awardId FROM Awards WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while(reader.Read())
+                {
+                    awards.Add(reader.GetInt32(0));
+                }
+                sqlCommand.Dispose();
+                return awards.ToArray();
+            }
+        }
+        public static void AddAward(int playerId, int awardId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "INSERT INTO Awards VALUES(@playerId,@awardId)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@awardId", awardId);
+
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+                return;
+            }
+        }
+
 
         public static bool HasCompetitionGear(int playerId)
         {

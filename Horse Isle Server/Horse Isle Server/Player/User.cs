@@ -40,6 +40,7 @@ namespace HISP.Player
         public Shop LastShoppedAt;
         public PlayerQuests Quests;
         public Highscore Highscores;
+        public Award Awards;
         public int FreeMinutes
         {
             get
@@ -374,7 +375,7 @@ namespace HISP.Player
             Gender = Database.GetGender(UserId);
             MailBox = new Mailbox(this);
             Highscores = new Highscore(this);
-
+            Awards = new Award(this);
 
             // Generate SecCodes
 
