@@ -2026,7 +2026,7 @@ namespace HISP.Server
                     forClient.SendPacket(swfModulePacket);
                 }
                 if (specialTile.Code != null)
-                    if (!ProcessMapCodeWithArg(forClient, specialTile.Code))
+                    if (!ProcessMapCodeWithArg(forClient, specialTile))
                         return;
                 LocationStr = Meta.BuildSpecialTileInfo(forClient.LoggedinUser, specialTile);
             }
@@ -2050,8 +2050,9 @@ namespace HISP.Server
         /*
          *   Other...
          */
-        public static bool ProcessMapCodeWithArg(GameClient forClient, string mapCode)
+        public static bool ProcessMapCodeWithArg(GameClient forClient, World.SpecialTile tile)
         {
+            string mapCode = tile.Code;
             if(mapCode.Contains('-'))
             {
                 string[] codeInfo = mapCode.Split('-');
@@ -2065,6 +2066,17 @@ namespace HISP.Server
                         string[] args = paramaters.Split(',');
                         try
                         {
+                            if(World.InIsle(tile.X, tile.Y))
+                            {
+                                World.Isle isle = World.GetIsle(tile.X, tile.Y);
+                                int tileset = isle.Tileset;
+                                int overlay = Map.GetTileId(tile.X, tile.Y, true);
+                                if(tileset == 6 && overlay == 249)
+                                {
+                                    byte[] swfPacket = PacketBuilder.CreateSwfModulePacket("warpcutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
+                                    forClient.SendPacket(swfPacket);
+                                }
+                            }
                             int newX = int.Parse(args[0]);
                             int newY = int.Parse(args[1]);
                             forClient.LoggedinUser.Teleport(newX, newY);
