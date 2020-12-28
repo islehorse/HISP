@@ -43,6 +43,19 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
+            if (args[0] == "QUEST")
+            {
+                int questId = 0;
+                try
+                {
+                    questId = int.Parse(args[1]);
+                    Quest.ActivateQuest(user, Quest.GetQuestById(questId));
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);

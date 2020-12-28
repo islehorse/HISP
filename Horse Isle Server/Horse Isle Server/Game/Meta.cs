@@ -323,7 +323,6 @@ namespace HISP.Game
                 Transport.TransportLocation transportLocation = Transport.GetTransportLocation(transportLocationId);
                 message += Messages.FormatTransportMessage(transportLocation.Type, transportLocation.LocationTitle, transportLocation.Cost, transportLocation.Id, transportLocation.GotoX, transportLocation.GotoY);
             }
-            message += "^R1";
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
             return message;
@@ -358,6 +357,22 @@ namespace HISP.Game
             return message;
         }
 
+        public static string BuildAwardList(User user)
+        {
+            string message = Messages.AwardHeader;
+            if (user.Awards.AwardsEarned.Length <= 0)
+                message += Messages.NoAwards;
+            else
+                foreach(Award.AwardEntry award in user.Awards.AwardsEarned)
+                    message += Messages.FormatAwardEntry(award.IconId, award.Title, award.MoneyBonus);
+                
+            
+
+
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildQuestLog(User user)
         {
             string message = "";
@@ -382,14 +397,8 @@ namespace HISP.Game
                 message += Messages.FormatQuestLogQuest(quest.Title, quest.QuestPointsEarned, quest.Difficulty, fmsg);
             }
 
-            int totalComplete = 0;
-            int totalQuestPoints = 0;
-            foreach(Quest.QuestEntry quest in questList)
-            {
-                if(user.Quests.GetTrackedQuestAmount(quest.Id) > 0)
-                        totalComplete++;
-                totalQuestPoints += quest.QuestPointsEarned;
-            }
+            int totalComplete = Quest.GetTotalQuestsComplete(user);
+            int totalQuestPoints = Quest.GetTotalQuestPoints();
 
             message += Messages.FormatQuestFooter(totalComplete, questList.Length, user.QuestPoints, totalQuestPoints);
             message += Messages.BackToMap;
@@ -434,7 +443,7 @@ namespace HISP.Game
                 if (TileCode == "TRANSPORT")
                 {
                     Transport.TransportPoint point = Transport.GetTransportPoint(specialTile.X, specialTile.Y);
-                    message += Meta.BuildTransportInfo(point) + "^R1";
+                    message += Meta.BuildTransportInfo(point);
                 }
 
                 if (TileCode == "STRAWPILE")

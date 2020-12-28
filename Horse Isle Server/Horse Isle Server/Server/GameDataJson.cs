@@ -3,6 +3,7 @@ using System.IO;
 using Newtonsoft.Json;
 using HISP.Game;
 using HISP.Game.Chat;
+using HISP.Player;
 
 namespace HISP.Server
 {
@@ -372,6 +373,27 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Shop ID: "+ shop.Id + " Selling items at " + shop.SellPricePercentage + "% and buying at " + shop.BuyPricePercentage);
             }
 
+            // Register awards
+
+            int totalAwards = gameData.award_list.Count;
+            Award.GlobalAwardList = new Award.AwardEntry[totalAwards];
+            for (int i = 0; i < totalAwards; i++)
+            {
+
+                Award.AwardEntry award = new Award.AwardEntry();
+                award.Id = i+1;
+                award.Sort = gameData.award_list[i].sort_by;
+                award.Title = gameData.award_list[i].title;
+                award.IconId = gameData.award_list[i].icon_id;
+                award.MoneyBonus = gameData.award_list[i].earn_money;
+                award.CompletionText = gameData.award_list[i].on_complete_text;
+                award.Description = gameData.award_list[i].description;
+
+                Award.GlobalAwardList[i] = award;
+
+                Logger.DebugPrint("Registered Award ID: " + award.Id + " - " + award.Title);
+            }
+
             Item.Present = gameData.item.special.present;
             Item.MailMessage = gameData.item.special.mail_message;
             Item.DorothyShoes = gameData.item.special.dorothy_shoes;
@@ -561,6 +583,12 @@ namespace HISP.Server
 
             Messages.GameBestTimeHeaderFormat = gameData.messages.meta.highscores.game_besttime_header;
             Messages.GameBestTimeFormat = gameData.messages.meta.highscores.game_besttime_format;
+
+            // Awards
+
+            Messages.AwardHeader = gameData.messages.meta.awards_page.awards_header;
+            Messages.NoAwards = gameData.messages.meta.awards_page.no_awards;
+            Messages.AwardFormat = gameData.messages.meta.awards_page.award_format;
 
             // Sec Codes
 
