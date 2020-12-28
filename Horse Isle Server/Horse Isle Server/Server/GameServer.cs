@@ -1368,7 +1368,71 @@ namespace HISP.Server
                     }
                     break;
 
+                case PacketBuilder.ITEM_CONSUME:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    randomId = 0;
 
+                    try
+                    {
+                        randomId = Int32.Parse(randomIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        return;
+                    }
+
+                    if (sender.LoggedinUser.Inventory.HasItem(randomId))
+                    {
+                        InventoryItem itm = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
+                        ItemInstance instance = itm.ItemInstances[0];
+                        sender.LoggedinUser.Inventory.Remove(instance);
+                        Item.ItemInformation itmInfo = instance.GetItemInfo();
+                        bool toMuch = false;
+                        foreach(Item.Effects effect in itmInfo.Effects)
+                        {
+                            switch(effect.EffectsWhat)
+                            {
+                                case "TIREDNESS":
+                                    if (sender.LoggedinUser.Tiredness + effect.EffectAmount > 1000)
+                                        toMuch = true;
+                                    sender.LoggedinUser.Tiredness += effect.EffectAmount;
+                                    break;
+                                case "THIRST":
+                                    if (sender.LoggedinUser.Thirst + effect.EffectAmount > 1000)
+                                        toMuch = true;
+                                    sender.LoggedinUser.Thirst += effect.EffectAmount;
+                                    break;
+                                case "HUNGER":
+                                    if (sender.LoggedinUser.Hunger + effect.EffectAmount > 1000)
+                                        toMuch = true;
+                                    sender.LoggedinUser.Hunger += effect.EffectAmount;
+                                    break;
+                                case "NOEFFECT":
+                                    break;
+                                default:
+                                    Logger.ErrorPrint("Unknown effect: " + effect.EffectsWhat);
+                                    break;
+
+                            }
+                        }
+
+
+                        byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatConsumeItemMessaege(itmInfo.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(chatPacket);
+                        if (toMuch)
+                        {
+                            chatPacket = PacketBuilder.CreateChat(Messages.ConsumedButMaxReached, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(chatPacket);
+                        }
+                        UpdateInventory(sender);
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to consume an item they did not have.");
+                    }
+                    break;
                 case PacketBuilder.ITEM_DROP:
                     packetStr = Encoding.UTF8.GetString(packet);
                     randomIdStr = packetStr.Substring(2, packet.Length - 2);
@@ -1912,6 +1976,19 @@ namespace HISP.Server
             
             return count;
         }
+
+        public static int GetNumberOfPlayersListeningToAdsChat()
+        {
+            int count = 0;
+            foreach (GameClient client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                    if (!client.LoggedinUser.MuteAds)
+                        count++;
+            }
+            return count;
+        }
+
         public static int GetNumberOfModsOnline()
         {
             int count = 0;
@@ -2066,20 +2143,20 @@ namespace HISP.Server
                         string[] args = paramaters.Split(',');
                         try
                         {
-                            if(World.InIsle(tile.X, tile.Y))
+                            int newX = int.Parse(args[0]);
+                            int newY = int.Parse(args[1]);
+                            forClient.LoggedinUser.Teleport(newX, newY);
+                            if (World.InIsle(tile.X, tile.Y))
                             {
                                 World.Isle isle = World.GetIsle(tile.X, tile.Y);
                                 int tileset = isle.Tileset;
                                 int overlay = Map.GetTileId(tile.X, tile.Y, true);
-                                if(tileset == 6 && overlay == 249)
+                                if (tileset == 6 && overlay == 249) // warp point
                                 {
                                     byte[] swfPacket = PacketBuilder.CreateSwfModulePacket("warpcutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
                                     forClient.SendPacket(swfPacket);
                                 }
                             }
-                            int newX = int.Parse(args[0]);
-                            int newY = int.Parse(args[1]);
-                            forClient.LoggedinUser.Teleport(newX, newY);
                             return false;
                         }
                         catch(Exception)

@@ -110,7 +110,7 @@ namespace HISP.Game.Chat
 
             foreach(Filter filter in FilteredWords)
             {
-                if (filter.MatchAll)
+                if (!filter.MatchAll)
                 {
                     foreach (string word in wordsSaid)
                     {
@@ -401,7 +401,8 @@ namespace HISP.Game.Chat
                     else
                         return Messages.FormatGlobalChatMessage(user.Username, message);
                 case ChatChannel.Ads:
-                    return Messages.FormatAdsChatMessage(user.Username, message);
+                    int numbListening = GameServer.GetNumberOfPlayersListeningToAdsChat(); // vry specific function ik
+                    return Messages.FormatAdsChatForSender(numbListening, user.Username, message);
                 case ChatChannel.Buddies:
                     return Messages.FormatBuddyChatMessageForSender(user.Friends.Count, user.Username, message);
                 case ChatChannel.Isle:
