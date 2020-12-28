@@ -402,7 +402,7 @@ namespace HISP.Game.Chat
                         return Messages.FormatGlobalChatMessage(user.Username, message);
                 case ChatChannel.Ads:
                     int numbListening = GameServer.GetNumberOfPlayersListeningToAdsChat(); // vry specific function ik
-                    return Messages.FormatAdsChatForSender(numbListening, user.Username, message);
+                    return Messages.FormatAdsChatForSender(numbListening-1, user.Username, message);
                 case ChatChannel.Buddies:
                     return Messages.FormatBuddyChatMessageForSender(user.Friends.Count, user.Username, message);
                 case ChatChannel.Isle:
