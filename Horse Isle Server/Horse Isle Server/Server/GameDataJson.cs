@@ -571,10 +571,11 @@ namespace HISP.Server
 
             Messages.BuddyListHeader = gameData.messages.meta.player_list.online_buddy_header;
             Messages.BuddyListOnlineBuddyEntryFormat = gameData.messages.meta.player_list.online_buddy_format;
-            Messages.BuddyListOfflineBuddys = gameData.messages.meta.offline_buddys;
-            Messages.BuddyListOfflineBuddyEntryFormat = gameData.messages.player_list.offline_buddy_format;
+            Messages.BuddyListOfflineBuddys = gameData.messages.meta.player_list.offline_buddys;
+            Messages.BuddyListOfflineBuddyEntryFormat = gameData.messages.meta.player_list.offline_buddy_format;
 
-            Messages.PlayerListIconInformation = gameData.messages.player_list.icon_info;
+            Messages.PlayerListIconFormat = gameData.messages.meta.player_list.icon_format;
+            Messages.PlayerListIconInformation = gameData.messages.meta.player_list.icon_info;
             // Consume
 
             Messages.ConsumeItemFormat = gameData.messages.consume.consumed_item_format;

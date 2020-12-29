@@ -244,6 +244,7 @@ namespace HISP.Game
         public static string BuddyListOfflineBuddys;
         public static string BuddyListOfflineBuddyEntryFormat;
 
+        public static string PlayerListIconFormat;
         public static string PlayerListIconInformation;
 
         // Meta
@@ -280,10 +281,14 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
-        public static string FormatOnlineBuddyEntry(int iconId, string username, int userId, int time, int x, int y)
+        public static string FormatIconFormat(int iconId)
+        {
+            return PlayerListIconFormat.Replace("%ICON%", iconId.ToString());
+        }
+        public static string FormatOnlineBuddyEntry(string iconFormat, string username, int userId, int time, int x, int y)
         {
             string xy = FormatMapLocation(x, y);
-            return BuddyListOnlineBuddyEntryFormat.Replace("%ICON%", iconId.ToString()).Replace("%USERNAME%", username).Replace("%TIME%", time.ToString("N0")).Replace("%PLAYERID%", userId.ToString()).Replace("%MAPXY%", xy);
+            return BuddyListOnlineBuddyEntryFormat.Replace("%ICONFORMAT%", iconFormat).Replace("%USERNAME%", username).Replace("%TIME%", time.ToString("N0")).Replace("%PLAYERID%", userId.ToString()).Replace("%MAPXY%", xy);
         }
         public static string FormatOfflineBuddyEntry(string username, int userId, int time)
         {

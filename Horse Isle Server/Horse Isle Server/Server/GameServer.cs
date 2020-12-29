@@ -194,6 +194,11 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAwardList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
+                case 35:
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBuddyList(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
                 default:
                     Logger.ErrorPrint("Dynamic button #" + buttonId + " unknown...");
                     break;
@@ -1899,11 +1904,14 @@ namespace HISP.Server
             }
 
         }
+
         public static void OnDisconnect(GameClient sender)
         {
             connectedClients.Remove(sender);
             if (sender.LoggedIn)
             {
+                Database.SetPlayerLastLogin(Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()), sender.LoggedinUser.Id); // Set last login date
+
                 Database.RemoveOnlineUser(sender.LoggedinUser.Id);
                 // Send disconnect message
                 byte[] logoutMessageBytes = PacketBuilder.CreateChat(Messages.FormatLogoutMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
@@ -1926,6 +1934,19 @@ namespace HISP.Server
          *  Get(Some Information)
          */
 
+
+        public static bool IsUserOnline(int id)
+        {
+            try
+            {
+                GetUserById(id);
+                return true;
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+        }
         public static User[] GetUsersUsersInIsle(World.Isle isle, bool includeStealth = false, bool includeMuted = false)
         {
             List<User> usersInIsle = new List<User>();
