@@ -231,7 +231,20 @@ namespace HISP.Game
         public static string PlayerListMapAllBuddiesForamt;
         public static string PlayerListMapAllPlayersFormat;
         public static string PlayerListAbuseReport;
-        
+
+        public static int ThreeMonthSubscripitionIcon;
+        public static int YearSubscriptionIcon;
+        public static int NewUserIcon;
+        public static int MonthSubscriptionIcon;
+        public static int AdminIcon;
+        public static int ModeratorIcon;
+
+        public static string BuddyListHeader;
+        public static string BuddyListOnlineBuddyEntryFormat;
+        public static string BuddyListOfflineBuddys;
+        public static string BuddyListOfflineBuddyEntryFormat;
+
+        public static string PlayerListIconInformation;
 
         // Meta
         public static string IsleFormat;
@@ -267,6 +280,15 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatOnlineBuddyEntry(int iconId, string username, int userId, int time, int x, int y)
+        {
+            string xy = FormatMapLocation(x, y);
+            return BuddyListOnlineBuddyEntryFormat.Replace("%ICON%", iconId.ToString()).Replace("%USERNAME%", username).Replace("%TIME%", time.ToString("N0")).Replace("%PLAYERID%", userId.ToString()).Replace("%MAPXY%", xy);
+        }
+        public static string FormatOfflineBuddyEntry(string username, int userId, int time)
+        {
+            return BuddyListOfflineBuddyEntryFormat.Replace("%USERNAME%", username).Replace("%TIME%", time.ToString("N0")).Replace("%PLAYERID%", userId.ToString());
+        }
         public static string FormatConsumeItemMessaege(string itemName)
         {
             return ConsumeItemFormat.Replace("%ITEM%", itemName);

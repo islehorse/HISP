@@ -562,7 +562,19 @@ namespace HISP.Server
             Messages.PlayerListMapAllPlayersFormat = gameData.messages.meta.player_list.map_all_players_format;
             Messages.PlayerListAbuseReport = gameData.messages.meta.player_list.abuse_report;
 
+            Messages.ThreeMonthSubscripitionIcon = gameData.messages.meta.player_list.icon_subbed_3month;
+            Messages.YearSubscriptionIcon = gameData.messages.meta.player_list.icon_subbed_year;
+            Messages.NewUserIcon = gameData.messages.meta.player_list.icon_new;
+            Messages.MonthSubscriptionIcon = gameData.messages.meta.player_list.icon_subbed_month;
+            Messages.AdminIcon = gameData.messages.meta.player_list.icon_admin;
+            Messages.ModeratorIcon = gameData.messages.meta.player_list.icon_mod;
 
+            Messages.BuddyListHeader = gameData.messages.meta.player_list.online_buddy_header;
+            Messages.BuddyListOnlineBuddyEntryFormat = gameData.messages.meta.player_list.online_buddy_format;
+            Messages.BuddyListOfflineBuddys = gameData.messages.meta.offline_buddys;
+            Messages.BuddyListOfflineBuddyEntryFormat = gameData.messages.player_list.offline_buddy_format;
+
+            Messages.PlayerListIconInformation = gameData.messages.player_list.icon_info;
             // Consume
 
             Messages.ConsumeItemFormat = gameData.messages.consume.consumed_item_format;

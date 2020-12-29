@@ -41,6 +41,7 @@ namespace HISP.Player
         public PlayerQuests Quests;
         public Highscore Highscores;
         public Award Awards;
+        public DateTime LoginTime;
         public int FreeMinutes
         {
             get
@@ -387,11 +388,9 @@ namespace HISP.Player
 
 
             Friends = new Friends(this);
-
+            LoginTime = DateTime.UtcNow;
             LoggedinClient = baseClient;
-
             Inventory = new PlayerInventory(this);
-
             Quests = new PlayerQuests(this);
         }
     }

@@ -1972,6 +1972,18 @@ namespace HISP.Server
             }
             throw new KeyNotFoundException("User was not found.");
         }
+
+        public static User GetUserById(int id)
+        {
+            foreach(GameClient client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                    if (client.LoggedinUser.Id == id)
+                        return client.LoggedinUser;
+            }
+
+            throw new KeyNotFoundException("User not found (not online?)");
+        }
         public static User[] GetNearbyUsers(int x, int y, bool includeStealth=false, bool includeMuted=false)
         {
             int startX = x - 15;

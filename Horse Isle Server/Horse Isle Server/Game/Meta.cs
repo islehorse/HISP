@@ -1,6 +1,7 @@
 ﻿using HISP.Player;
 using HISP.Server;
 using System;
+using System.Collections.Generic;
 
 namespace HISP.Game
 {
@@ -405,6 +406,21 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
 
             return message;
+        }
+
+
+        public static string BuildBuddyList(User user)
+        {
+            string message = Messages.BuddyListHeader;
+            foreach(int id in user.Friends.List.ToArray())
+            {
+                try
+                {
+                    User friend = GameServer.GetUserById(id);
+                    message += Messages.FormatOnlineBuddyEntry()
+                }
+                catch (KeyNotFoundException) { };
+            }
         }
 
         public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)
