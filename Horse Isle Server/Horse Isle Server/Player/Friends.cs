@@ -29,7 +29,22 @@ namespace HISP.Player
 
         }
 
- 
+        public void RemoveFriend(int userid)
+        {
+            Database.RemoveBuddy(baseUser.Id, userid);
+
+            // Remove buddy from there list if they are logged in
+            try
+            {
+
+                User removeFrom = GameServer.GetUserById(userid);
+                removeFrom.Friends.List.Remove(baseUser.Id);
+            }
+            catch (KeyNotFoundException) { /* User is ofline, remove from database is sufficent */ };
+
+
+            baseUser.Friends.List.Remove(userid);
+        }
         public void AddFriend(User userToFriend)
         {
             bool pendingRequest = Database.IsPendingBuddyRequestExist(baseUser.Id, userToFriend.Id);
