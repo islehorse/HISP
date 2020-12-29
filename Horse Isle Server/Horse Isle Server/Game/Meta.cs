@@ -417,10 +417,52 @@ namespace HISP.Game
                 try
                 {
                     User friend = GameServer.GetUserById(id);
-                    message += Messages.FormatOnlineBuddyEntry()
+                    int icon = -1;
+                    if (friend.NewPlayer)
+                        icon = Messages.NewUserIcon;
+                    if (friend.Subscribed)
+                    {
+                        int months = (DateTime.UtcNow.Month - friend.SubscribedUntil.Month) + 12 * (DateTime.UtcNow.Year - friend.SubscribedUntil.Year);
+                        if (months <= 1)
+                            icon = Messages.MonthSubscriptionIcon;
+                        else if (months <= 3)
+                            icon = Messages.ThreeMonthSubscripitionIcon;
+                        else
+                            icon = Messages.YearSubscriptionIcon;
+                    }
+                    if (friend.Moderator)
+                        icon = Messages.ModeratorIcon;
+                    if (friend.Administrator)
+                        icon = Messages.AdminIcon;
+
+                    string iconFormat = "";
+                    if (icon != -1)
+                        iconFormat = Messages.FormatIconFormat(icon);
+                    message += Messages.FormatOnlineBuddyEntry(iconFormat, friend.Username, friend.Id, (DateTime.UtcNow - friend.LoginTime).Minutes, friend.X, friend.Y);
+
                 }
-                catch (KeyNotFoundException) { };
+                catch (KeyNotFoundException) { }
+
             }
+            message += Messages.BuddyListOfflineBuddys;
+
+            foreach(int id in user.Friends.List.ToArray())
+            {
+                if (GameServer.IsUserOnline(id))
+                    continue;
+
+                message += Messages.BuddyListOfflineBuddys;
+                string username = Database.GetUsername(id);
+                int minutes = (DateTime.UtcNow - Converters.UnixTimeStampToDateTime(Database.GetPlayerLastLogin(id))).Minutes;
+
+                message += Messages.FormatOfflineBuddyEntry(username, id, minutes);
+            }
+
+            message += Messages.PlayerListIconInformation;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+
+            return message;
         }
 
         public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)

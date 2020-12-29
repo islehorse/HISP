@@ -42,16 +42,19 @@ namespace HISP.Player
         public Highscore Highscores;
         public Award Awards;
         public DateTime LoginTime;
+
+        public DateTime SubscribedUntil
+        {
+            get
+            {
+                return Converters.UnixTimeStampToDateTime(subscribedUntil);
+            }
+        }
         public int FreeMinutes
         {
             get
             {
                 int freeTime = Database.GetFreeTime(Id);
-                if(freeTime > 360)
-                {
-                    Database.SetFreeTime(Id, 360);
-                    return 360;
-                }
                 return freeTime;
             }
             set
