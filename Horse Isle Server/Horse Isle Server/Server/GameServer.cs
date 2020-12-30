@@ -1454,10 +1454,34 @@ namespace HISP.Server
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to wear an item they did not have.");
                     }
                     break;
+                case PacketBuilder.ITEM_DRINK:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    string idStr = packetStr.Substring(2, packet.Length - 4);
+                    if(idStr == "NaN") // Fountain
+                    {
+                        string msg = Messages.FountainDrankYourFull;
+                        bool looseMoney = RandomNumberGenerator.Next(0, 20) == 18;
+                        if(looseMoney)
+                        {
+                            int looseAmount = RandomNumberGenerator.Next(0, 100);
+                            if (looseAmount > sender.LoggedinUser.Money)
+                                looseAmount = sender.LoggedinUser.Money;
+                            sender.LoggedinUser.Money -= looseAmount;
+                            msg = Messages.FormatDroppedMoneyMessage(looseAmount);
+                        }
 
+                        sender.LoggedinUser.Thirst = 1000;
+                        byte[] drankFromFountainMessage = PacketBuilder.CreateChat(msg, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(drankFromFountainMessage);
+                    }
+                    else
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + "Sent unknown ITEM_DRINK command id: " + idStr);
+                    }
+                    break;
                 case PacketBuilder.ITEM_CONSUME:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    randomIdStr = packetStr.Substring(2, packet.Length - 3);
                     randomId = 0;
 
                     try

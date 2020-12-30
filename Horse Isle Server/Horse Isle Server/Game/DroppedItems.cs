@@ -24,8 +24,8 @@ namespace HISP.Game
             {
                 if (droppedItem.instance == null)
                 {
-                    continue;
                     RemoveDroppedItem(droppedItem);
+                    continue;
                 }
 
                 if(droppedItem.instance.ItemId == item.Id)

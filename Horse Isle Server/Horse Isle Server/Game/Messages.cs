@@ -272,7 +272,7 @@ namespace HISP.Game
         public static string East;
         public static string South;
         public static string West;
-
+        
         public static string TileFormat;
         public static string Seperator;
         
@@ -280,6 +280,11 @@ namespace HISP.Game
         public static string BackToMap;
         public static string LongFullLine;
         public static string MetaTerminator;
+
+        // Fountain 
+        public static string FountainMeta;
+        public static string FountainDrankYourFull;
+        public static string FountainDroppedMoneyFormat;
 
         // Disconnect Messages
         public static string KickReasonBanned;
@@ -295,7 +300,10 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
-
+        public static string FormatDroppedMoneyMessage(int amount)
+        {
+            return FountainDroppedMoneyFormat.Replace("%MONEY%", amount.ToString("N0"));
+        }
         public static string FormatAbuseReportPlayerNotFound(string username)
         {
             return AbuseReportPlayerNotFoundFormat.Replace("%USERNAME%", username);

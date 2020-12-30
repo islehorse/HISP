@@ -495,6 +495,7 @@ namespace HISP.Server
             Messages.AbuseReportPlayerNotFoundFormat = gameData.messages.abuse_report.player_not_found_format;
             Messages.AbuseReportFiled = gameData.messages.abuse_report.report_filed;
             Messages.AbuseReportProvideValidReason = gameData.messages.abuse_report.valid_reason;
+
             // Chat
 
             Messages.ChatViolationMessageFormat = gameData.messages.chat.violation_format;
@@ -630,6 +631,11 @@ namespace HISP.Server
 
             Messages.NoPitchforkMeta = gameData.messages.meta.hay_pile.no_pitchfork;
             Messages.HasPitchforkMeta = gameData.messages.meta.hay_pile.pitchfork;
+
+            // Fountain
+            Messages.FountainMeta = gameData.messages.meta.fountain;
+            Messages.FountainDrankYourFull = gameData.messages.fountain.drank_your_fill;
+            Messages.FountainDroppedMoneyFormat = gameData.messages.fountain.dropped_money;
 
             // Highscore
 
