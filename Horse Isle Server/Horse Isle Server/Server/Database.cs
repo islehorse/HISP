@@ -901,7 +901,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE userExt SET FreeMinutes=FreeMinutes+@minutes WHERE NOT FreeMinutes+@minutes > 360";
+                sqlCommand.CommandText = "UPDATE userExt SET FreeMinutes=FreeMinutes+@minutes";
                 sqlCommand.Parameters.AddWithValue("@minutes", minutes);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
