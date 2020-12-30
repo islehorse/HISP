@@ -80,7 +80,7 @@ namespace HISP.Server
                 return;
             }
             string packetStr = Encoding.UTF8.GetString(packet);
-            string dynamicInputStr = packetStr.Substring(1, packetStr.Length - 2);
+            string dynamicInputStr = packetStr.Substring(1, packetStr.Length - 3);
             if(dynamicInputStr.Contains("|"))
             {
                 string[] dynamicInput = dynamicInputStr.Split('|');
@@ -97,22 +97,57 @@ namespace HISP.Server
                         return;
                     }
 
-                    if(inputId == 7) // Private Notes
+                    switch(inputId) // Private Notes
                     {
-                        if(dynamicInput.Length >= 2)
-                        {
-                            sender.LoggedinUser.PrivateNotes = dynamicInput[1];
-                            UpdateStats(sender);
-                            byte[] chatPacket = PacketBuilder.CreateChat(Messages.PrivateNotesSavedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(chatPacket);
-                            return;
-                        }
-                        else
-                        {
-                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
-                            return;
-                        }
+                        case 7:
+                            if(dynamicInput.Length >= 2)
+                            {
+                                sender.LoggedinUser.PrivateNotes = dynamicInput[1];
+                                UpdateStats(sender);
+                                byte[] chatPacket = PacketBuilder.CreateChat(Messages.PrivateNotesSavedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(chatPacket);
+                                break;
+                            }
+                            else
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
+                                break;
+                            }
+                        case 12:
+                            if (dynamicInput.Length >= 2)
+                            {
+                                string userName = dynamicInput[1];
+                                string reason = dynamicInput[2];
+                                if(Database.CheckUserExist(userName))
+                                {
+                                    if(reason == "")
+                                    {
+                                        byte[] validReasonPlz = PacketBuilder.CreateChat(Messages.AbuseReportProvideValidReason, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(validReasonPlz);
+                                        break;
+                                    }
 
+                                    Database.AddReport(sender.LoggedinUser.Username, userName, reason);
+                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.AbuseReportFiled, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(chatPacket);
+                                    Update(sender);
+                                    break;
+                                }
+                                else
+                                {
+                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAbuseReportPlayerNotFound(userName), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(chatPacket);
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
+                                break;
+                            }
+                        default:
+                            Logger.ErrorPrint("Unknown dynamic input: " + inputId.ToString() + " packet dump: " + BitConverter.ToString(packet).Replace("-", " "));
+                            break;
                     }
 
 
@@ -158,49 +193,65 @@ namespace HISP.Server
                 return;
             }
             string packetStr = Encoding.UTF8.GetString(packet);
+            string buttonIdStr = packetStr.Substring(1, packetStr.Length - 3);
 
-            // Determine which button it is
-            int buttonId = 0;
-            string buttonIdStr = packetStr.Substring(1, packetStr.Length - 2);
-            try
+            switch(buttonIdStr)
             {
-                buttonId = int.Parse(buttonIdStr);
-            }
-            catch (FormatException)
-            {
-                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to click a invalid dynamic button");
-                return;
-            }
-
-            switch(buttonId)
-            {
-                case 3:
+                case "3": // Quest Log
                     sender.LoggedinUser.MetaPriority = true;
                     byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildQuestLog(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
-                case 21:
+                case "21": // Private Notes
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPrivateNotes(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
-                case 20:
+                case "20": // Minigame Rankings
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigameRankingsForUser(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
-                case 24:
+                case "24": // Award List
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAwardList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
-                case 35:
+                case "35": // Buddy List
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBuddyList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
+                case "36":
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildNearbyList(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "37": // All Players List
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerList());
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "40": // All Players Alphabetical
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListAlphabetical());
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "28c1":
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAbuseReportPage());
+                    sender.SendPacket(metaPacket);
+                    break;
                 default:
-                    Logger.ErrorPrint("Dynamic button #" + buttonId + " unknown...");
+                    if(AbuseReport.DoesReasonExist(buttonIdStr))
+                    {
+                        sender.LoggedinUser.MetaPriority = true;
+                        metaPacket = PacketBuilder.CreateMetaPacket(AbuseReport.GetReasonById(buttonIdStr).Meta);
+                        sender.SendPacket(metaPacket);
+                        break;
+                    }
+
+                    Logger.ErrorPrint("Dynamic button #" + buttonIdStr + " unknown...");
                     break;
             }
         }
@@ -640,7 +691,7 @@ namespace HISP.Server
             User loggedInUser = sender.LoggedinUser;
             byte movementDirection = packet[1];
 
-            if (loggedInUser.Thirst <= 25 || loggedInUser.Hunger <= 25 || loggedInUser.Tiredness <= 25)
+            if (loggedInUser.Thirst <= 0 || loggedInUser.Hunger <= 0 || loggedInUser.Tiredness <= 0)
             {
                 if (RandomNumberGenerator.Next(0, 10) == 7)
                 {
@@ -652,17 +703,17 @@ namespace HISP.Server
                         if (newDirection != movementDirection)
                         {
                             movementDirection = newDirection;
-                            if (loggedInUser.Thirst <= 25)
+                            if (loggedInUser.Thirst <= 0)
                             {
                                 byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatThirst.ToUpper()), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(chatMessage);
                             }
-                            else if (loggedInUser.Hunger <= 25)
+                            else if (loggedInUser.Hunger <= 0)
                             {
                                 byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatHunger.ToUpper()), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(chatMessage);
                             }
-                            else if (loggedInUser.Tiredness <= 25)
+                            else if (loggedInUser.Tiredness <= 0)
                             {
                                 byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatTired.ToUpper()), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(chatMessage);

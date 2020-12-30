@@ -29,6 +29,7 @@ namespace HISP.Server
                 string CompetitionGear = "CREATE TABLE CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)";
                 string Awards = "CREATE TABLE Awards(playerId INT, awardId INT)";
                 string Jewelry = "CREATE TABLE Jewelry(playerId INT, slot1 INT, slot2 INT, slot3 INT, slot4 INT)";
+                string AbuseReorts = "CREATE TABLE AbuseReports(ReportCreator TEXT(1028), Reporting TEXT(1028), ReportReason TEXT(1028))";
                 string Leaderboards = "CREATE TABLE Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
@@ -38,6 +39,19 @@ namespace HISP.Server
 
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = UserTable;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = AbuseReorts;
                     sqlCommand.ExecuteNonQuery();
                     sqlCommand.Dispose();
                 }
@@ -1176,6 +1190,25 @@ namespace HISP.Server
             }
         }
 
+
+        public static void AddReport(string reportCreator, string reporting, string reportReason)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                int epoch = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
+
+                sqlCommand.CommandText = "INSERT INTO AbuseReports VALUES(@reportCreator,@reporting,@reportReason)";
+                sqlCommand.Parameters.AddWithValue("@reportCreator", reportCreator);
+                sqlCommand.Parameters.AddWithValue("@reporting", reporting);
+                sqlCommand.Parameters.AddWithValue("@reportReason", reportReason);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+
+        }
         public static void AddMail(int toId, string fromName, string subject, string message)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

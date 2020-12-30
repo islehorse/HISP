@@ -31,6 +31,7 @@ namespace HISP.Player
         public string Gender;
         public bool MetaPriority = false;
 
+        public bool Idle;
         public int Facing;
         public Mailbox MailBox;
         public Friends Friends;
@@ -152,6 +153,7 @@ namespace HISP.Player
                 GameServer.UpdatePlayer(LoggedinClient);
             }
         }
+
 
         public int Experience
         {
@@ -305,6 +307,29 @@ namespace HISP.Player
         public  int SecCodeInc = 0;
         public int SecCodeCount = 0;
 
+
+        public int GetPlayerListIcon()
+        {
+            int icon = -1;
+            if (NewPlayer)
+                icon = Messages.NewUserIcon;
+            if (Subscribed)
+            {
+                int months = (DateTime.UtcNow.Month - SubscribedUntil.Month) + 12 * (DateTime.UtcNow.Year - SubscribedUntil.Year);
+                if (months <= 1)
+                    icon = Messages.MonthSubscriptionIcon;
+                else if (months <= 3)
+                    icon = Messages.ThreeMonthSubscripitionIcon;
+                else
+                    icon = Messages.YearSubscriptionIcon;
+            }
+            if (Moderator)
+                icon = Messages.ModeratorIcon;
+            if (Administrator)
+                icon = Messages.AdminIcon;
+
+            return icon;
+        }
         public void Teleport(int newX, int newY)
         {
             Logger.DebugPrint("Teleporting: " + Username + " to: " + newX.ToString() + "," + newY.ToString());

@@ -1,1 +1,1 @@
-<B>11 players<BR>online now:</B><BR>Akasha<BR>EquusKay<BR>Gho<BR>Indus<BR>Invalid<BR>LilacDiamonds<BR>Lozzy<BR>OrientExpress<BR>Passion<BR>Rhysand<BR>Riesl<BR><I><FONT COLOR=BLUE>(0 buddies)</FONT></I><BR><FONT COLOR=222222 SIZE=-1><I>This list refreshes every 30 seconds.</I></FONT>
+<B>3 players<BR>online now:</B><BR>BackInTime <FONT SIZE=-2 COLOR=660000>[new]</FONT><BR>Banaja<BR>Mudkip <FONT SIZE=-2 COLOR=660000>[new]</FONT><BR><I><FONT COLOR=BLUE>(0 buddies)</FONT></I><BR><FONT COLOR=222222 SIZE=-1><I>This list refreshes every 30 seconds.</I></FONT>

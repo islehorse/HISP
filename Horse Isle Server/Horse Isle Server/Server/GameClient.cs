@@ -82,7 +82,8 @@ namespace HISP.Server
             Logger.DebugPrint("Sending inactivity warning to: " + RemoteIp);
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatIdleWarningMessage(), PacketBuilder.CHAT_BOTTOM_RIGHT);
             SendPacket(chatPacket);
-            
+            if (LoggedIn)
+                LoggedinUser.Idle = true;
             warnTimer.Dispose();
             warnTimer = null;
 
@@ -167,9 +168,14 @@ namespace HISP.Server
             byte identifier = Packet[0];
 
             // Reset timers
-            if (inactivityTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
-                inactivityTimer.Change(keepAliveInterval, keepAliveInterval);
+           
 
+            if (inactivityTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
+            {
+                if (LoggedIn)
+                    LoggedinUser.Idle = false;
+                inactivityTimer.Change(keepAliveInterval, keepAliveInterval);
+            }
            
             if (kickTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
                 kickTimer = new Timer(new TimerCallback(kickTimerTick), null, kickInterval, kickInterval);
