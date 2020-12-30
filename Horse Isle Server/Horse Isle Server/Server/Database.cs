@@ -1444,7 +1444,7 @@ namespace HISP.Server
                     throw new Exception("Userid " + id + " Allready in userext.");
 
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,@timestamp,0,0,0,'','',0,0,'NO',0,0,1000,1000,1000, 360)";
+                sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,@timestamp,0,0,0,'','',0,0,'NO',0,0,1000,1000,1000, 180)";
                 sqlCommand.Parameters.AddWithValue("@id", id);
                 sqlCommand.Parameters.AddWithValue("@timestamp", Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()));
                 sqlCommand.Parameters.AddWithValue("@x", Map.NewUserStartX);

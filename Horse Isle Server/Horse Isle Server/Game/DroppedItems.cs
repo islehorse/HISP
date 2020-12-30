@@ -22,6 +22,12 @@ namespace HISP.Game
             int count = 0;
             foreach(DroppedItem droppedItem in dropedItems)
             {
+                if (droppedItem.instance == null)
+                {
+                    continue;
+                    RemoveDroppedItem(droppedItem);
+                }
+
                 if(droppedItem.instance.ItemId == item.Id)
                 {
                     count++;

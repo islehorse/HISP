@@ -1,0 +1,46 @@
+{
+    "Pinto":     {
+        "url": "http://pinto.horseisle.com/horseisle.swf?SERVER=pintoip&PORT=443",
+        "icon": "pinto.gif"
+    },
+    "Roan":      {
+        "url": "http://roan.horseisle.com/horseisle.swf?SERVER=roanip&PORT=443",
+        "icon": "roan.gif"
+    },
+    "Palomino":  {
+        "url": "http://palomino.horseisle.com/horseisle.swf?SERVER=palominoip&PORT=443",
+        "icon": "palomino.gif"
+    },
+    "Bay":       {
+        "url": "http://bay.horseisle.com/horseisle.swf?SERVER=bayip&PORT=443",
+        "icon": "bay.gif"
+    },
+    "Dun":       {
+        "url": "http://dun.horseisle.com/horseisle.swf?SERVER=dunip&PORT=443",
+        "icon": "dun.gif"
+    },
+    "Grey":      {
+        "url": "http://grey.horseisle.com/horseisle.swf?SERVER=greyip&PORT=443",
+        "icon": "grey.gif"
+    },
+    "White":     {
+        "url": "http://white.horseisle.com/horseisle.swf?SERVER=whiteip&PORT=443",
+        "icon": "white.gif"
+    },
+    "Chestnut":  {
+        "url": "http://chestnut.horseisle.com/horseisle.swf?SERVER=chestnutip&PORT=443",
+        "icon": "chestnut.gif"
+    },
+    "Cremello":  {
+        "url": "http://cremello.horseisle.com/horseisle.swf?SERVER=cremelloip&PORT=443",
+        "icon": "cremello.gif"
+    },
+    "Brown":     {
+        "url": "http://brown.horseisle.com/horseisle.swf?SERVER=brownip&PORT=443",
+        "icon": "brown.gif"
+    },
+    "Black":     {
+        "url": "http://black.horseisle.com/horseisle.swf?SERVER=blackip&PORT=443",
+        "icon": "black.gif"
+    }
+}

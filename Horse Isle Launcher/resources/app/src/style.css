@@ -1,0 +1,106 @@
+body, html {
+    margin: 0;
+    height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.background {
+    object-fit: cover;
+    position: absolute;
+    z-index: -1;
+}
+.content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+
+}
+.logo {
+    background-image: url("./media/logo.png");
+    image-rendering: -webkit-optimize-contrast;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 220px;
+    width: 220px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+.center-content {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    align-items: center;
+}
+.input {
+    display: flex;
+    color: white;
+    text-shadow: 2px 2px 2px black;
+    font-size: 20px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+.input .name {
+    width: 70px;
+}
+.input input {
+    border: solid 1px black;
+    outline: none;
+    font-size: 18px;
+    width: 150px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    box-shadow: 2px 2px 2px 0 black;
+}
+.button {
+    height: 25px;
+    width: 127.95px;
+    margin-top: 15px;
+    cursor: pointer;
+    width: auto;
+}
+.settings-button {
+    height: 18px;
+    width: auto;
+    position: absolute;
+    cursor: pointer;
+    bottom: 15px;
+    right: 10px;
+}
+.servers-list {
+    position: absolute;
+    background-color: #a797a7;
+    bottom: 60px;
+    right: 15px;
+    border: solid 1px black;
+    display: none;
+    flex-shrink: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+.servers-list .item {
+    background: #cccccc;
+    border: solid 3px white;
+    margin: 5px;
+    font-weight: bold;
+    padding: 5px;
+    cursor: pointer;
+    color: #333333;
+    padding-right: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    align-content: center;
+    box-shadow: 2px 2px 2px 0 black;
+}
+.servers-list .item .name {
+    margin-left: auto;
+}
+.servers-list .item img {
+    width: 20px;
+    height: auto;
+    margin-right: 10px;
+    flex-shrink: 0;
+}
