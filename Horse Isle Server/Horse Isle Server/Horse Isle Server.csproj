@@ -75,6 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Game\AbuseReport.cs" />
     <Compile Include="Game\Chat\Command.cs" />
     <Compile Include="Game\GameExceptions.cs" />
     <Compile Include="Game\Inventory\InventoryItem.cs" />

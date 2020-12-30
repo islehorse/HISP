@@ -221,7 +221,15 @@ namespace HISP.Game
         public static string BeatHighscoreFormat;
         public static string BeatBestTimeFormat;
 
+        // Abuse Report
+        public static string AbuseReportMetaFormat;
+        public static string AbuseReportReasonFormat;
+        public static string AbuseReportPlayerNotFoundFormat;
+        public static string AbuseReportFiled;
+        public static string AbuseReportProvideValidReason;
+
         // Player List
+        public static string PlayerListAbuseReport;
         public static string PlayerListHeader;
         public static string PlayerListSelectFromFollowing;
         public static string PlayerListOfBuddiesFormat;
@@ -230,7 +238,6 @@ namespace HISP.Game
         public static string PlayerListOfPlayersAlphabetically;
         public static string PlayerListMapAllBuddiesForamt;
         public static string PlayerListMapAllPlayersFormat;
-        public static string PlayerListAbuseReport;
 
         public static int ThreeMonthSubscripitionIcon;
         public static int YearSubscriptionIcon;
@@ -244,6 +251,13 @@ namespace HISP.Game
         public static string BuddyListOfflineBuddys;
         public static string BuddyListOfflineBuddyEntryFormat;
 
+        public static string NearbyPlayersListHeader;
+        public static string PlayerListEntryFormat;
+
+        public static string PlayerListAllHeader;
+        public static string PlayerListAllAlphabeticalHeader;
+
+        public static string PlayerListIdle;
         public static string PlayerListIconFormat;
         public static string PlayerListIconInformation;
 
@@ -281,9 +295,29 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+
+        public static string FormatAbuseReportPlayerNotFound(string username)
+        {
+            return AbuseReportPlayerNotFoundFormat.Replace("%USERNAME%", username);
+        }
+        public static string FormatAbuseReportMetaPage(string reasonsMeta)
+        {
+            return AbuseReportMetaFormat.Replace("%REASONS%", reasonsMeta);
+        }
+
+        public static string FormatAbuseReportReason(string id, string name)
+        {
+            return AbuseReportReasonFormat.Replace("%ID%", id).Replace("%NAME%", name);
+        }
         public static string FormatIconFormat(int iconId)
         {
             return PlayerListIconFormat.Replace("%ICON%", iconId.ToString());
+        }
+
+        public static string FormatPlayerEntry(string iconFormat, string username, int userId, int time, int x, int y, bool idle)
+        {
+            string xy = FormatMapLocation(x, y);
+            return PlayerListEntryFormat.Replace("%ICONFORMAT%", iconFormat).Replace("%USERNAME%", username).Replace("%PLAYERID%", userId.ToString()).Replace("%TIME%", time.ToString("N0")).Replace("%MAPXY%", xy).Replace("%IDLE%", idle ? PlayerListIdle : "");
         }
         public static string FormatOnlineBuddyEntry(string iconFormat, string username, int userId, int time, int x, int y)
         {

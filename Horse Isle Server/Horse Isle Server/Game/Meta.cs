@@ -2,6 +2,7 @@
 using HISP.Server;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game
 {
@@ -409,6 +410,98 @@ namespace HISP.Game
         }
 
 
+
+        public static string BuildNearbyList(User user)
+        {
+            string message = Messages.NearbyPlayersListHeader;
+            User[] nearbyUsers = GameServer.GetNearbyUsers(user.X, user.Y, false, true);
+            foreach (User nearbyUser in nearbyUsers)
+            {
+                if (nearbyUser.Stealth)
+                    continue;
+
+                if (nearbyUser.Id == user.Id)
+                    continue;
+
+
+                int icon = nearbyUser.GetPlayerListIcon();
+                string iconFormat = "";
+                if (icon != -1)
+                    iconFormat = Messages.FormatIconFormat(icon);
+
+                message += Messages.FormatPlayerEntry(iconFormat, nearbyUser.Username, nearbyUser.Id, (DateTime.UtcNow - nearbyUser.LoginTime).Minutes, nearbyUser.X, nearbyUser.Y, nearbyUser.Idle);
+            }
+
+            message += Messages.PlayerListIconInformation;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+
+            return message;
+        }
+
+        public static string BuildPlayerListAlphabetical()
+        {
+            string message = Messages.PlayerListAllAlphabeticalHeader;
+            GameClient[] clients = GameServer.ConnectedClients;
+            List<User> onlineUsers = new List<User>();
+
+            foreach (GameClient client in clients)
+            {
+                if (client.LoggedIn)
+                {
+                    if (client.LoggedinUser.Stealth)
+                        continue;
+                    onlineUsers.Add(client.LoggedinUser);
+                }
+            }
+
+            onlineUsers = onlineUsers.OrderBy(o => o.Username).ToList();
+
+            foreach (User onlineUser in onlineUsers)
+            {
+
+                int icon = onlineUser.GetPlayerListIcon();
+                string iconFormat = "";
+                if (icon != -1)
+                    iconFormat = Messages.FormatIconFormat(icon);
+
+                message += Messages.FormatPlayerEntry(iconFormat, onlineUser.Username, onlineUser.Id, (DateTime.UtcNow - onlineUser.LoginTime).Minutes, onlineUser.X, onlineUser.Y, onlineUser.Idle);
+            }
+
+            message += Messages.PlayerListIconInformation;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+
+            return message;
+        }
+
+        public static string BuildPlayerList()
+        {
+            string message = Messages.PlayerListAllHeader;
+            GameClient[] clients = GameServer.ConnectedClients;
+            foreach(GameClient client in clients)
+            {
+                if(client.LoggedIn)
+                {
+                    if (client.LoggedinUser.Stealth)
+                        continue;
+
+                    int icon = client.LoggedinUser.GetPlayerListIcon();
+                    string iconFormat = "";
+                    if (icon != -1)
+                        iconFormat = Messages.FormatIconFormat(icon);
+
+                    message += Messages.FormatPlayerEntry(iconFormat, client.LoggedinUser.Username, client.LoggedinUser.Id, (DateTime.UtcNow - client.LoggedinUser.LoginTime).Minutes, client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.Idle);
+                }
+            }
+
+            message += Messages.PlayerListIconInformation;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+
+            return message;
+        }
+
         public static string BuildBuddyList(User user)
         {
             string message = Messages.BuddyListHeader;
@@ -417,27 +510,14 @@ namespace HISP.Game
                 try
                 {
                     User friend = GameServer.GetUserById(id);
-                    int icon = -1;
-                    if (friend.NewPlayer)
-                        icon = Messages.NewUserIcon;
-                    if (friend.Subscribed)
-                    {
-                        int months = (DateTime.UtcNow.Month - friend.SubscribedUntil.Month) + 12 * (DateTime.UtcNow.Year - friend.SubscribedUntil.Year);
-                        if (months <= 1)
-                            icon = Messages.MonthSubscriptionIcon;
-                        else if (months <= 3)
-                            icon = Messages.ThreeMonthSubscripitionIcon;
-                        else
-                            icon = Messages.YearSubscriptionIcon;
-                    }
-                    if (friend.Moderator)
-                        icon = Messages.ModeratorIcon;
-                    if (friend.Administrator)
-                        icon = Messages.AdminIcon;
+                    if (friend.Stealth)
+                        continue;
 
+                    int icon = friend.GetPlayerListIcon();
                     string iconFormat = "";
                     if (icon != -1)
                         iconFormat = Messages.FormatIconFormat(icon);
+
                     message += Messages.FormatOnlineBuddyEntry(iconFormat, friend.Username, friend.Id, (DateTime.UtcNow - friend.LoginTime).Minutes, friend.X, friend.Y);
 
                 }
@@ -529,6 +609,15 @@ namespace HISP.Game
             return message;
         }
 
+        public static string BuildAbuseReportPage()
+        {
+            string reportReasons = "";
+            foreach(AbuseReport.ReportReason reason in AbuseReport.ReportReasons)
+            {
+                reportReasons += Messages.FormatAbuseReportReason(reason.Id, reason.Name);
+            }
+            return Messages.FormatAbuseReportMetaPage(reportReasons);
+        }
         public static string BuildPlayerList(User user)
         {
             string message = "";

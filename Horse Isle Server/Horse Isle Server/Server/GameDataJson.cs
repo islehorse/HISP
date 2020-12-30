@@ -394,6 +394,19 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Award ID: " + award.Id + " - " + award.Title);
             }
 
+            // Register Abuse Report Reasons
+
+            int totalAbuseReportReasons = gameData.messages.meta.abuse_report.reasons.Count;
+            for(int i = 0; i < totalAbuseReportReasons; i++)
+            {
+                AbuseReport.ReportReason reason = new AbuseReport.ReportReason();
+                reason.Id = gameData.messages.meta.abuse_report.reasons[i].id;
+                reason.Name = gameData.messages.meta.abuse_report.reasons[i].name;
+                reason.Meta = gameData.messages.meta.abuse_report.reasons[i].meta;
+                AbuseReport.AddReason(reason);
+                Logger.DebugPrint("Reigstered Abuse Report Reason: " + reason.Name);
+            }
+            
             Item.Present = gameData.item.special.present;
             Item.MailMessage = gameData.item.special.mail_message;
             Item.DorothyShoes = gameData.item.special.dorothy_shoes;
@@ -475,6 +488,13 @@ namespace HISP.Server
             Messages.CantAffordTransport = gameData.messages.transport.not_enough_money;
             Messages.WelcomeToAreaFormat = gameData.messages.transport.welcome_to_format;
 
+            // Abuse Reports
+            Messages.AbuseReportMetaFormat = gameData.messages.meta.abuse_report.options_format;
+            Messages.AbuseReportReasonFormat = gameData.messages.meta.abuse_report.report_reason_format;
+
+            Messages.AbuseReportPlayerNotFoundFormat = gameData.messages.abuse_report.player_not_found_format;
+            Messages.AbuseReportFiled = gameData.messages.abuse_report.report_filed;
+            Messages.AbuseReportProvideValidReason = gameData.messages.abuse_report.valid_reason;
             // Chat
 
             Messages.ChatViolationMessageFormat = gameData.messages.chat.violation_format;
@@ -574,6 +594,13 @@ namespace HISP.Server
             Messages.BuddyListOfflineBuddys = gameData.messages.meta.player_list.offline_buddys;
             Messages.BuddyListOfflineBuddyEntryFormat = gameData.messages.meta.player_list.offline_buddy_format;
 
+            Messages.NearbyPlayersListHeader = gameData.messages.meta.player_list.nearby_player_header;
+            Messages.PlayerListAllAlphabeticalHeader = gameData.messages.meta.player_list.all_players_alphabetical_header;
+
+            Messages.PlayerListEntryFormat = gameData.messages.meta.player_list.player_format;
+
+            Messages.PlayerListIdle = gameData.messages.meta.player_list.idle_text;
+            Messages.PlayerListAllHeader = gameData.messages.meta.player_list.all_players_header;
             Messages.PlayerListIconFormat = gameData.messages.meta.player_list.icon_format;
             Messages.PlayerListIconInformation = gameData.messages.meta.player_list.icon_info;
             // Consume
