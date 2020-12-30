@@ -545,6 +545,10 @@ namespace HISP.Game
             return message;
         }
 
+        public static string buildFountain()
+        {
+            return Messages.FountainMeta;
+        }
         public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)
         {
             string message = "";
@@ -600,6 +604,11 @@ namespace HISP.Game
                     Shop shop = Shop.GetShopById(ShopID);
                     user.LastShoppedAt = shop;
                     message += buildShopInfo(shop,user.Inventory);
+
+                }
+                if(TileCode == "FOUNTAIN")
+                {
+                    message += buildFountain();
 
                 }
             }
