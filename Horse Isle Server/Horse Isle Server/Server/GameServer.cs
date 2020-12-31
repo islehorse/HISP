@@ -279,6 +279,14 @@ namespace HISP.Server
             byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, World.GetWeather());
             sender.SendPacket(WorldData);
 
+            // Send first time message;
+            if (sender.LoggedinUser.NewPlayer)
+            {
+                byte[] NewUserMessage = PacketBuilder.CreateChat(Messages.NewUserMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(NewUserMessage);
+            }
+
+
             byte[] SecCodePacket = PacketBuilder.CreateSecCode(user.SecCodeSeeds, user.SecCodeInc, user.Administrator, user.Moderator);
             sender.SendPacket(SecCodePacket);
 
