@@ -374,6 +374,7 @@ namespace HISP.Player
             {
                 Database.CreateUserExt(UserId);
                 NewPlayer = true;
+
             }
 
 
