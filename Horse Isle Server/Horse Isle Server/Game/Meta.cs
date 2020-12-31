@@ -142,6 +142,30 @@ namespace HISP.Game
             return message;
         }
 
+
+        private static string buildWishingWell(User user)
+        {
+            string message = "";
+            bool hasCoins = user.Inventory.HasItemId(Item.WishingCoin);
+            if(!hasCoins)
+            {
+                message += Messages.NoWishingCoins;
+            }
+            else
+            {
+                InventoryItem wishingCoins = user.Inventory.GetItemByItemId(Item.WishingCoin);
+                int totalCoins = wishingCoins.ItemInstances.Count;
+                message += Messages.FormatNumberOfWishingCoins(totalCoins);
+                message += Messages.WishingWellMeta;
+            }
+
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+
+
+        }
+
         private static string buildCommonInfo(int x, int y)
         {
             string message = "";
@@ -377,6 +401,7 @@ namespace HISP.Game
 
             return message;
         }
+
 
         public static string BuildAwardList(User user)
         {
@@ -625,7 +650,10 @@ namespace HISP.Game
                     message += buildShopInfo(shop,user.Inventory);
 
                 }
-
+                if(TileCode == "WISHINGWELL")
+                {
+                    message += Meta.buildWishingWell(user);
+                }
                 if(TileCode == "INN")
                 {
                     int InnID = int.Parse(TileArg);

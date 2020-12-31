@@ -322,6 +322,78 @@ namespace HISP.Server
 
 
         }
+
+        public static void OnWish(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " tried to wish when not logged in.");
+                return;
+            }
+
+            if(packet.Length < 4)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid wish Packet");
+                return;
+            }
+
+            if (!sender.LoggedinUser.Inventory.HasItemId(Item.WishingCoin))
+            {
+                Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to use a wishing well while having 0 coins.");
+                return;
+            }
+
+            InventoryItem wishingCoinInvItems = sender.LoggedinUser.Inventory.GetItemByItemId(Item.WishingCoin);
+            byte wishType = packet[1];
+            string message = "";
+
+            byte[] chatMsg = PacketBuilder.CreateChat(Messages.TossedCoin, PacketBuilder.CHAT_BOTTOM_RIGHT);
+            sender.SendPacket(chatMsg);
+
+            switch(wishType)
+            {
+                case PacketBuilder.WISH_MONEY:
+                    int gainMoney = RandomNumberGenerator.Next(500, 1000);
+                    sender.LoggedinUser.Money += gainMoney;
+                    message = Messages.FormatWishMoneyMessage(gainMoney);
+                    break;
+                case PacketBuilder.WISH_ITEMS:
+                    Item.ItemInformation[] wishableItmes = Item.GetAllWishableItems();
+                    int item = RandomNumberGenerator.Next(0, wishableItmes.Length);
+                    Item.ItemInformation itm = wishableItmes[item];
+                    item = RandomNumberGenerator.Next(0, wishableItmes.Length);
+                    Item.ItemInformation itm2 = wishableItmes[item];
+
+                    sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(itm.Id));
+                    sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(itm2.Id));
+
+                    message = Messages.FormatWishThingsMessage(itm.Name, itm2.Name);
+                    break;
+                case PacketBuilder.WISH_WORLDPEACE:
+                    byte[] tooDeep = PacketBuilder.CreateChat(Messages.WorldPeaceOnlySoDeep, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(tooDeep);
+
+                    wishableItmes = Item.GetAllWishableItems();
+                    item = RandomNumberGenerator.Next(0, wishableItmes.Length);
+                    int earnMoney = RandomNumberGenerator.Next(0, 500);
+                    itm = wishableItmes[item];
+
+
+                    sender.LoggedinUser.Money += earnMoney;
+                    sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(itm.Id));
+
+                    message = Messages.FormatWishWorldPeaceMessage(earnMoney, itm.Name);
+                    break;
+                default:
+                    Logger.ErrorPrint("Unknnown Wish type: " + wishType.ToString("X"));
+                    break;
+            }
+            byte[] msg = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_RIGHT);
+            sender.SendPacket(msg);
+
+            sender.LoggedinUser.Inventory.Remove(wishingCoinInvItems.ItemInstances[0]);
+            Update(sender);
+        }
         public static void OnKeepAlive(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)

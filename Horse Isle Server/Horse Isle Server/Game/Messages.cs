@@ -188,7 +188,19 @@ namespace HISP.Game
         public static string AwardHeader;
         public static string NoAwards;
         public static string AwardFormat;
-        
+
+        // Wishing Well
+
+        public static string NoWishingCoins;
+        public static string WishingWellMeta;
+        public static string YouHaveWishingCoinsFormat;
+
+        public static string TossedCoin;
+        public static string WishItemsFormat;
+        public static string WishMoneyFormat;
+        public static string WishWorldPeaceFormat;
+        public static string WorldPeaceOnlySoDeep;
+
 
         // Shop
         public static string ThingsIAmSelling;
@@ -307,6 +319,27 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatNumberOfWishingCoins(int amount)
+        {
+            return YouHaveWishingCoinsFormat.Replace("%AMOUNT%", amount.ToString("N0"));
+        }
+        
+        public static string FormatWishThingsMessage(string item1, string item2)
+        {
+            return WishItemsFormat.Replace("%ITEM%", item1).Replace("%ITEM2%", item2);
+        }
+        public static string FormatWishMoneyMessage(int money)
+        {
+            return WishMoneyFormat.Replace("%MONEY%", money.ToString("N0"));
+        }
+        public static string FormatWishWorldPeaceMessage(int money, string item)
+        {
+            return WishWorldPeaceFormat.Replace("%MONEY%", money.ToString("N0")).Replace("%ITEM%", item);
+        }
+
+
+
         public static string FormatInnEnjoyedServiceMessage(string item, int price)
         {
             return InnEnjoyedServiceFormat.Replace("%ITEM%", item).Replace("%PRICE%", price.ToString("N0"));

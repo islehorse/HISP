@@ -444,6 +444,7 @@ namespace HISP.Server
             Item.PawneerOrder = gameData.item.special.pawneer_order;
             Item.Telescope = gameData.item.special.telescope;
             Item.Pitchfork = gameData.item.special.pitchfork;
+            Item.WishingCoin = gameData.item.special.wishing_coin;
 
             // New Users
             Messages.NewUserMessage = gameData.new_user.starting_message;
@@ -694,6 +695,16 @@ namespace HISP.Server
             Messages.NoAwards = gameData.messages.meta.awards_page.no_awards;
             Messages.AwardFormat = gameData.messages.meta.awards_page.award_format;
 
+            // World Peace
+            Messages.NoWishingCoins = gameData.messages.meta.wishing_well.no_coins;
+            Messages.YouHaveWishingCoinsFormat = gameData.messages.meta.wishing_well.wish_coins;
+            Messages.WishItemsFormat = gameData.messages.meta.wishing_well.wish_things;
+            Messages.WishMoneyFormat = gameData.messages.meta.wishing_well.wish_money;
+            Messages.WishWorldPeaceFormat = gameData.messages.meta.wishing_well.wish_worldpeace;
+
+            Messages.TossedCoin = gameData.messages.meta.wishing_well.make_wish;
+            Messages.WorldPeaceOnlySoDeep = gameData.messages.meta.wishing_well.world_peace_message;
+            Messages.WishingWellMeta = gameData.messages.meta.wishing_well.wish_meta;
             // Sec Codes
 
             Messages.InvalidSecCodeError = gameData.messages.sec_code.invalid_sec_code;

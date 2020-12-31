@@ -56,7 +56,19 @@ namespace HISP.Game
         public static int PawneerOrder;
         public static int Telescope;
         public static int Pitchfork;
+        public static int WishingCoin;
         
+        public static ItemInformation[] GetAllWishableItems()
+        {
+            List<ItemInformation> itemInfo = new List<ItemInformation>();
+            foreach(ItemInformation item in Items)
+            {
+                if (item.WishingWell)
+                    itemInfo.Add(item);
+            }
+            return itemInfo.ToArray();
+        }
+
         public static bool ConsumeItem(User user, ItemInformation itmInfo)
         {
 
