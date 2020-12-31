@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using HISP.Game;
 using HISP.Server;
 using HISP.Player.Equips;
+using HISP.Game.Services;
+using HISP.Game.Inventory;
 
 namespace HISP.Player
 {
@@ -39,6 +41,7 @@ namespace HISP.Player
         public PlayerInventory Inventory;
         public Npc.NpcEntry LastTalkedToNpc;
         public Shop LastShoppedAt;
+        public Inn LastVisitedInn;
         public PlayerQuests Quests;
         public Highscore Highscores;
         public Award Awards;

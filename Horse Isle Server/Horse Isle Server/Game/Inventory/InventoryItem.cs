@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace HISP.Game
+namespace HISP.Game.Inventory
 {
     class InventoryItem
     {

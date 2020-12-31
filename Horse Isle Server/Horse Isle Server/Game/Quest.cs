@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using HISP.Game.Inventory;
 using HISP.Player;
 using HISP.Server;
 
