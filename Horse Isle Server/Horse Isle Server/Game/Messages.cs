@@ -281,6 +281,14 @@ namespace HISP.Game
         public static string LongFullLine;
         public static string MetaTerminator;
 
+        // Inn
+        public static string InnBuyMeal;
+        public static string InnBuyRest;
+        public static string InnItemEntryFormat;
+        public static string InnEnjoyedServiceFormat;
+        public static string InnFullyRested;
+        public static string InnCannotAffordService;
+
         // Fountain 
         public static string FountainMeta;
         public static string FountainDrankYourFull;
@@ -299,7 +307,14 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
-
+        public static string FormatInnEnjoyedServiceMessage(string item, int price)
+        {
+            return InnEnjoyedServiceFormat.Replace("%ITEM%", item).Replace("%PRICE%", price.ToString("N0"));
+        }
+        public static string FormatInnItemEntry(int iconId, string itemName, int price, int itemId)
+        {
+            return InnItemEntryFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", itemName).Replace("%PRICE%", price.ToString("N0")).Replace("%ID%", itemId.ToString());
+        }
         public static string FormatDroppedMoneyMessage(int amount)
         {
             return FountainDroppedMoneyFormat.Replace("%MONEY%", amount.ToString("N0"));

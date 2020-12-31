@@ -11,6 +11,8 @@ using HISP.Security;
 using HISP.Game.Chat;
 using HISP.Player.Equips;
 using System.Drawing;
+using HISP.Game.Services;
+using HISP.Game.Inventory;
 
 namespace HISP.Server
 {
@@ -1500,35 +1502,7 @@ namespace HISP.Server
                         ItemInstance instance = itm.ItemInstances[0];
                         sender.LoggedinUser.Inventory.Remove(instance);
                         Item.ItemInformation itmInfo = instance.GetItemInfo();
-                        bool toMuch = false;
-                        foreach(Item.Effects effect in itmInfo.Effects)
-                        {
-                            switch(effect.EffectsWhat)
-                            {
-                                case "TIREDNESS":
-                                    if (sender.LoggedinUser.Tiredness + effect.EffectAmount > 1000)
-                                        toMuch = true;
-                                    sender.LoggedinUser.Tiredness += effect.EffectAmount;
-                                    break;
-                                case "THIRST":
-                                    if (sender.LoggedinUser.Thirst + effect.EffectAmount > 1000)
-                                        toMuch = true;
-                                    sender.LoggedinUser.Thirst += effect.EffectAmount;
-                                    break;
-                                case "HUNGER":
-                                    if (sender.LoggedinUser.Hunger + effect.EffectAmount > 1000)
-                                        toMuch = true;
-                                    sender.LoggedinUser.Hunger += effect.EffectAmount;
-                                    break;
-                                case "NOEFFECT":
-                                    break;
-                                default:
-                                    Logger.ErrorPrint("Unknown effect: " + effect.EffectsWhat);
-                                    break;
-
-                            }
-                        }
-
+                        bool toMuch = Item.ConsumeItem(sender.LoggedinUser, itmInfo);
 
                         byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatConsumeItemMessaege(itmInfo.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(chatPacket);
@@ -1537,6 +1511,7 @@ namespace HISP.Server
                             chatPacket = PacketBuilder.CreateChat(Messages.ConsumedButMaxReached, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(chatPacket);
                         }
+
                         UpdateInventory(sender);
                     }
                     else
@@ -1704,6 +1679,73 @@ namespace HISP.Server
                     }
                     break;
 
+                case PacketBuilder.ITEM_BUY_AND_CONSUME:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    itemIdStr = packetStr.Substring(2, packet.Length - 3);
+                    itemId = 0;
+                    // Prevent crashing on non-int string.
+                    try
+                    {
+                        itemId = Int32.Parse(itemIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object buy and consume packet.");
+                        return;
+                    }
+                    if (!Item.ItemIdExist(itemId))
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to buy an itemid that doesnt even exist.");
+                        break;
+                    }
+
+                    Inn lastInn = sender.LoggedinUser.LastVisitedInn;
+                    if (lastInn != null)
+                    {
+                        try
+                        {
+                            itemInfo = lastInn.GetStockedItem(itemId);
+                            int price = lastInn.CalculateBuyCost(itemInfo);
+                            if(sender.LoggedinUser.Money >= price)
+                            {
+                                sender.LoggedinUser.Money -= price;
+                                bool toMuch = Item.ConsumeItem(sender.LoggedinUser, itemInfo);
+
+                                string tooMuchMessage = Messages.ConsumedButMaxReached;
+                                if (itemInfo.Effects.Length > 0)
+                                    if (itemInfo.Effects[0].EffectsWhat == "TIREDNESS")
+                                        tooMuchMessage = Messages.InnFullyRested;
+                                if (itemInfo.Effects.Length > 1)
+                                    if (itemInfo.Effects[1].EffectsWhat == "TIREDNESS")
+                                        tooMuchMessage = Messages.InnFullyRested;
+
+                                byte[] enjoyedServiceMessage = PacketBuilder.CreateChat(Messages.FormatInnEnjoyedServiceMessage(itemInfo.Name, price), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(enjoyedServiceMessage);
+
+                                if(toMuch)
+                                {
+                                    byte[] toMuchMessage = PacketBuilder.CreateChat(tooMuchMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(toMuchMessage);
+                                }
+
+                                Update(sender);
+                            }
+                            else
+                            {
+                                byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.InnCannotAffordService, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cantAffordMessage);
+                            }
+                        }
+                        catch(KeyNotFoundException)
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to buy and consume an item not stocked by the inn there standing on.");
+                        }
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to buy and consume item while not in a inn.");
+                    }
+                    break;
 
                 case PacketBuilder.ITEM_BUY: // Handles buying an item.
                     message = 1;
@@ -1718,7 +1760,7 @@ namespace HISP.Server
                     count = 25;
                 doPurchase:;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    itemIdStr = packetStr.Substring(2, packet.Length - 2);
+                    itemIdStr = packetStr.Substring(2, packet.Length - 3);
                     itemId = 0;
                     // Prevent crashing on non-int string.
                     try
@@ -1729,6 +1771,12 @@ namespace HISP.Server
                     {
                         Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object buy packet.");
                         return;
+                    }
+
+                    if(!Item.ItemIdExist(itemId))
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to buy an itemid that doesnt even exist.");
+                        break;
                     }
 
                     itemInfo = Item.GetItemById(itemId);

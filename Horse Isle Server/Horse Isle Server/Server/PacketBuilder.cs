@@ -84,6 +84,7 @@ namespace HISP.Server
         public const byte ITEM_PICKUP = 0x14;
         public const byte ITEM_PICKUP_ALL = 0x15;
         public const byte ITEM_BUY = 0x33;
+        public const byte ITEM_BUY_AND_CONSUME = 0x34;
         public const byte ITEM_BUY_5 = 0x35;
         public const byte ITEM_BUY_25 = 0x37;
         public const byte ITEM_SELL = 0x3C;

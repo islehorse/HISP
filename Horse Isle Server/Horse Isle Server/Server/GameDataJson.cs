@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using HISP.Game;
 using HISP.Game.Chat;
 using HISP.Player;
+using HISP.Game.Services;
 
 namespace HISP.Server
 {
@@ -406,7 +407,37 @@ namespace HISP.Server
                 AbuseReport.AddReason(reason);
                 Logger.DebugPrint("Reigstered Abuse Report Reason: " + reason.Name);
             }
-            
+
+            // Map Data
+
+            Map.OverlayTileDepth = gameData.tile_paramaters.overlay_tiles.tile_depth.ToObject<int[]>();
+
+            List<Map.TerrainTile> terrainTiles = new List<Map.TerrainTile>();
+            int totalTerrainTiles = gameData.tile_paramaters.terrain_tiles.Count;
+            for (int i = 0; i < totalTerrainTiles; i++)
+            {
+                Map.TerrainTile tile = new Map.TerrainTile();
+                tile.Passable = gameData.tile_paramaters.terrain_tiles[i].passable;
+                tile.Type = gameData.tile_paramaters.terrain_tiles[i].tile_type;
+                Logger.DebugPrint("Registered Tile: " + i + " Passable: " + tile.Passable + " Type: " + tile.Type);
+                terrainTiles.Add(tile);
+            }
+            Map.TerrainTiles = terrainTiles.ToArray();
+
+            // Register Abuse Report Reasons
+
+            int totalInns = gameData.inns.Count;
+            for (int i = 0; i < totalInns; i++)
+            {
+                int id = gameData.inns[i].id;
+                int[] restsOffered = gameData.inns[i].rests_offered.ToObject<int[]>();
+                int[] mealsOffered = gameData.inns[i].meals_offered.ToObject<int[]>();
+                int buyPercent = gameData.inns[i].buy_percent;
+                Inn inn = new Inn(id, restsOffered, mealsOffered, buyPercent);
+
+                Logger.DebugPrint("Reigstered Inn: " + inn.Id + " Buying at: " + inn.BuyPercentage.ToString() + "%!");
+            }
+
             Item.Present = gameData.item.special.present;
             Item.MailMessage = gameData.item.special.mail_message;
             Item.DorothyShoes = gameData.item.special.dorothy_shoes;
@@ -632,6 +663,14 @@ namespace HISP.Server
             Messages.NoPitchforkMeta = gameData.messages.meta.hay_pile.no_pitchfork;
             Messages.HasPitchforkMeta = gameData.messages.meta.hay_pile.pitchfork;
 
+            // Inn
+            Messages.InnBuyMeal = gameData.messages.meta.inn.buy_meal;
+            Messages.InnBuyRest = gameData.messages.meta.inn.buy_rest;
+            Messages.InnItemEntryFormat = gameData.messages.meta.inn.inn_entry;
+            Messages.InnEnjoyedServiceFormat = gameData.messages.inn.enjoyed_service;
+            Messages.InnCannotAffordService = gameData.messages.inn.cant_afford;
+            Messages.InnFullyRested = gameData.messages.inn.fully_rested;
+
             // Fountain
             Messages.FountainMeta = gameData.messages.meta.fountain;
             Messages.FountainDrankYourFull = gameData.messages.fountain.drank_your_fill;
@@ -693,22 +732,6 @@ namespace HISP.Server
             Messages.NpcInformationButton = gameData.messages.meta.npc.npc_information_button;
             Messages.NpcInformationFormat = gameData.messages.meta.npc.npc_information_format;
 
-            // Map Data
-
-            Map.OverlayTileDepth = gameData.tile_paramaters.overlay_tiles.tile_depth.ToObject<int[]>();
-
-            List<Map.TerrainTile> terrainTiles = new List<Map.TerrainTile>();
-            int totalTerrainTiles = gameData.tile_paramaters.terrain_tiles.Count;
-            for(int i = 0; i < totalTerrainTiles; i++)
-            {
-                Map.TerrainTile tile = new Map.TerrainTile();
-                tile.Passable = gameData.tile_paramaters.terrain_tiles[i].passable;
-                tile.Type = gameData.tile_paramaters.terrain_tiles[i].tile_type;
-                Logger.DebugPrint("Registered Tile: " + i + " Passable: " + tile.Passable + " Type: " + tile.Type);
-                terrainTiles.Add(tile);
-            }
-            Map.TerrainTiles = terrainTiles.ToArray();
-            
             // Disconnect Reasons
 
             Messages.KickReasonBanned = gameData.messages.disconnect.banned;
@@ -744,6 +767,7 @@ namespace HISP.Server
             Messages.BoatCutscene = gameData.transport.boat_cutscene;
             Messages.BallonCutscene = gameData.transport.ballon_cutscene;
 
+            gameData = null;
         }
 
     }

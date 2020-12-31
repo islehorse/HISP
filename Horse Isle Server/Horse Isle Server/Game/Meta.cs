@@ -1,4 +1,6 @@
-﻿using HISP.Player;
+﻿using HISP.Game.Inventory;
+using HISP.Game.Services;
+using HISP.Player;
 using HISP.Server;
 using System;
 using System.Collections.Generic;
@@ -224,6 +226,23 @@ namespace HISP.Game
                 message += Messages.FormatNpcTalkButton(ent.Id);
                 message += "^R1";
             }
+            return message;
+        }
+
+        public static string buildInn(Inn inn)
+        {
+            string message = Messages.InnBuyMeal;
+            foreach(Item.ItemInformation item in inn.MealsOffered)
+            {
+                message += Messages.FormatInnItemEntry(item.IconId, item.Name, inn.CalculateBuyCost(item), item.Id);
+            }
+            message += Messages.InnBuyRest;
+            foreach (Item.ItemInformation item in inn.RestsOffered)
+            {
+                message += Messages.FormatInnItemEntry(item.IconId, item.Name, inn.CalculateBuyCost(item), item.Id);
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
             return message;
         }
 
@@ -605,6 +624,14 @@ namespace HISP.Game
                     user.LastShoppedAt = shop;
                     message += buildShopInfo(shop,user.Inventory);
 
+                }
+
+                if(TileCode == "INN")
+                {
+                    int InnID = int.Parse(TileArg);
+                    Inn inn = Inn.GetInnById(InnID);
+                    user.LastVisitedInn = inn;
+                    message += buildInn(inn);
                 }
                 if(TileCode == "FOUNTAIN")
                 {

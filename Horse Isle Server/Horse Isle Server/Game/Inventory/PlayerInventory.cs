@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using HISP.Game;
+using HISP.Player;
 using HISP.Server;
 
-namespace HISP.Player
+namespace HISP.Game.Inventory
 {
     
     class PlayerInventory : IInventory

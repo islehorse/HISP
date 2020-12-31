@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using HISP.Player;
+using HISP.Server;
+using System.Collections.Generic;
 
 namespace HISP.Game
 {
@@ -55,6 +57,37 @@ namespace HISP.Game
         public static int Telescope;
         public static int Pitchfork;
         
+        public static bool ConsumeItem(User user, ItemInformation itmInfo)
+        {
+
+            bool toMuch = false;
+            foreach (Item.Effects effect in itmInfo.Effects)
+            {
+                switch (effect.EffectsWhat)
+                {
+                    case "TIREDNESS":
+                        if (user.Tiredness + effect.EffectAmount > 1000)
+                            toMuch = true;
+                        user.Tiredness += effect.EffectAmount;
+                        break;
+                    case "THIRST":
+                        if (user.Thirst + effect.EffectAmount > 1000)
+                            toMuch = true;
+                        user.Thirst += effect.EffectAmount;
+                        break;
+                    case "HUNGER":
+                        if (user.Hunger + effect.EffectAmount > 1000)
+                            toMuch = true;
+                        user.Hunger += effect.EffectAmount;
+                        break;
+                    default:
+                        Logger.ErrorPrint("Unknown effect: " + effect.EffectsWhat);
+                        break;
+
+                }
+            }
+            return toMuch;
+        }
         public static bool IsThrowable(int id)
         {
             foreach(ThrowableItem itm in ThrowableItems)

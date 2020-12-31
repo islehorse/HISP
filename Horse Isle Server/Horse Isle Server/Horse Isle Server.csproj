@@ -80,7 +80,8 @@
     <Compile Include="Game\GameExceptions.cs" />
     <Compile Include="Game\Inventory\InventoryItem.cs" />
     <Compile Include="Game\Quest.cs" />
-    <Compile Include="Game\Shop.cs" />
+    <Compile Include="Game\Services\Inn.cs" />
+    <Compile Include="Game\Services\Shop.cs" />
     <Compile Include="Game\Inventory\ShopInventory.cs" />
     <Compile Include="Player\Award.cs" />
     <Compile Include="Player\Equips\Jewelry.cs" />
@@ -118,7 +119,7 @@
     <Compile Include="Security\RandomID.cs" />
     <Compile Include="Server\GameServer.cs" />
     <Compile Include="Player\TrackedQuest.cs" />
-    <Compile Include="Game\Transport.cs" />
+    <Compile Include="Game\Services\Transport.cs" />
     <Compile Include="Player\User.cs" />
     <Compile Include="Game\World.cs" />
   </ItemGroup>
