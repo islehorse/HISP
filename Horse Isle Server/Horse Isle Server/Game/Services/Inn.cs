@@ -29,7 +29,7 @@ namespace HISP.Game.Services
         public Item.ItemInformation GetStockedItem(int itemId)
         {
             
-            // Check if inn stock.. (pun intended)
+            // Check if inn stock.. 
             foreach(Item.ItemInformation offering in RestsOffered)
             {
                 if (offering.Id == itemId)

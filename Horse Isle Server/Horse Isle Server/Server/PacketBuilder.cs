@@ -38,7 +38,11 @@ namespace HISP.Server
         public const byte PACKET_QUIT = 0x7D;
         public const byte PACKET_PLAYERINFO = 0x16;
         public const byte PACKET_INFORMATION = 0x28;
+        public const byte PACKET_WISH = 0x2C;
 
+        public const byte WISH_MONEY = 0x31;
+        public const byte WISH_ITEMS = 0x32;
+        public const byte WISH_WORLDPEACE = 0x33;
 
         public const byte SECCODE_QUEST = 0x32;
         public const byte SECCODE_ITEM = 0x28;
