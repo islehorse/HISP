@@ -45,7 +45,7 @@ namespace HISP.Server
         private static void onGameTick(object state)
         {
             World.TickWorldClock();
-
+            
             gameTimer.Change(gameTickSpeed, gameTickSpeed);
         }
         private static void onMinuteTick(object state)
@@ -56,6 +56,8 @@ namespace HISP.Server
             {
                 Database.IncAllUsersFreeTime(1);
             }
+
+            Database.DoIntrestPayments(ConfigReader.IntrestRate);
             Database.IncPlayerTirednessForOfflineUsers();
             DroppedItems.Update();
             minuteTimer.Change(oneMinute, oneMinute);

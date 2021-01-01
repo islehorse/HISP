@@ -2175,13 +2175,14 @@ namespace HISP.Server
             }
         }
 
-        public static void DoIntrestPayments()
+        public static void DoIntrestPayments(int intrestRate)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE UserExt SET BankBalance=BankBalance * (1/@interestRate) AND NOT BankBalance * (1/@interestRate) > 9999999999.9999";
+                sqlCommand.CommandText = "UPDATE UserExt SET BankInterest=BankInterest * (1/@interestRate) AND NOT BankInterest * (1/@interestRate) > 9999999999.9999";
+                sqlCommand.Parameters.AddWithValue("@interest", intrestRate);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
