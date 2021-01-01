@@ -195,7 +195,7 @@ namespace HISP.Player
                     value = 9999999999.9999;
 
                 Database.SetPlayerBankInterest(value, Id);
-                BankInterest = value;
+                bankInterest = value;
             }
         }
         public double BankMoney

@@ -596,12 +596,28 @@ namespace HISP.Game
 
         private static string buildBank(User user)
         {
-            string messages = Messages.FormatBankCarryingMeta(user.Money, Convert.ToUInt64(Math.Floor(user.BankMoney)));
-            messages += Messages.BankWhatToDo;
-            messages += Messages.FormatBankOptionsMeta(user.Money, Convert.ToUInt64(Math.Floor(user.BankMoney)));
-            messages += Messages.ExitThisPlace;
-            messages += Messages.MetaTerminator;
-            return messages;
+            double moneyMade = 0;
+            if (user.BankInterest > user.BankMoney)
+            {
+                moneyMade = user.BankMoney - user.BankInterest;
+                user.BankMoney = user.BankInterest;
+
+            }
+            user.BankInterest = user.BankMoney;
+
+            string message = "";
+            moneyMade = Math.Floor(moneyMade);
+            if (moneyMade > 0)
+                message += Messages.FormatBankIntrestMadeMeta(Convert.ToUInt64(moneyMade));
+
+            message += Messages.FormatBankCarryingMeta(user.Money, Convert.ToUInt64(Math.Floor(user.BankMoney)));
+            message += Messages.BankWhatToDo;
+            message += Messages.FormatBankOptionsMeta(user.Money, Convert.ToUInt64(Math.Floor(user.BankMoney)));
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+
+
+            return message;
         }
 
 
