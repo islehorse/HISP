@@ -674,6 +674,9 @@ namespace HISP.Server
             Messages.NoPitchforkMeta = gameData.messages.meta.hay_pile.no_pitchfork;
             Messages.HasPitchforkMeta = gameData.messages.meta.hay_pile.pitchfork;
 
+            Messages.PasswordEntry = gameData.messages.meta.password_input;
+            Messages.VenusFlyTrapFormat = gameData.messages.meta.venus_flytrap_format;
+
             // Inn
             Messages.InnBuyMeal = gameData.messages.meta.inn.buy_meal;
             Messages.InnBuyRest = gameData.messages.meta.inn.buy_rest;

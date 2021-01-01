@@ -252,7 +252,14 @@ namespace HISP.Game
             }
             return message;
         }
-
+        public static string buildVenusFlyTrap(User user)
+        {
+            int moneyLost = GameServer.RandomNumberGenerator.Next(0, 100);
+            if (moneyLost > user.Money)
+                moneyLost = user.Money;
+            user.Money -= moneyLost;
+            return Messages.FormatVenusFlyTrapMeta(moneyLost);
+        }
         public static string buildInn(Inn inn)
         {
             string message = Messages.InnBuyMeal;
@@ -593,7 +600,10 @@ namespace HISP.Game
         {
             return Messages.FountainMeta;
         }
-
+        private static string buildPassword()
+        {
+            return Messages.PasswordEntry + Messages.ExitThisPlace + Messages.MetaTerminator;
+        }
         private static string buildBank(User user)
         {
             double moneyMade = 0;
@@ -685,6 +695,14 @@ namespace HISP.Game
                 if(TileCode == "WISHINGWELL")
                 {
                     message += buildWishingWell(user);
+                }
+                if(TileCode == "VENUSFLYTRAP")
+                {
+                    message += buildVenusFlyTrap(user);
+                }
+                if(TileCode == "PASSWORD")
+                {
+                    message += buildPassword();
                 }
                 if(TileCode == "INN")
                 {

@@ -193,6 +193,55 @@ namespace HISP.Server
                                 Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
                                 break;
                             }
+                        case 14:
+                            if(dynamicInput.Length >= 1)
+                            {
+                                string password = dynamicInput[1];
+                                // Get current tile
+                                if(World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                                {
+                                    World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                                    if(tile.Code.StartsWith("PASSWORD-"))
+                                    {
+                                        string[] args = tile.Code.Replace("!","-").Split('-');
+                                        if(args.Length >= 3)
+                                        {
+                                            string expectedPassword = args[1];
+                                            int questId = int.Parse(args[2]);
+                                            if(password.ToLower() == expectedPassword.ToLower())
+                                            {
+                                                Quest.CompleteQuest(sender.LoggedinUser, Quest.GetQuestById(questId), false);
+                                            }
+                                            else
+                                            {
+                                                Quest.FailQuest(sender.LoggedinUser, Quest.GetQuestById(questId), false);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Send invalid password input request. (Too few arguments!)");
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Send password input request. (Not on password tile!)");
+                                        break;
+                                    }
+                                }
+                                else
+                                {
+                                    Logger.HackerPrint(sender.LoggedinUser.Username + " Sent a password while not in a special tile.");
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid password request, (wrong size)");
+                                break;
+                            }
+
+                            break;
                         default:
                             Logger.ErrorPrint("Unknown dynamic input: " + inputId.ToString() + " packet dump: " + BitConverter.ToString(packet).Replace("-", " "));
                             break;
