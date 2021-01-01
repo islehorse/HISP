@@ -2177,12 +2177,17 @@ namespace HISP.Server
 
         public static void DoIntrestPayments(int intrestRate)
         {
+            if (intrestRate == 0)
+            {
+                Logger.WarnPrint("Intrest rate is 0, as deviding by 0 causes the universe to implode, adding intrest has been skipped.");
+                return;
+            }
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE UserExt SET BankInterest=BankInterest * (1/@interestRate) AND NOT BankInterest * (1/@interestRate) > 9999999999.9999";
-                sqlCommand.Parameters.AddWithValue("@interest", intrestRate);
+                sqlCommand.CommandText = "UPDATE UserExt SET BankInterest = BankInterest + (BankInterest * (1/@interestRate)) WHERE NOT BankInterest + (BankInterest * (1/@interestRate)) > 9999999999.9999";
+                sqlCommand.Parameters.AddWithValue("@interestRate", intrestRate);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
