@@ -528,6 +528,16 @@ namespace HISP.Server
             Messages.AbuseReportFiled = gameData.messages.abuse_report.report_filed;
             Messages.AbuseReportProvideValidReason = gameData.messages.abuse_report.valid_reason;
 
+            // Bank
+            Messages.BankMadeInIntrestFormat = gameData.messages.meta.bank.made_interest;
+            Messages.BankCarryingFormat = gameData.messages.meta.bank.carrying_message;
+            Messages.BankWhatToDo = gameData.messages.meta.bank.what_to_do;
+            Messages.BankOptionsFormat = gameData.messages.meta.bank.options;
+
+
+            Messages.BankDepositedMoneyFormat = gameData.messages.bank.deposit_format;
+            Messages.BankWithdrewMoneyFormat = gameData.messages.bank.withdraw_format;
+
             // Chat
 
             Messages.ChatViolationMessageFormat = gameData.messages.chat.violation_format;

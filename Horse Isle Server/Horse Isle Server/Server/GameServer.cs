@@ -99,10 +99,52 @@ namespace HISP.Server
                         return;
                     }
 
-                    switch(inputId) // Private Notes
+                    switch(inputId) 
                     {
-                        case 7:
-                            if(dynamicInput.Length >= 2)
+                        case 1: // Bank
+                            if (dynamicInput.Length >= 2)
+                            {
+                                int moneyDeposited = 0;
+                                int moneyWithdrawn = 0;
+                                try
+                                {
+                                    moneyDeposited = int.Parse(dynamicInput[1]);
+                                    moneyWithdrawn = int.Parse(dynamicInput[2]);
+                                }
+                                catch (FormatException)
+                                {
+                                    Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to deposit/witthdraw NaN money....");
+                                    break;
+                                }
+
+                                if((moneyDeposited <= sender.LoggedinUser.Money) && moneyDeposited != 0)
+                                {
+                                    sender.LoggedinUser.Money -= moneyDeposited;
+                                    sender.LoggedinUser.BankMoney += Convert.ToUInt64(moneyDeposited);
+
+                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatDepositedMoneyMessage(moneyDeposited), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(chatPacket);
+                                }
+
+                                if ((Convert.ToUInt64(moneyWithdrawn) <= sender.LoggedinUser.BankMoney) && moneyWithdrawn != 0)
+                                {
+                                    sender.LoggedinUser.BankMoney -= Convert.ToUInt64(moneyWithdrawn);
+                                    sender.LoggedinUser.Money += moneyWithdrawn;
+
+                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatWithdrawMoneyMessage(moneyWithdrawn), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(chatPacket);
+                                }
+
+                                Update(sender);
+                                break;
+                            }
+                            else
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
+                                break;
+                            }
+                        case 7: // Private Notes
+                            if (dynamicInput.Length >= 2)
                             {
                                 sender.LoggedinUser.PrivateNotes = dynamicInput[1];
                                 UpdateStats(sender);
@@ -115,7 +157,7 @@ namespace HISP.Server
                                 Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
                                 break;
                             }
-                        case 12:
+                        case 12: // Abuse Report
                             if (dynamicInput.Length >= 2)
                             {
                                 string userName = dynamicInput[1];

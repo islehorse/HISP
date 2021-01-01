@@ -589,10 +589,22 @@ namespace HISP.Game
             return message;
         }
 
-        public static string buildFountain()
+        private static string buildFountain()
         {
             return Messages.FountainMeta;
         }
+
+        private static string buildBank(User user)
+        {
+            string messages = Messages.FormatBankCarryingMeta(user.Money, user.BankMoney);
+            messages += Messages.BankWhatToDo;
+            messages += Messages.FormatBankOptionsMeta(user.Money, user.BankMoney);
+            messages += Messages.ExitThisPlace;
+            messages += Messages.MetaTerminator;
+            return messages;
+        }
+
+
         public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)
         {
             string message = "";
@@ -650,9 +662,13 @@ namespace HISP.Game
                     message += buildShopInfo(shop,user.Inventory);
 
                 }
+                if(TileCode == "BANK")
+                {
+                    message += buildBank(user);
+                }
                 if(TileCode == "WISHINGWELL")
                 {
-                    message += Meta.buildWishingWell(user);
+                    message += buildWishingWell(user);
                 }
                 if(TileCode == "INN")
                 {

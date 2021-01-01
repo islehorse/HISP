@@ -191,6 +191,9 @@ namespace HISP.Player
             }
             set
             {
+                if (value > 9999999999)
+                    value = 9999999999;
+
                 Database.SetPlayerBankMoney(value, Id);
                 bankMoney = value;
             }
@@ -265,7 +268,7 @@ namespace HISP.Player
                     value = 1000;
                 if (value <= 0)
                     value = 0;
-                Database.SetPlayerHunger(Id, value);
+                Database.SetPlayerThirst(Id, value);
                 thirst = value;
             }
         }
