@@ -447,9 +447,9 @@ namespace HISP.Server
             Item.WishingCoin = gameData.item.special.wishing_coin;
 
             // New Users
-            Messages.NewUserMessage = gameData.new_user.starting_message;
-            Map.NewUserStartX = gameData.new_user.starting_x;
-            Map.NewUserStartY = gameData.new_user.starting_y;
+            Messages.NewUserMessage = gameData.messages.new_user.starting_message;
+            Map.NewUserStartX = gameData.messages.new_user.starting_x;
+            Map.NewUserStartY = gameData.messages.new_user.starting_y;
 
             // Records
             Messages.ProfileSavedMessage = gameData.messages.profile_save;

@@ -599,7 +599,7 @@ namespace HISP.Game
             double moneyMade = 0;
             if (user.BankInterest > user.BankMoney)
             {
-                moneyMade = user.BankMoney - user.BankInterest;
+                moneyMade = user.BankInterest - user.BankMoney;
                 user.BankMoney = user.BankInterest;
 
             }

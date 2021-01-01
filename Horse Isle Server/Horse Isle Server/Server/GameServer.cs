@@ -57,7 +57,9 @@ namespace HISP.Server
                 Database.IncAllUsersFreeTime(1);
             }
 
-            Database.DoIntrestPayments(ConfigReader.IntrestRate);
+            if(totalMinutesElapsed % 24 == 0)
+                Database.DoIntrestPayments(ConfigReader.IntrestRate);
+
             Database.IncPlayerTirednessForOfflineUsers();
             DroppedItems.Update();
             minuteTimer.Change(oneMinute, oneMinute);
@@ -363,7 +365,6 @@ namespace HISP.Server
 
             byte[] MotdData = PacketBuilder.CreateMotd();
             sender.SendPacket(MotdData);
-
 
         }
 
