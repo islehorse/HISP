@@ -596,9 +596,9 @@ namespace HISP.Game
 
         private static string buildBank(User user)
         {
-            string messages = Messages.FormatBankCarryingMeta(user.Money, user.BankMoney);
+            string messages = Messages.FormatBankCarryingMeta(user.Money, Convert.ToUInt64(Math.Floor(user.BankMoney)));
             messages += Messages.BankWhatToDo;
-            messages += Messages.FormatBankOptionsMeta(user.Money, user.BankMoney);
+            messages += Messages.FormatBankOptionsMeta(user.Money, Convert.ToUInt64(Math.Floor(user.BankMoney)));
             messages += Messages.ExitThisPlace;
             messages += Messages.MetaTerminator;
             return messages;

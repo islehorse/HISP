@@ -183,7 +183,22 @@ namespace HISP.Player
             }
         }
 
-        public UInt64 BankMoney
+        public double BankInterest
+        {
+            get
+            {
+                return bankInterest;
+            }
+            set
+            {
+                if (value > 9999999999.9999)
+                    value = 9999999999.9999;
+
+                Database.SetPlayerBankInterest(value, Id);
+                BankInterest = value;
+            }
+        }
+        public double BankMoney
         {
             get
             {
@@ -191,8 +206,8 @@ namespace HISP.Player
             }
             set
             {
-                if (value > 9999999999)
-                    value = 9999999999;
+                if (value > 9999999999.9999)
+                    value = 9999999999.9999;
 
                 Database.SetPlayerBankMoney(value, Id);
                 bankMoney = value;
@@ -302,7 +317,8 @@ namespace HISP.Player
         private int y;
         private int money;
         private int questPoints;
-        private UInt64 bankMoney;
+        private double bankMoney;
+        private double bankInterest;
         private int experience;
         private int hunger;
         private int thirst;
@@ -406,6 +422,7 @@ namespace HISP.Player
             privateNotes = Database.GetPlayerNotes(UserId);
             hunger = Database.GetPlayerHunger(UserId);
             thirst = Database.GetPlayerThirst(UserId);
+            bankInterest = Database.GetPlayerBankInterest(UserId);
             tired = Database.GetPlayerTiredness(UserId);
 
             Gender = Database.GetGender(UserId);
