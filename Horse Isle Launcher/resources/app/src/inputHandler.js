@@ -1,12 +1,12 @@
 const util = require('util');
-    const exec = util.promisify(require('child_process').exec)
+const { spawn } = require('child_process');
 
 const urlInput = document.getElementById("urlInput")
 const ipInput = document.getElementById("ipInput")
 const portInput = document.getElementById("portInput")
 const enterButton = document.getElementById("enterButton")
 const settingsButton = document.getElementById("settingsButton")
-
+const path = require("path")
 let showServerList = false;
 
 const lastDetails = JSON.parse(localStorage.getItem("lastDetails"));
@@ -16,7 +16,6 @@ if (lastDetails) {
     ipInput.value = lastDetails.ip;
     portInput.value = lastDetails.port;
 }
-
 enterButton.addEventListener("click", async () => {
     const url = urlInput.value;
     const ip = ipInput.value;
@@ -27,22 +26,13 @@ enterButton.addEventListener("click", async () => {
         ip,
         port
     }))
-
-    runCommand(`hirunner.exe "${url}?SERVER=${ip}&PORT=${port}"`)
-    setTimeout(() => {
-        window.close()
-    }, 500);
+    
+    const _path = path.join(path.dirname(process.execPath), "hirunner.exe");
+	spawn(_path, [`${url}?SERVER=${ip}&PORT=${port}`],{detached: true,stdio: 'ignore'})
+    window.close();
 })
 
 
-async function runCommand(command) {
-    const { stdout, stderr } = await exec(command);
-    if(DEBUG_MODE)
-    {
-      console.log('stdout:', stdout);
-      console.log('stderr:', stderr);
-    }
-  }
 
 
 serversList.addEventListener("click", (event) => {

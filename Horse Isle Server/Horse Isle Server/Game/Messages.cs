@@ -218,6 +218,15 @@ namespace HISP.Game
         public static string Sold1Format;
         public static string SoldAllFormat;
 
+        // Bank
+        public static string BankMadeInIntrestFormat;
+        public static string BankCarryingFormat;
+        public static string BankWhatToDo;
+        public static string BankOptionsFormat;
+
+        public static string BankWithdrewMoneyFormat;
+        public static string BankDepositedMoneyFormat;
+
         // Npc
         public static string NpcStartChatFormat;
         public static string NpcChatpointFormat;
@@ -319,6 +328,28 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatBankIntrestMadeMeta(UInt64 intrestMade)
+        {
+            return BankMadeInIntrestFormat.Replace("%MONEY%", intrestMade.ToString("N0"));
+        }
+        public static string FormatBankCarryingMeta(int money, UInt64 bankMoney)
+        {
+            return BankCarryingFormat.Replace("%MONEY%", money.ToString("N0")).Replace("%BANKMONEY%", bankMoney.ToString("N0"));
+        }
+        public static string FormatBankOptionsMeta(int money, UInt64 bankMoney)
+        {
+            return BankOptionsFormat.Replace("%MONEY%", money.ToString("N0")).Replace("%BANKMONEY%", bankMoney.ToString("N0"));
+        }
+
+        public static string FormatDepositedMoneyMessage(int money)
+        {
+            return BankDepositedMoneyFormat.Replace("%MONEY%", money.ToString("N0"));
+        }
+        public static string FormatWithdrawMoneyMessage(int money)
+        {
+            return BankWithdrewMoneyFormat.Replace("%MONEY%", money.ToString("N0"));
+        }
 
         public static string FormatNumberOfWishingCoins(int amount)
         {
