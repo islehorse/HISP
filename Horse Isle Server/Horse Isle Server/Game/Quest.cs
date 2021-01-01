@@ -23,7 +23,7 @@ namespace HISP.Game
         {
             public string Type;
             public int ActivateX;
-            public int ActivateY; 
+            public int ActivateY;
         }
         public struct QuestEntry
         {
@@ -66,7 +66,7 @@ namespace HISP.Game
         {
             int totalQp = 0;
             QuestEntry[] quests = GetPublicQuestList();
-            foreach(QuestEntry quest in quests)
+            foreach (QuestEntry quest in quests)
             {
                 totalQp += quest.QuestPointsEarned;
             }
@@ -107,8 +107,8 @@ namespace HISP.Game
 
                 // Has completed other required quests?
                 foreach (int questId in quest.RequiresQuestIdCompleted)
-                if (user.Quests.GetTrackedQuestAmount(quest.Id) < 1)
-                    return false;
+                    if (user.Quests.GetTrackedQuestAmount(quest.Id) < 1)
+                        return false;
 
                 // Has NOT competed other MUST NOT BE required quests
                 foreach (int questId in quest.RequiresQuestIdNotCompleted)
@@ -117,12 +117,12 @@ namespace HISP.Game
 
                 // Has allready tracked this quest?
                 if (user.Quests.GetTrackedQuestAmount(quest.Id) >= quest.MaxRepeats)
-                    return false; 
+                    return false;
 
             }
 
             // Check if user has award unlocked
-            if(quest.AwardRequired != 0)
+            if (quest.AwardRequired != 0)
                 if (!user.Awards.HasAward(Award.GetAwardById(quest.AwardRequired)))
                     return false;
 
@@ -151,90 +151,101 @@ namespace HISP.Game
             return true;
         }
 
+        public static bool CompleteQuest(User user, QuestEntry quest, bool npcActivation = false)
+        {
+            // Take Items
+            foreach (QuestItemInfo itemInfo in quest.ItemsRequired)
+            {
+                InventoryItem itm = user.Inventory.GetItemByItemId(itemInfo.ItemId);
+                for (int i = 0; i < itemInfo.Quantity; i++)
+                    user.Inventory.Remove(itm.ItemInstances[0]);
+
+            }
+            user.Money -= quest.MoneyCost;
+            // Give money
+            user.Money += quest.MoneyEarned;
+            // Give items
+            foreach (QuestItemInfo itemInfo in quest.ItemsEarned)
+            {
+                for (int i = 0; i < itemInfo.Quantity; i++)
+                {
+                    ItemInstance itm = new ItemInstance(itemInfo.ItemId);
+                    user.Inventory.AddIgnoringFull(itm);
+                }
+            }
+            if (quest.WarpX != 0 && quest.WarpY != 0)
+                user.Teleport(quest.WarpX, quest.WarpY);
+
+            // Give quest points
+            user.QuestPoints += quest.QuestPointsEarned;
+
+            if (quest.ChainedQuestId != 0)
+                ActivateQuest(user, GetQuestById(quest.ChainedQuestId));
+
+            if (quest.Tracked)
+                user.Quests.TrackQuest(quest.Id);
+
+
+            if (quest.SuccessMessage != null)
+            {
+                byte[] ChatPacket = PacketBuilder.CreateChat(quest.SuccessMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                user.LoggedinClient.SendPacket(ChatPacket);
+            }
+
+            if (quest.SuccessNpcChat != null)
+            {
+                if (!npcActivation)
+                {
+                    byte[] ChatPacket = PacketBuilder.CreateChat(quest.SuccessNpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    user.LoggedinClient.SendPacket(ChatPacket);
+                }
+            }
+
+
+
+            // Check if award unlocked
+            int questPointsPercent = Convert.ToInt32(Math.Floor(((decimal)user.QuestPoints / (decimal)GetTotalQuestPoints()) * (decimal)100.0));
+            if (questPointsPercent >= 25)
+                user.Awards.AddAward(Award.GetAwardById(1)); // 25% Quest Completion Award.
+            if (questPointsPercent >= 50)
+                user.Awards.AddAward(Award.GetAwardById(2)); // 50% Quest Completion Award.
+            if (questPointsPercent >= 75)
+                user.Awards.AddAward(Award.GetAwardById(3)); // 75% Quest Completion Award.
+            if (questPointsPercent >= 100)
+                user.Awards.AddAward(Award.GetAwardById(4)); // 100% Quest Completion Award.
+
+            // Is cloud isles quest?
+            if (quest.Id == 1373)
+            {
+                byte[] swfLoadPacket = PacketBuilder.CreateSwfModulePacket("ballooncutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
+                user.LoggedinClient.SendPacket(swfLoadPacket);
+            }
+
+            return true;
+        }
+        public static bool FailQuest(User user, QuestEntry quest, bool npcActivation = false)
+        {
+            if (quest.FailNpcChat != null)
+            {
+                if (!npcActivation)
+                {
+                    byte[] ChatPacket = PacketBuilder.CreateChat(quest.FailNpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    user.LoggedinClient.SendPacket(ChatPacket);
+                }
+            }
+            return false;
+        }
         public static bool ActivateQuest(User user, QuestEntry quest, bool npcActivation = false)
         {
 
-            if(CanComplete(user, quest))
+            if (CanComplete(user, quest))
             {
-                // Take Items
-                foreach (QuestItemInfo itemInfo in quest.ItemsRequired)
-                {
-                    InventoryItem itm = user.Inventory.GetItemByItemId(itemInfo.ItemId);
-                    for (int i = 0; i < itemInfo.Quantity; i++)
-                        user.Inventory.Remove(itm.ItemInstances[0]);
-
-                }
-                user.Money -= quest.MoneyCost;
-                // Give money
-                user.Money += quest.MoneyEarned;
-                // Give items
-                foreach (QuestItemInfo itemInfo in quest.ItemsEarned)
-                {
-                    for (int i = 0; i < itemInfo.Quantity; i++)
-                    {
-                        ItemInstance itm = new ItemInstance(itemInfo.ItemId);
-                        user.Inventory.AddIgnoringFull(itm);
-                    }
-                }
-                if (quest.WarpX != 0 && quest.WarpY != 0)
-                    user.Teleport(quest.WarpX, quest.WarpY);
-
-                // Give quest points
-                user.QuestPoints += quest.QuestPointsEarned;
-
-                if (quest.ChainedQuestId != 0)
-                    ActivateQuest(user, GetQuestById(quest.ChainedQuestId));
-
-                if (quest.Tracked)
-                    user.Quests.TrackQuest(quest.Id);
-
-                if (quest.SuccessNpcChat != null)
-                {
-                    if (!npcActivation)
-                    {
-                        byte[] ChatPacket = PacketBuilder.CreateChat(quest.SuccessNpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        user.LoggedinClient.SendPacket(ChatPacket);
-                    }
-                }
-
-                if (quest.SuccessMessage != null)
-                {
-                    byte[] ChatPacket = PacketBuilder.CreateChat(quest.SuccessMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    user.LoggedinClient.SendPacket(ChatPacket);
-                }
-
-
-                // Check if award unlocked
-                int questPointsPercent = Convert.ToInt32(Math.Floor(((decimal)user.QuestPoints / (decimal)GetTotalQuestPoints()) * (decimal)100.0));
-                if (questPointsPercent >= 25)
-                    user.Awards.AddAward(Award.GetAwardById(1)); // 25% Quest Completion Award.
-                if (questPointsPercent >= 50)
-                    user.Awards.AddAward(Award.GetAwardById(2)); // 50% Quest Completion Award.
-                if (questPointsPercent >= 75)
-                    user.Awards.AddAward(Award.GetAwardById(3)); // 75% Quest Completion Award.
-                if (questPointsPercent >= 100)
-                    user.Awards.AddAward(Award.GetAwardById(4)); // 100% Quest Completion Award.
-
-                // Is cloud isles quest?
-                if(quest.Id == 1373)
-                {
-                    byte[] swfLoadPacket = PacketBuilder.CreateSwfModulePacket("ballooncutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
-                    user.LoggedinClient.SendPacket(swfLoadPacket);
-                }    
-
-                return true;
+                return CompleteQuest(user, quest, npcActivation);
             }
-            else {
-                if(quest.FailNpcChat != null)
-                {
-                    if(!npcActivation)
-                    {
-                        byte[] ChatPacket = PacketBuilder.CreateChat(quest.FailNpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        user.LoggedinClient.SendPacket(ChatPacket);
-                    }
-                }
-                return false;
-            };
+            else 
+            {
+                return FailQuest(user, quest, npcActivation);
+            }
 
         }
         public static bool DoesQuestExist(int id)

@@ -296,7 +296,9 @@ namespace HISP.Game
         
         public static string TileFormat;
         public static string Seperator;
-        
+        public static string VenusFlyTrapFormat;
+        public static string PasswordEntry;
+
         public static string ExitThisPlace;
         public static string BackToMap;
         public static string LongFullLine;
@@ -329,6 +331,10 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatVenusFlyTrapMeta(int money)
+        {
+            return VenusFlyTrapFormat.Replace("%MONEY%", money.ToString("N0"));
+        }
         public static string FormatBankIntrestMadeMeta(UInt64 intrestMade)
         {
             return BankMadeInIntrestFormat.Replace("%MONEY%", intrestMade.ToString("N0"));
