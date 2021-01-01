@@ -14,7 +14,7 @@ namespace HISP.Server
         public static string DatabaseName;
         public static string DatabasePassword;
         public static int DatabasePort;
-
+        public static int IntrestRate;
         public static string Motd;
         public static string MapFile;
         public static string GameDataFile;
@@ -101,6 +101,9 @@ namespace HISP.Server
                         break;
                     case "enable_word_filter":
                         DoCorrections = data == "true";
+                        break;
+                    case "intrest_rate":
+                        IntrestRate = int.Parse(data);
                         break;
                     case "debug":
                         Debug = data == "true";

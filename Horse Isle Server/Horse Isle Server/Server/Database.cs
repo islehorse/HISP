@@ -17,7 +17,7 @@ namespace HISP.Server
             {
                 db.Open();
                 string UserTable = "CREATE TABLE Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
-                string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance BIGINT, ProfilePage Text(1028),PrivateNotes Text(1028), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT)";
+                string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(1028),PrivateNotes Text(1028), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT)";
                 string MailTable = "CREATE TABLE Mailbox(IdTo INT, PlayerFrom TEXT(16),Subject TEXT(128), Message Text(1028), TimeSent INT)";
                 string BuddyTable = "CREATE TABLE BuddyList(Id INT, IdFriend INT, Pending BOOL)";
                 string WorldTable = "CREATE TABLE World(Time INT,Day INT, Year INT, Weather TEXT(64))";
@@ -1444,7 +1444,7 @@ namespace HISP.Server
                     throw new Exception("Userid " + id + " Allready in userext.");
 
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,@timestamp,0,0,0,'','',0,0,'NO',0,0,1000,1000,1000, 180)";
+                sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,@timestamp,0,0,0,0,'','',0,0,'NO',0,0,1000,1000,1000, 180)";
                 sqlCommand.Parameters.AddWithValue("@id", id);
                 sqlCommand.Parameters.AddWithValue("@timestamp", Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()));
                 sqlCommand.Parameters.AddWithValue("@x", Map.NewUserStartX);
@@ -2129,7 +2129,7 @@ namespace HISP.Server
             }
         }
 
-        public static UInt64 GetPlayerBankMoney(int userId)
+        public static double GetPlayerBankMoney(int userId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
@@ -2140,7 +2140,7 @@ namespace HISP.Server
                     sqlCommand.CommandText = "SELECT BankBalance FROM UserExt WHERE Id=@id";
                     sqlCommand.Parameters.AddWithValue("@id", userId);
                     sqlCommand.Prepare();
-                    UInt64 BankMoney = Convert.ToUInt64(sqlCommand.ExecuteScalar());
+                    double BankMoney = Convert.ToDouble(sqlCommand.ExecuteScalar());
 
                     sqlCommand.Dispose();
                     return BankMoney;
@@ -2152,7 +2152,66 @@ namespace HISP.Server
             }
         }
 
-        public static void SetPlayerBankMoney(UInt64 bankMoney, int id)
+        public static double GetPlayerBankInterest(int userId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                if (CheckUserExtExists(userId))
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "SELECT BankInterest FROM UserExt WHERE Id=@id";
+                    sqlCommand.Parameters.AddWithValue("@id", userId);
+                    sqlCommand.Prepare();
+                    double BankInterest = Convert.ToDouble(sqlCommand.ExecuteScalar());
+
+                    sqlCommand.Dispose();
+                    return BankInterest;
+                }
+                else
+                {
+                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                }
+            }
+        }
+
+        public static void DoIntrestPayments()
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE UserExt SET BankBalance=BankBalance * (1/@interestRate) AND NOT BankBalance * (1/@interestRate) > 9999999999.9999";
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetPlayerBankInterest(double interest, int id)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                if (CheckUserExist(id))
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "UPDATE UserExt SET BankInterest=@interest WHERE Id=@id";
+                    sqlCommand.Parameters.AddWithValue("@interest", interest);
+                    sqlCommand.Parameters.AddWithValue("@id", id);
+                    sqlCommand.Prepare();
+                    sqlCommand.ExecuteNonQuery();
+
+                    sqlCommand.Dispose();
+                }
+                else
+                {
+                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                }
+            }
+        }
+        public static void SetPlayerBankMoney(double bankMoney, int id)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
