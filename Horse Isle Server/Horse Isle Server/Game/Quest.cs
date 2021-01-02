@@ -47,6 +47,7 @@ namespace HISP.Game
             public int MoneyEarned;
             public QuestItemInfo[] ItemsEarned;
             public int QuestPointsEarned;
+            public int SetNpcChatpoint;
             public int GotoNpcChatpoint;
             public int WarpX;
             public int WarpY;

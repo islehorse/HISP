@@ -337,6 +337,7 @@ namespace HISP.Server
                 quest.ItemsEarned = itmInfo.ToArray();
 
                 quest.QuestPointsEarned = gameData.quest_list[i].quest_points;
+                quest.SetNpcChatpoint = gameData.quest_list[i].set_npc_chatpoint;
                 quest.GotoNpcChatpoint = gameData.quest_list[i].goto_npc_chatpoint;
                 if(gameData.quest_list[i].warp_x != null)
                     quest.WarpX = gameData.quest_list[i].warp_x;

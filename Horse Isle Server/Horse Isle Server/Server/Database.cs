@@ -31,6 +31,7 @@ namespace HISP.Server
                 string Jewelry = "CREATE TABLE Jewelry(playerId INT, slot1 INT, slot2 INT, slot3 INT, slot4 INT)";
                 string AbuseReorts = "CREATE TABLE AbuseReports(ReportCreator TEXT(1028), Reporting TEXT(1028), ReportReason TEXT(1028))";
                 string Leaderboards = "CREATE TABLE Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
+                string NpcStartPoint = "CREATE TABLE NpcStartPoint(playerId INT, npcId INT, chatpointId INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
 
@@ -187,7 +188,19 @@ namespace HISP.Server
                 {
                     Logger.WarnPrint(e.Message);
                 };
+                
+                try
+                {
 
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = NpcStartPoint;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
 
                 try
                 {
@@ -1125,6 +1138,72 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
+            }
+        }
+
+        public static bool HasNpcStartpointSet(int playerId, int npcId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM NpcStartPoint WHERE playerId=@playerId AND npcId=@npcId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Prepare();
+                int total = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return total >= 1;
+            }
+        }
+        public static void AddNpcStartPoint(int playerId, int npcId, int startChatpoint)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "INSERT INTO NpcStartPoint VALUES(@playerId, @npcId, @chatpointId)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Parameters.AddWithValue("@chatpointId", startChatpoint);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetNpcStartPoint(int playerId, int npcId, int startChatpoint)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE NpcStartPoint SET chatpointId=@chatpointId WHERE playerId=@playerId AND npcId=@npcId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Parameters.AddWithValue("@chatpointId", startChatpoint);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static int GetNpcStartPoint(int playerId, int npcId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT chatpointId FROM NpcStartPoint WHERE playerId=@playerId AND npcId=@npcId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Prepare();
+                int startPoint = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return startPoint;
             }
         }
 
