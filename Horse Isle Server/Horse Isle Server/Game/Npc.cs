@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using HISP.Player;
+using HISP.Server;
+using System.Collections.Generic;
 
 
 namespace HISP.Game
@@ -81,6 +83,24 @@ namespace HISP.Game
 
             throw new KeyNotFoundException("Npc chatpoint id: " + chatpointId + " not found!");
         }
+
+        public static int GetDefaultChatpoint(User user, NpcEntry npc)
+        {
+            if (Database.HasNpcStartpointSet(user.Id, npc.Id))
+                return Database.GetNpcStartPoint(user.Id, npc.Id);
+            else
+                return 0;
+        }
+
+        public static void SetDefaultChatpoint(User user, NpcEntry npc, int chatpointId)
+        {
+            if (Database.HasNpcStartpointSet(user.Id, npc.Id))
+                Database.SetNpcStartPoint(user.Id, npc.Id, chatpointId);
+            else
+                Database.AddNpcStartPoint(user.Id, npc.Id, chatpointId);
+        }
+
+
         public static bool NpcExists(int id)
         {
             try

@@ -1065,7 +1065,11 @@ namespace HISP.Server
                 }
                 sender.LoggedinUser.MetaPriority = true;
                 Npc.NpcEntry entry = Npc.GetNpcById(chatId);
-                string metaInfo = Meta.BuildChatpoint(sender.LoggedinUser, entry, entry.Chatpoints[0]);
+                
+                int defaultChatpointId = Npc.GetDefaultChatpoint(sender.LoggedinUser, entry);
+                Npc.NpcChat startingChatpoint = Npc.GetNpcChatpoint(entry, defaultChatpointId);
+
+                string metaInfo = Meta.BuildChatpoint(sender.LoggedinUser, entry, startingChatpoint);
                 byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
                 sender.SendPacket(metaPacket);
 

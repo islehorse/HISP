@@ -229,8 +229,6 @@ namespace HISP.Game
         {
             string message = "";
             Npc.NpcEntry[] entries = Npc.GetNpcByXAndY(x, y);
-            if (entries.Length > 0)
-                message += Messages.Seperator;
             foreach (Npc.NpcEntry ent in entries)
             {
                 if (ent.AdminOnly && !user.Administrator)
@@ -636,11 +634,11 @@ namespace HISP.Game
             string message = "";
 
             if (specialTile.Code == null)
-                message += buildLocationString(specialTile.X, specialTile.Y)+Messages.Seperator;
+                message += buildLocationString(specialTile.X, specialTile.Y);
 
 
             if (specialTile.Title != null && specialTile.Title != "")
-                message += Messages.FormatTileName(specialTile.Title) + Messages.Seperator; 
+                message += Messages.FormatTileName(specialTile.Title); 
 
             if (specialTile.Description != null && specialTile.Description != "")
                 message += specialTile.Description;
@@ -802,7 +800,9 @@ namespace HISP.Game
                 if (Quest.ActivateQuest(user, quest, true))
                 {
                     user.MetaPriority = true;
-                    if(quest.GotoNpcChatpoint != -1)
+                    if (quest.SetNpcChatpoint != -1)
+                        Npc.SetDefaultChatpoint(user, npc, quest.SetNpcChatpoint);
+                    if (quest.GotoNpcChatpoint != -1)
                         chatpoint = Npc.GetNpcChatpoint(npc,quest.GotoNpcChatpoint);
                     if (quest.SuccessNpcChat != null)
                         chatpoint.ChatText = quest.SuccessNpcChat;
