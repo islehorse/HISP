@@ -2,6 +2,8 @@
 using System.IO;
 using System.Text;
 using HISP.Game;
+using HISP.Game.SwfModules;
+
 namespace HISP.Server
 {
     class PacketBuilder
@@ -39,6 +41,12 @@ namespace HISP.Server
         public const byte PACKET_PLAYERINFO = 0x16;
         public const byte PACKET_INFORMATION = 0x28;
         public const byte PACKET_WISH = 0x2C;
+        public const byte PACKET_SWFMODULE = 0x50;
+
+        public const byte SWFMODULE_BRICKPOET = 0x5A;
+
+        public const byte BRICKPOET_LIST_ALL = 0x14;
+        public const byte BRICKPOET_MOVE = 0x55;
 
         public const byte WISH_MONEY = 0x31;
         public const byte WISH_ITEMS = 0x32;
@@ -112,7 +120,50 @@ namespace HISP.Server
         public const byte DIRECTION_TELEPORT = 4;
         public const byte DIRECTION_NONE = 10;
 
+        public static byte[] CreateBrickPoetMovePacket(Brickpoet.PoetryPeice peice)
+        {
 
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PacketBuilder.PACKET_SWFMODULE);
+            ms.WriteByte(PacketBuilder.BRICKPOET_MOVE);
+            string packetStr = "|";
+            packetStr += peice.Id + "|";
+            packetStr += peice.X + "|";
+            packetStr += peice.Y + "|";
+            packetStr += "^";
+
+            byte[] infoBytes = Encoding.UTF8.GetBytes(packetStr);
+            ms.Write(infoBytes, 0x00, infoBytes.Length);
+            ms.WriteByte(PACKET_TERMINATOR);
+            ms.Seek(0x00, SeekOrigin.Begin);
+            return ms.ToArray();
+        }
+        public static byte[] CreateBrickPoetListPacket(Brickpoet.PoetryPeice[] room)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PacketBuilder.PACKET_SWFMODULE);
+            string packetStr = "";
+            foreach(Brickpoet.PoetryPeice peice in room)
+            {
+                packetStr += "A";
+                packetStr += "|";
+                packetStr += peice.Id;
+                packetStr += "|";
+                packetStr += peice.Word.ToUpper();
+                packetStr += "|";
+                packetStr += peice.X;
+                packetStr += "|";
+                packetStr += peice.Y;
+                packetStr += "|";
+                packetStr += "^";
+            }
+            byte[] packetBytes = Encoding.UTF8.GetBytes(packetStr);
+            ms.Write(packetBytes, 0x00, packetBytes.Length);
+            ms.WriteByte(PacketBuilder.PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            return ms.ToArray();
+        }
         public static byte[] CreatePlaysoundPacket(string sound)
         {
             MemoryStream ms = new MemoryStream();

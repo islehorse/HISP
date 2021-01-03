@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using HISP.Game;
+using HISP.Game.SwfModules;
 using HISP.Security;
 using HISP.Server;
 namespace HISP
@@ -19,6 +20,7 @@ namespace HISP
             Map.OpenMap();
             World.ReadWorldData();
             DroppedItems.Init();
+            Brickpoet.LoadPoetryRooms();
             GameServer.StartServer();
 
         }
