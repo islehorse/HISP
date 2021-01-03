@@ -521,7 +521,7 @@ namespace HISP.Server
                             
                         }
 
-                        if (Database.GetLastPlayer("P" + roomId) == sender.LoggedinUser.Id)
+                        if (Database.GetLastPlayer("P" + roomId) != sender.LoggedinUser.Id)
                         {
                             Database.SetLastPlayer("P" + roomId, sender.LoggedinUser.Id);
                             UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
