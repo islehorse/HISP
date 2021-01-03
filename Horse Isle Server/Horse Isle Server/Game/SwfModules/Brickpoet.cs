@@ -150,6 +150,8 @@ namespace HISP.Game.SwfModules
             {
                 Logger.InfoPrint("Loading poetry room: " + room.ToString());
                 poetryRooms.Add(getPoetryRoom(room));
+                if (!Database.LastPlayerExist("P" + room))
+                    Database.AddLastPlayer("P" + room, -1);
             }
 
         }

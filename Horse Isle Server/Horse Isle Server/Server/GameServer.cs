@@ -484,7 +484,6 @@ namespace HISP.Server
                             break;
                         }
 
-
                         int roomId = packet[2] - 40;
                         int peiceId;
                         int x;
@@ -501,37 +500,31 @@ namespace HISP.Server
 
                             room = Brickpoet.GetPoetryRoom(roomId);
                             peice = Brickpoet.GetPoetryPeice(room, peiceId);
+                            
                         }
                         catch (Exception)
                         {
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to move a peice in an invalid brickpoet room: " + roomId);
                             break;
                         }
+
                         peice.X = x;
                         peice.Y = y;
 
-                        foreach(GameClient client in connectedClients)
+                        foreach(User user in GetUsersOnSpecialTileCode("MULTIROOM-" + "P" + roomId.ToString()))
                         {
-                            if(client.LoggedIn)
-                            {
-                                if (client.LoggedinUser.Id == sender.LoggedinUser.Id)
-                                    continue;
+                            if (user.Id == sender.LoggedinUser.Id)
+                                continue;
 
-                                if (World.InSpecialTile(client.LoggedinUser.X, client.LoggedinUser.Y))
-                                {
-                                    World.SpecialTile tile = World.GetSpecialTile(client.LoggedinUser.X, client.LoggedinUser.Y);
+                            byte[] updatePoetRoomPacket = PacketBuilder.CreateBrickPoetMovePacket(peice);
+                            user.LoggedinClient.SendPacket(updatePoetRoomPacket);
+                            
+                        }
 
-                                    if (tile.Code.StartsWith("MULTIROOM-"))
-                                    {
-                                        string roomNo = tile.Code.Split('-')[1];
-                                        if (roomNo == "P" + roomId.ToString())
-                                        {
-                                            byte[] updatePoetRoomPacket = PacketBuilder.CreateBrickPoetMovePacket(peice);
-                                            client.SendPacket(updatePoetRoomPacket);
-                                        }
-                                    }
-                                }
-                            }
+                        if (Database.GetLastPlayer("P" + roomId) == sender.LoggedinUser.Id)
+                        {
+                            Database.SetLastPlayer("P" + roomId, sender.LoggedinUser.Id);
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
                         }
 
                         break;
@@ -2398,6 +2391,29 @@ namespace HISP.Server
                 }
 
             return usersInIsle.ToArray();
+        }
+
+        public static User[] GetUsersOnSpecialTileCode(string code)
+        {
+            List<User> userList = new List<User>();
+
+            foreach (GameClient client in connectedClients)
+            {
+                if (client.LoggedIn)
+                {
+
+                    if (World.InSpecialTile(client.LoggedinUser.X, client.LoggedinUser.Y))
+                    {
+                        World.SpecialTile tile = World.GetSpecialTile(client.LoggedinUser.X, client.LoggedinUser.Y);
+
+                        if (tile.Code == code)
+                        {
+                            userList.Add(client.LoggedinUser);
+                        }
+                    }
+                }
+            }
+            return userList.ToArray();
         }
         public static User[] GetUsersAt(int x, int y, bool includeStealth = false, bool includeMuted = false)
         {

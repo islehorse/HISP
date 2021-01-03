@@ -33,6 +33,7 @@ namespace HISP.Server
                 string Leaderboards = "CREATE TABLE Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
                 string NpcStartPoint = "CREATE TABLE NpcStartPoint(playerId INT, npcId INT, chatpointId INT)";
                 string PoetryRooms = "CREATE TABLE PoetryRooms(poetId INT, X INT, Y INT, roomId INT)";
+                string LastPlayer = "CREATE TABLE LastPlayer(roomId TEXT(1028), playerId INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
 
@@ -220,6 +221,20 @@ namespace HISP.Server
                 {
 
                     MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = LastPlayer;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = WorldTable;
                     sqlCommand.ExecuteNonQuery();
 
@@ -275,6 +290,71 @@ namespace HISP.Server
                 };
             }
             
+        }
+
+        public static void AddLastPlayer(string roomId, int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO LastPlayer VALUES(@roomId,@playerId)";
+                sqlCommand.Parameters.AddWithValue("@roomId", roomId);
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static bool LastPlayerExist(string roomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM LastPlayer WHERE roomId=@roomId";
+                sqlCommand.Parameters.AddWithValue("@roomId", roomId);
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                sqlCommand.Dispose();
+                return count > 0;
+            }
+        }
+
+        public static int GetLastPlayer(string roomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT playerId FROM LastPlayer WHERE roomId=@roomId";
+                sqlCommand.Parameters.AddWithValue("@roomId", roomId);
+                sqlCommand.Prepare();
+                int playerId = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                sqlCommand.Dispose();
+                return playerId;
+            }
+        }
+
+
+        public static void SetLastPlayer(string roomId, int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE LastPlayer SET playerId=@playerId WHERE roomId=@roomId";
+                sqlCommand.Parameters.AddWithValue("@roomId", roomId);
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
         }
 
         public static void AddPoetWord(int id, int x, int y, int room)
