@@ -13,6 +13,7 @@ using HISP.Player.Equips;
 using System.Drawing;
 using HISP.Game.Services;
 using HISP.Game.Inventory;
+using HISP.Game.SwfModules;
 
 namespace HISP.Server
 {
@@ -414,6 +415,139 @@ namespace HISP.Server
 
             byte[] MotdData = PacketBuilder.CreateMotd();
             sender.SendPacket(MotdData);
+
+        }
+
+        public static void OnSwfModuleCommunication(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " tried to send swf communication when not logged in.");
+                return;
+            }
+            if (packet.Length < 4)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid swf commmunication Packet");
+                return;
+            }
+
+
+            byte module = packet[1];
+            switch(module)
+            {
+                case PacketBuilder.SWFMODULE_BRICKPOET:
+                    if(packet.Length < 5)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid BRICKPOET packet (swf communication, WRONG SIZE)");
+                        break;
+                    }
+                    if(packet[2] == PacketBuilder.BRICKPOET_LIST_ALL)
+                    {
+                        if (packet.Length < 6)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid BRICKPOET LIST ALL packet (swf communication, WRONG SIZE)");
+                            break;
+                        }
+
+                        int roomId = packet[3] - 40;
+                        Brickpoet.PoetryPeice[] room;
+                        try
+                        {
+                            room = Brickpoet.GetPoetryRoom(roomId);
+                        }
+                        catch(KeyNotFoundException)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to load an invalid brickpoet room: " + roomId);
+                            break;
+                        }
+
+                        byte[] poetPacket = PacketBuilder.CreateBrickPoetListPacket(room);
+                        sender.SendPacket(poetPacket);
+                    }
+                    else if(packet[3] == PacketBuilder.BRICKPOET_MOVE)
+                    {
+                        if (packet.Length < 0xB)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid BRICKPOET MOVE packet (swf communication, WRONG SIZE)");
+                            break;
+                        }
+                        string packetStr = Encoding.UTF8.GetString(packet);
+                        if(!packetStr.Contains('|'))
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid BRICKPOET MOVE packet (swf communication, NO | SEPERATOR)");
+                            break;
+                        }
+                        string[] args = packetStr.Split('|');
+                        if(args.Length < 5)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid BRICKPOET MOVE Packet (swf communication, NOT ENOUGH | SEPERATORS.");
+                            break;
+                        }
+
+
+                        int roomId = packet[2] - 40;
+                        int peiceId;
+                        int x;
+                        int y;
+                        Brickpoet.PoetryPeice[] room;
+                        Brickpoet.PoetryPeice peice;
+
+                        try
+                        {
+                            peiceId = int.Parse(args[1]);
+                            x = int.Parse(args[2]);
+                            y = int.Parse(args[3]);
+
+
+                            room = Brickpoet.GetPoetryRoom(roomId);
+                            peice = Brickpoet.GetPoetryPeice(room, peiceId);
+                        }
+                        catch (Exception)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to move a peice in an invalid brickpoet room: " + roomId);
+                            break;
+                        }
+                        peice.X = x;
+                        peice.Y = y;
+
+                        foreach(GameClient client in connectedClients)
+                        {
+                            if(client.LoggedIn)
+                            {
+                                if (client.LoggedinUser.Id == sender.LoggedinUser.Id)
+                                    continue;
+
+                                if (World.InSpecialTile(client.LoggedinUser.X, client.LoggedinUser.Y))
+                                {
+                                    World.SpecialTile tile = World.GetSpecialTile(client.LoggedinUser.X, client.LoggedinUser.Y);
+
+                                    if (tile.Code.StartsWith("MULTIROOM-"))
+                                    {
+                                        string roomNo = tile.Code.Split('-')[1];
+                                        if (roomNo == "P" + roomId.ToString())
+                                        {
+                                            byte[] updatePoetRoomPacket = PacketBuilder.CreateBrickPoetMovePacket(peice);
+                                            client.SendPacket(updatePoetRoomPacket);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        break;
+                    }
+                    else
+                    {
+                        Logger.DebugPrint(" packet dump: " + BitConverter.ToString(packet).Replace("-", " "));
+                        break;
+                    }
+
+                    break;
+                default:
+                    Logger.DebugPrint("Unknown moduleid : " + module + " packet dump: " + BitConverter.ToString(packet).Replace("-"," "));
+                    break;
+
+            }
 
         }
 

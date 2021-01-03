@@ -5,6 +5,7 @@ using HISP.Game;
 using HISP.Game.Chat;
 using HISP.Player;
 using HISP.Game.Services;
+using HISP.Game.SwfModules;
 
 namespace HISP.Server
 {
@@ -438,6 +439,19 @@ namespace HISP.Server
 
                 Logger.DebugPrint("Reigstered Inn: " + inn.Id + " Buying at: " + inn.BuyPercentage.ToString() + "%!");
             }
+
+            int totalPoets = gameData.poetry.Count;
+            for(int i = 0; i < totalPoets; i++)
+            {
+                Brickpoet.PoetryEntry entry = new Brickpoet.PoetryEntry();
+                entry.Id = gameData.poetry[i].id;
+                entry.Word = gameData.poetry[i].word;
+                entry.Room = gameData.poetry[i].room_id;
+                Brickpoet.PoetList.Add(entry);
+
+                Logger.DebugPrint("Registed poet: " + entry.Id.ToString() + " word: " + entry.Word + " in room " + entry.Room.ToString());
+            }
+
 
             Item.Present = gameData.item.special.present;
             Item.MailMessage = gameData.item.special.mail_message;

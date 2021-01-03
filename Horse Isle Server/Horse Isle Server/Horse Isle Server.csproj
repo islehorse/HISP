@@ -83,6 +83,7 @@
     <Compile Include="Game\Services\Inn.cs" />
     <Compile Include="Game\Services\Shop.cs" />
     <Compile Include="Game\Inventory\ShopInventory.cs" />
+    <Compile Include="Game\SwfModules\Brickpoet.cs" />
     <Compile Include="Player\Award.cs" />
     <Compile Include="Player\Equips\Jewelry.cs" />
     <Compile Include="Player\Equips\CompetitionGear.cs" />

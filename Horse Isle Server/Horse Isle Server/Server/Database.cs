@@ -32,6 +32,7 @@ namespace HISP.Server
                 string AbuseReorts = "CREATE TABLE AbuseReports(ReportCreator TEXT(1028), Reporting TEXT(1028), ReportReason TEXT(1028))";
                 string Leaderboards = "CREATE TABLE Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
                 string NpcStartPoint = "CREATE TABLE NpcStartPoint(playerId INT, npcId INT, chatpointId INT)";
+                string PoetryRooms = "CREATE TABLE PoetryRooms(poetId INT, X INT, Y INT, roomId INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
 
@@ -175,6 +176,19 @@ namespace HISP.Server
                 {
                     Logger.WarnPrint(e.Message);
                 };
+
+                try
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = PoetryRooms;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
                 
                 try
                 {
@@ -262,6 +276,93 @@ namespace HISP.Server
             }
             
         }
+
+        public static void AddPoetWord(int id, int x, int y, int room)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO PoetryRooms VALUES(@id,@x,@y,@room)";
+                sqlCommand.Parameters.AddWithValue("@id", id);
+                sqlCommand.Parameters.AddWithValue("@x", x);
+                sqlCommand.Parameters.AddWithValue("@y", y);
+                sqlCommand.Parameters.AddWithValue("@room", room);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetPoetPosition(int id, int x, int y, int room)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE PoetryRooms SET X=@x, Y=@y WHERE poetId=@id AND roomId=@room";
+                sqlCommand.Parameters.AddWithValue("@id", id);
+                sqlCommand.Parameters.AddWithValue("@x", x);
+                sqlCommand.Parameters.AddWithValue("@y", y);
+                sqlCommand.Parameters.AddWithValue("@room", room);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static bool GetPoetExist(int id, int room)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM PoetryRooms WHERE poetId=@id AND roomId=@room";
+                sqlCommand.Parameters.AddWithValue("@id", id);
+                sqlCommand.Parameters.AddWithValue("@room", room);
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                sqlCommand.Dispose();
+                return count > 0;
+            }
+        }
+        public static int GetPoetPositionX(int id, int room)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT X FROM PoetryRooms WHERE poetId=@id AND roomId=@room";
+                sqlCommand.Parameters.AddWithValue("@id", id);
+                sqlCommand.Parameters.AddWithValue("@room", room);
+                sqlCommand.Prepare();
+                int xpos = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                
+                sqlCommand.Dispose();
+                return xpos;
+            }
+        }
+
+        public static int GetPoetPositionY(int id, int room)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT Y FROM PoetryRooms WHERE poetId=@id AND roomId=@room";
+                sqlCommand.Parameters.AddWithValue("@id", id);
+                sqlCommand.Parameters.AddWithValue("@room", room);
+                sqlCommand.Prepare();
+                int ypos = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                sqlCommand.Dispose();
+                return ypos;
+            }
+        }
+
 
         public static void SetServerTime(int time, int day, int year)
         {
@@ -417,6 +518,8 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
+
+
 
         public static void SetJewelrySlot1(int playerId, int itemId)
         {
