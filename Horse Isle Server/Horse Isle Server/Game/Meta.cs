@@ -206,6 +206,29 @@ namespace HISP.Game
 
             return message;
         }
+
+        private static string buildMultiroom(string id, User user)
+        {
+            string message = Messages.MultiroomPlayersParticipating; 
+            foreach(User userOnTile in GameServer.GetUsersOnSpecialTileCode("MULTIROOM-"+id))
+            {
+                if (userOnTile.Id == user.Id)
+                    continue;
+                message += Messages.FormatMultiroomParticipent(userOnTile.Username);
+            }
+            if(id[0] == 'P') // Poet
+            {
+                int lastPoet = Database.GetLastPlayer(id);
+                string username = "";
+                if(lastPoet != -1)
+                    username = Database.GetUsername(lastPoet);
+
+                message += Messages.FormatLastPoet(username);
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         private static string buildEquippedCompetitionGear(User user)
         {
             string message = Messages.CompetitionGearSelected;
@@ -698,6 +721,11 @@ namespace HISP.Game
                 {
                     message += buildVenusFlyTrap(user);
                 }
+                if(TileCode == "MULTIROOM")
+                {
+                    user.MetaPriority = false; // acturally want to track updates here >-<
+                    message += buildMultiroom(TileArg, user);
+                }
                 if(TileCode == "PASSWORD")
                 {
                     message += buildPassword();
@@ -720,6 +748,7 @@ namespace HISP.Game
 
             return message;
         }
+
 
         public static string BuildAbuseReportPage()
         {

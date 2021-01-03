@@ -453,6 +453,7 @@ namespace HISP.Server
             }
 
 
+
             Item.Present = gameData.item.special.present;
             Item.MailMessage = gameData.item.special.mail_message;
             Item.DorothyShoes = gameData.item.special.dorothy_shoes;
@@ -588,6 +589,13 @@ namespace HISP.Server
 
             Messages.PasswordNotice = gameData.messages.chat.password_included;
             Messages.CapsNotice = gameData.messages.chat.caps_notice;
+
+            // Brickpoet
+            Messages.LastPoetFormat = gameData.messages.meta.last_poet;
+
+            // Mutliroom
+            Messages.MultiroomParticipentFormat = gameData.messages.meta.multiroom.partcipent_format;
+            Messages.MultiroomPlayersParticipating = gameData.messages.meta.multiroom.other_players_participating;
 
             // Dropped Items
 

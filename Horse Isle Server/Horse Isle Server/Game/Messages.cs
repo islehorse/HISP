@@ -304,6 +304,13 @@ namespace HISP.Game
         public static string LongFullLine;
         public static string MetaTerminator;
 
+        // Birckpoet
+        public static string LastPoetFormat;
+
+        // Multiroom
+        public static string MultiroomPlayersParticipating;
+        public static string MultiroomParticipentFormat;
+
         // Inn
         public static string InnBuyMeal;
         public static string InnBuyRest;
@@ -331,6 +338,14 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatLastPoet(string name)
+        {
+            return LastPoetFormat.Replace("%USERNAME%", name);
+        }
+        public static string FormatMultiroomParticipent(string name)
+        {
+            return MultiroomParticipentFormat.Replace("%USERNAME%", name);
+        }
         public static string FormatVenusFlyTrapMeta(int money)
         {
             return VenusFlyTrapFormat.Replace("%MONEY%", money.ToString("N0"));
