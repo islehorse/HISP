@@ -379,6 +379,31 @@ namespace HISP.Server
                     sender.SendPacket(metaPacket);
                     break;
                 default:
+                    if(buttonIdStr.StartsWith("4c"))
+                    {
+                        string idStr = buttonIdStr.Substring(2);
+                        int breedId = -1;
+                        Horse.Breed horseBreed;
+                        try
+                        {
+                            breedId = int.Parse(idStr);
+                            horseBreed = Horse.GetBreedById(breedId);
+                        }
+                        catch (Exception) {
+                            Logger.DebugPrint(sender.LoggedinUser.Username + " Sent invalid libary breed viewer request.");
+                            break; 
+                        };
+                        string metaTag = Meta.BuildBreedViewerLibary(horseBreed);
+                        metaPacket = PacketBuilder.CreateMetaPacket(metaTag);
+                        sender.SendPacket(metaPacket);
+
+                        string swf = "breedviewer.swf?terrain=book&breed=" + horseBreed.Swf + "&j=";
+                        byte[] loadSwf = PacketBuilder.CreateSwfModulePacket(swf, PacketBuilder.PACKET_SWF_MODULE_FORCE);
+                        sender.SendPacket(loadSwf);
+
+                        break;
+                        
+                    }
                     if(AbuseReport.DoesReasonExist(buttonIdStr))
                     {
                         sender.LoggedinUser.MetaPriority = true;

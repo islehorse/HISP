@@ -21,6 +21,7 @@ namespace HISP.Server
         public const byte PACKET_WORLD = 0x7A;
         public const byte PACKET_BASE_STATS = 0x7B;
         public const byte PACKET_SWF_CUTSCENE = 0x29;
+        public const byte PACKET_SWF_MODULE_FORCE = 0x28;
         public const byte PACKET_SWF_MODULE_GENTLE = 0x2A;
         public const byte PACKET_PLACE_INFO = 0x1E;
         public const byte PACKET_AREA_DEFS = 0x79;

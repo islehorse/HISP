@@ -37,5 +37,14 @@ namespace HISP.Game
 
         public static List<Breed> Breeds = new List<Breed>();
 
+        public static Breed GetBreedById(int id)
+        {
+            foreach(Breed breed in Breeds)
+            {
+                if (breed.Id == id)
+                    return breed;
+            }
+            throw new KeyNotFoundException("No horse breed with id " + id);
+        }
     }
 }
