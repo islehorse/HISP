@@ -620,6 +620,22 @@ namespace HISP.Game
             return message;
         }
 
+        public static string BuildHorseList()
+        {
+            string message = "";
+            foreach(Horse.Breed breed in Horse.Breeds.OrderBy(o => o.Name).ToList())
+            {
+                if (breed.Type == "unicorn" || breed.Type == "pegasus")
+                    continue;
+                if (breed.Type == "horse")
+                    message += Messages.FormatHorseBreed(breed.Name, breed.Id);
+                else
+                    message += Messages.FormatHorseRelative(breed.Name, breed.Id);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildNpcSearch(string search)
         {
             List<Npc.NpcEntry> foundNpcs = new List<Npc.NpcEntry>();

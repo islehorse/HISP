@@ -594,6 +594,9 @@ namespace HISP.Server
             Messages.LibaryFindNpcSearchNoResults = gameData.messages.meta.libary.find_npc_no_results;
             Messages.LibaryFindNpcLimit5 = gameData.messages.meta.libary.find_npc_limit5;
 
+            Messages.HorseBreedFormat = gameData.messages.meta.libary.horse_breed_format;
+            Messages.HorseRelativeFormat = gameData.messages.meta.libary.horse_relative_format;
+
             // Chat
 
             Messages.ChatViolationMessageFormat = gameData.messages.chat.violation_format;

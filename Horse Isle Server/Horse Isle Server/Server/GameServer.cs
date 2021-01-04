@@ -356,7 +356,10 @@ namespace HISP.Server
                     break;
                 case "31": // Find Ranch
                     break;
-                case "4": // View Horse Breed
+                case "4": // View Horse Breeds
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseList());
+                    sender.SendPacket(metaPacket);
                     break;
                 case "9": // View Tack
                     break;
