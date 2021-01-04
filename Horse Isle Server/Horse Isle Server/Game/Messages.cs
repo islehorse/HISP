@@ -85,6 +85,8 @@ namespace HISP.Game
 
         public static string HorseBreedFormat;
         public static string HorseRelativeFormat;
+        public static string BreedViewerFormat;
+
 
         // Records
 
@@ -158,6 +160,10 @@ namespace HISP.Game
         public static string EquipJewelryFormat;
         public static string MaxJewelryMessage;
         public static string RemoveJewelry;
+
+        // Horse
+        public static string BreedViewerMaximumStats;
+        public static string StatFormat;
 
         // Consume
 
@@ -349,7 +355,14 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
-
+        public static string FormatHorseBreedPreview(string name, string description)
+        {
+            return BreedViewerFormat.Replace("%NAME%", name).Replace("%DESCRIPTION%", description);
+        }
+        public static string FormatHorseStat(int baseStat, int companionBoost, int tackBoost, int maxStat)
+        {
+            return StatFormat.Replace("%BASE%", baseStat.ToString()).Replace("%COMPAINON%", companionBoost.ToString()).Replace("%TACK%", tackBoost.ToString()).Replace("%MAX%", maxStat.ToString());
+        }
         public static string FormatHorseRelative(string name, int id)
         {
             return HorseRelativeFormat.Replace("%NAME%", name).Replace("%ID%", id.ToString());

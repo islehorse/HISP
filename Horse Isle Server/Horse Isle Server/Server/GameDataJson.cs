@@ -503,6 +503,7 @@ namespace HISP.Server
             Messages.PrivateNotesSavedMessage = gameData.messages.private_notes_save;
             Messages.PrivateNotesMetaFormat = gameData.messages.meta.private_notes_format;
 
+
             // Announcements
 
             Messages.WelcomeFormat = gameData.messages.welcome_format;
@@ -585,6 +586,9 @@ namespace HISP.Server
             Messages.BankDepositedMoneyFormat = gameData.messages.bank.deposit_format;
             Messages.BankWithdrewMoneyFormat = gameData.messages.bank.withdraw_format;
 
+            // Horses
+            Messages.StatFormat = gameData.messages.meta.horse.stat_format;
+
 
             // Libary
             Messages.LibaryMainMenu = gameData.messages.meta.libary.main_menu;
@@ -596,6 +600,8 @@ namespace HISP.Server
 
             Messages.HorseBreedFormat = gameData.messages.meta.libary.horse_breed_format;
             Messages.HorseRelativeFormat = gameData.messages.meta.libary.horse_relative_format;
+            Messages.BreedViewerFormat = gameData.messages.meta.libary.breed_preview_format;
+            Messages.BreedViewerMaximumStats = gameData.messages.meta.libary.maximum_stats;
 
             // Chat
 

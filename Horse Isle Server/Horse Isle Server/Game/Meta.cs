@@ -620,13 +620,27 @@ namespace HISP.Game
             return message;
         }
 
+        public static string BuildBreedViewerLibary(Horse.Breed breed)
+        {
+            string message = Messages.FormatHorseBreedPreview(breed.Name, breed.Description);
+            message += Messages.BreedViewerMaximumStats;
+            message += Messages.FormatHorseStat(breed.BaseStats.Speed * 2, 0, 0, breed.BaseStats.Speed * 2);
+            message += Messages.FormatHorseStat(breed.BaseStats.Strength * 2, 0, 0, breed.BaseStats.Strength * 2);
+            message += Messages.FormatHorseStat(breed.BaseStats.Conformation * 2, 0, 0, breed.BaseStats.Conformation * 2);
+            message += Messages.FormatHorseStat(breed.BaseStats.Agility * 2, 0, 0, breed.BaseStats.Agility * 2);
+            message += Messages.FormatHorseStat(breed.BaseStats.Endurance * 2, 0, 0, breed.BaseStats.Endurance * 2);
+            message += Messages.FormatHorseStat(breed.BaseStats.Inteligence * 2, 0, 0, breed.BaseStats.Inteligence * 2);
+            message += Messages.FormatHorseStat(breed.BaseStats.Personality * 2, 0, 0, breed.BaseStats.Personality * 2);
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        
         public static string BuildHorseList()
         {
             string message = "";
             foreach(Horse.Breed breed in Horse.Breeds.OrderBy(o => o.Name).ToList())
             {
-                if (breed.Type == "unicorn" || breed.Type == "pegasus")
-                    continue;
                 if (breed.Type == "horse")
                     message += Messages.FormatHorseBreed(breed.Name, breed.Id);
                 else
