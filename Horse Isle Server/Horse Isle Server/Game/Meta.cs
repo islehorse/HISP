@@ -247,7 +247,10 @@ namespace HISP.Game
             return message;
 
         }
-
+        public static string buildLibary()
+        {
+            return Messages.LibaryMainMenu + Messages.ExitThisPlace + Messages.MetaTerminator;
+        }
         private static string buildNpc(User user, int x, int y)
         {
             string message = "";
@@ -617,6 +620,57 @@ namespace HISP.Game
             return message;
         }
 
+        public static string BuildNpcSearch(string search)
+        {
+            List<Npc.NpcEntry> foundNpcs = new List<Npc.NpcEntry>();
+            foreach(Npc.NpcEntry npc in Npc.NpcList)
+            {
+                if(npc.Name.ToLower().Contains(search.ToLower()))
+                {
+                    if(npc.LibarySearchable)
+                    {
+                        if (foundNpcs.Count >= 5)
+                            break;
+                        foundNpcs.Add(npc);
+                    }
+                    else
+                    {
+                        continue;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            string message = Messages.LibaryFindNpcSearchNoResults;
+            if(foundNpcs.Count >= 1)
+            {
+                message = Messages.LibaryFindNpcSearchResultsHeader;
+                foreach(Npc.NpcEntry npc in foundNpcs)
+                {
+                    string searchResult = Messages.FormatNpcSearchResult(npc.Name, npc.X, npc.Y);
+                    Logger.DebugPrint(searchResult);
+                    message += searchResult;
+                }
+            }
+            if(foundNpcs.Count >= 5)
+            {
+                message += Messages.LibaryFindNpcLimit5;
+            }
+
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+
+        }
+        public static string BuildFindNpcMenu()
+        {
+            string message = Messages.LibaryFindNpc;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         private static string buildFountain()
         {
             return Messages.FountainMeta;
@@ -720,6 +774,10 @@ namespace HISP.Game
                 if(TileCode == "VENUSFLYTRAP")
                 {
                     message += buildVenusFlyTrap(user);
+                }
+                if(TileCode == "LIBRARY")
+                {
+                    message += buildLibary();
                 }
                 if(TileCode == "MULTIROOM")
                 {

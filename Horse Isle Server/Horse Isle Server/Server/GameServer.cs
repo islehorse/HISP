@@ -148,6 +148,20 @@ namespace HISP.Server
                                 Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
                                 break;
                             }
+                        case 4: // NPC Search
+                            if(dynamicInput.Length >= 2)
+                            {
+                                sender.LoggedinUser.MetaPriority = true;
+                                string metaWindow = Meta.BuildNpcSearch(dynamicInput[1]);
+                                byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaWindow);
+                                sender.SendPacket(metaPacket);
+                                break;
+                            }
+                            else
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (NPC Search, wrong size)");
+                                break;
+                            }
                         case 7: // Private Notes
                             if (dynamicInput.Length >= 2)
                             {
@@ -334,6 +348,27 @@ namespace HISP.Server
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListAlphabetical());
                     sender.SendPacket(metaPacket);
+                    break;
+                case "30": // Find NPC
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildFindNpcMenu());
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "31": // Find Ranch
+                    break;
+                case "4": // View Horse Breed
+                    break;
+                case "9": // View Tack
+                    break;
+                case "10": // View Competitions
+                    break;
+                case "12": // View Miigames
+                    break;
+                case "22": // View Locations
+                    break;
+                case "23": // View Awards
+                    break;
+                case "38": // Read Books
                     break;
                 case "28c1":
                     sender.LoggedinUser.MetaPriority = true;
