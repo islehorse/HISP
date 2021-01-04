@@ -347,10 +347,10 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
-        public static string FormatNpcSearchResult(string name, int x, int y)
+        public static string FormatNpcSearchResult(string name, string desc,int x, int y)
         {
             string mapXy = FormatMapLocation(x, y);
-            return LibaryFindNpcSearchResultFormat.Replace("%NPCNAME%", name).Replace("%MAPXY%", mapXy);
+            return LibaryFindNpcSearchResultFormat.Replace("%NPCNAME%", name).Replace("%MAPXY%", mapXy).Replace("%NPCDESC%", desc);
         }
         public static string FormatLastPoet(string name)
         {
