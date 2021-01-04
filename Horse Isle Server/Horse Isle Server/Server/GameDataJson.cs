@@ -554,6 +554,15 @@ namespace HISP.Server
             Messages.BankDepositedMoneyFormat = gameData.messages.bank.deposit_format;
             Messages.BankWithdrewMoneyFormat = gameData.messages.bank.withdraw_format;
 
+
+            // Libary
+            Messages.LibaryMainMenu = gameData.messages.meta.libary.main_menu;
+            Messages.LibaryFindNpc = gameData.messages.meta.libary.find_npc;
+            Messages.LibaryFindNpcSearchResultsHeader = gameData.messages.meta.libary.find_npc_results_header;
+            Messages.LibaryFindNpcSearchResultFormat = gameData.messages.meta.libary.find_npc_results_format;
+            Messages.LibaryFindNpcSearchNoResults = gameData.messages.meta.libary.find_npc_no_results;
+            Messages.LibaryFindNpcLimit5 = gameData.messages.meta.libary.find_npc_limit5;
+
             // Chat
 
             Messages.ChatViolationMessageFormat = gameData.messages.chat.violation_format;

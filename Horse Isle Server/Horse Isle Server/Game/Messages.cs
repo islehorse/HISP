@@ -75,7 +75,16 @@ namespace HISP.Game
         public static string LoginMessageFormat;
         public static string LogoutMessageFormat;
 
+        // Libary
+        public static string LibaryMainMenu;
+        public static string LibaryFindNpc;
+        public static string LibaryFindNpcSearchResultsHeader;
+        public static string LibaryFindNpcSearchResultFormat;
+        public static string LibaryFindNpcSearchNoResults;
+        public static string LibaryFindNpcLimit5;
+
         // Records
+
         public static string ProfileSavedMessage;
         public static string PrivateNotesSavedMessage;
         public static string PrivateNotesMetaFormat;
@@ -338,6 +347,11 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatNpcSearchResult(string name, int x, int y)
+        {
+            string mapXy = FormatMapLocation(x, y);
+            return LibaryFindNpcSearchResultFormat.Replace("%NPCNAME%", name).Replace("%MAPXY%", mapXy);
+        }
         public static string FormatLastPoet(string name)
         {
             return LastPoetFormat.Replace("%USERNAME%", name);
