@@ -452,6 +452,37 @@ namespace HISP.Server
                 Logger.DebugPrint("Registed poet: " + entry.Id.ToString() + " word: " + entry.Word + " in room " + entry.Room.ToString());
             }
 
+            // Register Horse Breeds
+            int totalBreeds = gameData.horses.breeds.Count;
+            for(int i = 0; i < totalBreeds; i++)
+            {
+                Horse.Breed horseBreed = new Horse.Breed();
+
+                horseBreed.Id = gameData.horses.breeds[i].id;
+                horseBreed.Name = gameData.horses.breeds[i].name;
+                horseBreed.Description = gameData.horses.breeds[i].description;
+
+                horseBreed.BaseStats = new Horse.Stats();
+                horseBreed.BaseStats.Speed = gameData.horses.breeds[i].base_stats.speed;
+                horseBreed.BaseStats.Strength = gameData.horses.breeds[i].base_stats.strength;
+                horseBreed.BaseStats.Conformation = gameData.horses.breeds[i].base_stats.conformation;
+                horseBreed.BaseStats.Agility = gameData.horses.breeds[i].base_stats.agility;
+                horseBreed.BaseStats.Endurance = gameData.horses.breeds[i].base_stats.endurance;
+                horseBreed.BaseStats.Inteligence = gameData.horses.breeds[i].base_stats.inteligence;
+                horseBreed.BaseStats.Personality = gameData.horses.breeds[i].base_stats.personality;
+                horseBreed.BaseStats.Height = gameData.horses.breeds[i].base_stats.height;
+                horseBreed.BaseStats.MinHeight = gameData.horses.breeds[i].base_stats.min_height;
+                horseBreed.BaseStats.MaxHeight = gameData.horses.breeds[i].base_stats.max_height;
+
+                horseBreed.Colors = gameData.horses.breeds[i].colors.ToObject<string[]>();
+                horseBreed.SpawnOn = gameData.horses.breeds[i].spawn_on;
+                horseBreed.SpawnInArea = gameData.horses.breeds[i].spawn_area;
+                horseBreed.Swf = gameData.horses.breeds[i].swf;
+                horseBreed.Type = gameData.horses.breeds[i].type;
+
+                Horse.Breeds.Add(horseBreed);
+                Logger.DebugPrint("Reigistering Horse Breed: #" + horseBreed.Id + ": " + horseBreed.Name);
+            }
 
 
             Item.Present = gameData.item.special.present;

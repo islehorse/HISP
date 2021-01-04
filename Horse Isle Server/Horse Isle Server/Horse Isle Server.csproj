@@ -78,6 +78,7 @@
     <Compile Include="Game\AbuseReport.cs" />
     <Compile Include="Game\Chat\Command.cs" />
     <Compile Include="Game\GameExceptions.cs" />
+    <Compile Include="Game\Horse.cs" />
     <Compile Include="Game\Inventory\InventoryItem.cs" />
     <Compile Include="Game\Quest.cs" />
     <Compile Include="Game\Services\Inn.cs" />

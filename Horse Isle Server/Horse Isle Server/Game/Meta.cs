@@ -649,7 +649,7 @@ namespace HISP.Game
                 message = Messages.LibaryFindNpcSearchResultsHeader;
                 foreach(Npc.NpcEntry npc in foundNpcs)
                 {
-                    string searchResult = Messages.FormatNpcSearchResult(npc.Name, npc.X, npc.Y);
+                    string searchResult = Messages.FormatNpcSearchResult(npc.Name, npc.ShortDescription, npc.X, npc.Y);
                     Logger.DebugPrint(searchResult);
                     message += searchResult;
                 }
