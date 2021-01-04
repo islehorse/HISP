@@ -83,6 +83,9 @@ namespace HISP.Game
         public static string LibaryFindNpcSearchNoResults;
         public static string LibaryFindNpcLimit5;
 
+        public static string HorseBreedFormat;
+        public static string HorseRelativeFormat;
+
         // Records
 
         public static string ProfileSavedMessage;
@@ -347,6 +350,14 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatHorseRelative(string name, int id)
+        {
+            return HorseRelativeFormat.Replace("%NAME%", name).Replace("%ID%", id.ToString());
+        }
+        public static string FormatHorseBreed(string name, int id)
+        {
+            return HorseBreedFormat.Replace("%NAME%", name).Replace("%ID%", id.ToString());
+        }
         public static string FormatNpcSearchResult(string name, string desc,int x, int y)
         {
             string mapXy = FormatMapLocation(x, y);
