@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MySqlConnector;
 using HISP.Game;
 using HISP.Player;
+using HISP.Game.Horse;
 
 namespace HISP.Server
 {
@@ -33,6 +34,7 @@ namespace HISP.Server
                 string Leaderboards = "CREATE TABLE Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
                 string NpcStartPoint = "CREATE TABLE NpcStartPoint(playerId INT, npcId INT, chatpointId INT)";
                 string PoetryRooms = "CREATE TABLE PoetryRooms(poetId INT, X INT, Y INT, roomId INT)";
+                string WildHorse = "CREATE TABLE WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string LastPlayer = "CREATE TABLE LastPlayer(roomId TEXT(1028), playerId INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
@@ -235,6 +237,21 @@ namespace HISP.Server
                 {
 
                     MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = WildHorse;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+
+                
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = WorldTable;
                     sqlCommand.ExecuteNonQuery();
 
@@ -303,6 +320,148 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void AddWildHorse(WildHorse horse)
+        {
+            
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO WildHorse VALUES(@randomId,@originalOwner,@breed,@x,@y,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@timeout,@autosell,@category,@spoiled,@magicused)";
+
+                sqlCommand.Parameters.AddWithValue("@randomId", horse.Instance.RandomId);
+                sqlCommand.Parameters.AddWithValue("@originalOwner", horse.Instance.Owner);
+                sqlCommand.Parameters.AddWithValue("@breed", horse.Instance.Breed.Id);
+                sqlCommand.Parameters.AddWithValue("@x", horse.X);
+                sqlCommand.Parameters.AddWithValue("@y", horse.Y);
+                sqlCommand.Parameters.AddWithValue("@name", horse.Instance.Name);
+                sqlCommand.Parameters.AddWithValue("@description", horse.Instance.Description);
+                sqlCommand.Parameters.AddWithValue("@sex", horse.Instance.Sex);
+                sqlCommand.Parameters.AddWithValue("@color", horse.Instance.Color);
+
+                sqlCommand.Parameters.AddWithValue("@health", horse.Instance.BasicStats.Health);
+                sqlCommand.Parameters.AddWithValue("@shoes", horse.Instance.BasicStats.Shoes);
+                sqlCommand.Parameters.AddWithValue("@hunger", horse.Instance.BasicStats.Hunger);
+                sqlCommand.Parameters.AddWithValue("@thirst", horse.Instance.BasicStats.Thirst);
+                sqlCommand.Parameters.AddWithValue("@mood", horse.Instance.BasicStats.Mood);
+                sqlCommand.Parameters.AddWithValue("@groom", horse.Instance.BasicStats.Groom);
+                sqlCommand.Parameters.AddWithValue("@tiredness", horse.Instance.BasicStats.Tiredness);
+                sqlCommand.Parameters.AddWithValue("@experience", horse.Instance.BasicStats.Experience);
+
+                sqlCommand.Parameters.AddWithValue("@speed", horse.Instance.AdvancedStats.Speed);
+                sqlCommand.Parameters.AddWithValue("@strength", horse.Instance.AdvancedStats.Strength);
+                sqlCommand.Parameters.AddWithValue("@conformation", horse.Instance.AdvancedStats.Conformation);
+                sqlCommand.Parameters.AddWithValue("@agility", horse.Instance.AdvancedStats.Agility);
+                sqlCommand.Parameters.AddWithValue("@endurance", horse.Instance.AdvancedStats.Endurance);
+                sqlCommand.Parameters.AddWithValue("@inteligence", horse.Instance.AdvancedStats.Inteligence);
+                sqlCommand.Parameters.AddWithValue("@personality", horse.Instance.AdvancedStats.Personality);
+                sqlCommand.Parameters.AddWithValue("@height", horse.Instance.AdvancedStats.Height);
+
+                if(horse.Instance.Equipment.Saddle != null)
+                    sqlCommand.Parameters.AddWithValue("@saddle", horse.Instance.Equipment.Saddle.Id);
+                else
+                    sqlCommand.Parameters.AddWithValue("@saddle", null);
+
+                if (horse.Instance.Equipment.SaddlePad != null)
+                    sqlCommand.Parameters.AddWithValue("@saddlepad", horse.Instance.Equipment.SaddlePad.Id);
+                else
+                    sqlCommand.Parameters.AddWithValue("@saddlepad", null);
+
+                if (horse.Instance.Equipment.Bridle != null)
+                    sqlCommand.Parameters.AddWithValue("@bridle", horse.Instance.Equipment.Bridle.Id);
+                else
+                    sqlCommand.Parameters.AddWithValue("@bridle", null);
+
+                if (horse.Instance.Equipment.Companion != null)
+                    sqlCommand.Parameters.AddWithValue("@companion", horse.Instance.Equipment.Companion.Id);
+                else
+                    sqlCommand.Parameters.AddWithValue("@companion", null);
+
+                
+
+
+
+                sqlCommand.Parameters.AddWithValue("@timeout", horse.Timeout);
+                sqlCommand.Parameters.AddWithValue("@autosell", horse.Instance.AutoSell);
+                sqlCommand.Parameters.AddWithValue("@category", horse.Instance.Category);
+                sqlCommand.Parameters.AddWithValue("@spoiled", horse.Instance.Spoiled);
+                sqlCommand.Parameters.AddWithValue("@magicused", horse.Instance.MagicUsed);
+
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+            
+        }
+
+        public static void LoadWildHorses()
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM WildHorse";
+
+
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+
+                while(reader.Read())
+                {
+                    int randomId = reader.GetInt32(0);
+                    int breedId = reader.GetInt32(2);
+                    HorseInfo.Breed horseBreed = HorseInfo.GetBreedById(breedId);
+                    HorseInstance inst = new HorseInstance(horseBreed, randomId);
+                    inst.Owner = reader.GetInt32(1);
+                    inst.Name = reader.GetString(5);
+                    inst.Description = reader.GetString(6);
+                    inst.Sex = reader.GetString(7);
+                    inst.Color = reader.GetString(8);
+
+                    inst.BasicStats.Health = reader.GetInt32(9);
+                    inst.BasicStats.Shoes = reader.GetInt32(10);
+                    inst.BasicStats.Hunger = reader.GetInt32(11);
+                    inst.BasicStats.Thirst = reader.GetInt32(12);
+                    inst.BasicStats.Mood = reader.GetInt32(13);
+                    inst.BasicStats.Groom = reader.GetInt32(14);
+                    inst.BasicStats.Tiredness = reader.GetInt32(15);
+                    inst.BasicStats.Experience = reader.GetInt32(16);
+
+                    inst.AdvancedStats.Speed = reader.GetInt32(17);
+                    inst.AdvancedStats.Strength = reader.GetInt32(18);
+                    inst.AdvancedStats.Conformation = reader.GetInt32(19);
+                    inst.AdvancedStats.Agility = reader.GetInt32(20);
+                    inst.AdvancedStats.Endurance = reader.GetInt32(21);
+                    inst.AdvancedStats.Inteligence = reader.GetInt32(22);
+                    inst.AdvancedStats.Personality = reader.GetInt32(23);
+                    inst.AdvancedStats.Height = reader.GetInt32(24);
+
+                    if (!reader.IsDBNull(25))
+                        inst.Equipment.Saddle = Item.GetItemById(reader.GetInt32(25));
+                    if (!reader.IsDBNull(26))
+                        inst.Equipment.SaddlePad = Item.GetItemById(reader.GetInt32(26));
+                    if (!reader.IsDBNull(27))
+                        inst.Equipment.Bridle = Item.GetItemById(reader.GetInt32(27));
+                    if (!reader.IsDBNull(28))
+                        inst.Equipment.Companion = Item.GetItemById(reader.GetInt32(28));
+
+                    inst.AutoSell = reader.GetInt32(30);
+                    inst.Category = reader.GetString(31);
+                    inst.Spoiled = reader.GetInt32(32);
+                    inst.MagicUsed = reader.GetInt32(33);
+
+                    int x = reader.GetInt32(3);
+                    int y = reader.GetInt32(4);
+                    int timeout = reader.GetInt32(29);
+                    WildHorse wildHorse = new WildHorse(inst, x, y, timeout, false);
+                    
+                }
 
                 sqlCommand.Dispose();
             }

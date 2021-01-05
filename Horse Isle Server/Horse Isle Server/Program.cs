@@ -2,6 +2,7 @@
 using System.IO;
 using System.Reflection;
 using HISP.Game;
+using HISP.Game.Horse;
 using HISP.Game.SwfModules;
 using HISP.Security;
 using HISP.Server;
@@ -20,6 +21,7 @@ namespace HISP
             Map.OpenMap();
             World.ReadWorldData();
             DroppedItems.Init();
+            WildHorse.Init();
             Brickpoet.LoadPoetryRooms();
             GameServer.StartServer();
 

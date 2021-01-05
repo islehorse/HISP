@@ -14,6 +14,7 @@ using System.Drawing;
 using HISP.Game.Services;
 using HISP.Game.Inventory;
 using HISP.Game.SwfModules;
+using HISP.Game.Horse;
 
 namespace HISP.Server
 {
@@ -383,11 +384,11 @@ namespace HISP.Server
                     {
                         string idStr = buttonIdStr.Substring(2);
                         int breedId = -1;
-                        Horse.Breed horseBreed;
+                        HorseInfo.Breed horseBreed;
                         try
                         {
                             breedId = int.Parse(idStr);
-                            horseBreed = Horse.GetBreedById(breedId);
+                            horseBreed = HorseInfo.GetBreedById(breedId);
                         }
                         catch (Exception) {
                             Logger.DebugPrint(sender.LoggedinUser.Username + " Sent invalid libary breed viewer request.");

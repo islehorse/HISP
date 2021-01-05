@@ -1,4 +1,5 @@
-﻿using HISP.Game.Inventory;
+﻿using HISP.Game.Horse;
+using HISP.Game.Inventory;
 using HISP.Game.Services;
 using HISP.Player;
 using HISP.Server;
@@ -620,7 +621,7 @@ namespace HISP.Game
             return message;
         }
 
-        public static string BuildBreedViewerLibary(Horse.Breed breed)
+        public static string BuildBreedViewerLibary(HorseInfo.Breed breed)
         {
             string message = Messages.FormatHorseBreedPreview(breed.Name, breed.Description);
             message += Messages.BreedViewerMaximumStats;
@@ -639,7 +640,7 @@ namespace HISP.Game
         public static string BuildHorseList()
         {
             string message = "";
-            foreach(Horse.Breed breed in Horse.Breeds.OrderBy(o => o.Name).ToList())
+            foreach(HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name).ToList())
             {
                 if (breed.Type == "horse")
                     message += Messages.FormatHorseBreed(breed.Name, breed.Id);
