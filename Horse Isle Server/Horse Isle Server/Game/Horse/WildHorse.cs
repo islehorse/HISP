@@ -1,4 +1,5 @@
-﻿using HISP.Server;
+﻿using HISP.Player;
+using HISP.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -79,9 +80,42 @@ namespace HISP.Game.Horse
                     }
                 }
             }
+            else
+            {
+                x = MapX;
+                y = MapY;
+            }
             wildHorses.Add(this);
             if(addToDatabase)
                 Database.AddWildHorse(this);
+        }
+
+        public void Escape()
+        {
+            while(true)
+            {
+                int tryX = X + GameServer.RandomNumberGenerator.Next(-15, 15);
+                int tryY = Y + GameServer.RandomNumberGenerator.Next(-15, 15);
+
+                // Horses cannot be in towns.
+                if (World.InTown(tryX, tryY))
+                    continue;
+                if (World.InSpecialTile(tryX, tryY))
+                    continue;
+
+                if (Map.CheckPassable(tryX, tryY))
+                {
+                    X = tryX;
+                    Y = tryY;
+                    break;
+                }
+            }
+
+        }
+
+        public void Capture(User forUser)
+        {
+            Despawn(this);
         }
 
         private static List<WildHorse> wildHorses = new List<WildHorse>();
@@ -115,6 +149,56 @@ namespace HISP.Game.Horse
             Database.LoadWildHorses();
             GenerateHorses();
         }
+
+        public static WildHorse[] GetHorsesAt(int x, int y)
+        {
+            List<WildHorse> horses = new List<WildHorse>();
+            foreach (WildHorse wildHorse in WildHorses)
+            {
+                if (wildHorse.X == x && wildHorse.Y == y)
+                    horses.Add(wildHorse);
+            }
+            return horses.ToArray();
+        }
+        
+        public static bool DoesHorseExist(int randomId)
+        {
+            foreach (WildHorse wildHorse in WildHorses)
+            {
+                if (wildHorse.Instance.RandomId == randomId)
+                    return true;
+            }
+            return false;
+        }
+        public static WildHorse GetHorseById(int randomId)
+        {
+            foreach(WildHorse wildHorse in WildHorses)
+            {
+                if (wildHorse.Instance.RandomId == randomId)
+                    return wildHorse;
+            }
+            throw new KeyNotFoundException("No horse with id: " + randomId + " was found.");
+        }
+
+        public static void Despawn(WildHorse horse)
+        {
+            Database.RemoveWildHorse(horse.Instance.RandomId);
+            wildHorses.Remove(horse);
+        }
+
+        public static void Update()
+        {
+            foreach(WildHorse wildHorse in WildHorses)
+            {
+                wildHorse.Timeout -= 1;
+                if (wildHorse.Timeout <= 0)
+                    Despawn(wildHorse);
+            }
+            if(WildHorses.Length < 40)
+            {
+                GenerateHorses();
+            }    
+        }
         public HorseInstance Instance;
         public int X
         {
@@ -124,6 +208,7 @@ namespace HISP.Game.Horse
             }
             set
             {
+                Database.SetWildHorseX(this.Instance.RandomId, value);
                 x = value;
             }
         }
@@ -135,6 +220,7 @@ namespace HISP.Game.Horse
             }
             set
             {
+                Database.SetWildHorseY(this.Instance.RandomId, value);
                 y = value;
             }
         }
@@ -146,6 +232,7 @@ namespace HISP.Game.Horse
             }
             set
             {
+                Database.SetWildHorseTimeout(this.Instance.RandomId, value);
                 timeout = value;
             }
         }

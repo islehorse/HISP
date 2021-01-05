@@ -589,7 +589,11 @@ namespace HISP.Server
 
             // Horses
             Messages.StatFormat = gameData.messages.meta.horse.stat_format;
-
+            Messages.HorsesHere = gameData.messages.meta.horse.horses_here;
+            Messages.WildHorseFormat = gameData.messages.meta.horse.wild_horse;
+            Messages.HorseCaptureTimer = gameData.messages.meta.horse.horse_timer;
+            Messages.YouCapturedTheHorse = gameData.messages.meta.horse.hore_caught;
+            Messages.HorseEvadedCapture = gameData.messages.meta.horse.horse_escaped;
 
             // Libary
             Messages.LibaryMainMenu = gameData.messages.meta.libary.main_menu;

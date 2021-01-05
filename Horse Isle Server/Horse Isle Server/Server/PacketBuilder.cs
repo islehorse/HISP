@@ -24,6 +24,7 @@ namespace HISP.Server
         public const byte PACKET_SWF_MODULE_FORCE = 0x28;
         public const byte PACKET_SWF_MODULE_GENTLE = 0x2A;
         public const byte PACKET_PLACE_INFO = 0x1E;
+        public const byte PACKET_HORSE = 0x19;
         public const byte PACKET_AREA_DEFS = 0x79;
         public const byte PACKET_ITEM_INTERACTION = 0x1E;
         public const byte PACKET_ANNOUNCEMENT = 0x7E;
@@ -43,6 +44,10 @@ namespace HISP.Server
         public const byte PACKET_INFORMATION = 0x28;
         public const byte PACKET_WISH = 0x2C;
         public const byte PACKET_SWFMODULE = 0x50;
+
+        public const byte HORSE_TRY_CAPTURE = 0x1C;
+        public const byte HORSE_ESCAPE = 0x1E;
+        public const byte HORSE_CAUGHT = 0x1D;
 
         public const byte SWFMODULE_BRICKPOET = 0x5A;
 

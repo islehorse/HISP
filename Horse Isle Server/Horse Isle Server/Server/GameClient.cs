@@ -245,6 +245,9 @@ namespace HISP.Server
                     case PacketBuilder.PACKET_SWFMODULE:
                         GameServer.OnSwfModuleCommunication(this, Packet);
                         break;
+                    case PacketBuilder.PACKET_HORSE:
+                        GameServer.OnHorseInteraction(this, Packet);
+                        break;
                     case PacketBuilder.PACKET_WISH:
                         GameServer.OnWish(this, Packet);
                         break;

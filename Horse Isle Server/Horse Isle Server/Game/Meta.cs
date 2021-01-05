@@ -434,7 +434,20 @@ namespace HISP.Game
             return message;
         }
 
-
+        public static string BuildHorseList(User user)
+        {
+            string message = "";
+            WildHorse[] horses = WildHorse.GetHorsesAt(user.X, user.Y);
+            if(horses.Length > 0)
+            {
+                message = Messages.HorsesHere;
+                foreach(WildHorse horse in horses)
+                {
+                    message += Messages.FormatWildHorse(horse.Instance.Name, horse.Instance.Breed.Name, horse.Instance.RandomId);
+                }
+            }
+            return message;
+        }
         public static string BuildAwardList(User user)
         {
             string message = Messages.AwardHeader;
@@ -837,7 +850,21 @@ namespace HISP.Game
 
             return message;
         }
+        public static string BuildHorseEscapedMessage()
+        {
+            string message = Messages.HorseEvadedCapture;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
 
+        public static string BuildHorseCaughtMessage()
+        {
+            string message = Messages.YouCapturedTheHorse;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
 
         public static string BuildAbuseReportPage()
         {
@@ -960,7 +987,7 @@ namespace HISP.Game
         {
             string message = "";
             message += buildLocationString(x, y);
-
+            message += BuildHorseList(user);
             message += buildNpc(user, x, y);
 
 

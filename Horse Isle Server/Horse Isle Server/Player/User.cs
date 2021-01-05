@@ -5,6 +5,7 @@ using HISP.Server;
 using HISP.Player.Equips;
 using HISP.Game.Services;
 using HISP.Game.Inventory;
+using HISP.Game.Horse;
 
 namespace HISP.Player
 {
@@ -45,6 +46,7 @@ namespace HISP.Player
         public PlayerQuests Quests;
         public Highscore Highscores;
         public Award Awards;
+        public int CapturingHorseId;
         public DateTime LoginTime;
 
         public DateTime SubscribedUntil
