@@ -64,6 +64,7 @@ namespace HISP.Server
 
             Database.IncPlayerTirednessForOfflineUsers();
             DroppedItems.Update();
+            WildHorse.GenerateHorses();
             minuteTimer.Change(oneMinute, oneMinute);
         }
 
