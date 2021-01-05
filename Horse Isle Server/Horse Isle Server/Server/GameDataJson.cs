@@ -6,6 +6,7 @@ using HISP.Game.Chat;
 using HISP.Player;
 using HISP.Game.Services;
 using HISP.Game.SwfModules;
+using HISP.Game.Horse;
 
 namespace HISP.Server
 {
@@ -456,13 +457,13 @@ namespace HISP.Server
             int totalBreeds = gameData.horses.breeds.Count;
             for(int i = 0; i < totalBreeds; i++)
             {
-                Horse.Breed horseBreed = new Horse.Breed();
+                HorseInfo.Breed horseBreed = new HorseInfo.Breed();
 
                 horseBreed.Id = gameData.horses.breeds[i].id;
                 horseBreed.Name = gameData.horses.breeds[i].name;
                 horseBreed.Description = gameData.horses.breeds[i].description;
 
-                horseBreed.BaseStats = new Horse.Stats();
+                horseBreed.BaseStats = new HorseInfo.AdvancedStats();
                 horseBreed.BaseStats.Speed = gameData.horses.breeds[i].base_stats.speed;
                 horseBreed.BaseStats.Strength = gameData.horses.breeds[i].base_stats.strength;
                 horseBreed.BaseStats.Conformation = gameData.horses.breeds[i].base_stats.conformation;
@@ -480,7 +481,7 @@ namespace HISP.Server
                 horseBreed.Swf = gameData.horses.breeds[i].swf;
                 horseBreed.Type = gameData.horses.breeds[i].type;
 
-                Horse.Breeds.Add(horseBreed);
+                HorseInfo.Breeds.Add(horseBreed);
                 Logger.DebugPrint("Reigistering Horse Breed: #" + horseBreed.Id + ": " + horseBreed.Name);
             }
 

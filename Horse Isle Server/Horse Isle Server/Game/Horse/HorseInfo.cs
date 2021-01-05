@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace HISP.Game
+namespace HISP.Game.Horse
 {
-    class Horse
+    class HorseInfo
     {
-        public struct Stats
+        public struct AdvancedStats
         {
             public int Speed;
             public int Strength;
@@ -21,19 +17,40 @@ namespace HISP.Game
             public int MinHeight;
             public int MaxHeight;
         }
+        public struct BasicStats
+        {
+            public int Health;
+            public int Shoes;
+            public int Hunger;
+            public int Thirst;
+            public int Mood;
+            public int Groom;
+            public int Tiredness;
+            public int Experience;
+        }
 
         public struct Breed
         {
             public int Id;
             public string Name;
             public string Description;
-            public Stats BaseStats;
+            public AdvancedStats BaseStats;
             public string[] Colors;
             public string SpawnOn;
             public string SpawnInArea;
             public string Swf;
             public string Type;
         }
+
+        public struct HorseEquips
+        {
+            public Item.ItemInformation Saddle;
+            public Item.ItemInformation SaddlePad;
+            public Item.ItemInformation Bridle;
+            public Item.ItemInformation Companion;
+        }
+
+
 
         public static List<Breed> Breeds = new List<Breed>();
 
