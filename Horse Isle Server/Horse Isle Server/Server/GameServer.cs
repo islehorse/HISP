@@ -64,7 +64,7 @@ namespace HISP.Server
 
             Database.IncPlayerTirednessForOfflineUsers();
             DroppedItems.Update();
-            WildHorse.GenerateHorses();
+            WildHorse.Update();
             minuteTimer.Change(oneMinute, oneMinute);
         }
 
@@ -79,6 +79,86 @@ namespace HISP.Server
             byte[] crossDomainPolicyResponse = CrossDomainPolicy.GetPolicy();
 
             sender.SendPacket(crossDomainPolicyResponse);
+        }
+
+
+        public static void OnHorseInteraction(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent horse interaction when not logged in.");
+                return;
+            }
+
+            if(packet.Length < 4)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid sized horse interaction packet.");
+                return;
+            }
+
+            byte method = packet[1];
+            switch(method)
+            {
+                case PacketBuilder.HORSE_ESCAPE:
+                    if(WildHorse.DoesHorseExist(sender.LoggedinUser.CapturingHorseId))
+                    {
+                        WildHorse capturing = WildHorse.GetHorseById(sender.LoggedinUser.CapturingHorseId);
+                        capturing.Escape();
+                        Logger.InfoPrint(sender.LoggedinUser.Username + " Failed to capture: " + capturing.Instance.Breed.Name + " new location: " + capturing.X + ", " + capturing.Y);
+
+                        sender.LoggedinUser.MetaPriority = true;
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseEscapedMessage());
+                        sender.SendPacket(metaPacket);
+
+                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                    }
+
+                    break;
+                case PacketBuilder.HORSE_CAUGHT:
+                    if (WildHorse.DoesHorseExist(sender.LoggedinUser.CapturingHorseId))
+                    {
+                        WildHorse capturing = WildHorse.GetHorseById(sender.LoggedinUser.CapturingHorseId);
+                        capturing.Capture(sender.LoggedinUser);
+                        Logger.InfoPrint(sender.LoggedinUser.Username + " Captured a: " + capturing.Instance.Breed.Name + " new location: " + capturing.X + ", " + capturing.Y);
+
+                        sender.LoggedinUser.MetaPriority = true;
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseCaughtMessage());
+                        sender.SendPacket(metaPacket);
+
+                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                    }
+
+                    break;
+                case PacketBuilder.HORSE_TRY_CAPTURE:
+                    int randomId = 0;
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+                        
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        return;
+                    }
+                    if (!WildHorse.DoesHorseExist(randomId))
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to catch a horse that doesnt exist.");
+                        return;
+                    }
+                    sender.LoggedinUser.CapturingHorseId = randomId;
+                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.HorseCaptureTimer, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(chatPacket);
+                    byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket("catchhorse", PacketBuilder.PACKET_SWF_MODULE_FORCE);
+                    sender.SendPacket(swfModulePacket);
+
+                    break;
+                default:
+                    Logger.DebugPrint("Unknown horse packet: " + BitConverter.ToString(packet).Replace("-", " "));
+                    break;
+            }
         }
 
         public static void OnDynamicInputReceived(GameClient sender, byte[] packet)

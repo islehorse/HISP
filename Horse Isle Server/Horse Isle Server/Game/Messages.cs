@@ -164,6 +164,11 @@ namespace HISP.Game
         // Horse
         public static string BreedViewerMaximumStats;
         public static string StatFormat;
+        public static string HorsesHere;
+        public static string WildHorseFormat;
+        public static string HorseCaptureTimer;
+        public static string YouCapturedTheHorse;
+        public static string HorseEvadedCapture;
 
         // Consume
 
@@ -355,6 +360,11 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatWildHorse(string name, string breed, int randomId)
+        {
+            return WildHorseFormat.Replace("%NAME%", name).Replace("%BREED%", breed).Replace("%RANDOMID%", randomId.ToString());
+        }
         public static string FormatHorseBreedPreview(string name, string description)
         {
             return BreedViewerFormat.Replace("%NAME%", name).Replace("%DESCRIPTION%", description);
