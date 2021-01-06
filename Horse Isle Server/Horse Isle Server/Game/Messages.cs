@@ -180,7 +180,7 @@ namespace HISP.Game
 
         public static string HorseNameFormat;
         public static string HorseReleasedByFormat;
-        public static string HorseHandsHightFormat;
+        public static string HorseHandsHeightFormat;
         public static string HorseExperienceEarnedFormat;
 
         public static string HorseTrainableInFormat;
@@ -401,6 +401,88 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+        
+        public static string FormatHorseName(string name)
+        {
+            return HorseNameFormat.Replace("%NAME%", name);
+        }
+        public static string FormatHorseReleasedBy(string name)
+        {
+            return HorseReleasedByFormat.Replace("%USERNAME%", name);
+        }
+        public static string FormatHorseHandsHigh(string color, string sex, int handsHigh)
+        {
+            return HorseHandsHeightFormat.Replace("%COLOR%", color).Replace("%SEX%", sex).Replace("%HANDS%", handsHigh.ToString());
+        }
+        public static string FormatHorseExperience(int experience)
+        {
+            return HorseExperienceEarnedFormat.Replace("%EXP%", experience.ToString("N0"));
+        }
+        public static string FormatTrainableIn(int minutes)
+        {
+            return HorseTrainableInFormat.Replace("%TIME%", minutes.ToString());
+        }
+
+        public static string FormatMountButton(int randomId)
+        {
+            return HorseMountButtonFormat.Replace("%ID%", randomId.ToString());
+        }
+        public static string FormatFeedButton(int randomId)
+        {
+            return HorseFeedButtonFormat.Replace("%ID%", randomId.ToString());
+        }
+        public static string FormatTackButton(int randomId)
+        {
+            return HorseTackButtonFormat.Replace("%ID%", randomId.ToString());
+        }
+        public static string FormatPetButton(int randomId)
+        {
+            return HorsePetButtonFormat.Replace("%ID%", randomId.ToString());
+        }
+        public static string FormatProfileButton(int randomId)
+        {
+            return HorseProfileButtonFormat.Replace("%ID%", randomId.ToString());
+        }
+
+        public static string FormatAutoSellPrice(int money)
+        {
+            return HorseAutoSellPriceFormat.Replace("%MONEY%", money.ToString("N0"));
+        }
+        public static string FormatAutoSell(string autoSellStr)
+        {
+            return HorseAutoSellFormat.Replace("%AUTOSELL%", autoSellStr);
+        }
+
+        public static string FormatHorseCategory(string category)
+        {
+            return HorseCurrentlyCategoryFormat.Replace("%CATEGORY%", category);
+        }
+        public static string FormatHorseTackEntry(int iconId, string name, int itemId)
+        {
+            return HorseTackFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", name).Replace("%ITEMID%", itemId.ToString());
+        }
+        public static string FormatHorseCompanionEntry(int iconId, string name, int itemId)
+        {
+            return HorseCompanionFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", name).Replace("%ITEMID%", itemId.ToString());
+        }
+
+        public static string FormatHorseAdvancedStats(int spoiled, int magicUsed)
+        {
+            return HorseAdvancedStatsFormat.Replace("%SPOILED%", spoiled.ToString()).Replace("%MAGICUSED%", magicUsed.ToString());
+        }
+        public static string FormatHorseBreedDetails(string breedName, string description)
+        {
+            return HorseBreedDetailsFormat.Replace("%BREED%", breedName).Replace("%DESCRIPTION%", description);
+        }
+        public static string FormatHorseHeight(int minHeight, int maxHeight)
+        {
+            return HorseHeightRangeFormat.Replace("%MIN%", minHeight.ToString()).Replace("%MAX%", maxHeight.ToString());
+        }
+        public static string FormatPossibleColors(string[] colors)
+        {
+            return HorsePossibleColorsFormat.Replace("%COLORS%", String.Join(",", colors));
+        }
+
         public static string FormatHorseCategoryChangedMessage(string newCategory)
         {
             return UpdateHorseCategory.Replace("%CATEGORY%", newCategory);
