@@ -169,7 +169,7 @@ namespace HISP.Game
         public static string HorseCaptureTimer;
         public static string YouCapturedTheHorse;
         public static string HorseEvadedCapture;
-
+        public static string TooManyHorses;
         public static string HorsesMenuHeader;
         public static string UpdateHorseCategory;
         public static string HorseEntryFormat;

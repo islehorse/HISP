@@ -604,6 +604,7 @@ namespace HISP.Server
             Messages.HorseEvadedCapture = gameData.messages.meta.horse.horse_escaped;
 
             Messages.HorsesMenuHeader = gameData.messages.meta.horse.horses_menu;
+            Messages.TooManyHorses = gameData.messages.meta.horse.too_many_horses;
             Messages.UpdateHorseCategory = gameData.messages.meta.horse.update_category;
             Messages.HorseEntryFormat = gameData.messages.meta.horse.horse_format;
             Messages.ViewBaiscStats = gameData.messages.meta.horse.view_basic_stats;

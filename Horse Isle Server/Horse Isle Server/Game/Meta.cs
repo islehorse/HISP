@@ -879,7 +879,7 @@ namespace HISP.Game
         public static string BuildHorseInventory(User user)
         {
             // TODO: calculate max number based on ranch barns owned.
-            string message = Messages.FormatHorseHeader(7, user.HorseInventory.HorseList.Length);
+            string message = Messages.FormatHorseHeader(user.HorseInventory.MaxHorses, user.HorseInventory.HorseList.Length);
 
             int i = 1;
             foreach(HorseInfo.Category category in HorseInfo.HorseCategories)

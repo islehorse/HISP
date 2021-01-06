@@ -17,8 +17,18 @@ namespace HISP.Game.Inventory
             }
         }
 
+        public int MaxHorses
+        { 
+            get
+            {
+                return 7; // will change when ranches are implemented.
+            }
+        }
         public void AddHorse(HorseInstance horse, bool addToDb=true)
         {
+            if (HorseList.Length + 1 > MaxHorses)
+                throw new InventoryFullException();
+
             horse.Owner = baseUser.Id;
             if(addToDb)
                 Database.AddHorse(horse);

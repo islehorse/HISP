@@ -123,7 +123,17 @@ namespace HISP.Server
                     if (WildHorse.DoesHorseExist(sender.LoggedinUser.CapturingHorseId))
                     {
                         WildHorse capturing = WildHorse.GetHorseById(sender.LoggedinUser.CapturingHorseId);
-                        capturing.Capture(sender.LoggedinUser);
+                        
+                        try{
+                            capturing.Capture(sender.LoggedinUser);
+                        }
+                        catch(InventoryFullException)
+                        {
+                            byte[] chatMsg = PacketBuilder.CreateChat(Messages.TooManyHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(chatMsg);
+                            break;
+                        }
+
                         Logger.InfoPrint(sender.LoggedinUser.Username + " Captured a: " + capturing.Instance.Breed.Name + " new location: " + capturing.X + ", " + capturing.Y);
 
                         sender.LoggedinUser.MetaPriority = true;
