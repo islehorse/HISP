@@ -170,6 +170,12 @@ namespace HISP.Game
         public static string YouCapturedTheHorse;
         public static string HorseEvadedCapture;
 
+        public static string HorsesMenuHeader;
+        public static string UpdateHorseCategory;
+        public static string HorseEntryFormat;
+        public static string ViewBaiscStats;
+        public static string ViewAdvancedStats;
+
         // Consume
 
         public static string ConsumeItemFormat;
@@ -360,6 +366,19 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+        public static string FormatHorseCategoryChangedMessage(string newCategory)
+        {
+            return UpdateHorseCategory.Replace("%CATEGORY%", newCategory);
+        }
+        public static string FormatHorseEntry(int numb, string horseName, string breedName, int randomId)
+        {
+            return HorseEntryFormat.Replace("%NUMB%", numb.ToString()).Replace("%NAME%", horseName).Replace("%BREED%", breedName).Replace("%ID%", randomId.ToString());
+        }
+        public static string FormatHorseHeader(int maxHorses, int numHorses)
+        {
+            return HorsesMenuHeader.Replace("%MAXHORSE%", maxHorses.ToString()).Replace("%TOTALHORSE%", numHorses.ToString());   
+        }
+
 
         public static string FormatWildHorse(string name, string breed, int randomId)
         {

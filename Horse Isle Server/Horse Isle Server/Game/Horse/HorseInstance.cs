@@ -89,7 +89,11 @@ namespace HISP.Game.Horse
             Category = "KEEPER";
             Spoiled = 0;
             MagicUsed = 0;
+            RanchId = 0;
+            Leaser = 0;
         }
+        public int RanchId;
+        public int Leaser;
         public int RandomId;
         public int Owner;
         public string Name;

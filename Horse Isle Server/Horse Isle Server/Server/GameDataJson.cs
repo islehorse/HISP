@@ -484,7 +484,15 @@ namespace HISP.Server
                 HorseInfo.Breeds.Add(horseBreed);
                 Logger.DebugPrint("Reigistering Horse Breed: #" + horseBreed.Id + ": " + horseBreed.Name);
             }
-
+            int totalCategories = gameData.horses.categorys.Count;
+            for(int i = 0; i < totalCategories; i++)
+            {
+                HorseInfo.Category category = new HorseInfo.Category();
+                category.Name = gameData.horses.categorys[i].name;
+                category.Meta = gameData.horses.categorys[i].message;
+                HorseInfo.HorseCategories.Add(category);
+                Logger.DebugPrint("Registering horse category type: " + category.Name);
+            }
 
             Item.Present = gameData.item.special.present;
             Item.MailMessage = gameData.item.special.mail_message;
@@ -594,6 +602,12 @@ namespace HISP.Server
             Messages.HorseCaptureTimer = gameData.messages.meta.horse.horse_timer;
             Messages.YouCapturedTheHorse = gameData.messages.meta.horse.hore_caught;
             Messages.HorseEvadedCapture = gameData.messages.meta.horse.horse_escaped;
+
+            Messages.HorsesMenuHeader = gameData.messages.meta.horse.horses_menu;
+            Messages.UpdateHorseCategory = gameData.messages.meta.horse.update_category;
+            Messages.HorseEntryFormat = gameData.messages.meta.horse.horse_format;
+            Messages.ViewBaiscStats = gameData.messages.meta.horse.view_basic_stats;
+            Messages.ViewAdvancedStats = gameData.messages.meta.horse.view_advanced_stats;
 
             // Libary
             Messages.LibaryMainMenu = gameData.messages.meta.libary.main_menu;
