@@ -24,6 +24,12 @@ namespace HISP.Game.Inventory
                 return 7; // will change when ranches are implemented.
             }
         }
+        public HorseInventory(User user)
+        {
+            baseUser = user;
+            Database.LoadHorseInventory(this, baseUser.Id);
+        }
+
         public void AddHorse(HorseInstance horse, bool addToDb=true)
         {
             if (HorseList.Length + 1 > MaxHorses)
@@ -34,10 +40,27 @@ namespace HISP.Game.Inventory
                 Database.AddHorse(horse);
             horsesList.Add(horse);
         }
-        public HorseInventory(User user)
-        { 
-            baseUser = user;
-            Database.LoadHorseInventory(this, baseUser.Id);
+        
+        public bool HorseIdExist(int randomId)
+        {
+            try
+            {
+                GetHorseById(randomId);
+                return true;
+            }
+            catch(KeyNotFoundException)
+            {
+                return false;
+            }
+        }
+        public HorseInstance GetHorseById(int randomId)
+        {
+            foreach(HorseInstance inst in HorseList)
+            {
+                if (inst.RandomId == randomId)
+                    return inst;
+            }
+            throw new KeyNotFoundException();
         }
 
         public HorseInstance[] GetHorsesInCategory(HorseInfo.Category category)

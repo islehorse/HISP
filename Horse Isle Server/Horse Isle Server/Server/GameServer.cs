@@ -99,15 +99,50 @@ namespace HISP.Server
             byte method = packet[1];
             switch(method)
             {
-                case PacketBuilder.PACKET_CLIENT_TERMINATOR: // 19 0a 00 (horse list)
+                case PacketBuilder.HORSE_LIST:
                     sender.LoggedinUser.MetaPriority = true;
                     byte[] metaTags = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInventory(sender.LoggedinUser));
                     sender.SendPacket(metaTags);
+                    break;
+                case PacketBuilder.HORSE_LOOK:
+                    int randomId = 0;
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        return;
+                    }
+                    if(sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        int TileID = Map.GetTileId(sender.LoggedinUser.X, sender.LoggedinUser.Y, false);
+                        string type = Map.TerrainTiles[TileID - 1].Type;
+                        HorseInstance horse = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        string loadSwf = HorseInfo.BreedViewerSwf(horse, type);
+                        
+
+                        byte[] swfPacket = PacketBuilder.CreateSwfModulePacket(loadSwf, PacketBuilder.PACKET_SWF_MODULE_FORCE);
+                        sender.SendPacket(swfPacket);
+
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to look at a non existant horse.");
+                        break;
+                    }
+
                     break;
                 case PacketBuilder.HORSE_ESCAPE:
                     if(WildHorse.DoesHorseExist(sender.LoggedinUser.CapturingHorseId))
                     {
                         WildHorse capturing = WildHorse.GetHorseById(sender.LoggedinUser.CapturingHorseId);
+                        sender.LoggedinUser.CapturingHorseId = 0;
+
                         capturing.Escape();
                         Logger.InfoPrint(sender.LoggedinUser.Username + " Failed to capture: " + capturing.Instance.Breed.Name + " new location: " + capturing.X + ", " + capturing.Y);
 
@@ -123,8 +158,10 @@ namespace HISP.Server
                     if (WildHorse.DoesHorseExist(sender.LoggedinUser.CapturingHorseId))
                     {
                         WildHorse capturing = WildHorse.GetHorseById(sender.LoggedinUser.CapturingHorseId);
-                        
-                        try{
+                        sender.LoggedinUser.CapturingHorseId = 0;
+
+                        try
+                        {
                             capturing.Capture(sender.LoggedinUser);
                         }
                         catch(InventoryFullException)
@@ -145,9 +182,9 @@ namespace HISP.Server
 
                     break;
                 case PacketBuilder.HORSE_TRY_CAPTURE:
-                    int randomId = 0;
-                    string packetStr = Encoding.UTF8.GetString(packet);
-                    string randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
