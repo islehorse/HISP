@@ -614,7 +614,7 @@ namespace HISP.Server
 
             Messages.HorseNameFormat = gameData.messages.meta.horse.horse_inventory.your_horse_format;
             Messages.HorseReleasedByFormat = gameData.messages.meta.horse.horse_inventory.released_by_format;
-            Messages.HorseHandsHightFormat = gameData.messages.meta.horse.horse_inventory.hands_high;
+            Messages.HorseHandsHeightFormat = gameData.messages.meta.horse.horse_inventory.hands_high;
             Messages.HorseExperienceEarnedFormat = gameData.messages.meta.horse.horse_inventory.experience;
             
             Messages.HorseTrainableInFormat = gameData.messages.meta.horse.horse_inventory.trainable_in;
