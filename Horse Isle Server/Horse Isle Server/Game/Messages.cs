@@ -178,7 +178,38 @@ namespace HISP.Game
         public static string ViewAdvancedStats;
 
 
+        public static string HorseNameFormat;
+        public static string HorseReleasedByFormat;
+        public static string HorseHandsHightFormat;
+        public static string HorseExperienceEarnedFormat;
 
+        public static string HorseTrainableInFormat;
+        public static string HorseIsTrainable;
+
+        public static string HorseMountButtonFormat;
+        public static string HorseFeedButtonFormat;
+        public static string HorseTackButtonFormat;
+        public static string HorsePetButtonFormat;
+        public static string HorseProfileButtonFormat;
+
+        public static string HorseNoAutoSell;
+        public static string HorseAutoSellPriceFormat;
+        public static string HorseAutoSellFormat;
+        public static string HorseCantAutoSellTacked;
+        public static string HorseCurrentlyCategoryFormat;
+        public static string HorseStats;
+        public static string HorseTacked;
+        public static string HorseTackFormat;
+        public static string HorseCompanion;
+        public static string HorseCompanionFormat;
+        public static string HorseNoCompanion;
+
+        public static string HorseAdvancedStatsFormat;
+        public static string HorseBreedDetailsFormat;
+        public static string HorseHeightRangeFormat;
+        public static string HorsePossibleColorsFormat;
+        public static string HorseReleaseButton;
+        public static string HorseOthers;
 
         // Consume
 
