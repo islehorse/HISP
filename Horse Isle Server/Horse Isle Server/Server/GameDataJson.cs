@@ -611,6 +611,43 @@ namespace HISP.Server
             Messages.ViewBaiscStats = gameData.messages.meta.horse.view_basic_stats;
             Messages.ViewAdvancedStats = gameData.messages.meta.horse.view_advanced_stats;
 
+
+            Messages.HorseNameFormat = gameData.messages.meta.horse.horse_inventory.your_horse_format;
+            Messages.HorseReleasedByFormat = gameData.messages.meta.horse.horse_inventory.released_by_format;
+            Messages.HorseHandsHightFormat = gameData.messages.meta.horse.horse_inventory.hands_high;
+            Messages.HorseExperienceEarnedFormat = gameData.messages.meta.horse.horse_inventory.experience;
+            
+            Messages.HorseTrainableInFormat = gameData.messages.meta.horse.horse_inventory.trainable_in;
+            Messages.HorseIsTrainable = gameData.messages.meta.horse.horse_inventory.currently_trainable;
+
+            Messages.HorseMountButtonFormat = gameData.messages.meta.horse.horse_inventory.mount_button;
+            Messages.HorseFeedButtonFormat = gameData.messages.meta.horse.horse_inventory.feed_button;
+            Messages.HorseTackButtonFormat = gameData.messages.meta.horse.horse_inventory.tack_button;
+            Messages.HorsePetButtonFormat = gameData.messages.meta.horse.horse_inventory.pet_button;
+            Messages.HorseProfileButtonFormat = gameData.messages.meta.horse.horse_inventory.profile_button;
+
+            Messages.HorseNoAutoSell = gameData.messages.meta.horse.horse_inventory.no_auto_sell;
+            Messages.HorseAutoSellFormat = gameData.messages.meta.horse.horse_inventory.auto_sell_format;
+            Messages.HorseAutoSellPriceFormat = gameData.messages.meta.horse.horse_inventory.auto_sell;
+            Messages.HorseCantAutoSellTacked = gameData.messages.meta.horse.horse_inventory.cannot_auto_sell_tacked;
+
+            Messages.HorseCurrentlyCategoryFormat = gameData.messages.meta.horse.horse_inventory.marked_as;
+            Messages.HorseStats = gameData.messages.meta.horse.horse_inventory.horse_stats;
+            Messages.HorseTacked = gameData.messages.meta.horse.horse_inventory.wearing_tacked;
+            Messages.HorseTackFormat = gameData.messages.meta.horse.horse_inventory.tacked_format;
+
+            Messages.HorseCompanion = gameData.messages.meta.horse.horse_inventory.companion;
+            Messages.HorseCompanionFormat = gameData.messages.meta.horse.horse_inventory.companion_selected;
+            Messages.HorseNoCompanion = gameData.messages.meta.horse.horse_inventory.no_companion;
+
+            Messages.HorseAdvancedStatsFormat = gameData.messages.meta.horse.horse_inventory.advanced_stats;
+            Messages.HorseBreedDetailsFormat = gameData.messages.meta.horse.horse_inventory.breed_details;
+            Messages.HorseHeightRangeFormat = gameData.messages.meta.horse.horse_inventory.height_range;
+            Messages.HorsePossibleColorsFormat = gameData.messages.meta.horse.horse_inventory.possible_colors;
+            Messages.HorseReleaseButton = gameData.messages.meta.horse.horse_inventory.release_horse;
+            Messages.HorseOthers = gameData.messages.meta.horse.horse_inventory.other_horses;
+
+
             // Libary
             Messages.LibaryMainMenu = gameData.messages.meta.libary.main_menu;
             Messages.LibaryFindNpc = gameData.messages.meta.libary.find_npc;
