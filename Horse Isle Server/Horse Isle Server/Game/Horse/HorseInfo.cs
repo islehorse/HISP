@@ -58,7 +58,27 @@ namespace HISP.Game.Horse
 
         public static List<Category> HorseCategories = new List<Category>();
         public static List<Breed> Breeds = new List<Breed>();
+        public static double CalculateHands(int height)
+        {
+            return ((double)height / 4.0);
+        }
+        public static string BreedViewerSwf(HorseInstance horse, string terrainTileType)
+        {
+            double hands = CalculateHands(horse.AdvancedStats.Height);
 
+            string swf = "breedviewer.swf?terrain=" + terrainTileType + "&breed=" + horse.Breed.Swf + "&color=" + horse.Color + "&hands=" + hands.ToString();
+            if (horse.Equipment.Saddle != null)
+                swf += "&saddle=" + horse.Equipment.Saddle.EmbedSwf;
+            if (horse.Equipment.SaddlePad != null)
+                swf += "&saddlepad=" + horse.Equipment.SaddlePad.EmbedSwf;
+            if (horse.Equipment.Bridle != null)
+                swf += "&bridle=" + horse.Equipment.Bridle.EmbedSwf;
+            if (horse.Equipment.Companion != null)
+                swf += "&companion=" + horse.Equipment.Companion.EmbedSwf;
+            swf += "&junk=";
+
+            return swf;
+        }
         public static Breed GetBreedById(int id)
         {
             foreach(Breed breed in Breeds)

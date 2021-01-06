@@ -45,6 +45,8 @@ namespace HISP.Server
         public const byte PACKET_WISH = 0x2C;
         public const byte PACKET_SWFMODULE = 0x50;
 
+        public const byte HORSE_LIST = 0x0A;
+        public const byte HORSE_LOOK = 0x14;
         public const byte HORSE_TRY_CAPTURE = 0x1C;
         public const byte HORSE_ESCAPE = 0x1E;
         public const byte HORSE_CAUGHT = 0x1D;
