@@ -596,7 +596,8 @@ namespace HISP.Server
             Messages.BankWithdrewMoneyFormat = gameData.messages.bank.withdraw_format;
 
             // Horses
-            Messages.StatFormat = gameData.messages.meta.horse.stat_format;
+            Messages.AdvancedStatFormat = gameData.messages.meta.horse.stat_format;
+            Messages.BasicStatFormat = gameData.messages.meta.horse.basic_stat_format;
             Messages.HorsesHere = gameData.messages.meta.horse.horses_here;
             Messages.WildHorseFormat = gameData.messages.meta.horse.wild_horse;
             Messages.HorseCaptureTimer = gameData.messages.meta.horse.horse_timer;

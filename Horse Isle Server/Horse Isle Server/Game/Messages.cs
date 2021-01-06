@@ -163,7 +163,8 @@ namespace HISP.Game
 
         // Horse
         public static string BreedViewerMaximumStats;
-        public static string StatFormat;
+        public static string AdvancedStatFormat;
+        public static string BasicStatFormat;
         public static string HorsesHere;
         public static string WildHorseFormat;
         public static string HorseCaptureTimer;
@@ -175,6 +176,9 @@ namespace HISP.Game
         public static string HorseEntryFormat;
         public static string ViewBaiscStats;
         public static string ViewAdvancedStats;
+
+
+
 
         // Consume
 
@@ -388,10 +392,15 @@ namespace HISP.Game
         {
             return BreedViewerFormat.Replace("%NAME%", name).Replace("%DESCRIPTION%", description);
         }
-        public static string FormatHorseStat(int baseStat, int companionBoost, int tackBoost, int maxStat)
+        public static string FormatHorseAdvancedStat(int baseStat, int companionBoost, int tackBoost, int maxStat)
         {
-            return StatFormat.Replace("%BASE%", baseStat.ToString()).Replace("%COMPAINON%", companionBoost.ToString()).Replace("%TACK%", tackBoost.ToString()).Replace("%MAX%", maxStat.ToString());
+            return AdvancedStatFormat.Replace("%BASE%", baseStat.ToString()).Replace("%COMPAINON%", companionBoost.ToString()).Replace("%TACK%", tackBoost.ToString()).Replace("%MAX%", maxStat.ToString());
         }
+        public static string FormatHorseBasicStat(int health, int hunger, int thirst, int mood, int energy, int groom, int shoes)
+        {
+            return BasicStatFormat.Replace("%HEALTH%", health.ToString()).Replace("%HUNGER%", hunger.ToString()).Replace("%THIRST%", thirst.ToString()).Replace("%MOOD%", mood.ToString()).Replace("%ENERGY%", energy.ToString()).Replace("%GROOM%", groom.ToString()).Replace("%SHOES%", shoes.ToString());
+        }
+
         public static string FormatHorseRelative(string name, int id)
         {
             return HorseRelativeFormat.Replace("%NAME%", name).Replace("%ID%", id.ToString());

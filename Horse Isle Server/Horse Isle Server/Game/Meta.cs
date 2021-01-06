@@ -638,13 +638,13 @@ namespace HISP.Game
         {
             string message = Messages.FormatHorseBreedPreview(breed.Name, breed.Description);
             message += Messages.BreedViewerMaximumStats;
-            message += Messages.FormatHorseStat(breed.BaseStats.Speed * 2, 0, 0, breed.BaseStats.Speed * 2);
-            message += Messages.FormatHorseStat(breed.BaseStats.Strength * 2, 0, 0, breed.BaseStats.Strength * 2);
-            message += Messages.FormatHorseStat(breed.BaseStats.Conformation * 2, 0, 0, breed.BaseStats.Conformation * 2);
-            message += Messages.FormatHorseStat(breed.BaseStats.Agility * 2, 0, 0, breed.BaseStats.Agility * 2);
-            message += Messages.FormatHorseStat(breed.BaseStats.Endurance * 2, 0, 0, breed.BaseStats.Endurance * 2);
-            message += Messages.FormatHorseStat(breed.BaseStats.Inteligence * 2, 0, 0, breed.BaseStats.Inteligence * 2);
-            message += Messages.FormatHorseStat(breed.BaseStats.Personality * 2, 0, 0, breed.BaseStats.Personality * 2);
+            message += Messages.FormatHorseAdvancedStat(breed.BaseStats.Speed * 2, 0, 0, breed.BaseStats.Speed * 2);
+            message += Messages.FormatHorseAdvancedStat(breed.BaseStats.Strength * 2, 0, 0, breed.BaseStats.Strength * 2);
+            message += Messages.FormatHorseAdvancedStat(breed.BaseStats.Conformation * 2, 0, 0, breed.BaseStats.Conformation * 2);
+            message += Messages.FormatHorseAdvancedStat(breed.BaseStats.Agility * 2, 0, 0, breed.BaseStats.Agility * 2);
+            message += Messages.FormatHorseAdvancedStat(breed.BaseStats.Endurance * 2, 0, 0, breed.BaseStats.Endurance * 2);
+            message += Messages.FormatHorseAdvancedStat(breed.BaseStats.Inteligence * 2, 0, 0, breed.BaseStats.Inteligence * 2);
+            message += Messages.FormatHorseAdvancedStat(breed.BaseStats.Personality * 2, 0, 0, breed.BaseStats.Personality * 2);
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;
