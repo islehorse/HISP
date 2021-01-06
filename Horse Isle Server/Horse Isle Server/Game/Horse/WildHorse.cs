@@ -90,6 +90,45 @@ namespace HISP.Game.Horse
                 Database.AddWildHorse(this);
         }
 
+
+        public void RandomWander()
+        {
+            int direction = GameServer.RandomNumberGenerator.Next(0, 3);
+            int tryX = this.X;
+            int tryY = this.Y;
+
+            switch(direction)
+            {
+                case 0:
+                    tryX += 1;
+                    break;
+                case 1:
+                    tryX -= 1;
+                    break;
+                case 2: 
+                    tryY += 1;
+                    break;
+                case 3:
+                    tryY -= 1;
+                    break;
+
+
+            }
+            // Horses cannot be in towns.
+            if (World.InTown(tryX, tryY))
+                return;
+            if (World.InSpecialTile(tryX, tryY))
+                return;
+
+            if (Map.CheckPassable(tryX, tryY))
+            {
+                X = tryX;
+                Y = tryY;
+                return;
+            }
+            
+        }
+
         public void Escape()
         {
             while(true)
@@ -115,6 +154,7 @@ namespace HISP.Game.Horse
 
         public void Capture(User forUser)
         {
+            forUser.HorseInventory.AddHorse(this.Instance);
             Despawn(this);
         }
 
@@ -191,8 +231,16 @@ namespace HISP.Game.Horse
             foreach(WildHorse wildHorse in WildHorses)
             {
                 wildHorse.Timeout -= 1;
+
+                if (GameServer.GetUsersAt(wildHorse.X, wildHorse.Y, true, true).Length > 0)
+                    continue;
+
                 if (wildHorse.Timeout <= 0)
                     Despawn(wildHorse);
+
+                if(wildHorse.Timeout % 5 == 0)
+                    if (GameServer.RandomNumberGenerator.Next(0, 100) > 50)
+                        wildHorse.RandomWander();
             }
             if(WildHorses.Length < 40)
             {

@@ -875,6 +875,32 @@ namespace HISP.Game
             }
             return Messages.FormatAbuseReportMetaPage(reportReasons);
         }
+
+        public static string BuildHorseInventory(User user)
+        {
+            // TODO: calculate max number based on ranch barns owned.
+            string message = Messages.FormatHorseHeader(7, user.HorseInventory.HorseList.Length);
+
+            int i = 1;
+            foreach(HorseInfo.Category category in HorseInfo.HorseCategories)
+            {
+                HorseInstance[] horsesInCategory = user.HorseInventory.GetHorsesInCategory(category);
+                if(horsesInCategory.Length > 0)
+                {
+                    message += category.Meta;
+                    foreach(HorseInstance instance in horsesInCategory)
+                    {
+                        message += Messages.FormatHorseEntry(i, instance.Name, instance.Breed.Name, instance.RandomId);
+                        i++;
+                    }
+                }
+            }
+            message += Messages.ViewBaiscStats;
+            message += Messages.ViewAdvancedStats;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildPlayerList(User user)
         {
             string message = "";

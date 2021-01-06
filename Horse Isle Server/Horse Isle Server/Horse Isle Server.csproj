@@ -81,6 +81,7 @@
     <Compile Include="Game\Horse\HorseInfo.cs" />
     <Compile Include="Game\Horse\HorseInstance.cs" />
     <Compile Include="Game\Horse\WildHorse.cs" />
+    <Compile Include="Game\Inventory\HorseInventory.cs" />
     <Compile Include="Game\Inventory\InventoryItem.cs" />
     <Compile Include="Game\Quest.cs" />
     <Compile Include="Game\Services\Inn.cs" />

@@ -90,15 +90,20 @@ namespace HISP.Server
                 return;
             }
 
-            if(packet.Length < 4)
+            if(packet.Length < 3)
             {
-                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid sized horse interaction packet.");
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid sized horse interaction packet: " + BitConverter.ToString(packet).Replace("-", " "));
                 return;
             }
 
             byte method = packet[1];
             switch(method)
             {
+                case PacketBuilder.PACKET_CLIENT_TERMINATOR: // 19 0a 00 (horse list)
+                    sender.LoggedinUser.MetaPriority = true;
+                    byte[] metaTags = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInventory(sender.LoggedinUser));
+                    sender.SendPacket(metaTags);
+                    break;
                 case PacketBuilder.HORSE_ESCAPE:
                     if(WildHorse.DoesHorseExist(sender.LoggedinUser.CapturingHorseId))
                     {
@@ -2781,7 +2786,8 @@ namespace HISP.Server
             {
                 if (client.LoggedIn)
                     if (client.LoggedinUser.X == x && client.LoggedinUser.Y == y)
-                        UpdateArea(client);
+                        if(!client.LoggedinUser.MetaPriority)
+                            UpdateArea(client);
             }
         }
         public static void UpdateArea(GameClient forClient)

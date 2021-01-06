@@ -50,8 +50,13 @@ namespace HISP.Game.Horse
             public Item.ItemInformation Companion;
         }
 
+        public struct Category
+        {
+            public string Name;
+            public string Meta;
+        }
 
-
+        public static List<Category> HorseCategories = new List<Category>();
         public static List<Breed> Breeds = new List<Breed>();
 
         public static Breed GetBreedById(int id)

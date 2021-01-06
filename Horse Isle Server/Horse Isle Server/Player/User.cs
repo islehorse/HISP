@@ -5,7 +5,6 @@ using HISP.Server;
 using HISP.Player.Equips;
 using HISP.Game.Services;
 using HISP.Game.Inventory;
-using HISP.Game.Horse;
 
 namespace HISP.Player
 {
@@ -43,6 +42,7 @@ namespace HISP.Player
         public Npc.NpcEntry LastTalkedToNpc;
         public Shop LastShoppedAt;
         public Inn LastVisitedInn;
+        public HorseInventory HorseInventory;
         public PlayerQuests Quests;
         public Highscore Highscores;
         public Award Awards;
@@ -428,6 +428,7 @@ namespace HISP.Player
             MailBox = new Mailbox(this);
             Highscores = new Highscore(this);
             Awards = new Award(this);
+            HorseInventory = new HorseInventory(this);
 
             // Generate SecCodes
 
