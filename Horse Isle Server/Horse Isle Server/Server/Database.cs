@@ -929,6 +929,48 @@ namespace HISP.Server
             }
         }
 
+        public static void ClearSaddle(int horseRandomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET saddle=NULL WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void ClearSaddlePad(int horseRandomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET saddlepad=NULL WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void ClearBridle(int horseRandomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET bridle=NULL WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
 
         public static void SetWorldWeather(string Weather)
         {

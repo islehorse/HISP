@@ -179,11 +179,13 @@ namespace HISP.Server
                                             break;
                                     }
 
+
+                                    sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances[0]); // Remove item from inventory.
+
                                     sender.LoggedinUser.MetaPriority = true;
                                     byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
                                     sender.SendPacket(metaPacket);
 
-                                    sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances[0]); // Remove item from inventory.
                                     byte[] equipMsgPacket = PacketBuilder.CreateChat(Messages.FormatEquipTackMessage(itemInfo.Name, sender.LoggedinUser.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(equipMsgPacket);
 
@@ -211,6 +213,46 @@ namespace HISP.Server
                         break;
                     }
 
+                    break;
+                case PacketBuilder.HORSE_TACK_UNEQUIP:
+                    if (sender.LoggedinUser.LastViewedHorse != null)
+                    {
+                        byte equipSlot = packet[2];
+                        switch(equipSlot)
+                        {
+                            case 0x31: // Saddle
+                                if (sender.LoggedinUser.LastViewedHorse.Equipment.Saddle != null)
+                                    sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(sender.LoggedinUser.LastViewedHorse.Equipment.Saddle.Id));
+                                Database.ClearSaddle(sender.LoggedinUser.LastViewedHorse.RandomId);
+                                sender.LoggedinUser.LastViewedHorse.Equipment.Saddle = null;
+                                break;
+                            case 0x32: // Saddle Pad
+                                if (sender.LoggedinUser.LastViewedHorse.Equipment.SaddlePad != null)
+                                    sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(sender.LoggedinUser.LastViewedHorse.Equipment.SaddlePad.Id));
+                                Database.ClearSaddlePad(sender.LoggedinUser.LastViewedHorse.RandomId);
+                                sender.LoggedinUser.LastViewedHorse.Equipment.SaddlePad = null;
+                                break;
+                            case 0x33: // Bridle
+                                if (sender.LoggedinUser.LastViewedHorse.Equipment.Bridle != null)
+                                    sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(sender.LoggedinUser.LastViewedHorse.Equipment.Bridle.Id));
+                                Database.ClearBridle(sender.LoggedinUser.LastViewedHorse.RandomId);
+                                sender.LoggedinUser.LastViewedHorse.Equipment.Bridle = null;
+                                break;
+                            default:
+                                Logger.ErrorPrint("Unknown equip slot: " + equipSlot.ToString("X"));
+                                break;
+                        }
+                        byte[] itemUnequipedMessage = PacketBuilder.CreateChat(Messages.FormatUnEquipTackMessage(sender.LoggedinUser.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(itemUnequipedMessage);
+
+                        sender.LoggedinUser.MetaPriority = true;
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
+                        sender.SendPacket(metaPacket);
+                    }
+                    else
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to unequip items from non existnat horse");
+                    }
                     break;
                 case PacketBuilder.HORSE_MOUNT:
                     randomId = 0;
