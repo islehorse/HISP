@@ -1175,11 +1175,22 @@ namespace HISP.Game
             message += Messages.FormatHorseHeight(Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MinHeight))), Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MaxHeight))));
             
             message += Messages.FormatPossibleColors(horse.Breed.Colors);
+
+            bool canRelease = true;
+            if(World.InTown(user.X, user.Y))
+                canRelease = false;
             
-            if(!World.InTown(user.X, user.Y))
+
+            if (World.InSpecialTile(user.X, user.Y))
             {
-                message += Messages.HorseReleaseButton;
+                World.SpecialTile tile = World.GetSpecialTile(user.Y, user.Y);
+                if (tile.Code != null)
+                    canRelease = false;
             }
+
+            if(canRelease)
+                message += Messages.HorseReleaseButton;
+
             message += Messages.HorseOthers;
             message += buildHorseList(user);
 
