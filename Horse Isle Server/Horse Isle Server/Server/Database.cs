@@ -884,6 +884,52 @@ namespace HISP.Server
             }
         }
 
+        public static void SetSaddle(int horseRandomId, int saddleItemId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET saddle=@saddle WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@saddle", saddleItemId);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetSaddlePad(int horseRandomId, int saddlePadItemId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET saddlepad=@saddlepad WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@saddlepad", saddlePadItemId);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetBridle(int horseRandomId, int bridleItemId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET bridle=@bridle WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@bridle", bridleItemId);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+
         public static void SetWorldWeather(string Weather)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

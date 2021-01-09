@@ -104,10 +104,118 @@ namespace HISP.Server
                     byte[] metaTags = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInventory(sender.LoggedinUser));
                     sender.SendPacket(metaTags);
                     break;
-                case PacketBuilder.HORSE_MOUNT:
+                case PacketBuilder.HORSE_TACK:
+
                     int randomId = 0;
                     string packetStr = Encoding.UTF8.GetString(packet);
                     string randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        
+                        sender.LoggedinUser.LastViewedHorse = horseInst;
+                        sender.LoggedinUser.MetaPriority = true;
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackMenu(horseInst, sender.LoggedinUser));
+                        sender.SendPacket(metaPacket);
+                        break;
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to tack at a non existant horse.");
+                        break;
+                    }
+                case PacketBuilder.HORSE_TACK_EQUIP:
+
+                    int itemId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    string itemIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    try
+                    {
+                        itemId = int.Parse(itemIdStr);
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if(Item.ItemIdExist(itemId))
+                    {
+                        if(sender.LoggedinUser.LastViewedHorse != null)
+                        {
+                            if(sender.LoggedinUser.Inventory.HasItemId(itemId))
+                            {
+                                Item.ItemInformation itemInfo = Item.GetItemById(itemId);
+                                if (itemInfo.Type == "TACK")
+                                {
+                                    switch (itemInfo.MiscFlags[0])
+                                    {
+                                        case 1: // Saddle
+                                            if(sender.LoggedinUser.LastViewedHorse.Equipment.Saddle != null)
+                                                sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(sender.LoggedinUser.LastViewedHorse.Equipment.Saddle.Id));
+                                            Database.SetSaddle(sender.LoggedinUser.LastViewedHorse.RandomId, itemInfo.Id);
+                                            sender.LoggedinUser.LastViewedHorse.Equipment.Saddle = itemInfo;
+                                            break;
+                                        case 2: // Saddle Pad
+                                            if (sender.LoggedinUser.LastViewedHorse.Equipment.SaddlePad != null)
+                                                sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(sender.LoggedinUser.LastViewedHorse.Equipment.SaddlePad.Id));
+                                            Database.SetSaddlePad(sender.LoggedinUser.LastViewedHorse.RandomId, itemInfo.Id);
+                                            sender.LoggedinUser.LastViewedHorse.Equipment.SaddlePad = itemInfo;
+                                            break;
+                                        case 3: // Bridle
+                                            if (sender.LoggedinUser.LastViewedHorse.Equipment.Bridle != null)
+                                                sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(sender.LoggedinUser.LastViewedHorse.Equipment.Bridle.Id));
+                                            Database.SetBridle(sender.LoggedinUser.LastViewedHorse.RandomId, itemInfo.Id);
+                                            sender.LoggedinUser.LastViewedHorse.Equipment.Bridle = itemInfo;
+                                            break;
+                                    }
+
+                                    sender.LoggedinUser.MetaPriority = true;
+                                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
+                                    sender.SendPacket(metaPacket);
+
+                                    sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances[0]); // Remove item from inventory.
+                                    byte[] equipMsgPacket = PacketBuilder.CreateChat(Messages.FormatEquipTackMessage(itemInfo.Name, sender.LoggedinUser.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(equipMsgPacket);
+
+                                }
+                                else
+                                {
+                                    Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to equip a tack item to a hrose but that item was not of type \"TACK\".");
+                                }
+                            }
+                            else
+                            {
+                                Logger.HackerPrint(sender.LoggedinUser.Username + " tried to equip tack he doesnt have");
+                                break;
+                            }
+                        }
+                        else
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to equip tack to a horse when not viewing one.");
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " tried to equip tack he doesnt exist");
+                        break;
+                    }
+
+                    break;
+                case PacketBuilder.HORSE_MOUNT:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -126,11 +234,9 @@ namespace HISP.Server
                     }
                     else
                     {
-                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to mont at a non existant horse.");
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to mount at a non existant horse.");
                         break;
                     }
-
-                    break;
                 case PacketBuilder.HORSE_LOOK:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
@@ -147,16 +253,8 @@ namespace HISP.Server
                     }
                     if(sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
-                        int TileID = Map.GetTileId(sender.LoggedinUser.X, sender.LoggedinUser.Y, false);
-                        string type = Map.TerrainTiles[TileID - 1].Type;
                         HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInformation(horseInst, sender.LoggedinUser));
-                        sender.SendPacket(metaPacket);
-
-                        string loadSwf = HorseInfo.BreedViewerSwf(horseInst, type);
-                        byte[] swfPacket = PacketBuilder.CreateSwfModulePacket(loadSwf, PacketBuilder.PACKET_SWF_MODULE_FORCE);
-                        sender.SendPacket(swfPacket);
-
+                        UpdateHorseMenu(sender, horseInst);
                     }
                     else
                     {
@@ -476,6 +574,10 @@ namespace HISP.Server
                     byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildQuestLog(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
+                case "5":
+                    if (sender.LoggedinUser.LastViewedHorse != null)
+                        UpdateHorseMenu(sender, sender.LoggedinUser.LastViewedHorse);
+                    break;
                 case "21": // Private Notes
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPrivateNotes(sender.LoggedinUser));
@@ -574,7 +676,7 @@ namespace HISP.Server
                         break;
                     }
 
-                    Logger.ErrorPrint("Dynamic button #" + buttonIdStr + " unknown...");
+                    Logger.ErrorPrint("Dynamic button #" + buttonIdStr + " unknown... Packet Dump: "+BitConverter.ToString(packet).Replace("-", " "));
                     break;
             }
         }
@@ -2809,6 +2911,20 @@ namespace HISP.Server
 
 
             UpdateUserInfo(client.LoggedinUser);
+        }
+
+        public static void UpdateHorseMenu(GameClient forClient, HorseInstance horseInst)
+        {
+            int TileID = Map.GetTileId(forClient.LoggedinUser.X, forClient.LoggedinUser.Y, false);
+            string type = Map.TerrainTiles[TileID - 1].Type;
+            forClient.LoggedinUser.LastViewedHorse = horseInst;
+            forClient.LoggedinUser.MetaPriority = true;
+            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInformation(horseInst, forClient.LoggedinUser));
+            forClient.SendPacket(metaPacket);
+
+            string loadSwf = HorseInfo.BreedViewerSwf(horseInst, type);
+            byte[] swfPacket = PacketBuilder.CreateSwfModulePacket(loadSwf, PacketBuilder.PACKET_SWF_MODULE_FORCE);
+            forClient.SendPacket(swfPacket);
         }
         public static void UpdateInventory(GameClient forClient)
         {
