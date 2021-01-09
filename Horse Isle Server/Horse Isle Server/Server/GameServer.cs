@@ -104,10 +104,37 @@ namespace HISP.Server
                     byte[] metaTags = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInventory(sender.LoggedinUser));
                     sender.SendPacket(metaTags);
                     break;
-                case PacketBuilder.HORSE_LOOK:
+                case PacketBuilder.HORSE_MOUNT:
                     int randomId = 0;
                     string packetStr = Encoding.UTF8.GetString(packet);
                     string randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+
+                        break;
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to mont at a non existant horse.");
+                        break;
+                    }
+
+                    break;
+                case PacketBuilder.HORSE_LOOK:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -122,10 +149,11 @@ namespace HISP.Server
                     {
                         int TileID = Map.GetTileId(sender.LoggedinUser.X, sender.LoggedinUser.Y, false);
                         string type = Map.TerrainTiles[TileID - 1].Type;
-                        HorseInstance horse = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
-                        string loadSwf = HorseInfo.BreedViewerSwf(horse, type);
-                        
+                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInformation(horseInst, sender.LoggedinUser));
+                        sender.SendPacket(metaPacket);
 
+                        string loadSwf = HorseInfo.BreedViewerSwf(horseInst, type);
                         byte[] swfPacket = PacketBuilder.CreateSwfModulePacket(loadSwf, PacketBuilder.PACKET_SWF_MODULE_FORCE);
                         sender.SendPacket(swfPacket);
 

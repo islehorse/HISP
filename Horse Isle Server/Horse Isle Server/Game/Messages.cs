@@ -211,6 +211,16 @@ namespace HISP.Game
         public static string HorseReleaseButton;
         public static string HorseOthers;
 
+
+        // Tack horse menu
+        public static string HorseTackedAsFollows;
+        public static string HorseUnEquipSaddleFormat;
+        public static string HorseUnEquipSadlePadFormat;
+        public static string HorseUnEquipBridleFormat;
+        public static string HorseTackInInventory;
+        public static string HorseEquipFormat;
+        public static string HorseBackTo;
+
         // Consume
 
         public static string ConsumeItemFormat;
@@ -410,9 +420,9 @@ namespace HISP.Game
         {
             return HorseReleasedByFormat.Replace("%USERNAME%", name);
         }
-        public static string FormatHorseHandsHigh(string color, string sex, int handsHigh)
+        public static string FormatHorseHandsHigh(string color, string breed,string sex, int handsHigh)
         {
-            return HorseHandsHeightFormat.Replace("%COLOR%", color).Replace("%SEX%", sex).Replace("%HANDS%", handsHigh.ToString());
+            return HorseHandsHeightFormat.Replace("%COLOR%", color).Replace("%SEX%", sex).Replace("%HANDS%", handsHigh.ToString()).Replace("%BREED%", breed);
         }
         public static string FormatHorseExperience(int experience)
         {

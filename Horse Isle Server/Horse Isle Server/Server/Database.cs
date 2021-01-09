@@ -35,8 +35,8 @@ namespace HISP.Server
                 string Leaderboards = "CREATE TABLE Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
                 string NpcStartPoint = "CREATE TABLE NpcStartPoint(playerId INT, npcId INT, chatpointId INT)";
                 string PoetryRooms = "CREATE TABLE PoetryRooms(poetId INT, X INT, Y INT, roomId INT)";
-                string Horses = "CREATE TABLE Horses(randomId INT, ownerId INT, ranchId INT, leaser INT, breed INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, category TEXT(128), spoiled INT, magicUsed INT)";
-                string WildHorse = "CREATE TABLE WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, category TEXT(128), spoiled INT, magicUsed INT)";
+                string Horses = "CREATE TABLE Horses(randomId INT, ownerId INT, ranchId INT, leaser INT, breed INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
+                string WildHorse = "CREATE TABLE WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string LastPlayer = "CREATE TABLE LastPlayer(roomId TEXT(1028), playerId INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
@@ -401,7 +401,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Horses VALUES(@randomId,@originalOwner,@ranch,@leaser,@breed,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@autosell,@category,@spoiled,@magicused)";
+                sqlCommand.CommandText = "INSERT INTO Horses VALUES(@randomId,@originalOwner,@ranch,@leaser,@breed,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@autosell,@training,@category,@spoiled,@magicused)";
 
                 sqlCommand.Parameters.AddWithValue("@randomId", horse.RandomId);
                 sqlCommand.Parameters.AddWithValue("@originalOwner", horse.Owner);
@@ -456,6 +456,7 @@ namespace HISP.Server
 
 
                 sqlCommand.Parameters.AddWithValue("@autosell", horse.AutoSell);
+                sqlCommand.Parameters.AddWithValue("@training", horse.TrainTimer);
                 sqlCommand.Parameters.AddWithValue("@category", horse.Category);
                 sqlCommand.Parameters.AddWithValue("@spoiled", horse.Spoiled);
                 sqlCommand.Parameters.AddWithValue("@magicused", horse.MagicUsed);
@@ -521,9 +522,10 @@ namespace HISP.Server
                         inst.Equipment.Companion = Item.GetItemById(reader.GetInt32(28));
 
                     inst.AutoSell = reader.GetInt32(29);
-                    inst.Category = reader.GetString(30);
-                    inst.Spoiled = reader.GetInt32(31);
-                    inst.MagicUsed = reader.GetInt32(32);
+                    inst.TrainTimer = reader.GetInt32(30);
+                    inst.Category = reader.GetString(31);
+                    inst.Spoiled = reader.GetInt32(32);
+                    inst.MagicUsed = reader.GetInt32(33);
                     inv.AddHorse(inst, false);
 
                 }
@@ -538,7 +540,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO WildHorse VALUES(@randomId,@originalOwner,@breed,@x,@y,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@timeout,@autosell,@category,@spoiled,@magicused)";
+                sqlCommand.CommandText = "INSERT INTO WildHorse VALUES(@randomId,@originalOwner,@breed,@x,@y,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@timeout,@autosell,@training,@category,@spoiled,@magicused)";
 
                 sqlCommand.Parameters.AddWithValue("@randomId", horse.Instance.RandomId);
                 sqlCommand.Parameters.AddWithValue("@originalOwner", horse.Instance.Owner);
@@ -594,6 +596,7 @@ namespace HISP.Server
 
                 sqlCommand.Parameters.AddWithValue("@timeout", horse.Timeout);
                 sqlCommand.Parameters.AddWithValue("@autosell", horse.Instance.AutoSell);
+                sqlCommand.Parameters.AddWithValue("@training", horse.Instance.TrainTimer);
                 sqlCommand.Parameters.AddWithValue("@category", horse.Instance.Category);
                 sqlCommand.Parameters.AddWithValue("@spoiled", horse.Instance.Spoiled);
                 sqlCommand.Parameters.AddWithValue("@magicused", horse.Instance.MagicUsed);
@@ -658,9 +661,10 @@ namespace HISP.Server
                         inst.Equipment.Companion = Item.GetItemById(reader.GetInt32(28));
 
                     inst.AutoSell = reader.GetInt32(30);
-                    inst.Category = reader.GetString(31);
-                    inst.Spoiled = reader.GetInt32(32);
-                    inst.MagicUsed = reader.GetInt32(33);
+                    inst.TrainTimer = reader.GetInt32(31);
+                    inst.Category = reader.GetString(32);
+                    inst.Spoiled = reader.GetInt32(33);
+                    inst.MagicUsed = reader.GetInt32(34);
 
                     int x = reader.GetInt32(3);
                     int y = reader.GetInt32(4);

@@ -708,6 +708,7 @@ namespace HISP.Game
             return message;
 
         }
+
         public static string BuildFindNpcMenu()
         {
             string message = Messages.LibaryFindNpc;
@@ -875,26 +876,32 @@ namespace HISP.Game
             }
             return Messages.FormatAbuseReportMetaPage(reportReasons);
         }
-
-        public static string BuildHorseInventory(User user)
+        private static string buildHorseList(User user)
         {
-            // TODO: calculate max number based on ranch barns owned.
-            string message = Messages.FormatHorseHeader(user.HorseInventory.MaxHorses, user.HorseInventory.HorseList.Length);
-
+            string message = "";
             int i = 1;
-            foreach(HorseInfo.Category category in HorseInfo.HorseCategories)
+            foreach (HorseInfo.Category category in HorseInfo.HorseCategories)
             {
                 HorseInstance[] horsesInCategory = user.HorseInventory.GetHorsesInCategory(category);
-                if(horsesInCategory.Length > 0)
+                if (horsesInCategory.Length > 0)
                 {
                     message += category.Meta;
-                    foreach(HorseInstance instance in horsesInCategory)
+                    foreach (HorseInstance instance in horsesInCategory)
                     {
                         message += Messages.FormatHorseEntry(i, instance.Name, instance.Breed.Name, instance.RandomId);
                         i++;
                     }
                 }
             }
+            return message;
+
+        }
+        public static string BuildHorseInventory(User user)
+        {
+            // TODO: calculate max number based on ranch barns owned.
+            string message = Messages.FormatHorseHeader(user.HorseInventory.MaxHorses, user.HorseInventory.HorseList.Length);
+
+            message += buildHorseList(user);
             message += Messages.ViewBaiscStats;
             message += Messages.ViewAdvancedStats;
             message += Messages.BackToMap;
@@ -961,6 +968,226 @@ namespace HISP.Game
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;
+        }
+        public static string BuildHorseInformation(HorseInstance horse, User user)
+        {
+            string message = "";
+            message += Messages.FormatHorseName(horse.Name);
+            message += Messages.FormatHorseReleasedBy(Database.GetUsername(horse.Owner));
+            message += Messages.FormatHorseHandsHigh(horse.Color, horse.Breed.Name, horse.Sex, Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.AdvancedStats.Height))));
+            message += Messages.FormatHorseExperience(horse.BasicStats.Experience);
+            
+            if (horse.TrainTimer > 0)
+                message += Messages.FormatTrainableIn(horse.TrainTimer);
+            else
+                message += Messages.HorseIsTrainable;
+
+            message += Messages.FormatMountButton(horse.RandomId);
+            message += Messages.FormatFeedButton(horse.RandomId);
+            message += Messages.FormatTackButton(horse.RandomId);
+            message += Messages.FormatPetButton(horse.RandomId);
+            message += Messages.FormatProfileButton(horse.RandomId);
+
+            string autoSellMessage = Messages.HorseNoAutoSell;
+            if (horse.AutoSell > 0)
+                autoSellMessage = Messages.FormatAutoSellPrice(horse.AutoSell);
+            message += Messages.FormatAutoSell(autoSellMessage);
+
+            message += Messages.FormatHorseCategory(horse.Category);
+            message += Messages.HorseStats;
+
+            // What is energy?
+            message += Messages.FormatHorseBasicStat(horse.BasicStats.Health, horse.BasicStats.Hunger, horse.BasicStats.Thirst, horse.BasicStats.Mood, 1000, horse.BasicStats.Groom, horse.BasicStats.Groom);
+            message += Messages.HorseTacked;
+
+            if (horse.Equipment.Saddle != null)
+                message += Messages.FormatHorseTackEntry(horse.Equipment.Saddle.IconId, horse.Equipment.Saddle.Name, horse.Equipment.Saddle.Id);
+             
+            if (horse.Equipment.SaddlePad != null)
+                message += Messages.FormatHorseTackEntry(horse.Equipment.SaddlePad.IconId, horse.Equipment.SaddlePad.Name, horse.Equipment.SaddlePad.Id);
+            if (horse.Equipment.Bridle != null)
+                message += Messages.FormatHorseTackEntry(horse.Equipment.Bridle.IconId, horse.Equipment.Bridle.Name, horse.Equipment.Bridle.Id);
+
+            message += Messages.HorseCompanion;
+            if (horse.Equipment.Companion != null)
+                message += Messages.FormatHorseCompanionEntry(horse.Equipment.Companion.IconId, horse.Equipment.Companion.Name, horse.Equipment.Companion.Id);
+            else
+                message += Messages.HorseNoCompanion;
+
+            message += Messages.FormatHorseAdvancedStats(horse.Spoiled, horse.MagicUsed);
+
+            int CompanionBoostAgility = 0;
+            int CompanionBoostConformation = 0;
+            int CompanionBoostEndurance = 0;
+            int CompanionBoostPersonality = 0;
+            int CompanionBoostSpeed = 0;
+            int CompanionBoostStrength = 0;
+            int CompanionBoostInteligence = 0;
+
+            int TackBoostAgility = 0;
+            int TackBoostConformation = 0;
+            int TackBoostEndurance = 0;
+            int TackBoostPersonality = 0;
+            int TackBoostSpeed = 0;
+            int TackBoostStrength = 0;
+            int TackBoostInteligence = 0;
+
+            if(horse.Equipment.Saddle != null)
+            {
+                foreach (Item.Effects effect in horse.Equipment.Saddle.Effects)
+                {
+                    string effects = effect.EffectsWhat;
+                    switch (effects)
+                    {
+                        case "AGILITY":
+                            TackBoostAgility += effect.EffectAmount;
+                            break;
+                        case "CONFORMATION":
+                            TackBoostConformation += effect.EffectAmount;
+                            break;
+                        case "ENDURANCE":
+                            TackBoostEndurance += effect.EffectAmount;
+                            break;
+                        case "PERSONALITY":
+                            TackBoostPersonality += effect.EffectAmount;
+                            break;
+                        case "SPEED":
+                            TackBoostSpeed += effect.EffectAmount;
+                            break;
+                        case "STRENGTH":
+                            TackBoostStrength += effect.EffectAmount;
+                            break;
+                        case "INTELLIGENCEOFFSET":
+                            TackBoostInteligence += effect.EffectAmount;
+                            break;
+
+                    }
+
+                }
+            }
+            if (horse.Equipment.SaddlePad != null)
+            {
+                foreach (Item.Effects effect in horse.Equipment.SaddlePad.Effects)
+                {
+                    string effects = effect.EffectsWhat;
+                    switch (effects)
+                    {
+                        case "AGILITY":
+                            TackBoostAgility += effect.EffectAmount;
+                            break;
+                        case "CONFORMATION":
+                            TackBoostConformation += effect.EffectAmount;
+                            break;
+                        case "ENDURANCE":
+                            TackBoostEndurance += effect.EffectAmount;
+                            break;
+                        case "PERSONALITY":
+                            TackBoostPersonality += effect.EffectAmount;
+                            break;
+                        case "SPEED":
+                            TackBoostSpeed += effect.EffectAmount;
+                            break;
+                        case "STRENGTH":
+                            TackBoostStrength += effect.EffectAmount;
+                            break;
+                        case "INTELLIGENCEOFFSET":
+                            TackBoostInteligence += effect.EffectAmount;
+                            break;
+                    }
+
+                }
+            }
+            if (horse.Equipment.Bridle != null)
+            {
+                foreach (Item.Effects effect in horse.Equipment.Bridle.Effects)
+                {
+                    string effects = effect.EffectsWhat;
+                    switch (effects)
+                    {
+                        case "AGILITY":
+                            TackBoostAgility += effect.EffectAmount;
+                            break;
+                        case "CONFORMATION":
+                            TackBoostConformation += effect.EffectAmount;
+                            break;
+                        case "ENDURANCE":
+                            TackBoostEndurance += effect.EffectAmount;
+                            break;
+                        case "PERSONALITY":
+                            TackBoostPersonality += effect.EffectAmount;
+                            break;
+                        case "SPEED":
+                            TackBoostSpeed += effect.EffectAmount;
+                            break;
+                        case "STRENGTH":
+                            TackBoostStrength += effect.EffectAmount;
+                            break;
+                        case "INTELLIGENCE":
+                            TackBoostInteligence += effect.EffectAmount;
+                            break;
+
+                    }
+
+                }
+            }
+            if (horse.Equipment.Companion != null)
+            {
+                foreach (Item.Effects effect in horse.Equipment.Companion.Effects)
+                {
+                    string effects = effect.EffectsWhat;
+                    switch (effects)
+                    {
+                        case "AGILITY":
+                            CompanionBoostAgility += effect.EffectAmount;
+                            break;
+                        case "CONFORMATION":
+                            CompanionBoostConformation += effect.EffectAmount;
+                            break;
+                        case "ENDURANCE":
+                            CompanionBoostEndurance += effect.EffectAmount;
+                            break;
+                        case "PERSONALITY":
+                            CompanionBoostPersonality += effect.EffectAmount;
+                            break;
+                        case "SPEED":
+                            CompanionBoostSpeed += effect.EffectAmount;
+                            break;
+                        case "STRENGTH":
+                            CompanionBoostStrength += effect.EffectAmount;
+                            break;
+                        case "INTELLIGENCE":
+                            CompanionBoostInteligence += effect.EffectAmount;
+                            break;
+                    }
+
+                }
+            }
+
+
+            message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Speed + horse.AdvancedStats.Speed, CompanionBoostSpeed, TackBoostSpeed, horse.Breed.BaseStats.Speed * 2);
+            message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Strength + horse.AdvancedStats.Strength, CompanionBoostStrength, TackBoostStrength, horse.Breed.BaseStats.Strength * 2);
+            message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Conformation + horse.AdvancedStats.Conformation, CompanionBoostConformation, TackBoostConformation, horse.Breed.BaseStats.Conformation * 2);
+            message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Agility + horse.AdvancedStats.Agility, CompanionBoostAgility, TackBoostAgility, horse.Breed.BaseStats.Agility * 2);
+            message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Inteligence + horse.AdvancedStats.Inteligence, CompanionBoostInteligence, TackBoostInteligence, horse.Breed.BaseStats.Inteligence * 2);
+            message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Personality + horse.AdvancedStats.Personality, CompanionBoostPersonality, TackBoostPersonality, horse.Breed.BaseStats.Personality * 2);
+
+            message += Messages.FormatHorseBreedDetails(horse.Breed.Name, horse.Breed.Description);
+            message += Messages.FormatHorseHeight(Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MinHeight))), Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MaxHeight))));
+            
+            message += Messages.FormatPossibleColors(horse.Breed.Colors);
+            
+            if(!World.InTown(user.X, user.Y))
+            {
+                message += Messages.HorseReleaseButton;
+            }
+            message += Messages.HorseOthers;
+            message += buildHorseList(user);
+
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+
+            return message; 
+
         }
         public static string BuildChatpoint(User user, Npc.NpcEntry npc, Npc.NpcChat chatpoint)
         {
