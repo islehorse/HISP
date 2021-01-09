@@ -647,6 +647,18 @@ namespace HISP.Server
             Messages.HorseReleaseButton = gameData.messages.meta.horse.horse_inventory.release_horse;
             Messages.HorseOthers = gameData.messages.meta.horse.horse_inventory.other_horses;
 
+            Messages.HorseEquipTackMessageFormat = gameData.messages.meta.horse.equip_tack_message;
+            Messages.HorseUnEquipTackMessageFormat = gameData.messages.meta.horse.unequip_tack_message;
+
+            // Tack menu (horses)
+            Messages.HorseTackedAsFollowsFormat = gameData.messages.meta.horse.tack_menu.tacked_as_follows;
+            Messages.HorseUnEquipSaddleFormat = gameData.messages.meta.horse.tack_menu.dequip_saddle;
+            Messages.HorseUnEquipSaddlePadFormat = gameData.messages.meta.horse.tack_menu.dequip_saddle_pad;
+            Messages.HorseUnEquipBridleFormat = gameData.messages.meta.horse.tack_menu.dequip_bridle;
+            Messages.HorseTackInInventory = gameData.messages.meta.horse.tack_menu.you_have_following_tack;
+            Messages.HorseEquipFormat = gameData.messages.meta.horse.tack_menu.equip_tack;
+            Messages.HorseBackTo = gameData.messages.meta.horse.tack_menu.back_to_horse;
+
 
             // Libary
             Messages.LibaryMainMenu = gameData.messages.meta.libary.main_menu;

@@ -1189,6 +1189,29 @@ namespace HISP.Game
             return message; 
 
         }
+
+        public static string BuildTackMenu(HorseInstance horse, User user)
+        {
+            string message = Messages.FormatTackedAsFollowedMessage(horse.Name);
+            if(horse.Equipment.Saddle != null)
+                message += Messages.FormatUnEquipSaddle(horse.Equipment.Saddle.IconId, horse.Equipment.Saddle.Name);
+            if (horse.Equipment.SaddlePad != null)
+                message += Messages.FormatUnEquipSaddlePad(horse.Equipment.SaddlePad.IconId, horse.Equipment.SaddlePad.Name);
+            if (horse.Equipment.Bridle != null)
+                message += Messages.FormatUnEquipBridle(horse.Equipment.Bridle.IconId, horse.Equipment.Bridle.Name);
+            message += Messages.HorseTackInInventory;
+            foreach(InventoryItem item in user.Inventory.GetItemList())
+            {
+                Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
+                if (itemInfo.Type == "TACK")
+                {
+                    message += Messages.FormatHorseEquip(itemInfo.IconId, item.ItemInstances.Count, itemInfo.Name, itemInfo.Id);
+                }
+            }
+
+            message += Messages.HorseBackTo;
+            return message;
+        }
         public static string BuildChatpoint(User user, Npc.NpcEntry npc, Npc.NpcChat chatpoint)
         {
             bool hideReplys = false;

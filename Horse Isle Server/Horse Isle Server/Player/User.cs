@@ -5,6 +5,7 @@ using HISP.Server;
 using HISP.Player.Equips;
 using HISP.Game.Services;
 using HISP.Game.Inventory;
+using HISP.Game.Horse;
 
 namespace HISP.Player
 {
@@ -43,6 +44,7 @@ namespace HISP.Player
         public Shop LastShoppedAt;
         public Inn LastVisitedInn;
         public HorseInventory HorseInventory;
+        public HorseInstance LastViewedHorse;
         public PlayerQuests Quests;
         public Highscore Highscores;
         public Award Awards;

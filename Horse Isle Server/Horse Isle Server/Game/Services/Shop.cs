@@ -32,11 +32,11 @@ namespace HISP.Game.Services
         
         public int CalculateBuyCost(Item.ItemInformation item)
         {
-            return (int)Math.Floor((float)item.SellPrice * (100.0 / (float)BuyPricePercentage));
+            return (int)Math.Round((float)item.SellPrice * (100.0 / (float)BuyPricePercentage));
         }
         public int CalculateSellCost(Item.ItemInformation item)
         {
-            return (int)Math.Floor((float)item.SellPrice * (100.0 / (float)SellPricePercentage));
+            return (int)Math.Round((float)item.SellPrice * (100.0 / (float)SellPricePercentage));
         }
 
         public bool CanSell(Item.ItemInformation item)

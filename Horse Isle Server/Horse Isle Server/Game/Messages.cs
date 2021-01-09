@@ -212,10 +212,14 @@ namespace HISP.Game
         public static string HorseOthers;
 
 
+        public static string HorseEquipTackMessageFormat;
+        public static string HorseUnEquipTackMessageFormat;
+
+
         // Tack horse menu
-        public static string HorseTackedAsFollows;
+        public static string HorseTackedAsFollowsFormat;
         public static string HorseUnEquipSaddleFormat;
-        public static string HorseUnEquipSadlePadFormat;
+        public static string HorseUnEquipSaddlePadFormat;
         public static string HorseUnEquipBridleFormat;
         public static string HorseTackInInventory;
         public static string HorseEquipFormat;
@@ -412,6 +416,38 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
         
+        public static string FormatEquipTackMessage(string itemName, string horseName)
+        {
+            return HorseEquipTackMessageFormat.Replace("%NAME%", itemName).Replace("%HORSENAME%", horseName);
+        }
+        public static string FormatUnEquipTackMessage(string horseName)
+        {
+            return HorseUnEquipTackMessageFormat.Replace("%HORSENAME%", horseName);
+        }
+
+        public static string FormatTackedAsFollowedMessage(string name)
+        {
+            return HorseTackedAsFollowsFormat.Replace("%NAME%", name);
+        }
+        public static string FormatUnEquipSaddle(int iconId, string name)
+        {
+            return HorseUnEquipSaddleFormat.Replace("%NAME%", name).Replace("%ICONID%", iconId.ToString());
+        }
+        public static string FormatUnEquipSaddlePad(int iconId, string name)
+        {
+            return HorseUnEquipSaddlePadFormat.Replace("%NAME%", name).Replace("%ICONID%", iconId.ToString());
+        }
+        public static string FormatUnEquipBridle(int iconId, string name)
+        {
+            return HorseUnEquipBridleFormat.Replace("%NAME%", name).Replace("%ICONID%", iconId.ToString());
+        }
+        public static string FormatHorseEquip(int iconId, int count, string name, int id)
+        {
+            return HorseEquipFormat.Replace("%ICONID%", iconId.ToString()).Replace("%COUNT%", count.ToString()).Replace("%NAME%", name).Replace("%ID%", id.ToString());
+        }
+
+
+
         public static string FormatHorseName(string name)
         {
             return HorseNameFormat.Replace("%NAME%", name);
