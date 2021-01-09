@@ -89,6 +89,7 @@ namespace HISP.Game.Horse
             Category = "KEEPER";
             Spoiled = 0;
             MagicUsed = 0;
+            TrainTimer = 0;
             RanchId = 0;
             Leaser = 0;
         }
@@ -100,6 +101,7 @@ namespace HISP.Game.Horse
         public string Description;
         public string Sex;
         public string Color;
+        public int TrainTimer;
         public HorseInfo.Breed Breed;
         public HorseInfo.BasicStats BasicStats;
         public HorseInfo.AdvancedStats AdvancedStats;
@@ -109,6 +111,5 @@ namespace HISP.Game.Horse
         public int MagicUsed;
         public string Category;
         
-
     }
 }
