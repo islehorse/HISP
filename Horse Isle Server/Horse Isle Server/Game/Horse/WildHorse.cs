@@ -173,7 +173,8 @@ namespace HISP.Game.Horse
             while(wildHorses.Count < 40)
             {
                 HorseInfo.Breed horseBreed = HorseInfo.Breeds[GameServer.RandomNumberGenerator.Next(0, HorseInfo.Breeds.Count)];
-
+                if (horseBreed.Swf == "")
+                    continue;
                 if (horseBreed.SpawnInArea == "none") // no unipegs >_>
                     continue;
 
