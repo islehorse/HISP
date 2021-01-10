@@ -516,7 +516,7 @@ namespace HISP.Server
                                     sender.SendPacket(chatPacket);
                                 }
 
-                                Update(sender);
+                                UpdateArea(sender);
                                 break;
                             }
                             else
@@ -569,7 +569,7 @@ namespace HISP.Server
                                     Database.AddReport(sender.LoggedinUser.Username, userName, reason);
                                     byte[] chatPacket = PacketBuilder.CreateChat(Messages.AbuseReportFiled, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(chatPacket);
-                                    Update(sender);
+                                    UpdateArea(sender);
                                     break;
                                 }
                                 else
@@ -1056,7 +1056,7 @@ namespace HISP.Server
             sender.SendPacket(msg);
 
             sender.LoggedinUser.Inventory.Remove(wishingCoinInvItems.ItemInstances[0]);
-            Update(sender);
+            UpdateArea(sender);
         }
         public static void OnKeepAlive(GameClient sender, byte[] packet)
         {
