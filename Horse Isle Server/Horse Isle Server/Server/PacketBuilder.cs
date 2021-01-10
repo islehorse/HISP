@@ -330,23 +330,30 @@ namespace HISP.Server
             {
                 direction -= 20;
                 moveTwo = true;
+                
+                
             }
             
             int ystart = y - 4;
             int xstart = x - 6;
+            int xend = xstart + 12;
+            int yend = ystart + 9;
 
             if (direction == DIRECTION_UP)
             {
                 int totalY = 0;
                 if (moveTwo)
-                    totalY = 1;
-
-                for (int relY = totalY; relY >= 0; relY--)
                 {
-                    for (int relx = 0; relx <= 12; relx++)
+                    ystart++;
+                    totalY = 1;
+                }
+
+                for (int yy = ystart; yy >= ystart - totalY; yy--)
+                {
+                    for (int xx = xstart; xx <= xend; xx++)
                     {
-                        int tileId = Map.GetTileId(xstart + relx, ystart + relY, false);
-                        int otileId = Map.GetTileId(xstart + relx, ystart + relY, true);
+                        int tileId = Map.GetTileId(xx, yy, false);
+                        int otileId = Map.GetTileId(xx, yy, true);
 
                         if (tileId >= 190)
                         {
@@ -371,14 +378,17 @@ namespace HISP.Server
             {
                 int totalX = 0;
                 if (moveTwo)
-                    totalX = 1;
-
-                for (int relX = totalX; relX >= 0; relX--)
                 {
-                    for (int rely = 0; rely <= 9; rely++)
+                    xstart++;
+                    totalX = 1;
+                }
+
+                for (int xx = xstart; xx >= xstart - totalX; xx--)
+                {
+                    for (int yy = ystart; yy <= yend; yy++)
                     {
-                        int tileId = Map.GetTileId(xstart + relX, ystart + rely, false);
-                        int otileId = Map.GetTileId(xstart + relX, ystart + rely, true);
+                        int tileId = Map.GetTileId(xx, yy, false);
+                        int otileId = Map.GetTileId(xx, yy, true);
 
 
 
@@ -406,15 +416,18 @@ namespace HISP.Server
             {
                 int totalX = 0;
                 if (moveTwo)
+                {
+                    xend--;
                     totalX = 1;
+                }
 
-                for (int relX = 0; relX <= totalX; relX++)
+                for (int xx = xend; xx <= xend + totalX; xx++)
                 {
 
-                    for (int rely = 0; rely <= 9; rely++)
+                    for (int yy = ystart; yy <= yend; yy++)
                     {
-                        int tileId = Map.GetTileId(xstart + relX + 12, ystart + rely, false);
-                        int otileId = Map.GetTileId(xstart + relX + 12, ystart + rely, true);
+                        int tileId = Map.GetTileId(xx, yy, false);
+                        int otileId = Map.GetTileId(xx, yy, true);
 
 
                         if (tileId >= 190)
@@ -439,15 +452,18 @@ namespace HISP.Server
             {
                 int totalY = 0;
                 if (moveTwo)
+                {
+                    yend--;
                     totalY = 1;
+                }
 
-                for (int relY = totalY; relY >= 0; relY--)
+                for (int yy = yend; yy <= yend + totalY; yy++)
                 {
 
-                    for (int relx = 0; relx <= 12; relx++)
+                    for (int xx = xstart; xx <= xend; xx++)
                     {
-                        int tileId = Map.GetTileId(xstart + relx, ystart + relY + 9 , false);
-                        int otileId = Map.GetTileId(xstart + relx, ystart + relY + 9, true);
+                        int tileId = Map.GetTileId(xx, yy, false);
+                        int otileId = Map.GetTileId(xx, yy, true);
 
 
                         if (tileId >= 190)
@@ -502,7 +518,6 @@ namespace HISP.Server
             byte[] Packet = ms.ToArray();
             ms.Dispose();
 
-            Logger.DebugPrint(BitConverter.ToString(Packet).Replace("-", " "));
             return Packet;
         }
 
