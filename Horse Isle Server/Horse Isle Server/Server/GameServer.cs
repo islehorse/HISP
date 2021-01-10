@@ -343,10 +343,9 @@ namespace HISP.Server
                         sender.LoggedinUser.Facing += incBy;
 
                         byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
-                        Logger.DebugPrint("packet dump: " +BitConverter.ToString(rideHorsePacket).Replace("-", " "));
                         sender.SendPacket(rideHorsePacket);
 
-
+                        UpdateUserInfo(sender.LoggedinUser);
                         break;
                     }
                     else
@@ -1594,7 +1593,7 @@ namespace HISP.Server
             }
             else if(movementDirection == PacketBuilder.MOVE_UPDATE)
             {
-                Update(sender);
+                UpdateArea(sender);
                 return;
             }
 
@@ -2497,7 +2496,7 @@ namespace HISP.Server
                                     sender.SendPacket(toMuchMessage);
                                 }
 
-                                Update(sender);
+                                UpdateArea(sender);
                             }
                             else
                             {
