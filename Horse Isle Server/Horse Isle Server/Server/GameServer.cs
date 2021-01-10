@@ -271,6 +271,11 @@ namespace HISP.Server
                     if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
                         HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        
+                        string ridingHorseMessage = Messages.FormatHorseRidingMessage(horseInst.Name);
+                        byte[] ridingHorseMessagePacket = PacketBuilder.CreateChat(ridingHorseMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(ridingHorseMessagePacket);
+                        sender.LoggedinUser.Riding = horseInst;
 
                         break;
                     }

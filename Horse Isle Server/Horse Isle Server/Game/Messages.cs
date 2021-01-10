@@ -177,7 +177,7 @@ namespace HISP.Game
         public static string ViewBaiscStats;
         public static string ViewAdvancedStats;
 
-
+        public static string HorseRidingMessageFormat;
         public static string HorseNameFormat;
         public static string HorseReleasedByFormat;
         public static string HorseHandsHeightFormat;
@@ -379,6 +379,7 @@ namespace HISP.Game
 
         public static string ExitThisPlace;
         public static string BackToMap;
+        public static string BackToMapHorse;
         public static string LongFullLine;
         public static string MetaTerminator;
 
@@ -415,7 +416,10 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
-        
+        public static string FormatHorseRidingMessage(string name)
+        {
+            return HorseRidingMessageFormat.Replace("%HORSENAME%", name);
+        }
         public static string FormatEquipTackMessage(string itemName, string horseName)
         {
             return HorseEquipTackMessageFormat.Replace("%NAME%", itemName).Replace("%HORSENAME%", horseName);

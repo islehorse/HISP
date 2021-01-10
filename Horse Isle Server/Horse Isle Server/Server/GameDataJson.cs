@@ -611,7 +611,7 @@ namespace HISP.Server
             Messages.ViewBaiscStats = gameData.messages.meta.horse.view_basic_stats;
             Messages.ViewAdvancedStats = gameData.messages.meta.horse.view_advanced_stats;
 
-
+            Messages.HorseRidingMessageFormat = gameData.messages.meta.horse.riding_message;
             Messages.HorseNameFormat = gameData.messages.meta.horse.horse_inventory.your_horse_format;
             Messages.HorseReleasedByFormat = gameData.messages.meta.horse.horse_inventory.released_by_format;
             Messages.HorseHandsHeightFormat = gameData.messages.meta.horse.horse_inventory.hands_high;
@@ -804,6 +804,7 @@ namespace HISP.Server
             Messages.TransportFormat = gameData.messages.meta.transport_format;
             Messages.ExitThisPlace = gameData.messages.meta.exit_this_place;
             Messages.BackToMap = gameData.messages.meta.back_to_map;
+            Messages.BackToMapHorse = gameData.messages.meta.back_to_map_horse;
             Messages.LongFullLine = gameData.messages.meta.long_full_line;
             Messages.MetaTerminator = gameData.messages.meta.end_of_meta;
 

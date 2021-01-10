@@ -1183,7 +1183,7 @@ namespace HISP.Game
 
             if (World.InSpecialTile(user.X, user.Y))
             {
-                World.SpecialTile tile = World.GetSpecialTile(user.Y, user.Y);
+                World.SpecialTile tile = World.GetSpecialTile(user.X, user.Y);
                 if (tile.Code != null)
                     canRelease = false;
             }
@@ -1194,7 +1194,7 @@ namespace HISP.Game
             message += Messages.HorseOthers;
             message += buildHorseList(user);
 
-            message += Messages.BackToMap;
+            message += Messages.BackToMapHorse;
             message += Messages.MetaTerminator;
 
             return message; 
