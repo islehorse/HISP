@@ -275,7 +275,77 @@ namespace HISP.Server
                         string ridingHorseMessage = Messages.FormatHorseRidingMessage(horseInst.Name);
                         byte[] ridingHorseMessagePacket = PacketBuilder.CreateChat(ridingHorseMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(ridingHorseMessagePacket);
-                        sender.LoggedinUser.Riding = horseInst;
+                        
+                        // Determine what sprite to use;
+                        int incBy = 0;
+                        switch(horseInst.Color)
+                        {
+                            case "brown":
+                                incBy = 1;
+                                break;
+                            case "cremello":
+                            case "white":
+                                incBy = 2;
+                                break;
+                            case "black":
+                                incBy = 3;
+                                break;
+                            case "chestnut":
+                                incBy = 4;
+                                break;
+                            case "bay":
+                                incBy = 5;
+                                break;
+                            case "grey":
+                                incBy = 6;
+                                break;
+                            case "dun":
+                                incBy = 7;
+                                break;
+                            case "palomino":
+                                incBy = 8;
+                                break;
+                            case "roan":
+                                incBy = 9;
+                                break;
+                            case "pinto":
+                                incBy = 10;
+                                break;
+                        }
+
+
+                        if(horseInst.Breed.Type == "zebra")
+                        {
+                            incBy = 11;
+                        }
+                        if (horseInst.Breed.Type == "camel")
+                        {
+                            if (horseInst.Color == "brown")
+                                incBy = 13;
+                            if (horseInst.Color == "white")
+                                incBy = 14;
+
+                        }
+                        if (horseInst.Breed.Type == "unicorn")
+                        {
+                            incBy = 15;
+                        }
+                        if (horseInst.Breed.Type == "pegasus")
+                        {
+                            incBy = 16;
+                        }
+                        if(horseInst.Breed.Id == 170) // Unipeg
+                        {
+                            incBy = 17;
+                        }
+
+                        incBy *= 5;
+                        sender.LoggedinUser.Facing += incBy;
+
+                        byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
+                        Logger.DebugPrint("packet dump: " +BitConverter.ToString(rideHorsePacket).Replace("-", " "));
+                        sender.SendPacket(rideHorsePacket);
+
 
                         break;
                     }
@@ -1403,15 +1473,24 @@ namespace HISP.Server
 
 
 
+            int onHorse = 0;
+            int facing = sender.LoggedinUser.Facing;
+            while (facing >= 5)
+            {
+                facing = facing - 5;
+                onHorse++;
+            }
+            byte direction = 0;
+            int newX = loggedInUser.X;
+            int newY = loggedInUser.Y;
+            bool moveTwo = false;
+
             if (movementDirection == PacketBuilder.MOVE_ESCAPE)
             {
 
                 byte Direction;
                 if (World.InSpecialTile(loggedInUser.X, loggedInUser.Y))
                 {
-
-                    int newX = loggedInUser.X;
-                    int newY = loggedInUser.Y;
 
                     World.SpecialTile tile = World.GetSpecialTile(loggedInUser.X, loggedInUser.Y);
                     if (tile.ExitX != 0)
@@ -1448,74 +1527,70 @@ namespace HISP.Server
                     Direction = PacketBuilder.DIRECTION_DOWN;
                 }
 
+
+                loggedInUser.Facing = Direction + (onHorse * 5);
                 Logger.DebugPrint("Exiting player: " + loggedInUser.Username + " to: " + loggedInUser.X + "," + loggedInUser.Y);
-                byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, Direction, Direction, true);
+                byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, Direction, true);
                 sender.SendPacket(moveResponse);
+                Update(sender);
+                return;
             }
 
             if (movementDirection == PacketBuilder.MOVE_UP)
             {
+                direction = PacketBuilder.DIRECTION_UP;
+                if (Map.CheckPassable(newX, newY - 1))
+                    newY -= 1;
+                
 
-
-                loggedInUser.Facing = PacketBuilder.DIRECTION_UP;
-                if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y - 1))
-                {
-                    loggedInUser.Y -= 1;
-
-                    byte[] moveUpResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, sender.LoggedinUser.Facing, PacketBuilder.DIRECTION_UP, true);
-                    sender.SendPacket(moveUpResponse);
-                }
-                else
-                {
-                    byte[] moveUpResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, sender.LoggedinUser.Facing, PacketBuilder.DIRECTION_NONE, false);
-                    sender.SendPacket(moveUpResponse);
-                }
+                if (loggedInUser.Facing == (direction + (onHorse * 5))&& onHorse != 0) // Double move
+                    if (Map.CheckPassable(newX, newY - 1))
+                    {
+                        newY -= 1;
+                        moveTwo = true;
+                    }
             }
             else if (movementDirection == PacketBuilder.MOVE_LEFT)
             {
-                loggedInUser.Facing = PacketBuilder.DIRECTION_LEFT;
-                if (Map.CheckPassable(loggedInUser.X - 1, loggedInUser.Y))
-                {
-                    loggedInUser.X -= 1;
-                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_LEFT, true);
-                    sender.SendPacket(moveLeftResponse);
-                }
-                else
-                {
-                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
-                    sender.SendPacket(moveLeftResponse);
-                }
+                direction = PacketBuilder.DIRECTION_LEFT;
+                if (Map.CheckPassable(newX - 1, newY))
+                    newX -= 1;
+
+
+                if (loggedInUser.Facing == (direction + (onHorse * 5)) && onHorse != 0) // Double move
+                    if (Map.CheckPassable(newX - 1, newY))
+                    {
+                        newX -= 1;
+                        moveTwo = true;
+                    }
             }
             else if (movementDirection == PacketBuilder.MOVE_RIGHT)
             {
-                loggedInUser.Facing = PacketBuilder.DIRECTION_RIGHT;
-                if (Map.CheckPassable(loggedInUser.X + 1, loggedInUser.Y))
-                {
-                    loggedInUser.X += 1;
-                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_RIGHT, true);
-                    sender.SendPacket(moveLeftResponse);
-                }
-                else
-                {
-                    byte[] moveLeftResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
-                    sender.SendPacket(moveLeftResponse);
-                }
+                direction = PacketBuilder.DIRECTION_RIGHT;
+                if (Map.CheckPassable(newX + 1, newY))
+                    newX += 1;
+
+
+                if (loggedInUser.Facing == (direction + (onHorse * 5)) && onHorse != 0) // Double move
+                    if (Map.CheckPassable(newX + 1, newY))
+                    {
+                        newX += 1;
+                        moveTwo = true;
+                    }
             }
             else if (movementDirection == PacketBuilder.MOVE_DOWN)
             {
-                loggedInUser.Facing = PacketBuilder.DIRECTION_DOWN;
-                if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
-                {
-                    loggedInUser.Y += 1;
-                    byte[] moveDownResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_DOWN, true);
-                    sender.SendPacket(moveDownResponse);
-                }
-                else
-                {
-                    byte[] moveDownResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
-                    sender.SendPacket(moveDownResponse);
-                }
+                direction = PacketBuilder.DIRECTION_DOWN;
+                if (Map.CheckPassable(newX, newY + 1))
+                    newY += 1;
 
+
+                if (loggedInUser.Facing == (direction + (onHorse * 5)) && onHorse != 0) // Double move
+                    if (Map.CheckPassable(newX, newY + 1))
+                    {
+                        newY += 1;
+                        moveTwo = true;
+                    }
             }
             else if(movementDirection == PacketBuilder.MOVE_UPDATE)
             {
@@ -1523,6 +1598,21 @@ namespace HISP.Server
                 return;
             }
 
+            if(loggedInUser.Y != newY || loggedInUser.X != newX)
+            {
+                loggedInUser.Facing = direction + (onHorse * 5);
+                if (moveTwo)
+                    direction += 20;
+                loggedInUser.Y = newY;
+                loggedInUser.X = newX;
+                byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, direction, true);
+                sender.SendPacket(moveResponse);
+            }
+            else
+            {
+                byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
+                sender.SendPacket(moveResponse);
+            }
 
             Update(sender);
         }

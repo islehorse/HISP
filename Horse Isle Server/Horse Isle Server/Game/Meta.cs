@@ -655,6 +655,8 @@ namespace HISP.Game
             string message = "";
             foreach(HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name).ToList())
             {
+                if (breed.Swf == "")
+                    continue;
                 if (breed.Type == "horse")
                     message += Messages.FormatHorseBreed(breed.Name, breed.Id);
                 else

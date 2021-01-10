@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using HISP.Game;
+using HISP.Game.Horse;
 using HISP.Game.SwfModules;
 
 namespace HISP.Server
@@ -95,6 +96,7 @@ namespace HISP.Server
         public const byte MOVE_LEFT = 0x17;
         public const byte MOVE_ESCAPE = 0x18;
         public const byte MOVE_UPDATE = 0x0A;
+
 
         public const byte CHAT_BOTTOM_LEFT = 0x14;
         public const byte CHAT_BOTTOM_RIGHT = 0x15;
@@ -275,6 +277,33 @@ namespace HISP.Server
             return Packet;
         }
 
+        public static byte[] CreateHorseRidePacket(int x, int y, int charId, int facing, int direction, bool walk)
+        {
+            // Header information
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_MOVE);
+
+            ms.WriteByte((byte)(((x - 4) / 64) + 20)); //1
+            ms.WriteByte((byte)(((x - 4) % 64) + 20)); //2
+
+            ms.WriteByte((byte)(((y - 1) / 64) + 20)); //3
+            ms.WriteByte((byte)(((y - 1) % 64) + 20)); //4
+
+            ms.WriteByte((byte)(facing + 20)); //5
+
+            ms.WriteByte((byte)((charId / 64) + 20)); //6
+            ms.WriteByte((byte)((charId % 64) + 20)); //7
+
+            ms.WriteByte((byte)(direction + 20)); //8
+
+            ms.WriteByte((byte)(Convert.ToInt32(walk) + 20)); //9\
+            ms.WriteByte(PACKET_TERMINATOR);
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] packetData = ms.ToArray();
+            ms.Dispose();
+            return packetData;
+        }
+
         public static byte[] CreateMovementPacket(int x, int y,int charId,int facing, int direction, bool walk)
         {
             // Header information
@@ -291,116 +320,153 @@ namespace HISP.Server
 
             ms.WriteByte((byte)((charId / 64) + 20)); //6
             ms.WriteByte((byte)((charId % 64) + 20)); //7
-
             ms.WriteByte((byte)(direction + 20)); //8
-
             ms.WriteByte((byte)(Convert.ToInt32(walk) + 20)); //9
 
-            // Map Data
 
-            if (direction >= 20)
+            // Map Data
+            bool moveTwo = false;
+            if(direction >= 20)
             {
                 direction -= 20;
+                moveTwo = true;
             }
-
+            
             int ystart = y - 4;
             int xstart = x - 6;
 
             if (direction == DIRECTION_UP)
             {
-                for (int relx = 0; relx <= 12; relx++)
+                int totalY = 0;
+                if (moveTwo)
+                    totalY = 1;
+
+                for (int relY = totalY; relY >= 0; relY--)
                 {
-                    int tileId = Map.GetTileId(xstart + relx, ystart, false);
-                    int otileId = Map.GetTileId(xstart + relx, ystart, true);
-
-                    if (tileId >= 190)
+                    for (int relx = 0; relx <= 12; relx++)
                     {
-                        ms.WriteByte((byte)190);
-                        tileId -= 100;
-                    }
-                    ms.WriteByte((byte)tileId);
+                        int tileId = Map.GetTileId(xstart + relx, ystart + relY, false);
+                        int otileId = Map.GetTileId(xstart + relx, ystart + relY, true);
 
-                    if (otileId >= 190)
-                    {
-                        ms.WriteByte((byte)190);
-                        otileId -= 100;
+                        if (tileId >= 190)
+                        {
+                            ms.WriteByte((byte)190);
+                            tileId -= 100;
+                        }
+                        ms.WriteByte((byte)tileId);
+
+                        if (otileId >= 190)
+                        {
+                            ms.WriteByte((byte)190);
+                            otileId -= 100;
+                        }
+                        ms.WriteByte((byte)otileId);
+
+
                     }
-                    ms.WriteByte((byte)otileId);
                 }
             }
 
             if (direction == DIRECTION_LEFT)
             {
-                for (int rely = 0; rely <= 9; rely++)
+                int totalX = 0;
+                if (moveTwo)
+                    totalX = 1;
+
+                for (int relX = totalX; relX >= 0; relX--)
                 {
-                    int tileId = Map.GetTileId(xstart, ystart + rely, false);
-                    int otileId = Map.GetTileId(xstart, ystart + rely, true);
-
-
-
-                    if (tileId >= 190)
+                    for (int rely = 0; rely <= 9; rely++)
                     {
-                        ms.WriteByte((byte)190);
-                        tileId -= 100;
-                    }
-                    ms.WriteByte((byte)tileId);
+                        int tileId = Map.GetTileId(xstart + relX, ystart + rely, false);
+                        int otileId = Map.GetTileId(xstart + relX, ystart + rely, true);
 
-                    if (otileId >= 190)
-                    {
-                        ms.WriteByte((byte)190);
-                        otileId -= 100;
+
+
+                        if (tileId >= 190)
+                        {
+                            ms.WriteByte((byte)190);
+                            tileId -= 100;
+                        }
+                        ms.WriteByte((byte)tileId);
+
+                        if (otileId >= 190)
+                        {
+                            ms.WriteByte((byte)190);
+                            otileId -= 100;
+                        }
+                        ms.WriteByte((byte)otileId);
+
+
                     }
-                    ms.WriteByte((byte)otileId);
                 }
             }
 
 
             if (direction == DIRECTION_RIGHT)
             {
-                for (int rely = 0; rely <= 9; rely++)
+                int totalX = 0;
+                if (moveTwo)
+                    totalX = 1;
+
+                for (int relX = 0; relX <= totalX; relX++)
                 {
-                    int tileId = Map.GetTileId(xstart + 12, ystart + rely, false);
-                    int otileId = Map.GetTileId(xstart + 12, ystart + rely, true);
 
-
-                    if (tileId >= 190)
+                    for (int rely = 0; rely <= 9; rely++)
                     {
-                        ms.WriteByte((byte)190);
-                        tileId -= 100;
-                    }
-                    ms.WriteByte((byte)tileId);
+                        int tileId = Map.GetTileId(xstart + relX + 12, ystart + rely, false);
+                        int otileId = Map.GetTileId(xstart + relX + 12, ystart + rely, true);
 
-                    if (otileId >= 190)
-                    {
-                        ms.WriteByte((byte)190);
-                        otileId -= 100;
+
+                        if (tileId >= 190)
+                        {
+                            ms.WriteByte((byte)190);
+                            tileId -= 100;
+                        }
+                        ms.WriteByte((byte)tileId);
+
+                        if (otileId >= 190)
+                        {
+                            ms.WriteByte((byte)190);
+                            otileId -= 100;
+                        }
+                        ms.WriteByte((byte)otileId);
+
                     }
-                    ms.WriteByte((byte)otileId);
                 }
             }
 
             if (direction == DIRECTION_DOWN)
             {
-                for (int relx = 0; relx <= 12; relx++)
+                int totalY = 0;
+                if (moveTwo)
+                    totalY = 1;
+
+                for (int relY = totalY; relY >= 0; relY--)
                 {
-                    int tileId = Map.GetTileId(xstart + relx, ystart + 9, false);
-                    int otileId = Map.GetTileId(xstart + relx, ystart + 9, true);
 
-
-                    if (tileId >= 190)
+                    for (int relx = 0; relx <= 12; relx++)
                     {
-                        ms.WriteByte((byte)190);
-                        tileId -= 100;
-                    }
-                    ms.WriteByte((byte)tileId);
+                        int tileId = Map.GetTileId(xstart + relx, ystart + relY + 9 , false);
+                        int otileId = Map.GetTileId(xstart + relx, ystart + relY + 9, true);
 
-                    if (otileId >= 190)
-                    {
-                        ms.WriteByte((byte)190);
-                        otileId -= 100;
+
+                        if (tileId >= 190)
+                        {
+                            ms.WriteByte((byte)190);
+                            tileId -= 100;
+                        }
+                        ms.WriteByte((byte)tileId);
+
+                        if (otileId >= 190)
+                        {
+                            ms.WriteByte((byte)190);
+                            otileId -= 100;
+                        }
+                        ms.WriteByte((byte)otileId);
+
                     }
-                    ms.WriteByte((byte)otileId);
                 }
+
             }
             if (direction == DIRECTION_TELEPORT)
             {
@@ -436,7 +502,7 @@ namespace HISP.Server
             byte[] Packet = ms.ToArray();
             ms.Dispose();
 
-            //Logger.DebugPrint(BitConverter.ToString(Packet).Replace("-", " "));
+            Logger.DebugPrint(BitConverter.ToString(Packet).Replace("-", " "));
             return Packet;
         }
 
