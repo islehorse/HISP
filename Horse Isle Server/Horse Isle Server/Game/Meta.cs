@@ -984,7 +984,11 @@ namespace HISP.Game
             else
                 message += Messages.HorseIsTrainable;
 
-            message += Messages.FormatMountButton(horse.RandomId);
+            if (user.Facing <= 5)
+                message += Messages.FormatMountButton(horse.RandomId);
+            else
+                message += Messages.FormatDisMountButton(horse.RandomId);
+
             message += Messages.FormatFeedButton(horse.RandomId);
             message += Messages.FormatTackButton(horse.RandomId);
             message += Messages.FormatPetButton(horse.RandomId);

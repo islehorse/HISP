@@ -53,6 +53,7 @@ namespace HISP.Server
         public const byte HORSE_TACK_EQUIP = 0x3C;
         public const byte HORSE_TACK_UNEQUIP = 0x3D;
         public const byte HORSE_MOUNT = 0x46;
+        public const byte HORSE_DISMOUNT = 0x47;
         public const byte HORSE_ESCAPE = 0x1E;
         public const byte HORSE_CAUGHT = 0x1D;
 
