@@ -621,6 +621,7 @@ namespace HISP.Server
             Messages.HorseIsTrainable = gameData.messages.meta.horse.horse_inventory.currently_trainable;
 
             Messages.HorseMountButtonFormat = gameData.messages.meta.horse.horse_inventory.mount_button;
+            Messages.HorseDisMountButtonFormat = gameData.messages.meta.horse.horse_inventory.dismount_button;
             Messages.HorseFeedButtonFormat = gameData.messages.meta.horse.horse_inventory.feed_button;
             Messages.HorseTackButtonFormat = gameData.messages.meta.horse.horse_inventory.tack_button;
             Messages.HorsePetButtonFormat = gameData.messages.meta.horse.horse_inventory.pet_button;
@@ -649,6 +650,7 @@ namespace HISP.Server
 
             Messages.HorseEquipTackMessageFormat = gameData.messages.meta.horse.equip_tack_message;
             Messages.HorseUnEquipTackMessageFormat = gameData.messages.meta.horse.unequip_tack_message;
+            Messages.HorseStopRidingMessage = gameData.messages.meta.horse.stop_riding_message;
 
             // Tack menu (horses)
             Messages.HorseTackedAsFollowsFormat = gameData.messages.meta.horse.tack_menu.tacked_as_follows;

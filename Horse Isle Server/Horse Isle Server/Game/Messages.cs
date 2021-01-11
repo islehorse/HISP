@@ -187,6 +187,7 @@ namespace HISP.Game
         public static string HorseIsTrainable;
 
         public static string HorseMountButtonFormat;
+        public static string HorseDisMountButtonFormat;
         public static string HorseFeedButtonFormat;
         public static string HorseTackButtonFormat;
         public static string HorsePetButtonFormat;
@@ -214,7 +215,7 @@ namespace HISP.Game
 
         public static string HorseEquipTackMessageFormat;
         public static string HorseUnEquipTackMessageFormat;
-
+        public static string HorseStopRidingMessage;
 
         // Tack horse menu
         public static string HorseTackedAsFollowsFormat;
@@ -473,6 +474,10 @@ namespace HISP.Game
             return HorseTrainableInFormat.Replace("%TIME%", minutes.ToString());
         }
 
+        public static string FormatDisMountButton(int randomId)
+        {
+            return HorseDisMountButtonFormat.Replace("%ID%", randomId.ToString());
+        }
         public static string FormatMountButton(int randomId)
         {
             return HorseMountButtonFormat.Replace("%ID%", randomId.ToString());

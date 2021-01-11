@@ -254,6 +254,38 @@ namespace HISP.Server
                         Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to unequip items from non existnat horse");
                     }
                     break;
+                case PacketBuilder.HORSE_DISMOUNT:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        byte[] stopRidingHorseMessagePacket = PacketBuilder.CreateChat(Messages.HorseStopRidingMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(stopRidingHorseMessagePacket);
+
+
+                        sender.LoggedinUser.Facing %= 5;
+                        byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
+                        sender.SendPacket(rideHorsePacket);
+
+                        UpdateUserInfo(sender.LoggedinUser);
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to dismount at a non existant horse.");
+                        break;
+                    }
+                    break;
                 case PacketBuilder.HORSE_MOUNT:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
@@ -318,6 +350,11 @@ namespace HISP.Server
                         {
                             incBy = 11;
                         }
+                        if(horseInst.Breed.Id == 5) // Appaloosa
+                        {
+                            if(horseInst.Color == "brown")
+                                incBy = 12;
+                        }
                         if (horseInst.Breed.Type == "camel")
                         {
                             if (horseInst.Color == "brown")
@@ -340,7 +377,9 @@ namespace HISP.Server
                         }
 
                         incBy *= 5;
+                        sender.LoggedinUser.Facing %= 5;
                         sender.LoggedinUser.Facing += incBy;
+
 
                         byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
                         sender.SendPacket(rideHorsePacket);
