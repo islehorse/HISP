@@ -179,7 +179,7 @@ namespace HISP.Game
 
         public static string HorseRidingMessageFormat;
         public static string HorseNameFormat;
-        public static string HorseReleasedByFormat;
+        public static string HorseDescriptionFormat;
         public static string HorseHandsHeightFormat;
         public static string HorseExperienceEarnedFormat;
 
@@ -212,6 +212,7 @@ namespace HISP.Game
         public static string HorseReleaseButton;
         public static string HorseOthers;
 
+        public static string HorseDescriptionEditFormat;
 
         public static string HorseEquipTackMessageFormat;
         public static string HorseUnEquipTackMessageFormat;
@@ -429,6 +430,10 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatDescriptionEditMeta(string username, string description)
+        {
+            return HorseDescriptionEditFormat.Replace("%HORSENAME%", username).Replace("%DESCRIPTION%", description);
+        }
         public static string FormatHorsePetMessage(int mood, int tiredness)
         {
             return HorsePetMessageFormat.Replace("%MOOD%", mood.ToString()).Replace("%TIREDNESS%", tiredness.ToString());
@@ -488,9 +493,9 @@ namespace HISP.Game
         {
             return HorseNameFormat.Replace("%NAME%", name);
         }
-        public static string FormatHorseReleasedBy(string name)
+        public static string FormatHorseDescription(string Description)
         {
-            return HorseReleasedByFormat.Replace("%USERNAME%", name);
+            return HorseDescriptionFormat.Replace("%DESCRIPTION%", Description);
         }
         public static string FormatHorseHandsHigh(string color, string breed,string sex, int handsHigh)
         {

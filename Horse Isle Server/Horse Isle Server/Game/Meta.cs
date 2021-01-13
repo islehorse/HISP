@@ -989,12 +989,17 @@ namespace HISP.Game
             message += Messages.BackToHorse;
             return message;
         }
-
+        public static string BuildHorseDescriptionEditMeta(HorseInstance horse)
+        {
+            string message = Messages.FormatDescriptionEditMeta(horse.Name, horse.Description);
+            message += Messages.BackToHorse;
+            return message;
+        }
         public static string BuildHorseInformation(HorseInstance horse, User user)
         {
             string message = "";
             message += Messages.FormatHorseName(horse.Name);
-            message += Messages.FormatHorseReleasedBy(Database.GetUsername(horse.Owner));
+            message += Messages.FormatHorseDescription(Database.GetUsername(horse.Owner));
             message += Messages.FormatHorseHandsHigh(horse.Color, horse.Breed.Name, horse.Sex, Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.AdvancedStats.Height))));
             message += Messages.FormatHorseExperience(horse.BasicStats.Experience);
             

@@ -253,7 +253,7 @@ namespace HISP.Server
                 npcEntry.LibarySearchable = gameData.npc_list[i].libary_searchable;
                 npcEntry.IconId = gameData.npc_list[i].icon_id;
 
-                Logger.DebugPrint("\tNPC ID:" + npcEntry.Id.ToString() + " NAME: " + npcEntry.Name);
+                Logger.DebugPrint("NPC ID:" + npcEntry.Id.ToString() + " NAME: " + npcEntry.Name);
                 List<Npc.NpcChat> chats = new List<Npc.NpcChat>();
                 int totalNpcChat = gameData.npc_list[i].chatpoints.Count;
                 for (int ii = 0; ii < totalNpcChat; ii++)
@@ -263,7 +263,7 @@ namespace HISP.Server
                     npcChat.ChatText = gameData.npc_list[i].chatpoints[ii].chat_text;
                     npcChat.ActivateQuestId = gameData.npc_list[i].chatpoints[ii].activate_questid;
 
-                    Logger.DebugPrint("\t\tCHATPOINT ID: " + npcChat.Id.ToString() + " TEXT: " + npcChat.ChatText);
+                    Logger.DebugPrint("CHATPOINT ID: " + npcChat.Id.ToString() + " TEXT: " + npcChat.ChatText);
                     int totalNpcReply = gameData.npc_list[i].chatpoints[ii].replies.Count;
                     List<Npc.NpcReply> replys = new List<Npc.NpcReply>();
                     for (int iii = 0; iii < totalNpcReply; iii++)
@@ -279,7 +279,7 @@ namespace HISP.Server
                         if (gameData.npc_list[i].chatpoints[ii].replies[iii].requires_questid_not_completed != null)
                             npcReply.RequiresQuestIdNotCompleted = gameData.npc_list[i].chatpoints[ii].replies[iii].requires_questid_not_completed;
 
-                        Logger.DebugPrint("\t\t\tREPLY ID: " + npcReply.Id.ToString() + " TEXT: " + npcReply.ReplyText);
+                        Logger.DebugPrint("REPLY ID: " + npcReply.Id.ToString() + " TEXT: " + npcReply.ReplyText);
                         replys.Add(npcReply);
 
                     }
@@ -408,7 +408,7 @@ namespace HISP.Server
                 reason.Name = gameData.messages.meta.abuse_report.reasons[i].name;
                 reason.Meta = gameData.messages.meta.abuse_report.reasons[i].meta;
                 AbuseReport.AddReason(reason);
-                Logger.DebugPrint("Reigstered Abuse Report Reason: " + reason.Name);
+                Logger.DebugPrint("Registered Abuse Report Reason: " + reason.Name);
             }
 
             // Map Data
@@ -493,6 +493,8 @@ namespace HISP.Server
                 HorseInfo.HorseCategories.Add(category);
                 Logger.DebugPrint("Registering horse category type: " + category.Name);
             }
+
+            HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
             Item.Present = gameData.item.special.present;
             Item.MailMessage = gameData.item.special.mail_message;
@@ -613,7 +615,7 @@ namespace HISP.Server
 
             Messages.HorseRidingMessageFormat = gameData.messages.meta.horse.riding_message;
             Messages.HorseNameFormat = gameData.messages.meta.horse.horse_inventory.your_horse_format;
-            Messages.HorseReleasedByFormat = gameData.messages.meta.horse.horse_inventory.released_by_format;
+            Messages.HorseDescriptionFormat = gameData.messages.meta.horse.horse_inventory.description_format;
             Messages.HorseHandsHeightFormat = gameData.messages.meta.horse.horse_inventory.hands_high;
             Messages.HorseExperienceEarnedFormat = gameData.messages.meta.horse.horse_inventory.experience;
             
@@ -648,6 +650,7 @@ namespace HISP.Server
             Messages.HorseReleaseButton = gameData.messages.meta.horse.horse_inventory.release_horse;
             Messages.HorseOthers = gameData.messages.meta.horse.horse_inventory.other_horses;
 
+            Messages.HorseDescriptionEditFormat = gameData.messages.meta.horse.description_edit;
             Messages.HorseEquipTackMessageFormat = gameData.messages.meta.horse.equip_tack_message;
             Messages.HorseUnEquipTackMessageFormat = gameData.messages.meta.horse.unequip_tack_message;
             Messages.HorseStopRidingMessage = gameData.messages.meta.horse.stop_riding_message;

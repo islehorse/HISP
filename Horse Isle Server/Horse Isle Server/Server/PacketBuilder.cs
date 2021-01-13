@@ -50,6 +50,8 @@ namespace HISP.Server
         public const byte HORSE_LOOK = 0x14;
         public const byte HORSE_FEED = 0x15;
         public const byte HORSE_PET = 0x18;
+        public const byte HORSE_PROFILE = 0x2C;
+        public const byte HORSE_PROFILE_EDIT = 0x14;
         public const byte HORSE_TRY_CAPTURE = 0x1C;
         public const byte HORSE_TACK = 0x16;
         public const byte HORSE_GIVE_FEED = 0x1B;

@@ -104,6 +104,26 @@ namespace HISP.Server
                     byte[] metaTags = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInventory(sender.LoggedinUser));
                     sender.SendPacket(metaTags);
                     break;
+                case PacketBuilder.HORSE_PROFILE:
+                    byte methodProfileEdit = packet[2]; 
+                    if(methodProfileEdit == PacketBuilder.HORSE_PROFILE_EDIT)
+                    {
+                        if (sender.LoggedinUser.LastViewedHorse != null)
+                        {
+                            sender.LoggedinUser.MetaPriority = true;
+                            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseDescriptionEditMeta(sender.LoggedinUser.LastViewedHorse));
+                            sender.SendPacket(metaPacket);
+                        }
+                        else
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + "Trying to edit description of no horse");
+                        }
+                    }
+                    else
+                    {
+                        Logger.InfoPrint(BitConverter.ToString(packet).Replace("-", " "));
+                    }
+                    break;
                 case PacketBuilder.HORSE_FEED:
                     int randomId = 0;
                     string packetStr = Encoding.UTF8.GetString(packet);
@@ -151,8 +171,8 @@ namespace HISP.Server
                     {
                         HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
                         sender.LoggedinUser.LastViewedHorse = horseInst;
-                        int randMoodAddition = RandomNumberGenerator.Next(0, 20);
-                        int randTiredMinus = RandomNumberGenerator.Next(0, 10);
+                        int randMoodAddition = RandomNumberGenerator.Next(1, 20);
+                        int randTiredMinus = RandomNumberGenerator.Next(1, 10);
                         horseInst.BasicStats.Tiredness -= randTiredMinus;
                         horseInst.BasicStats.Mood += randMoodAddition;
 
