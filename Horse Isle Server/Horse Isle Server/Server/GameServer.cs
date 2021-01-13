@@ -130,7 +130,56 @@ namespace HISP.Server
                     }
                     else
                     {
-                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to tack at a non existant horse.");
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to feed at a non existant horse.");
+                        break;
+                    }
+                case PacketBuilder.HORSE_PET:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        sender.LoggedinUser.LastViewedHorse = horseInst;
+                        int randMoodAddition = RandomNumberGenerator.Next(0, 20);
+                        int randTiredMinus = RandomNumberGenerator.Next(0, 10);
+                        horseInst.BasicStats.Tiredness -= randTiredMinus;
+                        horseInst.BasicStats.Mood += randMoodAddition;
+
+
+                        string message = "";
+                        if(horseInst.BasicStats.Mood < 1000)
+                        {
+                            horseInst.BasicStats.Mood = 1000;
+                            message = Messages.FormatHorsePetMessage(randMoodAddition, randTiredMinus);
+                        }
+                        else 
+                            message = Messages.FormatHorsePetTooHappyMessage(randMoodAddition, randTiredMinus);
+
+                        if (horseInst.BasicStats.Tiredness < 0)
+                            horseInst.BasicStats.Tiredness = 0;
+
+                        Database.SetHorseTiredness(horseInst.RandomId, horseInst.BasicStats.Tiredness);
+                        Database.SetHorseMood(horseInst.RandomId, horseInst.BasicStats.Mood);
+
+                        byte[] petMessagePacket = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(petMessagePacket);
+
+                        break;
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to feed at a non existant horse.");
                         break;
                     }
                 case PacketBuilder.HORSE_GIVE_FEED:

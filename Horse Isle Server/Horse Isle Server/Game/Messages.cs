@@ -217,6 +217,9 @@ namespace HISP.Game
         public static string HorseUnEquipTackMessageFormat;
         public static string HorseStopRidingMessage;
 
+        public static string HorsePetMessageFormat;
+        public static string HorsePetTooHappyFormat;
+
 
         // Horse Feed Menu
         public static string HorseCurrentStatusFormat;
@@ -425,6 +428,15 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatHorsePetMessage(int mood, int tiredness)
+        {
+            return HorsePetMessageFormat.Replace("%MOOD%", mood.ToString()).Replace("%TIREDNESS%", tiredness.ToString());
+        }
+        public static string FormatHorsePetTooHappyMessage(int mood, int tiredness)
+        {
+            return HorsePetTooHappyFormat.Replace("%MOOD%", mood.ToString()).Replace("%TIREDNESS%", tiredness.ToString());
+        }
 
         public static string FormatHorseCurrentStatus(string name)
         {

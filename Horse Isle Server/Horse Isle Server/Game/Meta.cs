@@ -975,7 +975,7 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.FormatHorseCurrentStatus(horse.Name);
-            message += Messages.FormatHorseBasicStat(horse.BasicStats.Health, horse.BasicStats.Hunger, horse.BasicStats.Thirst, horse.BasicStats.Mood, 1000, horse.BasicStats.Groom, horse.BasicStats.Groom);
+            message += Messages.FormatHorseBasicStat(horse.BasicStats.Health, horse.BasicStats.Hunger, horse.BasicStats.Thirst, horse.BasicStats.Mood, horse.BasicStats.Tiredness, horse.BasicStats.Groom, horse.BasicStats.Groom);
             message += Messages.HorseHoldingHorseFeed;
             foreach(InventoryItem item in user.Inventory.GetItemList())
             {
@@ -1022,7 +1022,7 @@ namespace HISP.Game
             message += Messages.HorseStats;
 
             // What is energy?
-            message += Messages.FormatHorseBasicStat(horse.BasicStats.Health, horse.BasicStats.Hunger, horse.BasicStats.Thirst, horse.BasicStats.Mood, 1000, horse.BasicStats.Groom, horse.BasicStats.Groom);
+            message += Messages.FormatHorseBasicStat(horse.BasicStats.Health, horse.BasicStats.Hunger, horse.BasicStats.Thirst, horse.BasicStats.Mood, horse.BasicStats.Tiredness, horse.BasicStats.Groom, horse.BasicStats.Groom);
             message += Messages.HorseTacked;
 
             if (horse.Equipment.Saddle != null)
