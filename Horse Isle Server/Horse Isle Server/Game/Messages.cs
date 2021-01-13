@@ -194,8 +194,8 @@ namespace HISP.Game
         public static string HorseProfileButtonFormat;
 
         public static string HorseNoAutoSell;
-        public static string HorseAutoSellPriceFormat;
         public static string HorseAutoSellFormat;
+        public static string HorseAutoSellPriceFormat;
         public static string HorseCantAutoSellTacked;
         public static string HorseCurrentlyCategoryFormat;
         public static string HorseStats;
@@ -222,6 +222,10 @@ namespace HISP.Game
         public static string HorsePetTooHappyFormat;
         public static string HorseSetNewCategoryMessageFormat;
 
+        public static string HorseAutoSellMenuFormat;
+        public static string HorseIsAutoSell;
+        public static string HorseAutoSellConfirmedFormat;
+        public static string HorseAutoSellRemoved;
 
         // Horse Feed Menu
         public static string HorseCurrentStatusFormat;
@@ -431,6 +435,14 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatAutoSellConfirmedMessage(int money)
+        {
+            return HorseAutoSellConfirmedFormat.Replace("%MONEY%", money.ToString("N0"));
+        }
+        public static string FormatAutoSellMenu(int currentAutoSellPrice)
+        {
+            return HorseAutoSellMenuFormat.Replace("%AUTOSELL%", currentAutoSellPrice.ToString());
+        }
         public static string FormatHorseSetToNewCategory(string category)
         {
             return HorseSetNewCategoryMessageFormat.Replace("%CATEGORY%", category);
@@ -587,9 +599,9 @@ namespace HISP.Game
         {
             return UpdateHorseCategory.Replace("%CATEGORY%", newCategory);
         }
-        public static string FormatHorseEntry(int numb, string horseName, string breedName, int randomId)
+        public static string FormatHorseEntry(int numb, string horseName, string breedName, int randomId, bool hasAutoSell)
         {
-            return HorseEntryFormat.Replace("%NUMB%", numb.ToString()).Replace("%NAME%", horseName).Replace("%BREED%", breedName).Replace("%ID%", randomId.ToString());
+            return HorseEntryFormat.Replace("%NUMB%", numb.ToString()).Replace("%NAME%", horseName).Replace("%BREED%", breedName).Replace("%ID%", randomId.ToString()).Replace("%ISAUTOSELL%", hasAutoSell ? HorseIsAutoSell : "");
         }
         public static string FormatHorseHeader(int maxHorses, int numHorses)
         {

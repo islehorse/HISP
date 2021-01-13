@@ -631,8 +631,8 @@ namespace HISP.Server
             Messages.HorseSavedProfileMessageFormat = gameData.messages.meta.horse.saved_profile;
 
             Messages.HorseNoAutoSell = gameData.messages.meta.horse.horse_inventory.no_auto_sell;
-            Messages.HorseAutoSellFormat = gameData.messages.meta.horse.horse_inventory.auto_sell_format;
-            Messages.HorseAutoSellPriceFormat = gameData.messages.meta.horse.horse_inventory.auto_sell;
+            Messages.HorseAutoSellPriceFormat = gameData.messages.meta.horse.horse_inventory.auto_sell_format;
+            Messages.HorseAutoSellFormat = gameData.messages.meta.horse.horse_inventory.auto_sell;
             Messages.HorseCantAutoSellTacked = gameData.messages.meta.horse.horse_inventory.cannot_auto_sell_tacked;
 
             Messages.HorseCurrentlyCategoryFormat = gameData.messages.meta.horse.horse_inventory.marked_as;
@@ -659,6 +659,12 @@ namespace HISP.Server
             Messages.HorsePetMessageFormat = gameData.messages.meta.horse.pet_horse;
             Messages.HorsePetTooHappyFormat = gameData.messages.meta.horse.pet_horse_too_happy;
             Messages.HorseSetNewCategoryMessageFormat = gameData.messages.meta.horse.horse_set_new_category;
+
+            Messages.HorseAutoSellMenuFormat = gameData.messages.meta.horse.auto_sell.auto_sell_meta;
+            Messages.HorseIsAutoSell = gameData.messages.meta.auto_sell.horse.is_auto_sell;
+            Messages.HorseAutoSellConfirmedFormat = gameData.messages.meta.auto_sell.horse.auto_sell_confirmed;
+            Messages.HorseAutoSellRemoved = gameData.messages.meta.auto_sell.horse.auto_sell_remove;
+
 
             // Horse Feed Menu
             Messages.HorseCurrentStatusFormat = gameData.messages.meta.horse.feed_horse.current_status;

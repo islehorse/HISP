@@ -890,7 +890,7 @@ namespace HISP.Game
                     message += category.Meta;
                     foreach (HorseInstance instance in horsesInCategory)
                     {
-                        message += Messages.FormatHorseEntry(i, instance.Name, instance.Breed.Name, instance.RandomId);
+                        message += Messages.FormatHorseEntry(i, instance.Name, instance.Breed.Name, instance.RandomId, instance.AutoSell > 0);
                         i++;
                     }
                 }
@@ -989,6 +989,15 @@ namespace HISP.Game
             message += Messages.BackToHorse;
             return message;
         }
+
+        public static string BuildAutoSellMenu(HorseInstance horse)
+        {
+            string message = "";
+            message += Messages.FormatAutoSellMenu(horse.AutoSell);
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildHorseDescriptionEditMeta(HorseInstance horse)
         {
             string message = Messages.FormatDescriptionEditMeta(horse.Name, horse.Description);
@@ -1018,10 +1027,17 @@ namespace HISP.Game
             message += Messages.FormatPetButton(horse.RandomId);
             message += Messages.FormatProfileButton(horse.RandomId);
 
-            string autoSellMessage = Messages.HorseNoAutoSell;
-            if (horse.AutoSell > 0)
-                autoSellMessage = Messages.FormatAutoSellPrice(horse.AutoSell);
-            message += Messages.FormatAutoSell(autoSellMessage);
+            if (horse.Equipment.Saddle == null && horse.Equipment.SaddlePad == null && horse.Equipment.Bridle == null)
+            {
+                string autoSellMessage = Messages.HorseNoAutoSell;
+                if (horse.AutoSell > 0)
+                    autoSellMessage = Messages.FormatAutoSellPrice(horse.AutoSell);
+                message += Messages.FormatAutoSell(autoSellMessage);
+            }
+            else
+            {
+                message += Messages.HorseCantAutoSellTacked;
+            }
 
             message += Messages.FormatHorseCategory(horse.Category);
             message += Messages.HorseStats;

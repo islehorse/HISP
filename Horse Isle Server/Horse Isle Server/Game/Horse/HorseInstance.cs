@@ -178,6 +178,11 @@ namespace HISP.Game.Horse
         private int autosell;
         private string category;
 
+        public void ChangeNameWithoutUpdatingDatabase(string newName)
+        {
+            name = newName;
+        }
+
         
     }
 }

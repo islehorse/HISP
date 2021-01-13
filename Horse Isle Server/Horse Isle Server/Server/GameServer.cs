@@ -809,6 +809,42 @@ namespace HISP.Server
                                 Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
                                 break;
                             }
+                        case 10: // Change auto sell price
+                            if (dynamicInput.Length >= 2)
+                            {
+                                if (sender.LoggedinUser.LastViewedHorse != null)
+                                {
+                                    sender.LoggedinUser.MetaPriority = true;
+                                    HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
+                                    int newSellPrice = 0;
+                                    try
+                                    {
+                                        newSellPrice = int.Parse(dynamicInput[1]);
+                                    }
+                                    catch (FormatException)
+                                    {
+                                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to set sell price to non int value.");
+                                        break;
+                                    }
+
+                                    byte[] sellPricePacket;
+                                    if (newSellPrice > 0)
+                                        sellPricePacket = PacketBuilder.CreateChat(Messages.FormatAutoSellConfirmedMessage(newSellPrice), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    else
+                                        sellPricePacket = PacketBuilder.CreateChat(Messages.HorseAutoSellRemoved, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(sellPricePacket);
+                                    horseInstance.AutoSell = newSellPrice;
+
+                                    UpdateHorseMenu(sender, sender.LoggedinUser.LastViewedHorse);
+                                }
+                            }
+                            else
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (autosell, wrong size)");
+                                break;
+                            }
+                            break;
+
                         case 12: // Abuse Report
                             if (dynamicInput.Length >= 2)
                             {
@@ -961,7 +997,7 @@ namespace HISP.Server
                     {
                         sender.LoggedinUser.MetaPriority = true;
                         HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
-                        horseInstance.Name = HorseInfo.GenerateHorseName();
+                        horseInstance.ChangeNameWithoutUpdatingDatabase(HorseInfo.GenerateHorseName());
                         metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseDescriptionEditMeta(horseInstance));
                         sender.SendPacket(metaPacket);
                     }
@@ -1005,6 +1041,15 @@ namespace HISP.Server
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildFindNpcMenu());
                     sender.SendPacket(metaPacket);
+                    break;
+                case "25": // Set auto sell price
+                    if (sender.LoggedinUser.LastViewedHorse != null)
+                    {
+                        sender.LoggedinUser.MetaPriority = true;
+                        HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
+                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAutoSellMenu(horseInstance));
+                        sender.SendPacket(metaPacket);
+                    }
                     break;
                 case "31": // Find Ranch
                     break;
