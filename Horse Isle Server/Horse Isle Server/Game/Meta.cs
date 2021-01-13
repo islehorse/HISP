@@ -999,7 +999,7 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.FormatHorseName(horse.Name);
-            message += Messages.FormatHorseDescription(Database.GetUsername(horse.Owner));
+            message += Messages.FormatHorseDescription(horse.Description);
             message += Messages.FormatHorseHandsHigh(horse.Color, horse.Breed.Name, horse.Sex, Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.AdvancedStats.Height))));
             message += Messages.FormatHorseExperience(horse.BasicStats.Experience);
             

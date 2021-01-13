@@ -438,7 +438,7 @@ namespace HISP.Server
                 int buyPercent = gameData.inns[i].buy_percent;
                 Inn inn = new Inn(id, restsOffered, mealsOffered, buyPercent);
 
-                Logger.DebugPrint("Reigstered Inn: " + inn.Id + " Buying at: " + inn.BuyPercentage.ToString() + "%!");
+                Logger.DebugPrint("Registered Inn: " + inn.Id + " Buying at: " + inn.BuyPercentage.ToString() + "%!");
             }
 
             int totalPoets = gameData.poetry.Count;
@@ -450,7 +450,7 @@ namespace HISP.Server
                 entry.Room = gameData.poetry[i].room_id;
                 Brickpoet.PoetList.Add(entry);
 
-                Logger.DebugPrint("Registed poet: " + entry.Id.ToString() + " word: " + entry.Word + " in room " + entry.Room.ToString());
+                Logger.DebugPrint("Registered poet: " + entry.Id.ToString() + " word: " + entry.Word + " in room " + entry.Room.ToString());
             }
 
             // Register Horse Breeds
@@ -463,15 +463,15 @@ namespace HISP.Server
                 horseBreed.Name = gameData.horses.breeds[i].name;
                 horseBreed.Description = gameData.horses.breeds[i].description;
 
-                horseBreed.BaseStats = new HorseInfo.AdvancedStats();
-                horseBreed.BaseStats.Speed = gameData.horses.breeds[i].base_stats.speed;
-                horseBreed.BaseStats.Strength = gameData.horses.breeds[i].base_stats.strength;
-                horseBreed.BaseStats.Conformation = gameData.horses.breeds[i].base_stats.conformation;
-                horseBreed.BaseStats.Agility = gameData.horses.breeds[i].base_stats.agility;
-                horseBreed.BaseStats.Endurance = gameData.horses.breeds[i].base_stats.endurance;
-                horseBreed.BaseStats.Inteligence = gameData.horses.breeds[i].base_stats.inteligence;
-                horseBreed.BaseStats.Personality = gameData.horses.breeds[i].base_stats.personality;
-                horseBreed.BaseStats.Height = gameData.horses.breeds[i].base_stats.height;
+                int speed = gameData.horses.breeds[i].base_stats.speed;
+                int strength = gameData.horses.breeds[i].base_stats.strength;
+                int conformation = gameData.horses.breeds[i].base_stats.conformation;
+                int agility = gameData.horses.breeds[i].base_stats.agility;
+                int inteligence = gameData.horses.breeds[i].base_stats.inteligence;
+                int endurance = gameData.horses.breeds[i].base_stats.endurance;
+                int personality = gameData.horses.breeds[i].base_stats.personality;
+                int height = gameData.horses.breeds[i].base_stats.height;
+                horseBreed.BaseStats = new HorseInfo.AdvancedStats(null, speed, strength, conformation, agility, inteligence, endurance, personality, height);
                 horseBreed.BaseStats.MinHeight = gameData.horses.breeds[i].base_stats.min_height;
                 horseBreed.BaseStats.MaxHeight = gameData.horses.breeds[i].base_stats.max_height;
 
@@ -482,7 +482,7 @@ namespace HISP.Server
                 horseBreed.Type = gameData.horses.breeds[i].type;
 
                 HorseInfo.Breeds.Add(horseBreed);
-                Logger.DebugPrint("Reigistering Horse Breed: #" + horseBreed.Id + ": " + horseBreed.Name);
+                Logger.DebugPrint("Registered Horse Breed: #" + horseBreed.Id + ": " + horseBreed.Name);
             }
             int totalCategories = gameData.horses.categorys.Count;
             for(int i = 0; i < totalCategories; i++)
@@ -491,7 +491,7 @@ namespace HISP.Server
                 category.Name = gameData.horses.categorys[i].name;
                 category.Meta = gameData.horses.categorys[i].message;
                 HorseInfo.HorseCategories.Add(category);
-                Logger.DebugPrint("Registering horse category type: " + category.Name);
+                Logger.DebugPrint("Registered horse category type: " + category.Name);
             }
 
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
@@ -628,6 +628,7 @@ namespace HISP.Server
             Messages.HorseTackButtonFormat = gameData.messages.meta.horse.horse_inventory.tack_button;
             Messages.HorsePetButtonFormat = gameData.messages.meta.horse.horse_inventory.pet_button;
             Messages.HorseProfileButtonFormat = gameData.messages.meta.horse.horse_inventory.profile_button;
+            Messages.HorseSavedProfileMessageFormat = gameData.messages.meta.horse.saved_profile;
 
             Messages.HorseNoAutoSell = gameData.messages.meta.horse.horse_inventory.no_auto_sell;
             Messages.HorseAutoSellFormat = gameData.messages.meta.horse.horse_inventory.auto_sell_format;

@@ -485,32 +485,38 @@ namespace HISP.Server
                     int randomId = reader.GetInt32(0);
                     int breedId = reader.GetInt32(4);
                     HorseInfo.Breed horseBreed = HorseInfo.GetBreedById(breedId);
-                    HorseInstance inst = new HorseInstance(horseBreed, randomId);
+                    string name = reader.GetString(5);
+                    string description = reader.GetString(6);
+                    int spoiled = reader.GetInt32(32);
+
+                    HorseInstance inst = new HorseInstance(horseBreed, randomId, name, description, spoiled);
                     inst.Owner = reader.GetInt32(1);
                     inst.RanchId = reader.GetInt32(2);
                     inst.Leaser = reader.GetInt32(3);
-                    inst.Name = reader.GetString(5);
-                    inst.Description = reader.GetString(6);
                     inst.Sex = reader.GetString(7);
                     inst.Color = reader.GetString(8);
 
-                    inst.BasicStats.Health = reader.GetInt32(9);
-                    inst.BasicStats.Shoes = reader.GetInt32(10);
-                    inst.BasicStats.Hunger = reader.GetInt32(11);
-                    inst.BasicStats.Thirst = reader.GetInt32(12);
-                    inst.BasicStats.Mood = reader.GetInt32(13);
-                    inst.BasicStats.Groom = reader.GetInt32(14);
-                    inst.BasicStats.Tiredness = reader.GetInt32(15);
-                    inst.BasicStats.Experience = reader.GetInt32(16);
 
-                    inst.AdvancedStats.Speed = reader.GetInt32(17);
-                    inst.AdvancedStats.Strength = reader.GetInt32(18);
-                    inst.AdvancedStats.Conformation = reader.GetInt32(19);
-                    inst.AdvancedStats.Agility = reader.GetInt32(20);
-                    inst.AdvancedStats.Endurance = reader.GetInt32(21);
-                    inst.AdvancedStats.Inteligence = reader.GetInt32(22);
-                    inst.AdvancedStats.Personality = reader.GetInt32(23);
-                    inst.AdvancedStats.Height = reader.GetInt32(24);
+                    int health = reader.GetInt32(9);
+                    int shoes = reader.GetInt32(10);
+                    int hunger = reader.GetInt32(11);
+                    int thirst = reader.GetInt32(12);
+                    int mood = reader.GetInt32(13);
+                    int groom = reader.GetInt32(14);
+                    int tiredness = reader.GetInt32(15);
+                    int experience = reader.GetInt32(16);
+                    inst.BasicStats = new HorseInfo.BasicStats(inst, health, shoes, hunger, thirst, mood, groom, tiredness, experience);
+
+
+                    int speed = reader.GetInt32(17);
+                    int strength = reader.GetInt32(18);
+                    int conformation = reader.GetInt32(19);
+                    int agility = reader.GetInt32(20);
+                    int endurance = reader.GetInt32(21);
+                    int inteligence = reader.GetInt32(22);
+                    int personality = reader.GetInt32(23);
+                    int height = reader.GetInt32(24);
+                    inst.AdvancedStats = new HorseInfo.AdvancedStats(inst, speed, strength, conformation, agility, inteligence, endurance, personality, height);
 
                     if (!reader.IsDBNull(25))
                         inst.Equipment.Saddle = Item.GetItemById(reader.GetInt32(25));
@@ -524,7 +530,6 @@ namespace HISP.Server
                     inst.AutoSell = reader.GetInt32(29);
                     inst.TrainTimer = reader.GetInt32(30);
                     inst.Category = reader.GetString(31);
-                    inst.Spoiled = reader.GetInt32(32);
                     inst.MagicUsed = reader.GetInt32(33);
                     inv.AddHorse(inst, false);
 
@@ -883,6 +888,34 @@ namespace HISP.Server
                 return Weather;
             }
         }
+        public static void SetHorseName(int horseRandomId, string Name)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET name=@name WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@name", Name);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseDescription(int horseRandomId, string Description)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET description=@description WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@description", Description);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
         public static void SetHorseTiredness(int horseRandomId, int Tiredness)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -891,6 +924,76 @@ namespace HISP.Server
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "UPDATE Horses SET tiredness=@tiredness WHERE randomId=@randomId";
                 sqlCommand.Parameters.AddWithValue("@tiredness", Tiredness);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseSpeed(int horseRandomId, int Speed)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET speed=@speed WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@speed", Speed);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseStrength(int horseRandomId, int Strength)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET strength=@strength WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@strength", Strength);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseConformation(int horseRandomId, int Conformation)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET conformation=@conformation WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@conformation", Conformation);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseAgility(int horseRandomId, int Agility)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET agility=@agility WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@agility", Agility);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseEndurance(int horseRandomId, int Endurance)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET endurance=@endurance WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@endurance", Endurance);
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -911,6 +1014,20 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
+        public static void SetHorseInteligence(int horseRandomId, int Inteligence)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET inteligence=@inteligence WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@inteligence", Inteligence);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
         public static void SetHorseSpoiled(int horseRandomId, int Spoiled)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -925,6 +1042,34 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
+        public static void SetHorseExperience(int horseRandomId, int Experience)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET experience=@experience WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@experience", Experience);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseShoes(int horseRandomId, int Shoes)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET shoes=@shoes WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@shoes", Shoes);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
         public static void SetHorseHeight(int horseRandomId, int Height)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -933,20 +1078,6 @@ namespace HISP.Server
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "UPDATE Horses SET height=@height WHERE randomId=@randomId";
                 sqlCommand.Parameters.AddWithValue("@height", Height);
-                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
-                sqlCommand.Prepare();
-                sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
-            }
-        }
-        public static void SetHorseInteligence(int horseRandomId, int Inteligence)
-        {
-            using (MySqlConnection db = new MySqlConnection(ConnectionString))
-            {
-                db.Open();
-                MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET inteligence=@inteligence WHERE randomId=@randomId";
-                sqlCommand.Parameters.AddWithValue("@inteligence", Inteligence);
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();

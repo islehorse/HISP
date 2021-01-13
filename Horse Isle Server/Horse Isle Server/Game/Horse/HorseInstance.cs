@@ -6,88 +6,82 @@ namespace HISP.Game.Horse
 {
     class HorseInstance
     {
-        public HorseInstance(HorseInfo.Breed breed, int randomId = -1)
+        public HorseInstance(HorseInfo.Breed breed, int randomId = -1, string loadName=null, string loadDescription = "", int loadSpoiled=0)
         {
             RandomId = RandomID.NextRandomId(randomId);
             Owner = 0;
-            if(breed.Type == "camel")
+            if(loadName == null)
             {
-                Name = "Wild Camel";
-                if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
-                {
-                    Sex = "cow";
-                }
-                else
-                {
-                    Sex = "bull";
-                }
 
-            }
-            else if(breed.Type == "llama")
-            {
-                Name = "Jungle Llama";
-                if(GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
+                if (breed.Type == "camel")
                 {
-                    Sex = "male";
+                    name = "Wild Camel";
+                    if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
+                    {
+                        Sex = "cow";
+                    }
+                    else
+                    {
+                        Sex = "bull";
+                    }
+
+                }
+                else if (breed.Type == "llama")
+                {
+                    name = "Jungle Llama";
+                    if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
+                    {
+                        Sex = "male";
+                    }
+                    else
+                    {
+                        Sex = "female";
+                    }
+                }
+                else if (breed.Type == "zebra")
+                {
+                    name = "Wild Zebra";
+                    if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
+                    {
+                        Sex = "stallion";
+                    }
+                    else
+                    {
+                        Sex = "mare";
+                    }
                 }
                 else
                 {
-                    Sex = "female";
-                }
-            }
-            else if(breed.Type == "zebra")
-            {
-                Name = "Wild Zebra";
-                if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
-                {
-                    Sex = "stallion";
-                }
-                else
-                {
-                    Sex = "mare";
+                    name = "Wild Horse";
+                    if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
+                    {
+                        Sex = "stallion";
+                    }
+                    else
+                    {
+                        Sex = "mare";
+                    }
                 }
             }
             else
             {
-                Name = "Wild Horse";
-                if (GameServer.RandomNumberGenerator.Next(0,100) >= 50)
-                {
-                    Sex = "stallion";
-                }
-                else
-                {
-                    Sex = "mare";
-                }
+                name = loadName;
             }
 
-            Description = "";
+            description = loadDescription;
             Breed = breed;
             Color = breed.Colors[GameServer.RandomNumberGenerator.Next(0, breed.Colors.Length)];
 
-            BasicStats = new HorseInfo.BasicStats();
-            BasicStats.Health = 1000;
-            BasicStats.Shoes = 0;
-            BasicStats.Hunger = 1000;
-            BasicStats.Thirst = 1000;
-            BasicStats.Mood = 500;
-            BasicStats.Groom = 1000;
-            BasicStats.Tiredness = 1000;
-            BasicStats.Experience = 0;
-
-            AdvancedStats = new HorseInfo.AdvancedStats();
-            AdvancedStats.Speed = 0;
-            AdvancedStats.Strength = 0;
-            AdvancedStats.Conformation = 0;
-            AdvancedStats.Agility = 0;
-            AdvancedStats.Endurance = 0;
-            AdvancedStats.Inteligence = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Inteligence, breed.BaseStats.Inteligence * 2)) - breed.BaseStats.Inteligence;
-            AdvancedStats.Personality = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Personality, breed.BaseStats.Personality * 2)) - breed.BaseStats.Personality;
-            AdvancedStats.Height = GameServer.RandomNumberGenerator.Next(breed.BaseStats.MinHeight, breed.BaseStats.MaxHeight);
+            BasicStats = new HorseInfo.BasicStats(this, 1000, 0, 1000, 1000, 500, 1000, 1000, 0);
+            int inteligence = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Inteligence, breed.BaseStats.Inteligence * 2)) - breed.BaseStats.Inteligence;
+            int personality = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Personality, breed.BaseStats.Personality * 2)) - breed.BaseStats.Personality;
+            int height = GameServer.RandomNumberGenerator.Next(breed.BaseStats.MinHeight, breed.BaseStats.MaxHeight);
+            AdvancedStats = new HorseInfo.AdvancedStats(this, 0, 0, 0, 0, inteligence, 0, personality, height);
 
             Equipment = new HorseInfo.HorseEquips();
             AutoSell = 0;
             Category = "KEEPER";
-            Spoiled = 0;
+            spoiled = loadSpoiled;
             MagicUsed = 0;
             TrainTimer = 0;
             RanchId = 0;
@@ -97,8 +91,30 @@ namespace HISP.Game.Horse
         public int Leaser;
         public int RandomId;
         public int Owner;
-        public string Name;
-        public string Description;
+        public string Name
+        {
+            get
+            {
+                return name;
+            }
+            set
+            {
+                name = value;
+                Database.SetHorseName(this.RandomId, name);
+            }
+        }
+        public string Description
+        {
+            get
+            {
+                return description;
+            }
+            set
+            {
+                description = value;
+                Database.SetHorseDescription(this.RandomId, value);
+            }
+        }
         public string Sex;
         public string Color;
         public int TrainTimer;
@@ -107,9 +123,26 @@ namespace HISP.Game.Horse
         public HorseInfo.AdvancedStats AdvancedStats;
         public HorseInfo.HorseEquips Equipment;
         public int AutoSell;
-        public int Spoiled;
+        public int Spoiled
+        {
+            get
+            {
+                return spoiled;
+            }
+            set
+            {
+                Database.SetHorseSpoiled(RandomId, value);
+                spoiled = value;
+            }
+        }
         public int MagicUsed;
         public string Category;
+
+        private string name;
+        private string description;
+        private int spoiled;
+
+
         
     }
 }
