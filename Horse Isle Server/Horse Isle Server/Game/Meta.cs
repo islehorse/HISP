@@ -1198,6 +1198,7 @@ namespace HISP.Game
             message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Strength + horse.AdvancedStats.Strength, CompanionBoostStrength, TackBoostStrength, horse.Breed.BaseStats.Strength * 2);
             message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Conformation + horse.AdvancedStats.Conformation, CompanionBoostConformation, TackBoostConformation, horse.Breed.BaseStats.Conformation * 2);
             message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Agility + horse.AdvancedStats.Agility, CompanionBoostAgility, TackBoostAgility, horse.Breed.BaseStats.Agility * 2);
+            message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Endurance + horse.AdvancedStats.Endurance, CompanionBoostInteligence, TackBoostInteligence, horse.Breed.BaseStats.Endurance * 2);
             message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Inteligence + horse.AdvancedStats.Inteligence, CompanionBoostInteligence, TackBoostInteligence, horse.Breed.BaseStats.Inteligence * 2);
             message += Messages.FormatHorseAdvancedStat(horse.Breed.BaseStats.Personality + horse.AdvancedStats.Personality, CompanionBoostPersonality, TackBoostPersonality, horse.Breed.BaseStats.Personality * 2);
 
