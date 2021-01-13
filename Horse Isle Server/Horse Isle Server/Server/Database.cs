@@ -883,6 +883,147 @@ namespace HISP.Server
                 return Weather;
             }
         }
+        public static void SetHorseTiredness(int horseRandomId, int Tiredness)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET tiredness=@tiredness WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@tiredness", Tiredness);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorsePersonality(int horseRandomId, int Personality)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET personality=@personality WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@personality", Personality);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseSpoiled(int horseRandomId, int Spoiled)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET spoiled=@spoiled WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@spoiled", Spoiled);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseHeight(int horseRandomId, int Height)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET height=@height WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@height", Height);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseInteligence(int horseRandomId, int Inteligence)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET inteligence=@inteligence WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@inteligence", Inteligence);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseMood(int horseRandomId, int Mood)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET mood=@mood WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@mood", Mood);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseGroom(int horseRandomId, int Groom)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET groom=@groom WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@groom", Groom);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetHorseHunger(int horseRandomId, int Hunger)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET hunger=@hunger WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@hunger", Hunger);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseThirst(int horseRandomId, int Thirst)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET thirst=@thirst WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@thirst", Thirst);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseHealth(int horseRandomId, int Health)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET health=@health WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@health", Health);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
 
         public static void SetSaddle(int horseRandomId, int saddleItemId)
         {
