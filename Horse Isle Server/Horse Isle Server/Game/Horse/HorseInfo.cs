@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using HISP.Server;
+using System.Collections.Generic;
 
 namespace HISP.Game.Horse
 {
@@ -56,8 +57,17 @@ namespace HISP.Game.Horse
             public string Meta;
         }
 
+        public static string[] HorseNames;
         public static List<Category> HorseCategories = new List<Category>();
         public static List<Breed> Breeds = new List<Breed>();
+
+        public static string GenerateHorseName()
+        {
+            int indx = 0;
+            int max = HorseNames.Length;
+            int i = GameServer.RandomNumberGenerator.Next(indx, max);
+            return HorseNames[i];
+        }
         public static double CalculateHands(int height)
         {
             return ((double)height / 4.0);
