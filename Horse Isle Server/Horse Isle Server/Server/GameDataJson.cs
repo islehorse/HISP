@@ -652,6 +652,9 @@ namespace HISP.Server
             Messages.HorseUnEquipTackMessageFormat = gameData.messages.meta.horse.unequip_tack_message;
             Messages.HorseStopRidingMessage = gameData.messages.meta.horse.stop_riding_message;
 
+            Messages.HorsePetMessageFormat = gameData.messages.meta.horse.pet_horse;
+            Messages.HorsePetTooHappyFormat = gameData.messages.meta.horse.pet_horse_too_happy;
+
             // Horse Feed Menu
             Messages.HorseCurrentStatusFormat = gameData.messages.meta.horse.feed_horse.current_status;
             Messages.HorseHoldingHorseFeed = gameData.messages.meta.horse.feed_horse.holding_horse_feed;
