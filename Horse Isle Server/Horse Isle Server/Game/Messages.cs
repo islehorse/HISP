@@ -217,6 +217,14 @@ namespace HISP.Game
         public static string HorseUnEquipTackMessageFormat;
         public static string HorseStopRidingMessage;
 
+
+        // Horse Feed Menu
+        public static string HorseCurrentStatusFormat;
+        public static string HorseHoldingHorseFeed;
+        public static string HorsefeedFormat;
+        public static string HorseNeighsThanks;
+        public static string HorseCouldNotFinish;
+
         // Tack horse menu
         public static string HorseTackedAsFollowsFormat;
         public static string HorseUnEquipSaddleFormat;
@@ -224,7 +232,7 @@ namespace HISP.Game
         public static string HorseUnEquipBridleFormat;
         public static string HorseTackInInventory;
         public static string HorseEquipFormat;
-        public static string HorseBackTo;
+        public static string BackToHorse;
 
         // Consume
 
@@ -417,6 +425,17 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatHorseCurrentStatus(string name)
+        {
+            return HorseCurrentStatusFormat.Replace("%HORSENAME%", name);
+        }
+
+        public static string FormatHorseFeedEntry(int icon, int count, string name, int randomId)
+        {
+            return HorsefeedFormat.Replace("%ICONID%", icon.ToString()).Replace("%COUNT%", count.ToString("N0")).Replace("%NAME%", name).Replace("%RANDOMID%", randomId.ToString());
+        }
+
         public static string FormatHorseRidingMessage(string name)
         {
             return HorseRidingMessageFormat.Replace("%HORSENAME%", name);

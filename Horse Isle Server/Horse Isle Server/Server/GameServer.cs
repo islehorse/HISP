@@ -104,11 +104,147 @@ namespace HISP.Server
                     byte[] metaTags = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInventory(sender.LoggedinUser));
                     sender.SendPacket(metaTags);
                     break;
-                case PacketBuilder.HORSE_TACK:
-
+                case PacketBuilder.HORSE_FEED:
                     int randomId = 0;
                     string packetStr = Encoding.UTF8.GetString(packet);
                     string randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+
+                        sender.LoggedinUser.LastViewedHorse = horseInst;
+                        sender.LoggedinUser.MetaPriority = true;
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseFeedMenu(horseInst, sender.LoggedinUser));
+                        sender.SendPacket(metaPacket);
+                        break;
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to tack at a non existant horse.");
+                        break;
+                    }
+                case PacketBuilder.HORSE_GIVE_FEED:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if(sender.LoggedinUser.LastViewedHorse == null)
+                    {
+                        Logger.InfoPrint(sender.LoggedinUser.Username + " Tried to feed a non existant horse.");
+                        break;
+                    }
+                    if (sender.LoggedinUser.Inventory.HasItem(randomId))
+                    {
+                        InventoryItem item = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
+                        Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
+                        HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
+                        bool tooMuch = false;
+                        if (itemInfo.Type == "HORSEFOOD")
+                        {
+                            foreach(Item.Effects effect in itemInfo.Effects)
+                            {
+                                switch(effect.EffectsWhat)
+                                {
+                                    case "HUNGER":
+                                        horseInstance.BasicStats.Hunger += effect.EffectAmount;
+                                        if (horseInstance.BasicStats.Hunger > 1000)
+                                        {
+                                            horseInstance.BasicStats.Hunger = 1000;
+                                            tooMuch = true;
+                                        }
+                                        Database.SetHorseHunger(horseInstance.RandomId, horseInstance.BasicStats.Hunger);
+                                        break;
+                                    case "THIRST":
+                                        horseInstance.BasicStats.Thirst += effect.EffectAmount;
+                                        if (horseInstance.BasicStats.Thirst > 1000)
+                                        {
+                                            horseInstance.BasicStats.Thirst = 1000;
+                                            tooMuch = true;
+                                        }
+                                        Database.SetHorseThirst(horseInstance.RandomId, horseInstance.BasicStats.Thirst);
+                                        break;
+                                    case "MOOD":
+                                        horseInstance.BasicStats.Mood += effect.EffectAmount;
+                                        if (horseInstance.BasicStats.Mood > 1000)
+                                        {
+                                            horseInstance.BasicStats.Mood = 1000;
+                                            tooMuch = true;
+                                        }
+                                        Database.SetHorseMood(horseInstance.RandomId, horseInstance.BasicStats.Mood);
+                                        break;
+                                    case "TIREDNESS":
+                                        horseInstance.BasicStats.Tiredness += effect.EffectAmount;
+                                        if (horseInstance.BasicStats.Tiredness > 1000)
+                                        {
+                                            horseInstance.BasicStats.Tiredness = 1000;
+                                            tooMuch = true;
+                                        }
+                                        Database.SetHorseTiredness(horseInstance.RandomId, horseInstance.BasicStats.Tiredness);
+                                        break;
+                                    case "INTELLIGENCEOFFSET":
+                                        horseInstance.AdvancedStats.Inteligence += effect.EffectAmount;
+                                        Database.SetHorseInteligence(horseInstance.RandomId, horseInstance.AdvancedStats.Inteligence);
+                                        break;
+                                    case "PERSONALITYOFFSET":
+                                        horseInstance.AdvancedStats.Personality += effect.EffectAmount;
+                                        Database.SetHorsePersonality(horseInstance.RandomId, horseInstance.AdvancedStats.Personality);
+                                        break;
+                                    case "SPOILED":
+                                        horseInstance.Spoiled += effect.EffectAmount;
+                                        Database.SetHorseSpoiled(horseInstance.RandomId, horseInstance.Spoiled);
+                                        break;
+                                }
+                            }
+                            sender.LoggedinUser.Inventory.Remove(item.ItemInstances[0]);
+
+                            byte[] horseNeighThanksPacket = PacketBuilder.CreateChat(Messages.HorseNeighsThanks, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(horseNeighThanksPacket);
+
+                            if (tooMuch)
+                            {
+                                byte[] horseCouldntFinishItAll = PacketBuilder.CreateChat(Messages.HorseCouldNotFinish, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(horseCouldntFinishItAll);
+                            }
+
+                            sender.LoggedinUser.MetaPriority = true;
+                            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseFeedMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
+                            sender.SendPacket(metaPacket);
+                            break;
+                        }
+                        else
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + "Tried to feed a horse a non-HORSEFOOD item.");
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to feed a non existant item to a horse.");
+                        break;
+                    }
+                case PacketBuilder.HORSE_TACK:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
                     try
                     {
                         randomId = int.Parse(randomIdStr);

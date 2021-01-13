@@ -971,6 +971,25 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        public static string BuildHorseFeedMenu(HorseInstance horse, User user)
+        {
+            string message = "";
+            message += Messages.FormatHorseCurrentStatus(horse.Name);
+            message += Messages.FormatHorseBasicStat(horse.BasicStats.Health, horse.BasicStats.Hunger, horse.BasicStats.Thirst, horse.BasicStats.Mood, 1000, horse.BasicStats.Groom, horse.BasicStats.Groom);
+            message += Messages.HorseHoldingHorseFeed;
+            foreach(InventoryItem item in user.Inventory.GetItemList())
+            {
+                Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
+                if(itemInfo.Type == "HORSEFOOD")
+                {
+                    message += Messages.FormatHorseFeedEntry(itemInfo.IconId, item.ItemInstances.Count, itemInfo.Name, item.ItemInstances[0].RandomId);
+                }
+                
+            }
+            message += Messages.BackToHorse;
+            return message;
+        }
+
         public static string BuildHorseInformation(HorseInstance horse, User user)
         {
             string message = "";
@@ -1226,7 +1245,7 @@ namespace HISP.Game
                 }
             }
 
-            message += Messages.HorseBackTo;
+            message += Messages.BackToHorse;
             return message;
         }
         public static string BuildChatpoint(User user, Npc.NpcEntry npc, Npc.NpcChat chatpoint)

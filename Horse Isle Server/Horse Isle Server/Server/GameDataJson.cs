@@ -652,6 +652,13 @@ namespace HISP.Server
             Messages.HorseUnEquipTackMessageFormat = gameData.messages.meta.horse.unequip_tack_message;
             Messages.HorseStopRidingMessage = gameData.messages.meta.horse.stop_riding_message;
 
+            // Horse Feed Menu
+            Messages.HorseCurrentStatusFormat = gameData.messages.meta.horse.feed_horse.current_status;
+            Messages.HorseHoldingHorseFeed = gameData.messages.meta.horse.feed_horse.holding_horse_feed;
+            Messages.HorsefeedFormat = gameData.messages.meta.horse.feed_horse.horsefeed_format;
+            Messages.HorseNeighsThanks = gameData.messages.meta.horse.feed_horse.horse_neigh;
+            Messages.HorseCouldNotFinish = gameData.messages.meta.horse.feed_horse.horse_could_not_finish;
+
             // Tack menu (horses)
             Messages.HorseTackedAsFollowsFormat = gameData.messages.meta.horse.tack_menu.tacked_as_follows;
             Messages.HorseUnEquipSaddleFormat = gameData.messages.meta.horse.tack_menu.dequip_saddle;
@@ -659,7 +666,7 @@ namespace HISP.Server
             Messages.HorseUnEquipBridleFormat = gameData.messages.meta.horse.tack_menu.dequip_bridle;
             Messages.HorseTackInInventory = gameData.messages.meta.horse.tack_menu.you_have_following_tack;
             Messages.HorseEquipFormat = gameData.messages.meta.horse.tack_menu.equip_tack;
-            Messages.HorseBackTo = gameData.messages.meta.horse.tack_menu.back_to_horse;
+            Messages.BackToHorse = gameData.messages.meta.horse.back_to_horse;
 
 
             // Libary
