@@ -266,9 +266,11 @@ namespace HISP.Server
 
                                     case "INTELLIGENCEOFFSET":
                                         horseInstance.AdvancedStats.Inteligence += effect.EffectAmount;
+                                        horseInstance.MagicUsed++;
                                         break;
                                     case "PERSONALITYOFFSET":
                                         horseInstance.AdvancedStats.Personality += effect.EffectAmount;
+                                        horseInstance.MagicUsed++;
                                         break;
                                     case "SPOILED":
                                         horseInstance.Spoiled += effect.EffectAmount;
