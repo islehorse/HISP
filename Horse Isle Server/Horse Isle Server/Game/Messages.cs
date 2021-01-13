@@ -213,7 +213,7 @@ namespace HISP.Game
         public static string HorseOthers;
 
         public static string HorseDescriptionEditFormat;
-
+        public static string HorseSavedProfileMessageFormat;
         public static string HorseEquipTackMessageFormat;
         public static string HorseUnEquipTackMessageFormat;
         public static string HorseStopRidingMessage;
@@ -430,6 +430,10 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatHorseSavedProfileMessage(string horsename)
+        {
+            return HorseSavedProfileMessageFormat.Replace("%HORSENAME%", horsename);
+        }
         public static string FormatDescriptionEditMeta(string username, string description)
         {
             return HorseDescriptionEditFormat.Replace("%HORSENAME%", username).Replace("%DESCRIPTION%", description);

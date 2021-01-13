@@ -173,24 +173,19 @@ namespace HISP.Server
                         sender.LoggedinUser.LastViewedHorse = horseInst;
                         int randMoodAddition = RandomNumberGenerator.Next(1, 20);
                         int randTiredMinus = RandomNumberGenerator.Next(1, 10);
-                        horseInst.BasicStats.Tiredness -= randTiredMinus;
-                        horseInst.BasicStats.Mood += randMoodAddition;
+
 
 
                         string message = "";
-                        if(horseInst.BasicStats.Mood < 1000)
-                        {
-                            horseInst.BasicStats.Mood = 1000;
+                        if(horseInst.BasicStats.Mood + randMoodAddition > 1000)
                             message = Messages.FormatHorsePetMessage(randMoodAddition, randTiredMinus);
-                        }
                         else 
                             message = Messages.FormatHorsePetTooHappyMessage(randMoodAddition, randTiredMinus);
 
-                        if (horseInst.BasicStats.Tiredness < 0)
-                            horseInst.BasicStats.Tiredness = 0;
 
-                        Database.SetHorseTiredness(horseInst.RandomId, horseInst.BasicStats.Tiredness);
-                        Database.SetHorseMood(horseInst.RandomId, horseInst.BasicStats.Mood);
+                        
+                        horseInst.BasicStats.Tiredness -= randTiredMinus;
+                        horseInst.BasicStats.Mood += randMoodAddition;
 
                         byte[] petMessagePacket = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(petMessagePacket);
@@ -233,53 +228,50 @@ namespace HISP.Server
                             {
                                 switch(effect.EffectsWhat)
                                 {
-                                    case "HUNGER":
-                                        horseInstance.BasicStats.Hunger += effect.EffectAmount;
-                                        if (horseInstance.BasicStats.Hunger > 1000)
-                                        {
-                                            horseInstance.BasicStats.Hunger = 1000;
+                                    case "HEALTH":
+                                        if (horseInstance.BasicStats.Health + effect.EffectAmount > 1000)
                                             tooMuch = true;
-                                        }
-                                        Database.SetHorseHunger(horseInstance.RandomId, horseInstance.BasicStats.Hunger);
+                                        horseInstance.BasicStats.Health += effect.EffectAmount;
                                         break;
-                                    case "THIRST":
-                                        horseInstance.BasicStats.Thirst += effect.EffectAmount;
-                                        if (horseInstance.BasicStats.Thirst > 1000)
-                                        {
-                                            horseInstance.BasicStats.Thirst = 1000;
+                                    case "HUNGER":
+                                        if (horseInstance.BasicStats.Hunger + effect.EffectAmount > 1000)
                                             tooMuch = true;
-                                        }
-                                        Database.SetHorseThirst(horseInstance.RandomId, horseInstance.BasicStats.Thirst);
+                                        horseInstance.BasicStats.Hunger += effect.EffectAmount;
                                         break;
                                     case "MOOD":
-                                        horseInstance.BasicStats.Mood += effect.EffectAmount;
-                                        if (horseInstance.BasicStats.Mood > 1000)
-                                        {
-                                            horseInstance.BasicStats.Mood = 1000;
+                                        if (horseInstance.BasicStats.Mood + effect.EffectAmount > 1000)
                                             tooMuch = true;
-                                        }
-                                        Database.SetHorseMood(horseInstance.RandomId, horseInstance.BasicStats.Mood);
+                                        horseInstance.BasicStats.Mood += effect.EffectAmount;
+                                        break;
+                                    case "GROOM":
+                                        if (horseInstance.BasicStats.Groom + effect.EffectAmount > 1000)
+                                            tooMuch = true;
+                                        horseInstance.BasicStats.Groom += effect.EffectAmount;
+                                        break;
+                                    case "SHOES":
+                                        if (horseInstance.BasicStats.Shoes + effect.EffectAmount > 1000)
+                                            tooMuch = true;
+                                        horseInstance.BasicStats.Shoes += effect.EffectAmount;
+                                        break;
+                                    case "THIRST":
+                                        if (horseInstance.BasicStats.Thirst + effect.EffectAmount > 1000)
+                                            tooMuch = true;
+                                        horseInstance.BasicStats.Thirst += effect.EffectAmount;
                                         break;
                                     case "TIREDNESS":
-                                        horseInstance.BasicStats.Tiredness += effect.EffectAmount;
-                                        if (horseInstance.BasicStats.Tiredness > 1000)
-                                        {
-                                            horseInstance.BasicStats.Tiredness = 1000;
+                                        if (horseInstance.BasicStats.Tiredness + effect.EffectAmount > 1000)
                                             tooMuch = true;
-                                        }
-                                        Database.SetHorseTiredness(horseInstance.RandomId, horseInstance.BasicStats.Tiredness);
+                                        horseInstance.BasicStats.Tiredness += effect.EffectAmount;
                                         break;
+
                                     case "INTELLIGENCEOFFSET":
                                         horseInstance.AdvancedStats.Inteligence += effect.EffectAmount;
-                                        Database.SetHorseInteligence(horseInstance.RandomId, horseInstance.AdvancedStats.Inteligence);
                                         break;
                                     case "PERSONALITYOFFSET":
                                         horseInstance.AdvancedStats.Personality += effect.EffectAmount;
-                                        Database.SetHorsePersonality(horseInstance.RandomId, horseInstance.AdvancedStats.Personality);
                                         break;
                                     case "SPOILED":
                                         horseInstance.Spoiled += effect.EffectAmount;
-                                        Database.SetHorseSpoiled(horseInstance.RandomId, horseInstance.Spoiled);
                                         break;
                                 }
                             }
@@ -768,6 +760,25 @@ namespace HISP.Server
                                 Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
                                 break;
                             }
+                        case 5: // Horse Description
+                            if (dynamicInput.Length >= 3)
+                            {
+                                if(sender.LoggedinUser.LastViewedHorse != null)
+                                {
+                                    sender.LoggedinUser.MetaPriority = true;
+                                    sender.LoggedinUser.LastViewedHorse.Name = dynamicInput[1];
+                                    sender.LoggedinUser.LastViewedHorse.Description = dynamicInput[2];
+                                    byte[] horseNameSavedPacket = PacketBuilder.CreateChat(Messages.FormatHorseSavedProfileMessage(sender.LoggedinUser.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(horseNameSavedPacket);
+                                    UpdateHorseMenu(sender, sender.LoggedinUser.LastViewedHorse);
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (NPC Search, wrong size)");
+                                break;
+                            }
                         case 4: // NPC Search
                             if(dynamicInput.Length >= 2)
                             {
@@ -934,9 +945,24 @@ namespace HISP.Server
                     byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildQuestLog(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
+                case "4": // View Horse Breeds
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseList());
+                    sender.SendPacket(metaPacket);
+                    break;
                 case "5":
                     if (sender.LoggedinUser.LastViewedHorse != null)
                         UpdateHorseMenu(sender, sender.LoggedinUser.LastViewedHorse);
+                    break;
+                case "11": // Randomize horse name
+                    if (sender.LoggedinUser.LastViewedHorse != null)
+                    {
+                        sender.LoggedinUser.MetaPriority = true;
+                        HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
+                        horseInstance.Name = HorseInfo.GenerateHorseName();
+                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseDescriptionEditMeta(horseInstance));
+                        sender.SendPacket(metaPacket);
+                    }
                     break;
                 case "21": // Private Notes
                     sender.LoggedinUser.MetaPriority = true;
@@ -979,11 +1005,6 @@ namespace HISP.Server
                     sender.SendPacket(metaPacket);
                     break;
                 case "31": // Find Ranch
-                    break;
-                case "4": // View Horse Breeds
-                    sender.LoggedinUser.MetaPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseList());
-                    sender.SendPacket(metaPacket);
                     break;
                 case "9": // View Tack
                     break;
