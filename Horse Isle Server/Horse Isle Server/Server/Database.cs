@@ -484,12 +484,17 @@ namespace HISP.Server
                 {
                     int randomId = reader.GetInt32(0);
                     int breedId = reader.GetInt32(4);
+                    
                     HorseInfo.Breed horseBreed = HorseInfo.GetBreedById(breedId);
                     string name = reader.GetString(5);
                     string description = reader.GetString(6);
                     int spoiled = reader.GetInt32(32);
+                    string category = reader.GetString(31);
+                    int magicUsed = reader.GetInt32(33);
+                    int autosell = reader.GetInt32(29);
 
-                    HorseInstance inst = new HorseInstance(horseBreed, randomId, name, description, spoiled);
+
+                    HorseInstance inst = new HorseInstance(horseBreed, randomId, name, description, spoiled, category, magicUsed, autosell);
                     inst.Owner = reader.GetInt32(1);
                     inst.RanchId = reader.GetInt32(2);
                     inst.Leaser = reader.GetInt32(3);
@@ -527,10 +532,7 @@ namespace HISP.Server
                     if (!reader.IsDBNull(28))
                         inst.Equipment.Companion = Item.GetItemById(reader.GetInt32(28));
 
-                    inst.AutoSell = reader.GetInt32(29);
                     inst.TrainTimer = reader.GetInt32(30);
-                    inst.Category = reader.GetString(31);
-                    inst.MagicUsed = reader.GetInt32(33);
                     inv.AddHorse(inst, false);
 
                 }
@@ -888,6 +890,51 @@ namespace HISP.Server
                 return Weather;
             }
         }
+
+        public static void SetHorseCategory(int horseRandomId, string Category)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET category=@category WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@category", Category);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetHorseAutoSell(int horseRandomId, int AutoSell)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET autosell=@autosell WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@autosell", AutoSell);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetHorseMagicUsed(int horseRandomId, int MagicUsed)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET magicused=@magicused WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@magicused", MagicUsed);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
         public static void SetHorseName(int horseRandomId, string Name)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

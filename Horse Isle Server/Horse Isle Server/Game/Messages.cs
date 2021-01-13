@@ -220,6 +220,7 @@ namespace HISP.Game
 
         public static string HorsePetMessageFormat;
         public static string HorsePetTooHappyFormat;
+        public static string HorseSetNewCategoryMessageFormat;
 
 
         // Horse Feed Menu
@@ -430,6 +431,10 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatHorseSetToNewCategory(string category)
+        {
+            return HorseSetNewCategoryMessageFormat.Replace("%CATEGORY%", category);
+        }
         public static string FormatHorseSavedProfileMessage(string horsename)
         {
             return HorseSavedProfileMessageFormat.Replace("%HORSENAME%", horsename);

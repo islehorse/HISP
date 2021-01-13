@@ -658,6 +658,7 @@ namespace HISP.Server
 
             Messages.HorsePetMessageFormat = gameData.messages.meta.horse.pet_horse;
             Messages.HorsePetTooHappyFormat = gameData.messages.meta.horse.pet_horse_too_happy;
+            Messages.HorseSetNewCategoryMessageFormat = gameData.messages.meta.horse.horse_set_new_category;
 
             // Horse Feed Menu
             Messages.HorseCurrentStatusFormat = gameData.messages.meta.horse.feed_horse.current_status;

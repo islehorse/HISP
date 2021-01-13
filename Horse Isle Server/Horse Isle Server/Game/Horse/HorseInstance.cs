@@ -6,7 +6,7 @@ namespace HISP.Game.Horse
 {
     class HorseInstance
     {
-        public HorseInstance(HorseInfo.Breed breed, int randomId = -1, string loadName=null, string loadDescription = "", int loadSpoiled=0)
+        public HorseInstance(HorseInfo.Breed breed, int randomId = -1, string loadName=null, string loadDescription = "", int loadSpoiled=0, string loadCategory="KEEPER", int loadMagicUsed=0, int loadAutoSell=0)
         {
             RandomId = RandomID.NextRandomId(randomId);
             Owner = 0;
@@ -79,10 +79,10 @@ namespace HISP.Game.Horse
             AdvancedStats = new HorseInfo.AdvancedStats(this, 0, 0, 0, 0, inteligence, 0, personality, height);
 
             Equipment = new HorseInfo.HorseEquips();
-            AutoSell = 0;
-            Category = "KEEPER";
+            autosell = loadAutoSell;
+            category = loadCategory;
             spoiled = loadSpoiled;
-            MagicUsed = 0;
+            magicUsed = loadMagicUsed;
             TrainTimer = 0;
             RanchId = 0;
             Leaser = 0;
@@ -122,7 +122,18 @@ namespace HISP.Game.Horse
         public HorseInfo.BasicStats BasicStats;
         public HorseInfo.AdvancedStats AdvancedStats;
         public HorseInfo.HorseEquips Equipment;
-        public int AutoSell;
+        public int AutoSell
+        {
+            get
+            {
+                return autosell;
+            }
+            set
+            {
+                Database.SetHorseAutoSell(RandomId, value);
+                autosell = value;
+            }
+        }
         public int Spoiled
         {
             get
@@ -135,13 +146,37 @@ namespace HISP.Game.Horse
                 spoiled = value;
             }
         }
-        public int MagicUsed;
-        public string Category;
+        public int MagicUsed
+        {
+            get
+            {
+                return magicUsed;
+            }
+            set
+            {
+                Database.SetHorseMagicUsed(RandomId, value);
+                magicUsed = value;
+            }
+        }
+        public string Category
+        {
+            get
+            {
+                return category;
+            }
+            set
+            {
+                Database.SetHorseCategory(RandomId, value);
+                category = value;
+            }
+        }
 
         private string name;
         private string description;
         private int spoiled;
-
+        private int magicUsed;
+        private int autosell;
+        private string category;
 
         
     }

@@ -1018,11 +1018,35 @@ namespace HISP.Server
                     break;
                 case "38": // Read Books
                     break;
-                case "28c1":
+                case "28c1": // Abuse Report
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAbuseReportPage());
                     sender.SendPacket(metaPacket);
                     break;
+                case "52c1": // Horse set to KEEPER
+                    string category = "KEEPER";
+                    goto setCategory;
+                case "52c2": // Horse set to TRAINING
+                    category = "TRAINING";
+                    goto setCategory;
+                case "52c3": // Horse set to TRADING
+                    category = "TRADING";
+                    goto setCategory;
+                case "52c4": // Horse set to RETIRED
+                    category = "RETIRED";
+                    goto setCategory;
+                setCategory:;
+                    if (sender.LoggedinUser.LastViewedHorse != null)
+                    {
+                        sender.LoggedinUser.LastViewedHorse.Category = category;
+                        byte[] categoryChangedPacket = PacketBuilder.CreateChat(Messages.FormatHorseSetToNewCategory(category), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(categoryChangedPacket);
+
+                        sender.LoggedinUser.MetaPriority = true;
+                        UpdateHorseMenu(sender, sender.LoggedinUser.LastViewedHorse);
+                    }
+                    break;
+
                 default:
                     if(buttonIdStr.StartsWith("4c"))
                     {
