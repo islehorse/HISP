@@ -998,6 +998,25 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+
+        public static string BuildHorseCompanionEquipMenu(HorseInstance horse, User user)
+        {
+            string message = "";
+            message += Messages.FormatHorseCompanionMenuHeader(horse.Name);
+            if (horse.Equipment.Companion != null)
+                message += Messages.FormatHorseCompanionSelected(horse.Equipment.Companion.IconId, horse.Equipment.Companion.Name);
+            message += Messages.HorseCompanionMenuCurrentlyAvalibleCompanions;
+            foreach (InventoryItem item in user.Inventory.GetItemList())
+            {
+                Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
+                if(itemInfo.Type == "COMPANION")
+                {
+                    message += Messages.FormatHorseCompanionOption(itemInfo.IconId, item.ItemInstances.Count, itemInfo.Name, item.ItemId);
+                }
+            }
+            message += Messages.BackToHorse;
+            return message;
+        }
         public static string BuildHorseDescriptionEditMeta(HorseInstance horse)
         {
             string message = Messages.FormatDescriptionEditMeta(horse.Name, horse.Description);
@@ -1027,12 +1046,16 @@ namespace HISP.Game
             message += Messages.FormatPetButton(horse.RandomId);
             message += Messages.FormatProfileButton(horse.RandomId);
 
-            if (horse.Equipment.Saddle == null && horse.Equipment.SaddlePad == null && horse.Equipment.Bridle == null)
+            if (horse.Equipment.Saddle == null && horse.Equipment.SaddlePad == null && horse.Equipment.Bridle == null && horse.Equipment.Companion == null)
             {
                 string autoSellMessage = Messages.HorseNoAutoSell;
                 if (horse.AutoSell > 0)
                     autoSellMessage = Messages.FormatAutoSellPrice(horse.AutoSell);
                 message += Messages.FormatAutoSell(autoSellMessage);
+                if (horse.AutoSell > 0)
+                    message += Messages.HorseChangeAutoSell;
+                else
+                    message += Messages.HorseSetAutoSell;
             }
             else
             {

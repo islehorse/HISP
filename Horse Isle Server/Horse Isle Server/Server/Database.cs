@@ -1247,6 +1247,20 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
+        public static void SetCompanion(int horseRandomId, int companionItemId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET companion=@companion WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@companion", companionItemId);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
 
         public static void ClearSaddle(int horseRandomId)
         {
@@ -1290,6 +1304,19 @@ namespace HISP.Server
             }
         }
 
+        public static void ClearCompanion(int horseRandomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET companion=NULL WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
 
         public static void SetWorldWeather(string Weather)
         {

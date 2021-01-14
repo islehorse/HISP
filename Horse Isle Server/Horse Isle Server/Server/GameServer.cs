@@ -351,6 +351,13 @@ namespace HISP.Server
                     {
                         if(sender.LoggedinUser.LastViewedHorse != null)
                         {
+                            if(sender.LoggedinUser.LastViewedHorse.AutoSell > 0)
+                            {
+                                byte[] failMessagePacket = PacketBuilder.CreateChat(Messages.HorseTackFailAutoSell, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(failMessagePacket);
+                                break;
+                            }
+
                             if(sender.LoggedinUser.Inventory.HasItemId(itemId))
                             {
                                 Item.ItemInformation itemInfo = Item.GetItemById(itemId);
@@ -388,6 +395,22 @@ namespace HISP.Server
                                     byte[] equipMsgPacket = PacketBuilder.CreateChat(Messages.FormatEquipTackMessage(itemInfo.Name, sender.LoggedinUser.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(equipMsgPacket);
 
+                                }
+                                else if(itemInfo.Type == "COMPANION")
+                                {
+                                    if (sender.LoggedinUser.LastViewedHorse.Equipment.Companion != null)
+                                        sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(sender.LoggedinUser.LastViewedHorse.Equipment.Companion.Id));
+                                    Database.SetCompanion(sender.LoggedinUser.LastViewedHorse.RandomId, itemInfo.Id);
+                                    sender.LoggedinUser.LastViewedHorse.Equipment.Companion = itemInfo;
+
+                                    sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances[0]); // Remove item from inventory.
+
+                                    sender.LoggedinUser.MetaPriority = true;
+                                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseCompanionEquipMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
+                                    sender.SendPacket(metaPacket);
+
+                                    byte[] equipMsgPacket = PacketBuilder.CreateChat(Messages.FormatHorseCompanionEquipMessage(sender.LoggedinUser.LastViewedHorse.Name, itemInfo.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(equipMsgPacket);
                                 }
                                 else
                                 {
@@ -437,6 +460,12 @@ namespace HISP.Server
                                 Database.ClearBridle(sender.LoggedinUser.LastViewedHorse.RandomId);
                                 sender.LoggedinUser.LastViewedHorse.Equipment.Bridle = null;
                                 break;
+                            case 0x34: // Companion
+                                if (sender.LoggedinUser.LastViewedHorse.Equipment.Companion != null)
+                                    sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(sender.LoggedinUser.LastViewedHorse.Equipment.Companion.Id));
+                                Database.ClearCompanion(sender.LoggedinUser.LastViewedHorse.RandomId);
+                                sender.LoggedinUser.LastViewedHorse.Equipment.Companion = null;
+                                goto companionRemove;
                             default:
                                 Logger.ErrorPrint("Unknown equip slot: " + equipSlot.ToString("X"));
                                 break;
@@ -447,6 +476,16 @@ namespace HISP.Server
                         sender.LoggedinUser.MetaPriority = true;
                         byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
+                        break;
+                    companionRemove:;
+                        itemUnequipedMessage = PacketBuilder.CreateChat(Messages.FormatHorseCompanionRemoveMessage(sender.LoggedinUser.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(itemUnequipedMessage);
+
+                        sender.LoggedinUser.MetaPriority = true;
+                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseCompanionEquipMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
+                        sender.SendPacket(metaPacket);
+                        break;
+
                     }
                     else
                     {
@@ -988,9 +1027,18 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseList());
                     sender.SendPacket(metaPacket);
                     break;
-                case "5":
+                case "5": // Back to horse
                     if (sender.LoggedinUser.LastViewedHorse != null)
                         UpdateHorseMenu(sender, sender.LoggedinUser.LastViewedHorse);
+                    break;
+                case "6": // Equip companion
+                    if (sender.LoggedinUser.LastViewedHorse != null)
+                    {
+                        sender.LoggedinUser.MetaPriority = true;
+                        HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
+                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseCompanionEquipMenu(horseInstance,sender.LoggedinUser));
+                        sender.SendPacket(metaPacket);
+                    }
                     break;
                 case "11": // Randomize horse name
                     if (sender.LoggedinUser.LastViewedHorse != null)
