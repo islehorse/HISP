@@ -317,11 +317,20 @@ namespace HISP.Game
             throw new Exception("A mathematically impossible error occured. please check wether the laws of physics still apply.");
         }
 
+        public static string BuildHorseReleased()
+        {
+            string message = "";
+            message += Messages.HorseReleasedMeta;
+            message += Messages.BackToMapHorse;
+            message += Messages.MetaTerminator;
+            return message;
+
+        }
         public static string BuildTopHighscores(string gameName)
         {
             Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameName, 20);
             if (scores.Length <= 0)
-                return "No scores recorded.";
+                return "ERROR: No scores recorded.";
             string message = "";
 
             message += Messages.FormatHighscoreHeader(gameName);
@@ -999,6 +1008,14 @@ namespace HISP.Game
             return message;
         }
 
+
+        public static string BuildHorseReleaseConfirmationMessage(HorseInstance horse)
+        {
+            string message = Messages.FormatHorseAreYouSureMessage(horse.RandomId);
+            message += Messages.BackToMapHorse;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildHorseCompanionEquipMenu(HorseInstance horse, User user)
         {
             string message = "";

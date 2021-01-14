@@ -669,6 +669,11 @@ namespace HISP.Server
             Messages.HorseChangeAutoSell = gameData.messages.meta.horse.horse_inventory.change_auto_sell;
             Messages.HorseTackFailAutoSell = gameData.messages.meta.horse.tack_fail_autosell;
 
+            Messages.HorseAreYouSureYouWantToReleaseFormat = gameData.messages.meta.horse.horse_release;
+            Messages.HorseCantReleaseTheHorseYourRidingOn = gameData.messages.meta.horse.cant_release_currently_riding;
+            Messages.HorseReleasedMeta = gameData.messages.meta.horse.released_horse;
+            Messages.HorseReleasedBy = gameData.messages.meta.horse.released_by_message;
+
             // Horse companion menu
             Messages.HorseCompanionMenuHeaderFormat = gameData.messages.meta.horse.companion_menu.menu_header;
             Messages.HorseCompnaionMenuCurrentCompanionFormat = gameData.messages.meta.horse.companion_menu.selected_companion;

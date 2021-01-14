@@ -45,6 +45,7 @@ namespace HISP.Player
         public Inn LastVisitedInn;
         public HorseInventory HorseInventory;
         public HorseInstance LastViewedHorse;
+        public HorseInstance CurrentlyRidingHorse;
         public PlayerQuests Quests;
         public Highscore Highscores;
         public Award Awards;
