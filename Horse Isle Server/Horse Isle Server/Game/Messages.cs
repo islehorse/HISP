@@ -227,6 +227,19 @@ namespace HISP.Game
         public static string HorseAutoSellConfirmedFormat;
         public static string HorseAutoSellRemoved;
 
+        public static string HorseChangeAutoSell;
+        public static string HorseSetAutoSell;
+
+        public static string HorseTackFailAutoSell;
+
+        // Horse compainion menu
+        public static string HorseCompanionMenuHeaderFormat;
+        public static string HorseCompnaionMenuCurrentCompanionFormat;
+        public static string HorseCompanionEntryFormat;
+        public static string HorseCompanionEquipMessageFormat;
+        public static string HorseCompanionRemoveMessageFormat;
+        public static string HorseCompanionMenuCurrentlyAvalibleCompanions;
+
         // Horse Feed Menu
         public static string HorseCurrentStatusFormat;
         public static string HorseHoldingHorseFeed;
@@ -434,6 +447,26 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+        public static string FormatHorseCompanionRemoveMessage(string horseName)
+        {
+            return HorseCompanionRemoveMessageFormat.Replace("%HORSENAME%", horseName);
+        }
+        public static string FormatHorseCompanionEquipMessage(string horseName, string itemName)
+        {
+            return HorseCompanionEquipMessageFormat.Replace("%HORSENAME%", horseName).Replace("%ITEM%", itemName);
+        }
+        public static string FormatHorseCompanionSelected(int icon, string name)
+        {
+            return HorseCompnaionMenuCurrentCompanionFormat.Replace("%ICONID%", icon.ToString()).Replace("%NAME%", name);
+        }
+        public static string FormatHorseCompanionMenuHeader(string horseName)
+        {
+            return HorseCompanionMenuHeaderFormat.Replace("%HORSENAME%", horseName);
+        }
+        public static string FormatHorseCompanionOption(int icon, int count, string name, int id)
+        {
+            return HorseCompanionEntryFormat.Replace("%ICONID%", icon.ToString()).Replace("%COUNT%", count.ToString("N0")).Replace("%NAME%", name).Replace("%ID%", id.ToString());
+        }
 
         public static string FormatAutoSellConfirmedMessage(int money)
         {
@@ -917,23 +950,23 @@ namespace HISP.Game
         }
         public static string FormatSellMessage(string itemName, int price)
         {
-            return Sold1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
+            return Sold1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0"));
         }
         public static string FormatSellAllMessage(string itemName, int price, int sellAmount)
         {
-            return SoldAllFormat.Replace("%AMOUNT%",sellAmount.ToString()).Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
+            return SoldAllFormat.Replace("%AMOUNT%",sellAmount.ToString()).Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0"));
         }
         public static string FormatBuy25Message(string itemName, int price)
         {
-            return Brought25Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
+            return Brought25Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0"));
         }
         public static string FormatBuy5Message(string itemName, int price)
         {
-            return Brought5Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
+            return Brought5Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0"));
         }
         public static string FormatBuyMessage(string itemName, int price)
         {
-            return Brought1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString());
+            return Brought1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0"));
         }
         public static string FormatShopEntry(int iconid, string count, string name, int price)
         {

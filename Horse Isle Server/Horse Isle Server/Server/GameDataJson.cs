@@ -661,10 +661,21 @@ namespace HISP.Server
             Messages.HorseSetNewCategoryMessageFormat = gameData.messages.meta.horse.horse_set_new_category;
 
             Messages.HorseAutoSellMenuFormat = gameData.messages.meta.horse.auto_sell.auto_sell_meta;
-            Messages.HorseIsAutoSell = gameData.messages.meta.auto_sell.horse.is_auto_sell;
-            Messages.HorseAutoSellConfirmedFormat = gameData.messages.meta.auto_sell.horse.auto_sell_confirmed;
-            Messages.HorseAutoSellRemoved = gameData.messages.meta.auto_sell.horse.auto_sell_remove;
+            Messages.HorseIsAutoSell = gameData.messages.meta.horse.auto_sell.is_auto_sell;
+            Messages.HorseAutoSellConfirmedFormat = gameData.messages.meta.horse.auto_sell.auto_sell_confirmed;
+            Messages.HorseAutoSellRemoved = gameData.messages.meta.horse.auto_sell.auto_sell_remove;
 
+            Messages.HorseSetAutoSell = gameData.messages.meta.horse.horse_inventory.set_auto_sell;
+            Messages.HorseChangeAutoSell = gameData.messages.meta.horse.horse_inventory.change_auto_sell;
+            Messages.HorseTackFailAutoSell = gameData.messages.meta.horse.tack_fail_autosell;
+
+            // Horse companion menu
+            Messages.HorseCompanionMenuHeaderFormat = gameData.messages.meta.horse.companion_menu.menu_header;
+            Messages.HorseCompnaionMenuCurrentCompanionFormat = gameData.messages.meta.horse.companion_menu.selected_companion;
+            Messages.HorseCompanionEntryFormat = gameData.messages.meta.horse.companion_menu.companion_entry;
+            Messages.HorseCompanionEquipMessageFormat = gameData.messages.meta.horse.companion_menu.companion_equip_message;
+            Messages.HorseCompanionRemoveMessageFormat = gameData.messages.meta.horse.companion_menu.companion_remove_message;
+            Messages.HorseCompanionMenuCurrentlyAvalibleCompanions = gameData.messages.meta.horse.companion_menu.companions_avalible;
 
             // Horse Feed Menu
             Messages.HorseCurrentStatusFormat = gameData.messages.meta.horse.feed_horse.current_status;
