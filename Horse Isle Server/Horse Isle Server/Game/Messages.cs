@@ -231,6 +231,10 @@ namespace HISP.Game
         public static string HorseSetAutoSell;
 
         public static string HorseTackFailAutoSell;
+        public static string HorseAreYouSureYouWantToReleaseFormat;
+        public static string HorseCantReleaseTheHorseYourRidingOn;
+        public static string HorseReleasedMeta;
+        public static string HorseReleasedBy;
 
         // Horse compainion menu
         public static string HorseCompanionMenuHeaderFormat;
@@ -447,6 +451,15 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatHorseReleasedBy(string username)
+        {
+            return HorseReleasedBy.Replace("%USERNAME%", username);
+        }
+        public static string FormatHorseAreYouSureMessage(int randomId)
+        {
+            return HorseAreYouSureYouWantToReleaseFormat.Replace("%RANDOMID%", randomId.ToString());
+        }
         public static string FormatHorseCompanionRemoveMessage(string horseName)
         {
             return HorseCompanionRemoveMessageFormat.Replace("%HORSENAME%", horseName);

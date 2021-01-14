@@ -40,6 +40,12 @@ namespace HISP.Game.Inventory
                 Database.AddHorse(horse);
             horsesList.Add(horse);
         }
+
+        public void DeleteHorse(HorseInstance horse)
+        {
+            Database.RemoveHorse(horse.RandomId);
+            horsesList.Remove(horse);
+        }
         
         public bool HorseIdExist(int randomId)
         {

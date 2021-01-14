@@ -394,6 +394,19 @@ namespace HISP.Server
             }
         }
 
+        public static void RemoveHorse(int randomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM Horses WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
         public static void AddHorse(HorseInstance horse)
         {
 
