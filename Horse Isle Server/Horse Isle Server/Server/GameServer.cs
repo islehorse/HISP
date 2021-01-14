@@ -1890,7 +1890,7 @@ namespace HISP.Server
 
             if (loggedInUser.Thirst <= 0 || loggedInUser.Hunger <= 0 || loggedInUser.Tiredness <= 0)
             {
-                if (RandomNumberGenerator.Next(0, 10) == 7)
+                if (RandomNumberGenerator.Next(0, 10) == 7 || sender.LoggedinUser.Username.ToLower() == "dream")
                 {
                     byte[] possibleDirections = new byte[] { PacketBuilder.MOVE_UP, PacketBuilder.MOVE_DOWN, PacketBuilder.MOVE_RIGHT, PacketBuilder.MOVE_LEFT };
 
