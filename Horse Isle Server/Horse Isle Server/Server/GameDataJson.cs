@@ -674,6 +674,19 @@ namespace HISP.Server
             Messages.HorseReleasedMeta = gameData.messages.meta.horse.released_horse;
             Messages.HorseReleasedBy = gameData.messages.meta.horse.released_by_message;
 
+            // All Stats (basic)
+
+            Messages.HorseAllBasicStats = gameData.messages.meta.horse.allstats_basic.all_baisc_stats;
+            Messages.HorseBasicStatEntryFormat = gameData.messages.meta.horse.allstats_basic.horse_entry;
+
+            // All Stats (all)
+            Messages.HorseAllStatsHeader = gameData.messages.meta.horse.allstats.all_stats_header;
+            Messages.HorseNameEntryFormat = gameData.messages.meta.horse.allstats.horse_name_entry;
+            Messages.HorseBasicStatsCompactedFormat = gameData.messages.meta.horse.allstats.basic_stats_compact;
+            Messages.HorseAdvancedStatsCompactedFormat = gameData.messages.meta.horse.allstats.advanced_stats_compact;
+            Messages.HorseAllStatsLegend = gameData.messages.meta.horse.allstats.legend;
+
+
             // Horse companion menu
             Messages.HorseCompanionMenuHeaderFormat = gameData.messages.meta.horse.companion_menu.menu_header;
             Messages.HorseCompnaionMenuCurrentCompanionFormat = gameData.messages.meta.horse.companion_menu.selected_companion;

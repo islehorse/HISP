@@ -1166,6 +1166,16 @@ namespace HISP.Server
                         sender.SendPacket(metaPacket);
                     }
                     break;
+                case "33":
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAllBasicStats(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "34":
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAllStats(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
                 case "31": // Find Ranch
                     break;
                 case "9": // View Tack
