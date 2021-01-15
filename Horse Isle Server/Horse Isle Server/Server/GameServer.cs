@@ -748,6 +748,7 @@ namespace HISP.Server
                             break;
                         }
 
+                        sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count++;
                         Logger.InfoPrint(sender.LoggedinUser.Username + " Captured a: " + capturing.Instance.Breed.Name + " new location: " + capturing.X + ", " + capturing.Y);
 
                         sender.LoggedinUser.MetaPriority = true;
@@ -1190,6 +1191,11 @@ namespace HISP.Server
                     break;
                 case "38": // Read Books
                     break;
+                case "53": // Misc Stats / Tracked Items
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMiscStats(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
                 case "28c1": // Abuse Report
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAbuseReportPage());
@@ -1513,6 +1519,7 @@ namespace HISP.Server
                     Logger.ErrorPrint("Unknnown Wish type: " + wishType.ToString("X"));
                     break;
             }
+            sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.WishingWell).Count++;
             byte[] msg = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_RIGHT);
             sender.SendPacket(msg);
 
@@ -2219,6 +2226,7 @@ namespace HISP.Server
                     }
 
                     sender.LoggedinUser.Teleport(transportLocation.GotoX, transportLocation.GotoY);
+                    sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Transport).Count++;
 
                     byte[] welcomeToIslePacket = PacketBuilder.CreateChat(Messages.FormatWelcomeToAreaMessage(transportLocation.LocationTitle), PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(welcomeToIslePacket);

@@ -493,6 +493,15 @@ namespace HISP.Server
                 HorseInfo.HorseCategories.Add(category);
                 Logger.DebugPrint("Registered horse category type: " + category.Name);
             }
+            int totalTrackedItems = gameData.messages.meta.misc_stats.tracked_items.Count;
+            for(int i = 0; i < totalTrackedItems; i++)
+            {
+                Tracking.TrackedItemStatsMenu trackedItem = new Tracking.TrackedItemStatsMenu();
+                trackedItem.What = gameData.messages.meta.misc_stats.tracked_items[i].id;
+                trackedItem.Value = gameData.messages.meta.misc_stats.tracked_items[i].value;
+                Tracking.TrackedItemsStatsMenu.Add(trackedItem);
+                Logger.DebugPrint("Registered Tracked Item: " + trackedItem.What + " value: " + trackedItem.Value);
+            }
 
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
@@ -563,6 +572,13 @@ namespace HISP.Server
             Messages.StatTired = gameData.messages.meta.stats_page.tired_stat_name;
 
             Messages.StatPlayerFormats = gameData.messages.meta.stats_page.player_stats.ToObject<string[]>();
+
+            // Misc Stats
+            Messages.StatMiscHeader = gameData.messages.meta.misc_stats.header;
+            Messages.StatMiscNoneRecorded = gameData.messages.meta.misc_stats.no_stats_recorded;
+            Messages.StatMiscEntryFormat = gameData.messages.meta.misc_stats.stat_format;
+
+            // Movement
             Messages.RandomMovement = gameData.messages.random_movement;
 
             // Quests Log

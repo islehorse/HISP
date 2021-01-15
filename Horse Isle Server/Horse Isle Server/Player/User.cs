@@ -46,6 +46,7 @@ namespace HISP.Player
         public HorseInventory HorseInventory;
         public HorseInstance LastViewedHorse;
         public HorseInstance CurrentlyRidingHorse;
+        public Tracking TrackedItems;
         public PlayerQuests Quests;
         public Highscore Highscores;
         public Award Awards;
@@ -431,6 +432,7 @@ namespace HISP.Player
             MailBox = new Mailbox(this);
             Highscores = new Highscore(this);
             Awards = new Award(this);
+            TrackedItems = new Tracking(this);
             HorseInventory = new HorseInventory(this);
 
             // Generate SecCodes

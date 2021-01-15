@@ -1184,6 +1184,28 @@ namespace HISP.Game
             return message;
         }
 
+        public static string BuildMiscStats(User user)
+        {
+            string message = Messages.StatMiscHeader;
+            if (user.TrackedItems.TrackingItems.Length <= 0)
+                message += Messages.StatMiscNoneRecorded;
+            foreach(Tracking.TrackedItem trackedItem in user.TrackedItems.TrackingItems)
+            {
+                try
+                {
+                    message += Messages.FormatMiscStatsEntry(Tracking.GetTrackedItemsStatsMenuName(trackedItem.What), trackedItem.Count);
+                }
+                catch(KeyNotFoundException)
+                {
+                    Logger.ErrorPrint(user.Username + " Has tracked items in db that dont have a value associated.");
+                    continue;
+                }
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+
         public static string BuildTackMenu(HorseInstance horse, User user)
         {
             string message = Messages.FormatTackedAsFollowedMessage(horse.Name);
