@@ -57,6 +57,12 @@ namespace HISP.Game
 
         public static string[] StatPlayerFormats;
 
+        // Misc Stats
+
+        public static string StatMiscHeader;
+        public static string StatMiscNoneRecorded;
+        public static string StatMiscEntryFormat;
+
         // Quests Completed Page
         public static string QuestLogHeader;
         public static string QuestFormat;
@@ -465,6 +471,10 @@ namespace HISP.Game
         public static string NothingInterestingHere;
 
 
+        public static string FormatMiscStatsEntry(string statName, int value)
+        {
+            return StatMiscEntryFormat.Replace("%STAT%", statName).Replace("%COUNT%", value.ToString());
+        }
         public static string FormatCompactedAdvancedStats(int speed, int strength, int conformation, int agility, int endurance, int inteligence, int personality)
         {
             return HorseAdvancedStatsCompactedFormat.Replace("%SPEED%", speed.ToString()).Replace("%STRENGTH%", strength.ToString()).Replace("%CONFORMATION%",conformation.ToString()).Replace("%AGILITY%", agility.ToString()).Replace("%ENDURANCE%", endurance.ToString()).Replace("%INTELIGENCE%", inteligence.ToString()).Replace("%PERSONALITY%", personality.ToString());

@@ -38,7 +38,22 @@ namespace HISP.Server
                 string Horses = "CREATE TABLE Horses(randomId INT, ownerId INT, ranchId INT, leaser INT, breed INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string WildHorse = "CREATE TABLE WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string LastPlayer = "CREATE TABLE LastPlayer(roomId TEXT(1028), playerId INT)";
+                string TrackingStats = "CREATE TABLE Tracking(playerId INT, what TEXT(128), count INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = TrackingStats;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
 
 
                 try
@@ -323,6 +338,74 @@ namespace HISP.Server
                 };
             }
             
+        }
+
+        public static void AddTrackedItem(int playerId, Tracking.TrackableItem what, int count)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO Tracking VALUES(@playerId, @what, @count)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@what", what.ToString());
+                sqlCommand.Parameters.AddWithValue("@count", count);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static bool HasTrackedItem(int playerId, Tracking.TrackableItem what)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(*) FROM Tracking WHERE playerId=@playerId AND what=@what";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@what", what.ToString());
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                sqlCommand.Dispose();
+                return count > 0;
+            }
+        }
+        public static int GetTrackedCount(int playerId, Tracking.TrackableItem what)
+        {
+            
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT count FROM Tracking WHERE playerId=@playerId AND what=@what";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@what", what.ToString());
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                sqlCommand.Dispose();
+                return count;
+            }
+        }
+
+        public static void SetTrackedItemCount(int playerId, Tracking.TrackableItem what, int count)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Tracking SET count=@count WHERE playerId=@playerId AND what=@what";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@what", what.ToString());
+                sqlCommand.Parameters.AddWithValue("@count", count);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
         }
 
         public static void AddLastPlayer(string roomId, int playerId)
