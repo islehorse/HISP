@@ -5,6 +5,194 @@ namespace HISP.Game.Horse
 {
     class HorseInfo
     {
+        public enum StatType
+        {
+            AGILITY,
+            CONFORMATION,
+            ENDURANCE,
+            PERSONALITY,
+            SPEED,
+            STRENGTH,
+            INTELIGENCE
+        }
+        public class StatCalculator
+        {
+            public StatCalculator(HorseInstance horse, StatType type)
+            {
+                baseHorse = horse;
+                horseStat = type;
+            }
+            private StatType horseStat;
+            private HorseInstance baseHorse;
+
+            public int BaseValue
+            {
+                get
+                {
+                    switch (horseStat)
+                    {
+                        case StatType.AGILITY:
+                            return baseHorse.Breed.BaseStats.Agility;
+                        case StatType.CONFORMATION:
+                            return baseHorse.Breed.BaseStats.Conformation;
+                        case StatType.ENDURANCE:
+                            return baseHorse.Breed.BaseStats.Endurance;
+                        case StatType.PERSONALITY:
+                            return baseHorse.Breed.BaseStats.Personality;
+                        case StatType.SPEED:
+                            return baseHorse.Breed.BaseStats.Speed;
+                        case StatType.STRENGTH:
+                            return baseHorse.Breed.BaseStats.Strength;
+                        case StatType.INTELIGENCE:
+                            return baseHorse.Breed.BaseStats.Inteligence;
+                        default:
+                            return 0;
+                    }
+                }
+            }
+            public int MaxValue
+            { 
+                get
+                {
+                    return BaseValue * 2;
+                }
+            }
+            public int BreedValue
+            {
+                get
+                {
+                    return BaseValue + BreedOffset;
+                }
+            }
+            public int BreedOffset
+            {
+                get
+                {
+                    switch (horseStat)
+                    {
+                        case StatType.AGILITY:
+                            return baseHorse.AdvancedStats.Agility;
+                        case StatType.CONFORMATION:
+                            return baseHorse.AdvancedStats.Conformation;
+                        case StatType.ENDURANCE:
+                            return baseHorse.AdvancedStats.Endurance;
+                        case StatType.PERSONALITY:
+                            return baseHorse.AdvancedStats.Personality;
+                        case StatType.SPEED:
+                            return baseHorse.AdvancedStats.Speed;
+                        case StatType.STRENGTH:
+                            return baseHorse.AdvancedStats.Strength;
+                        case StatType.INTELIGENCE:
+                            return baseHorse.AdvancedStats.Inteligence;
+                        default:
+                            return 0;
+                    }
+                }
+                set
+                {
+                    switch (horseStat)
+                    {
+                        case StatType.AGILITY:
+                            baseHorse.AdvancedStats.Agility = value;
+                            break;
+                        case StatType.CONFORMATION:
+                            baseHorse.AdvancedStats.Conformation = value;
+                            break;
+                        case StatType.ENDURANCE:
+                            baseHorse.AdvancedStats.Endurance = value;
+                            break;
+                        case StatType.PERSONALITY:
+                            baseHorse.AdvancedStats.Personality = value;
+                            break;
+                        case StatType.SPEED:
+                            baseHorse.AdvancedStats.Speed = value;
+                            break;
+                        case StatType.STRENGTH:
+                            baseHorse.AdvancedStats.Strength = value;
+                            break;
+                        case StatType.INTELIGENCE:
+                            baseHorse.AdvancedStats.Inteligence = value;
+                            break;
+                    }
+                }
+            }
+            public int CompanionOffset
+            {
+                get
+                {
+                    int offsetBy = 0;
+                    if (baseHorse.Equipment.Companion != null)
+                        offsetBy += getOffetFrom(baseHorse.Equipment.Companion);
+                    return offsetBy;
+                }
+            }
+            public int TackOffset
+            {
+                get
+                {
+                    int offsetBy = 0;
+                    if (baseHorse.Equipment.Saddle != null)
+                        offsetBy += getOffetFrom(baseHorse.Equipment.Saddle);
+                    if (baseHorse.Equipment.SaddlePad != null)
+                        offsetBy += getOffetFrom(baseHorse.Equipment.SaddlePad);
+                    if (baseHorse.Equipment.Bridle != null)
+                        offsetBy += getOffetFrom(baseHorse.Equipment.Bridle);
+                    return offsetBy;
+                }
+            }
+            public int Total
+            {
+                get
+                {
+                    return BreedValue + CompanionOffset + TackOffset;
+                }
+            }
+
+            private int getOffetFrom(Item.ItemInformation tackPeice)
+            {
+                int offsetBy = 0;
+                foreach (Item.Effects effect in baseHorse.Equipment.Bridle.Effects)
+                {
+                    string effects = effect.EffectsWhat;
+                    switch (effects)
+                    {
+                        case "AGILITYOFFSET":
+                            if (horseStat == StatType.AGILITY)
+                                offsetBy += effect.EffectAmount;
+                            break;
+                        case "CONFORMATIONOFFSET":
+                            if (horseStat == StatType.CONFORMATION)
+                                offsetBy += effect.EffectAmount;
+                            break;
+                        case "ENDURANCEOFFSET":
+                            if (horseStat == StatType.ENDURANCE)
+                                offsetBy += effect.EffectAmount;
+                            break;
+                        case "PERSONALITYOFFSET":
+                            if (horseStat == StatType.PERSONALITY)
+                                offsetBy += effect.EffectAmount;
+                            break;
+                        case "SPEEDOFFSET":
+                            if (horseStat == StatType.SPEED)
+                                offsetBy += effect.EffectAmount;
+                            break;
+                        case "STRENGTHOFFSET":
+                            if (horseStat == StatType.STRENGTH)
+                                offsetBy += effect.EffectAmount;
+                            break;
+                        case "INTELLIGENCEOFFSET":
+                            if (horseStat == StatType.INTELIGENCE)
+                                offsetBy += effect.EffectAmount;
+                            break;
+
+                    }
+
+                }
+                return offsetBy;
+            }
+
+        }
+
         public class AdvancedStats
         {
             public AdvancedStats(HorseInstance horse, int newSpeed,int newStrength, int newConformation, int newAgility, int newInteligence, int newEndurance, int newPersonality, int newHeight)
@@ -20,6 +208,7 @@ namespace HISP.Game.Horse
                 personality = newPersonality;
                 Height = newHeight;
             }
+
 
             public int Speed
             {

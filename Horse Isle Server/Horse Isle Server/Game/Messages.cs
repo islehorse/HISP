@@ -236,6 +236,18 @@ namespace HISP.Game
         public static string HorseReleasedMeta;
         public static string HorseReleasedBy;
 
+        // All Stats (basic)
+        public static string HorseAllBasicStats;
+        public static string HorseBasicStatEntryFormat;
+
+        // All Stats (all)
+
+        public static string HorseAllStatsHeader;
+        public static string HorseNameEntryFormat;
+        public static string HorseBasicStatsCompactedFormat;
+        public static string HorseAdvancedStatsCompactedFormat;
+        public static string HorseAllStatsLegend;
+
         // Horse compainion menu
         public static string HorseCompanionMenuHeaderFormat;
         public static string HorseCompnaionMenuCurrentCompanionFormat;
@@ -452,6 +464,31 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+
+        public static string FormatCompactedAdvancedStats(int speed, int strength, int conformation, int agility, int endurance, int inteligence, int personality)
+        {
+            return HorseAdvancedStatsCompactedFormat.Replace("%SPEED%", speed.ToString()).Replace("%STRENGTH%", strength.ToString()).Replace("%CONFORMATION%",conformation.ToString()).Replace("%AGILITY%", agility.ToString()).Replace("%ENDURANCE%", endurance.ToString()).Replace("%INTELIGENCE%", inteligence.ToString()).Replace("%PERSONALITY%", personality.ToString());
+        }
+        public static string FormatCompactedBasicStats(int health, int hunger, int thirst, int mood, int tiredness, int groom, int shoes)
+        {
+            int healthPercentage = Convert.ToInt32(Math.Floor((((double)health / 1000.0) * 100.0)));
+            int hungerPercentage = Convert.ToInt32(Math.Floor((((double)hunger / 1000.0) * 100.0)));
+            int thirstPercentage = Convert.ToInt32(Math.Floor((((double)thirst / 1000.0) * 100.0)));
+            int moodPercentage = Convert.ToInt32(Math.Floor((((double)mood / 1000.0) * 100.0)));
+            int tirednessPercentage = Convert.ToInt32(Math.Floor((((double)tiredness / 1000.0) * 100.0)));
+            int groomPercentage = Convert.ToInt32(Math.Floor((((double)groom / 1000.0) * 100.0)));
+            int shoesPercentage = Convert.ToInt32(Math.Floor((((double)shoes / 1000.0) * 100.0)));
+
+            return HorseBasicStatsCompactedFormat.Replace("%HEALTH%", healthPercentage.ToString()).Replace("%HUNGER%", hungerPercentage.ToString()).Replace("%THIRST%", thirstPercentage.ToString()).Replace("%MOOD%", moodPercentage.ToString()).Replace("%TIREDNESS%", tirednessPercentage.ToString()).Replace("%GROOM%", groomPercentage.ToString()).Replace("%SHOES%", shoesPercentage.ToString());
+        }
+        public static string FormatAllStatsEntry(string horseName, string color, string breedName, string sex, int exp)
+        {
+            return HorseNameEntryFormat.Replace("%HORSENAME%", horseName).Replace("%COLOR%", color).Replace("%BREEDNAME%", breedName).Replace("%SEX%", sex).Replace("%EXP%", exp.ToString("N0"));
+        }
+        public static string FormaHorseAllBasicStatsEntry(string horseName, string color, string breedName, string sex, int exp)
+        {
+            return HorseBasicStatEntryFormat.Replace("%HORSENAME%", horseName).Replace("%COLOR%", color).Replace("%BREEDNAME%", breedName).Replace("%SEX%", sex).Replace("%EXP%", exp.ToString("N0"));
+        }
         public static string FormatHorseReleasedBy(string username)
         {
             return HorseReleasedBy.Replace("%USERNAME%", username);
