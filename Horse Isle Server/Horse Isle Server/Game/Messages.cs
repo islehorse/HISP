@@ -157,8 +157,26 @@ namespace HISP.Game
         public static string DroppedAnItemMessage;
         public static string ItemInformationFormat;
 
+        // Pond
+        public static string PondHeader;
+        public static string PondGoFishing;
+        public static string PondNoFishingPole;
+        public static string PondNoEarthWorms;
+        public static string PondDrinkHereIfSafe;
+        public static string PondHorseDrinkFormat;
+
+        public static string PondNotThirstyFormat;
+        public static string PondDrinkFullFormat;
+        public static string PondCantDrinkHpLowFormat;
+        public static string PondDrinkOhNoesFormat;
+
+        // Mud Hole
+
+        public static string MudHoleNoHorses;
+        public static string MudHoleRuinedGroomFormat;
 
         // Competition Gear
+
         public static string EquipCompetitionGearFormat;
         public static string RemoveCompetitionGear;
 
@@ -369,6 +387,7 @@ namespace HISP.Game
         // Sec Codes
         public static string InvalidSecCodeError;
         public static string YouEarnedAnItemFormat;
+        public static string YouLostAnItemFormat;
         public static string YouEarnedMoneyFormat;
         public static string BeatHighscoreFormat;
         public static string BeatBestTimeFormat;
@@ -469,8 +488,32 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+        
+        public static string FormatPondNotThirsty(string horseName)
+        {
+            return PondNotThirstyFormat.Replace("%HORSENAME%", horseName);
+        }
+        public static string FormatPondDrinkOhNoes(string horseName)
+        {
+            return PondDrinkOhNoesFormat.Replace("%HORSENAME%", horseName);
+        }
+        public static string FormatPondDrinkFull(string horseName)
+        {
+            return PondDrinkFullFormat.Replace("%HORSENAME%", horseName);
+        }
+        public static string FormatPondHpLowMessage(string horseName)
+        {
+            return PondCantDrinkHpLowFormat.Replace("%HORSENAME%", horseName);
+        }
 
-
+        public static string FormatPondDrinkHorseFormat(string horseName, int thirst, int maxThirst, int randomId)
+        {
+            return PondHorseDrinkFormat.Replace("%HORSENAME%", horseName).Replace("%THIRST%", thirst.ToString()).Replace("%MAXTHIRST%", maxThirst.ToString()).Replace("%RANDOMID%", randomId.ToString());
+        }
+        public static string FormatMudHoleGroomDestroyed(string horseName)
+        {
+            return MudHoleRuinedGroomFormat.Replace("%HORSENAME%", horseName);
+        }
         public static string FormatMiscStatsEntry(string statName, int value)
         {
             return StatMiscEntryFormat.Replace("%STAT%", statName).Replace("%COUNT%", value.ToString());
@@ -1004,6 +1047,10 @@ namespace HISP.Game
             return PlayerCommandFormat.Replace("%COMMAND%", command);
         }
 
+        public static string FormatYouLostAnItemMessage(string itemName)
+        {
+            return YouLostAnItemFormat.Replace("%ITEM%", itemName);
+        }
         public static string FormatYouEarnedAnItemMessage(string itemName)
         {
             return YouEarnedAnItemFormat.Replace("%ITEM%", itemName);

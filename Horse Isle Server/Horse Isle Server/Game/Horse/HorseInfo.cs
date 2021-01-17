@@ -397,7 +397,7 @@ namespace HISP.Game.Horse
                         value = 1000;
                     if (value < 0)
                         value = 0;
-                    hunger = value;
+                    thirst = value;
                     Database.SetHorseThirst(baseHorse.RandomId, value);
                 }
             }

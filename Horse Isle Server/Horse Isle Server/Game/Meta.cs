@@ -731,6 +731,48 @@ namespace HISP.Game
         {
             return Messages.FountainMeta;
         }
+        private static string buildPond(User user)
+        {
+            string message = Messages.PondHeader;
+            if(!user.Inventory.HasItemId(Item.FishingPole))
+            {
+                message += Messages.PondNoFishingPole;
+            }
+            else if(!user.Inventory.HasItemId(Item.Earthworm))
+            {
+                message += Messages.PondNoEarthWorms;
+            }
+            else
+            {
+                message += Messages.PondGoFishing;
+            }
+            message += Messages.PondDrinkHereIfSafe;
+            foreach(HorseInstance horse in user.HorseInventory.HorseList)
+            {
+                message += Messages.FormatPondDrinkHorseFormat(horse.Name, horse.BasicStats.Thirst, 1000, horse.RandomId);
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        private static string buildMudHole(User user)
+        {
+            string message = "";
+            if(user.HorseInventory.HorseList.Length > 0)
+            {
+                int rngHorseIndex = GameServer.RandomNumberGenerator.Next(0, user.HorseInventory.HorseList.Length);
+                HorseInstance horse = user.HorseInventory.HorseList[rngHorseIndex];
+                horse.BasicStats.Groom = 0;
+                message += Messages.FormatMudHoleGroomDestroyed(horse.Name);
+            }
+            else
+            {
+                message += Messages.MudHoleNoHorses;
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         private static string buildPassword()
         {
             return Messages.PasswordEntry + Messages.ExitThisPlace + Messages.MetaTerminator;
@@ -772,6 +814,7 @@ namespace HISP.Game
 
             if (specialTile.Title != null && specialTile.Title != "")
                 message += Messages.FormatTileName(specialTile.Title); 
+
 
             if (specialTile.Description != null && specialTile.Description != "")
                 message += specialTile.Description;
@@ -834,6 +877,14 @@ namespace HISP.Game
                 if(TileCode == "LIBRARY")
                 {
                     message += buildLibary();
+                }
+                if(TileCode == "POND")
+                {
+                    message += buildPond(user);
+                }
+                if(TileCode == "MUDHOLE")
+                {
+                    message += buildMudHole(user);
                 }
                 if(TileCode == "MULTIROOM")
                 {
@@ -1066,7 +1117,7 @@ namespace HISP.Game
             else
                 message += Messages.HorseIsTrainable;
 
-            if (user.Facing <= 5)
+            if (user.CurrentlyRidingHorse == null)
                 message += Messages.FormatMountButton(horse.RandomId);
             else
                 message += Messages.FormatDisMountButton(horse.RandomId);

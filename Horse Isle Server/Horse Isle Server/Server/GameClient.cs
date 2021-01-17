@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using HISP.Player;
 using HISP.Game;
+using HISP.Game.Horse;
 
 namespace HISP.Server
 {
@@ -52,20 +53,35 @@ namespace HISP.Server
                 // From testing hunger seemed to go down fastest, then thirst, and finally tiredness.
 
 
-                if(totalMinutesElapsed % 1 == 0)
+                foreach(HorseInstance horse in LoggedinUser.HorseInventory.HorseList)
                 {
-                    LoggedinUser.Hunger -= 1;
+                    if (totalMinutesElapsed % 2 == 0)
+                    {
+                        horse.BasicStats.Thirst--;
+                        horse.BasicStats.Hunger--;
+                    }
+                    if (totalMinutesElapsed % 2 == 0 && (horse.BasicStats.Thirst <= 100 || horse.BasicStats.Thirst <= 100 || horse.BasicStats.Tiredness <= 100)) 
+                        horse.BasicStats.Health--;
+
+                    if (totalMinutesElapsed % 60 == 0)
+                    {
+                        horse.BasicStats.Mood--;
+                        horse.BasicStats.Shoes--;
+                        horse.BasicStats.Tiredness--;
+                    }
+
+
                 }
+
+
+                if (totalMinutesElapsed % 1 == 0)
+                    LoggedinUser.Thirst--;
 
                 if (totalMinutesElapsed % 5 == 0)
-                {
-                    LoggedinUser.Thirst -= 1;
-                }
+                    LoggedinUser.Hunger--;
 
                 if (totalMinutesElapsed % 10 == 0)
-                {
-                    LoggedinUser.Tiredness -= 1;
-                }
+                    LoggedinUser.Tiredness--;
             }
 
             minuteTimer.Change(oneMinute, oneMinute);

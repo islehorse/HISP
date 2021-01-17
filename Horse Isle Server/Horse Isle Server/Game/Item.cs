@@ -57,6 +57,8 @@ namespace HISP.Game
         public static int Telescope;
         public static int Pitchfork;
         public static int WishingCoin;
+        public static int FishingPole;
+        public static int Earthworm;
         
         public static ItemInformation[] GetAllWishableItems()
         {
