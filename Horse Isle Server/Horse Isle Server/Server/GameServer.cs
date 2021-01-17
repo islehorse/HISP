@@ -387,6 +387,69 @@ namespace HISP.Server
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to tack at a non existant horse.");
                         break;
                     }
+                case PacketBuilder.HORSE_DRINK:
+                    if(World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                    {
+                        World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        if(tile.Code != "POND")
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to drink from a pond when not on one.");
+                            break;
+                        }
+                    }
+
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+
+                        if(horseInst.BasicStats.Health < 200)
+                        {
+                            byte[] hpToLow = PacketBuilder.CreateChat(Messages.FormatPondHpLowMessage(horseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(hpToLow);
+                            break;
+                        }
+
+                        if(horseInst.BasicStats.Thirst < 1000)
+                        {
+                            horseInst.BasicStats.Thirst = 1000;
+                            byte[] drinkFull = PacketBuilder.CreateChat(Messages.FormatPondDrinkFull(horseInst.Name),PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(drinkFull);
+
+                            if(RandomNumberGenerator.Next(0, 100) < 25)
+                            {
+                                horseInst.BasicStats.Health -= 200;
+                                byte[] ohNoes = PacketBuilder.CreateChat(Messages.FormatPondDrinkOhNoes(horseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(ohNoes);
+                            }
+
+                            UpdateArea(sender);
+                        }
+                        else
+                        {
+                            byte[] notThirsty = PacketBuilder.CreateChat(Messages.FormatPondNotThirsty(horseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(notThirsty);
+                            break;
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to tack at a non existant horse.");
+                        break;
+                    }
                 case PacketBuilder.HORSE_TACK_EQUIP:
 
                     int itemId = 0;
@@ -1777,7 +1840,7 @@ namespace HISP.Server
 
                 }
             }
-            else if (method == PacketBuilder.SECCODE_ITEM)
+            else if (method == PacketBuilder.SECCODE_GIVE_ITEM)
             {
                 byte[] ExpectedSecCode = sender.LoggedinUser.GenerateSecCode();
                 byte[] GotSecCode = new byte[4];
@@ -1815,6 +1878,59 @@ namespace HISP.Server
                     else
                     {
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Sent correct sec code, but tried to give an non existant item");
+                        return;
+                    }
+
+                }
+                else
+                {
+                    byte[] errorMessage = PacketBuilder.CreateChat(Messages.InvalidSecCodeError, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(errorMessage);
+                    Logger.HackerPrint(sender.LoggedinUser.Username + " Sent invalid sec code");
+                    return;
+                }
+            }
+            else if (method == PacketBuilder.SECCODE_DELETE_ITEM)
+            {
+                byte[] ExpectedSecCode = sender.LoggedinUser.GenerateSecCode();
+                byte[] GotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
+                if (ExpectedSecCode.SequenceEqual(GotSecCode))
+                {
+                    if (packet.Length < 6)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a seccode item request with invalid size");
+                        return;
+                    }
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string intStr = packetStr.Substring(6, packetStr.Length - 6 - 2);
+                    int value = -1;
+                    try
+                    {
+                        value = int.Parse(intStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid value");
+                        return;
+                    }
+
+
+                    if (sender.LoggedinUser.Inventory.HasItemId(value))
+                    {
+                        InventoryItem item = sender.LoggedinUser.Inventory.GetItemByItemId(value);
+                        sender.LoggedinUser.Inventory.Remove(item.ItemInstances[0]);
+
+                        Item.ItemInformation itemInfo = Item.GetItemById(value);
+                        byte[] lostItemMessage = PacketBuilder.CreateChat(Messages.FormatYouLostAnItemMessage(itemInfo.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(lostItemMessage);
+
+                        UpdateArea(sender);
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Sent correct sec code, but tried to delete an non existant item");
                         return;
                     }
 
@@ -1891,7 +2007,6 @@ namespace HISP.Server
                 byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildTopTimes(gameName));
                 sender.SendPacket(metaTag);
             }
-
 
         }
         public static void OnMovementPacket(GameClient sender, byte[] packet)
@@ -2080,6 +2195,7 @@ namespace HISP.Server
                 byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
                 sender.SendPacket(moveResponse);
             }
+
 
             Update(sender);
         }
@@ -2392,20 +2508,21 @@ namespace HISP.Server
                 case PacketBuilder.ITEM_PICKUP_ALL:
                     string chatMsg = Messages.GrabAllItemsMessage;
                     DroppedItems.DroppedItem[] droppedItems = DroppedItems.GetItemsAt(sender.LoggedinUser.X, sender.LoggedinUser.Y);
-                    foreach(DroppedItems.DroppedItem item in droppedItems)
+
+                    try
                     {
-                        try
+                        foreach (DroppedItems.DroppedItem item in droppedItems)
                         {
                             sender.LoggedinUser.Inventory.Add(item.instance);
+                            DroppedItems.RemoveDroppedItem(item);
                         }
-                        catch (InventoryException)
-                        {
-                            chatMsg = Messages.GrabbedAllItemsButInventoryFull;
-                            break;
-                        }
-                            
-                        DroppedItems.RemoveDroppedItem(item);
                     }
+                    catch (InventoryException)
+                    {
+                        chatMsg = Messages.GrabbedAllItemsButInventoryFull;
+                        break;
+                    }
+
                     UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
 
                     byte[] chatMessage = PacketBuilder.CreateChat(chatMsg, PacketBuilder.CHAT_BOTTOM_RIGHT);

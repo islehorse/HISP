@@ -512,6 +512,8 @@ namespace HISP.Server
             Item.Telescope = gameData.item.special.telescope;
             Item.Pitchfork = gameData.item.special.pitchfork;
             Item.WishingCoin = gameData.item.special.wishing_coin;
+            Item.FishingPole = gameData.item.special.fishing_poll;
+            Item.Earthworm = gameData.item.special.earthworm;
 
             // New Users
             Messages.NewUserMessage = gameData.messages.new_user.starting_message;
@@ -577,6 +579,23 @@ namespace HISP.Server
             Messages.StatMiscHeader = gameData.messages.meta.misc_stats.header;
             Messages.StatMiscNoneRecorded = gameData.messages.meta.misc_stats.no_stats_recorded;
             Messages.StatMiscEntryFormat = gameData.messages.meta.misc_stats.stat_format;
+
+            // Pond
+            Messages.PondHeader = gameData.messages.meta.pond.header;
+            Messages.PondGoFishing = gameData.messages.meta.pond.go_fishing;
+            Messages.PondNoFishingPole = gameData.messages.meta.pond.no_fishing_pole;
+            Messages.PondDrinkHereIfSafe = gameData.messages.meta.pond.drink_here;
+            Messages.PondHorseDrinkFormat = gameData.messages.meta.pond.horse_drink_format;
+            Messages.PondNoEarthWorms = gameData.messages.meta.pond.no_earth_worms;
+
+            Messages.PondDrinkFullFormat = gameData.messages.meta.pond.drank_full;
+            Messages.PondCantDrinkHpLowFormat = gameData.messages.meta.pond.cant_drink_hp_low;
+            Messages.PondDrinkOhNoesFormat = gameData.messages.meta.pond.drank_something_bad;
+            Messages.PondNotThirstyFormat = gameData.messages.meta.pond.not_thirsty;
+
+            // Mud Hole
+            Messages.MudHoleNoHorses = gameData.messages.meta.mud_hole.no_horses;
+            Messages.MudHoleRuinedGroomFormat = gameData.messages.meta.mud_hole.ruined_groom;
 
             // Movement
             Messages.RandomMovement = gameData.messages.random_movement;
@@ -933,6 +952,7 @@ namespace HISP.Server
 
             Messages.InvalidSecCodeError = gameData.messages.sec_code.invalid_sec_code;
             Messages.YouEarnedAnItemFormat = gameData.messages.sec_code.item_earned;
+            Messages.YouLostAnItemFormat = gameData.messages.sec_code.item_deleted;
             Messages.YouEarnedMoneyFormat = gameData.messages.sec_code.money_earned;
             Messages.BeatHighscoreFormat = gameData.messages.sec_code.highscore_beaten;
             Messages.BeatBestTimeFormat = gameData.messages.sec_code.best_time_beaten;

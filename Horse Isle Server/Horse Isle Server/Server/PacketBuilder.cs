@@ -55,6 +55,7 @@ namespace HISP.Server
         public const byte HORSE_TRY_CAPTURE = 0x1C;
         public const byte HORSE_RELEASE = 0x19;
         public const byte HORSE_TACK = 0x16;
+        public const byte HORSE_DRINK = 0x2B;
         public const byte HORSE_GIVE_FEED = 0x1B;
         public const byte HORSE_TACK_EQUIP = 0x3C;
         public const byte HORSE_TACK_UNEQUIP = 0x3D;
@@ -73,7 +74,8 @@ namespace HISP.Server
         public const byte WISH_WORLDPEACE = 0x33;
 
         public const byte SECCODE_QUEST = 0x32;
-        public const byte SECCODE_ITEM = 0x28;
+        public const byte SECCODE_GIVE_ITEM = 0x28;
+        public const byte SECCODE_DELETE_ITEM = 0x29;
         public const byte SECCODE_SCORE = 0x3D;
         public const byte SECCODE_TIME = 0x3E;
         public const byte SECCODE_MONEY = 0x1E;
