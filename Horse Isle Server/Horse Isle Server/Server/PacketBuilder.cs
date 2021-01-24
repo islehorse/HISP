@@ -252,7 +252,7 @@ namespace HISP.Server
             return Packet;
         }
 
-        public static byte[] CreateLoginPacket(bool Success)
+        public static byte[] CreateLoginPacket(bool Success, string message="")
         {
             MemoryStream ms = new MemoryStream();
             ms.WriteByte(PACKET_LOGIN);
