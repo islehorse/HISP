@@ -104,7 +104,36 @@ namespace HISP.Game.Chat
         {
             if (!user.Administrator)
                 return false;
-            user.NoClip = !user.NoClip;
+            
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+        }
+
+        public static bool Kick(string message, string[] args, User user)
+        {
+            if (!user.Administrator || !user.Moderator)
+                return false;
+            if (args.Length <= 0)
+                return false;
+
+            try
+            {
+                User toKick = GameServer.GetUserByName(args[0]);
+
+                if (args.Length >= 2)
+                {
+                    string reason = string.Join(" ", args, 1, args.Length - 1);
+                    toKick.LoggedinClient.Kick(reason);
+                }
+                else
+                    toKick.LoggedinClient.Kick(Messages.KickReasonKicked);
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
@@ -119,7 +148,7 @@ namespace HISP.Game.Chat
                 return false;
             if(args[0] == "PLAYER")
             {
-                if(args.Length <= 1)
+                if(args.Length <= 2)
                     return false;
                 try
                 {

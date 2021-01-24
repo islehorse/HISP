@@ -332,11 +332,7 @@ namespace HISP.Server
                 receivePackets();
             });
             recvPackets.Start();
-
-            if(ConfigReader.CustomBanner)
-            {
-                byte[] loginFailedPacket = PacketBuilder.
-            }
+            
         }
     }
 }
