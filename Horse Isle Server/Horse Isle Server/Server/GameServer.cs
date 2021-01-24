@@ -2080,7 +2080,7 @@ namespace HISP.Server
                     if (tile.ExitY != 0)
                         newY = tile.ExitY;
                     else
-                        if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
+                        if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1) || loggedInUser.NoClip)
                             newY += 1;
 
 
@@ -2103,7 +2103,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1))
+                    if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1) || loggedInUser.NoClip)
                         loggedInUser.Y += 1;
 
                     Direction = PacketBuilder.DIRECTION_DOWN;
@@ -2121,12 +2121,12 @@ namespace HISP.Server
             if (movementDirection == PacketBuilder.MOVE_UP)
             {
                 direction = PacketBuilder.DIRECTION_UP;
-                if (Map.CheckPassable(newX, newY - 1))
+                if (Map.CheckPassable(newX, newY - 1) || loggedInUser.NoClip)
                     newY -= 1;
                 
 
                 if (loggedInUser.Facing == (direction + (onHorse * 5))&& onHorse != 0) // Double move
-                    if (Map.CheckPassable(newX, newY - 1))
+                    if (Map.CheckPassable(newX, newY - 1) || loggedInUser.NoClip)
                     {
                         newY -= 1;
                         moveTwo = true;
@@ -2135,12 +2135,12 @@ namespace HISP.Server
             else if (movementDirection == PacketBuilder.MOVE_LEFT)
             {
                 direction = PacketBuilder.DIRECTION_LEFT;
-                if (Map.CheckPassable(newX - 1, newY))
+                if (Map.CheckPassable(newX - 1, newY) || loggedInUser.NoClip)
                     newX -= 1;
 
 
                 if (loggedInUser.Facing == (direction + (onHorse * 5)) && onHorse != 0) // Double move
-                    if (Map.CheckPassable(newX - 1, newY))
+                    if (Map.CheckPassable(newX - 1, newY) || loggedInUser.NoClip)
                     {
                         newX -= 1;
                         moveTwo = true;
@@ -2149,12 +2149,12 @@ namespace HISP.Server
             else if (movementDirection == PacketBuilder.MOVE_RIGHT)
             {
                 direction = PacketBuilder.DIRECTION_RIGHT;
-                if (Map.CheckPassable(newX + 1, newY))
+                if (Map.CheckPassable(newX + 1, newY) || loggedInUser.NoClip)
                     newX += 1;
 
 
                 if (loggedInUser.Facing == (direction + (onHorse * 5)) && onHorse != 0) // Double move
-                    if (Map.CheckPassable(newX + 1, newY))
+                    if (Map.CheckPassable(newX + 1, newY) || loggedInUser.NoClip)
                     {
                         newX += 1;
                         moveTwo = true;
@@ -2163,12 +2163,12 @@ namespace HISP.Server
             else if (movementDirection == PacketBuilder.MOVE_DOWN)
             {
                 direction = PacketBuilder.DIRECTION_DOWN;
-                if (Map.CheckPassable(newX, newY + 1))
+                if (Map.CheckPassable(newX, newY + 1) || loggedInUser.NoClip)
                     newY += 1;
 
 
                 if (loggedInUser.Facing == (direction + (onHorse * 5)) && onHorse != 0) // Double move
-                    if (Map.CheckPassable(newX, newY + 1))
+                    if (Map.CheckPassable(newX, newY + 1) || loggedInUser.NoClip)
                     {
                         newY += 1;
                         moveTwo = true;
