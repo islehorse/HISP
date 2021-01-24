@@ -211,8 +211,13 @@ namespace HISP.Server
 
                             foreach (HorseInstance horse in sender.LoggedinUser.HorseInventory.HorseList)
                                 price += vet.CalculatePrice(horse.BasicStats.Health);
-
-                            if (sender.LoggedinUser.Money >= price)
+                            if(price == 0)
+                            {
+                                byte[] notNeededMessagePacket = PacketBuilder.CreateChat(Messages.VetServicesNotNeededAll, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(notNeededMessagePacket);
+                                break;
+                            }
+                            else if (sender.LoggedinUser.Money >= price)
                             {
                                 foreach (HorseInstance horse in sender.LoggedinUser.HorseInventory.HorseList)
                                     horse.BasicStats.Health = 1000;
@@ -227,7 +232,9 @@ namespace HISP.Server
                             {
                                 byte[] cannotAffordMessagePacket = PacketBuilder.CreateChat(Messages.VetCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(cannotAffordMessagePacket);
+                                break;
                             }
+                            UpdateArea(sender);
                         }
                     }
                     break;
@@ -276,9 +283,9 @@ namespace HISP.Server
                                     byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.VetCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(cantAffordMessage);
                                 }
+                                UpdateArea(sender);
                             }
                         }
-                        
                         break;
                     }
                     else

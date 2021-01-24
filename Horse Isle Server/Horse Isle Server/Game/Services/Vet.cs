@@ -22,8 +22,8 @@ namespace HISP.Game.Services
         public double PriceMultiplier; 
         public int CalculatePrice(int health)
         {
-            double price = ((double)health - 1000.0) * PriceMultiplier;
-            return Convert.ToInt32(Math.Floor(price));
+            double price = (1000.0 - (double)health) * PriceMultiplier;
+            return Convert.ToInt32(Math.Round(price));
         }
         
         public static Vet GetVetById(int id)
