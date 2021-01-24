@@ -134,6 +134,7 @@ namespace HISP.Server
         public const byte ITEM_SHOVEL = 0x5A;
 
         public const byte LOGIN_INVALID_USER_PASS = 0x15;
+        public const byte LOGIN_CUSTOM_MESSAGE = 0x16;
         public const byte LOGIN_SUCCESS = 0x14;
 
         public const byte DIRECTION_UP = 0;
@@ -256,10 +257,16 @@ namespace HISP.Server
         {
             MemoryStream ms = new MemoryStream();
             ms.WriteByte(PACKET_LOGIN);
-            if (Success)
+            if (message != "")
+                ms.WriteByte(LOGIN_CUSTOM_MESSAGE);
+            else if (Success)
                 ms.WriteByte(LOGIN_SUCCESS);
             else
                 ms.WriteByte(LOGIN_INVALID_USER_PASS);
+
+            byte[] loginFailMessage = Encoding.UTF8.GetBytes(message);
+            ms.Write(loginFailMessage, 0x00, loginFailMessage.Length);
+
             ms.WriteByte(PACKET_TERMINATOR);
 
             ms.Seek(0x00, SeekOrigin.Begin);

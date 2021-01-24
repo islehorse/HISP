@@ -989,6 +989,7 @@ namespace HISP.Server
 
             // Disconnect Reasons
 
+            Messages.KickReasonKicked = gameData.messages.disconnect.kicked;
             Messages.KickReasonBanned = gameData.messages.disconnect.banned;
             Messages.KickReasonIdleFormat = gameData.messages.disconnect.client_timeout.kick_message;
             Messages.KickReasonNoTime = gameData.messages.disconnect.no_playtime;

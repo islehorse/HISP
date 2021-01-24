@@ -19,13 +19,11 @@ namespace HISP.Server
         public static string MapFile;
         public static string GameDataFile;
         public static string CrossDomainPolicyFile;
-        public static string BannerText;
 
         public static bool Debug;
         public static bool AllUsersSubbed;
         public static bool BadWords;
         public static bool DoCorrections;
-        public static bool CustomBanner;
 
         public const int MAX_STACK = 40;
 
@@ -91,12 +89,6 @@ namespace HISP.Server
                         break;
                     case "gamedata":
                         GameDataFile = data;
-                        break;
-                    case "enable_custom_banner":
-                        CustomBanner = data == "true";
-                        break;
-                    case "custom_banner":
-                        BannerText = data;
                         break;
                     case "crossdomain":
                         CrossDomainPolicyFile = data;

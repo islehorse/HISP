@@ -477,6 +477,7 @@ namespace HISP.Game
 
         // Disconnect Messages
         public static string KickReasonBanned;
+        public static string KickReasonKicked;
         public static string KickReasonDuplicateLogin;
         public static string KickReasonIdleFormat;
         public static string KickReasonNoTime;
