@@ -891,7 +891,6 @@ namespace HISP.Game
                     int VetId = int.Parse(TileArg);
                     Vet vet = Vet.GetVetById(VetId);
                     message += buildVet(vet, user);
-                    Logger.DebugPrint(message);
                 }
                 if(TileCode == "BANK")
                 {

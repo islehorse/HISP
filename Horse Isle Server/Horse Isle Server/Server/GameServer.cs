@@ -197,6 +197,95 @@ namespace HISP.Server
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to feed at a non existant horse.");
                         break;
                     }
+                case PacketBuilder.HORSE_VET_SERVICE_ALL:
+
+                    if (World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                    {
+                        World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        if (tile.Code.StartsWith("VET-"))
+                        {
+                            string[] vetInfo = tile.Code.Split('-');
+                            int vetId = int.Parse(vetInfo[1]);
+                            Vet vet = Vet.GetVetById(vetId);
+                            int price = 0;
+
+                            foreach (HorseInstance horse in sender.LoggedinUser.HorseInventory.HorseList)
+                                price += vet.CalculatePrice(horse.BasicStats.Health);
+
+                            if (sender.LoggedinUser.Money >= price)
+                            {
+                                foreach (HorseInstance horse in sender.LoggedinUser.HorseInventory.HorseList)
+                                    horse.BasicStats.Health = 1000;
+
+                                byte[] healedMessagePacket = PacketBuilder.CreateChat(Messages.VetAllFullHealthRecoveredMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(healedMessagePacket);
+
+                                sender.LoggedinUser.Money -= price;
+
+                            }
+                            else
+                            {
+                                byte[] cannotAffordMessagePacket = PacketBuilder.CreateChat(Messages.VetCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cannotAffordMessagePacket);
+                            }
+                        }
+                    }
+                    break;
+                case PacketBuilder.HORSE_VET_SERVICE:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+
+                    if (randomIdStr == "NaN")
+                        break;
+                        
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        sender.LoggedinUser.LastViewedHorse = horseInst;
+
+                        if(World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                        {
+                            World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            if(tile.Code.StartsWith("VET-"))
+                            {
+                                string[] vetInfo = tile.Code.Split('-');
+                                int vetId = int.Parse(vetInfo[1]);
+
+                                Vet vet = Vet.GetVetById(vetId);
+                                int price = vet.CalculatePrice(horseInst.BasicStats.Health);
+                                if(sender.LoggedinUser.Money >= price)
+                                {
+                                    horseInst.BasicStats.Health = 1000;
+                                    sender.LoggedinUser.Money -= price;
+
+                                    byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatVetHorseAtFullHealthMessage(horseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(messagePacket);
+                                }
+                                else
+                                {
+                                    byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.VetCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordMessage);
+                                }
+                            }
+                        }
+                        
+                        break;
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to use vet services on a non existant horse.");
+                        break;
+                    }
                 case PacketBuilder.HORSE_GIVE_FEED:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
