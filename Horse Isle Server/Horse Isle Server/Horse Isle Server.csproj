@@ -87,6 +87,7 @@
     <Compile Include="Game\Services\Inn.cs" />
     <Compile Include="Game\Services\Shop.cs" />
     <Compile Include="Game\Inventory\ShopInventory.cs" />
+    <Compile Include="Game\Services\Vet.cs" />
     <Compile Include="Game\SwfModules\Brickpoet.cs" />
     <Compile Include="Game\Tracking.cs" />
     <Compile Include="Player\Award.cs" />
