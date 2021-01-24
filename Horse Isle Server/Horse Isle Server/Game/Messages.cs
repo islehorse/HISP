@@ -296,6 +296,17 @@ namespace HISP.Game
         public static string HorseEquipFormat;
         public static string BackToHorse;
 
+        // Vet
+        public static string VetServiceHorseFormat;
+        public static string VetSerivcesNotNeeded;
+        public static string VetApplyServicesFormat;
+
+        public static string VetApplyServicesForAllFormat;
+        public static string VetFullHealthRecoveredMessageFormat;
+
+        public static string VetServicesNotNeededAll;
+        public static string VetAllFullHealthRecoveredMessage;
+
         // Consume
 
         public static string ConsumeItemFormat;
@@ -490,6 +501,27 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
         
+        public static string FormatVetServiceHorseMeta(string horseName, int currentHealth, int maxHealth)
+        {
+            return VetServiceHorseFormat.Replace("%HORSENAME%", horseName).Replace("%CURHEALTH%", currentHealth.ToString()).Replace("%MAXHEALTH%", maxHealth.ToString());
+        }
+
+        public static string FormatVetApplyServiceMeta(int price, int randomId)
+        {
+            return VetApplyServicesFormat.Replace("%PRICE%", price.ToString()).Replace("%RANDOMID%", randomId.ToString());
+        }
+
+        public static string FormatVetApplyAllServiceMeta(int price)
+        {
+            return VetApplyServicesForAllFormat.Replace("%PRICE%", price.ToString());
+        }
+
+        public static string FormatVetHorseAtFullHealthMessage(string horseName)
+        {
+            return VetFullHealthRecoveredMessageFormat.Replace("%HORSENAME%", horseName);
+        }
+
+
         public static string FormatPondNotThirsty(string horseName)
         {
             return PondNotThirstyFormat.Replace("%HORSENAME%", horseName);

@@ -803,6 +803,30 @@ namespace HISP.Game
             return message;
         }
 
+        private static string buildVet(Vet vet, User user)
+        {
+            string message = "";
+            int totalPrice = 0;
+            foreach (HorseInstance horse in user.HorseInventory.HorseList)
+            {
+                message += Messages.FormatVetServiceHorseMeta(horse.Name, horse.BasicStats.Health, 1000);
+                
+                if (horse.BasicStats.Health >= 1000)
+                    message += Messages.VetSerivcesNotNeeded;
+                else
+                {
+                    int price = vet.CalculatePrice(horse.BasicStats.Health);
+                    totalPrice += price;
+
+                    message += Messages.FormatVetApplyServiceMeta(price, horse.RandomId);
+                }
+                
+            }
+            message += Messages.FormatVetApplyAllServiceMeta(totalPrice);
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
 
         public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)
         {
@@ -861,6 +885,13 @@ namespace HISP.Game
                     user.LastShoppedAt = shop;
                     message += buildShopInfo(shop,user.Inventory);
 
+                }
+                if(TileCode == "VET")
+                {
+                    int VetId = int.Parse(TileArg);
+                    Vet vet = Vet.GetVetById(VetId);
+                    message += buildVet(vet, user);
+                    Logger.DebugPrint(message);
                 }
                 if(TileCode == "BANK")
                 {

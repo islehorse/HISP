@@ -502,7 +502,14 @@ namespace HISP.Server
                 Tracking.TrackedItemsStatsMenu.Add(trackedItem);
                 Logger.DebugPrint("Registered Tracked Item: " + trackedItem.What + " value: " + trackedItem.Value);
             }
-
+            int totalVets = gameData.vet.price_multipliers.Count;
+            for (int i = 0; i < totalVets; i++)
+            {
+                double cost = gameData.vet.price_multipliers[i].cost;
+                int id = gameData.vet.price_multipliers[i].id;
+                Vet vet = new Vet(id, cost);
+                Logger.DebugPrint("Registered Vet: " + vet.Id + " selling at: " + vet.PriceMultiplier);
+            }
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
             Item.Present = gameData.item.special.present;
@@ -579,6 +586,16 @@ namespace HISP.Server
             Messages.StatMiscHeader = gameData.messages.meta.misc_stats.header;
             Messages.StatMiscNoneRecorded = gameData.messages.meta.misc_stats.no_stats_recorded;
             Messages.StatMiscEntryFormat = gameData.messages.meta.misc_stats.stat_format;
+
+            // Vet
+            Messages.VetServiceHorseFormat = gameData.messages.meta.vet.service_horse;
+            Messages.VetSerivcesNotNeeded = gameData.messages.meta.vet.not_needed;
+            Messages.VetApplyServicesFormat = gameData.messages.meta.vet.apply;
+
+            Messages.VetApplyServicesForAllFormat = gameData.messages.meta.vet.apply_all;
+            Messages.VetFullHealthRecoveredMessageFormat = gameData.messages.meta.vet.now_full_health;
+            Messages.VetServicesNotNeededAll = gameData.messages.meta.vet.not_needed_all;
+            Messages.VetAllFullHealthRecoveredMessage = gameData.messages.meta.vet.all_full;
 
             // Pond
             Messages.PondHeader = gameData.messages.meta.pond.header;
