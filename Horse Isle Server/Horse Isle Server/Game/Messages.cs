@@ -306,6 +306,7 @@ namespace HISP.Game
 
         public static string VetServicesNotNeededAll;
         public static string VetAllFullHealthRecoveredMessage;
+        public static string VetCannotAffordMessage;
 
         // Consume
 

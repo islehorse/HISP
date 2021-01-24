@@ -596,6 +596,7 @@ namespace HISP.Server
             Messages.VetFullHealthRecoveredMessageFormat = gameData.messages.meta.vet.now_full_health;
             Messages.VetServicesNotNeededAll = gameData.messages.meta.vet.not_needed_all;
             Messages.VetAllFullHealthRecoveredMessage = gameData.messages.meta.vet.all_full;
+            Messages.VetCannotAffordMessage = gameData.messages.meta.vet.cant_afford;
 
             // Pond
             Messages.PondHeader = gameData.messages.meta.pond.header;
