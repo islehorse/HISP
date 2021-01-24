@@ -1,4 +1,5 @@
 Horse Isle Server/Horse Isle Server/bin/*
 Horse Isle Server/Horse Isle Server/obj/*
+Horse Isle Server/.vs/*
 *.log
 *.suo
