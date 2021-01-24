@@ -100,22 +100,52 @@ namespace HISP.Game.Chat
             return true;
         }
 
+        public static bool NoClip(string message, string[] args, User user)
+        {
+            if (!user.Administrator)
+                return false;
+            user.NoClip = !user.NoClip;
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+        }
+
         public static bool Goto(string message, string[] args, User user)
         {
             if (args.Length <= 0)
                 return false;
             if (!user.Administrator)
                 return false;
+            if(args[0] == "PLAYER")
+            {
+                if(args.Length <= 1)
+                    return false;
+                try
+                {
+                    User teleportTo = GameServer.GetUserByName(args[1]);
+                    user.Teleport(teleportTo.X, teleportTo.Y);
+                }
+                catch (KeyNotFoundException)
+                {
+                    return false;
+                }
+            }
+            if(args[0].Contains(","))
+            {
+                try
+                {
+                    string[] xy = args[0].Split(',');
+                    int x = int.Parse(xy[0]);
+                    int y = int.Parse(xy[1]);
+                    user.Teleport(x, y);
+                }
+                catch(FormatException)
+                {
+                    return false;
+                }
+            }
 
-            try
-            {
-                User teleportTo = GameServer.GetUserByName(args[0]);
-                user.Teleport(teleportTo.X, teleportTo.Y);
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
         
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);

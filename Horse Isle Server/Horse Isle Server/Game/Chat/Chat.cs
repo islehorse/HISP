@@ -60,6 +60,8 @@ namespace HISP.Game.Chat
                         return Command.Give(message, args, user);
                     if (message.StartsWith("%GOTO"))
                         return Command.Goto(message, args, user);
+                    if (message.StartsWith("%NOCLIP"))
+                        return Command.NoClip(message, args, user);
                     return false;
                 }
             if (message[0] == '!')
