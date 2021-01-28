@@ -1,6 +1,4 @@
 ﻿using System;
-using System.IO;
-using System.Reflection;
 using HISP.Game;
 using HISP.Game.Horse;
 using HISP.Game.SwfModules;
@@ -13,7 +11,6 @@ namespace HISP
         static void Main(string[] args)
         {
             Console.Title = "HISP - Horse Isle Server Emulator";
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location));
             ConfigReader.OpenConfig();
             CrossDomainPolicy.GetPolicy();
             Database.OpenDatabase();
