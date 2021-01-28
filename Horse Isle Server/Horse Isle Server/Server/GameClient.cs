@@ -291,7 +291,7 @@ namespace HISP.Server
             LoggedinUser = null;
             ClientSocket.Close();
             ClientSocket.Dispose();
-            recvPackets.Abort();
+            //recvPackets.Anort();
         }
 
        public void Kick(string Reason)
