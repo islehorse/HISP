@@ -1,6 +1,6 @@
 # HISP - Horse Isle Server Protocal.
 
-![Auto Build](https://github.com/KuromeSan/HISP/workflows/dotnet/badge.svg)
+![.NET](https://github.com/KuromeSan/HISP/workflows/.NET/badge.svg
 
 This is a horse isle server that is massively still in development
 
