@@ -25,11 +25,25 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
       
-    - name: Build linux-64
-      run: dotnet publish -r linux-x64 --self-contained false
-
+      
     - name: Build win-64
-      run: dotnet publish -r win-x64 --self-contained false
+      run: dotnet publish -p:PublishProfile=Win64.pubxml
+    
+    - name: Build win-32
+      run: dotnet publish -p:PublishProfile=Win32.pubxml
+
+
+    - name: Build linux-64
+      run: dotnet publish -p:PublishProfile=Linux64.pubxml
+    
+    - name: Build linux-arm
+      run: dotnet publish -p:PublishProfile=LinuxARM.pubxml
+    
+    - name: Build linux-arm64
+      run: dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+
+
+
 
     - name: upload linux-64
       uses: actions/upload-artifact@v2
@@ -37,9 +51,28 @@ jobs:
         name: linux-x64
         path: Horse Isle Server/HorseIsleServer/bin/Debug/net5.0/linux-x64/publish/
 
+    - name: upload linux-arm
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-arm
+        path: Horse Isle Server/HorseIsleServer/bin/ARM/net5.0/linux-ARM/publish/
+    
+    - name: upload linux-arm64
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-arm64
+        path: Horse Isle Server/HorseIsleServer/bin/ARM64/net5.0/linux-ARM64/publish/
+
+
     - name: upload-win64
       uses: actions/upload-artifact@v2
       with:
         name: win-64
-        path: Horse Isle Server/HorseIsleServer/bin/Debug/net5.0/win-x64/publish/
+        path: Horse Isle Server/HorseIsleServer/bin/Windows/net5.0/win-x64/publish/
+
+    - name: upload-win32
+      uses: actions/upload-artifact@v2
+      with:
+        name: win-32
+        path: Horse Isle Server/HorseIsleServer/bin/x86/Windows/net5.0/win-x86/publish\/
 
