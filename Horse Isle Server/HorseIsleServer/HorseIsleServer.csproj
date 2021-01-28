@@ -14,13 +14,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -35,7 +28,11 @@
     <PostBuildEvent Condition="'$(OS)' != 'Windows_NT'">
       cp -f "$(MSBuildThisFileDirectory)../../DataCollection/gamedata.json" "$(TargetDir)gamedata.json"
       cp -f "$(MSBuildThisFileDirectory)../../DataCollection/HI1.MAP" "$(TargetDir)HI1.MAP"
-    </PostBuildEvent>
+    </PostBuildEvent> 
+  </PropertyGroup>
+  <PropertyGroup>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>

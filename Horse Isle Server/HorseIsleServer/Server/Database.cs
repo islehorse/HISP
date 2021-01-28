@@ -772,7 +772,7 @@ namespace HISP.Server
                     int x = reader.GetInt32(3);
                     int y = reader.GetInt32(4);
                     int timeout = reader.GetInt32(29);
-                    WildHorse wildHorse = new WildHorse(inst, x, y, timeout, false);
+                    WildHorse WildHorse = new WildHorse(inst, x, y, timeout, false);
                     
                 }
 
@@ -1472,7 +1472,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM jewelry WHERE playerId=@playerId";
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM Jewelry WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
 
                 sqlCommand.Prepare();
@@ -1489,7 +1489,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "INSERT INTO jewelry VALUES(@playerId,0,0,0,0)";
+                sqlCommand.CommandText = "INSERT INTO Jewelry VALUES(@playerId,0,0,0,0)";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
 
                 sqlCommand.Prepare();
@@ -1507,7 +1507,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE jewelry SET slot1=@itemId WHERE playerId=@playerId";
+                sqlCommand.CommandText = "UPDATE Jewelry SET slot1=@itemId WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@itemId", itemId);
 
@@ -1523,7 +1523,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT slot1 FROM jewelry WHERE playerId=@playerId";
+                sqlCommand.CommandText = "SELECT slot1 FROM Jewelry WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1539,7 +1539,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE jewelry SET slot2=@itemId WHERE playerId=@playerId";
+                sqlCommand.CommandText = "UPDATE Jewelry SET slot2=@itemId WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@itemId", itemId);
 
@@ -1555,7 +1555,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT slot2 FROM jewelry WHERE playerId=@playerId";
+                sqlCommand.CommandText = "SELECT slot2 FROM Jewelry WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1572,7 +1572,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE jewelry SET slot3=@itemId WHERE playerId=@playerId";
+                sqlCommand.CommandText = "UPDATE Jewelry SET slot3=@itemId WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@itemId", itemId);
 
@@ -1588,7 +1588,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT slot3 FROM jewelry WHERE playerId=@playerId";
+                sqlCommand.CommandText = "SELECT slot3 FROM Jewelry WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1604,7 +1604,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE jewelry SET slot4=@itemId WHERE playerId=@playerId";
+                sqlCommand.CommandText = "UPDATE Jewelry SET slot4=@itemId WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@itemId", itemId);
 
@@ -1620,7 +1620,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT slot4 FROM jewelry WHERE playerId=@playerId";
+                sqlCommand.CommandText = "SELECT slot4 FROM Jewelry WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1633,7 +1633,7 @@ namespace HISP.Server
 
         public static int[] GetAwards(int playerId)
         {
-            List<int> awards = new List<int>();
+            List<int> Awards = new List<int>();
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
@@ -1646,10 +1646,10 @@ namespace HISP.Server
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
                 while(reader.Read())
                 {
-                    awards.Add(reader.GetInt32(0));
+                    Awards.Add(reader.GetInt32(0));
                 }
                 sqlCommand.Dispose();
-                return awards.ToArray();
+                return Awards.ToArray();
             }
         }
         public static void AddAward(int playerId, int awardId)
@@ -1678,7 +1678,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM competitionGear WHERE playerId=@playerId";
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM CompetitionGear WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
 
                 sqlCommand.Prepare();
@@ -1695,7 +1695,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "INSERT INTO competitionGear VALUES(@playerId,0,0,0,0)";
+                sqlCommand.CommandText = "INSERT INTO CompetitionGear VALUES(@playerId,0,0,0,0)";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
 
                 sqlCommand.Prepare();
@@ -1711,7 +1711,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE competitionGear SET headItem=@itemId WHERE playerId=@playerId";
+                sqlCommand.CommandText = "UPDATE CompetitionGear SET headItem=@itemId WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@itemId", itemId);
 
@@ -1727,7 +1727,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT headItem FROM competitionGear WHERE playerId=@playerId";
+                sqlCommand.CommandText = "SELECT headItem FROM CompetitionGear WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1743,7 +1743,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE competitionGear SET bodyItem=@itemId WHERE playerId=@playerId";
+                sqlCommand.CommandText = "UPDATE CompetitionGear SET bodyItem=@itemId WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@itemId", itemId);
 
@@ -1759,7 +1759,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT bodyItem FROM competitionGear WHERE playerId=@playerId";
+                sqlCommand.CommandText = "SELECT bodyItem FROM CompetitionGear WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1775,7 +1775,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE competitionGear SET legItem=@itemId WHERE playerId=@playerId";
+                sqlCommand.CommandText = "UPDATE CompetitionGear SET legItem=@itemId WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@itemId", itemId);
 
@@ -1791,7 +1791,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT legItem FROM competitionGear WHERE playerId=@playerId";
+                sqlCommand.CommandText = "SELECT legItem FROM CompetitionGear WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1807,7 +1807,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE competitionGear SET feetItem=@itemId WHERE playerId=@playerId";
+                sqlCommand.CommandText = "UPDATE CompetitionGear SET feetItem=@itemId WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@itemId", itemId);
 
@@ -1823,7 +1823,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT feetItem FROM competitionGear WHERE playerId=@playerId";
+                sqlCommand.CommandText = "SELECT feetItem FROM CompetitionGear WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1881,7 +1881,7 @@ namespace HISP.Server
 
         public static TrackedQuest[] GetTrackedQuests(int playerId)
         {
-            List<TrackedQuest> trackedQuests = new List<TrackedQuest>();
+            List<TrackedQuest> TrackedQuests = new List<TrackedQuest>();
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
@@ -1893,12 +1893,12 @@ namespace HISP.Server
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
                 while(reader.Read())
                 {
-                    TrackedQuest trackedQuest = new TrackedQuest(playerId, reader.GetInt32(0), reader.GetInt32(1));
-                    trackedQuests.Add(trackedQuest);
+                    TrackedQuest TrackedQuest = new TrackedQuest(playerId, reader.GetInt32(0), reader.GetInt32(1));
+                    TrackedQuests.Add(TrackedQuest);
                 }
                 sqlCommand.Dispose();
             }
-            return trackedQuests.ToArray();
+            return TrackedQuests.ToArray();
         }
         public static void SetTrackedQuestCompletedCount(int playerId, int questId, int timesCompleted)
         {
@@ -2513,7 +2513,7 @@ namespace HISP.Server
                 if (GetBuddyCount(id) <= 0)
                     return new int[0];      // user is forever alone.
 
-                List<int> buddyList = new List<int>();
+                List<int> BuddyList = new List<int>();
 
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT Id,IdFriend FROM BuddyList WHERE Id=@id OR IdFriend=@id AND Pending=false";
@@ -2526,13 +2526,13 @@ namespace HISP.Server
                     int adder = dataReader.GetInt32(0);
                     int friend = dataReader.GetInt32(1);
                     if (adder != id)
-                        buddyList.Add(adder);
+                        BuddyList.Add(adder);
                     else if (friend != id)
-                        buddyList.Add(adder);
+                        BuddyList.Add(adder);
                 }
 
                 sqlCommand.Dispose();
-                return buddyList.ToArray();
+                return BuddyList.ToArray();
             }
         }
 
@@ -2967,7 +2967,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM leaderboards WHERE playerId=@playerId ORDER BY score DESC";
+                sqlCommand.CommandText = "SELECT * FROM Leaderboards WHERE playerId=@playerId ORDER BY score DESC";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
@@ -2998,7 +2998,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM leaderboards WHERE minigame=@gameTitle ORDER BY score DESC LIMIT @limit";
+                sqlCommand.CommandText = "SELECT * FROM Leaderboards WHERE minigame=@gameTitle ORDER BY score DESC LIMIT @limit";
                 sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
                 sqlCommand.Parameters.AddWithValue("@limit", limit);
                 sqlCommand.Prepare();
@@ -3030,7 +3030,7 @@ namespace HISP.Server
 
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT DISTINCT score FROM leaderboards WHERE minigame=@gameTitle ORDER BY score DESC";
+                sqlCommand.CommandText = "SELECT DISTINCT score FROM Leaderboards WHERE minigame=@gameTitle ORDER BY score DESC";
                 sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
@@ -3072,7 +3072,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE UserExt SET tiredness = tiredness + 1 WHERE id NOT IN (SELECT playerId FROM onlineUsers) AND NOT tiredness +1 > 1000";
+                sqlCommand.CommandText = "UPDATE UserExt SET tiredness = tiredness + 1 WHERE id NOT IN (SELECT playerId FROM OnlineUsers) AND NOT tiredness +1 > 1000";
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
