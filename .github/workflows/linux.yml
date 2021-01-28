@@ -51,16 +51,16 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: linux-x64
-        path: HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/
+        path: Horse Isle Server/HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/
 
     - name: upload linux-arm
       uses: actions/upload-artifact@v2
       with:
         name: linux-arm
-        path: HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/
+        path: Horse Isle Server/HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/
     
     - name: upload linux-arm64
       uses: actions/upload-artifact@v2
       with:
         name: linux-arm64
-        path: HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/
+        path: Horse Isle Server/HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/
