@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "Horse Isle Server": {
+    "HorseIsleServer": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
