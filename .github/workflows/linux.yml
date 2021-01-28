@@ -30,21 +30,21 @@ jobs:
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=Linux64.pubxml
-        cp ../DataCollection/*.json "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/
+        cp ../DataCollection/*.json "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
         cp ../DataCollection/*.MAP "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
     
     - name: Build linux-arm
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=LinuxARM.pubxml
-        cp ../DataCollection/*.json "HorseIsleServer/bin/arm/Linux/net5.0/linux-arm/publish/
+        cp ../DataCollection/*.json "HorseIsleServer/bin/arm/Linux/net5.0/linux-arm/publish/"
         cp ../DataCollection/*.MAP "HorseIsleServer/bin/arm/Linux/net5.0/linux-arm/publish/"
     
     - name: Build linux-arm64
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=LinuxARM64.pubxml
-        cp ../DataCollection/*.json "HorseIsleServer/bin/arm64/Linux/net5.0/linux-arm64/publish/
+        cp ../DataCollection/*.json "HorseIsleServer/bin/arm64/Linux/net5.0/linux-arm64/publish/"
         cp ../DataCollection/*.MAP "HorseIsleServer/bin/arm64/Linux/net5.0/linux-arm64/publish/"
         
     - name: upload linux-64
