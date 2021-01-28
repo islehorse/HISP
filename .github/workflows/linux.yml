@@ -30,22 +30,19 @@ jobs:
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=Linux64.pubxml
-        cp ../DataCollection/gamedata.json "Horse Isle Server/HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/gamedata.json"
-        cp ../DataCollection/HI1.MAP "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/HI1.MAP"
+        cp ../DataCollection/* "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
     
     - name: Build linux-arm
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=LinuxARM.pubxml
-        cp ../DataCollection/gamedata.json "Horse Isle Server/HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/gamedata.json"
-        cp ../DataCollection/HI1.MAP "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/HI1.MAP"
+        cp ../DataCollection/* "HorseIsleServer/bin/arm/Linux/net5.0/linux-arm/publish/"
     
     - name: Build linux-arm64
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=LinuxARM64.pubxml
-        cp ../DataCollection/gamedata.json "Horse Isle Server/HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/gamedata.json"
-        cp ../DataCollection/HI1.MAP "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/HI1.MAP"
+        cp ../DataCollection/* "HorseIsleServer/bin/arm64/Linux/net5.0/linux-arm64/publish/"
     - name: upload linux-64
       uses: actions/upload-artifact@v2
       with:
