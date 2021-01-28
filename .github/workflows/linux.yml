@@ -1,4 +1,4 @@
-name: .NET
+name: linux
 
 on:
   push:
@@ -26,30 +26,26 @@ jobs:
       run: dotnet restore
       
       
-    - name: Build win-64
-      continue-on-error: true
-      run: dotnet publish -p:PublishProfile=Win64.pubxml
-    
-    - name: Build win-32
-      continue-on-error: true
-      run: dotnet publish -p:PublishProfile=Win32.pubxml
-
-
     - name: Build linux-64
-      continue-on-error: true
-      run: dotnet publish -p:PublishProfile=Linux64.pubxml
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=Linux64.pubxml
+        cp ../DataCollection/gamedata.json "Horse Isle Server/HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
+        cp ../DataCollection/HI1.MAP "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
     
     - name: Build linux-arm
-      continue-on-error: true
-      run: dotnet publish -p:PublishProfile=LinuxARM.pubxml
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=LinuxARM.pubxml
+        cp ../DataCollection/gamedata.json "Horse Isle Server/HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/"
+        cp ../DataCollection/HI1.MAP "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/"
     
     - name: Build linux-arm64
-      continue-on-error: true
-      run: dotnet publish -p:PublishProfile=LinuxARM64.pubxml
-
-
-
-
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+        cp ../DataCollection/gamedata.json "Horse Isle Server/HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/"
+        cp ../DataCollection/HI1.MAP "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/"
     - name: upload linux-64
       uses: actions/upload-artifact@v2
       with:
@@ -67,17 +63,3 @@ jobs:
       with:
         name: linux-arm64
         path: Horse Isle Server/HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/
-
-
-    - name: upload-win64
-      uses: actions/upload-artifact@v2
-      with:
-        name: win-64
-        path: Horse Isle Server/HorseIsleServer/bin/Windows/net5.0/win-x64/publish/
-
-    - name: upload-win32
-      uses: actions/upload-artifact@v2
-      with:
-        name: win-32
-        path: Horse Isle Server/HorseIsleServer/bin/x86/Windows/net5.0/win-x86/publish\/
-
