@@ -1931,7 +1931,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE userExt SET Subscriber=@subscribed WHERE Id=@playerId";
+                sqlCommand.CommandText = "UPDATE UserExt SET Subscriber=@subscribed WHERE Id=@playerId";
                 sqlCommand.Parameters.AddWithValue("@subscribed", subscribed ? "YES" : "NO");
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
@@ -1949,7 +1949,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT Gender FROM users WHERE Id=@playerId";
+                sqlCommand.CommandText = "SELECT Gender FROM Users WHERE Id=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 string gender = sqlCommand.ExecuteScalar().ToString();
@@ -1965,7 +1965,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT Experience FROM userExt WHERE Id=@playerId";
+                sqlCommand.CommandText = "SELECT Experience FROM UserExt WHERE Id=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int xp = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1981,7 +1981,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE userExt SET Experience=@xp WHERE Id=@playerId";
+                sqlCommand.CommandText = "UPDATE UserExt SET Experience=@xp WHERE Id=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@xp", exp);
                 sqlCommand.Prepare();
@@ -1996,7 +1996,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE userExt SET FreeMinutes=FreeMinutes+@minutes";
+                sqlCommand.CommandText = "UPDATE UserExt SET FreeMinutes=FreeMinutes+@minutes";
                 sqlCommand.Parameters.AddWithValue("@minutes", minutes);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -2010,7 +2010,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "UPDATE userExt SET FreeMinutes=@minutes WHERE Id=@playerId";
+                sqlCommand.CommandText = "UPDATE UserExt SET FreeMinutes=@minutes WHERE Id=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@minutes", minutes);
                 sqlCommand.Prepare();
@@ -2025,7 +2025,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT FreeMinutes FROM userExt WHERE Id=@playerId";
+                sqlCommand.CommandText = "SELECT FreeMinutes FROM UserExt WHERE Id=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int freeMinutes = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -2041,7 +2041,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT SubscribedUntil FROM userExt WHERE Id=@playerId";
+                sqlCommand.CommandText = "SELECT SubscribedUntil FROM UserExt WHERE Id=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int subscribedUntil = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -2057,7 +2057,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT Subscriber FROM userExt WHERE Id=@playerId";
+                sqlCommand.CommandText = "SELECT Subscriber FROM UserExt WHERE Id=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 bool subscribed = sqlCommand.ExecuteScalar().ToString() == "YES";
@@ -2602,7 +2602,7 @@ namespace HISP.Server
             {
                 db.Open();
                 if (CheckUserExtExists(id)) // user allready exists!
-                    throw new Exception("Userid " + id + " Allready in userext.");
+                    throw new Exception("Userid " + id + " Allready in UserExt.");
 
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,@timestamp,0,0,0,0,'','',0,0,'NO',0,0,1000,1000,1000, 180)";
@@ -3072,7 +3072,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE userext SET tiredness = tiredness + 1 WHERE id NOT IN (SELECT playerId FROM onlineusers) AND NOT tiredness +1 > 1000";
+                sqlCommand.CommandText = "UPDATE UserExt SET tiredness = tiredness + 1 WHERE id NOT IN (SELECT playerId FROM onlineUsers) AND NOT tiredness +1 > 1000";
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
