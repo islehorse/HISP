@@ -1,0 +1,53 @@
+name: windows
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+defaults:
+  run:
+    working-directory: ./Horse Isle Server
+
+jobs:
+  build:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+
+    - name: Restore dependencies
+      run: dotnet restore
+      
+      
+    - name: Build win-x64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=Win64.pubxml
+        copy ../DataCollection/gamedata.json "Horse Isle Server/HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
+        copy ../DataCollection/HI1.MAP "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
+    
+    - name: Build win-x86
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=Win32.pubxml
+        copy ../DataCollection/gamedata.json "Horse Isle Server/HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
+        copy ../DataCollection/HI1.MAP "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
+    
+    - name: upload win-x64
+      uses: actions/upload-artifact@v2
+      with:
+        name: win-x64
+        path: Horse Isle Server/HorseIsleServer/bin/x64/windows/net5.0/windows-x64/publish/
+    
+    - name: upload win-x86
+      uses: actions/upload-artifact@v2
+      with:
+        name: win-x86
+        path: Horse Isle Server/HorseIsleServer/bin/x86/windows/net5.0/windows-x86/publish/
