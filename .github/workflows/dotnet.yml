@@ -23,9 +23,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet publish --no-restore -c All -p:Platform="Any CPU" --self-contained true
+      run: dotnet publish -r linux-x64 --self-contained false
     - name: upload result
       uses: actions/upload-artifact@v2
       with:
         name: result
-        path: Horse Isle Server/HorseIsleServer/bin/
+        path: HorseIsleServer/bin/Debug/net5.0/linux-x64/publish/
