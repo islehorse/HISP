@@ -16,16 +16,30 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x
+
     - name: Restore dependencies
       run: dotnet restore
-    - name: Build
+      
+    - name: Build linux-64
       run: dotnet publish -r linux-x64 --self-contained false
-    - name: upload result
+
+    - name: Build win-64
+      run: dotnet publish -r win-x64 --self-contained false
+
+    - name: upload linux-64
       uses: actions/upload-artifact@v2
       with:
-        name: result
+        name: linux-x64
         path: Horse Isle Server/HorseIsleServer/bin/Debug/net5.0/linux-x64/publish/
+
+    - name: upload-win64
+      uses: actions/upload-artifact@v2
+      with:
+        name: win-64
+        path: Horse Isle Server/HorseIsleServer/bin/Debug/net5.0/win-x64/publish/
+
