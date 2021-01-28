@@ -28,4 +28,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: result
-        path: HorseIsleServer/bin/Debug/net5.0/linux-x64/publish/
+        path: Horse Isle Server/HorseIsleServer/bin/Debug/net5.0/linux-x64/publish/
