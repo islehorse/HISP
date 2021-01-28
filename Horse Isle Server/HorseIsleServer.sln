@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Horse Isle Server", "Horse Isle Server\Horse Isle Server.csproj", "{C48CBD82-AB30-494A-8FFA-4DE7069B5827}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HorseIsleServer", "HorseIsleServer\HorseIsleServer.csproj", "{C48CBD82-AB30-494A-8FFA-4DE7069B5827}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
