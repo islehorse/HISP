@@ -5,7 +5,7 @@
     <LangVersion>7.0</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon></ApplicationIcon>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -29,7 +29,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)..\DataCollection\GameData.json" "$(TargetDir)GameData.json" /Y
+    <PostBuildEvent>copy "$(SolutionDir)..\DataCollection\GameData.json" "$(TargetDir)gamedata.json" /Y
 copy "$(SolutionDir)..\DataCollection\HI1.MAP" "$(TargetDir)HI1.MAP" /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
