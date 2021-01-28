@@ -75,7 +75,7 @@
     <Optimize>true</Optimize>
     <PlatformTarget>ARM64</PlatformTarget>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)'=='All'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All|Any CPU'">
     <TargetFramework>net5.0</TargetFramework>
     <RuntimeIdentifiers>win-x86;win-x64;win-arm;win-arm64;linux-x64;linux-arm;linux-arm64</RuntimeIdentifiers>
     <Optimize>true</Optimize>
