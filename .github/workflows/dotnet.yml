@@ -23,7 +23,7 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet publish --no-restore -c All --self-contained true
+      run: dotnet publish --no-restore -c All -p:Platform="Any CPU" --self-contained true
     - name: upload result
       uses: actions/upload-artifact@v2
       with:
