@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>HISP</RootNamespace>
     <LangVersion>8.0</LangVersion>
-    <Platforms>x64;x86;ARM;AnyCPU</Platforms>
+    <Platforms>x64;x86;ARM;ARM64;AnyCPU</Platforms>
     <Configurations>Windows;Debug;Linux</Configurations>
   </PropertyGroup>
   <ItemGroup>
@@ -68,6 +68,11 @@
     <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <PlatformTarget>ARM</PlatformTarget>
-    <WarningLevel>1</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM64'">
+    <TargetFramework>net5.0</TargetFramework>
+    <RuntimeIdentifier>linux-arm64</RuntimeIdentifier>
+    <Optimize>true</Optimize>
+    <PlatformTarget>ARM64</PlatformTarget>
   </PropertyGroup>
 </Project>
