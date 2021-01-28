@@ -1,6 +1,7 @@
 # HISP - Horse Isle Server Protocal.
 
 ![Linux](https://github.com/KuromeSan/HISP/workflows/linux/badge.svg)
+![Windows](https://github.com/KuromeSan/HISP/workflows/windows/badge.svg)
 
 This is a horse isle server that is massively still in development
 
