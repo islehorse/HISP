@@ -29,11 +29,11 @@
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent Condition="'$(OS)' == 'Windows_NT'">
-      copy "$(SolutionDir)..\DataCollection\GameData.json" "$(TargetDir)gamedata.json" /Y
+      copy "$(SolutionDir)..\DataCollection\gamedata.json" "$(TargetDir)gamedata.json" /Y
       copy "$(SolutionDir)..\DataCollection\HI1.MAP" "$(TargetDir)HI1.MAP" /Y
     </PostBuildEvent>
     <PostBuildEvent Condition="'$(OS)' != 'Windows_NT'">
-      cp -f "$(SolutionDir)..\DataCollection\GameData.json" "$(TargetDir)gamedata.json"
+      cp -f "$(SolutionDir)..\DataCollection\gamedata.json" "$(TargetDir)gamedata.json"
       cp -f "$(SolutionDir)..\DataCollection\HI1.MAP" "$(TargetDir)HI1.MAP"
     </PostBuildEvent>
   </PropertyGroup>
