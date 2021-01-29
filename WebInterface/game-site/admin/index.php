@@ -105,7 +105,7 @@ color: #440000;
 
 <CENTER>
 <FONT FACE=Verdana,arial SIZE=-1>
-<BR><B>HISP - Admin Portal</B><BR>
+<BR><B>HISP - Super Admin Login</B><BR>
 <BR> This page requires a password, please enter it below:</BR>
 <BR> <FORM METHOD=POST ACTION=/admin/login.php>
 	<INPUT TYPE=PASSWORD SIZE=30 NAME=PASS></INPUT>

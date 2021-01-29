@@ -107,7 +107,7 @@ color: #440000;
 <?php
 	if($_SESSION["logged_in"] == false) 
 	{
-		header("Location: /admin.php"); # Fuck off.
+		header("Location: /admin"); # Fuck off.
 		exit();
 	}
 	
