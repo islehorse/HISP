@@ -6,7 +6,7 @@ $connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to c
 $onlineUsers = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers");
 $onlineSubscribers = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers WHERE Subscribed = 'YES'");
 $onlineModerators = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers WHERE Moderator = 'YES'");
-$activeAccounts = mysqli_query($connect, "SELECT COUNT(1) FROM users");
+$activeAccounts = mysqli_query($connect, "SELECT COUNT(1) FROM Users");
 
 $fmt = numfmt_create( 'en_US', NumberFormatter::DECIMAL );
 
