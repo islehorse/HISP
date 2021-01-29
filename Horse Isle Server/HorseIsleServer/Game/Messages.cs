@@ -308,6 +308,16 @@ namespace HISP.Game
         public static string VetAllFullHealthRecoveredMessage;
         public static string VetCannotAffordMessage;
 
+        // Horse Whisperer
+
+        public static string WhispererHorseLocateButtonFormat;
+        public static string WhispererServiceCostYouFormat;
+
+        public static string WhispererServiceCannotAfford;
+        public static string WhispererSearchingAmoungHorses;
+        public static string WhispererNoneFound;
+        public static string WhispererHorsesFoundFormat;
+
         // Consume
 
         public static string ConsumeItemFormat;
@@ -502,6 +512,22 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
         
+
+        public static string FormatWhispererHorseFoundMeta(string mapXys)
+        {
+            return WhispererHorsesFoundFormat.Replace("%MAPXYS%",mapXys);
+        }
+
+        public static string FormatWhispererPrice(int price)
+        {
+            return WhispererServiceCostYouFormat.Replace("%MONEY%",price.ToString("N0"));
+        }
+
+        public static string FormatWhispererHorseBreedButton(string breedName, int breedId)
+        {
+            return WhispererHorseLocateButtonFormat.Replace("%BREEDNAME%",breedName).Replace("%BREEDID%",breedId.ToString());
+        }
+
         public static string FormatVetServiceHorseMeta(string horseName, int currentHealth, int maxHealth)
         {
             return VetServiceHorseFormat.Replace("%HORSENAME%", horseName).Replace("%CURHEALTH%", currentHealth.ToString()).Replace("%MAXHEALTH%", maxHealth.ToString());
