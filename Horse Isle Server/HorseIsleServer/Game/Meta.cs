@@ -777,6 +777,23 @@ namespace HISP.Game
         {
             return Messages.PasswordEntry + Messages.ExitThisPlace + Messages.MetaTerminator;
         }
+
+        private static string buildHorseWhisperer()
+        {
+            string message = "";
+            foreach(HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name).ToList())
+            {
+                if (breed.Swf == "")
+                    continue;
+                if(breed.SpawnInArea == "none")
+                    continue;
+                message += Messages.FormatWhispererHorseBreedButton(breed.Name, breed.Id);
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+
         private static string buildBank(User user)
         {
             double moneyMade = 0;
@@ -924,6 +941,10 @@ namespace HISP.Game
                 if(TileCode == "PASSWORD")
                 {
                     message += buildPassword();
+                }
+                if(TileCode == "HORSEWHISPERER")
+                {
+                    message += buildHorseWhisperer();
                 }
                 if(TileCode == "INN")
                 {
