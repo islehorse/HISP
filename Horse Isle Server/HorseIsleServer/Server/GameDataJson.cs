@@ -611,6 +611,14 @@ namespace HISP.Server
             Messages.PondDrinkOhNoesFormat = gameData.messages.meta.pond.drank_something_bad;
             Messages.PondNotThirstyFormat = gameData.messages.meta.pond.not_thirsty;
 
+            // Horse Whisperer
+            Messages.WhispererHorseLocateButtonFormat = gameData.messages.meta.whisperer.horse_locate_meta;
+            Messages.WhispererServiceCostYouFormat = gameData.messages.meta.whisperer.service_cost;
+            Messages.WhispererServiceCannotAfford = gameData.messages.meta.whisperer.cant_afford;
+            Messages.WhispererSearchingAmoungHorses = gameData.messages.meta.whisperer.searching_amoung_horses;
+            Messages.WhispererNoneFound = gameData.messages.meta.whisperer.none_found_meta;
+            Messages.WhispererHorsesFoundFormat = gameData.messages.meta.whisperer.horse_found_meta;
+
             // Mud Hole
             Messages.MudHoleNoHorses = gameData.messages.meta.mud_hole.no_horses;
             Messages.MudHoleRuinedGroomFormat = gameData.messages.meta.mud_hole.ruined_groom;
