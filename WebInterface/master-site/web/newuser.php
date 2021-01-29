@@ -214,15 +214,18 @@ $country = $_POST['country'];
 $gender = $_POST['sex'];
 
 $connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
-$result = mysqli_query($connect, "SELECT COUNT(1) FROM users");
+$result = mysqli_query($connect, "SELECT MAX(Id) FROM Users");
 
 $user_id = $result->fetch_row()[0] + 1;
+if($user_id == NULL)
+	$user_id = 0;
+	
 $salt = random_bytes ( 64 );
 $answer_hash = hash_salt($reset_answer,$salt);
 $password_hash = hash_salt($password,$salt);
 $hex_salt = bin2hex($salt);
 
-$stmt = $connect->prepare("SELECT COUNT(1) FROM users WHERE Username=?"); 
+$stmt = $connect->prepare("SELECT COUNT(1) FROM Users WHERE Username=?"); 
 $stmt->bind_param("s", $username);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -230,7 +233,7 @@ $count = intval($result->fetch_row()[0]);
 if($count !== 0)
 	die("Username is allready in use.");
 
-$stmt = $connect->prepare("INSERT INTO users VALUES(?,?,?,?,?,?,?,?,?,?,'NO','NO')"); 
+$stmt = $connect->prepare("INSERT INTO Users VALUES(?,?,?,?,?,?,?,?,?,?,'NO','NO')"); 
 $stmt->bind_param("isssssisss", $user_id, $username, $email, $country, $reset_question, $answer_hash, $age, $password_hash, $hex_salt, $gender);
 $stmt->execute();
 echo('Account Created!');
