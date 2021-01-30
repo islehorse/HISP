@@ -5,12 +5,13 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Drawing;
+
 using HISP.Player;
 using HISP.Game;
 using HISP.Security;
 using HISP.Game.Chat;
 using HISP.Player.Equips;
-using System.Drawing;
 using HISP.Game.Services;
 using HISP.Game.Inventory;
 using HISP.Game.SwfModules;
@@ -1385,7 +1386,54 @@ namespace HISP.Server
                     break;
 
                 default:
-                    if(buttonIdStr.StartsWith("4c"))
+                    if(buttonIdStr.StartsWith("32c")) // Horse Whisperer
+                    {
+                        string idStr = buttonIdStr.Substring(3);
+                        int breedId = -1;
+                        try
+                        {
+                            breedId = int.Parse(idStr);
+                        }
+                        catch (FormatException) {
+                            Logger.DebugPrint(sender.LoggedinUser.Username + " Tried to whisper a horse with BreedId NaN.");
+                            break; 
+                        };
+                        
+                        if(sender.LoggedinUser.Money < 50000)
+                        {
+                            byte[] cannotAffordMessage = PacketBuilder.CreateChat(Messages.WhispererServiceCannotAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cannotAffordMessage);
+                            break;
+                        }
+
+                        List<WildHorse> horsesFound = new List<WildHorse>();
+                        foreach(WildHorse horse in WildHorse.WildHorses)
+                        {
+                            if(horse.Instance.Breed.Id == breedId)
+                            {
+                                horsesFound.Add(horse);
+                            }
+                        }
+                        int cost = 0;
+                        if(horsesFound.Count >= 1)
+                        {
+                            cost = 50000;
+                        }
+                        else
+                        {
+                            cost = 10000;
+                        }
+
+                        byte[] pricingMessage = PacketBuilder.CreateChat(Messages.FormatWhispererPrice(cost), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(pricingMessage);
+
+                        byte[] serachResultMeta = PacketBuilder.CreateMetaPacket(Meta.BuildWhisperSearchResults(horsesFound.ToArray()));
+                        sender.SendPacket(serachResultMeta);
+                        
+                        sender.LoggedinUser.Money -= cost;
+                        break;
+                    }
+                    else if(buttonIdStr.StartsWith("4c")) // Libary Breed Search
                     {
                         string idStr = buttonIdStr.Substring(2);
                         int breedId = -1;
