@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace HISP.Game
 {
-    class Tracking
+    public class Tracking
     {
         public enum TrackableItem
         { 

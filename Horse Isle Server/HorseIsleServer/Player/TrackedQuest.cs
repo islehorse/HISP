@@ -2,7 +2,7 @@
 using HISP.Server;
 namespace HISP
 {
-    class TrackedQuest
+    public class TrackedQuest
     {
         public TrackedQuest(int playerID, int questID, int timesComplete)
         {

@@ -9,7 +9,7 @@ using HISP.Game.Horse;
 
 namespace HISP.Player
 {
-    class User
+    public class User
     {
 
         public int Id;

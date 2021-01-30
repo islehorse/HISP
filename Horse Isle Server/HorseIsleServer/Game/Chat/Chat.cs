@@ -6,7 +6,7 @@ using HISP.Server;
 
 namespace HISP.Game.Chat
 {
-    class Chat
+    public class Chat
     {
         public struct Correction
         {

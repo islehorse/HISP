@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace HISP.Player
 {
-    class Award
+    public class Award
     {
         public struct AwardEntry
         {

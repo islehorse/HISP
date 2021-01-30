@@ -1,9 +1,11 @@
 ﻿using HISP.Server;
+using HISP.Game.Items;
+
 using System.Collections.Generic;
 
 namespace HISP.Game.Horse
 {
-    class HorseInfo
+    public class HorseInfo
     {
         public enum StatType
         {

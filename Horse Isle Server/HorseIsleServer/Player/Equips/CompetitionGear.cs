@@ -1,9 +1,10 @@
 ﻿using HISP.Game;
 using HISP.Server;
+using HISP.Game.Items;
 
 namespace HISP.Player.Equips
 {
-    class CompetitionGear
+    public class CompetitionGear
     {
         public const int MISC_FLAG_HEAD = 1;
         public const int MISC_FLAG_BODY = 2;

@@ -1,10 +1,11 @@
 ﻿using HISP.Player;
 using HISP.Server;
+using HISP.Game;
 using System.Collections.Generic;
 
-namespace HISP.Game
+namespace HISP.Game.Items
 {
-    class Item
+    public class Item
     {
         public struct Effects
         {
@@ -138,7 +139,10 @@ namespace HISP.Game
                 return false;
             }
         }
-
+        public static void DoSpecialCases()
+        {
+            Tack.GenerateTackSets();
+        }
         public static ItemInformation GetItemById(int id)
         {
             foreach(ItemInformation item in Items)

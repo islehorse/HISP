@@ -1,11 +1,12 @@
 ﻿using HISP.Player;
 using HISP.Server;
+using HISP.Game.Items;
 using System;
 using System.Collections.Generic;
 
 namespace HISP.Game.Chat
 {
-    class Command
+    public class Command
     {
 
         public static bool Give(string message, string[] args, User user)

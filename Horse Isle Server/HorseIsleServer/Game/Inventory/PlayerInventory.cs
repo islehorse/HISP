@@ -2,11 +2,12 @@
 using System.Linq;
 using HISP.Player;
 using HISP.Server;
+using HISP.Game.Items;
 
 namespace HISP.Game.Inventory
 {
     
-    class PlayerInventory : IInventory
+    public class PlayerInventory : IInventory
     {
         
 

@@ -9,7 +9,7 @@ using HISP.Game.Horse;
 
 namespace HISP.Server
 {
-    class GameClient
+    public class GameClient
     {
         public Socket ClientSocket;
         public string RemoteIp;

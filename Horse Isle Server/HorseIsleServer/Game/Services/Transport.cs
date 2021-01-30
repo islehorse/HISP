@@ -2,7 +2,7 @@
 
 namespace HISP.Game.Services
 {
-    class Transport
+    public class Transport
     {
         public struct TransportLocation
         {

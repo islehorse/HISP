@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace HISP.Player
 {
-    class Highscore
+    public class Highscore
     {
         public class HighscoreTableEntry
         {

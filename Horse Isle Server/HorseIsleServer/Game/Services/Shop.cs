@@ -1,11 +1,12 @@
 ﻿using HISP.Game.Inventory;
 using HISP.Server;
+using HISP.Game.Items;
 using System;
 using System.Collections.Generic;
 
 namespace HISP.Game.Services
 {
-    class Shop
+    public class Shop
     {
         public int Id;
 

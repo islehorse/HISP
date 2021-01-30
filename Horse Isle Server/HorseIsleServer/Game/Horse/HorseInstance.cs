@@ -4,7 +4,7 @@ using HISP.Server;
 
 namespace HISP.Game.Horse
 {
-    class HorseInstance
+    public class HorseInstance
     {
         public HorseInstance(HorseInfo.Breed breed, int randomId = -1, string loadName=null, string loadDescription = "", int loadSpoiled=0, string loadCategory="KEEPER", int loadMagicUsed=0, int loadAutoSell=0)
         {

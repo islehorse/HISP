@@ -16,10 +16,11 @@ using HISP.Game.Services;
 using HISP.Game.Inventory;
 using HISP.Game.SwfModules;
 using HISP.Game.Horse;
+using HISP.Game.Items;
 
 namespace HISP.Server
 {
-    class GameServer
+    public class GameServer
     {
 
         public static Socket ServerSocket;

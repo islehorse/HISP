@@ -1,7 +1,8 @@
 ﻿using HISP.Security;
-namespace HISP.Game
+using HISP.Game;
+namespace HISP.Game.Items
 {
-    class ItemInstance 
+    public class ItemInstance 
     {
         public int RandomId;
         public int ItemId;

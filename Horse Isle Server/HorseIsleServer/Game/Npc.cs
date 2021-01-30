@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace HISP.Game
 {
-    class Npc
+    public class Npc
     {
         public struct NpcReply
         {

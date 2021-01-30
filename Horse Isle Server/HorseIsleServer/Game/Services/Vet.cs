@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HISP.Game.Services
 {
-    class Vet
+    public class Vet
     {
 
         public static List<Vet> Vets = new List<Vet>();

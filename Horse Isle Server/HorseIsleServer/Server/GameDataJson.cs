@@ -7,10 +7,11 @@ using HISP.Player;
 using HISP.Game.Services;
 using HISP.Game.SwfModules;
 using HISP.Game.Horse;
+using HISP.Game.Items;
 
 namespace HISP.Server
 {
-    class GameDataJson
+    public class GameDataJson
     {
         
         public static void ReadGamedata()

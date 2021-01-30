@@ -7,7 +7,7 @@ using HISP.Game.SwfModules;
 
 namespace HISP.Server
 {
-    class PacketBuilder
+    public class PacketBuilder
     {
 
         public const byte PACKET_TERMINATOR = 0x00;

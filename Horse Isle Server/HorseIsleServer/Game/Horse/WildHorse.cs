@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace HISP.Game.Horse
 {
 
-    class WildHorse
+    public class WildHorse
     {
 
         public WildHorse(HorseInstance horse, int MapX = -1, int MapY = -1, int despawnTimeout=60, bool addToDatabase = true)

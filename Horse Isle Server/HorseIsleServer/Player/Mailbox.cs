@@ -2,7 +2,7 @@
 
 namespace HISP.Player
 {
-    class Mailbox
+    public class Mailbox
     {
         private User baseUser;
         public int MailCount;

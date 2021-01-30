@@ -4,7 +4,7 @@ using System.IO;
 namespace HISP.Server
 {
 
-    class ConfigReader
+    public class ConfigReader
     {
         public static int Port;
         public static string BindIP;
