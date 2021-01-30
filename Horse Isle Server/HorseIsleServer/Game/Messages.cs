@@ -185,6 +185,12 @@ namespace HISP.Game
         public static string MaxJewelryMessage;
         public static string RemoveJewelry;
 
+        // Tack (Libary)
+        public static string TackViewSetFormat;
+        public static string TackSetPeiceFormat;
+        public static string TackBonusFormat;
+        public static string TackAndSeperator;
+
         // Horse
         public static string BreedViewerMaximumStats;
         public static string AdvancedStatFormat;
