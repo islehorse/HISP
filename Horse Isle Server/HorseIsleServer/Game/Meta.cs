@@ -6,6 +6,7 @@ using HISP.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Drawing;
 
 namespace HISP.Game
 {
@@ -727,6 +728,31 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        public static string BuildWhisperSearchResults(WildHorse[] results)
+        {
+            string message = Messages.WhispererSearchingAmoungHorses;
+            if(results.Length <= 0)
+            {
+                message = Messages.WhispererNoneFound;
+            }
+            else
+            {
+                List<Point> locations = new List<Point>();
+                foreach(WildHorse result in results)
+                {
+                    Point location = new Point();
+                    location.X = result.X;
+                    location.Y = result.Y;
+                    locations.Add(location);
+                }
+                string mapxys = Messages.FormatMapLocations(locations.ToArray());
+                message += Messages.FormatWhispererHorseFoundMeta(mapxys);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+
         private static string buildFountain()
         {
             return Messages.FountainMeta;
