@@ -7,8 +7,10 @@ $onlineUsers = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers");
 $onlineSubscribers = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers WHERE Subscribed = 'YES'");
 $onlineModerators = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers WHERE Moderator = 'YES'");
 $activeAccounts = mysqli_query($connect, "SELECT COUNT(1) FROM Users");
+$hasIntl = function_exists('numfmt_create');
 
-$fmt = numfmt_create( 'en_US', NumberFormatter::DECIMAL );
+if($hasIntl)
+	$fmt = numfmt_create( 'en_US', NumberFormatter::DECIMAL );
 
 ?>
 
@@ -174,10 +176,37 @@ $fmt = numfmt_create( 'en_US', NumberFormatter::DECIMAL );
                                       <BR>
 
                                       <B>CURRENTLY:</B><BR>
-                                      <FONT COLOR=550000><B><?php echo numfmt_format($fmt, $onlineUsers->fetch_row()[0] )?></B></FONT> Players Online Now<BR>
-                                      <FONT COLOR=550000><B><?php echo numfmt_format($fmt, $onlineSubscribers->fetch_row()[0] )?></B></FONT> Subscribers Online Now<BR>
-                                      <FONT COLOR=550000><B><?php echo numfmt_format($fmt, $onlineModerators->fetch_row()[0] )?></B></FONT> Moderators Online Now<BR>
-                                      <FONT COLOR=550000><B><?php echo numfmt_format($fmt, $activeAccounts->fetch_row()[0] )?></B></FONT> Active Accounts<BR><BR>
+                                      <FONT COLOR=550000><B>
+					<?php 
+						$onlineUsersCount = $onlineUsers->fetch_row()[0];
+						if($hasIntl)
+							echo numfmt_format($fmt, $onlineUsersCount);
+						else
+							echo $onlineUserCount;
+					?></B></FONT> Players Online Now<BR>
+                                      <FONT COLOR=550000><B><?php 
+						$onlineSubscribersCount = $onlineSubscribers->fetch_row()[0];
+						if($hasIntl)					
+							echo numfmt_format($fmt, $onlineSubscribersCount);
+						else
+							echo $onlineSubscribersCount;
+					?></B></FONT> Subscribers Online Now<BR>
+                                      <FONT COLOR=550000><B>
+					<?php 
+						$onlineModeratorsCount = $onlineModerators->fetch_row()[0];
+						if($hasIntl)					
+							echo numfmt_format($fmt, $onlineModeratorsCount );
+						else
+							echo $onlineModeratorsCount;
+					?></B></FONT> Moderators Online Now<BR>
+                                      <FONT COLOR=550000><B>
+					<?php 
+						$activeUserCount = $activeAccounts->fetch_row()[0];
+						if($hasIntl)						
+							echo numfmt_format($fmt,  $activeUserCount);
+						else
+							echo $activeUserCount;
+					?></B></FONT> Active Accounts<BR><BR>
                                       <B>ABOUT:</B><BR>
                                       Horse Isle is a vast multi-player horse based world. It allows for many players to
                                       interact while searching for wild
