@@ -319,6 +319,48 @@ namespace HISP.Game
             throw new Exception("A mathematically impossible error occured. please check wether the laws of physics still apply.");
         }
 
+        public static string buildTackPeiceLibary(Item.ItemInformation item)
+        {
+            string message = "";
+            message += Messages.FormatTackSetPeice(item.Name, item.Description);
+            return message;
+        }
+
+        public static string BuildTackLibary()
+        {
+            string message = "";
+
+            foreach(Tack.TackSet set in Tack.TackSets)
+            {
+                string[] setSwfs = set.GetSwfNames();
+                string swf = "breedviewer.swf?terrain=book2&breed=tackonly";
+                if(setSwfs.Length >= 1)
+                    swf += "&saddle="+setSwfs[0];
+                if(setSwfs.Length >= 2)
+                    swf += "&saddlepad="+setSwfs[1];
+                if(setSwfs.Length >= 3)
+                    swf += "&bridle="+setSwfs[2];
+                swf += "&j=";
+
+                message += Messages.FormatTackSetView(set.IconId, set.SetName, swf);
+
+                // Write all peices
+                try
+                {
+                    message += buildTackPeiceLibary(set.GetSaddle());
+                    message += buildTackPeiceLibary(set.GetSaddlePad());
+                    message += buildTackPeiceLibary(set.GetBridle());
+                }
+                catch(Exception e)
+                {
+                    Logger.ErrorPrint(e.Message);
+                }
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+
         public static string BuildHorseReleased()
         {
             string message = "";

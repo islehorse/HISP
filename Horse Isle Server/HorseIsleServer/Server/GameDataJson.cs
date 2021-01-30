@@ -591,8 +591,6 @@ namespace HISP.Server
             // Tack (Horse)
             Messages.TackViewSetFormat = gameData.messages.meta.libary.tack.view_tack_set;
             Messages.TackSetPeiceFormat = gameData.messages.meta.libary.tack.set_peice_format;
-            Messages.TackBonusFormat = gameData.messages.meta.libary.tack.bonus_format;
-            Messages.TackAndSeperator = gameData.messages.meta.libary.tack.and;
 
             // Vet
             Messages.VetServiceHorseFormat = gameData.messages.meta.vet.service_horse;
