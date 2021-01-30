@@ -587,6 +587,12 @@ namespace HISP.Server
             Messages.StatMiscNoneRecorded = gameData.messages.meta.misc_stats.no_stats_recorded;
             Messages.StatMiscEntryFormat = gameData.messages.meta.misc_stats.stat_format;
 
+            // Tack (Horse)
+            Messages.TackViewSetFormat = gameData.messages.meta.libary.tack.view_tack_set;
+            Messages.TackSetPeiceFormat = gameData.messages.meta.libary.tack.set_peice_format;
+            Messages.TackBonusFormat = gameData.messages.meta.libary.tack.bonus_format;
+            Messages.TackAndSeperator = gameData.messages.meta.libary.tack.and;
+
             // Vet
             Messages.VetServiceHorseFormat = gameData.messages.meta.vet.service_horse;
             Messages.VetSerivcesNotNeeded = gameData.messages.meta.vet.not_needed;
