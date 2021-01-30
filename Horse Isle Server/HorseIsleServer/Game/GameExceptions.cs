@@ -4,7 +4,7 @@
 namespace HISP.Game
 {
     // Inventory
-    class InventoryException : Exception { };
-    class InventoryFullException : InventoryException { };
-    class InventoryMaxStackException : InventoryException { };
+    public class InventoryException : Exception { };
+    public class InventoryFullException : InventoryException { };
+    public class InventoryMaxStackException : InventoryException { };
 }

@@ -4,7 +4,7 @@ using HISP.Server;
 
 namespace HISP.Game
 {
-    class Map
+    public class Map
     {
         public struct TerrainTile
         {

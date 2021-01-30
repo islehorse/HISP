@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HISP.Server
 {
-    class Converters
+    public class Converters
     {
         // Thanks Stackoverflow (https://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array)
         private static int getHexVal(char hex)

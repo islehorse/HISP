@@ -1,7 +1,7 @@
 ﻿using System;
 namespace HISP.Security
 {
-    class RandomID
+    public class RandomID
     {
         private static int prevId = 0;
         public static int NextRandomId(int randomId=-1)

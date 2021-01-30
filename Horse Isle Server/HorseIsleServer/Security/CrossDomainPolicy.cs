@@ -4,7 +4,7 @@ using System.IO;
 using HISP.Server;
 namespace HISP.Security
 {
-    class CrossDomainPolicy
+    public class CrossDomainPolicy
     {
         public static byte[] GetPolicy()
         {

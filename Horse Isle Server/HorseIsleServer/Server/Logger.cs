@@ -2,7 +2,7 @@
 
 namespace HISP.Server
 {
-    class Logger
+    public class Logger
     {
         public static void HackerPrint(string text) // When someone is obviously cheating.
         {

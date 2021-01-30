@@ -3,6 +3,7 @@ using HISP.Game.Inventory;
 using HISP.Game.Services;
 using HISP.Player;
 using HISP.Server;
+using HISP.Game.Items;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Drawing;
 
 namespace HISP.Game
 {
-    class Meta
+    public class Meta
     {
         // Meta
 

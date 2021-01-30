@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace HISP.Game.Inventory
 {
-    class HorseInventory
+    public class HorseInventory
     {
         private User baseUser;
         private List<HorseInstance> horsesList = new List<HorseInstance>();

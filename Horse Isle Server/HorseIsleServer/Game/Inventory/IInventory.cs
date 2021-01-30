@@ -1,4 +1,5 @@
-﻿
+﻿using HISP.Game.Items;
+
 namespace HISP.Game.Inventory
 {
 

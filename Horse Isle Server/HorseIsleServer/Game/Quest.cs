@@ -4,10 +4,11 @@ using System.Linq;
 using HISP.Game.Inventory;
 using HISP.Player;
 using HISP.Server;
+using HISP.Game.Items;
 
 namespace HISP.Game
 {
-    class Quest
+    public class Quest
     {
         public const string Shovel = "SHOVEL";
         public const string Binoculars = "BINOCS";

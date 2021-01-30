@@ -1,11 +1,12 @@
 ﻿using HISP.Game.Services;
 using HISP.Server;
+using HISP.Game.Items;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace HISP.Game.Inventory
 {
-    class ShopInventory : IInventory
+    public class ShopInventory : IInventory
     {
         private Shop baseShop;
         private List<InventoryItem> inventoryItems;

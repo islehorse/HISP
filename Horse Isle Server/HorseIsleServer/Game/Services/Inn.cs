@@ -1,4 +1,6 @@
 ﻿using HISP.Player;
+using HISP.Game.Items;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HISP.Game.Services
 {
-    class Inn
+    public class Inn
     {
         private static List<Inn> listInns = new List<Inn>();
         public static Inn[] Inns

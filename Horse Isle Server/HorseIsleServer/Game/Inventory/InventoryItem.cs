@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using HISP.Game.Items;
 
 namespace HISP.Game.Inventory
 {
-    class InventoryItem
+    public class InventoryItem
     {
         public InventoryItem()
         {

@@ -3,7 +3,7 @@ using HISP.Server;
 
 namespace HISP.Player
 {
-    class Friends
+    public class Friends
     {
         private User baseUser;
         public List<int> List;

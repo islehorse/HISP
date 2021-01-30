@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 namespace HISP.Game
 {
-    class AbuseReport
+    public class AbuseReport
     {
         public struct ReportReason
         {

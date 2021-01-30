@@ -1,9 +1,10 @@
 ﻿using HISP.Game;
 using HISP.Server;
+using HISP.Game.Items;
 
 namespace HISP.Player.Equips
 {
-    class Jewelry
+    public class Jewelry
     {
         
         private int playerId;

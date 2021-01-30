@@ -1,12 +1,14 @@
 ﻿using System;
 using HISP.Game;
+using HISP.Game.Items;
 using HISP.Game.Horse;
 using HISP.Game.SwfModules;
 using HISP.Security;
 using HISP.Server;
+
 namespace HISP
 {
-    class Program
+    public class Program
     {
         static void Main(string[] args)
         {
@@ -20,6 +22,7 @@ namespace HISP
             DroppedItems.Init();
             WildHorse.Init();
             Brickpoet.LoadPoetryRooms();
+            Item.DoSpecialCases();
             GameServer.StartServer();
 
         }

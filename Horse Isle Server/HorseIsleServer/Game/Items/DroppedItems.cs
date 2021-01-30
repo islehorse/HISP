@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using HISP.Server;
+using HISP.Game;
 
-namespace HISP.Game
+namespace HISP.Game.Items
 {
-    class DroppedItems
+    public class DroppedItems
     {
         public struct DroppedItem
         {

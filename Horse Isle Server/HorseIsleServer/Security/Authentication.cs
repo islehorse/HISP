@@ -5,7 +5,7 @@ using HISP.Server;
 
 namespace HISP.Security
 {
-    class Authentication
+    public class Authentication
     {
         public static string DecryptLogin(string encpass)
         {

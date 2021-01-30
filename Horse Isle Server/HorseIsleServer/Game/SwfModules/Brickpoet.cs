@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HISP.Game.SwfModules
 {
-    class Brickpoet
+    public class Brickpoet
     {
         public struct PoetryEntry {
             public int Id;

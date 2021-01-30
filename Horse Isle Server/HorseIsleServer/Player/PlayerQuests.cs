@@ -3,7 +3,7 @@ using HISP.Server;
 
 namespace HISP.Player
 {
-    class PlayerQuests
+    public class PlayerQuests
     {
         private List<TrackedQuest> trackedQuests = new List<TrackedQuest>();
         public User BaseUser;

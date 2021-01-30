@@ -5,10 +5,11 @@ using HISP.Game;
 using HISP.Player;
 using HISP.Game.Horse;
 using HISP.Game.Inventory;
+using HISP.Game.Items;
 
 namespace HISP.Server
 {
-    class Database
+    public class Database
     {
         public static string ConnectionString = "";
 

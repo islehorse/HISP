@@ -4,7 +4,7 @@ using HISP.Server;
 namespace HISP.Game
 {
 
-    class World
+    public class World
     {
         public struct Isle
         {
