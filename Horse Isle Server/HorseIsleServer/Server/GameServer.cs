@@ -1338,19 +1338,10 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAllStats(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
-                case "31": // Find Ranch
-                    break;
                 case "9": // View Tack
-                    break;
-                case "10": // View Competitions
-                    break;
-                case "12": // View Miigames
-                    break;
-                case "22": // View Locations
-                    break;
-                case "23": // View Awards
-                    break;
-                case "38": // Read Books
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackLibary());
+                    sender.SendPacket(metaPacket);
                     break;
                 case "53": // Misc Stats / Tracked Items
                     sender.LoggedinUser.MetaPriority = true;

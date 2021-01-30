@@ -518,14 +518,10 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
-        public static string FormatTackBoost(string stat, int amount)
-        {
-            return TackBonusFormat.Replace("%BOOST%",amount.ToString("N0")).Replace("%STAT%",stat);
-        }
 
-        public static string FormatTackSetPeice(string itemName, string itemDescription, string bonus)
+        public static string FormatTackSetPeice(string itemName, string itemDescription)
         {
-            return TackSetPeiceFormat.Replace("%ITEMNAME%",itemName).Replace("%ITEMDESC%", itemDescription).Replace("%BONUS%",bonus);
+            return TackSetPeiceFormat.Replace("%ITEMNAME%",itemName).Replace("%ITEMDESC%", itemDescription);
         }
 
         public static string FormatTackSetView(int iconId, string tackSetName, string swf)

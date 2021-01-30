@@ -16,6 +16,13 @@ namespace HISP.Game.Items
                 tackItems = new List<Item.ItemInformation>();
             }
             
+            public int IconId
+            {
+                get
+                {
+                    return GetSaddle().IconId;
+                }
+            }
             public string SetName;
             private List<Item.ItemInformation> tackItems;
             public void Add(Item.ItemInformation item)
@@ -23,6 +30,48 @@ namespace HISP.Game.Items
                 Logger.DebugPrint("Added "+item.Name+" To Tack Set: "+this.SetName);
                 tackItems.Add(item);
             }
+
+            public Item.ItemInformation GetSaddle()
+            {
+                foreach(Item.ItemInformation tackItem in TackItems)
+                {
+                    if(tackItem.MiscFlags[0] == 1) // Saddle
+                        return tackItem;
+                }
+                throw new KeyNotFoundException("Saddle not found.");
+            }
+
+
+            public Item.ItemInformation GetSaddlePad()
+            {
+                foreach(Item.ItemInformation tackItem in TackItems)
+                {
+                    if(tackItem.MiscFlags[0] == 2) // SaddlePad
+                        return tackItem;
+                }
+                throw new KeyNotFoundException("SaddlePad not found.");
+            }
+
+            public Item.ItemInformation GetBridle()
+            {
+                foreach(Item.ItemInformation tackItem in TackItems)
+                {
+                    if(tackItem.MiscFlags[0] == 3) // Bridle
+                        return tackItem;
+                }
+                throw new KeyNotFoundException("GetBridle not found.");
+            }
+
+            public string[] GetSwfNames()
+            {
+                string[] swfs = new string[3];
+                swfs[0] = GetSaddle().EmbedSwf;
+                swfs[1] = GetSaddlePad().EmbedSwf;
+                swfs[2] = GetBridle().EmbedSwf;
+
+                return swfs;
+            }
+
             public Item.ItemInformation[] TackItems
             {
                 get
@@ -37,7 +86,7 @@ namespace HISP.Game.Items
             return firstChar + str.Substring(1);
         }
         private static List<TackSet> tackSets = new List<TackSet>();
-        public TackSet[] TackSets
+        public static TackSet[] TackSets
         {
             get
             {
@@ -69,16 +118,22 @@ namespace HISP.Game.Items
                         set.Add(itemInfo);
                     }
                     catch(KeyNotFoundException)
-                    {
-                        continue;
+                    {                   
+                        TackSet tackSet = new TackSet();
+                        tackSet.SetName = capitalizeFirstLetter(itemInfo.EmbedSwf);
+                        Logger.DebugPrint("Created Tack Set: "+tackSet.SetName); 
+                        tackSet.Add(itemInfo);
+                        tackSets.Add(tackSet);
                     }
-                    
-                    TackSet tackSet = new TackSet();
-                    tackSet.SetName = capitalizeFirstLetter(itemInfo.EmbedSwf);
-                    tackSet.Add(itemInfo);
-                    tackSets.Add(tackSet);
-                    Logger.DebugPrint("Created Tack Set: "+tackSet.SetName);
                 
+                }
+            }
+            foreach(TackSet set in TackSets)
+            {
+                if(set.TackItems.Length < 3)
+                {
+                    Logger.DebugPrint("Removing set: "+set.SetName);
+                    tackSets.Remove(set);
                 }
             }
         }
