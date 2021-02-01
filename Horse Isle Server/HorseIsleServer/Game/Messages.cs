@@ -185,6 +185,10 @@ namespace HISP.Game
         public static string MaxJewelryMessage;
         public static string RemoveJewelry;
 
+        // Awards (Libary)
+        public static string AwardsAvalible;
+        public static string AwardEntryFormat;
+
         // Locations (Libary)
         public static string LocationKnownIslands;
         public static string LocationKnownTowns;
@@ -533,6 +537,12 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatAwardEntry(int iconId, string awardName, int bonusMoney, string description)
+        {
+            return AwardEntryFormat.Replace("%ICONID%", iconId.ToString()).Replace("%AWARDNAME%", awardName).Replace("%BONUSMONEY%",bonusMoney.ToString("N0")).Replace("%DESCRIPTION%",description);
+        }
+
         public static string FormatLocationDescription(string description)
         {
             return LocationDescriptionFormat.Replace("%AREADESC%", description);

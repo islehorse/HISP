@@ -1309,6 +1309,11 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildLocationsLibary());
                     sender.SendPacket(metaPacket);
                     break;
+                case "23": // View Awards (Libary)
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAwardsLibary());
+                    sender.SendPacket(metaPacket);
+                    break;
                 case "24": // Award List
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAwardList(sender.LoggedinUser));

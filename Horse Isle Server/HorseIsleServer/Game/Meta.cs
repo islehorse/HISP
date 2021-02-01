@@ -446,6 +446,19 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        public static string BuildAwardsLibary()
+        {
+            string message = "";
+            message += Messages.AwardsAvalible;
+            foreach(Award.AwardEntry award in Award.GlobalAwardList.OrderBy(o => o.Sort).ToArray())
+            {
+                message += Messages.FormatAwardEntry(award.IconId, award.Title, award.MoneyBonus, award.Description);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+
         public static string BuildHorseReleased()
         {
             string message = "";
@@ -455,6 +468,7 @@ namespace HISP.Game
             return message;
 
         }
+
         public static string BuildTopHighscores(string gameName)
         {
             Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameName, 20);
