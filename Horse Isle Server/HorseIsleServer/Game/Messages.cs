@@ -185,6 +185,13 @@ namespace HISP.Game
         public static string MaxJewelryMessage;
         public static string RemoveJewelry;
 
+        // Locations (Libary)
+        public static string LocationKnownIslands;
+        public static string LocationKnownTowns;
+        public static string LocationIslandFormat;
+        public static string LocationTownFormat;
+        public static string LocationDescriptionFormat;
+
         // Minigames (Libary)
         public static string MinigameSingleplayer;
         public static string MinigameTwoplayer;
@@ -526,8 +533,18 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
-
-
+        public static string FormatLocationDescription(string description)
+        {
+            return LocationDescriptionFormat.Replace("%AREADESC%", description);
+        }
+        public static string FormatIslandLocation(string isleName, string mapXy)
+        {
+            return LocationIslandFormat.Replace("%ISLENAME%", isleName).Replace("%MAPXY%",mapXy);
+        }
+        public static string FormatTownLocation(string townName, string mapXy)
+        {
+            return LocationTownFormat.Replace("%TOWNNAME%", townName).Replace("%MAPXY%",mapXy);
+        }
         public static string FormatMinigameEntry(string gameName, string mapXy)
         {
             return MinigameEntryFormat.Replace("%GAMENAME%",gameName).Replace("%MAPXY%",mapXy);

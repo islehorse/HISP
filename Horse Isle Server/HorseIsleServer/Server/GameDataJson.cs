@@ -89,6 +89,20 @@ namespace HISP.Server
                 World.Isles.Add(isle);
             }
 
+            int totalWaypoints = gameData.places.waypoints.Count;
+            for(int i = 0; i < totalWaypoints; i++)
+            {
+                World.Waypoint waypoint = new World.Waypoint();
+                waypoint.Name = gameData.places.waypoints[i].name;
+                waypoint.PosX = gameData.places.waypoints[i].pos_x;
+                waypoint.PosY = gameData.places.waypoints[i].pos_y;
+                waypoint.Type = gameData.places.waypoints[i].type;
+                waypoint.Description = gameData.places.waypoints[i].description;
+                waypoint.WeatherTypesAvalible = gameData.places.waypoints[i].weather_avalible.ToObject<string[]>();
+                Logger.DebugPrint("Registered Waypoint: "+waypoint.PosX.ToString()+", "+waypoint.PosY.ToString() +" TYPE: "+waypoint.Type);
+                World.Waypoints.Add(waypoint);
+            }
+
             // Register Special Tiles
             int totalSpecialTiles = gameData.places.special_tiles.Count;
             for (int i = 0; i < totalSpecialTiles; i++)
@@ -587,6 +601,13 @@ namespace HISP.Server
             Messages.StatMiscHeader = gameData.messages.meta.misc_stats.header;
             Messages.StatMiscNoneRecorded = gameData.messages.meta.misc_stats.no_stats_recorded;
             Messages.StatMiscEntryFormat = gameData.messages.meta.misc_stats.stat_format;
+
+            // Locations (Libary)
+            Messages.LocationKnownIslands = gameData.messages.meta.libary.locations.known_islands;
+            Messages.LocationKnownTowns = gameData.messages.meta.libary.locations.known_towns;
+            Messages.LocationIslandFormat = gameData.messages.meta.libary.locations.isle_entry;
+            Messages.LocationTownFormat = gameData.messages.meta.libary.locations.town_entry;
+            Messages.LocationDescriptionFormat = gameData.messages.meta.libary.locations.location_description;
 
             // Minigame (Libary)
             Messages.MinigameSingleplayer = gameData.messages.meta.libary.minigames.singleplayer;

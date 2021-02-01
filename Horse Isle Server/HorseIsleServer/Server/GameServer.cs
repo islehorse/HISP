@@ -1294,14 +1294,19 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigamesLibary());
                     sender.SendPacket(metaPacket);
                     break;
+                case "20": // Minigame Rankings
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigameRankingsForUser(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
                 case "21": // Private Notes
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPrivateNotes(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
-                case "20": // Minigame Rankings
+                case "22": // View Locations (Libary)
                     sender.LoggedinUser.MetaPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigameRankingsForUser(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildLocationsLibary());
                     sender.SendPacket(metaPacket);
                     break;
                 case "24": // Award List
