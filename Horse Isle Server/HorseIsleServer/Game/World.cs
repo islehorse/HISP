@@ -6,7 +6,28 @@ namespace HISP.Game
 
     public class World
     {
-        public struct Isle
+        private static Waypoint getWaypoint(string find)
+        {
+            foreach(Waypoint waypoint in Waypoints)
+            {
+                if(waypoint.Name == find)
+                    return waypoint;
+            }
+            
+            throw new KeyNotFoundException("Waypoint with name "+find+" not found.");
+        
+        }
+
+        public struct Waypoint
+        {
+            public string Name;
+            public int PosX;
+            public int PosY;
+            public string Type;
+            public string Description;
+            public string[] WeatherTypesAvalible;
+        }
+        public class Isle 
         {
             public int StartX;
             public int EndX;
@@ -14,14 +35,25 @@ namespace HISP.Game
             public int EndY;
             public int Tileset;
             public string Name;
+            
+            public Waypoint GetWaypoint()
+            {
+                return getWaypoint(this.Name);
+            }
+
         }
-        public struct Town
+        public class Town 
         {
             public int StartX;
             public int EndX;
             public int StartY;
             public int EndY;
             public string Name;
+            
+            public Waypoint GetWaypoint()
+            {
+                return getWaypoint(this.Name);
+            }
         }
         public struct Area
         {
@@ -66,12 +98,14 @@ namespace HISP.Game
         }
         public static Time ServerTime = new Time();
 
+        public static List<Waypoint> Waypoints = new List<Waypoint>();
         public static List<Isle> Isles = new List<Isle>();
         public static List<Town> Towns = new List<Town>();
         public static List<Area> Areas = new List<Area>();
         public static List<Zone> Zones = new List<Zone>();
 
         public static List<SpecialTile> SpecialTiles = new List<SpecialTile>();
+
         public static void TickWorldClock() 
         {
             ServerTime.Minutes += 1;

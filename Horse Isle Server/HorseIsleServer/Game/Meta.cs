@@ -419,7 +419,33 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
-
+        public static string BuildLocationsLibary()
+        {
+            string message = "";
+            message += Messages.LocationKnownIslands;
+            foreach(World.Waypoint waypoint in World.Waypoints.OrderBy(o => o.Name).ToArray())
+            {
+                if(waypoint.Type == "ISLE")
+                {
+                    string mapxy = Messages.FormatMapLocation(waypoint.PosX, waypoint.PosY);
+                    message += Messages.FormatIslandLocation(waypoint.Name, mapxy);
+                    message += Messages.FormatLocationDescription(waypoint.Description);
+                }
+            }
+            message += Messages.LocationKnownTowns;
+            foreach(World.Waypoint waypoint in World.Waypoints.OrderBy(o => o.Name).ToArray())
+            {
+                if(waypoint.Type == "TOWN")
+                {
+                    string mapxy = Messages.FormatMapLocation(waypoint.PosX, waypoint.PosY);
+                    message += Messages.FormatTownLocation(waypoint.Name, mapxy);
+                    message += Messages.FormatLocationDescription(waypoint.Description);
+                }
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildHorseReleased()
         {
             string message = "";
