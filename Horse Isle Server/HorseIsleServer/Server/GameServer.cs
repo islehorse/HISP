@@ -1269,12 +1269,12 @@ namespace HISP.Server
                         sender.SendPacket(metaPacket);
                     }
                     break;
-                case "9": // View Tack
+                case "9": // View Tack (Libary)
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackLibary());
                     sender.SendPacket(metaPacket);
                     break;
-                case "10":
+                case "10": // View Companions (Libary)
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildCompanionLibary());
                     sender.SendPacket(metaPacket);
@@ -1288,6 +1288,11 @@ namespace HISP.Server
                         metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseDescriptionEditMeta(horseInstance));
                         sender.SendPacket(metaPacket);
                     }
+                    break;
+                case "12": // View Minigames (Libary)
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigamesLibary());
+                    sender.SendPacket(metaPacket);
                     break;
                 case "21": // Private Notes
                     sender.LoggedinUser.MetaPriority = true;
