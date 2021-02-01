@@ -602,6 +602,10 @@ namespace HISP.Server
             Messages.StatMiscNoneRecorded = gameData.messages.meta.misc_stats.no_stats_recorded;
             Messages.StatMiscEntryFormat = gameData.messages.meta.misc_stats.stat_format;
 
+            // Awards (Libary)
+            Messages.AwardsAvalible = gameData.messages.meta.libary.awards.all_earnable_awards;
+            Messages.AwardEntryFormat = gameData.messages.meta.libary.awards.award_entry;
+
             // Locations (Libary)
             Messages.LocationKnownIslands = gameData.messages.meta.libary.locations.known_islands;
             Messages.LocationKnownTowns = gameData.messages.meta.libary.locations.known_towns;
