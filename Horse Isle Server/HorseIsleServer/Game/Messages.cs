@@ -185,6 +185,13 @@ namespace HISP.Game
         public static string MaxJewelryMessage;
         public static string RemoveJewelry;
 
+        // Minigames (Libary)
+        public static string MinigameSingleplayer;
+        public static string MinigameTwoplayer;
+        public static string MinigameMultiplayer;
+        public static string MinigameCompetitions;
+        public static string MinigameEntryFormat;
+
         // Companion (Libary)
         public static string CompanionViewFormat;
         public static string CompanionEntryFormat;
@@ -520,6 +527,11 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+
+        public static string FormatMinigameEntry(string gameName, string mapXy)
+        {
+            return MinigameEntryFormat.Replace("%GAMENAME%",gameName).Replace("%MAPXY%",mapXy);
+        }
         public static string FormatCompanionEntry(string itemDescription)
         {
             return CompanionEntryFormat.Replace("%COMPANIONDESC%", itemDescription);

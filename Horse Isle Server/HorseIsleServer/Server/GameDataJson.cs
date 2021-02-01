@@ -588,6 +588,13 @@ namespace HISP.Server
             Messages.StatMiscNoneRecorded = gameData.messages.meta.misc_stats.no_stats_recorded;
             Messages.StatMiscEntryFormat = gameData.messages.meta.misc_stats.stat_format;
 
+            // Minigame (Libary)
+            Messages.MinigameSingleplayer = gameData.messages.meta.libary.minigames.singleplayer;
+            Messages.MinigameTwoplayer = gameData.messages.meta.libary.minigames.twoplayer;
+            Messages.MinigameMultiplayer = gameData.messages.meta.libary.minigames.multiplayer;
+            Messages.MinigameCompetitions = gameData.messages.meta.libary.minigames.competitions;
+            Messages.MinigameEntryFormat = gameData.messages.meta.libary.minigames.minigame_entry;
+
             // Companion (Libary)
             Messages.CompanionViewFormat = gameData.messages.meta.libary.companion.view_button;
             Messages.CompanionEntryFormat = gameData.messages.meta.libary.companion.entry_format;
