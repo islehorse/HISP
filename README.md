@@ -3,8 +3,12 @@
 [![Linux](https://github.com/KuromeSan/HISP/workflows/linux/badge.svg)](https://github.com/KuromeSan/HISP/actions?query=workflow%3Alinux)
 [![Windows](https://github.com/KuromeSan/HISP/workflows/windows/badge.svg)](https://github.com/KuromeSan/HISP/actions?query=workflow%3Awindows)
 
-This is an open source re-implementation of the Horse Isle 1 Serverside code
-Alot of features don't work atm but it gets in game and let's you do a few things.
+HISP is a "Server Emulator" for Horse Isle 1.0
+You may know of "private servers" for big MMO games such as **Runescape** or **Club Penguin**
+well they essentailly run off "Server Emulators". 
+
+btw, alot of features dont work atm, but alot also do, 
+i basically have to rewrite the entire game so .. 
 
 # Depends
  HISP Depends on a SQL Server, 
