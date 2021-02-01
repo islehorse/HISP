@@ -11,7 +11,7 @@ btw, alot of features dont work atm, but alot also do,
 i basically have to rewrite the entire game so .. 
 
 
-**tl;dr, think "Horse Isle Rewritten"**
+**tl;dr, think "Club Penguin Rewritten" but with Horse Isle.**
 
 
 # Depends
