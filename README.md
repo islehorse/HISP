@@ -3,7 +3,7 @@
 [![Linux](https://github.com/KuromeSan/HISP/workflows/linux/badge.svg)](https://github.com/KuromeSan/HISP/actions?query=workflow%3Alinux)
 [![Windows](https://github.com/KuromeSan/HISP/workflows/windows/badge.svg)](https://github.com/KuromeSan/HISP/actions?query=workflow%3Awindows)
 
-HISP is a "Server Emulator" for Horse Isle 1.0          
+HISP is a "Server Emulator" for Horse Isle 1          
 You may know of "private servers" for big MMO games such as **Runescape** or **Club Penguin**          
 well they essentailly run off "Server Emulators".          
 
