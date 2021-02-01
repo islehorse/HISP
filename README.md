@@ -10,6 +10,10 @@ well they essentailly run off "Server Emulators".
 btw, alot of features dont work atm, but alot also do, 
 i basically have to rewrite the entire game so .. 
 
+
+**tl;dr, think "Horse Isle Rewritten"**
+
+
 # Depends
  HISP Depends on a SQL Server, 
  its been tested and known to work specifically with MariaDB, https://mariadb.org/
