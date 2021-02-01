@@ -26,7 +26,7 @@ namespace HISP.Server
         private Timer kickTimer;
         private Timer minuteTimer;
 
-
+        private bool isDisconnecting = false;
         private int keepAliveInterval = 60 * 1000;
         private int updateInterval = 60 * 1000;
 
@@ -132,13 +132,16 @@ namespace HISP.Server
             updateTimer = new Timer(new TimerCallback(updateTimerTick), null, updateInterval, updateInterval);
             inactivityTimer = new Timer(new TimerCallback(keepAliveTimerTick), null, keepAliveInterval, keepAliveInterval);
         }
-        private void receivePackets()
+        private bool receivePackets()
         {
             // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
             MemoryStream ms = new MemoryStream();
 
             while(ClientSocket.Connected)
             {
+                if(isDisconnecting)
+                    break;
+
                 try
                 {
                     if (ClientSocket.Available >= 1)
@@ -149,6 +152,9 @@ namespace HISP.Server
 
                         foreach (Byte b in buffer)
                         {
+                            if(isDisconnecting)
+                                break;
+
                             ms.WriteByte(b);
                             if (b == 0x00)
                             {
@@ -172,6 +178,23 @@ namespace HISP.Server
 
             }
 
+            // Shutdown sockets
+            if(updateTimer != null)
+                updateTimer.Dispose();
+            if(inactivityTimer != null)
+                inactivityTimer.Dispose();
+            if(warnTimer != null)
+                warnTimer.Dispose();
+            if(kickTimer != null)
+                kickTimer.Dispose();
+            
+            GameServer.OnDisconnect(this);
+            LoggedIn = false;
+            LoggedinUser = null;
+            ClientSocket.Close();
+            ClientSocket.Dispose();
+
+            return isDisconnecting; // Stop the thread.
                 
         }
 
@@ -277,21 +300,10 @@ namespace HISP.Server
        public void Disconnect()
         {
             
-            if(updateTimer != null)
-                updateTimer.Dispose();
-            if(inactivityTimer != null)
-                inactivityTimer.Dispose();
-            if(warnTimer != null)
-                warnTimer.Dispose();
-            if(kickTimer != null)
-                kickTimer.Dispose();
-            
-            GameServer.OnDisconnect(this);
-            LoggedIn = false;
-            LoggedinUser = null;
-            ClientSocket.Close();
-            ClientSocket.Dispose();
-            //recvPackets.Anort();
+            // Cant outright stop threads anymore in .NET core,
+            // Lets just let the thread stop gracefully.
+
+            this.isDisconnecting = true;
         }
 
        public void Kick(string Reason)

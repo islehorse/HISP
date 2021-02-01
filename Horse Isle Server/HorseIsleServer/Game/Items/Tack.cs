@@ -35,7 +35,7 @@ namespace HISP.Game.Items
             {
                 foreach(Item.ItemInformation tackItem in TackItems)
                 {
-                    if(tackItem.MiscFlags[0] == 1) // Saddle
+                    if(tackItem.GetMiscFlag(0) == 1) // Saddle
                         return tackItem;
                 }
                 throw new KeyNotFoundException("Saddle not found.");
@@ -46,7 +46,7 @@ namespace HISP.Game.Items
             {
                 foreach(Item.ItemInformation tackItem in TackItems)
                 {
-                    if(tackItem.MiscFlags[0] == 2) // SaddlePad
+                    if(tackItem.GetMiscFlag(0) == 2) // SaddlePad
                         return tackItem;
                 }
                 throw new KeyNotFoundException("SaddlePad not found.");
@@ -56,7 +56,7 @@ namespace HISP.Game.Items
             {
                 foreach(Item.ItemInformation tackItem in TackItems)
                 {
-                    if(tackItem.MiscFlags[0] == 3) // Bridle
+                    if(tackItem.GetMiscFlag(0) == 3) // Bridle
                         return tackItem;
                 }
                 throw new KeyNotFoundException("GetBridle not found.");
@@ -78,6 +78,18 @@ namespace HISP.Game.Items
                 {
                     return tackItems.ToArray();
                 }
+            }
+            public int SortPosition()
+            {
+                int pos = 0;
+                foreach(Item.ItemInformation tackitem in TackItems)
+                {
+                    foreach(Item.Effects effect in tackitem.Effects)
+                    {
+                        pos += effect.EffectAmount;
+                    }
+                }
+                return pos;
             }
         }
         private static string capitalizeFirstLetter(string str)

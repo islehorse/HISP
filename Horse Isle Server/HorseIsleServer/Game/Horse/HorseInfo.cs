@@ -122,10 +122,7 @@ namespace HISP.Game.Horse
             {
                 get
                 {
-                    int offsetBy = 0;
-                    if (baseHorse.Equipment.Companion != null)
-                        offsetBy += getOffetFrom(baseHorse.Equipment.Companion);
-                    return offsetBy;
+                    return baseHorse.Equipment.Companion.GetMiscFlag(0);
                 }
             }
             public int TackOffset
@@ -134,11 +131,11 @@ namespace HISP.Game.Horse
                 {
                     int offsetBy = 0;
                     if (baseHorse.Equipment.Saddle != null)
-                        offsetBy += getOffetFrom(baseHorse.Equipment.Saddle);
+                        offsetBy += getOffsetFrom(baseHorse.Equipment.Saddle);
                     if (baseHorse.Equipment.SaddlePad != null)
-                        offsetBy += getOffetFrom(baseHorse.Equipment.SaddlePad);
+                        offsetBy += getOffsetFrom(baseHorse.Equipment.SaddlePad);
                     if (baseHorse.Equipment.Bridle != null)
-                        offsetBy += getOffetFrom(baseHorse.Equipment.Bridle);
+                        offsetBy += getOffsetFrom(baseHorse.Equipment.Bridle);
                     return offsetBy;
                 }
             }
@@ -150,7 +147,7 @@ namespace HISP.Game.Horse
                 }
             }
 
-            private int getOffetFrom(Item.ItemInformation tackPeice)
+            private int getOffsetFrom(Item.ItemInformation tackPeice)
             {
                 int offsetBy = 0;
                 foreach (Item.Effects effect in baseHorse.Equipment.Bridle.Effects)

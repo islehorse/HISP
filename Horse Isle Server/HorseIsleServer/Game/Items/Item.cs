@@ -40,6 +40,14 @@ namespace HISP.Game.Items
 
             public SpawnRules SpawnParamaters;
 
+            public int GetMiscFlag(int no)
+            {
+                if(MiscFlags.Length <= no)
+                    return 0;
+                else
+                    return MiscFlags[no];
+            }
+
         }
 
         public struct ThrowableItem
