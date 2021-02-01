@@ -17,6 +17,8 @@ Alot of features don't work atm but it gets in game and let's you do a few thing
  
 # Building
  Building the server from source requires Microsoft .NET Core SDK, targetting version 5.0 https://dotnet.microsoft.com/download/dotnet-core
+ use ``dotnet build`` to build a debug build, (requires .NET Core Runtime) quickly or one of our publishing XML's
+ see: ``dotnet publish -p:PublishProfile=Linux64.pubxml`` to to build it standalone.
  
 # Web Server
  Theres a bunch of saved files from the Horse Isle 1.0 website, as well as some basic functionality to make it work
