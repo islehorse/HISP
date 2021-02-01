@@ -185,11 +185,13 @@ namespace HISP.Game
         public static string MaxJewelryMessage;
         public static string RemoveJewelry;
 
+        // Companion (Libary)
+        public static string CompanionViewFormat;
+        public static string CompanionEntryFormat;
+
         // Tack (Libary)
         public static string TackViewSetFormat;
         public static string TackSetPeiceFormat;
-        public static string TackBonusFormat;
-        public static string TackAndSeperator;
 
         // Horse
         public static string BreedViewerMaximumStats;
@@ -518,7 +520,14 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
-
+        public static string FormatCompanionEntry(string itemDescription)
+        {
+            return CompanionEntryFormat.Replace("%COMPANIONDESC%", itemDescription);
+        }
+        public static string FormatCompanionViewButton(int iconid, string itemName, string swf)
+        {
+            return CompanionViewFormat.Replace("%ICONID%", iconId.ToString()).Replace("%COMPANIONNAME%",itemName).Replace("%SWF%", swf);
+        }
         public static string FormatTackSetPeice(string itemName, string itemDescription)
         {
             return TackSetPeiceFormat.Replace("%ITEMNAME%",itemName).Replace("%ITEMDESC%", itemDescription);
