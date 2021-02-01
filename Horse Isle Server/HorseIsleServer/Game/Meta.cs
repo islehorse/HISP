@@ -360,7 +360,49 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
-
+        public static string BuildMinigamesLibary()
+        {
+            string message = "";
+            message += Messages.MinigameSingleplayer;
+            foreach(World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title))
+            {
+                if(tile.TypeFlag == "1PLAYER")
+                {
+                    string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
+                    message += Messages.FormatMinigameEntry(tile.Title, mapXy);
+                }
+            }
+            message += Messages.MinigameTwoplayer;
+            foreach(World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title))
+            {
+                if(tile.TypeFlag == "2PLAYER")
+                {
+                    string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
+                    message += Messages.FormatMinigameEntry(tile.Title, mapXy);
+                }
+            }
+            message += Messages.MinigameMultiplayer;
+            foreach(World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title))
+            {
+                if(tile.TypeFlag == "MULTIPLAYER")
+                {
+                    string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
+                    message += Messages.FormatMinigameEntry(tile.Title, mapXy);
+                }
+            }
+            message += Messages.MinigameCompetitions;
+            foreach(World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title))
+            {
+                if(tile.TypeFlag == "ARENA")
+                {
+                    string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
+                    message += Messages.FormatMinigameEntry(tile.Title, mapXy);
+                }
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildCompanionLibary()
         {
             string message = "";
