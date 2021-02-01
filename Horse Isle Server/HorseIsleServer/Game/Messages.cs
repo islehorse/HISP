@@ -526,7 +526,7 @@ namespace HISP.Game
         }
         public static string FormatCompanionViewButton(int iconid, string itemName, string swf)
         {
-            return CompanionViewFormat.Replace("%ICONID%", iconId.ToString()).Replace("%COMPANIONNAME%",itemName).Replace("%SWF%", swf);
+            return CompanionViewFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COMPANIONNAME%",itemName).Replace("%SWF%", swf);
         }
         public static string FormatTackSetPeice(string itemName, string itemDescription)
         {

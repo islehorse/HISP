@@ -330,7 +330,7 @@ namespace HISP.Game
         {
             string message = "";
 
-            foreach(Tack.TackSet set in Tack.TackSets)
+            foreach(Tack.TackSet set in Tack.TackSets.OrderBy(o => o.SortPosition()).ToArray())
             {
                 string[] setSwfs = set.GetSwfNames();
                 string swf = "breedviewer.swf?terrain=book2&breed=tackonly";
@@ -354,6 +354,23 @@ namespace HISP.Game
                 catch(Exception e)
                 {
                     Logger.ErrorPrint(e.Message);
+                }
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+
+        public static string BuildCompanionLibary()
+        {
+            string message = "";
+            foreach(Item.ItemInformation itm in Item.Items.OrderBy(o => o.GetMiscFlag(0)).ToArray())
+            {
+                if(itm.Type == "COMPANION" && itm.EmbedSwf != null)
+                {
+                    string swf = "breedviewer.swf?terrain=book2&breed=tackonly&companion="+itm.EmbedSwf+"&j=";
+                    message += Messages.FormatCompanionViewButton(itm.IconId, itm.Name, swf);
+                    message += Messages.FormatCompanionEntry(itm.Description);
                 }
             }
             message += Messages.BackToMap;

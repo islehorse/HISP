@@ -578,7 +578,7 @@ namespace HISP.Server
                                 Item.ItemInformation itemInfo = Item.GetItemById(itemId);
                                 if (itemInfo.Type == "TACK")
                                 {
-                                    switch (itemInfo.MiscFlags[0])
+                                    switch (itemInfo.GetMiscFlag(0))
                                     {
                                         case 1: // Saddle
                                             if(sender.LoggedinUser.LastViewedHorse.Equipment.Saddle != null)
@@ -1269,6 +1269,16 @@ namespace HISP.Server
                         sender.SendPacket(metaPacket);
                     }
                     break;
+                case "9": // View Tack
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackLibary());
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "10":
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildCompanionLibary());
+                    sender.SendPacket(metaPacket);
+                    break;
                 case "11": // Randomize horse name
                     if (sender.LoggedinUser.LastViewedHorse != null)
                     {
@@ -1336,11 +1346,6 @@ namespace HISP.Server
                 case "34":
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAllStats(sender.LoggedinUser));
-                    sender.SendPacket(metaPacket);
-                    break;
-                case "9": // View Tack
-                    sender.LoggedinUser.MetaPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackLibary());
                     sender.SendPacket(metaPacket);
                     break;
                 case "53": // Misc Stats / Tracked Items
@@ -2849,13 +2854,7 @@ namespace HISP.Server
                         Item.ItemInformation itemInf = instance.GetItemInfo();
                         if(itemInf.Type == "CLOTHES")
                         {
-                            if (itemInf.MiscFlags.Length <= 0)
-                            {
-                                Logger.ErrorPrint(itemInf.Name + " Has no misc flags.");
-                                return;
-                            }
-
-                            switch (itemInf.MiscFlags[0])
+                            switch (itemInf.GetMiscFlag(0))
                             {
                                 case CompetitionGear.MISC_FLAG_HEAD:
                                     if (sender.LoggedinUser.EquipedCompetitionGear.Head == null)
@@ -2897,6 +2896,9 @@ namespace HISP.Server
                                         sender.LoggedinUser.EquipedCompetitionGear.Feet = itemInf;
                                     }
                                     break;
+                                default: 
+                                    Logger.ErrorPrint(itemInf.Name + " Has unknown misc flags.");
+                                    return;
                             }
                             sender.LoggedinUser.Inventory.Remove(instance);
                             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatEquipCompetitionGearMessage(itemInf.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
