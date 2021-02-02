@@ -122,7 +122,10 @@ namespace HISP.Game.Horse
             {
                 get
                 {
-                    return baseHorse.Equipment.Companion.GetMiscFlag(0);
+                    if(baseHorse.Equipment.Companion != null)
+                        return baseHorse.Equipment.Companion.GetMiscFlag(0);
+                    else
+                        return 0;
                 }
             }
             public int TackOffset

@@ -66,6 +66,8 @@ namespace HISP.Game.Chat
                         return Command.NoClip(message, args, user);
                     if (message.StartsWith("%BAN"))
                         return Command.Ban(message, args, user);
+                    if (message.StartsWith("%UNBAN"))
+                        return Command.UnBan(message, args, user);
                     return false;
                 }
             if (message[0] == '!')

@@ -53,7 +53,6 @@ namespace HISP.Server
                 }
                 catch (Exception e)
                 {
-                    Logger.DebugPrint(e.GetType().ToString());
                     Logger.WarnPrint(e.Message);
                 };
 
@@ -662,6 +661,19 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", userId);
                 sqlCommand.Parameters.AddWithValue("@ipAddress", ip);
                 sqlCommand.Parameters.AddWithValue("@reason", reason);
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void UnBanUser(int userId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM BannedPlayers WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", userId);
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
             }
