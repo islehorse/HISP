@@ -62,6 +62,31 @@ namespace HISP.Game.Chat
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
+
+        public static bool UnBan(string message, string[] args, User user)
+        {
+            if(args.Length <= 0)
+                return false;
+            if(!user.Administrator || !user.Moderator)
+                return false;
+
+            try{
+                string userName = args[0];
+                int id = Database.GetUserid(userName);
+                Database.UnBanUser(id);
+            }
+            catch(Exception e)
+            {
+                Logger.ErrorPrint(e.Message);
+                return false;
+            }
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+
+            return true;
+        }
+
         public static bool Ban(string message, string[] args, User user)
         {
             if (args.Length <= 0)
@@ -79,13 +104,19 @@ namespace HISP.Game.Chat
                 }
 
                 Database.BanUser(id, ip, reason);
-                User bannedUser = GameServer.GetUserByName(args[0]);
-                bannedUser.LoggedinClient.Kick(Messages.KickReasonBanned);
             }
             catch(Exception)
             {
                 return false;
             }
+            try{
+                User bannedUser = GameServer.GetUserByName(args[0]);
+                bannedUser.LoggedinClient.Kick(Messages.KickReasonBanned);
+            }
+            catch(KeyNotFoundException){};
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
 
             return true;
         }
@@ -134,7 +165,7 @@ namespace HISP.Game.Chat
             if (!user.Administrator)
                 return false;
             
-
+            user.NoClip = !user.NoClip;
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
