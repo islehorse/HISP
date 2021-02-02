@@ -20,7 +20,7 @@ namespace HISP.Server
             {
                 db.Open();
                 string UserTable = "CREATE TABLE Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
-                string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(1028),PrivateNotes Text(1028), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT)";
+                string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(1028),IpAddress TEXT(1028),PrivateNotes Text(1028), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT)";
                 string MailTable = "CREATE TABLE Mailbox(IdTo INT, PlayerFrom TEXT(16),Subject TEXT(128), Message Text(1028), TimeSent INT)";
                 string BuddyTable = "CREATE TABLE BuddyList(Id INT, IdFriend INT, Pending BOOL)";
                 string WorldTable = "CREATE TABLE World(Time INT,Day INT, Year INT, Weather TEXT(64))";
@@ -40,6 +40,7 @@ namespace HISP.Server
                 string WildHorse = "CREATE TABLE WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string LastPlayer = "CREATE TABLE LastPlayer(roomId TEXT(1028), playerId INT)";
                 string TrackingStats = "CREATE TABLE Tracking(playerId INT, what TEXT(128), count INT)";
+                string BannedPlayers = "CREATE TABLE BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
                 try
@@ -52,6 +53,7 @@ namespace HISP.Server
                 }
                 catch (Exception e)
                 {
+                    Logger.DebugPrint(e.GetType().ToString());
                     Logger.WarnPrint(e.Message);
                 };
 
@@ -224,7 +226,19 @@ namespace HISP.Server
                     Logger.WarnPrint(e.Message);
                 };
 
-                
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = BannedPlayers;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
                 try
                 {
 
@@ -637,6 +651,51 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
+
+        public static void BanUser(int userId, string ip, string reason)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO BannedPlayers VALUES(@playerId,@ipAddress,@reason)";
+                sqlCommand.Parameters.AddWithValue("@playerId", userId);
+                sqlCommand.Parameters.AddWithValue("@ipAddress", ip);
+                sqlCommand.Parameters.AddWithValue("@reason", reason);
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+
+        public static bool IsIpBanned(string ip)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM BannedPlayers WHERE ipAddress=@ipAddr";
+                sqlCommand.Parameters.AddWithValue("@ipAddr", ip);
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return count >= 1;
+            }
+        }
+        public static bool IsUserBanned(int userId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM BannedPlayers WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", userId);
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return count >= 1;
+            }
+            
+        }
+
         public static void AddWildHorse(WildHorse horse)
         {
             
@@ -2597,6 +2656,42 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
+        public static string GetIpAddress(int id)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                if (!CheckUserExtExists(id)) // user allready exists!
+                    throw new Exception("Userid " + id + " Does not exist in UserExt.");
+
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT IpAddress FROM UserExt WHERE Id=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", id);
+                sqlCommand.Prepare();
+                string IpAddress = sqlCommand.ExecuteScalar().ToString();
+                sqlCommand.Dispose();
+                return IpAddress;
+            }
+        }
+        public static void SetIpAddress(int id, string ipAddress)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                if (!CheckUserExtExists(id)) // user allready exists!
+                    throw new Exception("Userid " + id + " Does not exist in UserExt.");
+
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE UserExt SET IpAddress=@ipAddr WHERE Id=@playerId";
+                sqlCommand.Parameters.AddWithValue("@ipAddr", ipAddress);
+                sqlCommand.Parameters.AddWithValue("@playerId", id);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
         public static void CreateUserExt(int id)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -2606,7 +2701,7 @@ namespace HISP.Server
                     throw new Exception("Userid " + id + " Allready in UserExt.");
 
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,@timestamp,0,0,0,0,'','',0,0,'NO',0,0,1000,1000,1000, 180)";
+                sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,@timestamp,0,0,0,0,'','','',0,0,'NO',0,0,1000,1000,1000, 180)";
                 sqlCommand.Parameters.AddWithValue("@id", id);
                 sqlCommand.Parameters.AddWithValue("@timestamp", Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()));
                 sqlCommand.Parameters.AddWithValue("@x", Map.NewUserStartX);

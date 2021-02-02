@@ -62,6 +62,34 @@ namespace HISP.Game.Chat
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
+        public static bool Ban(string message, string[] args, User user)
+        {
+            if (args.Length <= 0)
+                return false;
+            if(!user.Administrator || !user.Moderator)
+                return false;
+            try{
+                string userName = args[0];
+                int id = Database.GetUserid(userName);
+                string ip = Database.GetIpAddress(id);
+                string reason = "NONE SPECIFIED";
+                if (args.Length >= 2)
+                {
+                    reason = string.Join(" ", args, 1, args.Length - 1);
+                }
+
+                Database.BanUser(id, ip, reason);
+                User bannedUser = GameServer.GetUserByName(args[0]);
+                bannedUser.LoggedinClient.Kick(Messages.KickReasonBanned);
+            }
+            catch(Exception)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public static bool Stickbug(string message, string[] args, User user)
         {
             if (args.Length <= 0)
