@@ -759,6 +759,13 @@ namespace HISP.Server
                     {
                         HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
                         
+                        if(horseInst.Equipment.Saddle == null || horseInst.Equipment.SaddlePad == null || horseInst.Equipment.Bridle == null)
+                        {
+                            byte[] horseNotTackedMessage = PacketBuilder.CreateChat(Messages.HorseCannotMountUntilTackedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(horseNotTackedMessage);
+                            break;
+                        }
+
                         string ridingHorseMessage = Messages.FormatHorseRidingMessage(horseInst.Name);
                         byte[] ridingHorseMessagePacket = PacketBuilder.CreateChat(ridingHorseMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(ridingHorseMessagePacket);
