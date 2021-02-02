@@ -236,6 +236,7 @@ namespace HISP.Game
         public static string HorseTrainableInFormat;
         public static string HorseIsTrainable;
 
+        public static string HorseCannotMountUntilTackedMessage;
         public static string HorseMountButtonFormat;
         public static string HorseDisMountButtonFormat;
         public static string HorseFeedButtonFormat;

@@ -153,7 +153,7 @@ namespace HISP.Game.Horse
             private int getOffsetFrom(Item.ItemInformation tackPeice)
             {
                 int offsetBy = 0;
-                foreach (Item.Effects effect in baseHorse.Equipment.Bridle.Effects)
+                foreach (Item.Effects effect in tackPeice.Effects)
                 {
                     string effects = effect.EffectsWhat;
                     switch (effects)
