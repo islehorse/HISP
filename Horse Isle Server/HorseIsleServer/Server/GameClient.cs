@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
+using System.Net;
 using System.Text;
 using System.Threading;
 using HISP.Player;
@@ -125,9 +126,10 @@ namespace HISP.Server
                         Client.Kick(Messages.KickReasonDuplicateLogin);
                 }
             }
-
             LoggedinUser = new User(this,id);
             LoggedIn = true;
+
+            Database.SetIpAddress(id, RemoteIp);
 
             updateTimer = new Timer(new TimerCallback(updateTimerTick), null, updateInterval, updateInterval);
             inactivityTimer = new Timer(new TimerCallback(keepAliveTimerTick), null, keepAliveInterval, keepAliveInterval);
@@ -332,6 +334,9 @@ namespace HISP.Server
         {
             ClientSocket = clientSocket;
             RemoteIp = clientSocket.RemoteEndPoint.ToString();
+            
+            if(RemoteIp.Contains(":"))
+                RemoteIp = RemoteIp.Substring(0, RemoteIp.IndexOf(":"));
 
             Logger.DebugPrint("Client connected @ " + RemoteIp);
 

@@ -523,6 +523,10 @@ namespace HISP.Game
         public static string FountainDrankYourFull;
         public static string FountainDroppedMoneyFormat;
 
+        // Login Fail messages
+        public static string LoginFailedReasonBanned;
+        public static string LoginFailedReasonBannedIpFormat;
+
         // Disconnect Messages
         public static string KickReasonBanned;
         public static string KickReasonKicked;
@@ -537,7 +541,10 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
-
+        public static string FormatIpBannedMessage(string Ip)
+        {
+            return LoginFailedReasonBannedIpFormat.Replace("%IP%", Ip);
+        }
         public static string FormatAwardEntry(int iconId, string awardName, int bonusMoney, string description)
         {
             return AwardEntryFormat.Replace("%ICONID%", iconId.ToString()).Replace("%AWARDNAME%", awardName).Replace("%BONUSMONEY%",bonusMoney.ToString("N0")).Replace("%DESCRIPTION%",description);

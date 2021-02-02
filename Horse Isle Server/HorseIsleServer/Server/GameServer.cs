@@ -3506,6 +3506,24 @@ namespace HISP.Server
                 {
                     // Obtain user information
                     int userId = Database.GetUserid(username);
+
+                    if(Database.IsUserBanned(userId))
+                    {
+                        Logger.DebugPrint(sender.RemoteIp + " Tried to login to : " + username + " but, the account was banned.");
+                        byte[] userBannedPacket = PacketBuilder.CreateLoginPacket(false, Messages.LoginFailedReasonBanned);
+                        sender.SendPacket(userBannedPacket);
+                        return;
+                    }
+
+                    if(Database.IsIpBanned(sender.RemoteIp))
+                    {
+                        Logger.DebugPrint(sender.RemoteIp + " Tried to login to : " + username + " but, the IP was banned.");
+                        byte[] ipBannedPacket = PacketBuilder.CreateLoginPacket(false, Messages.FormatIpBannedMessage(sender.RemoteIp));
+                        sender.SendPacket(ipBannedPacket);
+                        return;
+                    }
+
+
                     sender.Login(userId);
                     sender.LoggedinUser.Password = password;
 

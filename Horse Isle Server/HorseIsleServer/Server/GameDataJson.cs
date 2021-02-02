@@ -1054,6 +1054,10 @@ namespace HISP.Server
             Messages.NpcInformationButton = gameData.messages.meta.npc.npc_information_button;
             Messages.NpcInformationFormat = gameData.messages.meta.npc.npc_information_format;
 
+            // Login Failed Reasons
+            Messages.LoginFailedReasonBanned = gameData.messages.login.banned;
+            Messages.LoginFailedReasonBannedIpFormat = gameData.messages.login.ip_banned;
+
             // Disconnect Reasons
 
             Messages.KickReasonKicked = gameData.messages.disconnect.kicked;
