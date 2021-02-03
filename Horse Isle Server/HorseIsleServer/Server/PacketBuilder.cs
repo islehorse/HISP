@@ -139,12 +139,16 @@ namespace HISP.Server
         public const byte LOGIN_CUSTOM_MESSAGE = 0x16;
         public const byte LOGIN_SUCCESS = 0x14;
 
+        public const byte WEATHER_UPDATE = 0x13;
+
         public const byte DIRECTION_UP = 0;
         public const byte DIRECTION_RIGHT = 1;
         public const byte DIRECTION_DOWN = 2;
         public const byte DIRECTION_LEFT = 3;
         public const byte DIRECTION_TELEPORT = 4;
         public const byte DIRECTION_NONE = 10;
+
+
 
         public static byte[] CreateBrickPoetMovePacket(Brickpoet.PoetryPeice peice)
         {
@@ -581,6 +585,23 @@ namespace HISP.Server
 
             ms.Write(strBytes, 0x00, strBytes.Length);
 
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] Packet = ms.ToArray();
+            ms.Dispose();
+
+            return Packet;
+        }
+
+        public static byte[] CreateWeatherUpdatePacket(string newWeather)
+        {
+            byte[] strBytes = Encoding.UTF8.GetBytes(newWeather);
+
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_WORLD);
+            ms.WriteByte(WEATHER_UPDATE);
+            ms.Write(strBytes, 0x00, strBytes.Length);
             ms.WriteByte(PACKET_TERMINATOR);
 
             ms.Seek(0x00, SeekOrigin.Begin);

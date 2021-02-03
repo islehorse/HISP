@@ -64,6 +64,25 @@ namespace HISP.Server
             if(totalMinutesElapsed % 24 == 0)
                 Database.DoIntrestPayments(ConfigReader.IntrestRate);
 
+            foreach (World.Town town in World.Towns)
+            {
+                if (RandomNumberGenerator.Next(0, 10) > 5)
+                {
+                    town.Weather = town.SelectRandomWeather();
+                    Logger.DebugPrint("Changing the weather in " + town.Name + " to " + town.Weather);
+                }
+            }
+
+            foreach (World.Isle isle in World.Isles)
+            {
+                if(RandomNumberGenerator.Next(0,10) > 5)
+                {
+                    isle.Weather = isle.SelectRandomWeather();
+                    Logger.DebugPrint("Changing the weather in " + isle.Name + " to " + isle.Weather);
+                }
+            }
+
+
             Database.IncPlayerTirednessForOfflineUsers();
             DroppedItems.Update();
             WildHorse.Update();
@@ -1540,7 +1559,8 @@ namespace HISP.Server
             byte[] WelcomeMessage = PacketBuilder.CreateWelcomeMessage(user.Username);
             sender.SendPacket(WelcomeMessage);
 
-            byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, World.GetWeather());
+            
+            byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, sender.LoggedinUser.GetWeatherSeen());
             sender.SendPacket(WorldData);
 
             // Send first time message;
@@ -3634,7 +3654,25 @@ namespace HISP.Server
                 return false;
             }
         }
-        public static User[] GetUsersUsersInIsle(World.Isle isle, bool includeStealth = false, bool includeMuted = false)
+
+        public static User[] GetUsersInTown(World.Town town, bool includeStealth = false, bool includeMuted = false)
+        {
+            List<User> usersInTown = new List<User>();
+            foreach (GameClient client in ConnectedClients)
+                if (client.LoggedIn)
+                {
+                    if (!includeStealth && client.LoggedinUser.Stealth)
+                        continue;
+                    if (!includeMuted && client.LoggedinUser.MuteIsland)
+                        continue;
+                    if (World.InTown(client.LoggedinUser.X, client.LoggedinUser.Y))
+                        if (World.GetIsle(client.LoggedinUser.X, client.LoggedinUser.Y).Name == town.Name)
+                            usersInTown.Add(client.LoggedinUser);
+                }
+
+            return usersInTown.ToArray();
+        }
+        public static User[] GetUsersInIsle(World.Isle isle, bool includeStealth = false, bool includeMuted = false)
         {
             List<User> usersInIsle = new List<User>();
             foreach (GameClient client in ConnectedClients)
@@ -3866,6 +3904,18 @@ namespace HISP.Server
             byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildInventoryInfo(forClient.LoggedinUser.Inventory));
             forClient.SendPacket(metaPacket);
         }
+
+        public static void UpdateWeather(GameClient forClient)
+        {
+            if (!forClient.LoggedIn)
+            {
+                Logger.ErrorPrint(forClient.RemoteIp + "tried to update weather information when not logged in.");
+                return;
+            }
+
+            byte[] WeatherUpdate = PacketBuilder.CreateWeatherUpdatePacket(forClient.LoggedinUser.GetWeatherSeen());
+            forClient.SendPacket(WeatherUpdate);
+        }
         public static void UpdateWorld(GameClient forClient)
         {
             if (!forClient.LoggedIn)
@@ -3874,7 +3924,7 @@ namespace HISP.Server
                 return;
             }
 
-            byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, World.GetWeather());
+            byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, forClient.LoggedinUser.GetWeatherSeen());
             forClient.SendPacket(WorldData);
         }
         public static void UpdatePlayer(GameClient forClient)
@@ -3939,6 +3989,15 @@ namespace HISP.Server
                         return;
                 LocationStr = Meta.BuildSpecialTileInfo(forClient.LoggedinUser, specialTile);
             }
+
+            string lastWeather = forClient.LoggedinUser.LastSeenWeather;
+            string weather = forClient.LoggedinUser.GetWeatherSeen();
+            if(lastWeather != weather)
+            {
+                byte[] WeatherUpdate = PacketBuilder.CreateWeatherUpdatePacket(weather);
+                forClient.SendPacket(WeatherUpdate);
+            }
+
             byte[] AreaMessage = PacketBuilder.CreateMetaPacket(LocationStr);
             forClient.SendPacket(AreaMessage);
             forClient.LoggedinUser.MetaPriority = false;
