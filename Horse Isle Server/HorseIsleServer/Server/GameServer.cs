@@ -66,7 +66,7 @@ namespace HISP.Server
 
             foreach (World.Town town in World.Towns)
             {
-                if (RandomNumberGenerator.Next(0, 10) > 5)
+                if (RandomNumberGenerator.Next(0, 100) < 25)
                 {
                     town.Weather = town.SelectRandomWeather();
                     Logger.DebugPrint("Changing the weather in " + town.Name + " to " + town.Weather);
@@ -75,7 +75,7 @@ namespace HISP.Server
 
             foreach (World.Isle isle in World.Isles)
             {
-                if(RandomNumberGenerator.Next(0,10) > 5)
+                if(RandomNumberGenerator.Next(0,100) < 25)
                 {
                     isle.Weather = isle.SelectRandomWeather();
                     Logger.DebugPrint("Changing the weather in " + isle.Name + " to " + isle.Weather);
