@@ -231,7 +231,7 @@ namespace HISP.Game.Chat
                 List<GameClient> recipiants = new List<GameClient>();
                 if(World.InIsle(user.X,user.Y))
                 {
-                    User[] usersInSile = GameServer.GetUsersUsersInIsle(World.GetIsle(user.X, user.Y), true, false);
+                    User[] usersInSile = GameServer.GetUsersInIsle(World.GetIsle(user.X, user.Y), true, false);
                     foreach (User userInIsle in usersInSile)
                     {
                         if (user.Id != userInIsle.Id)
@@ -416,7 +416,7 @@ namespace HISP.Game.Chat
                 case ChatChannel.Isle:
                     int inIsle = 0;
                     if (World.InIsle(user.X, user.Y))
-                        inIsle = GameServer.GetUsersUsersInIsle(World.GetIsle(user.X, user.Y), false, false).Length -1;
+                        inIsle = GameServer.GetUsersInIsle(World.GetIsle(user.X, user.Y), false, false).Length -1;
                     return Messages.FormatIsleChatMessageForSender(inIsle, user.Username, message);
                 case ChatChannel.Here:
                     int usersHere = GameServer.GetUsersAt(user.X, user.Y, false, false).Length -1;

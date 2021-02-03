@@ -53,7 +53,18 @@ namespace HISP.Player
         public Award Awards;
         public int CapturingHorseId;
         public DateTime LoginTime;
+        public string LastSeenWeather;
 
+        public string GetWeatherSeen()
+        {
+            string weather = "SUNNY";
+            if (World.InTown(this.X, this.Y))
+                weather = World.GetTown(this.X, this.Y).Weather;
+            if (World.InIsle(this.X, this.Y))
+                weather = World.GetIsle(this.X, this.Y).Weather;
+            LastSeenWeather = weather;
+            return weather;
+        }
         public DateTime SubscribedUntil
         {
             get

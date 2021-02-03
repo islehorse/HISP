@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using HISP.Player;
 using HISP.Server;
 
 namespace HISP.Game
@@ -29,12 +30,53 @@ namespace HISP.Game
         }
         public class Isle 
         {
+            
             public int StartX;
             public int EndX;
             public int StartY;
             public int EndY;
             public int Tileset;
             public string Name;
+            public string SelectRandomWeather()
+            {
+                Waypoint point;
+                try
+                {
+                    point = GetWaypoint();
+                }
+                catch (KeyNotFoundException)
+                {
+                    return "SUNNY";
+                }
+                int intWeatherType = GameServer.RandomNumberGenerator.Next(0, point.WeatherTypesAvalible.Length);
+                string weather = point.WeatherTypesAvalible[intWeatherType];
+                return weather;
+            }
+
+            public string Weather
+            {
+                get
+                {
+                    if (!Database.WeatherExists(Name))
+                    {
+                        string weather = SelectRandomWeather();
+                        Database.InsertWeather(Name, weather);
+                        return weather;
+                    }
+                    else
+                    {
+                        return Database.GetWeather(Name);
+                    }
+                }
+                set
+                {
+                    Database.SetWeather(Name, value);
+                    foreach(User user in GameServer.GetUsersInIsle(this,true,true))
+                    {
+                        GameServer.UpdateArea(user.LoggedinClient);
+                    }
+                }
+            }
             
             public Waypoint GetWaypoint()
             {
@@ -49,7 +91,46 @@ namespace HISP.Game
             public int StartY;
             public int EndY;
             public string Name;
-            
+            public string SelectRandomWeather()
+            {
+                Waypoint point;
+                try
+                {
+                    point = GetWaypoint();
+                }
+                catch (KeyNotFoundException)
+                {
+                    return "SUNNY";
+                }
+                int intWeatherType = GameServer.RandomNumberGenerator.Next(0, point.WeatherTypesAvalible.Length);
+                string weather = point.WeatherTypesAvalible[intWeatherType];
+                return weather;
+            }
+            public string Weather
+            {
+                get
+                {
+                    if (!Database.WeatherExists(Name))
+                    {
+                        string weather = SelectRandomWeather();
+                        Database.InsertWeather(Name, weather);
+                        return weather;
+                    }
+                    else
+                    {
+                        return Database.GetWeather(Name);
+                    }
+                }
+                set
+                {
+                    Database.SetWeather(Name, value);
+                    foreach (User user in GameServer.GetUsersInTown(this, true, true))
+                    {
+                        GameServer.UpdateArea(user.LoggedinClient);
+                    }
+                }
+
+            }
             public Waypoint GetWaypoint()
             {
                 return getWaypoint(this.Name);
@@ -295,9 +376,5 @@ namespace HISP.Game
             return true;
         }
 
-        public static string GetWeather()
-        {
-            return Database.GetWorldWeather();
-        }
     }
 }

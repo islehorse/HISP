@@ -23,7 +23,8 @@ namespace HISP.Server
                 string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(1028),IpAddress TEXT(1028),PrivateNotes Text(1028), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT)";
                 string MailTable = "CREATE TABLE Mailbox(IdTo INT, PlayerFrom TEXT(16),Subject TEXT(128), Message Text(1028), TimeSent INT)";
                 string BuddyTable = "CREATE TABLE BuddyList(Id INT, IdFriend INT, Pending BOOL)";
-                string WorldTable = "CREATE TABLE World(Time INT,Day INT, Year INT, Weather TEXT(64))";
+                string WorldTable = "CREATE TABLE World(Time INT, Day INT, Year INT)";
+                string WeatherTable = "CREATE TABLE Weather(Area TEXT(1028), Weather TEXT(64))";
                 string InventoryTable = "CREATE TABLE Inventory(PlayerID INT, RandomID INT, ItemID INT)";
                 string ShopInventory = "CREATE TABLE ShopInventory(ShopID INT, RandomID INT, ItemID INT)";
                 string DroppedItems = "CREATE TABLE DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT)";
@@ -141,6 +142,19 @@ namespace HISP.Server
 
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = Jewelry;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = WeatherTable;
                     sqlCommand.ExecuteNonQuery();
                     sqlCommand.Dispose();
                 }
@@ -303,7 +317,7 @@ namespace HISP.Server
 
 
                     sqlCommand = db.CreateCommand();
-                    sqlCommand.CommandText = "INSERT INTO World VALUES(0,0,0,'SUNNY')";
+                    sqlCommand.CommandText = "INSERT INTO World VALUES(0,0,0)";
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
@@ -404,6 +418,8 @@ namespace HISP.Server
                 return count;
             }
         }
+
+
 
         public static void SetTrackedItemCount(int playerId, Tracking.TrackableItem what, int count)
         {
@@ -1044,15 +1060,56 @@ namespace HISP.Server
         }
 
 
-
-
-        public static string GetWorldWeather()
+        public static bool WeatherExists(string Area)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Weather FROM World";
+                sqlCommand.CommandText = "SELECT COUNT(*) FROM Weather WHERE Area=@area";
+                sqlCommand.Parameters.AddWithValue("@area", Area);
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return count > 0;
+            }
+        }
+
+        public static void InsertWeather(string Area, string Weather)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO Weather VALUES(@area,@weather)";
+                sqlCommand.Parameters.AddWithValue("@weather", Weather);
+                sqlCommand.Parameters.AddWithValue("@area", Area);
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetWeather(string Area, string Weather)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Weather SET Weather=@weather WHERE Area=@area";
+                sqlCommand.Parameters.AddWithValue("@weather", Weather);
+                sqlCommand.Parameters.AddWithValue("@area", Area);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+        public static string GetWeather(string Area)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT Weather FROM Weather WHERE Area=@area";
+                sqlCommand.Parameters.AddWithValue("@area", Area);
                 string Weather = sqlCommand.ExecuteScalar().ToString();
                 sqlCommand.Dispose();
                 return Weather;
