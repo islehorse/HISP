@@ -517,13 +517,22 @@ namespace HISP.Server
                 Tracking.TrackedItemsStatsMenu.Add(trackedItem);
                 Logger.DebugPrint("Registered Tracked Item: " + trackedItem.What + " value: " + trackedItem.Value);
             }
-            int totalVets = gameData.vet.price_multipliers.Count;
+            int totalVets = gameData.services.vet.price_multipliers.Count;
             for (int i = 0; i < totalVets; i++)
             {
-                double cost = gameData.vet.price_multipliers[i].cost;
-                int id = gameData.vet.price_multipliers[i].id;
+                double cost = gameData.services.vet.price_multipliers[i].cost;
+                int id = gameData.services.vet.price_multipliers[i].id;
                 Vet vet = new Vet(id, cost);
                 Logger.DebugPrint("Registered Vet: " + vet.Id + " selling at: " + vet.PriceMultiplier);
+            }
+            int totalGroomers = gameData.services.groomer.price_multipliers.Count;
+            for (int i = 0; i < totalGroomers; i++)
+            {
+                double cost = gameData.services.groomer.price_multipliers[i].cost;
+                int id = gameData.services.groomer.price_multipliers[i].id;
+                int max = gameData.services.groomer.price_multipliers[i].max;
+                Groomer groomer = new Groomer(id, cost, max);
+                Logger.DebugPrint("Registered Groomer: " + groomer.Id + " selling at: " + groomer.PriceMultiplier);
             }
             int totalBooks = gameData.books.Count;
             for (int i = 0; i < totalBooks; i++)
@@ -643,6 +652,14 @@ namespace HISP.Server
             // Tack (Libary)
             Messages.TackViewSetFormat = gameData.messages.meta.libary.tack.view_tack_set;
             Messages.TackSetPeiceFormat = gameData.messages.meta.libary.tack.set_peice_format;
+
+            // Groomer
+            Messages.GroomerBestToHisAbilitiesFormat = gameData.messages.meta.groomer.groomed_best_it_can;
+            Messages.GroomerCannotAffordMessage = gameData.messages.meta.groomer.cannot_afford_service;
+            Messages.GroomerHorseCurrentlyAtFormat = gameData.messages.meta.groomer.currently_at;
+            Messages.GroomerApplyServiceFormat = gameData.messages.meta.groomer.apply_service;
+            Messages.GroomerApplyServiceForAllFormat = gameData.messages.meta.groomer.apply_all;
+            Messages.GroomerCannotImprove = gameData.messages.meta.groomer.cannot_improve;
 
             // Vet
             Messages.VetServiceHorseFormat = gameData.messages.meta.vet.service_horse;

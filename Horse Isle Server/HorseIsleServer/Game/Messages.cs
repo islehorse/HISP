@@ -328,6 +328,15 @@ namespace HISP.Game
         public static string HorseEquipFormat;
         public static string BackToHorse;
 
+
+        // Groomer
+        public static string GroomerBestToHisAbilitiesFormat;
+        public static string GroomerCannotAffordMessage;
+        public static string GroomerHorseCurrentlyAtFormat;
+        public static string GroomerApplyServiceFormat;
+        public static string GroomerApplyServiceForAllFormat;
+        public static string GroomerCannotImprove;
+
         // Vet
         public static string VetServiceHorseFormat;
         public static string VetSerivcesNotNeeded;
@@ -547,6 +556,23 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatGroomerApplyAllService(int count, int price)
+        {
+            return GroomerApplyServiceForAllFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%COUNT%", count.ToString("N0"));
+        }
+        public static string FormatGroomerApplyService(int price, int randomid)
+        {
+            return GroomerApplyServiceFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%RANDOMID%", randomid.ToString());
+        }
+        public static string FormatHorseGroomCurrentlyAt(string horseName, int currentGroom, int maxGroom)
+        {
+            return GroomerHorseCurrentlyAtFormat.Replace("%HORSENAME%", horseName).Replace("%TOTAL%", currentGroom.ToString()).Replace("%MAX%", maxGroom.ToString());
+        }
+        public static string FormatHorseGroomedToBestAbilities(string breedName)
+        {
+            return GroomerBestToHisAbilitiesFormat.Replace("%HORSEBREED%", breedName);
+        }
 
         public static string FormatBookReadMeta(string author, string title, string bookText)
         {
