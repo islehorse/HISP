@@ -525,6 +525,17 @@ namespace HISP.Server
                 Vet vet = new Vet(id, cost);
                 Logger.DebugPrint("Registered Vet: " + vet.Id + " selling at: " + vet.PriceMultiplier);
             }
+            int totalBooks = gameData.books.Count;
+            for (int i = 0; i < totalBooks; i++)
+            {
+                int id = gameData.books[i].id;
+                string author = gameData.books[i].author;
+                string title = gameData.books[i].title;
+                string text = gameData.books[i].text;
+                Book book = new Book(id, title, author, text);
+                Logger.DebugPrint("Registered Libary Book: " + book.Id + " " + book.Title + " by " + book.Author);
+
+            }
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
             Item.Present = gameData.item.special.present;
@@ -601,6 +612,11 @@ namespace HISP.Server
             Messages.StatMiscHeader = gameData.messages.meta.misc_stats.header;
             Messages.StatMiscNoneRecorded = gameData.messages.meta.misc_stats.no_stats_recorded;
             Messages.StatMiscEntryFormat = gameData.messages.meta.misc_stats.stat_format;
+
+            // Books (Libary)
+            Messages.BooksOfHorseIsle = gameData.messages.meta.libary.books.books_of_horseisle;
+            Messages.BookEntryFormat = gameData.messages.meta.libary.books.book_entry;
+            Messages.BookReadFormat = gameData.messages.meta.libary.books.book_read;
 
             // Awards (Libary)
             Messages.AwardsAvalible = gameData.messages.meta.libary.awards.all_earnable_awards;

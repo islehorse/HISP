@@ -458,6 +458,26 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        public static string BuildBookReadLibary(Book book)
+        {
+            string message = "";
+            message = Messages.FormatBookReadMeta(book.Author, book.Title, book.Text);
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildBooksLibary()
+        {
+            string message = "";
+            message += Messages.BooksOfHorseIsle;
+            foreach(Book libaryBook in Book.LibaryBooks.OrderBy(o => o.Title).ToArray())
+            {
+                message += Messages.FormatBookEntry(libaryBook.Title, libaryBook.Author, libaryBook.Id);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
 
         public static string BuildHorseReleased()
         {

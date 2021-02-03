@@ -1370,6 +1370,11 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAllStats(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
+                case "38":
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBooksLibary());
+                    sender.SendPacket(metaPacket);
+                    break;
                 case "53": // Misc Stats / Tracked Items
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMiscStats(sender.LoggedinUser));
@@ -1405,6 +1410,33 @@ namespace HISP.Server
                     break;
 
                 default:
+                    if(buttonIdStr.StartsWith("39c")) // Book Read
+                    {
+                        string idStr = buttonIdStr.Substring(3);
+                        int bookId = -1;
+                        try
+                        {
+                            bookId = int.Parse(idStr);
+                        }
+                        catch (FormatException)
+                        {
+                            Logger.DebugPrint(sender.LoggedinUser.Username + " Tried to read a book of id NaN");
+                            break;
+                        };
+
+                        if(Book.BookExists(bookId))
+                        {
+                            Book book = Book.GetBookById(bookId);
+                            sender.LoggedinUser.MetaPriority = true;
+                            metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBookReadLibary(book));
+                            sender.SendPacket(metaPacket);
+                        }
+                        else
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + "Tried to read a book that doesnt exist.");
+                        }
+                        break;
+                    }
                     if(buttonIdStr.StartsWith("32c")) // Horse Whisperer
                     {
                         string idStr = buttonIdStr.Substring(3);

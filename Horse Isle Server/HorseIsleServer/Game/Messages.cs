@@ -185,6 +185,11 @@ namespace HISP.Game
         public static string MaxJewelryMessage;
         public static string RemoveJewelry;
 
+        // Books (Libary) 
+        public static string BooksOfHorseIsle;
+        public static string BookEntryFormat;
+        public static string BookReadFormat;
+
         // Awards (Libary)
         public static string AwardsAvalible;
         public static string AwardEntryFormat;
@@ -542,6 +547,15 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatBookReadMeta(string author, string title, string bookText)
+        {
+            return BookReadFormat.Replace("%AUTHOR%", author).Replace("%TITLE%", title).Replace("%TEXT%", bookText);
+        }
+        public static string FormatBookEntry(string title, string author, int id)
+        {
+            return BookEntryFormat.Replace("%TITLE%", title).Replace("%AUTHOR%", author).Replace("%ID%", id.ToString());
+        }
         public static string FormatIpBannedMessage(string Ip)
         {
             return LoginFailedReasonBannedIpFormat.Replace("%IP%", Ip);
