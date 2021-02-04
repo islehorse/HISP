@@ -912,6 +912,7 @@ namespace HISP.Server
             Messages.ItemInformationFormat = gameData.messages.meta.dropped_items.item_information_format;
             Messages.GrabAllItemsButton = gameData.messages.meta.dropped_items.grab_all;
             Messages.DroppedAnItemMessage = gameData.messages.dropped_items.dropped_item_message;
+            Messages.DroppedItemTileIsFull = gameData.messages.dropped_items.drop_tile_full;
             Messages.GrabbedAllItemsMessage = gameData.messages.dropped_items.grab_all_message;
             Messages.GrabbedItemMessage = gameData.messages.dropped_items.grab_message;
             Messages.GrabAllItemsMessage = gameData.messages.dropped_items.grab_all_message;

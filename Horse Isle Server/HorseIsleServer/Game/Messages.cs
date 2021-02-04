@@ -155,6 +155,7 @@ namespace HISP.Game
         public static string GrabbedAllItemsButInventoryFull;
         public static string GrabbedAllItemsMessage;
         public static string DroppedAnItemMessage;
+        public static string DroppedItemTileIsFull;
         public static string ItemInformationFormat;
 
         // Pond

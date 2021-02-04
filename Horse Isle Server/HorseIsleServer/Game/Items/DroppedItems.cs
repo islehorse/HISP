@@ -112,6 +112,7 @@ namespace HISP.Game.Items
                 {
                     if(GameServer.GetUsersAt(item.X, item.Y,true,true).Length == 0)
                     {
+                        Logger.DebugPrint("Despawned Item at " + item.X + ", " + item.Y);
                         RemoveDroppedItem(item);
                         removedCount++;
                     }
@@ -132,6 +133,9 @@ namespace HISP.Game.Items
         }
         public static void GenerateItems()
         {
+
+            Logger.InfoPrint("Generating items, (this may take awhile on a fresh database!)");
+
             int newItems = 0;
             foreach (Item.ItemInformation item in Item.Items)
             {
@@ -165,6 +169,9 @@ namespace HISP.Game.Items
 
                                 if (item.SpawnParamaters.SpawnOnTileType == TileType)
                                 {
+                                    if (GetItemsAt(tryX, tryY).Length > 26) // Max here
+                                        continue;
+
                                     ItemInstance instance = new ItemInstance(item.Id);
                                     DroppedItem droppedItem = new DroppedItem();
                                     droppedItem.X = tryX;
@@ -199,6 +206,9 @@ namespace HISP.Game.Items
 
                             if (Map.CheckPassable(spawnOn.X, spawnOn.Y))
                             {
+                                if (GetItemsAt(spawnOn.X, spawnOn.Y).Length > 26) // Max here
+                                    continue;
+
                                 ItemInstance instance = new ItemInstance(item.Id);
                                 DroppedItem droppedItem = new DroppedItem();
                                 droppedItem.X = spawnOn.X;
@@ -260,6 +270,8 @@ namespace HISP.Game.Items
 
                             if (Map.CheckPassable(tryX, tryY))
                             {
+                                if (GetItemsAt(tryX, tryY).Length > 26) // Max here
+                                    continue;
 
                                 ItemInstance instance = new ItemInstance(item.Id);
                                 DroppedItem droppedItem = new DroppedItem();
@@ -286,13 +298,14 @@ namespace HISP.Game.Items
                         while (true)
                         {
                             // Pick a random isle:
-                            int isleId = GameServer.RandomNumberGenerator.Next(0, World.Isles.Count);
-                            World.Isle isle = World.Isles[isleId];
+                            //int isleId = GameServer.RandomNumberGenerator.Next(0, World.Isles.Count);
+                            //World.Isle isle = World.Isles[isleId];
 
                             // Pick a random location inside the isle
-                            int tryX = GameServer.RandomNumberGenerator.Next(isle.StartX, isle.EndX);
-                            int tryY = GameServer.RandomNumberGenerator.Next(isle.StartY, isle.EndY);
-
+                            //int tryX = GameServer.RandomNumberGenerator.Next(isle.StartX, isle.EndX);
+                            //int tryY = GameServer.RandomNumberGenerator.Next(isle.StartY, isle.EndY);
+                            int tryX = GameServer.RandomNumberGenerator.Next(0, Map.Width);
+                            int tryY = GameServer.RandomNumberGenerator.Next(0, Map.Height);
 
                             if (World.InSpecialTile(tryX, tryY))
                                 continue;
@@ -304,6 +317,9 @@ namespace HISP.Game.Items
 
                                 if (item.SpawnParamaters.SpawnOnTileType == TileType)
                                 {
+                                    if (GetItemsAt(tryX, tryY).Length > 26) // Max here
+                                        continue;
+
                                     ItemInstance instance = new ItemInstance(item.Id);
                                     DroppedItem droppedItem = new DroppedItem();
                                     droppedItem.X = tryX;
@@ -312,7 +328,7 @@ namespace HISP.Game.Items
                                     droppedItem.instance = instance;
                                     droppedItemsList.Add(droppedItem);
                                     Database.AddDroppedItem(droppedItem);
-                                    Logger.DebugPrint("Created Item ID: " + instance.ItemId + " in " + isle.Name + " at: X: " + droppedItem.X + " Y: " + droppedItem.Y);
+                                    Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + droppedItem.X + " Y: " + droppedItem.Y);
                                     newItems++;
                                     break;
 
@@ -340,7 +356,6 @@ namespace HISP.Game.Items
         public static void Init()
         {
             ReadFromDatabase();
-            Logger.InfoPrint("Generating items, (this may take awhile on a fresh database!)");
             GenerateItems();
         }
 

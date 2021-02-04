@@ -37,12 +37,41 @@ namespace HISP.Server
                 string Leaderboards = "CREATE TABLE Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
                 string NpcStartPoint = "CREATE TABLE NpcStartPoint(playerId INT, npcId INT, chatpointId INT)";
                 string PoetryRooms = "CREATE TABLE PoetryRooms(poetId INT, X INT, Y INT, roomId INT)";
+                string SavedDrawings = "CREATE TABLE SavedDrawings(playerId INT, Drawing1 TEXT(65535), Drawing2 TEXT(65535), Drawing3 TEXT(65535))";
+                string DrawingRooms = "CREATE TABLE DrawingRooms(roomId INT, Drawing TEXT(65535))";
                 string Horses = "CREATE TABLE Horses(randomId INT, ownerId INT, ranchId INT, leaser INT, breed INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string WildHorse = "CREATE TABLE WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string LastPlayer = "CREATE TABLE LastPlayer(roomId TEXT(1028), playerId INT)";
                 string TrackingStats = "CREATE TABLE Tracking(playerId INT, what TEXT(128), count INT)";
                 string BannedPlayers = "CREATE TABLE BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = SavedDrawings;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = DrawingRooms;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
 
                 try
                 {
@@ -264,7 +293,7 @@ namespace HISP.Server
                 {
                     Logger.WarnPrint(e.Message);
                 };
-                
+
                 try
                 {
 
@@ -306,7 +335,7 @@ namespace HISP.Server
                 };
 
 
-                
+
                 try
                 {
 
@@ -365,8 +394,9 @@ namespace HISP.Server
                     Logger.WarnPrint(e.Message);
                 };
             }
-            
+
         }
+
 
         public static void AddTrackedItem(int playerId, Tracking.TrackableItem what, int count)
         {
@@ -403,7 +433,7 @@ namespace HISP.Server
         }
         public static int GetTrackedCount(int playerId, Tracking.TrackableItem what)
         {
-            
+
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
@@ -610,7 +640,7 @@ namespace HISP.Server
                 {
                     int randomId = reader.GetInt32(0);
                     int breedId = reader.GetInt32(4);
-                    
+
                     HorseInfo.Breed horseBreed = HorseInfo.GetBreedById(breedId);
                     string name = reader.GetString(5);
                     string description = reader.GetString(6);
@@ -721,12 +751,12 @@ namespace HISP.Server
                 sqlCommand.Dispose();
                 return count >= 1;
             }
-            
+
         }
 
         public static void AddWildHorse(WildHorse horse)
         {
-            
+
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
@@ -761,7 +791,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@personality", horse.Instance.AdvancedStats.Personality);
                 sqlCommand.Parameters.AddWithValue("@height", horse.Instance.AdvancedStats.Height);
 
-                if(horse.Instance.Equipment.Saddle != null)
+                if (horse.Instance.Equipment.Saddle != null)
                     sqlCommand.Parameters.AddWithValue("@saddle", horse.Instance.Equipment.Saddle.Id);
                 else
                     sqlCommand.Parameters.AddWithValue("@saddle", null);
@@ -781,7 +811,7 @@ namespace HISP.Server
                 else
                     sqlCommand.Parameters.AddWithValue("@companion", null);
 
-                
+
 
 
 
@@ -797,7 +827,7 @@ namespace HISP.Server
 
                 sqlCommand.Dispose();
             }
-            
+
         }
 
         public static void LoadWildHorses()
@@ -812,7 +842,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
 
-                while(reader.Read())
+                while (reader.Read())
                 {
                     int randomId = reader.GetInt32(0);
                     int breedId = reader.GetInt32(2);
@@ -861,7 +891,7 @@ namespace HISP.Server
                     int y = reader.GetInt32(4);
                     int timeout = reader.GetInt32(29);
                     WildHorse WildHorse = new WildHorse(inst, x, y, timeout, false);
-                    
+
                 }
 
                 sqlCommand.Dispose();
@@ -886,6 +916,9 @@ namespace HISP.Server
 
         public static int GetLastPlayer(string roomId)
         {
+            if (!Database.LastPlayerExist(roomId))
+                Database.AddLastPlayer(roomId, -1);
+
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
@@ -903,6 +936,8 @@ namespace HISP.Server
 
         public static void SetLastPlayer(string roomId, int playerId)
         {
+            if (!Database.LastPlayerExist(roomId))
+                Database.AddLastPlayer(roomId, -1);
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
@@ -980,7 +1015,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@room", room);
                 sqlCommand.Prepare();
                 int xpos = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                
+
                 sqlCommand.Dispose();
                 return xpos;
             }
@@ -1003,6 +1038,152 @@ namespace HISP.Server
             }
         }
 
+        public static bool SavedDrawingsExist(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(*) FROM SavedDrawings WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                sqlCommand.Dispose();
+                return count >= 1;
+            }
+        }
+        public static void CreateSavedDrawings(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO SavedDrawings VALUES(@playerId,'','','')";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static bool DrawingRoomExists(int room)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(*) FROM DrawingRooms WHERE roomId=@room";
+                sqlCommand.Parameters.AddWithValue("@room", room);
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                sqlCommand.Dispose();
+                return count >= 1;
+            }
+        }
+
+        public static void CreateDrawingRoom(int room)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO DrawingRooms VALUES(@roomId,'')";
+                sqlCommand.Parameters.AddWithValue("@roomId", room);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetDrawingRoomDrawing(int room, string Drawing)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE DrawingRooms SET Drawing=@drawing WHERE roomId=@room";
+                sqlCommand.Parameters.AddWithValue("@drawing", Drawing);
+                sqlCommand.Parameters.AddWithValue("@room", room);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+        public static string GetDrawingRoomDrawing(int room)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT Drawing FROM DrawingRooms WHERE roomId=@room";
+                sqlCommand.Parameters.AddWithValue("@room", room);
+                sqlCommand.Prepare();
+                string drawing = sqlCommand.ExecuteScalar().ToString();
+
+                sqlCommand.Dispose();
+                return drawing;
+            }
+        }
+
+        public static void SaveDrawingSlot1(int playerId, string drawing)
+        {
+            if (!SavedDrawingsExist(playerId))
+                CreateSavedDrawings(playerId);
+
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE SavedDrawings SET Drawing1=@drawing WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@drawing", drawing);
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SaveDrawingSlot2(int playerId, string drawing)
+        {
+            if (!SavedDrawingsExist(playerId))
+                CreateSavedDrawings(playerId);
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE SavedDrawings SET Drawing2=@drawing WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@drawing", drawing);
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SaveDrawingSlot3(int playerId, string drawing)
+        {
+            if (!SavedDrawingsExist(playerId))
+                CreateSavedDrawings(playerId);
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE SavedDrawings SET Drawing3=@drawing WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@drawing", drawing);
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
 
         public static void SetServerTime(int time, int day, int year)
         {
