@@ -208,7 +208,7 @@ namespace HISP.Game.Chat
                 return false;
             if(args[0] == "PLAYER")
             {
-                if(args.Length <= 2)
+                if(args.Length < 2)
                     return false;
                 try
                 {
