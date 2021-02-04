@@ -518,6 +518,13 @@ namespace HISP.Game
         public static string LongFullLine;
         public static string MetaTerminator;
 
+        // Drawing room
+        public static string DrawingLastToDrawFormat;
+        public static string DrawingContentsSavedInSlotFormat;
+        public static string DrawingContentsLoadedFromSlotFormat;
+        public static string DrawingPlzClearLoad;
+        public static string DrawingPlzClearDraw;
+
         // Birckpoet
         public static string LastPoetFormat;
 
@@ -557,6 +564,18 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatDrawingRoomSaved(int slot)
+        {
+            return DrawingContentsSavedInSlotFormat.Replace("%SLOT%", slot.ToString("N0"));
+        }
+        public static string FormatDrawingRoomLoaded(int slot)
+        {
+            return DrawingContentsLoadedFromSlotFormat.Replace("%SLOT%", slot.ToString("N0"));
+        }
+        public static string FormatLastToDraw(string username)
+        {
+            return DrawingLastToDrawFormat.Replace("%USERNAME%", username);
+        }
         public static string FormatGroomerApplyAllService(int count, int price)
         {
             return GroomerApplyServiceForAllFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%COUNT%", count.ToString("N0"));
