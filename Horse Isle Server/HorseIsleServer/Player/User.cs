@@ -90,6 +90,9 @@ namespace HISP.Player
             {
                 if (ConfigReader.AllUsersSubbed)
                     return true;
+
+                if (Administrator)
+                    return true;
                 
                 int Timestamp = Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds());
                 if(Timestamp > subscribedUntil && subscribed) // sub expired.

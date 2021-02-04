@@ -525,6 +525,8 @@ namespace HISP.Game
         public static string DrawingContentsLoadedFromSlotFormat;
         public static string DrawingPlzClearLoad;
         public static string DrawingPlzClearDraw;
+        public static string DrawingNotSentNotSubscribed;
+        public static string DrawingCannotLoadNotSubscribed;
 
         // Birckpoet
         public static string LastPoetFormat;

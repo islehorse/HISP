@@ -1623,6 +1623,212 @@ namespace HISP.Server
             byte module = packet[1];
             switch(module)
             {
+                case PacketBuilder.SWFMODULE_DRAWINGROOM:
+                    if(packet.Length < 3)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid DRAWINGROOM packet (swf communication, WRONG SIZE)");
+                        break;
+                    }
+                    if(packet[2] == PacketBuilder.DRAWINGROOM_GET_DRAWING)
+                    {
+                        if (packet.Length < 6)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid DRAWINGROOM GET DRAWING packet (swf communication, WRONG SIZE)");
+                            break;
+                        }
+                        int roomId = packet[3] - 40;
+                        Drawingroom room;
+                        try
+                        {
+                           room = Drawingroom.GetDrawingRoomById(roomId);
+                        }
+                        catch(KeyNotFoundException)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to load an invalid drawing room: " + roomId);
+                            break;
+                        }
+                        if(room.Drawing != "")
+                        {
+                            byte[] drawingPacket = PacketBuilder.CreateDrawingUpdatePacket(room.Drawing);
+                            sender.SendPacket(drawingPacket);
+                        }
+
+                    }
+                    else if(packet[2] == PacketBuilder.DRAWINGROOM_SAVE)
+                    {
+                        if (packet.Length < 5)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid DRAWINGROOM GET DRAWING packet (swf communication, WRONG SIZE)");
+                            break;
+                        }
+
+                        /*
+                         *   The lack of an if case for if the user isnt subscribed
+                         *   is NOT a bug thats just how pinto does it.
+                         *   you can save but not load if your subscribed. weird huh?
+                         */
+
+                        int roomId = packet[3] - 40;
+                        Drawingroom room;
+                        try
+                        {
+                            room = Drawingroom.GetDrawingRoomById(roomId);
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to load an invalid drawing room: " + roomId);
+                            break;
+                        }
+
+                        
+
+                        if (!Database.SavedDrawingsExist(sender.LoggedinUser.Id))
+                            Database.CreateSavedDrawings(sender.LoggedinUser.Id);
+
+                        int slotNo = 0;
+                        byte slot = packet[4];
+                        switch (slot)
+                        {
+                            case 0x29: // Slot 1
+                                Database.SaveDrawingSlot1(sender.LoggedinUser.Id, room.Drawing);
+                                slotNo = 1;
+                                break;
+                            case 0x2A: // Slot 2
+                                Database.SaveDrawingSlot2(sender.LoggedinUser.Id, room.Drawing);
+                                slotNo = 2;
+                                break;
+                            case 0x2B: // Slot 3
+                                Database.SaveDrawingSlot3(sender.LoggedinUser.Id, room.Drawing);
+                                slotNo = 3;
+                                break;
+                        }
+
+                        byte[] savedDrawingMessage = PacketBuilder.CreateChat(Messages.FormatDrawingRoomSaved(slotNo), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(savedDrawingMessage);
+
+                        break;
+                    }
+                    else if (packet[2] == PacketBuilder.DRAWINGROOM_LOAD)
+                    {
+                        if (packet.Length < 5)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid DRAWINGROOM GET DRAWING packet (swf communication, WRONG SIZE)");
+                            break;
+                        }
+
+                        if(!sender.LoggedinUser.Subscribed)
+                        {
+                            byte[] notSubscribedCantLoad = PacketBuilder.CreateChat(Messages.DrawingCannotLoadNotSubscribed, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(notSubscribedCantLoad);
+                            break;
+                        }
+
+                        int roomId = packet[3] - 40;
+                        Drawingroom room;
+                        try
+                        {
+                            room = Drawingroom.GetDrawingRoomById(roomId);
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to load an invalid drawing room: " + roomId);
+                            break;
+                        }
+
+                        if (!Database.SavedDrawingsExist(sender.LoggedinUser.Id))
+                            Database.CreateSavedDrawings(sender.LoggedinUser.Id);
+
+                        int slotNo = 0;
+                        byte slot = packet[4];
+                        string drawingToAdd = "";
+                        switch (slot)
+                        {
+                            case 0x29: // Slot 1
+                                drawingToAdd = Database.LoadDrawingSlot1(sender.LoggedinUser.Id);
+                                slotNo = 1;
+                                break;
+                            case 0x2A: // Slot 2
+                                drawingToAdd = Database.LoadDrawingSlot2(sender.LoggedinUser.Id);
+                                slotNo = 2;
+                                break;
+                            case 0x2B: // Slot 3
+                                drawingToAdd = Database.LoadDrawingSlot3(sender.LoggedinUser.Id);
+                                slotNo = 3;
+                                break;
+                        }
+
+                        if (room.Drawing.Length + drawingToAdd.Length < 65535) // will this max out the db?
+                        {
+                            room.Drawing += drawingToAdd;
+                            Database.SetLastPlayer("D" + room.Id.ToString(), sender.LoggedinUser.Id);
+                        }
+                        else
+                        {
+                            byte[] roomFullMessage = PacketBuilder.CreateChat(Messages.DrawingPlzClearLoad, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(roomFullMessage);
+                            break;
+                        }
+
+                        room.Drawing += drawingToAdd;
+                        UpdateDrawingForAll(sender, drawingToAdd, true);
+
+                        byte[] loadedDrawingMessage = PacketBuilder.CreateChat(Messages.FormatDrawingRoomLoaded(slotNo), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(loadedDrawingMessage);
+
+                        break;
+                    }
+                    else // Default action- draw line
+                    {
+                        if (packet.Length < 5)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid DRAWINGROOM GET DRAWING packet (swf communication, WRONG SIZE)");
+                            break;
+                        }
+
+                        if(!sender.LoggedinUser.Subscribed)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to draw while not subscribed.");
+                            byte[] notSubscribedMessage = PacketBuilder.CreateChat(Messages.DrawingNotSentNotSubscribed, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(notSubscribedMessage);
+                            break;
+                        }
+
+                        int roomId = packet[2] - 40;
+                        Drawingroom room;
+                        try
+                        {
+                            room = Drawingroom.GetDrawingRoomById(roomId);
+                        }
+                        catch (KeyNotFoundException)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to load an invalid drawing room: " + roomId);
+                            break;
+                        }
+
+                        string packetStr = Encoding.UTF8.GetString(packet);
+                        
+                        string drawing = packetStr.Substring(3, packetStr.Length - 5);
+                        if (drawing.Contains("X")) // Clear byte
+                        {
+                            room.Drawing = "";
+                        }
+                        else if(room.Drawing.Length + drawing.Length < 65535) // will this max out the db?
+                        {
+                            room.Drawing += drawing;
+                            Database.SetLastPlayer("D" + room.Id.ToString(), sender.LoggedinUser.Id);
+                        }
+                        else
+                        {
+                            byte[] roomFullMessage = PacketBuilder.CreateChat(Messages.DrawingPlzClearDraw, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(roomFullMessage);
+                            break;
+                        }
+
+                        UpdateDrawingForAll(sender, drawing, false);
+
+                    }
+
+                    break;
                 case PacketBuilder.SWFMODULE_BRICKPOET:
                     if(packet.Length < 5)
                     {
@@ -2691,7 +2897,7 @@ namespace HISP.Server
                     return;
                 }
 
-                Logger.DebugPrint(sender.LoggedinUser.Username + " Clicked on tile: " + Map.GetTileId(x, y, false).ToString() + "(overlay: " + Map.GetTileId(x, y, true).ToString() + " at " + x.ToString() + "," + y.ToString());
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Clicked on tile: " + Map.GetTileId(x, y, false).ToString() + "(overlay: " + Map.GetTileId(x, y, true).ToString() + ") at " + x.ToString() + "," + y.ToString());
 
 
                 // Get description of tile 
@@ -3107,7 +3313,7 @@ namespace HISP.Server
                     {
                         InventoryItem itm = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
                         ItemInstance instance = itm.ItemInstances[0];
-                        if(DroppedItems.GetItemsAt(sender.LoggedinUser.X, sender.LoggedinUser.Y).Length > 26)
+                        if(DroppedItems.GetItemsAt(sender.LoggedinUser.X, sender.LoggedinUser.Y).Length > 25)
                         {
                             byte[] tileIsFullPacket = PacketBuilder.CreateChat(Messages.DroppedItemTileIsFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(tileIsFullPacket);
@@ -3892,6 +4098,23 @@ namespace HISP.Server
             UpdateUserInfo(client.LoggedinUser);
         }
 
+        public static void UpdateDrawingForAll(GameClient sender, string drawing, bool includingSender=false)
+        {
+
+            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+            User[] usersHere = GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true);
+            foreach (User user in usersHere)
+            {
+                if(!includingSender)
+                    if (user.Id == sender.LoggedinUser.Id)
+                        continue;
+                
+
+                byte[] patchDrawing = PacketBuilder.CreateDrawingUpdatePacket(drawing);
+                user.LoggedinClient.SendPacket(patchDrawing);
+
+            }
+        }
         public static void UpdateHorseMenu(GameClient forClient, HorseInstance horseInst)
         {
             int TileID = Map.GetTileId(forClient.LoggedinUser.X, forClient.LoggedinUser.Y, false);

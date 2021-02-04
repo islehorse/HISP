@@ -67,6 +67,11 @@ namespace HISP.Server
         public const byte HORSE_CAUGHT = 0x1D;
 
         public const byte SWFMODULE_BRICKPOET = 0x5A;
+        public const byte SWFMODULE_DRAWINGROOM = 0x5B;
+
+        public const byte DRAWINGROOM_GET_DRAWING = 0x14;
+        public const byte DRAWINGROOM_SAVE = 0x15;
+        public const byte DRAWINGROOM_LOAD = 0x16;
 
         public const byte BRICKPOET_LIST_ALL = 0x14;
         public const byte BRICKPOET_MOVE = 0x55;
@@ -148,8 +153,16 @@ namespace HISP.Server
         public const byte DIRECTION_TELEPORT = 4;
         public const byte DIRECTION_NONE = 10;
 
-
-
+        public static byte[] CreateDrawingUpdatePacket(string Drawing)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PacketBuilder.PACKET_SWFMODULE);
+            byte[] drawingBytes = Encoding.UTF8.GetBytes(Drawing);
+            ms.Write(drawingBytes, 0x00, drawingBytes.Length);
+            ms.WriteByte(PACKET_TERMINATOR);
+            ms.Seek(0x00, SeekOrigin.Begin);
+            return ms.ToArray();
+        }
         public static byte[] CreateBrickPoetMovePacket(Brickpoet.PoetryPeice peice)
         {
 
@@ -817,7 +830,7 @@ namespace HISP.Server
             ms.Seek(0x00, SeekOrigin.Begin);
             byte[] Packet = ms.ToArray();
             ms.Dispose();
-
+            Logger.InfoPrint("Sending load "+(char)type + swf + " packet");
             return Packet;
         }
         public static byte[] CreateAnnouncement(string announcement)
