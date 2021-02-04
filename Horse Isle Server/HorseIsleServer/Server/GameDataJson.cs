@@ -897,6 +897,15 @@ namespace HISP.Server
             Messages.PasswordNotice = gameData.messages.chat.password_included;
             Messages.CapsNotice = gameData.messages.chat.caps_notice;
 
+            // Drawing Rooms
+            Messages.DrawingLastToDrawFormat = gameData.messages.meta.drawing_rooms.last_draw;
+            Messages.DrawingContentsSavedInSlotFormat = gameData.messages.meta.drawing_rooms.saved;
+            Messages.DrawingContentsLoadedFromSlotFormat = gameData.messages.meta.drawing_rooms.load;
+            Messages.DrawingPlzClearDraw = gameData.messages.meta.drawing_rooms.plz_clear_draw;
+            Messages.DrawingPlzClearLoad = gameData.messages.meta.drawing_rooms.plz_clear_load;
+            Messages.DrawingNotSentNotSubscribed = gameData.messages.meta.drawing_rooms.not_subscribed_draw;
+            Messages.DrawingCannotLoadNotSubscribed = gameData.messages.meta.drawing_rooms.not_subscribed_load;
+
             // Brickpoet
             Messages.LastPoetFormat = gameData.messages.meta.last_poet;
 

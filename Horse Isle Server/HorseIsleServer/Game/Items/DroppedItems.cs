@@ -169,7 +169,7 @@ namespace HISP.Game.Items
 
                                 if (item.SpawnParamaters.SpawnOnTileType == TileType)
                                 {
-                                    if (GetItemsAt(tryX, tryY).Length > 26) // Max here
+                                    if (GetItemsAt(tryX, tryY).Length > 25) // Max items in one tile.
                                         continue;
 
                                     ItemInstance instance = new ItemInstance(item.Id);
@@ -206,7 +206,7 @@ namespace HISP.Game.Items
 
                             if (Map.CheckPassable(spawnOn.X, spawnOn.Y))
                             {
-                                if (GetItemsAt(spawnOn.X, spawnOn.Y).Length > 26) // Max here
+                                if (GetItemsAt(spawnOn.X, spawnOn.Y).Length > 25) // Max items in one tile.
                                     continue;
 
                                 ItemInstance instance = new ItemInstance(item.Id);
@@ -270,7 +270,7 @@ namespace HISP.Game.Items
 
                             if (Map.CheckPassable(tryX, tryY))
                             {
-                                if (GetItemsAt(tryX, tryY).Length > 26) // Max here
+                                if (GetItemsAt(tryX, tryY).Length > 25) // Max here
                                     continue;
 
                                 ItemInstance instance = new ItemInstance(item.Id);
@@ -297,13 +297,7 @@ namespace HISP.Game.Items
                         
                         while (true)
                         {
-                            // Pick a random isle:
-                            //int isleId = GameServer.RandomNumberGenerator.Next(0, World.Isles.Count);
-                            //World.Isle isle = World.Isles[isleId];
-
-                            // Pick a random location inside the isle
-                            //int tryX = GameServer.RandomNumberGenerator.Next(isle.StartX, isle.EndX);
-                            //int tryY = GameServer.RandomNumberGenerator.Next(isle.StartY, isle.EndY);
+                            // Pick a random location:
                             int tryX = GameServer.RandomNumberGenerator.Next(0, Map.Width);
                             int tryY = GameServer.RandomNumberGenerator.Next(0, Map.Height);
 
@@ -317,7 +311,7 @@ namespace HISP.Game.Items
 
                                 if (item.SpawnParamaters.SpawnOnTileType == TileType)
                                 {
-                                    if (GetItemsAt(tryX, tryY).Length > 26) // Max here
+                                    if (GetItemsAt(tryX, tryY).Length > 25) // Max here
                                         continue;
 
                                     ItemInstance instance = new ItemInstance(item.Id);

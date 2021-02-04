@@ -1129,7 +1129,60 @@ namespace HISP.Server
                 return drawing;
             }
         }
+        public static string LoadDrawingSlot3(int playerId)
+        {
+            if (!SavedDrawingsExist(playerId))
+                CreateSavedDrawings(playerId);
 
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT Drawing3 FROM SavedDrawings WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                string drawing = sqlCommand.ExecuteScalar().ToString();
+
+                sqlCommand.Dispose();
+                return drawing;
+            }
+        }
+        public static string LoadDrawingSlot2(int playerId)
+        {
+            if (!SavedDrawingsExist(playerId))
+                CreateSavedDrawings(playerId);
+
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT Drawing2 FROM SavedDrawings WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                string drawing = sqlCommand.ExecuteScalar().ToString();
+
+                sqlCommand.Dispose();
+                return drawing;
+            }
+        }
+        public static string LoadDrawingSlot1(int playerId)
+        {
+            if (!SavedDrawingsExist(playerId))
+                CreateSavedDrawings(playerId);
+
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT Drawing1 FROM SavedDrawings WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                string drawing = sqlCommand.ExecuteScalar().ToString();
+
+                sqlCommand.Dispose();
+                return drawing;
+            }
+        }
         public static void SaveDrawingSlot1(int playerId, string drawing)
         {
             if (!SavedDrawingsExist(playerId))
