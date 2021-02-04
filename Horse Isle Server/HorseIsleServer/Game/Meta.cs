@@ -1124,7 +1124,8 @@ namespace HISP.Game
                 if(TileCode == "MULTIROOM")
                 {
                     user.MetaPriority = false; // acturally want to track updates here >-<
-                    message += buildMultiroom(TileArg, user);
+                    if(TileArg != "")
+                        message += buildMultiroom(TileArg, user);
                 }
                 if(TileCode == "PASSWORD")
                 {

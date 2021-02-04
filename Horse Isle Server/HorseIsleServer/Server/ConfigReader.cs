@@ -24,6 +24,7 @@ namespace HISP.Server
         public static bool AllUsersSubbed;
         public static bool BadWords;
         public static bool DoCorrections;
+        public static bool DoNonViolations;
 
         public const int MAX_STACK = 40;
 
@@ -98,6 +99,9 @@ namespace HISP.Server
                         break;
                     case "enable_corrections":
                         BadWords = data == "true";
+                        break;
+                    case "non_violation":
+                        DoNonViolations = data == "true";
                         break;
                     case "enable_word_filter":
                         DoCorrections = data == "true";
