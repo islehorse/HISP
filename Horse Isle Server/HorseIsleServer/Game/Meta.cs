@@ -228,6 +228,16 @@ namespace HISP.Game
 
                 message += Messages.FormatLastPoet(username);
             }
+            if(id[0] == 'D') // Drawning room
+            {
+                int lastDraw = Database.GetLastPlayer(id);
+                string username = "";
+                if (lastDraw != -1)
+                    username = Database.GetUsername(lastDraw);
+
+                message += Messages.FormatLastToDraw(username);
+            }
+
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
             return message;
@@ -264,11 +274,11 @@ namespace HISP.Game
                     continue;
 
                 if (ent.RequiresQuestIdCompleted != 0)
-                    if (user.Quests.GetTrackedQuestAmount(ent.RequiresQuestIdNotCompleted) <= 0)
+                    if (user.Quests.GetTrackedQuestAmount(ent.RequiresQuestIdCompleted) <= 0)
                         continue;
 
                 if (ent.RequiresQuestIdNotCompleted != 0)
-                    if (user.Quests.GetTrackedQuestAmount(ent.RequiresQuestIdCompleted) >= 1)
+                    if (user.Quests.GetTrackedQuestAmount(ent.RequiresQuestIdNotCompleted) >= 1)
                         continue;
 
                 message += Messages.FormatNpcStartChatMessage(ent.IconId, ent.Name, ent.ShortDescription, ent.Id);
@@ -1519,7 +1529,7 @@ namespace HISP.Game
             message += Messages.BackToHorse;
             return message;
         }
-        public static string BuildChatpoint(User user, Npc.NpcEntry npc, Npc.NpcChat chatpoint)
+        public static string BuildNpcChatpoint(User user, Npc.NpcEntry npc, Npc.NpcChat chatpoint)
         {
             bool hideReplys = false;
             if (chatpoint.ActivateQuestId != 0)
@@ -1556,7 +1566,7 @@ namespace HISP.Game
                     if (user.Quests.GetTrackedQuestAmount(reply.RequiresQuestIdCompleted) <= 0)
                         continue;
                 if (reply.RequiresQuestIdNotCompleted != 0)
-                    if (user.Quests.GetTrackedQuestAmount(reply.RequiresQuestIdCompleted) >= 1)
+                    if (user.Quests.GetTrackedQuestAmount(reply.RequiresQuestIdNotCompleted) >= 1)
                         continue;
                 if (hideReplys)
                     continue;

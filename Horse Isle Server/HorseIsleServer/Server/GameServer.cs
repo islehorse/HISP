@@ -2458,7 +2458,7 @@ namespace HISP.Server
                 int defaultChatpointId = Npc.GetDefaultChatpoint(sender.LoggedinUser, entry);
                 Npc.NpcChat startingChatpoint = Npc.GetNpcChatpoint(entry, defaultChatpointId);
 
-                string metaInfo = Meta.BuildChatpoint(sender.LoggedinUser, entry, startingChatpoint);
+                string metaInfo = Meta.BuildNpcChatpoint(sender.LoggedinUser, entry, startingChatpoint);
                 byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
                 sender.SendPacket(metaPacket);
 
@@ -2497,7 +2497,7 @@ namespace HISP.Server
                     return;
                 }
                 sender.LoggedinUser.MetaPriority = true;
-                string metaInfo = Meta.BuildChatpoint(sender.LoggedinUser, lastNpc, Npc.GetNpcChatpoint(lastNpc, reply.GotoChatpoint));
+                string metaInfo = Meta.BuildNpcChatpoint(sender.LoggedinUser, lastNpc, Npc.GetNpcChatpoint(lastNpc, reply.GotoChatpoint));
                 byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
                 sender.SendPacket(metaPacket);
                 return;
