@@ -3107,6 +3107,12 @@ namespace HISP.Server
                     {
                         InventoryItem itm = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
                         ItemInstance instance = itm.ItemInstances[0];
+                        if(DroppedItems.GetItemsAt(sender.LoggedinUser.X, sender.LoggedinUser.Y).Length > 26)
+                        {
+                            byte[] tileIsFullPacket = PacketBuilder.CreateChat(Messages.DroppedItemTileIsFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(tileIsFullPacket);
+                            break;
+                        }
                         DroppedItems.AddItem(instance, sender.LoggedinUser.X, sender.LoggedinUser.Y);
                         sender.LoggedinUser.Inventory.Remove(instance);
                         byte[] chatPacket = PacketBuilder.CreateChat(Messages.DroppedAnItemMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);

@@ -93,40 +93,43 @@ namespace HISP.Game.Horse
 
         public void RandomWander()
         {
-            int direction = GameServer.RandomNumberGenerator.Next(0, 3);
-            int tryX = this.X;
-            int tryY = this.Y;
-
-            switch(direction)
+            while(true)
             {
-                case 0:
-                    tryX += 1;
-                    break;
-                case 1:
-                    tryX -= 1;
-                    break;
-                case 2: 
-                    tryY += 1;
-                    break;
-                case 3:
-                    tryY -= 1;
-                    break;
+                int direction = GameServer.RandomNumberGenerator.Next(0, 3);
+                int tryX = this.X;
+                int tryY = this.Y;
+
+                switch (direction)
+                {
+                    case 0:
+                        tryX += 1;
+                        break;
+                    case 1:
+                        tryX -= 1;
+                        break;
+                    case 2:
+                        tryY += 1;
+                        break;
+                    case 3:
+                        tryY -= 1;
+                        break;
 
 
+                }
+                // Horses cannot be in towns.
+                if (World.InTown(tryX, tryY))
+                    continue;
+                if (World.InSpecialTile(tryX, tryY))
+                    continue;
+
+                if (Map.CheckPassable(tryX, tryY)) // Can the player stand here?
+                {
+                    Logger.DebugPrint(this.Instance.Breed.Name + " Randomly wandered to: " + tryX.ToString() + ", " + tryY.ToString());
+                    X = tryX;
+                    Y = tryY;
+                    break;
+                }
             }
-            // Horses cannot be in towns.
-            if (World.InTown(tryX, tryY))
-                return;
-            if (World.InSpecialTile(tryX, tryY))
-                return;
-
-            if (Map.CheckPassable(tryX, tryY))
-            {
-                X = tryX;
-                Y = tryY;
-                return;
-            }
-            
         }
 
         public void Escape()
@@ -239,9 +242,8 @@ namespace HISP.Game.Horse
                 if (wildHorse.Timeout <= 0)
                     Despawn(wildHorse);
 
-                if(wildHorse.Timeout % 5 == 0)
-                    if (GameServer.RandomNumberGenerator.Next(0, 100) > 50)
-                        wildHorse.RandomWander();
+                if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
+                    wildHorse.RandomWander();
             }
             if(WildHorses.Length < 40)
             {
