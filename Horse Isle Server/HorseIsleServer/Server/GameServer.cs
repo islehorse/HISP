@@ -2691,6 +2691,9 @@ namespace HISP.Server
                     return;
                 }
 
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Clicked on tile: " + Map.GetTileId(x, y, false).ToString() + "(overlay: " + Map.GetTileId(x, y, true).ToString() + " at " + x.ToString() + "," + y.ToString());
+
+
                 // Get description of tile 
                 string returnedMsg = Messages.NothingInterestingHere;
                 if(World.InSpecialTile(x, y))
