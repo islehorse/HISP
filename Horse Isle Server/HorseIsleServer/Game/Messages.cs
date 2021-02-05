@@ -451,6 +451,7 @@ namespace HISP.Game
         // Sec Codes
         public static string InvalidSecCodeError;
         public static string YouEarnedAnItemFormat;
+        public static string YouEarnedAnItemButInventoryWasFullFormat;
         public static string YouLostAnItemFormat;
         public static string YouEarnedMoneyFormat;
         public static string BeatHighscoreFormat;
@@ -1244,6 +1245,10 @@ namespace HISP.Game
         public static string FormatYouLostAnItemMessage(string itemName)
         {
             return YouLostAnItemFormat.Replace("%ITEM%", itemName);
+        }
+        public static string FormatYouEarnedAnItemButInventoryFullMessage(string itemName)
+        {
+            return YouEarnedAnItemButInventoryWasFullFormat.Replace("%ITEM%", itemName);
         }
         public static string FormatYouEarnedAnItemMessage(string itemName)
         {

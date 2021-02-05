@@ -12,6 +12,45 @@ namespace HISP.Game.Horse
     public class WildHorse
     {
 
+        public bool CanHorseBeHere(int x, int y, bool checkSpawnLocationValid=true)
+        {
+
+            // Horses cannot be in towns.
+            if (World.InTown(x, y))
+                return false;
+            if (World.InSpecialTile(x, y))
+                return false;
+
+            // Check area
+            if(checkSpawnLocationValid)
+            {
+                if (this.Instance.Breed.SpawnInArea != null)
+                {
+                    if (World.InArea(x, y))
+                    {
+                        if (World.GetArea(x, y).Name != this.Instance.Breed.SpawnInArea)
+                            return false;
+                    }
+                }
+            }
+            
+
+
+            // Check Tile Type
+            int TileID = Map.GetTileId(x, y, false);
+            string TileType = Map.TerrainTiles[TileID - 1].Type;
+            if(checkSpawnLocationValid)
+            {
+                if (TileType != this.Instance.Breed.SpawnOn)
+                    return false;
+            }
+
+
+            if (Map.CheckPassable(x, y)) // Can the player stand over here?
+                return true;
+
+            return false;
+        }
         public WildHorse(HorseInstance horse, int MapX = -1, int MapY = -1, int despawnTimeout=60, bool addToDatabase = true)
         {
             Instance = horse;
@@ -24,31 +63,20 @@ namespace HISP.Game.Horse
                     if (horse.Breed.SpawnInArea == null)
                     {
 
-                        // Pick a random isle.
-                        int isleId = GameServer.RandomNumberGenerator.Next(0, World.Isles.Count);
-                        World.Isle isle = World.Isles[isleId];
 
-                        // Pick x/y in isle.
-                        int tryX = GameServer.RandomNumberGenerator.Next(isle.StartX, isle.EndX);
-                        int tryY = GameServer.RandomNumberGenerator.Next(isle.StartY, isle.EndY);
+                        // Pick x/y
+                        int tryX = GameServer.RandomNumberGenerator.Next(0, Map.Width);
+                        int tryY = GameServer.RandomNumberGenerator.Next(0, Map.Height);
 
-                        // Horses cannot be in towns.
-                        if (World.InTown(tryX, tryY))
-                            continue;
-                        if (World.InSpecialTile(tryX, tryY))
-                            continue;
-
-                        // Check Tile Type
-                        int TileID = Map.GetTileId(tryX, tryY, false);
-                        string TileType = Map.TerrainTiles[TileID - 1].Type;
-                        if (TileType == horse.Breed.SpawnOn)
+                        if (CanHorseBeHere(tryX, tryY))
                         {
-                            if (Map.CheckPassable(tryX, tryY)) // Can the player stand over here?
-                            {
-                                x = tryX;
-                                y = tryY;
-                                break;
-                            }
+                            x = tryX;
+                            y = tryY;
+                            break;
+                        }
+                        else
+                        {
+                            continue;
                         }
                     }
                     else
@@ -58,23 +86,15 @@ namespace HISP.Game.Horse
                         int tryX = GameServer.RandomNumberGenerator.Next(zone.StartX, zone.EndX);
                         int tryY = GameServer.RandomNumberGenerator.Next(zone.StartY, zone.EndY);
 
-                        // Horses cannot be in towns.
-                        if (World.InTown(tryX, tryY))
-                            continue;
-                        if (World.InSpecialTile(tryX, tryY))
-                            continue;
-
-                        // Check Tile Type
-                        int TileID = Map.GetTileId(tryX, tryY, false);
-                        string TileType = Map.TerrainTiles[TileID - 1].Type;
-                        if (TileType == horse.Breed.SpawnOn)
+                        if (CanHorseBeHere(tryX, tryY))
                         {
-                            if (Map.CheckPassable(tryX, tryY)) // Can the player stand over here?
-                            {
-                                x = tryX;
-                                y = tryY;
-                                break;
-                            }
+                            x = tryX;
+                            y = tryY;
+                            break;
+                        }
+                        else
+                        {
+                            continue;
                         }
 
                     }
@@ -93,42 +113,38 @@ namespace HISP.Game.Horse
 
         public void RandomWander()
         {
-            while(true)
+            if (GameServer.GetUsersAt(this.X, this.Y, true, true).Length > 0)
+                return;
+
+            int direction = GameServer.RandomNumberGenerator.Next(0, 3);
+            int tryX = this.X;
+            int tryY = this.Y;
+
+            switch (direction)
             {
-                int direction = GameServer.RandomNumberGenerator.Next(0, 3);
-                int tryX = this.X;
-                int tryY = this.Y;
-
-                switch (direction)
-                {
-                    case 0:
-                        tryX += 1;
-                        break;
-                    case 1:
-                        tryX -= 1;
-                        break;
-                    case 2:
-                        tryY += 1;
-                        break;
-                    case 3:
-                        tryY -= 1;
-                        break;
-
-
-                }
-                // Horses cannot be in towns.
-                if (World.InTown(tryX, tryY))
-                    continue;
-                if (World.InSpecialTile(tryX, tryY))
-                    continue;
-
-                if (Map.CheckPassable(tryX, tryY)) // Can the player stand here?
-                {
-                    X = tryX;
-                    Y = tryY;
+                case 0:
+                    tryX += 1;
                     break;
-                }
+                case 1:
+                    tryX -= 1;
+                    break;
+                case 2:
+                    tryY += 1;
+                    break;
+                case 3:
+                    tryY -= 1;
+                    break;
+
+
             }
+            bool check = CanHorseBeHere(this.X, this.Y); // if the horse is allready in an invalid position..
+
+            if (CanHorseBeHere(tryX, tryY, check))
+            {
+                x = tryX;
+                y = tryY;
+            }
+            
         }
 
         public void Escape()
@@ -138,13 +154,9 @@ namespace HISP.Game.Horse
                 int tryX = X + GameServer.RandomNumberGenerator.Next(-15, 15);
                 int tryY = Y + GameServer.RandomNumberGenerator.Next(-15, 15);
 
-                // Horses cannot be in towns.
-                if (World.InTown(tryX, tryY))
-                    continue;
-                if (World.InSpecialTile(tryX, tryY))
-                    continue;
+                bool check = CanHorseBeHere(this.X, this.Y); // if the horse is allready in an invalid position..
 
-                if (Map.CheckPassable(tryX, tryY))
+                if (CanHorseBeHere(tryX, tryY, check))
                 {
                     X = tryX;
                     Y = tryY;

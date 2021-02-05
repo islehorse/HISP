@@ -137,7 +137,7 @@ namespace HISP.Server
         private bool receivePackets()
         {
             // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
-            MemoryStream ms = new MemoryStream();
+            
 
             while(ClientSocket.Connected)
             {
@@ -146,29 +146,29 @@ namespace HISP.Server
 
                 try
                 {
-                    if (ClientSocket.Available >= 1)
+                    using (MemoryStream ms = new MemoryStream())
                     {
-                        byte[] buffer = new byte[ClientSocket.Available];
-                        ClientSocket.Receive(buffer);
-
-
-                        foreach (Byte b in buffer)
+                        if (ClientSocket.Available >= 1)
                         {
-                            if(isDisconnecting)
-                                break;
+                            byte[] buffer = new byte[ClientSocket.Available];
+                            ClientSocket.Receive(buffer);
 
-                            ms.WriteByte(b);
-                            if (b == 0x00)
+                            foreach (Byte b in buffer)
                             {
-                                ms.Seek(0x00, SeekOrigin.Begin);
-                                byte[] fullPacket = ms.ToArray();
-                                parsePackets(fullPacket);
+                                if (isDisconnecting)
+                                    break;
 
-                                ms.Close();
-                                ms = new MemoryStream();
+                                ms.WriteByte(b);
+                                if (b == 0x00)
+                                {
+                                    ms.Seek(0x00, SeekOrigin.Begin);
+                                    byte[] fullPacket = ms.ToArray();
+                                    parsePackets(fullPacket);
+                                    ms.Seek(0x00, SeekOrigin.Begin);
+                                    ms.SetLength(0);
+                                }
                             }
                         }
-
                     }
                 }
                 catch(SocketException e)
