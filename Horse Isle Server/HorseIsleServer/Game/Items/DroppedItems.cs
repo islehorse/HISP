@@ -27,6 +27,9 @@ namespace HISP.Game.Items
             int count = 0;
             for(int i = 0; i < droppedItems.Length; i++)
             {
+                if (droppedItems[i] == null) // Item removed in another thread.
+                    continue;
+
                 if(droppedItems[i].Instance.ItemId == item.Id)
                 {
                     count++;
@@ -42,7 +45,10 @@ namespace HISP.Game.Items
             List<DroppedItem> items = new List<DroppedItem>();
             for(int i = 0; i < droppedItems.Length; i++)
             {
-                if(droppedItems[i].X == x && droppedItems[i].Y == y)
+                if (droppedItems[i] == null) // Item removed in another thread.
+                    continue;
+
+                if (droppedItems[i].X == x && droppedItems[i].Y == y)
                 {
                     items.Add(droppedItems[i]);
                 }
@@ -88,7 +94,10 @@ namespace HISP.Game.Items
 
             for(int i = 0; i < droppedItems.Length; i++)
             {
-                if(droppedItems[i].Instance.RandomId == randomId)
+                if (droppedItems[i] == null) // Item removed in another thread.
+                    continue;
+
+                if (droppedItems[i].Instance.RandomId == randomId)
                 {
                     return droppedItems[i];
                 }
@@ -103,6 +112,9 @@ namespace HISP.Game.Items
 
             for(int i = 0; i < droppedItemsList.Count; i++)
             {
+                if (droppedItemsList[i] == null) // Item removed in another thread.
+                    continue;
+
                 droppedItemsList[i].DespawnTimer--;
                 if(droppedItemsList[i].DespawnTimer <= 0)
                 {
