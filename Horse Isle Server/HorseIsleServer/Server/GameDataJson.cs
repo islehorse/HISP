@@ -385,6 +385,7 @@ namespace HISP.Server
             {
 
                 Shop shop = new Shop(gameData.shop_list[i].stocks_itemids.ToObject<int[]>());
+                shop.Id = gameData.shop_list[i].id;
                 shop.BuyPricePercentage = gameData.shop_list[i].buy_percent;
                 shop.SellPricePercentage = gameData.shop_list[i].sell_percent;
                 shop.BuysItemTypes = gameData.shop_list[i].buys_item_types.ToObject<string[]>();

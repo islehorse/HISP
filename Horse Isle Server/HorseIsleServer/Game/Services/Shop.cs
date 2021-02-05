@@ -9,7 +9,6 @@ namespace HISP.Game.Services
     public class Shop
     {
         public int Id;
-
         public string[] BuysItemTypes;
         public int BuyPricePercentage;
         public int SellPricePercentage;
@@ -17,7 +16,6 @@ namespace HISP.Game.Services
 
         public Shop(int[] infiniteStocks)
         {
-            Id = ShopList.Count+1;
             this.Inventory = new ShopInventory(this);
 
 
@@ -55,7 +53,12 @@ namespace HISP.Game.Services
         public static List<Shop> ShopList = new List<Shop>();
         public static Shop GetShopById(int id)
         {
-            return ShopList[id-1];
+            foreach(Shop shop in ShopList)
+            {
+                if (shop.Id == id)
+                    return shop;
+            }
+            throw new KeyNotFoundException("no shop with id: " + id + " found.");
         }
 
     }
