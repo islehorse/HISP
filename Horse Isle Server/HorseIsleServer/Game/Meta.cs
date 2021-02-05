@@ -183,8 +183,8 @@ namespace HISP.Game
                 message += Messages.ItemsOnGroundMessage;
                 foreach(DroppedItems.DroppedItem item in Items)
                 {
-                    Item.ItemInformation itemInfo = item.instance.GetItemInfo();
-                    message += Messages.FormatGrabItemMessage(itemInfo.Name, item.instance.RandomId, itemInfo.IconId);
+                    Item.ItemInformation itemInfo = item.Instance.GetItemInfo();
+                    message += Messages.FormatGrabItemMessage(itemInfo.Name, item.Instance.RandomId, itemInfo.IconId);
                 }
                 if(Items.Length > 1)
                     message += Messages.GrabAllItemsButton;

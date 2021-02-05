@@ -2679,12 +2679,11 @@ namespace HISP.Server
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
                 while(reader.Read())
                 {
-                    DroppedItems.DroppedItem droppedItem = new DroppedItems.DroppedItem();
+                    ItemInstance instance = new ItemInstance(reader.GetInt32(3), reader.GetInt32(2));
+                    DroppedItems.DroppedItem droppedItem = new DroppedItems.DroppedItem(instance);
                     droppedItem.X = reader.GetInt32(0);
                     droppedItem.Y = reader.GetInt32(1);
                     droppedItem.DespawnTimer = reader.GetInt32(4);
-                    ItemInstance instance = new ItemInstance(reader.GetInt32(3),reader.GetInt32(2));
-                    droppedItem.instance = instance;
                     itemList.Add(droppedItem);
                 }
                 sqlCommand.Dispose();
@@ -2704,8 +2703,8 @@ namespace HISP.Server
                 sqlCommand.CommandText = "INSERT INTO DroppedItems VALUES(@x, @y, @randomId, @itemId, @despawnTimer)";
                 sqlCommand.Parameters.AddWithValue("@x", item.X);
                 sqlCommand.Parameters.AddWithValue("@y", item.Y);
-                sqlCommand.Parameters.AddWithValue("@randomId", item.instance.RandomId);
-                sqlCommand.Parameters.AddWithValue("@itemId", item.instance.ItemId);
+                sqlCommand.Parameters.AddWithValue("@randomId", item.Instance.RandomId);
+                sqlCommand.Parameters.AddWithValue("@itemId", item.Instance.ItemId);
                 sqlCommand.Parameters.AddWithValue("@despawnTimer", item.DespawnTimer);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();

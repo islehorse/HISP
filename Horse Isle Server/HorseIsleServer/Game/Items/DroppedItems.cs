@@ -1,35 +1,34 @@
 ﻿using System;
 using System.Collections.Generic;
 using HISP.Server;
-using HISP.Game;
 
 namespace HISP.Game.Items
 {
     public class DroppedItems
     {
-        public struct DroppedItem
+        public class DroppedItem
         {
+            public DroppedItem(ItemInstance itmInstance)
+            {
+                if (itmInstance == null)
+                    throw new NullReferenceException("How could this happen?");
+                Instance = itmInstance;
+            }
             public int X;
             public int Y;
             public int DespawnTimer;
-            public ItemInstance instance;
+            public ItemInstance Instance;
         }
         private static int epoch = 0;
         private static List<DroppedItem> droppedItemsList = new List<DroppedItem>();
         public static int GetCountOfItem(Item.ItemInformation item)
         {
 
-            DroppedItem[] dropedItems = droppedItemsList.ToArray();
+            DroppedItem[] droppedItems = droppedItemsList.ToArray();
             int count = 0;
-            foreach(DroppedItem droppedItem in dropedItems)
+            foreach(DroppedItem droppedItem in droppedItems)
             {
-                if (droppedItem.instance == null)
-                {
-                    RemoveDroppedItem(droppedItem);
-                    continue;
-                }
-
-                if(droppedItem.instance.ItemId == item.Id)
+                if(droppedItem.Instance.ItemId == item.Id)
                 {
                     count++;
                 }
@@ -40,9 +39,9 @@ namespace HISP.Game.Items
         public static DroppedItem[] GetItemsAt(int x, int y)
         {
 
-            DroppedItem[] dropedItems = droppedItemsList.ToArray();
+            DroppedItem[] droppedItems = droppedItemsList.ToArray();
             List<DroppedItem> items = new List<DroppedItem>();
-            foreach(DroppedItem droppedItem in dropedItems)
+            foreach(DroppedItem droppedItem in droppedItems)
             {
                 if(droppedItem.X == x && droppedItem.Y == y)
                 {
@@ -67,7 +66,7 @@ namespace HISP.Game.Items
         }
         public static void RemoveDroppedItem(DroppedItem item)
         {
-            int randomId = item.instance.RandomId;
+            int randomId = item.Instance.RandomId;
             Database.RemoveDroppedItem(randomId);
             droppedItemsList.Remove(item);
             
@@ -89,11 +88,11 @@ namespace HISP.Game.Items
         public static DroppedItem GetDroppedItemById(int randomId)
         {
 
-            DroppedItem[] dropedItems = droppedItemsList.ToArray();
+            DroppedItem[] droppedItems = droppedItemsList.ToArray();
 
-            foreach (DroppedItem item in dropedItems)
+            foreach (DroppedItem item in droppedItems)
             {
-                if(item.instance.RandomId == randomId)
+                if(item.Instance.RandomId == randomId)
                 {
                     return item;
                 }
@@ -122,14 +121,14 @@ namespace HISP.Game.Items
                 epoch = new_epoch;
         }
 
-        public static void AddItem(ItemInstance item, int x, int y)
+        public static void AddItem(ItemInstance item, int x, int y, int despawnTimer=1500)
         {
-            DroppedItem droppedItem = new DroppedItem();
+            DroppedItem droppedItem = new DroppedItem(item);
             droppedItem.X = x;
             droppedItem.Y = y;
-            droppedItem.DespawnTimer = 1500;
-            droppedItem.instance = item;
+            droppedItem.DespawnTimer = despawnTimer;
             droppedItemsList.Add(droppedItem);
+            Database.AddDroppedItem(droppedItem);
         }
         public static void GenerateItems()
         {
@@ -173,14 +172,8 @@ namespace HISP.Game.Items
                                         continue;
 
                                     ItemInstance instance = new ItemInstance(item.Id);
-                                    DroppedItem droppedItem = new DroppedItem();
-                                    droppedItem.X = tryX;
-                                    droppedItem.Y = tryY;
-                                    droppedItem.DespawnTimer = despawnTimer;
-                                    droppedItem.instance = instance;
-                                    droppedItemsList.Add(droppedItem);
-                                    Database.AddDroppedItem(droppedItem);
-                                    Logger.DebugPrint("Created Item ID: " + instance.ItemId + " in ZONE: " + spawnArea.Name + " at: X: " + droppedItem.X + " Y: " + droppedItem.Y);
+                                    AddItem(instance, tryX, tryY, despawnTimer);
+                                    Logger.DebugPrint("Created Item ID: " + instance.ItemId + " in ZONE: " + spawnArea.Name + " at: X: " + tryX + " Y: " + tryY);
                                     newItems++;
                                     break;
                                 }
@@ -210,14 +203,8 @@ namespace HISP.Game.Items
                                     continue;
 
                                 ItemInstance instance = new ItemInstance(item.Id);
-                                DroppedItem droppedItem = new DroppedItem();
-                                droppedItem.X = spawnOn.X;
-                                droppedItem.Y = spawnOn.Y;
-                                droppedItem.DespawnTimer = despawnTimer;
-                                droppedItem.instance = instance;
-                                droppedItemsList.Add(droppedItem);
-                                Database.AddDroppedItem(droppedItem);
-                                Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + droppedItem.X + " Y: " + droppedItem.Y);
+                                AddItem(instance, spawnOn.X, spawnOn.Y, despawnTimer);
+                                Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + spawnOn.X + " Y: " + spawnOn.Y);
                                 newItems++;
                                 break;
                             }
@@ -273,15 +260,9 @@ namespace HISP.Game.Items
                                 if (GetItemsAt(tryX, tryY).Length > 25) // Max here
                                     continue;
 
-                                ItemInstance instance = new ItemInstance(item.Id);
-                                DroppedItem droppedItem = new DroppedItem();
-                                droppedItem.X = tryX;
-                                droppedItem.Y = tryY;
-                                droppedItem.DespawnTimer = despawnTimer;
-                                droppedItem.instance = instance;
-                                droppedItemsList.Add(droppedItem);
-                                Database.AddDroppedItem(droppedItem);
-                                Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + droppedItem.X + " Y: " + droppedItem.Y);
+                                ItemInstance instance = new ItemInstance(item.Id); 
+                                AddItem(instance, tryX, tryY, despawnTimer);
+                                Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + tryX + " Y: " + tryY);
                                 newItems++;
                                 break;
                             }
@@ -315,14 +296,8 @@ namespace HISP.Game.Items
                                         continue;
 
                                     ItemInstance instance = new ItemInstance(item.Id);
-                                    DroppedItem droppedItem = new DroppedItem();
-                                    droppedItem.X = tryX;
-                                    droppedItem.Y = tryY;
-                                    droppedItem.DespawnTimer = despawnTimer;
-                                    droppedItem.instance = instance;
-                                    droppedItemsList.Add(droppedItem);
-                                    Database.AddDroppedItem(droppedItem);
-                                    Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + droppedItem.X + " Y: " + droppedItem.Y);
+                                    AddItem(instance, tryX, tryY, despawnTimer);
+                                    Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + tryX + " Y: " + tryY);
                                     newItems++;
                                     break;
 
