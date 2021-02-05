@@ -19,16 +19,15 @@ namespace HISP.Game.Items
             public int DespawnTimer;
             public ItemInstance Instance;
         }
-        private static int epoch = 0;
         private static List<DroppedItem> droppedItemsList = new List<DroppedItem>();
         public static int GetCountOfItem(Item.ItemInformation item)
         {
 
             DroppedItem[] droppedItems = droppedItemsList.ToArray();
             int count = 0;
-            foreach(DroppedItem droppedItem in droppedItems)
+            for(int i = 0; i < droppedItems.Length; i++)
             {
-                if(droppedItem.Instance.ItemId == item.Id)
+                if(droppedItems[i].Instance.ItemId == item.Id)
                 {
                     count++;
                 }
@@ -41,11 +40,11 @@ namespace HISP.Game.Items
 
             DroppedItem[] droppedItems = droppedItemsList.ToArray();
             List<DroppedItem> items = new List<DroppedItem>();
-            foreach(DroppedItem droppedItem in droppedItems)
+            for(int i = 0; i < droppedItems.Length; i++)
             {
-                if(droppedItem.X == x && droppedItem.Y == y)
+                if(droppedItems[i].X == x && droppedItems[i].Y == y)
                 {
-                    items.Add(droppedItem);
+                    items.Add(droppedItems[i]);
                 }
             }
             return items.ToArray();
@@ -58,10 +57,7 @@ namespace HISP.Game.Items
         }
         public static void Update()
         {
-            int epoch_new = (Int32)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
-
-            DespawnItems(epoch, epoch_new);
-
+            DespawnItems();
             GenerateItems();
         }
         public static void RemoveDroppedItem(DroppedItem item)
@@ -90,35 +86,30 @@ namespace HISP.Game.Items
 
             DroppedItem[] droppedItems = droppedItemsList.ToArray();
 
-            foreach (DroppedItem item in droppedItems)
+            for(int i = 0; i < droppedItems.Length; i++)
             {
-                if(item.Instance.RandomId == randomId)
+                if(droppedItems[i].Instance.RandomId == randomId)
                 {
-                    return item;
+                    return droppedItems[i];
                 }
             }
 
             throw new KeyNotFoundException("Random id: " + randomId.ToString() + " not found");
             
         }
-        public static void DespawnItems(int old_epoch, int new_epoch)
+        public static void DespawnItems()
         {
-            int removedCount = 0;
-            DroppedItem[] items = droppedItemsList.ToArray();
-            foreach (DroppedItem item in items)
+            Database.DecrementDroppedItemDespawnTimer();
+
+            for(int i = 0; i < droppedItemsList.Count; i++)
             {
-                if(new_epoch + item.DespawnTimer < old_epoch)
+                droppedItemsList[i].DespawnTimer--;
+                if(droppedItemsList[i].DespawnTimer <= 0)
                 {
-                    if(GameServer.GetUsersAt(item.X, item.Y,true,true).Length == 0)
-                    {
-                        Logger.DebugPrint("Despawned Item at " + item.X + ", " + item.Y);
-                        RemoveDroppedItem(item);
-                        removedCount++;
-                    }
+                    Logger.DebugPrint("Despawned Item at " + droppedItemsList[i].X + ", " + droppedItemsList[i].Y);
+                    RemoveDroppedItem(droppedItemsList[i]);
                 }
             }
-            if(removedCount > 0)
-                epoch = new_epoch;
         }
 
         public static void AddItem(ItemInstance item, int x, int y, int despawnTimer=1500)
