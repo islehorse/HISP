@@ -106,6 +106,8 @@ namespace HISP.Game.Items
                 droppedItemsList[i].DespawnTimer--;
                 if(droppedItemsList[i].DespawnTimer <= 0)
                 {
+                    if (GameServer.GetUsersAt(droppedItemsList[i].X, droppedItemsList[i].Y, true, true).Length > 0) // Dont despawn items players are standing on
+                        continue;
                     Logger.DebugPrint("Despawned Item at " + droppedItemsList[i].X + ", " + droppedItemsList[i].Y);
                     RemoveDroppedItem(droppedItemsList[i]);
                 }

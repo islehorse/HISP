@@ -2933,18 +2933,17 @@ namespace HISP.Server
                     string chatMsg = Messages.GrabAllItemsMessage;
                     DroppedItems.DroppedItem[] droppedItems = DroppedItems.GetItemsAt(sender.LoggedinUser.X, sender.LoggedinUser.Y);
 
-                    try
+                    foreach (DroppedItems.DroppedItem item in droppedItems)
                     {
-                        foreach (DroppedItems.DroppedItem item in droppedItems)
+                        try
                         {
                             sender.LoggedinUser.Inventory.Add(item.Instance);
                             DroppedItems.RemoveDroppedItem(item);
                         }
-                    }
-                    catch (InventoryException)
-                    {
-                        chatMsg = Messages.GrabbedAllItemsButInventoryFull;
-                        break;
+                        catch (InventoryException)
+                        {
+                            chatMsg = Messages.GrabbedAllItemsButInventoryFull;
+                        }
                     }
 
                     UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
