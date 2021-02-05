@@ -26,7 +26,7 @@ namespace HISP.Server
         public static bool DoCorrections;
         public static bool DoNonViolations;
 
-        public const int MAX_STACK = 40;
+        public const int MAX_STACK = 50;
 
         private static string ConfigurationFileName = "server.properties";
         public static void OpenConfig()
