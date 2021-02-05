@@ -73,7 +73,7 @@ namespace HISP.Game
                     Database.SetWeather(Name, value);
                     foreach(User user in GameServer.GetUsersInIsle(this,true,true))
                     {
-                        GameServer.UpdateArea(user.LoggedinClient);
+                        GameServer.UpdateWeather(user.LoggedinClient);
                     }
                 }
             }

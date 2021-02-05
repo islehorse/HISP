@@ -4144,8 +4144,13 @@ namespace HISP.Server
                 return;
             }
 
-            byte[] WeatherUpdate = PacketBuilder.CreateWeatherUpdatePacket(forClient.LoggedinUser.GetWeatherSeen());
-            forClient.SendPacket(WeatherUpdate);
+            string lastWeather = forClient.LoggedinUser.LastSeenWeather;
+            string weather = forClient.LoggedinUser.GetWeatherSeen();
+            if (lastWeather != weather)
+            {
+                byte[] WeatherUpdate = PacketBuilder.CreateWeatherUpdatePacket(weather);
+                forClient.SendPacket(WeatherUpdate);
+            }
         }
         public static void UpdateWorld(GameClient forClient)
         {
@@ -4194,6 +4199,7 @@ namespace HISP.Server
                             UpdateArea(client);
             }
         }
+        
         public static void UpdateArea(GameClient forClient)
         {
             if (!forClient.LoggedIn)
@@ -4219,14 +4225,6 @@ namespace HISP.Server
                     if (!ProcessMapCodeWithArg(forClient, specialTile))
                         return;
                 LocationStr = Meta.BuildSpecialTileInfo(forClient.LoggedinUser, specialTile);
-            }
-
-            string lastWeather = forClient.LoggedinUser.LastSeenWeather;
-            string weather = forClient.LoggedinUser.GetWeatherSeen();
-            if(lastWeather != weather)
-            {
-                byte[] WeatherUpdate = PacketBuilder.CreateWeatherUpdatePacket(weather);
-                forClient.SendPacket(WeatherUpdate);
             }
 
             byte[] AreaMessage = PacketBuilder.CreateMetaPacket(LocationStr);

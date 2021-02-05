@@ -7,7 +7,7 @@ namespace HISP.Server
     public class ConfigReader
     {
         public static int Port;
-        public static string BindIP;
+        public static string BindIP = "0.0.0.0";
 
         public static string DatabaseIP;
         public static string DatabaseUsername;
@@ -20,11 +20,11 @@ namespace HISP.Server
         public static string GameDataFile;
         public static string CrossDomainPolicyFile;
 
-        public static bool Debug;
-        public static bool AllUsersSubbed;
-        public static bool BadWords;
-        public static bool DoCorrections;
-        public static bool DoNonViolations;
+        public static bool Debug = false;
+        public static bool AllUsersSubbed = false;
+        public static bool BadWords = true;
+        public static bool DoCorrections = true;
+        public static bool DoNonViolations = true;
 
         public const int MAX_STACK = 50;
 
