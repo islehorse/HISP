@@ -161,10 +161,10 @@ namespace HISP.Game.Inventory
                 {
                     throw new InventoryMaxStackException();
                 }
-                else if (Count >= Messages.DefaultInventoryMax)
-                {
-                    throw new InventoryFullException();
-                }
+            }
+            else if (Count >= Messages.DefaultInventoryMax)
+            {
+                throw new InventoryFullException();
             }
 
 
