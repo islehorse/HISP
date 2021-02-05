@@ -40,7 +40,7 @@ namespace HISP.Game.Items
 
         public static DroppedItem[] GetItemsAt(int x, int y)
         {
-
+            
             DroppedItem[] droppedItems = droppedItemsList.ToArray();
             List<DroppedItem> items = new List<DroppedItem>();
             for(int i = 0; i < droppedItems.Length; i++)
@@ -64,7 +64,7 @@ namespace HISP.Game.Items
         public static void Update()
         {
             DespawnItems();
-            GenerateItems();
+            GenerateItems(false);
         }
         public static void RemoveDroppedItem(DroppedItem item)
         {
@@ -135,7 +135,7 @@ namespace HISP.Game.Items
             droppedItemsList.Add(droppedItem);
             Database.AddDroppedItem(droppedItem);
         }
-        public static void GenerateItems()
+        public static void GenerateItems(bool randomizeDespawnTime)
         {
 
             Logger.InfoPrint("Generating items, (this may take awhile on a fresh database!)");
@@ -148,8 +148,9 @@ namespace HISP.Game.Items
                 {
 
                     count++;
-
-                    int despawnTimer = GameServer.RandomNumberGenerator.Next(900, 1500);
+                    int despawnTimer = 1500;
+                    if(randomizeDespawnTime)
+                        despawnTimer = GameServer.RandomNumberGenerator.Next(900, 1500);
 
                     if (item.SpawnParamaters.SpawnInZone != null)
                     {
@@ -330,7 +331,7 @@ namespace HISP.Game.Items
         public static void Init()
         {
             ReadFromDatabase();
-            GenerateItems();
+            GenerateItems(true);
         }
 
     }
