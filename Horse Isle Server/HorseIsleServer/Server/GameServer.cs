@@ -64,23 +64,28 @@ namespace HISP.Server
             if(totalMinutesElapsed % 24 == 0)
                 Database.DoIntrestPayments(ConfigReader.IntrestRate);
 
-            foreach (World.Town town in World.Towns)
+
+            if (totalMinutesElapsed % 25 == 0)
             {
-                if (RandomNumberGenerator.Next(0, 100) < 25)
+
+                Logger.DebugPrint("Randomizing Weather...");
+                foreach (World.Town town in World.Towns)
                 {
-                    town.Weather = town.SelectRandomWeather();
-                    Logger.DebugPrint("Changing the weather in " + town.Name + " to " + town.Weather);
+                    if (RandomNumberGenerator.Next(0, 100) < 25)
+                    {
+                        town.Weather = town.SelectRandomWeather();
+                    }
+                }
+
+                foreach (World.Isle isle in World.Isles)
+                {
+                    if (RandomNumberGenerator.Next(0, 100) < 25)
+                    {
+                        isle.Weather = isle.SelectRandomWeather();
+                    }
                 }
             }
 
-            foreach (World.Isle isle in World.Isles)
-            {
-                if(RandomNumberGenerator.Next(0,100) < 25)
-                {
-                    isle.Weather = isle.SelectRandomWeather();
-                    Logger.DebugPrint("Changing the weather in " + isle.Name + " to " + isle.Weather);
-                }
-            }
 
 
             Database.IncPlayerTirednessForOfflineUsers();

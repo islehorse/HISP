@@ -124,7 +124,6 @@ namespace HISP.Game.Horse
 
                 if (Map.CheckPassable(tryX, tryY)) // Can the player stand here?
                 {
-                    Logger.DebugPrint(this.Instance.Breed.Name + " Randomly wandered to: " + tryX.ToString() + ", " + tryY.ToString());
                     X = tryX;
                     Y = tryY;
                     break;
@@ -232,7 +231,8 @@ namespace HISP.Game.Horse
 
         public static void Update()
         {
-            foreach(WildHorse wildHorse in WildHorses)
+            Logger.DebugPrint("Making horses wander.");
+            foreach (WildHorse wildHorse in WildHorses)
             {
                 wildHorse.Timeout -= 1;
 
@@ -242,7 +242,7 @@ namespace HISP.Game.Horse
                 if (wildHorse.Timeout <= 0)
                     Despawn(wildHorse);
 
-                if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
+                if (GameServer.RandomNumberGenerator.Next(0, 100) >= 25)
                     wildHorse.RandomWander();
             }
             if(WildHorses.Length < 40)

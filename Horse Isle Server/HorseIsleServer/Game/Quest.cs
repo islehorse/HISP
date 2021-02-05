@@ -109,12 +109,12 @@ namespace HISP.Game
 
                 // Has completed other required quests?
                 foreach (int questId in quest.RequiresQuestIdCompleted)
-                    if (user.Quests.GetTrackedQuestAmount(quest.Id) < 1)
+                    if (user.Quests.GetTrackedQuestAmount(questId) < 1)
                         return false;
 
                 // Has NOT competed other MUST NOT BE required quests
                 foreach (int questId in quest.RequiresQuestIdNotCompleted)
-                    if (user.Quests.GetTrackedQuestAmount(quest.Id) > 1)
+                    if (user.Quests.GetTrackedQuestAmount(questId) > 1)
                         return false;
 
                 // Has allready tracked this quest?
