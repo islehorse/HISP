@@ -65,6 +65,9 @@ namespace HISP.Game.Inventory
 
         public void AddInfinity(Item.ItemInformation itemInfo)
         {
+            if (HasItemId(itemInfo.Id))
+                return;
+
             InventoryItem inventoryItem = new InventoryItem();
             inventoryItem.ItemId = itemInfo.Id;
             inventoryItem.Infinite = true;

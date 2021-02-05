@@ -181,12 +181,12 @@ namespace HISP.Game
             // Give quest points
             user.QuestPoints += quest.QuestPointsEarned;
 
-            if (quest.ChainedQuestId != 0)
-                ActivateQuest(user, GetQuestById(quest.ChainedQuestId));
-
+            
             if (quest.Tracked)
                 user.Quests.TrackQuest(quest.Id);
 
+            if (quest.ChainedQuestId != 0)
+                ActivateQuest(user, Quest.GetQuestById(quest.ChainedQuestId), npcActivation);
 
             if (quest.SuccessMessage != null)
             {
@@ -202,6 +202,7 @@ namespace HISP.Game
                     user.LoggedinClient.SendPacket(ChatPacket);
                 }
             }
+
 
 
 

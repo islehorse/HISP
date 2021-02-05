@@ -2296,9 +2296,19 @@ namespace HISP.Server
                     if (Item.ItemIdExist(value))
                     {
                         ItemInstance itm = new ItemInstance(value);
-                        sender.LoggedinUser.Inventory.Add(itm);
+
                         Item.ItemInformation itemInfo = Item.GetItemById(value);
-                        byte[] earnedItemMessage = PacketBuilder.CreateChat(Messages.FormatYouEarnedAnItemMessage(itemInfo.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        string messageToSend = Messages.FormatYouEarnedAnItemMessage(itemInfo.Name);
+                        try
+                        {
+                            sender.LoggedinUser.Inventory.Add(itm);
+                        }
+                        catch(InventoryException)
+                        {
+                            messageToSend = Messages.FormatYouEarnedAnItemButInventoryFullMessage(itemInfo.Name);
+                        }
+
+                        byte[] earnedItemMessage = PacketBuilder.CreateChat(messageToSend, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(earnedItemMessage);
                     }
                     else
