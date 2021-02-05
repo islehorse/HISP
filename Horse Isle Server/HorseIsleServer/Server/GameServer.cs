@@ -2937,7 +2937,7 @@ namespace HISP.Server
                     {
                         foreach (DroppedItems.DroppedItem item in droppedItems)
                         {
-                            sender.LoggedinUser.Inventory.Add(item.instance);
+                            sender.LoggedinUser.Inventory.Add(item.Instance);
                             DroppedItems.RemoveDroppedItem(item);
                         }
                     }
@@ -2973,7 +2973,7 @@ namespace HISP.Server
                         DroppedItems.DroppedItem item = DroppedItems.GetDroppedItemById(randomId);
                         try
                         {
-                            sender.LoggedinUser.Inventory.Add(item.instance);
+                            sender.LoggedinUser.Inventory.Add(item.Instance);
                         }
                         catch (InventoryException)
                         {
@@ -3683,7 +3683,7 @@ namespace HISP.Server
                         if (sender.LoggedinUser.Inventory.HasItem(value))
                             itemId = sender.LoggedinUser.Inventory.GetItemByRandomid(value).ItemId;
                         else if (DroppedItems.IsDroppedItemExist(value))
-                            itemId = DroppedItems.GetDroppedItemById(value).instance.ItemId;
+                            itemId = DroppedItems.GetDroppedItemById(value).Instance.ItemId;
                         if (itemId == -1)
                         {
                             Logger.HackerPrint(sender.LoggedinUser.Username + " asked for details of non existiant item.");
