@@ -2691,6 +2691,20 @@ namespace HISP.Server
             }
             return itemList.ToArray();
         }
+        public static void DecrementDroppedItemDespawnTimer()
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+
+
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE DroppedItems SET DespawnTimer=DespawnTimer-1";
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+
+            }
+        }
 
         public static void AddDroppedItem(DroppedItems.DroppedItem item)
         {
