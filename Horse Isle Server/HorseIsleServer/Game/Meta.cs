@@ -1390,7 +1390,7 @@ namespace HISP.Game
             string message = "";
             message += Messages.FormatHorseName(horse.Name);
             message += Messages.FormatHorseDescription(horse.Description);
-            message += Messages.FormatHorseHandsHigh(horse.Color, horse.Breed.Name, horse.Sex, Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.AdvancedStats.Height))));
+            message += Messages.FormatHorseHandsHigh(horse.Color, horse.Breed.Name, horse.Sex, HorseInfo.CalculateHands(horse.AdvancedStats.Height, false));
             message += Messages.FormatHorseExperience(horse.BasicStats.Experience);
             
             if (horse.TrainTimer > 0)
@@ -1464,7 +1464,7 @@ namespace HISP.Game
             message += Messages.FormatHorseAdvancedStat(personalityStat.BreedValue, personalityStat.CompanionOffset, personalityStat.TackOffset, personalityStat.MaxValue);
 
             message += Messages.FormatHorseBreedDetails(horse.Breed.Name, horse.Breed.Description);
-            message += Messages.FormatHorseHeight(Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MinHeight))), Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MaxHeight))));
+            message += Messages.FormatHorseHeight(Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MinHeight,false))), Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MaxHeight,false))));
             
             message += Messages.FormatPossibleColors(horse.Breed.Colors);
 
