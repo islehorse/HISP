@@ -3391,6 +3391,75 @@ namespace HISP.Server
                         sender.SendPacket(ChatPacket);
                     }
                     break;
+                case PacketBuilder.ITEM_CRAFT:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    string craftIdStr = packetStr.Substring(2, packet.Length - 2);
+                    int craftId = 0;
+                    // Prevent crashing on non-int string.
+                    try
+                    {
+                        craftId = Int32.Parse(craftIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to craft using craft id NaN.");
+                        return;
+                    }
+                    if(Workshop.CraftIdExists(craftId))
+                    {
+                        Workshop.CraftableItem itm = Workshop.GetCraftId(craftId);
+                        if(itm.MoneyCost <= sender.LoggedinUser.Money) // Check money
+                        {
+                            foreach(Workshop.RequiredItem reqItem in itm.RequiredItems)
+                            {
+                                if (sender.LoggedinUser.Inventory.HasItemId(reqItem.RequiredItemId))
+                                {
+                                    if (sender.LoggedinUser.Inventory.GetItemByItemId(reqItem.RequiredItemId).ItemInstances.Count < reqItem.RequiredItemCount)
+                                        goto failMissingItem;
+                                }
+                                else
+                                    goto failMissingItem;
+                            }
+
+                            // Finally create the items
+                            try
+                            {
+                                sender.LoggedinUser.Inventory.Add(new ItemInstance(itm.GiveItemId));
+                            }
+                            catch(InventoryException)
+                            {
+                                byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.WorkshopNoRoomInInventory, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(inventoryFullMessage);
+                                break;
+                            }
+                            sender.LoggedinUser.Money -= itm.MoneyCost;
+
+                            // Remove the required items..
+                            foreach(Workshop.RequiredItem reqItem in itm.RequiredItems) 
+                                for(int i = 0; i < reqItem.RequiredItemCount; i++)
+                                    sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(reqItem.RequiredItemId).ItemInstances[0]);
+
+                            byte[] itemCraftSuccess = PacketBuilder.CreateChat(Messages.WorkshopCraftingSuccess, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(itemCraftSuccess);
+                            break;
+                            
+                        }
+                        else
+                        {
+                            byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.WorkshopCannotAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantAffordMessage);
+                            break;
+                        }
+
+                        failMissingItem:
+                        {
+                            byte[] missingItemMessage = PacketBuilder.CreateChat(Messages.WorkshopMissingRequiredItem, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(missingItemMessage);
+                            break;
+                        }
+                    }
+
+                    break;
                 case PacketBuilder.ITEM_SELL: // Handles selling an item.
                     int totalSold = 1;
                     int message = 1;

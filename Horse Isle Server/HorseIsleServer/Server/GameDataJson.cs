@@ -560,11 +560,11 @@ namespace HISP.Server
                     craftableItem.GiveItemId = gameData.workshop[i].craftable_items[ii].give_item;
                     craftableItem.MoneyCost = gameData.workshop[i].craftable_items[ii].money_cost;
                     int totalItemsRequired = gameData.workshop[i].craftable_items[ii].required_items.Count;
-                    for(int iii = 0; iii < 0; iii++)
+                    for(int iii = 0; iii < totalItemsRequired; iii++)
                     {
                         Workshop.RequiredItem requiredItem = new Workshop.RequiredItem();
-                        requiredItem.RequiredItemId = totalItemsRequired = gameData.workshop[i].craftable_items[ii].required_items[iii].req_item;
-                        requiredItem.RequiredItemId = totalItemsRequired = gameData.workshop[i].craftable_items[ii].required_items[iii].req_quantity;
+                        requiredItem.RequiredItemId = gameData.workshop[i].craftable_items[ii].required_items[iii].req_item;
+                        requiredItem.RequiredItemCount = gameData.workshop[i].craftable_items[ii].required_items[iii].req_quantity;
                         craftableItem.RequiredItems.Add(requiredItem);
                     }
                     wkShop.CraftableItems.Add(craftableItem);
@@ -760,6 +760,17 @@ namespace HISP.Server
 
             Messages.BankDepositedMoneyFormat = gameData.messages.bank.deposit_format;
             Messages.BankWithdrewMoneyFormat = gameData.messages.bank.withdraw_format;
+
+            // Workshop
+            Messages.WorkshopCraftEntryFormat = gameData.messages.meta.workshop.craft_entry;
+            Messages.WorkshopRequiresFormat = gameData.messages.meta.workshop.requires;
+            Messages.WorkshopRequireEntryFormat = gameData.messages.meta.workshop.require;
+            Messages.WorkshopAnd = gameData.messages.meta.workshop.and;
+
+            Messages.WorkshopNoRoomInInventory = gameData.messages.meta.workshop.no_room;
+            Messages.WorkshopMissingRequiredItem = gameData.messages.meta.workshop.missing_item;
+            Messages.WorkshopCraftingSuccess = gameData.messages.meta.workshop.craft_success;
+            Messages.WorkshopCannotAfford = gameData.messages.meta.workshop.no_money;
 
             // Horses
             Messages.AdvancedStatFormat = gameData.messages.meta.horse.stat_format;

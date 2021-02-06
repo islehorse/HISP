@@ -102,6 +102,23 @@ namespace HISP.Game
             return sortedQuests.ToArray();
         }
 
+        public class QuestResult
+        {
+            public QuestResult()
+            {
+                NpcChat = null;
+                SetChatpoint = -1;
+                GotoChatpoint = -1;
+                HideRepliesOnFail = false;
+                QuestCompleted = false;
+            }
+            public string NpcChat;
+            public int SetChatpoint;
+            public int GotoChatpoint;
+            public bool HideRepliesOnFail;
+            public bool QuestCompleted;
+        }
+
         public static bool CanComplete(User user, QuestEntry quest)
         {
             if (quest.Tracked)
@@ -153,8 +170,10 @@ namespace HISP.Game
             return true;
         }
 
-        public static bool CompleteQuest(User user, QuestEntry quest, bool npcActivation = false)
+        public static QuestResult CompleteQuest(User user, QuestEntry quest, bool npcActivation = false, QuestResult res=null)
         {
+            if(res == null)
+                res = new QuestResult();
             // Take Items
             foreach (QuestItemInfo itemInfo in quest.ItemsRequired)
             {
@@ -181,12 +200,24 @@ namespace HISP.Game
             // Give quest points
             user.QuestPoints += quest.QuestPointsEarned;
 
-            
+            res.QuestCompleted = true;
+            if (npcActivation)
+            {
+                if (quest.SuccessNpcChat != null)
+                    res.NpcChat = quest.SuccessNpcChat;
+
+                if(quest.SetNpcChatpoint != -1)
+                    res.SetChatpoint = quest.SetNpcChatpoint;
+
+                if(quest.GotoNpcChatpoint != -1)
+                    res.GotoChatpoint = quest.GotoNpcChatpoint;
+            }
+
             if (quest.Tracked)
                 user.Quests.TrackQuest(quest.Id);
 
             if (quest.ChainedQuestId != 0)
-                ActivateQuest(user, Quest.GetQuestById(quest.ChainedQuestId), npcActivation);
+                res = ActivateQuest(user, Quest.GetQuestById(quest.ChainedQuestId), npcActivation, res);
 
             if (quest.SuccessMessage != null)
             {
@@ -202,9 +233,6 @@ namespace HISP.Game
                     user.LoggedinClient.SendPacket(ChatPacket);
                 }
             }
-
-
-
 
             // Check if award unlocked
             int questPointsPercent = Convert.ToInt32(Math.Floor(((decimal)user.QuestPoints / (decimal)GetTotalQuestPoints()) * (decimal)100.0));
@@ -224,10 +252,23 @@ namespace HISP.Game
                 user.LoggedinClient.SendPacket(swfLoadPacket);
             }
 
-            return true;
+            return res;
         }
-        public static bool FailQuest(User user, QuestEntry quest, bool npcActivation = false)
+        public static QuestResult FailQuest(User user, QuestEntry quest, bool npcActivation = false, QuestResult res=null)
         {
+            if(res == null)
+                res = new QuestResult();
+            res.QuestCompleted = false;
+
+            if(npcActivation)
+            {
+                if(quest.GotoNpcChatpoint != -1)
+                   res.GotoChatpoint = quest.GotoNpcChatpoint;
+                if(quest.HideReplyOnFail != false)
+                    res.HideRepliesOnFail = quest.HideReplyOnFail;
+                if(res.SetChatpoint != -1)
+                    res.SetChatpoint = quest.SetNpcChatpoint;
+            }
             if (quest.FailNpcChat != null)
             {
                 if (!npcActivation)
@@ -235,19 +276,24 @@ namespace HISP.Game
                     byte[] ChatPacket = PacketBuilder.CreateChat(quest.FailNpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     user.LoggedinClient.SendPacket(ChatPacket);
                 }
+                else
+                {
+                    if(quest.FailNpcChat != null)
+                        res.NpcChat = quest.FailNpcChat;
+                }
             }
-            return false;
+            return res;
         }
-        public static bool ActivateQuest(User user, QuestEntry quest, bool npcActivation = false)
+        public static QuestResult ActivateQuest(User user, QuestEntry quest, bool npcActivation = false, QuestResult res=null)
         {
 
             if (CanComplete(user, quest))
             {
-                return CompleteQuest(user, quest, npcActivation);
+                return CompleteQuest(user, quest, npcActivation, res);
             }
             else 
             {
-                return FailQuest(user, quest, npcActivation);
+                return FailQuest(user, quest, npcActivation, res);
             }
 
         }
