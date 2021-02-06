@@ -1430,7 +1430,7 @@ namespace HISP.Game
             message += Messages.FormatHorseAdvancedStat(agilityStat.BreedValue, agilityStat.CompanionOffset, agilityStat.TackOffset, agilityStat.MaxValue);
             message += Messages.FormatHorseAdvancedStat(enduranceStat.BreedValue, enduranceStat.CompanionOffset, enduranceStat.TackOffset, enduranceStat.MaxValue);
             message += Messages.FormatHorseAdvancedStat(inteligenceStat.BreedValue, inteligenceStat.CompanionOffset, inteligenceStat.TackOffset, inteligenceStat.MaxValue);
-            message += Messages.FormatHorseAdvancedStat(agilityStat.BreedValue, personalityStat.CompanionOffset, personalityStat.TackOffset, personalityStat.MaxValue);
+            message += Messages.FormatHorseAdvancedStat(personalityStat.BreedValue, personalityStat.CompanionOffset, personalityStat.TackOffset, personalityStat.MaxValue);
 
             message += Messages.FormatHorseBreedDetails(horse.Breed.Name, horse.Breed.Description);
             message += Messages.FormatHorseHeight(Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MinHeight))), Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MaxHeight))));

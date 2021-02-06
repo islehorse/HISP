@@ -61,7 +61,7 @@ namespace HISP.Server
                 Database.IncAllUsersFreeTime(1);
             }
 
-            if(totalMinutesElapsed % 24 == 0)
+            if(totalMinutesElapsed % 20 == 0)
                 Database.DoIntrestPayments(ConfigReader.IntrestRate);
 
 
@@ -477,7 +477,7 @@ namespace HISP.Server
                     }
                     else
                     {
-                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to tack at a non existant horse.");
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to release at a non existant horse.");
                         break;
                     }
                 case PacketBuilder.HORSE_TACK:
@@ -711,6 +711,17 @@ namespace HISP.Server
                         }
                         byte[] itemUnequipedMessage = PacketBuilder.CreateChat(Messages.FormatUnEquipTackMessage(sender.LoggedinUser.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(itemUnequipedMessage);
+
+                        if(sender.LoggedinUser.CurrentlyRidingHorse != null)
+                        {
+                            if(sender.LoggedinUser.CurrentlyRidingHorse.RandomId == sender.LoggedinUser.LastViewedHorse.RandomId)
+                            {
+                                sender.LoggedinUser.CurrentlyRidingHorse = null;
+                                sender.LoggedinUser.Facing %= 5;
+                                byte[] disMounted = PacketBuilder.CreateChat(Messages.FormatHorseDismountedBecauseTackedMessage(sender.LoggedinUser.CurrentlyRidingHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(disMounted);
+                            }
+                        }
 
                         sender.LoggedinUser.MetaPriority = true;
                         byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
@@ -1384,17 +1395,17 @@ namespace HISP.Server
                         sender.SendPacket(metaPacket);
                     }
                     break;
-                case "33":
+                case "33": // View All stats (Horse)
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAllBasicStats(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
-                case "34":
+                case "34": // View Basic stats (Horse)
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAllStats(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
-                case "38":
+                case "38": // Read Books
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBooksLibary());
                     sender.SendPacket(metaPacket);
