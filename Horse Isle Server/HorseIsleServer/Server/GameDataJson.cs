@@ -8,6 +8,7 @@ using HISP.Game.Services;
 using HISP.Game.SwfModules;
 using HISP.Game.Horse;
 using HISP.Game.Items;
+using System.Globalization;
 
 namespace HISP.Server
 {
@@ -524,7 +525,7 @@ namespace HISP.Server
                 double cost = gameData.services.vet.price_multipliers[i].cost;
                 int id = gameData.services.vet.price_multipliers[i].id;
                 Vet vet = new Vet(id, cost);
-                Logger.DebugPrint("Registered Vet: " + vet.Id + " selling at: " + vet.PriceMultiplier);
+                Logger.DebugPrint("Registered Vet: " + vet.Id + " selling at: " + vet.PriceMultiplier.ToString(CultureInfo.InvariantCulture));
             }
             int totalGroomers = gameData.services.groomer.price_multipliers.Count;
             for (int i = 0; i < totalGroomers; i++)
@@ -533,7 +534,7 @@ namespace HISP.Server
                 int id = gameData.services.groomer.price_multipliers[i].id;
                 int max = gameData.services.groomer.price_multipliers[i].max;
                 Groomer groomer = new Groomer(id, cost, max);
-                Logger.DebugPrint("Registered Groomer: " + groomer.Id + " selling at: " + groomer.PriceMultiplier);
+                Logger.DebugPrint("Registered Groomer: " + groomer.Id + " selling at: " + groomer.PriceMultiplier.ToString(CultureInfo.InvariantCulture));
             }
             int totalBooks = gameData.books.Count;
             for (int i = 0; i < totalBooks; i++)

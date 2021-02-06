@@ -2,6 +2,7 @@
 using HISP.Game.Items;
 
 using System.Collections.Generic;
+using System.Globalization;
 
 namespace HISP.Game.Horse
 {
@@ -520,13 +521,27 @@ namespace HISP.Game.Horse
             if(isBreedViewer)
                 return ((double)height / 4.00);
             else
-                return ((double)height / 4.08);
+            {
+                int h1 = 0;
+                int h2 = 0;
+                for(int i = 0; i < height; i++)
+                {
+                    h2++;
+                    if (h2 == 4)
+                    {
+                        h2 = 0;
+                        h1++;
+                    }
+                }
+                double hands = double.Parse(h1 + "." + h2); // This is terrible. dont do this.
+                return hands;
+            }
         }
         public static string BreedViewerSwf(HorseInstance horse, string terrainTileType)
         {
             double hands = CalculateHands(horse.AdvancedStats.Height, true);
 
-            string swf = "breedviewer.swf?terrain=" + terrainTileType + "&breed=" + horse.Breed.Swf + "&color=" + horse.Color + "&hands=" + hands.ToString();
+            string swf = "breedviewer.swf?terrain=" + terrainTileType + "&breed=" + horse.Breed.Swf + "&color=" + horse.Color + "&hands=" + hands.ToString(CultureInfo.InvariantCulture);
             if (horse.Equipment.Saddle != null)
                 swf += "&saddle=" + horse.Equipment.Saddle.EmbedSwf;
             if (horse.Equipment.SaddlePad != null)
