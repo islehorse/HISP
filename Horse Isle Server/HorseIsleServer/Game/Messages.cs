@@ -1,6 +1,7 @@
 ﻿using HISP.Server;
 using System;
 using System.Drawing;
+using System.Globalization;
 
 namespace HISP.Game
 {
@@ -879,7 +880,7 @@ namespace HISP.Game
         }
         public static string FormatHorseHandsHigh(string color, string breed,string sex, double handsHigh)
         {
-            return HorseHandsHeightFormat.Replace("%COLOR%", color).Replace("%SEX%", sex).Replace("%HANDS%", handsHigh.ToString("0.0")).Replace("%BREED%", breed);
+            return HorseHandsHeightFormat.Replace("%COLOR%", color).Replace("%SEX%", sex).Replace("%HANDS%", handsHigh.ToString(CultureInfo.InvariantCulture)).Replace("%BREED%", breed);
         }
         public static string FormatHorseExperience(int experience)
         {
