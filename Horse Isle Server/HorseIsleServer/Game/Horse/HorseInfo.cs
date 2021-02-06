@@ -533,7 +533,7 @@ namespace HISP.Game.Horse
                         h1++;
                     }
                 }
-                double hands = double.Parse(h1 + "." + h2); // This is terrible. dont do this.
+                double hands = double.Parse(h1 + "." + h2, CultureInfo.InvariantCulture); // This is terrible. dont do this.
                 return hands;
             }
         }
