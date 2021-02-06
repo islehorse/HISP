@@ -515,13 +515,16 @@ namespace HISP.Game.Horse
             int i = GameServer.RandomNumberGenerator.Next(indx, max);
             return HorseNames[i];
         }
-        public static double CalculateHands(int height)
+        public static double CalculateHands(int height, bool isBreedViewer)
         {
-            return ((double)height / 4.0);
+            if(isBreedViewer)
+                return ((double)height / 4.00);
+            else
+                return ((double)height / 4.08);
         }
         public static string BreedViewerSwf(HorseInstance horse, string terrainTileType)
         {
-            double hands = CalculateHands(horse.AdvancedStats.Height);
+            double hands = CalculateHands(horse.AdvancedStats.Height, true);
 
             string swf = "breedviewer.swf?terrain=" + terrainTileType + "&breed=" + horse.Breed.Swf + "&color=" + horse.Color + "&hands=" + hands.ToString();
             if (horse.Equipment.Saddle != null)

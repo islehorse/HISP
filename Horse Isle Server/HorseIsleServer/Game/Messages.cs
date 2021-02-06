@@ -877,9 +877,9 @@ namespace HISP.Game
         {
             return HorseDescriptionFormat.Replace("%DESCRIPTION%", Description);
         }
-        public static string FormatHorseHandsHigh(string color, string breed,string sex, int handsHigh)
+        public static string FormatHorseHandsHigh(string color, string breed,string sex, double handsHigh)
         {
-            return HorseHandsHeightFormat.Replace("%COLOR%", color).Replace("%SEX%", sex).Replace("%HANDS%", handsHigh.ToString()).Replace("%BREED%", breed);
+            return HorseHandsHeightFormat.Replace("%COLOR%", color).Replace("%SEX%", sex).Replace("%HANDS%", handsHigh.ToString("0.0")).Replace("%BREED%", breed);
         }
         public static string FormatHorseExperience(int experience)
         {
