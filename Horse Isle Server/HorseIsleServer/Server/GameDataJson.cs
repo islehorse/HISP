@@ -546,6 +546,34 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Libary Book: " + book.Id + " " + book.Title + " by " + book.Author);
 
             }
+            int totalWorkshops = gameData.workshop.Count;
+            for (int i = 0; i < totalWorkshops; i++)
+            {
+                Workshop wkShop = new Workshop();
+                wkShop.X = gameData.workshop[i].pos_x;
+                wkShop.Y = gameData.workshop[i].pos_y;
+                int totalCraftableItems = gameData.workshop[i].craftable_items.Count;
+                for(int ii = 0; ii < totalCraftableItems; ii++)
+                {
+                    Workshop.CraftableItem craftableItem = new Workshop.CraftableItem();
+                    craftableItem.Id = gameData.workshop[i].craftable_items[ii].id;
+                    craftableItem.GiveItemId = gameData.workshop[i].craftable_items[ii].give_item;
+                    craftableItem.MoneyCost = gameData.workshop[i].craftable_items[ii].money_cost;
+                    int totalItemsRequired = gameData.workshop[i].craftable_items[ii].required_items.Count;
+                    for(int iii = 0; iii < 0; iii++)
+                    {
+                        Workshop.RequiredItem requiredItem = new Workshop.RequiredItem();
+                        requiredItem.RequiredItemId = totalItemsRequired = gameData.workshop[i].craftable_items[ii].required_items[iii].req_item;
+                        requiredItem.RequiredItemId = totalItemsRequired = gameData.workshop[i].craftable_items[ii].required_items[iii].req_quantity;
+                        craftableItem.RequiredItems.Add(requiredItem);
+                    }
+                    wkShop.CraftableItems.Add(craftableItem);
+                }
+
+                Workshop.Workshops.Add(wkShop);
+                Logger.DebugPrint("Registered Workshop at X: " + wkShop.X + " Y: " + wkShop.Y);
+
+            }
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
             Item.Present = gameData.item.special.present;
@@ -759,6 +787,7 @@ namespace HISP.Server
             Messages.HorseIsTrainable = gameData.messages.meta.horse.horse_inventory.currently_trainable;
 
             Messages.HorseCannotMountUntilTackedMessage = gameData.messages.meta.horse.cannot_mount_tacked;
+            Messages.HorseDismountedBecauseNotTackedMessageFormat = gameData.messages.meta.horse.dismount_because_tack;
             Messages.HorseMountButtonFormat = gameData.messages.meta.horse.horse_inventory.mount_button;
             Messages.HorseDisMountButtonFormat = gameData.messages.meta.horse.horse_inventory.dismount_button;
             Messages.HorseFeedButtonFormat = gameData.messages.meta.horse.horse_inventory.feed_button;

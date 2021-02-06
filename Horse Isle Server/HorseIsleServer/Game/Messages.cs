@@ -243,6 +243,7 @@ namespace HISP.Game
         public static string HorseIsTrainable;
 
         public static string HorseCannotMountUntilTackedMessage;
+        public static string HorseDismountedBecauseNotTackedMessageFormat;
         public static string HorseMountButtonFormat;
         public static string HorseDisMountButtonFormat;
         public static string HorseFeedButtonFormat;
@@ -765,7 +766,10 @@ namespace HISP.Game
         {
             return HorseCompanionEntryFormat.Replace("%ICONID%", icon.ToString()).Replace("%COUNT%", count.ToString("N0")).Replace("%NAME%", name).Replace("%ID%", id.ToString());
         }
-
+        public static string FormatHorseDismountedBecauseTackedMessage(string horsename)
+        {
+            return HorseDismountedBecauseNotTackedMessageFormat.Replace("%HORSENAME%", horsename);
+        }
         public static string FormatAutoSellConfirmedMessage(int money)
         {
             return HorseAutoSellConfirmedFormat.Replace("%MONEY%", money.ToString("N0"));

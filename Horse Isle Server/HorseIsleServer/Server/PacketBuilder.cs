@@ -830,7 +830,7 @@ namespace HISP.Server
             ms.Seek(0x00, SeekOrigin.Begin);
             byte[] Packet = ms.ToArray();
             ms.Dispose();
-            Logger.InfoPrint("Sending load "+(char)type + swf + " packet");
+            Logger.DebugPrint("Sending load "+(char)type + swf + " packet");
             return Packet;
         }
         public static byte[] CreateAnnouncement(string announcement)
