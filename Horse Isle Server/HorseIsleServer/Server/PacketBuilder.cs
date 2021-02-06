@@ -137,6 +137,7 @@ namespace HISP.Server
         public const byte ITEM_DRINK = 0x52;
         public const byte ITEM_BINOCULARS = 0x5C;
         public const byte ITEM_MAGNIFYING = 0x5D;
+        public const byte ITEM_CRAFT = 0x64;
         public const byte ITEM_RAKE = 0x5B;
         public const byte ITEM_SHOVEL = 0x5A;
 

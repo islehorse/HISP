@@ -1018,6 +1018,33 @@ namespace HISP.Game
             return message;
         }
 
+        private static string buildWorkshop(User user)
+        {
+            Workshop shop = Workshop.GetWorkshopAt(user.X, user.Y);
+            string message = "";
+            foreach(Workshop.CraftableItem craft in shop.CraftableItems)
+            {
+                Item.ItemInformation itmInfo = Item.GetItemById(craft.GiveItemId);
+                message += Messages.FormatWorkshopCraftEntry(itmInfo.IconId, itmInfo.Name, craft.MoneyCost, itmInfo.Id, craft.Id);
+                // Get requirements
+                List<string> Requirements = new List<string>();
+                foreach(Workshop.RequiredItem reqItem in craft.RequiredItems)
+                {
+
+                    Item.ItemInformation requiredItemInfo = Item.GetItemById(reqItem.RequiredItemId);
+                    string requirementTxt;
+                    if (reqItem.RequiredItemCount <= 1)
+                        requirementTxt = Messages.FormatWorkshopRequireEntry(reqItem.RequiredItemCount, requiredItemInfo.Name);
+                    else
+                        requirementTxt = Messages.FormatWorkshopRequireEntry(reqItem.RequiredItemCount, requiredItemInfo.PluralName);
+                    Requirements.Add(requirementTxt);
+                }
+                message += Messages.FormatWorkshopRequirements(string.Join(Messages.WorkshopAnd, Requirements.ToArray()));
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         private static string buildVet(Vet vet, User user)
         {
             string message = "";
@@ -1126,6 +1153,10 @@ namespace HISP.Game
                 if(TileCode == "POND")
                 {
                     message += buildPond(user);
+                }
+                if(TileCode == "WORKSHOP")
+                {
+                    message += buildWorkshop(user);
                 }
                 if(TileCode == "MUDHOLE")
                 {
@@ -1535,24 +1566,26 @@ namespace HISP.Game
             if (chatpoint.ActivateQuestId != 0)
             {
                 Quest.QuestEntry quest = Quest.GetQuestById(chatpoint.ActivateQuestId);
-                if (Quest.ActivateQuest(user, quest, true))
+
+                Quest.QuestResult result = Quest.ActivateQuest(user, quest, true);
+                if (result.QuestCompleted)
                 {
                     user.MetaPriority = true;
-                    if (quest.SetNpcChatpoint != -1)
-                        Npc.SetDefaultChatpoint(user, npc, quest.SetNpcChatpoint);
-                    if (quest.GotoNpcChatpoint != -1)
-                        chatpoint = Npc.GetNpcChatpoint(npc,quest.GotoNpcChatpoint);
-                    if (quest.SuccessNpcChat != null)
-                        chatpoint.ChatText = quest.SuccessNpcChat;
+                    if (result.SetChatpoint != -1)
+                        Npc.SetDefaultChatpoint(user, npc, result.SetChatpoint);
+                    if (result.GotoChatpoint != -1)
+                        chatpoint = Npc.GetNpcChatpoint(npc, result.GotoChatpoint);
+                    if (result.NpcChat != null)
+                        chatpoint.ChatText = result.NpcChat;
                 }
                 else
                 {
-                    if (quest.GotoNpcChatpoint != -1)
-                        chatpoint = Npc.GetNpcChatpoint(npc, quest.GotoNpcChatpoint);
-                    if (quest.FailNpcChat != null)
-                        chatpoint.ChatText = quest.FailNpcChat;
+                    if (result.GotoChatpoint != -1)
+                        chatpoint = Npc.GetNpcChatpoint(npc, result.GotoChatpoint);
+                    if (result.NpcChat != null)
+                        chatpoint.ChatText = result.NpcChat;
                     
-                    if (quest.HideReplyOnFail)
+                    if (result.HideRepliesOnFail)
                         hideReplys = true;
                 }
             }

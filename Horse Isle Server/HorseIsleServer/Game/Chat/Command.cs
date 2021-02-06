@@ -31,7 +31,7 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
-            if (args[0] == "MONEY")
+            else if (args[0] == "MONEY")
             {
                 int money = 0;
                 try
@@ -44,7 +44,7 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
-            if (args[0] == "QUEST")
+            else if (args[0] == "QUEST")
             {
                 int questId = 0;
                 try
@@ -57,7 +57,10 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
-
+            else
+            {
+                return false;
+            }
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
@@ -216,6 +219,31 @@ namespace HISP.Game.Chat
                     user.Teleport(teleportTo.X, teleportTo.Y);
                 }
                 catch (KeyNotFoundException)
+                {
+                    return false;
+                }
+            }
+            else if(args[0] == "AREA")
+            {
+                if (args.Length < 2)
+                    return false;
+                
+                try
+                {
+                    string area = string.Join(" ", args, 1, args.Length - 1);
+                    bool teleported = false;
+                    foreach(World.Waypoint waypnt in World.Waypoints)
+                    {
+                        if(waypnt.Name.ToLower().StartsWith(area.ToLower()))
+                        {
+                            user.Teleport(waypnt.PosX, waypnt.PosY);
+                            teleported = true;
+                        }
+                    }
+                    if(!teleported)
+                        return false;
+                }
+                catch(Exception)
                 {
                     return false;
                 }

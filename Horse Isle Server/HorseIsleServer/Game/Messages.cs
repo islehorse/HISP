@@ -217,6 +217,17 @@ namespace HISP.Game
         public static string TackViewSetFormat;
         public static string TackSetPeiceFormat;
 
+        // Workshop
+        public static string WorkshopCraftEntryFormat;
+        public static string WorkshopRequiresFormat;
+        public static string WorkshopRequireEntryFormat;
+        public static string WorkshopAnd;
+
+        public static string WorkshopNoRoomInInventory;
+        public static string WorkshopMissingRequiredItem;
+        public static string WorkshopCraftingSuccess;
+        public static string WorkshopCannotAfford;
+
         // Horse
         public static string BreedViewerMaximumStats;
         public static string AdvancedStatFormat;
@@ -568,6 +579,19 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatWorkshopCraftEntry(int iconId, string itemName, int price, int itemId, int craftId)
+        {
+            return WorkshopCraftEntryFormat.Replace("%ICONID%", iconId.ToString()).Replace("%ITEMNAME%", itemName).Replace("%PRICE%", price.ToString("N0")).Replace("%ITEMID%", itemId.ToString()).Replace("%CRAFTID%", craftId.ToString());
+        }
+        public static string FormatWorkshopRequirements(string requiresTxt)
+        {
+            return WorkshopRequiresFormat.Replace("%REQUIRES%", requiresTxt);
+        }
+        public static string FormatWorkshopRequireEntry(int requiredCount, string itemNamePlural)
+        {
+            return WorkshopRequireEntryFormat.Replace("%REQCOUNT%", requiredCount.ToString("N0")).Replace("%ITEMNAME%", itemNamePlural);
+        }
 
         public static string FormatDrawingRoomSaved(int slot)
         {
