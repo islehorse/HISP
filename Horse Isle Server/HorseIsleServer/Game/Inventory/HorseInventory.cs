@@ -21,6 +21,9 @@ namespace HISP.Game.Inventory
         { 
             get
             {
+                if (baseUser.Subscribed)
+                    return 11;
+
                 return 7; // will change when ranches are implemented.
             }
         }
