@@ -27,20 +27,26 @@ namespace HISP.Game
         public static int NewUserStartY;
         public static int GetTileId(int x, int y, bool overlay)
         {
-            if ((x > Width || x < 0) || (y > Height || y < 0)) // Outside map?
-                return 0x1;
-
             int pos = ((x * Height) + y);
 
-            if (overlay && Treasure.IsTileBuiredTreasure(x, y))
+            if (pos >= oMapData.Length && overlay)
+                return 1;
+            else if (pos >= MapData.Length && !overlay)
+                return 1;
+            else if (overlay && oMapData[pos] != 1)
+                return oMapData[pos];
+            else if (overlay && Treasure.IsTileBuiredTreasure(x, y))
                 return 193; // Burried Treasure tile.
             else if (overlay && Treasure.IsTilePotOfGold(x, y))
                 return 186; // Pot of Gold tile.
-
-            if (overlay)
-                return oMapData[pos];
-            else
+            else if (overlay && Ranch.IsRanchHere(x, y))
+                return 170 + Ranch.GetRanchAt(x, y).Upgraded; // Ranch Tile + Upgraded amount
+            else if (overlay)
+                return 1;
+            else if (!overlay)
                 return MapData[pos];
+            else // Not sure how you could even get here.
+                return 1;
         }
         public static bool CheckPassable(int x, int y)
         {
