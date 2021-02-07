@@ -101,9 +101,9 @@ namespace HISP.Game
             oMapData = new byte[Width * Height];
             int ii = 8;
 
+
             for (int i = 0; i < MapData.Length; i++)
             {
-                
                 oMapData[i] = worldMap[ii];
                 MapData[i] = worldMap[ii+ 1];
                 ii += 2;
