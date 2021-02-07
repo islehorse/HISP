@@ -43,8 +43,23 @@ namespace HISP.Server
                 string WildHorse = "CREATE TABLE WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string LastPlayer = "CREATE TABLE LastPlayer(roomId TEXT(1028), playerId INT)";
                 string TrackingStats = "CREATE TABLE Tracking(playerId INT, what TEXT(128), count INT)";
+                string Treasure = "CREATE TABLE Treasure(randomId INT, x INT, y INT, value INT, type TEXT(128))";
                 string BannedPlayers = "CREATE TABLE BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = Treasure;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
 
                 try
                 {
