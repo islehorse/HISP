@@ -575,6 +575,42 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Workshop at X: " + wkShop.X + " Y: " + wkShop.Y);
 
             }
+            int totalRanchLocations = gameData.ranch.ranch_locations.Count;
+            for (int i = 0; i < totalRanchLocations; i++)
+            {
+                int x = gameData.ranch.ranch_locations[i].x;
+                int y = gameData.ranch.ranch_locations[i].y;
+                int id = gameData.ranch.ranch_locations[i].id;
+                int value = gameData.ranch.ranch_locations[i].value;
+                Ranch ranch = new Ranch(x, y, id, value);
+                Ranch.Ranches.Add(ranch);
+                Logger.DebugPrint("Registered Ranch at X: " + ranch.X + " Y: " + ranch.Y);
+
+            }
+            int totalRanchBuildings = gameData.ranch.ranch_buildings.Count;
+            for (int i = 0; i < totalRanchBuildings; i++)
+            {
+                int id = gameData.ranch.ranch_buildings[i].id;
+                string type = gameData.ranch.ranch_buildings[i].type;
+                int cost = gameData.ranch.ranch_buildings[i].cost;
+                string title = gameData.ranch.ranch_buildings[i].title;
+                string description = gameData.ranch.ranch_buildings[i].description;
+
+                Ranch.RanchBuilding building = new Ranch.RanchBuilding();
+
+                if (gameData.ranch.ranch_buildings[i].limit != null)
+                    building.Limit = gameData.ranch.ranch_buildings[i].limit;
+                building.Id = id;
+                building.Type = type;
+                building.Cost = cost;
+                building.Title = title;
+                building.Description = description;
+                
+                Ranch.RanchBuilding.RanchBuildings.Add(building);
+                Logger.DebugPrint("Registered Ranch Building: "+building.Title);
+
+            }
+
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
             Item.Present = gameData.item.special.present;

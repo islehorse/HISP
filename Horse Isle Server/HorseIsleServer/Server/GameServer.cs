@@ -2486,13 +2486,13 @@ namespace HISP.Server
 
             // Pac-man the world.
             if (loggedInUser.X > Map.Width)
-                loggedInUser.Teleport(0, loggedInUser.Y);
-            else if (loggedInUser.X < 0)
-                loggedInUser.Teleport(Map.Width, loggedInUser.Y);
-            else if (loggedInUser.Y > Map.Height)
-                loggedInUser.Teleport(loggedInUser.X, 0);
-            else if (loggedInUser.Y < 0)
-                loggedInUser.Teleport(loggedInUser.X, Map.Height);
+                loggedInUser.Teleport(2, loggedInUser.Y);
+            else if (loggedInUser.X < 2)
+                loggedInUser.Teleport(Map.Width-2, loggedInUser.Y);
+            else if (loggedInUser.Y > Map.Height-2)
+                loggedInUser.Teleport(loggedInUser.X, 2);
+            else if (loggedInUser.Y < 2)
+                loggedInUser.Teleport(loggedInUser.X, Map.Height-2);
 
             if (loggedInUser.CurrentlyRidingHorse != null)
             {
