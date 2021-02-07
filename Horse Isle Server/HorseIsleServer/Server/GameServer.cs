@@ -2484,7 +2484,17 @@ namespace HISP.Server
 
             User loggedInUser = sender.LoggedinUser;
 
-            if(loggedInUser.CurrentlyRidingHorse != null)
+            // Pac-man the world.
+            if (loggedInUser.X > Map.Width)
+                loggedInUser.Teleport(0, loggedInUser.Y);
+            else if (loggedInUser.X < 0)
+                loggedInUser.Teleport(Map.Width, loggedInUser.Y);
+            else if (loggedInUser.Y > Map.Height)
+                loggedInUser.Teleport(loggedInUser.X, 0);
+            else if (loggedInUser.Y < 0)
+                loggedInUser.Teleport(loggedInUser.X, Map.Height);
+
+            if (loggedInUser.CurrentlyRidingHorse != null)
             {
                 if(loggedInUser.CurrentlyRidingHorse.BasicStats.Experience < 25)
                 {
@@ -2678,6 +2688,7 @@ namespace HISP.Server
             }
 
             Update(sender);
+
         }
         public static void OnQuitPacket(GameClient sender, byte[] packet)
         {
