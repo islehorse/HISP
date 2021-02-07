@@ -61,8 +61,6 @@ namespace HISP.Server
                 Database.IncAllUsersFreeTime(1);
             }
 
-            if(totalMinutesElapsed % 20 == 0)
-                Database.DoIntrestPayments(ConfigReader.IntrestRate);
 
 
             if (totalMinutesElapsed % 25 == 0)
@@ -202,18 +200,19 @@ namespace HISP.Server
 
 
 
-                        string message = "";
-                        if(horseInst.BasicStats.Mood + randMoodAddition > 1000)
-                            message = Messages.FormatHorsePetMessage(randMoodAddition, randTiredMinus);
-                        else 
-                            message = Messages.FormatHorsePetTooHappyMessage(randMoodAddition, randTiredMinus);
+                        string msgs = "";
+                        if (horseInst.BasicStats.Mood + randMoodAddition >= 1000)
+                            msgs += Messages.HorsePetTooHappy;
+                        if (horseInst.BasicStats.Tiredness - randTiredMinus <= 0)
+                            msgs += Messages.HorsePetTooTired;
 
 
                         
+
                         horseInst.BasicStats.Tiredness -= randTiredMinus;
                         horseInst.BasicStats.Mood += randMoodAddition;
 
-                        byte[] petMessagePacket = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        byte[] petMessagePacket = PacketBuilder.CreateChat(Messages.FormatHorsePetMessage(msgs,randMoodAddition, randTiredMinus), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(petMessagePacket);
 
                         break;
@@ -716,9 +715,9 @@ namespace HISP.Server
                         {
                             if(sender.LoggedinUser.CurrentlyRidingHorse.RandomId == sender.LoggedinUser.LastViewedHorse.RandomId)
                             {
-                                sender.LoggedinUser.CurrentlyRidingHorse = null;
-                                sender.LoggedinUser.Facing %= 5;
                                 byte[] disMounted = PacketBuilder.CreateChat(Messages.FormatHorseDismountedBecauseTackedMessage(sender.LoggedinUser.CurrentlyRidingHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.LoggedinUser.Facing %= 5;
+                                sender.LoggedinUser.CurrentlyRidingHorse = null;
                                 sender.SendPacket(disMounted);
                             }
                         }
@@ -2572,7 +2571,7 @@ namespace HISP.Server
                     newY -= 1;
                 
 
-                if (loggedInUser.Facing == (direction + (onHorse * 5))&& onHorse != 0) // Double move
+                if (loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
                     if (Map.CheckPassable(newX, newY - 1) || loggedInUser.NoClip)
                     {
                         newY -= 1;
@@ -2586,7 +2585,7 @@ namespace HISP.Server
                     newX -= 1;
 
 
-                if (loggedInUser.Facing == (direction + (onHorse * 5)) && onHorse != 0) // Double move
+                if (loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
                     if (Map.CheckPassable(newX - 1, newY) || loggedInUser.NoClip)
                     {
                         newX -= 1;
@@ -2600,7 +2599,7 @@ namespace HISP.Server
                     newX += 1;
 
 
-                if (loggedInUser.Facing == (direction + (onHorse * 5)) && onHorse != 0) // Double move
+                if (loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
                     if (Map.CheckPassable(newX + 1, newY) || loggedInUser.NoClip)
                     {
                         newX += 1;
@@ -2614,7 +2613,7 @@ namespace HISP.Server
                     newY += 1;
 
 
-                if (loggedInUser.Facing == (direction + (onHorse * 5)) && onHorse != 0) // Double move
+                if (loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
                     if (Map.CheckPassable(newX, newY + 1) || loggedInUser.NoClip)
                     {
                         newY += 1;
@@ -3438,6 +3437,8 @@ namespace HISP.Server
                             foreach(Workshop.RequiredItem reqItem in itm.RequiredItems) 
                                 for(int i = 0; i < reqItem.RequiredItemCount; i++)
                                     sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(reqItem.RequiredItemId).ItemInstances[0]);
+
+                            sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count++;
 
                             byte[] itemCraftSuccess = PacketBuilder.CreateChat(Messages.WorkshopCraftingSuccess, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(itemCraftSuccess);

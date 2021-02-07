@@ -835,7 +835,8 @@ namespace HISP.Server
             Messages.HorseStopRidingMessage = gameData.messages.meta.horse.stop_riding_message;
 
             Messages.HorsePetMessageFormat = gameData.messages.meta.horse.pet_horse;
-            Messages.HorsePetTooHappyFormat = gameData.messages.meta.horse.pet_horse_too_happy;
+            Messages.HorsePetTooHappy = gameData.messages.meta.horse.pet_horse_too_happy;
+            Messages.HorsePetTooTired = gameData.messages.meta.horse.pet_horse_too_sleepy;
             Messages.HorseSetNewCategoryMessageFormat = gameData.messages.meta.horse.horse_set_new_category;
 
             Messages.HorseAutoSellMenuFormat = gameData.messages.meta.horse.auto_sell.auto_sell_meta;
