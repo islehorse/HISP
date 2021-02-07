@@ -788,6 +788,7 @@ namespace HISP.Server
             Messages.HorseEntryFormat = gameData.messages.meta.horse.horse_format;
             Messages.ViewBaiscStats = gameData.messages.meta.horse.view_basic_stats;
             Messages.ViewAdvancedStats = gameData.messages.meta.horse.view_advanced_stats;
+            Messages.HorseBuckedYou = gameData.messages.meta.horse.horse_bucked;
 
             Messages.HorseRidingMessageFormat = gameData.messages.meta.horse.riding_message;
             Messages.HorseNameFormat = gameData.messages.meta.horse.horse_inventory.your_horse_format;
@@ -1069,6 +1070,9 @@ namespace HISP.Server
             Messages.InnCannotAffordService = gameData.messages.inn.cant_afford;
             Messages.InnFullyRested = gameData.messages.inn.fully_rested;
 
+            // Password
+            Messages.IncorrectPasswordMessage = gameData.messages.incorrect_password;
+
             // Fountain
             Messages.FountainMeta = gameData.messages.meta.fountain;
             Messages.FountainDrankYourFull = gameData.messages.fountain.drank_your_fill;
@@ -1110,6 +1114,7 @@ namespace HISP.Server
             Messages.YouLostAnItemFormat = gameData.messages.sec_code.item_deleted;
             Messages.YouEarnedMoneyFormat = gameData.messages.sec_code.money_earned;
             Messages.BeatHighscoreFormat = gameData.messages.sec_code.highscore_beaten;
+            Messages.BeatBestHighscore = gameData.messages.sec_code.best_highscore_beaten;
             Messages.BeatBestTimeFormat = gameData.messages.sec_code.best_time_beaten;
 
             // Inventory
