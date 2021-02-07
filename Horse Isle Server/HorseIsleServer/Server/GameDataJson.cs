@@ -592,6 +592,9 @@ namespace HISP.Server
             Map.NewUserStartX = gameData.messages.new_user.starting_x;
             Map.NewUserStartY = gameData.messages.new_user.starting_y;
 
+            // Treasure
+            Messages.PirateTreasureFormat = gameData.messages.treasure.pirate_treasure;
+
             // Records
             Messages.ProfileSavedMessage = gameData.messages.profile_save;
             Messages.PrivateNotesSavedMessage = gameData.messages.private_notes_save;

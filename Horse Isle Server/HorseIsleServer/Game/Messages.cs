@@ -344,8 +344,12 @@ namespace HISP.Game
         public static string HorseEquipFormat;
         public static string BackToHorse;
 
+        // Treasure
+        public static string PirateTreasureFormat;
+
 
         // Groomer
+
         public static string GroomerBestToHisAbilitiesFormat;
         public static string GroomerCannotAffordMessage;
         public static string GroomerHorseCurrentlyAtFormat;
@@ -587,6 +591,10 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatPirateTreasure(int prize)
+        {
+            return PirateTreasureFormat.Replace("%PRIZE%", prize.ToString("N0"));
+        }
         public static string FormatWorkshopCraftEntry(int iconId, string itemName, int price, int itemId, int craftId)
         {
             return WorkshopCraftEntryFormat.Replace("%ICONID%", iconId.ToString()).Replace("%ITEMNAME%", itemName).Replace("%PRICE%", price.ToString("N0")).Replace("%ITEMID%", itemId.ToString()).Replace("%CRAFTID%", craftId.ToString());
