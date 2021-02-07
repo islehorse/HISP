@@ -44,8 +44,22 @@ namespace HISP.Server
                 string LastPlayer = "CREATE TABLE LastPlayer(roomId TEXT(1028), playerId INT)";
                 string TrackingStats = "CREATE TABLE Tracking(playerId INT, what TEXT(128), count INT)";
                 string Treasure = "CREATE TABLE Treasure(randomId INT, x INT, y INT, value INT, type TEXT(128))";
+                string Ranches = "CREATE TABLE Ranches(ranchId INT, playerId INT, title TEXT(1028), description TEXT(1028), upgradeLevel INT, building1 INT, building2 INT, building3 INT, building4 INT, building5 INT, building6 INT, building7 INT, building8 INT, building9 INT, building10 INT, building11 INT, building12 INT, building13 INT, building14 INT, building15 INT, building16 INT, investedMoney INT)";
                 string BannedPlayers = "CREATE TABLE BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+                
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = Ranches;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
 
                 try
                 {
@@ -412,6 +426,41 @@ namespace HISP.Server
 
         }
 
+        public static void AddRanch(int ranchId, int playerId, string title, string description, int upgradeLevel, int building1, int building2, int building3, int building4, int building5, int building6, int building7, int building8, int building9, int building10, int building11, int building12, int building13, int building14, int building15, int building16, int investedMoney)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO Ranches VALUES(@ranchId, @playerId, @title, @description, @upgradeLevel, @building1, @building2, @building3, @building4, @building5, @building6, @building7, @building8, @building9, @building10, @building11, @building12, @building13, @building14, @building15, @building16, @investedMoney)";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@title", title);
+                sqlCommand.Parameters.AddWithValue("@description", description);
+                sqlCommand.Parameters.AddWithValue("@upgradeLevel", upgradeLevel);
+                sqlCommand.Parameters.AddWithValue("@building1", building1);
+                sqlCommand.Parameters.AddWithValue("@building2", building2);
+                sqlCommand.Parameters.AddWithValue("@building3", building3);
+                sqlCommand.Parameters.AddWithValue("@building4", building4);
+                sqlCommand.Parameters.AddWithValue("@building5", building5);
+                sqlCommand.Parameters.AddWithValue("@building6", building6);
+                sqlCommand.Parameters.AddWithValue("@building7", building7);
+                sqlCommand.Parameters.AddWithValue("@building8", building8);
+                sqlCommand.Parameters.AddWithValue("@building9", building9);
+                sqlCommand.Parameters.AddWithValue("@building10", building10);
+                sqlCommand.Parameters.AddWithValue("@building11", building11);
+                sqlCommand.Parameters.AddWithValue("@building12", building12);
+                sqlCommand.Parameters.AddWithValue("@building13", building13);
+                sqlCommand.Parameters.AddWithValue("@building14", building14);
+                sqlCommand.Parameters.AddWithValue("@building15", building15);
+                sqlCommand.Parameters.AddWithValue("@building16", building16);
+                sqlCommand.Parameters.AddWithValue("@investedMoney", investedMoney);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
         public static void SetTreasureValue(int randomId, int value)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

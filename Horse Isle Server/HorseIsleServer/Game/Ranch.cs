@@ -26,14 +26,19 @@ namespace HISP.Game
         public int Value;
 
         public int OwnerId;
-        public int Upgraded;
+        public int UpgradedLevel;
+        public int InvestedMoney;
+        public string Title;
+        public string Description;
+
+        public RanchBuilding[] Buildings = new RanchBuilding[16];
         public Ranch(int x, int y, int id, int value)
         {
             X = x;
             Y = y;
             Id = id;
             Value = value;
-            Upgraded = 0;
+            UpgradedLevel = 0;
             OwnerId = -1;
         }
 
