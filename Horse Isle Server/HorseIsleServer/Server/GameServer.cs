@@ -1198,7 +1198,11 @@ namespace HISP.Server
                                             }
                                             else
                                             {
-                                                Quest.FailQuest(sender.LoggedinUser, Quest.GetQuestById(questId), false);
+                                                Quest.QuestResult result = Quest.FailQuest(sender.LoggedinUser, Quest.GetQuestById(questId), true);
+                                                if (result.NpcChat == null || result.NpcChat == "")
+                                                    result.NpcChat = Messages.IncorrectPasswordMessage;
+                                                byte[] ChatPacket = PacketBuilder.CreateChat(result.NpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                                sender.SendPacket(ChatPacket);
                                             }
                                         }
                                         else
@@ -2192,9 +2196,19 @@ namespace HISP.Server
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid score value");
                             return;
                         }
+                        Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameTitle, 5);
+                        bool bestScoreEver = false;
+                        if (scores.Length >= 1)
+                            bestScoreEver = scores[0].Score <= value;
 
                         bool newHighscore = sender.LoggedinUser.Highscores.UpdateHighscore(gameTitle, value, time);
-                        if (newHighscore && !time)
+                        if(bestScoreEver && !time)
+                        {
+                            byte[] bestScoreBeaten = PacketBuilder.CreateChat(Messages.BeatBestHighscore, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(bestScoreBeaten);
+                            sender.LoggedinUser.Money += 2500;
+                        }
+                        else if (newHighscore && !time)
                         {
                             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatHighscoreBeatenMessage(value), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(chatPacket);
@@ -2464,6 +2478,22 @@ namespace HISP.Server
             }
 
             User loggedInUser = sender.LoggedinUser;
+
+            if(loggedInUser.CurrentlyRidingHorse != null)
+            {
+                if(loggedInUser.CurrentlyRidingHorse.BasicStats.Experience < 25)
+                {
+                    if(GameServer.RandomNumberGenerator.Next(0,250) > 240)
+                    {
+                        loggedInUser.CurrentlyRidingHorse.BasicStats.Experience++;
+                        sender.LoggedinUser.CurrentlyRidingHorse = null;
+                        sender.LoggedinUser.Facing %= 5;
+                        byte[] horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(horseBuckedMessage);
+                    }
+                }
+            }
+
             byte movementDirection = packet[1];
 
             if (loggedInUser.Thirst <= 0 || loggedInUser.Hunger <= 0 || loggedInUser.Tiredness <= 0)
@@ -2571,7 +2601,7 @@ namespace HISP.Server
                     newY -= 1;
                 
 
-                if (loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
+                if (loggedInUser.Facing == (direction + (onHorse * 5)) && loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
                     if (Map.CheckPassable(newX, newY - 1) || loggedInUser.NoClip)
                     {
                         newY -= 1;
@@ -2585,7 +2615,7 @@ namespace HISP.Server
                     newX -= 1;
 
 
-                if (loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
+                if (loggedInUser.Facing == (direction + (onHorse * 5)) && loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
                     if (Map.CheckPassable(newX - 1, newY) || loggedInUser.NoClip)
                     {
                         newX -= 1;
@@ -2599,7 +2629,7 @@ namespace HISP.Server
                     newX += 1;
 
 
-                if (loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
+                if (loggedInUser.Facing == (direction + (onHorse * 5)) && loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
                     if (Map.CheckPassable(newX + 1, newY) || loggedInUser.NoClip)
                     {
                         newX += 1;
@@ -2613,7 +2643,7 @@ namespace HISP.Server
                     newY += 1;
 
 
-                if (loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
+                if (loggedInUser.Facing == (direction + (onHorse * 5)) && loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
                     if (Map.CheckPassable(newX, newY + 1) || loggedInUser.NoClip)
                     {
                         newY += 1;
@@ -2641,7 +2671,6 @@ namespace HISP.Server
                 byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
                 sender.SendPacket(moveResponse);
             }
-
 
             Update(sender);
         }
@@ -4189,7 +4218,7 @@ namespace HISP.Server
                     if(!nearbyUser.MetaPriority)
                         UpdateArea(nearbyUser.LoggedinClient);
 
-
+            UpdateWeather(client);
             UpdateUserInfo(client.LoggedinUser);
         }
 

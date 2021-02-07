@@ -244,6 +244,7 @@ namespace HISP.Game
         public static string HorseEntryFormat;
         public static string ViewBaiscStats;
         public static string ViewAdvancedStats;
+        public static string HorseBuckedYou;
 
         public static string HorseRidingMessageFormat;
         public static string HorseNameFormat;
@@ -469,6 +470,7 @@ namespace HISP.Game
         public static string YouLostAnItemFormat;
         public static string YouEarnedMoneyFormat;
         public static string BeatHighscoreFormat;
+        public static string BeatBestHighscore;
         public static string BeatBestTimeFormat;
 
         // Abuse Report
@@ -574,6 +576,9 @@ namespace HISP.Game
         public static string KickReasonIdleFormat;
         public static string KickReasonNoTime;
 
+        // Password
+        public static string IncorrectPasswordMessage;
+        
         // Swf
         public static string BoatCutscene;
         public static string WagonCutscene;
