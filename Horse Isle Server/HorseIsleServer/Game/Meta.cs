@@ -1088,7 +1088,7 @@ namespace HISP.Game
             string npc = buildNpc(user, specialTile.X, specialTile.Y);
             message += npc;
 
-            if (specialTile.Code == null)
+            if (specialTile.Code == null || specialTile.Code == "")
                 message += buildCommonInfo(specialTile.X, specialTile.Y);
             else
             {

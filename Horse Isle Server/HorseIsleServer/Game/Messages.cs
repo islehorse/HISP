@@ -289,7 +289,8 @@ namespace HISP.Game
         public static string HorseStopRidingMessage;
 
         public static string HorsePetMessageFormat;
-        public static string HorsePetTooHappyFormat;
+        public static string HorsePetTooHappy;
+        public static string HorsePetTooTired;
         public static string HorseSetNewCategoryMessageFormat;
 
         public static string HorseAutoSellMenuFormat;
@@ -815,15 +816,10 @@ namespace HISP.Game
         {
             return HorseDescriptionEditFormat.Replace("%HORSENAME%", username).Replace("%DESCRIPTION%", description);
         }
-        public static string FormatHorsePetMessage(int mood, int tiredness)
+        public static string FormatHorsePetMessage(string messages, int mood, int tiredness)
         {
-            return HorsePetMessageFormat.Replace("%MOOD%", mood.ToString()).Replace("%TIREDNESS%", tiredness.ToString());
+            return HorsePetMessageFormat.Replace("%MESSAGES%", messages).Replace("%MOOD%", mood.ToString()).Replace("%TIREDNESS%", tiredness.ToString());
         }
-        public static string FormatHorsePetTooHappyMessage(int mood, int tiredness)
-        {
-            return HorsePetTooHappyFormat.Replace("%MOOD%", mood.ToString()).Replace("%TIREDNESS%", tiredness.ToString());
-        }
-
         public static string FormatHorseCurrentStatus(string name)
         {
             return HorseCurrentStatusFormat.Replace("%HORSENAME%", name);

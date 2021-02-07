@@ -201,6 +201,8 @@ namespace HISP.Game
             {
                 ServerTime.Days += 1;
                 ServerTime.Minutes = 0;
+
+                Database.DoIntrestPayments(ConfigReader.IntrestRate);
             }
 
             if (ServerTime.Days == 366)  // 1 year!
