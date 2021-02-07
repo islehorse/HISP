@@ -84,8 +84,7 @@ namespace HISP.Server
                 }
             }
 
-
-
+            Treasure.AddValue();
             Database.IncPlayerTirednessForOfflineUsers();
             DroppedItems.Update();
             WildHorse.Update();
@@ -951,6 +950,12 @@ namespace HISP.Server
                         }
 
                         sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count++;
+
+                        if(sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count >= 100)
+                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(24)); // Wrangler
+                        if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count >= 1000)
+                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(25)); // Pro Wrangler
+
                         Logger.InfoPrint(sender.LoggedinUser.Username + " Captured a: " + capturing.Instance.Breed.Name + " new location: " + capturing.X + ", " + capturing.Y);
 
                         sender.LoggedinUser.MetaPriority = true;
@@ -2819,6 +2824,12 @@ namespace HISP.Server
                     sender.LoggedinUser.Teleport(transportLocation.GotoX, transportLocation.GotoY);
                     sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Transport).Count++;
 
+
+                    if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Transport).Count >= 500)
+                        sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(27)); // Traveller
+                    if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Transport).Count >= 5000)
+                        sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(28)); // Globetrotter
+
                     byte[] welcomeToIslePacket = PacketBuilder.CreateChat(Messages.FormatWelcomeToAreaMessage(transportLocation.LocationTitle), PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(welcomeToIslePacket);
 
@@ -3468,6 +3479,11 @@ namespace HISP.Server
                                     sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(reqItem.RequiredItemId).ItemInstances[0]);
 
                             sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count++;
+
+                            if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count >= 100)
+                                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(22)); // Craftiness
+                            if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count >= 1000)
+                                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(23)); // Workmanship
 
                             byte[] itemCraftSuccess = PacketBuilder.CreateChat(Messages.WorkshopCraftingSuccess, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(itemCraftSuccess);

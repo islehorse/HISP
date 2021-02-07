@@ -412,6 +412,62 @@ namespace HISP.Server
 
         }
 
+        public static void SetTreasureValue(int randomId, int value)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Treasure SET value=@value";
+                sqlCommand.Parameters.AddWithValue("@value", value);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void AddTreasure(int randomId, int x, int y, int value, string type)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO Treasure VALUES(@randomId, @x, @y, @value, @type)";
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
+                sqlCommand.Parameters.AddWithValue("@x", x);
+                sqlCommand.Parameters.AddWithValue("@y", y);
+                sqlCommand.Parameters.AddWithValue("@value", value);
+                sqlCommand.Parameters.AddWithValue("@type", type);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+        public static Treasure[] GetTreasures()
+        {
+            List<Treasure> treasures = new List<Treasure>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM Treasure";
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while(reader.Read())
+                {
+                    int randomId = reader.GetInt32(0);
+                    int x = reader.GetInt32(1);
+                    int y = reader.GetInt32(2);
+                    int value = reader.GetInt32(3);
+                    string type = reader.GetString(4);
+                    Treasure treasure = new Treasure(x, y, type, randomId, value);
+                    treasures.Add(treasure);
+                }
+                sqlCommand.Dispose();
+                return treasures.ToArray();
+            }
+        }
 
         public static void AddTrackedItem(int playerId, Tracking.TrackableItem what, int count)
         {

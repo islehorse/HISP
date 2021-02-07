@@ -330,6 +330,15 @@ namespace HISP.Game
                     return true;
                 }
             }
+
+            if(tool == Quest.Shovel)
+            {
+                // Also check Treasures
+                if (Treasure.IsTileTreasure(x, y))
+                    Treasure.GetTreasureAt(x, y).CollectTreasure(user);
+                    
+            }
+
             return false;
         }
     }

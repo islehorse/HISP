@@ -32,6 +32,11 @@ namespace HISP.Game
 
             int pos = ((x * Height) + y);
 
+            if (overlay && Treasure.IsTileBuiredTreasure(x, y))
+                return 193; // Burried Treasure tile.
+            else if (overlay && Treasure.IsTilePotOfGold(x, y))
+                return 186; // Pot of Gold tile.
+
             if (overlay)
                 return oMapData[pos];
             else

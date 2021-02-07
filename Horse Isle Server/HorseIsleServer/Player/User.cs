@@ -242,6 +242,9 @@ namespace HISP.Player
             }
             set
             {
+                if (value > Map.Width)
+                    value = Map.Width;
+
                 Database.SetPlayerX(value, Id);
                 x = value;
             }
@@ -255,6 +258,8 @@ namespace HISP.Player
             }
             set
             {
+                if (value > Map.Height)
+                    value = Map.Height;
                 Database.SetPlayerY(value, Id);
                 y = value;
             }

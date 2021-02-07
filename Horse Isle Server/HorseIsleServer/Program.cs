@@ -17,8 +17,11 @@ namespace HISP
             CrossDomainPolicy.GetPolicy();
             Database.OpenDatabase();
             GameDataJson.ReadGamedata();
+
             Map.OpenMap();
             World.ReadWorldData();
+            Treasure.Init();
+
             DroppedItems.Init();
             WildHorse.Init();
             Brickpoet.LoadPoetryRooms();
