@@ -575,6 +575,7 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Workshop at X: " + wkShop.X + " Y: " + wkShop.Y);
 
             }
+            // Register Ranches
             int totalRanchLocations = gameData.ranch.ranch_locations.Count;
             for (int i = 0; i < totalRanchLocations; i++)
             {
@@ -587,21 +588,18 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Ranch at X: " + ranch.X + " Y: " + ranch.Y);
 
             }
-            int totalRanchBuildings = gameData.ranch.ranch_buildings.Count;
+            // Register Ranch Buildings
+            int totalRanchBuildings = gameData.ranch.ranch_buildings.buildings.Count;
             for (int i = 0; i < totalRanchBuildings; i++)
             {
-                int id = gameData.ranch.ranch_buildings[i].id;
-                string type = gameData.ranch.ranch_buildings[i].type;
-                int cost = gameData.ranch.ranch_buildings[i].cost;
-                string title = gameData.ranch.ranch_buildings[i].title;
-                string description = gameData.ranch.ranch_buildings[i].description;
+                int id = gameData.ranch.ranch_buildings.buildings[i].id;
+                int cost = gameData.ranch.ranch_buildings.buildings[i].cost;
+                string title = gameData.ranch.ranch_buildings.buildings[i].title;
+                string description = gameData.ranch.ranch_buildings.buildings[i].description;
 
                 Ranch.RanchBuilding building = new Ranch.RanchBuilding();
 
-                if (gameData.ranch.ranch_buildings[i].limit != null)
-                    building.Limit = gameData.ranch.ranch_buildings[i].limit;
                 building.Id = id;
-                building.Type = type;
                 building.Cost = cost;
                 building.Title = title;
                 building.Description = description;
@@ -610,6 +608,29 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Ranch Building: "+building.Title);
 
             }
+            // Register Ranch Upgrades
+            int totalRanchUpgrades = gameData.ranch.ranch_buildings.upgrades.Count;
+            for (int i = 0; i < totalRanchUpgrades; i++)
+            {
+                int id = gameData.ranch.ranch_buildings.upgrades[i].id;
+                int cost = gameData.ranch.ranch_buildings.upgrades[i].cost;
+                string title = gameData.ranch.ranch_buildings.upgrades[i].title;
+                string description = gameData.ranch.ranch_buildings.upgrades[i].description;
+
+                Ranch.RanchUpgrade upgrade = new Ranch.RanchUpgrade();
+
+                if (gameData.ranch.ranch_buildings.upgrades[i].limit != null)
+                    upgrade.Limit = gameData.ranch.ranch_buildings.upgrades[i].limit;
+                upgrade.Id = id;
+                upgrade.Cost = cost;
+                upgrade.Title = title;
+                upgrade.Description = description;
+
+                Ranch.RanchUpgrade.RanchUpgrades.Add(upgrade);
+                Logger.DebugPrint("Registered Ranch Upgrade: " + upgrade.Title);
+
+            }
+            // Register Riddles
             int totalRiddles = gameData.riddle_room.Count;
             for (int i = 0; i < totalRiddles; i++)
             {

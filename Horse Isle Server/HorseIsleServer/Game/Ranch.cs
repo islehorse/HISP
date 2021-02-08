@@ -5,15 +5,41 @@ namespace HISP.Game
 {
     public class Ranch
     {
-        public class RanchBuilding
+        public class RanchUpgrade
         {
-            public static List<RanchBuilding> RanchBuildings = new List<RanchBuilding>();
+            public static List<RanchUpgrade> RanchUpgrades = new List<RanchUpgrade>();
             public int Id;
-            public string Type;
             public int Cost;
             public string Title;
             public string Description;
             public int Limit;
+
+            public static bool RanchUpgradeExists(int id)
+            {
+                foreach (RanchUpgrade rachUpgrade in RanchUpgrades)
+                {
+                    if (rachUpgrade.Id == id)
+                        return true;
+                }
+                return false;
+            }
+            public static RanchUpgrade GetRanchUpgradeById(int id)
+            {
+                foreach (RanchUpgrade rachUpgrade in RanchUpgrades)
+                {
+                    if (rachUpgrade.Id == id)
+                        return rachUpgrade;
+                }
+                throw new KeyNotFoundException("No ranch found.");
+            }
+        }
+        public class RanchBuilding
+        {
+            public static List<RanchBuilding> RanchBuildings = new List<RanchBuilding>();
+            public int Id;
+            public int Cost;
+            public string Title;
+            public string Description;
 
             public static bool RanchBuildingExists(int id)
             {
