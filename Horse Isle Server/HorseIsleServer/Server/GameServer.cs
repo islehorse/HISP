@@ -1067,6 +1067,23 @@ namespace HISP.Server
                                 Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
                                 break;
                             }
+                        case 6: // Riddle Room
+                            if (dynamicInput.Length >= 2)
+                            {
+                                if (sender.LoggedinUser.LastRiddle != null)
+                                {
+                                    string answer = dynamicInput[1];
+                                    if(sender.LoggedinUser.LastRiddle.CheckAnswer(sender.LoggedinUser, answer))
+                                        sender.LoggedinUser.LastRiddle = null;
+                                    UpdateArea(sender);
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (LastRiddle, wrong size)");
+                                break;
+                            }
                         case 5: // Horse Description
                             if (dynamicInput.Length >= 3)
                             {
@@ -2498,7 +2515,7 @@ namespace HISP.Server
             {
                 if(loggedInUser.CurrentlyRidingHorse.BasicStats.Experience < 25)
                 {
-                    if(GameServer.RandomNumberGenerator.Next(0,10) == 7 || sender.LoggedinUser.Username.ToLower() == "dream")
+                    if(GameServer.RandomNumberGenerator.Next(0,50) == 25 || sender.LoggedinUser.Username.ToLower() == "dream")
                     {
                         loggedInUser.CurrentlyRidingHorse.BasicStats.Experience++;
                         sender.LoggedinUser.CurrentlyRidingHorse = null;
