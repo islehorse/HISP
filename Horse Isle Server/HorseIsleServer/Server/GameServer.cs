@@ -2515,7 +2515,7 @@ namespace HISP.Server
             {
                 if(loggedInUser.CurrentlyRidingHorse.BasicStats.Experience < 25)
                 {
-                    if(GameServer.RandomNumberGenerator.Next(0,50) == 25 || sender.LoggedinUser.Username.ToLower() == "dream")
+                    if(GameServer.RandomNumberGenerator.Next(0,20) == 14 || sender.LoggedinUser.Username.ToLower() == "dream")
                     {
                         loggedInUser.CurrentlyRidingHorse.BasicStats.Experience++;
                         sender.LoggedinUser.CurrentlyRidingHorse = null;
