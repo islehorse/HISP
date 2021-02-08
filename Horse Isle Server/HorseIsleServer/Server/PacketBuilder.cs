@@ -366,8 +366,6 @@ namespace HISP.Server
             {
                 direction -= 20;
                 moveTwo = true;
-                
-                
             }
             
             int ystart = y - 4;

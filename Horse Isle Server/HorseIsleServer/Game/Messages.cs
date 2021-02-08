@@ -605,7 +605,6 @@ namespace HISP.Game
         {
             return RiddlerCorrectAnswerFormat.Replace("%REASON%", reason);
         }
-
         public static string FormatPirateTreasure(int prize)
         {
             return PirateTreasureFormat.Replace("%PRIZE%", prize.ToString("N0"));
