@@ -610,6 +610,17 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Ranch Building: "+building.Title);
 
             }
+            int totalRiddles = gameData.riddle_room.Count;
+            for (int i = 0; i < totalRiddles; i++)
+            {
+                int id = gameData.riddle_room[i].id;
+                string riddle = gameData.riddle_room[i].riddle;
+                string[] answers = gameData.riddle_room[i].answers.ToObject<string[]>();
+                string reason = gameData.riddle_room[i].reason;
+                Riddler riddlerRiddle = new Riddler(id, riddle, answers, reason);
+                Logger.DebugPrint("Registered Riddler Riddle: " + riddlerRiddle.Riddle);
+
+            }
 
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
@@ -800,6 +811,12 @@ namespace HISP.Server
 
             Messages.BankDepositedMoneyFormat = gameData.messages.bank.deposit_format;
             Messages.BankWithdrewMoneyFormat = gameData.messages.bank.withdraw_format;
+
+            // Riddler
+            Messages.RiddlerAnsweredAll = gameData.messages.meta.riddler.riddle_all_complete;
+            Messages.RiddlerIncorrectAnswer = gameData.messages.meta.riddler.riddle_incorrect;
+            Messages.RiddlerCorrectAnswerFormat = gameData.messages.meta.riddler.riddle_correct;
+            Messages.RiddlerEnterAnswerFormat = gameData.messages.meta.riddler.riddle_format;
 
             // Workshop
             Messages.WorkshopCraftEntryFormat = gameData.messages.meta.workshop.craft_entry;

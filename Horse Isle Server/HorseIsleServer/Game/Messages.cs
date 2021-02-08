@@ -580,6 +580,12 @@ namespace HISP.Game
         public static string KickReasonIdleFormat;
         public static string KickReasonNoTime;
 
+        // Riddler
+        public static string RiddlerEnterAnswerFormat;
+        public static string RiddlerCorrectAnswerFormat;
+        public static string RiddlerIncorrectAnswer;
+        public static string RiddlerAnsweredAll;
+
         // Password
         public static string IncorrectPasswordMessage;
         
@@ -590,6 +596,15 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatRiddlerRiddle(string riddle)
+        {
+            return RiddlerEnterAnswerFormat.Replace("%RIDDLE%", riddle);
+        }
+        public static string FormatRiddlerAnswerCorrect(string reason)
+        {
+            return RiddlerCorrectAnswerFormat.Replace("%REASON%", reason);
+        }
 
         public static string FormatPirateTreasure(int prize)
         {

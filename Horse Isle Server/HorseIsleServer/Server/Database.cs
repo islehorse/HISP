@@ -46,8 +46,22 @@ namespace HISP.Server
                 string Treasure = "CREATE TABLE Treasure(randomId INT, x INT, y INT, value INT, type TEXT(128))";
                 string Ranches = "CREATE TABLE Ranches(ranchId INT, playerId INT, title TEXT(1028), description TEXT(1028), upgradeLevel INT, building1 INT, building2 INT, building3 INT, building4 INT, building5 INT, building6 INT, building7 INT, building8 INT, building9 INT, building10 INT, building11 INT, building12 INT, building13 INT, building14 INT, building15 INT, building16 INT, investedMoney INT)";
                 string BannedPlayers = "CREATE TABLE BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))";
+                string RiddlesComplete = "CREATE TABLE RiddlesComplete(playerId INT, riddleId INT, solved TEXT(1028))";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
-                
+
+                try
+                {
+
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = RiddlesComplete;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
                 try
                 {
 
@@ -424,6 +438,667 @@ namespace HISP.Server
                 };
             }
 
+        }
+
+        public static void DeleteRanchOwner(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static bool IsRanchOwned(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return count >= 1;
+            }
+        }
+        public static int GetRanchInvestment(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT investedMoney FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int invested = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return invested;
+            }
+        }
+        public static void SetRanchUpgradeLevel(int ranchId, int upgradeLevel)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET upgradeLevel=@upgradeLevel";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@upgradeLevel", upgradeLevel);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchInvestment(int ranchId, int investedMoney)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET investedMoney=@investedMoney";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@investedMoney", investedMoney);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchOwner(int ranchId, int ownerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET playerId=@ownerId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@ownerId", ownerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchDescription(int ranchId, string description)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET description=@description";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@description", description);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchTitle(int ranchId, string title)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET title=@title";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@title", title);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding16(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building16=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding15(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building15=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding14(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building14=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding13(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building13=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding12(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building12=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding11(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building11=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding10(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building10=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding9(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building9=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding8(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building8=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding7(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building7=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding6(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building6=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding5(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building5=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding4(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building4=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding3(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building3=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding2(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building2=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetRanchBuilding1(int ranchId, int buildingId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Ranches SET building1=@buildingId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static int GetRanchBuilding16(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building16 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding15(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building15 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding14(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building14 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding13(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building13 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding12(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building12 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding11(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building11 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding10(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building10 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding9(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building9 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding8(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building8 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding7(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building7 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding6(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building6 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding5(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building5 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding4(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building4 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding3(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building3 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding2(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building2 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchBuilding1(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT building1 FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return building;
+            }
+        }
+        public static int GetRanchUpgradeLevel(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT upgradeLevel FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int upgradeLevel = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return upgradeLevel;
+            }
+        }
+
+        public static string GetRanchDescription(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT description FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                string description = sqlCommand.ExecuteScalar().ToString();
+                sqlCommand.Dispose();
+                return description;
+            }
+        }
+        public static string GetRanchTitle(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT title FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                string title = sqlCommand.ExecuteScalar().ToString();
+                sqlCommand.Dispose();
+                return title;
+            }
+        }
+        public static int GetRanchOwner(int ranchId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT playerId FROM Ranches WHERE ranchId=@ranchId";
+                sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
+                sqlCommand.Prepare();
+                int playerId = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return playerId;
+            }
+        }
+
+        public static int TotalRiddlesCompletedByPlayer(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(*) FROM RiddlesComplete WHERE playerId=@playerId AND solved=\"YES\"";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return count;
+            }
+        }
+        public static bool HasPlayerCompletedRiddle(int riddleId, int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(*) FROM RiddlesComplete WHERE riddleId=@riddleId AND playerId=@playerId AND solved=\"YES\"";
+                sqlCommand.Parameters.AddWithValue("@riddleId", riddleId);
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return count >= 1;
+            }
+        }
+        public static void CompleteRiddle(int riddleId, int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO RiddlesComplete VALUES(@riddleId, @playerId, \"YES\")";
+                sqlCommand.Parameters.AddWithValue("@riddleId", riddleId);
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
         }
 
         public static void AddRanch(int ranchId, int playerId, string title, string description, int upgradeLevel, int building1, int building2, int building3, int building4, int building5, int building6, int building7, int building8, int building9, int building10, int building11, int building12, int building13, int building14, int building15, int building16, int investedMoney)

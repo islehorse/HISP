@@ -31,18 +31,14 @@ namespace HISP.Game
 
             if (pos >= oMapData.Length && overlay)
                 return 1;
-            else if (pos >= MapData.Length && !overlay)
-                return 1;
-            else if (overlay && oMapData[pos] != 1)
-                return oMapData[pos];
             else if (overlay && Treasure.IsTileBuiredTreasure(x, y))
                 return 193; // Burried Treasure tile.
             else if (overlay && Treasure.IsTilePotOfGold(x, y))
                 return 186; // Pot of Gold tile.
             else if (overlay && Ranch.IsRanchHere(x, y))
-                return 170 + Ranch.GetRanchAt(x, y).Upgraded; // Ranch Tile + Upgraded amount
+                return 170 + Ranch.GetRanchAt(x, y).UpgradedLevel; // Ranch Tile + Upgraded amount
             else if (overlay)
-                return 1;
+                return oMapData[pos];
             else if (!overlay)
                 return MapData[pos];
             else // Not sure how you could even get here.

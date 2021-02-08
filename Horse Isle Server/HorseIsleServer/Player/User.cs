@@ -48,8 +48,10 @@ namespace HISP.Player
         public HorseInstance LastViewedHorse;
         public HorseInstance CurrentlyRidingHorse;
         public Tracking TrackedItems;
+        public Ranch OwnedRanch = null;
         public PlayerQuests Quests;
         public Highscore Highscores;
+        public Riddler LastRiddle;
         public Award Awards;
         public int CapturingHorseId;
         public DateTime LoginTime;
@@ -442,6 +444,19 @@ namespace HISP.Player
             hunger = Database.GetPlayerHunger(UserId);
             thirst = Database.GetPlayerThirst(UserId);
             tired = Database.GetPlayerTiredness(UserId);
+
+            if(Ranch.IsRanchOwned(this.Id))
+            {
+                if (this.Subscribed)
+                {
+                    OwnedRanch = Ranch.GetRanchOwnedBy(this.Id);
+                }
+                else // idk what it does here ...
+                {
+                    OwnedRanch = null;
+                    Ranch.GetRanchOwnedBy(this.Id).OwnerId = -1;
+                }
+            }    
 
             Gender = Database.GetGender(UserId);
             MailBox = new Mailbox(this);
