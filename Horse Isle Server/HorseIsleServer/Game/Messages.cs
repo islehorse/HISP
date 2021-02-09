@@ -30,7 +30,7 @@ namespace HISP.Game
 
         public static string RanchEditDescriptionMetaFormat;
         public static string RanchYourRanchMetaFormat;
-        public static string RanchDescription;
+        public static string RanchDescriptionFormat;
 
         // Ranch: Build.
         public static string RanchCanBuildOneOfTheFollowingInThisSpot;
@@ -586,7 +586,7 @@ namespace HISP.Game
         public static string East;
         public static string South;
         public static string West;
-        
+
         public static string TileFormat;
         public static string Seperator;
         public static string VenusFlyTrapFormat;
@@ -646,7 +646,7 @@ namespace HISP.Game
 
         // Password
         public static string IncorrectPasswordMessage;
-        
+
         // Swf
         public static string BoatCutscene;
         public static string WagonCutscene;
@@ -655,6 +655,86 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatUnownedRanchMeta(int price)
+        {
+            return RanchUnownedRanchFormat.Replace("%PRICE%", price.ToString("N0"));
+        }
+        public static string FormatRanchClickMessage(string owner, string title)
+        {
+            return RanchClickMessageFormat.Replace("%USERNAME%", owner).Replace("%TITLE%", title);
+        }
+        public static string FormatRanchBroughtMessage(int price)
+        {
+            return RanchRanchBroughtMessageFormat.Replace("%PRICE%", price.ToString("N0"));
+        }
+        public static string FormatRanchEditDescriptonMeta(string curTitle, string curDesc)
+        {
+            return RanchEditDescriptionMetaFormat.Replace("%RANCHTITLE%", curTitle).Replace("%RANCHDESC%", curDesc);
+        }
+        public static string FormatRanchTitle(string username, string title)
+        {
+            return RanchYourRanchMetaFormat.Replace("%USERNAME%", username).Replace("%TITLE%", title);
+        }
+        public static string FormatRanchDescription(string description)
+        {
+            return RanchDescriptionFormat.Replace("%DESCRIPTION%", description);
+        }
+        public static string FormatBuildingEntry(string name, int price, int buildingId)
+        {
+            return RanchBuildingEntryFormat.Replace("%BUILDINGNAME%", name).Replace("%PRICE%", price.ToString("N0")).Replace("%BUILDINGID%", buildingId.ToString());
+        }
+        public static string FormatBuildingInformaton(string name, string description)
+        {
+            return RanchBuildingInformationFormat.Replace("%BUILDINGNAME%", name).Replace("%BUILINGDESCRIPTION%", description);
+        }
+        public static string FormatBuildingPlaced(string name, int buildingId, int price)
+        {
+            return RanchBuildingAlreadyHere.Replace("%BUILDINGNAME%", name).Replace("%BUILDINGID%", buildingId.ToString()).Replace("%PRICE%", price.ToString());
+        }
+        public static string FormatBuildingTornDown(int price)
+        {
+            return RanchTornDownRanchBuildingFormat.Replace("%PRICE%", price.ToString("N0"));
+        }
+        public static string FormatViewBuilding(string name, string description)
+        {
+            return RanchViewBuildingFormat.Replace("%BUILDINGNAME%", name).Replace("%BUILDINGDESC%", description);
+        }
+        public static string FormatBarn(string horseList)
+        {
+            return RanchBarnHorsesFormat.Replace("%HORSELIST%", horseList);
+        }
+        public static string FormatCurrentUpgrade(string curUpgradeName, string curUpgradeDesc, string YouCouldUpgrade, int ranchSellPrice)
+        {
+            return UpgradeCurrentUpgradeFormat.Replace("%UPGRADENAME%", curUpgradeName).Replace("%UPGRADEDESC%", curUpgradeDesc).Replace("%YOUCOULDUPGRADE%", YouCouldUpgrade).Replace("%SELLPRICE%", ranchSellPrice.ToString("N0"));
+        }
+        public static string FormatNextUpgrade(string nextUpgrade, int cost)
+        {
+            return UpgradeNextUpgradeFormat.Replace("%NEXTUPGRADE%", nextUpgrade).Replace("%COST%", cost.ToString("N0"));
+        }
+        public static string FormatBuildingBarn(int numbBarns, int numbHorses)
+        {
+            return BuildingBarnFormat.Replace("%COUNT%", numbBarns.ToString("N0")).Replace("%AMOUNT%", numbHorses.ToString("N0"));
+        }
+        public static string FormatBuildingBigBarn(int numbBarns, int numbHorses)
+        {
+            return BuildingBigBarnFormat.Replace("%COUNT%", numbBarns.ToString("N0")).Replace("%AMOUNT%", numbHorses.ToString("N0"));
+        }
+        public static string FormatBuildingGoldBarn(int numbBarns, int numbHorses)
+        {
+            return BuildingGoldBarnFormat.Replace("%COUNT%", numbBarns.ToString("N0")).Replace("%AMOUNT%", numbHorses.ToString("N0"));
+        }
+        public static string FormatBuildingWindmill(int numbWindmills, int moneyEarns)
+        {
+            return BuildingWindmillFormat.Replace("%COUNT%", numbWindmills.ToString("N0")).Replace("%AMOUNT%", moneyEarns.ToString("N0"));
+        }
+        public static string FormatTrainSuccess(string horseName)
+        {
+            return RanchTrainSuccess.Replace("%HORSENAME%", horseName);
+        }
+        public static string FormatCantTrain(string horseName)
+        {
+            return RanchTrainCantTrain.Replace("%HORSENAME%", horseName);
+        }
         public static string FormatRiddlerRiddle(string riddle)
         {
             return RiddlerEnterAnswerFormat.Replace("%RIDDLE%", riddle);

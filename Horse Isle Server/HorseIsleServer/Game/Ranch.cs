@@ -239,7 +239,7 @@ namespace HISP.Game
 
         public string GetSwf(bool mine)
         {
-            string swf  = "ranchviewer.swf?H=" + upgradedLevel.ToString();
+            string swf  = "ranchviewer.swf?H=" + upgradedLevel+1.ToString();
             for(int i = 0; i < buildings.Length; i++)
             {
                 swf += "&B" + i.ToString() + "=";
