@@ -236,6 +236,22 @@ namespace HISP.Game
                     Database.SetRanchBuilding16(this.Id, 0);
             }
         }
+
+        public string GetSwf(bool mine)
+        {
+            string swf  = "ranchviewer.swf?H=" + upgradedLevel.ToString();
+            for(int i = 0; i < buildings.Length; i++)
+            {
+                swf += "&B" + i.ToString() + "=";
+                if (buildings[i] != null)
+                {
+                    swf += buildings[i].Id.ToString();
+                }
+            }
+            if (mine)
+                swf += "&MINE=1";
+            return swf;
+        }
         
 
         public Ranch(int x, int y, int id, int value)
@@ -321,6 +337,15 @@ namespace HISP.Game
                     return true;
             }
             return false;
+        }
+        public static Ranch GetRanchById(int ranchId)
+        {
+            foreach (Ranch ranch in Ranches)
+            {
+                if (ranch.Id == ranchId)
+                    return ranch;
+            }
+            throw new KeyNotFoundException("No Ranch with id " + ranchId);
         }
         public static Ranch GetRanchAt(int x, int y)
         {

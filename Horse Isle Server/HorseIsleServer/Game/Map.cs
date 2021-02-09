@@ -25,6 +25,9 @@ namespace HISP.Game
 
         public static int NewUserStartX;
         public static int NewUserStartY;
+
+        public static int ModIsleX;
+        public static int ModIsleY;
         public static int GetTileId(int x, int y, bool overlay)
         {
             int pos = ((x * Height) + y);

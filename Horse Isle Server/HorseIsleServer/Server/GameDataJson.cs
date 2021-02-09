@@ -660,6 +660,67 @@ namespace HISP.Server
             Map.NewUserStartX = gameData.messages.new_user.starting_x;
             Map.NewUserStartY = gameData.messages.new_user.starting_y;
 
+            // Mod Isle
+            Messages.ModIsleMessage = gameData.messages.commands.mod_isle.message;
+            Map.ModIsleX = gameData.messages.commands.mod_isle.x;
+            Map.ModIsleY = gameData.messages.commands.mod_isle.y;
+
+            // Ranch
+            Messages.RanchUnownedRanchFormat = gameData.messages.meta.ranch.unowned_ranch;
+            Messages.RanchYouCouldPurchaseThisRanch = gameData.messages.meta.ranch.you_could_purchase_this;
+            Messages.RanchYouAllreadyOwnARanch = gameData.messages.meta.ranch.ranch_already_owned;
+
+            Messages.RanchUnownedRanchClicked = gameData.messages.meta.ranch.unowned_ranch_click;
+            Messages.RanchClickMessageFormat = gameData.messages.meta.ranch.click_message;
+
+            Messages.RanchDorothyShoesMessage = gameData.messages.meta.ranch.dorothy_message;
+            Messages.RanchDorothyShoesPrisonIsleMessage = gameData.messages.meta.ranch.dorothy_prison_isle;
+
+            Messages.RanchCantAffordRanch = gameData.messages.meta.ranch.ranch_buy_cannot_afford;
+            Messages.RanchRanchBroughtMessageFormat = gameData.messages.meta.ranch.ranch_brought;
+            Messages.RanchSavedRanchDescripton = gameData.messages.meta.ranch.saved_ranch;
+            Messages.RanchDefaultRanchTitle = gameData.messages.meta.ranch.default_title;
+            Messages.RanchEditDescriptionMetaFormat = gameData.messages.meta.ranch.edit_description;
+            Messages.RanchYourRanchMetaFormat = gameData.messages.meta.ranch.your_ranch_meta;
+            Messages.RanchDescription = gameData.messages.meta.ranch.view_desc;
+
+            // Ranch : Breed
+
+            Messages.RanchCanBuildOneOfTheFollowingInThisSpot = gameData.messages.meta.ranch.build.build_on_this_spot;
+            Messages.RanchBuildingEntryFormat = gameData.messages.meta.ranch.build.build_format;
+            Messages.RanchCantAffordThisBuilding = gameData.messages.meta.ranch.build.cannot_afford;
+            Messages.RanchBuildingInformationFormat = gameData.messages.meta.ranch.build.information;
+            Messages.RanchBuildingComplete = gameData.messages.meta.ranch.build.build_complete;
+            Messages.RanchBuildingAlreadyHere = gameData.messages.meta.ranch.build.building_allready_placed;
+            Messages.RanchTornDownRanchBuildingFormat = gameData.messages.meta.ranch.build.torn_down;
+            Messages.RanchViewBuildingFormat = gameData.messages.meta.ranch.build.view_building;
+            Messages.RanchBarnHorsesFormat = gameData.messages.meta.ranch.build.barn;
+
+            // Ranch : Upgrades
+
+            Messages.UpgradedMessage = gameData.messages.meta.ranch.upgrade.upgrade_message;
+            Messages.UpgradeCannotAfford = gameData.messages.meta.ranch.upgrade.cannot_afford;
+            Messages.UpgradeCurrentUpgradeFormat = gameData.messages.meta.ranch.upgrade.upgrade_meta;
+            Messages.UpgradeNextUpgradeFormat = gameData.messages.meta.ranch.upgrade.you_could_upgrade;
+
+            // Ranch : Special
+
+            Messages.BuildingRestHere = gameData.messages.meta.ranch.special.rest_here;
+            Messages.BuildingGrainSilo = gameData.messages.meta.ranch.special.grain_silo;
+            Messages.BuildingBarnFormat = gameData.messages.meta.ranch.special.barn;
+            Messages.BuildingBigBarnFormat = gameData.messages.meta.ranch.special.big_barn;
+            Messages.BuildingGoldBarnFormat = gameData.messages.meta.ranch.special.gold_barn;
+            Messages.BuildingWaterWell = gameData.messages.meta.ranch.special.water_well;
+            Messages.BuildingWindmillFormat = gameData.messages.meta.ranch.special.windmills;
+            Messages.BuildingWagon = gameData.messages.meta.ranch.special.wagon;
+            Messages.BuildingTrainingPen = gameData.messages.meta.ranch.special.training_pen;
+            Messages.BuildingVegatableGarden = gameData.messages.meta.ranch.special.vegatable_garden;
+            Messages.RanchTrainAllAttempt = gameData.messages.meta.ranch.special.train_all;
+            Messages.RanchTrainSuccess = gameData.messages.meta.ranch.special.train_success;
+            Messages.RanchTrainCantTrain = gameData.messages.meta.ranch.special.train_cant_train;
+            Messages.RanchHorsesFullyRested = gameData.messages.meta.ranch.special.fully_rested;
+            Messages.RanchWagonDroppedYouOff = gameData.messages.meta.ranch.special.wagon_used;
+
             // Treasure
             Messages.PirateTreasureFormat = gameData.messages.treasure.pirate_treasure;
 
@@ -1218,6 +1279,7 @@ namespace HISP.Server
             // Npc
 
             Messages.NpcStartChatFormat = gameData.messages.meta.npc.start_chat_format;
+            Messages.NpcNoChatpoints = gameData.messages.meta.npc.no_chatpoints;
             Messages.NpcChatpointFormat = gameData.messages.meta.npc.chatpoint_format;
             Messages.NpcReplyFormat = gameData.messages.meta.npc.reply_format;
             Messages.NpcTalkButton = gameData.messages.meta.npc.npc_talk_button;
