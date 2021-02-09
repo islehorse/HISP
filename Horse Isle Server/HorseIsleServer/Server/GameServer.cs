@@ -2749,6 +2749,7 @@ namespace HISP.Server
                 Npc.NpcEntry entry = Npc.GetNpcById(chatId);
                 
                 int defaultChatpointId = Npc.GetDefaultChatpoint(sender.LoggedinUser, entry);
+
                 Npc.NpcChat startingChatpoint = Npc.GetNpcChatpoint(entry, defaultChatpointId);
 
                 string metaInfo = Meta.BuildNpcChatpoint(sender.LoggedinUser, entry, startingChatpoint);
