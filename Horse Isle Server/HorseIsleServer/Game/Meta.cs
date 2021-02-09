@@ -282,9 +282,16 @@ namespace HISP.Game
                         continue;
 
                 message += Messages.FormatNpcStartChatMessage(ent.IconId, ent.Name, ent.ShortDescription, ent.Id);
-                if (ent.LongDescription != "")
-                    message += Messages.FormatNpcInformationButton(ent.Id);
-                message += Messages.FormatNpcTalkButton(ent.Id);
+                if(ent.Chatpoints.Length > 0)
+                {
+                    if (ent.LongDescription != "")
+                        message += Messages.FormatNpcInformationButton(ent.Id);
+                    message += Messages.FormatNpcTalkButton(ent.Id);
+                }
+                else
+                {
+                    message += Messages.NpcNoChatpoints;
+                }
                 message += "^R1";
             }
             return message;
@@ -1017,7 +1024,31 @@ namespace HISP.Game
 
             return message;
         }
+        private static string buildRanch(User user, int ranchId)
+        {
+            string message = "";
+            Ranch ranch = Ranch.GetRanchById(ranchId);
+            bool mine = (ranch.OwnerId == user.Id);
+            string swfModule = ranch.GetSwf(mine);
 
+            byte[] moduleSwf = PacketBuilder.CreateSwfModulePacket(swfModule, PacketBuilder.PACKET_SWF_MODULE_FORCE);
+            user.LoggedinClient.SendPacket(moduleSwf);
+
+            if (mine) // This is My DS.
+            {
+                
+            }
+            else if(ranch.OwnerId == -1) // No mans sky
+            {
+
+            }
+            else
+            {
+
+            }
+
+            return message;
+        }
         private static string buildWorkshop(User user)
         {
             Workshop shop = Workshop.GetWorkshopAt(user.X, user.Y);
@@ -1175,6 +1206,10 @@ namespace HISP.Game
                 if(TileCode == "MUDHOLE")
                 {
                     message += buildMudHole(user);
+                }
+                if(TileCode == "RANCH")
+                {
+                    message += buildRanch(user, int.Parse(TileArg));
                 }
                 if(TileCode == "MULTIROOM")
                 {

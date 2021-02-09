@@ -235,7 +235,7 @@ namespace HISP.Game
             }
 
             // Check if award unlocked
-            int questPointsPercent = Convert.ToInt32(Math.Floor(((decimal)user.QuestPoints / (decimal)GetTotalQuestPoints()) * (decimal)100.0));
+            int questPointsPercent = Convert.ToInt32(Math.Floor(((decimal)user.QuestPoints / (decimal)GetTotalQuestPoints()) * (decimal)100.0)); 
             if (questPointsPercent >= 25)
                 user.Awards.AddAward(Award.GetAwardById(1)); // 25% Quest Completion Award.
             if (questPointsPercent >= 50)

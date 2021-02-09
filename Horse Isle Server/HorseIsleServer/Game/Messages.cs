@@ -10,6 +10,63 @@ namespace HISP.Game
         public static int RequiredChatViolations;
         public static int DefaultInventoryMax;
 
+        // Mod isle
+        public static string ModIsleMessage;
+
+        // Ranch
+        public static string RanchUnownedRanchFormat;
+        public static string RanchYouCouldPurchaseThisRanch;
+        public static string RanchYouAllreadyOwnARanch;
+        public static string RanchUnownedRanchClicked;
+        public static string RanchClickMessageFormat;
+
+        public static string RanchDorothyShoesMessage;
+        public static string RanchDorothyShoesPrisonIsleMessage;
+
+        public static string RanchCantAffordRanch;
+        public static string RanchRanchBroughtMessageFormat;
+        public static string RanchSavedRanchDescripton;
+        public static string RanchDefaultRanchTitle;
+
+        public static string RanchEditDescriptionMetaFormat;
+        public static string RanchYourRanchMetaFormat;
+        public static string RanchDescription;
+
+        // Ranch: Build.
+        public static string RanchCanBuildOneOfTheFollowingInThisSpot;
+        public static string RanchBuildingEntryFormat;
+        public static string RanchCantAffordThisBuilding;
+        public static string RanchBuildingInformationFormat;
+        public static string RanchBuildingComplete;
+        public static string RanchBuildingAlreadyHere;
+        public static string RanchTornDownRanchBuildingFormat;
+        public static string RanchViewBuildingFormat;
+        public static string RanchBarnHorsesFormat;
+
+        // Ranch: Upgrade
+        public static string UpgradedMessage;
+        public static string UpgradeCannotAfford;
+        public static string UpgradeCurrentUpgradeFormat;
+        public static string UpgradeNextUpgradeFormat;
+
+        // Ranch: Special
+        public static string BuildingRestHere;
+        public static string BuildingGrainSilo;
+        public static string BuildingBarnFormat;
+        public static string BuildingBigBarnFormat;
+        public static string BuildingGoldBarnFormat;
+        public static string BuildingWaterWell;
+        public static string BuildingWindmillFormat;
+        public static string BuildingWagon;
+        public static string BuildingTrainingPen;
+        public static string BuildingVegatableGarden;
+
+        public static string RanchTrainAllAttempt;
+        public static string RanchTrainSuccess;
+        public static string RanchTrainCantTrain;
+        public static string RanchHorsesFullyRested;
+        public static string RanchWagonDroppedYouOff;
+
         // Tools
         public static string BinocularsNothing;
         public static string MagnifyNothing;
@@ -461,6 +518,7 @@ namespace HISP.Game
 
         // Npc
         public static string NpcStartChatFormat;
+        public static string NpcNoChatpoints;
         public static string NpcChatpointFormat;
         public static string NpcReplyFormat;
         public static string NpcInformationButton;
