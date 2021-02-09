@@ -81,7 +81,7 @@ namespace HISP.Game
                 }
             }
 
-            throw new KeyNotFoundException("Npc chatpoint id: " + chatpointId + " not found!");
+            return npc.Chatpoints[0];
         }
 
         public static int GetDefaultChatpoint(User user, NpcEntry npc)

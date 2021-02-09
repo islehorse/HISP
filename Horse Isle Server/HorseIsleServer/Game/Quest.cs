@@ -279,7 +279,15 @@ namespace HISP.Game
                 else
                 {
                     if(quest.FailNpcChat != null)
-                        res.NpcChat = quest.FailNpcChat;
+                    {
+                        if(npcActivation)
+                        {
+                            if (quest.FailNpcChat != "")
+                            {
+                                res.NpcChat = quest.FailNpcChat;
+                            }
+                        }
+                    }
                 }
             }
             return res;
@@ -322,22 +330,47 @@ namespace HISP.Game
         }
         public static bool UseTool(User user, string tool, int x, int y)
         {
-            foreach(QuestEntry quest in QuestList)
+
+            if (tool == Quest.Shovel)
             {
-                if (quest.AltActivation.Type == tool && quest.AltActivation.ActivateX == x && quest.AltActivation.ActivateY == y)
+                // check Treasures
+                if (Treasure.IsTileTreasure(x, y))
                 {
-                    ActivateQuest(user, quest);
+                    Treasure.GetTreasureAt(x, y).CollectTreasure(user);
                     return true;
                 }
             }
 
-            if(tool == Quest.Shovel)
+            QuestResult result = null;
+
+            foreach (QuestEntry quest in QuestList)
             {
-                // Also check Treasures
-                if (Treasure.IsTileTreasure(x, y))
-                    Treasure.GetTreasureAt(x, y).CollectTreasure(user);
-                    
+                
+                if (quest.AltActivation.Type == tool && quest.AltActivation.ActivateX == x && quest.AltActivation.ActivateY == y)
+                {
+                    result = ActivateQuest(user, quest, true, result);
+                    if(result.QuestCompleted)
+                    {
+                        if(result.NpcChat != null)
+                        {
+                            byte[] ChatPacket = PacketBuilder.CreateChat(result.NpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            user.LoggedinClient.SendPacket(ChatPacket);
+                        }
+                        return true;
+                    }
+                }
             }
+
+            if(result != null)
+            {
+                if (result.NpcChat != null)
+                {
+                    byte[] ChatPacket = PacketBuilder.CreateChat(result.NpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    user.LoggedinClient.SendPacket(ChatPacket);
+                }
+                return true;
+            }
+
 
             return false;
         }

@@ -1,11 +1,6 @@
 ﻿using HISP.Player;
 using HISP.Server;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace HISP.Game.Horse
 {
 
@@ -19,6 +14,8 @@ namespace HISP.Game.Horse
             if (World.InTown(x, y))
                 return false;
             if (World.InSpecialTile(x, y))
+                return false;
+            if (!World.InIsle(x, y))
                 return false;
 
             // Check area
