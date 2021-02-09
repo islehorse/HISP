@@ -125,8 +125,6 @@ namespace HISP.Game.Chat
         }
         public static bool Escape(string message, string[] args, User user)
         {
-            if (args.Length <= 0)
-                return false;
             if (!user.Administrator || !user.Moderator)
                 return false;
 
