@@ -123,7 +123,20 @@ namespace HISP.Game.Chat
 
             return true;
         }
+        public static bool Escape(string message, string[] args, User user)
+        {
+            if (args.Length <= 0)
+                return false;
+            if (!user.Administrator || !user.Moderator)
+                return false;
 
+
+            user.Teleport(Map.ModIsleX, Map.ModIsleY);
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)) + Messages.ModIsleMessage, PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+        }
         public static bool Stickbug(string message, string[] args, User user)
         {
             if (args.Length <= 0)
