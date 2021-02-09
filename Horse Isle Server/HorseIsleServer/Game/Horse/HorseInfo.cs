@@ -502,6 +502,7 @@ namespace HISP.Game.Horse
         public struct Category
         {
             public string Name;
+            public string MetaOthers;
             public string Meta;
         }
 

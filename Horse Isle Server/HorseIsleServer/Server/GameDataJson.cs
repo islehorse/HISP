@@ -506,6 +506,7 @@ namespace HISP.Server
             {
                 HorseInfo.Category category = new HorseInfo.Category();
                 category.Name = gameData.horses.categorys[i].name;
+                category.MetaOthers = gameData.horses.categorys[i].message_others;
                 category.Meta = gameData.horses.categorys[i].message;
                 HorseInfo.HorseCategories.Add(category);
                 Logger.DebugPrint("Registered horse category type: " + category.Name);
@@ -682,7 +683,7 @@ namespace HISP.Server
             Messages.RanchDefaultRanchTitle = gameData.messages.meta.ranch.default_title;
             Messages.RanchEditDescriptionMetaFormat = gameData.messages.meta.ranch.edit_description;
             Messages.RanchYourRanchMetaFormat = gameData.messages.meta.ranch.your_ranch_meta;
-            Messages.RanchDescription = gameData.messages.meta.ranch.view_desc;
+            Messages.RanchDescriptionFormat = gameData.messages.meta.ranch.view_desc;
 
             // Ranch : Breed
 
@@ -715,6 +716,7 @@ namespace HISP.Server
             Messages.BuildingWagon = gameData.messages.meta.ranch.special.wagon;
             Messages.BuildingTrainingPen = gameData.messages.meta.ranch.special.training_pen;
             Messages.BuildingVegatableGarden = gameData.messages.meta.ranch.special.vegatable_garden;
+
             Messages.RanchTrainAllAttempt = gameData.messages.meta.ranch.special.train_all;
             Messages.RanchTrainSuccess = gameData.messages.meta.ranch.special.train_success;
             Messages.RanchTrainCantTrain = gameData.messages.meta.ranch.special.train_cant_train;
