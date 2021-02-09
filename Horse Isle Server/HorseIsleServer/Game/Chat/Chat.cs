@@ -68,6 +68,8 @@ namespace HISP.Game.Chat
                         return Command.Ban(message, args, user);
                     if (message.StartsWith("%UNBAN"))
                         return Command.UnBan(message, args, user);
+                    if (message.StartsWith("%ESCAPE"))
+                        return Command.Escape(message, args, user);
                     return false;
                 }
             if (message[0] == '!')
