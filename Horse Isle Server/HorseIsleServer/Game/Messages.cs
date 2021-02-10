@@ -204,6 +204,9 @@ namespace HISP.Game
 
         public static string CantAffordTransport;
         public static string WelcomeToAreaFormat;
+        public static string TransportFormat;
+        public static string TransportCostFormat;
+        public static string TransportWagonFree;
 
         //Dropped Items
 
@@ -584,7 +587,6 @@ namespace HISP.Game
         public static string TownFormat;
         public static string AreaFormat;
         public static string LocationFormat;
-        public static string TransportFormat;
         public static string NearbyPlayers;
         public static string North;
         public static string East;
@@ -1630,14 +1632,18 @@ namespace HISP.Game
             return xy;
         }
 
-        public static string FormatTransportMessage(string method, string place, int cost, int id, int x, int y)
+        public static string FormatTransportCost(int cost)
+        {
+            return TransportCostFormat.Replace("%COST%", cost.ToString("N0"));
+        }
+        public static string FormatTransportMessage(string method, string place, string costFormat, int id, int x, int y)
         {
             string xy = FormatMapLocation(x, y);
 
             int iconId = 253;
             if(method == "WAGON")
                 iconId = 254;
-            return TransportFormat.Replace("%METHOD%", method).Replace("%PLACE%", place).Replace("%COST%", cost.ToString()).Replace("%ID%", id.ToString()).Replace("%ICON%",iconId.ToString()).Replace("%XY%", xy);
+            return TransportFormat.Replace("%METHOD%", method).Replace("%PLACE%", place).Replace("%COSTFORMAT%", costFormat).Replace("%ID%", id.ToString()).Replace("%ICON%",iconId.ToString()).Replace("%XY%", xy);
         }
         // For all
         public static string FormatGlobalChatMessage(string username, string message)

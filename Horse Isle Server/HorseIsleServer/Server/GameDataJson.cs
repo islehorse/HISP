@@ -881,6 +881,9 @@ namespace HISP.Server
 
             Messages.CantAffordTransport = gameData.messages.transport.not_enough_money;
             Messages.WelcomeToAreaFormat = gameData.messages.transport.welcome_to_format;
+            Messages.TransportFormat = gameData.messages.meta.transport_format;
+            Messages.TransportCostFormat = gameData.messages.meta.transport_cost;
+            Messages.TransportWagonFree = gameData.messages.meta.transport_free;
 
             // Abuse Reports
             Messages.AbuseReportMetaFormat = gameData.messages.meta.abuse_report.options_format;
@@ -1187,7 +1190,6 @@ namespace HISP.Server
             Messages.AreaFormat = gameData.messages.meta.area_format;
             Messages.Seperator = gameData.messages.meta.seperator;
             Messages.TileFormat = gameData.messages.meta.tile_format;
-            Messages.TransportFormat = gameData.messages.meta.transport_format;
             Messages.ExitThisPlace = gameData.messages.meta.exit_this_place;
             Messages.BackToMap = gameData.messages.meta.back_to_map;
             Messages.BackToMapHorse = gameData.messages.meta.back_to_map_horse;

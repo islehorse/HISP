@@ -1375,9 +1375,21 @@ namespace HISP.Server
                             }
                             Transport.TransportPoint newPoint = Transport.TransportPoints[smalestTransportPointId];
 
+                            int newX = newPoint.X;
+                            int newY = newPoint.Y;
+
+                            if (World.InSpecialTile(newX, newY))
+                            {
+                                World.SpecialTile tile = World.GetSpecialTile(newX, newY);
+                                if (tile.ExitX != 0)
+                                    newX = tile.ExitX;
+                                if (tile.ExitY != 0)
+                                    newY = tile.ExitY;
+                            }
+
                             byte[] transported = PacketBuilder.CreateChat(Messages.RanchWagonDroppedYouOff, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(transported);
-                            sender.LoggedinUser.Teleport(newPoint.X, newPoint.Y);
+                            sender.LoggedinUser.Teleport(newX, newY);
                         }
                     }
                     break;
@@ -2912,12 +2924,21 @@ namespace HISP.Server
                 }
 
                 Transport.TransportLocation transportLocation = Transport.GetTransportLocation(transportid);
+                int cost = transportLocation.Cost;
 
-
-                if (sender.LoggedinUser.Money >= transportLocation.Cost)
+                if (transportLocation.Type == "WAGON")
                 {
-                    
+                    if(sender.LoggedinUser.OwnedRanch != null)
+                    {
+                        if(sender.LoggedinUser.OwnedRanch.GetBuildingCount(7) > 0) // Wagon
+                        {
+                            cost = 0;
+                        }
+                    }
+                }
 
+                if (sender.LoggedinUser.Money >= cost)
+                {
                     string swfToLoad = Messages.BoatCutscene;
                     if (transportLocation.Type == "WAGON")
                         swfToLoad = Messages.WagonCutscene;
@@ -2940,7 +2961,8 @@ namespace HISP.Server
                     byte[] welcomeToIslePacket = PacketBuilder.CreateChat(Messages.FormatWelcomeToAreaMessage(transportLocation.LocationTitle), PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(welcomeToIslePacket);
 
-                    sender.LoggedinUser.Money -= transportLocation.Cost;
+                    if(cost > 0)
+                        sender.LoggedinUser.Money -= cost;
                 }
                 else
                 {
