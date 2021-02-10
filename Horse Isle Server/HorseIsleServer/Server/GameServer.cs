@@ -1181,6 +1181,7 @@ namespace HISP.Server
                                 }
                                 byte[] descriptionEditedMessage = PacketBuilder.CreateChat(Messages.RanchSavedRanchDescripton, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(descriptionEditedMessage);
+                                UpdateArea(sender);
                             }
                             else
                             {
@@ -1346,6 +1347,38 @@ namespace HISP.Server
                         HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
                         metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseCompanionEquipMenu(horseInstance,sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
+                    }
+                    break;
+                case "7": // TP To nearest wagon (ranch)
+                    if(sender.LoggedinUser.OwnedRanch != null)
+                    {
+                        if(sender.LoggedinUser.OwnedRanch.GetBuildingCount(7) > 0) // Wagon
+                        {
+                            int ranchX = sender.LoggedinUser.OwnedRanch.X;
+                            int ranchY = sender.LoggedinUser.OwnedRanch.Y;
+
+                            double smallestDistance = Double.PositiveInfinity;
+                            int smalestTransportPointId = 0;
+                            for (int i = 0; i < Transport.TransportPoints.Count; i++) 
+                            {
+                                Transport.TransportPoint tpPoint = Transport.TransportPoints[i];
+
+                                if(Transport.GetTransportLocation(tpPoint.Locations[0]).Type == "WAGON") // is wagon?
+                                {
+                                    double distance = Converters.PointsToDistance(ranchX, ranchY, tpPoint.X, tpPoint.Y);
+                                    if(distance < smallestDistance)
+                                    {
+                                        smallestDistance = distance;
+                                        smalestTransportPointId = i;
+                                    }
+                                }
+                            }
+                            Transport.TransportPoint newPoint = Transport.TransportPoints[smalestTransportPointId];
+
+                            byte[] transported = PacketBuilder.CreateChat(Messages.RanchWagonDroppedYouOff, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(transported);
+                            sender.LoggedinUser.Teleport(newPoint.X, newPoint.Y);
+                        }
                     }
                     break;
                 case "8":
