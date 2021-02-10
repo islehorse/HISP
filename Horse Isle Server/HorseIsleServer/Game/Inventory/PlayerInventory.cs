@@ -162,7 +162,7 @@ namespace HISP.Game.Inventory
                     throw new InventoryMaxStackException();
                 }
             }
-            else if (Count >= Messages.DefaultInventoryMax)
+            else if (Count >= BaseUser.MaxItems)
             {
                 throw new InventoryFullException();
             }

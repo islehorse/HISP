@@ -37,6 +37,42 @@ namespace HISP.Player
 
         public bool Idle;
         public int Facing;
+        public int MaxItems
+        {
+            get
+            {
+                int baseValue = 40;
+                if (Subscribed)
+                {
+                    if (OwnedRanch != null)
+                    {
+                        baseValue += 20 * OwnedRanch.GetBuildingCount(4); // Shed
+                        if (baseValue > 80) // 2 sheds max!
+                            baseValue = 80;
+                    }
+                }
+                return baseValue;
+            }
+        }
+        public int MaxHorses
+        {
+            get
+            {
+                if (Subscribed)
+                {
+                    int baseValue = 11;
+                    if(OwnedRanch != null)
+                    {
+                        baseValue += OwnedRanch.GetBuildingCount(1) * 4; // Barn
+                        baseValue += OwnedRanch.GetBuildingCount(10) * 8; // Big Barn
+                        baseValue += OwnedRanch.GetBuildingCount(11) * 12; // Gold Barn
+                    }
+                    return baseValue;
+                }
+
+                return 7; // will change when ranches are implemented.
+            }
+        }
         public Mailbox MailBox;
         public Friends Friends;
         public string Password; // For chat filter.
@@ -56,6 +92,7 @@ namespace HISP.Player
         public int CapturingHorseId;
         public DateTime LoginTime;
         public string LastSeenWeather;
+        public int LastClickedRanchBuilding = 0;
 
         public string GetWeatherSeen()
         {
@@ -66,6 +103,37 @@ namespace HISP.Player
                 weather = World.GetIsle(this.X, this.Y).Weather;
             LastSeenWeather = weather;
             return weather;
+        }
+        public void DoRanchActions()
+        {
+            if(OwnedRanch != null)
+            {
+                Tiredness = 1000; // All ranches fully rest you.
+                
+                if(OwnedRanch.GetBuildingCount(2) > 0)
+                {
+                    Thirst = 1000;
+                    foreach (HorseInstance horse in HorseInventory.HorseList)
+                        horse.BasicStats.Thirst = 1000;
+                }
+
+                if (OwnedRanch.GetBuildingCount(3) > 0)
+                {
+                    foreach (HorseInstance horse in HorseInventory.HorseList)
+                        horse.BasicStats.Hunger = 1000;
+                }
+                if(OwnedRanch.GetBuildingCount(9) > 0)
+                {
+                    Hunger = 1000;
+                }
+                if( (OwnedRanch.GetBuildingCount(1) > 0)|| (OwnedRanch.GetBuildingCount(10) > 0) || (OwnedRanch.GetBuildingCount(11) > 0))
+                {
+
+                    foreach (HorseInstance horse in HorseInventory.HorseList)
+                        horse.BasicStats.Tiredness = 1000;
+                }
+
+            }
         }
         public DateTime SubscribedUntil
         {

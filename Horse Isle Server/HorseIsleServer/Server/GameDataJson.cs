@@ -576,19 +576,6 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Workshop at X: " + wkShop.X + " Y: " + wkShop.Y);
 
             }
-            // Register Ranches
-            int totalRanchLocations = gameData.ranch.ranch_locations.Count;
-            for (int i = 0; i < totalRanchLocations; i++)
-            {
-                int x = gameData.ranch.ranch_locations[i].x;
-                int y = gameData.ranch.ranch_locations[i].y;
-                int id = gameData.ranch.ranch_locations[i].id;
-                int value = gameData.ranch.ranch_locations[i].value;
-                Ranch ranch = new Ranch(x, y, id, value);
-                Ranch.Ranches.Add(ranch);
-                Logger.DebugPrint("Registered Ranch at X: " + ranch.X + " Y: " + ranch.Y);
-
-            }
             // Register Ranch Buildings
             int totalRanchBuildings = gameData.ranch.ranch_buildings.buildings.Count;
             for (int i = 0; i < totalRanchBuildings; i++)
@@ -631,6 +618,19 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Ranch Upgrade: " + upgrade.Title);
 
             }
+            // Register Ranches
+            int totalRanchLocations = gameData.ranch.ranch_locations.Count;
+            for (int i = 0; i < totalRanchLocations; i++)
+            {
+                int x = gameData.ranch.ranch_locations[i].x;
+                int y = gameData.ranch.ranch_locations[i].y;
+                int id = gameData.ranch.ranch_locations[i].id;
+                int value = gameData.ranch.ranch_locations[i].value;
+                Ranch ranch = new Ranch(x, y, id, value);
+                Ranch.Ranches.Add(ranch);
+                Logger.DebugPrint("Registered Ranch id " + id + " at X: " + ranch.X + " Y: " + ranch.Y);
+
+            }
             // Register Riddles
             int totalRiddles = gameData.riddle_room.Count;
             for (int i = 0; i < totalRiddles; i++)
@@ -670,7 +670,8 @@ namespace HISP.Server
             Messages.RanchUnownedRanchFormat = gameData.messages.meta.ranch.unowned_ranch;
             Messages.RanchYouCouldPurchaseThisRanch = gameData.messages.meta.ranch.you_could_purchase_this;
             Messages.RanchYouAllreadyOwnARanch = gameData.messages.meta.ranch.ranch_already_owned;
-
+            Messages.RanchSubscribersOnly = gameData.messages.meta.ranch.sub_only;
+            Messages.RanchDescriptionOthersFormat = gameData.meta.ranch.ranch_desc_others;
             Messages.RanchUnownedRanchClicked = gameData.messages.meta.ranch.unowned_ranch_click;
             Messages.RanchClickMessageFormat = gameData.messages.meta.ranch.click_message;
 
@@ -682,8 +683,11 @@ namespace HISP.Server
             Messages.RanchSavedRanchDescripton = gameData.messages.meta.ranch.saved_ranch;
             Messages.RanchDefaultRanchTitle = gameData.messages.meta.ranch.default_title;
             Messages.RanchEditDescriptionMetaFormat = gameData.messages.meta.ranch.edit_description;
-            Messages.RanchYourRanchMetaFormat = gameData.messages.meta.ranch.your_ranch_meta;
-            Messages.RanchDescriptionFormat = gameData.messages.meta.ranch.view_desc;
+            Messages.RanchTitleFormat = gameData.messages.meta.ranch.your_ranch_meta;
+            Messages.RanchYourDescriptionFormat = gameData.messages.meta.ranch.view_desc;
+
+            Messages.RanchSellAreYouSure = gameData.messages.meta.ranch.sell_confirm;
+            Messages.RanchSoldFormat = gameData.messages.meta.ranch.sell_done;
 
             // Ranch : Breed
 
@@ -1305,10 +1309,6 @@ namespace HISP.Server
 
             GameServer.IdleWarning = gameData.messages.disconnect.client_timeout.warn_after;
             GameServer.IdleTimeout = gameData.messages.disconnect.client_timeout.kick_after;
-
-            // Inventory
-
-            Messages.DefaultInventoryMax = gameData.item.max_carryable;
 
             // Competition Gear
 

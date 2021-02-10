@@ -3208,6 +3208,22 @@ namespace HISP.Server
                 return subscribedUntil;
             }
         }
+        public static bool IsUserAdmin(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT Admin FROM Users WHERE Id=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                bool admin = sqlCommand.ExecuteScalar().ToString() == "YES";
+                sqlCommand.Dispose();
+
+                return admin;
+            }
+        }
         public static bool IsUserSubscribed(int playerId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -3365,6 +3381,21 @@ namespace HISP.Server
             }
         }
 
+        public static void RemoveAllItemTypesFromPlayerInventory(int playerId, int itemId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "DELETE FROM Inventory WHERE (PlayerId=@playerId AND ItemID=@itemId)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@itemId", itemId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
         public static void RemoveItemFromInventory(int playerId, ItemInstance instance)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

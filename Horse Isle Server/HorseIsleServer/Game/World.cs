@@ -196,6 +196,25 @@ namespace HISP.Game
             // Periodically write time to database:
             if (ServerTime.Minutes % 10 == 0) // every 10-in-game minutes)
                 Database.SetServerTime(ServerTime.Minutes, ServerTime.Days, ServerTime.Years);
+            
+            // Ranch Windmill Payments
+            if(hours % 12 == 0)
+            {
+                Logger.DebugPrint("Paying windmill owners . . . ");
+                foreach (Ranch ranch in Ranch.Ranches)
+                {
+                    int ranchOwner = ranch.OwnerId;
+                    if (ranchOwner != -1)
+                    {
+                        int moneyToAdd = 5000 * ranch.GetBuildingCount(8); // Windmill
+                        if (GameServer.IsUserOnline(ranchOwner))
+                            GameServer.GetUserById(ranchOwner).Money += moneyToAdd;
+                        else
+                            Database.SetPlayerMoney(Database.GetPlayerMoney(ranchOwner) + moneyToAdd, ranchOwner);
+                    }
+                }
+            }
+
 
             if (hours == 24) // 1 day
             {

@@ -1,4 +1,8 @@
-﻿using HISP.Server;
+﻿using HISP.Game.Inventory;
+using HISP.Game.Items;
+using HISP.Player;
+using HISP.Server;
+using System;
 using System.Collections.Generic;
 
 namespace HISP.Game
@@ -59,6 +63,11 @@ namespace HISP.Game
                 }
                 throw new KeyNotFoundException("No ranch found.");
             }
+
+            public int GetTeardownPrice()
+            {
+                return (int)Math.Round((float)this.Cost / (100 / 35.0));
+            }
         }
         public static List<Ranch> Ranches = new List<Ranch>();
 
@@ -73,39 +82,81 @@ namespace HISP.Game
         private string title;
         private string description;
 
+        public int GetSellPrice()
+        {
+            return (int)Math.Round((float)this.InvestedMoney / (100 / 75.0));
+        }
+        private void removeDorothyShoes(int Id)
+        {
+            if (Id == -1)
+                return;
+            
+            if(GameServer.IsUserOnline(Id))
+            {
+                User user = GameServer.GetUserById(Id);
+                user.OwnedRanch = null;
+                InventoryItem items = user.Inventory.GetItemByItemId(Item.DorothyShoes);
+                foreach (ItemInstance itm in items.ItemInstances.ToArray())
+                {
+                    user.Inventory.Remove(itm);
+                }
+            }
+            else
+            {
+                Database.RemoveAllItemTypesFromPlayerInventory(this.Id, Item.DorothyShoes);
+            }
+            
+        }
+        
+        private void deleteRanch()
+        {
+            Database.DeleteRanchOwner(this.Id);
+            removeDorothyShoes(this.ownerId);
+            resetRanch();
+        }
+        private void resetRanch()
+        {
+            title = "";
+            description = "";
+            investedMoney = 0;
+            upgradedLevel = 0;
+            ownerId = -1;
+            for (int i = 0; i < 16; i++)
+                buildings[i] = null;
+        }
         public int OwnerId
         {
             get
             {
+                if(ownerId != -1)
+                {
+                    if (!Database.IsUserSubscribed(ownerId) && !Database.IsUserAdmin(ownerId))
+                        deleteRanch();
+                }
                 return ownerId;
+                
             }
             set
             {
-
-                ownerId = value;
-
                 if (value == -1)
                 {
-                    Database.DeleteRanchOwner(this.Id);
+                    deleteRanch();
                 }
                 else
                 {
                     if(Database.IsRanchOwned(this.Id))
                     {
                         Database.SetRanchOwner(this.Id, ownerId);
+                        removeDorothyShoes(ownerId);
                     }
                     else
                     {
-                        title = "";
-                        description = "";
-                        investedMoney = 0;
-                        upgradedLevel = 0;
-                        for (int i = 0; i < 16; i++)
-                            buildings[i] = null;
-
-                        Database.AddRanch(this.Id, OwnerId, "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+                        resetRanch();
+                        Database.AddRanch(this.Id, value, "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
                     }
                 }
+
+                ownerId = value;
             }
         }
 
@@ -129,8 +180,8 @@ namespace HISP.Game
             }
             set
             {
-                investedMoney = 0;
-                Database.SetRanchUpgradeLevel(Id, value);
+                investedMoney = value;
+                Database.SetRanchInvestment(Id, value);
             }
         }
         public string Title
@@ -160,89 +211,101 @@ namespace HISP.Game
         
 
         private RanchBuilding[] buildings = new RanchBuilding[16];
-
-        public RanchBuilding[] Buildings
+        public int GetBuildingCount(int buildingId)
         {
-            get
+            int count = 0;
+            foreach(RanchBuilding building in buildings)
             {
-                return buildings;
+                if(building != null)
+                    if (building.Id == buildingId)
+                        count++;
             }
-            set
-            {
-                buildings = value;
-                if (buildings[0] != null)
-                    Database.SetRanchBuilding1(this.Id, buildings[0].Id);
-                else
-                    Database.SetRanchBuilding1(this.Id, 0);
-                if (buildings[1] != null)
-                    Database.SetRanchBuilding2(this.Id, buildings[1].Id);
-                else
-                    Database.SetRanchBuilding2(this.Id, 0);
-                if (buildings[2] != null)
-                    Database.SetRanchBuilding3(this.Id, buildings[2].Id);
-                else
-                    Database.SetRanchBuilding3(this.Id, 0);
-                if (buildings[3] != null)
-                    Database.SetRanchBuilding4(this.Id, buildings[3].Id);
-                else
-                    Database.SetRanchBuilding4(this.Id, 0);
-                if (buildings[4] != null)
-                    Database.SetRanchBuilding5(this.Id, buildings[4].Id);
-                else
-                    Database.SetRanchBuilding5(this.Id, 0);
-                if (buildings[5] != null)
-                    Database.SetRanchBuilding6(this.Id, buildings[5].Id);
-                else
-                    Database.SetRanchBuilding6(this.Id, 0);
-                if (buildings[6] != null)
-                    Database.SetRanchBuilding7(this.Id, buildings[6].Id);
-                else
-                    Database.SetRanchBuilding7(this.Id, 0);
-                if (buildings[7] != null)
-                    Database.SetRanchBuilding8(this.Id, buildings[7].Id);
-                else
-                    Database.SetRanchBuilding8(this.Id, 0);
-                if (buildings[8] != null)
-                    Database.SetRanchBuilding9(this.Id, buildings[8].Id);
-                else
-                    Database.SetRanchBuilding9(this.Id, 0);
-                if (buildings[9] != null)
-                    Database.SetRanchBuilding10(this.Id, buildings[9].Id);
-                else
-                    Database.SetRanchBuilding10(this.Id, 0);
-                if (buildings[10] != null)
-                    Database.SetRanchBuilding11(this.Id, buildings[10].Id);
-                else
-                    Database.SetRanchBuilding11(this.Id, 0);
-                if (buildings[11] != null)
-                    Database.SetRanchBuilding12(this.Id, buildings[11].Id);
-                else
-                    Database.SetRanchBuilding12(this.Id, 0);
-                if (buildings[12] != null)
-                    Database.SetRanchBuilding13(this.Id, buildings[12].Id);
-                else
-                    Database.SetRanchBuilding13(this.Id, 0);
-                if (buildings[13] != null)
-                    Database.SetRanchBuilding14(this.Id, buildings[13].Id);
-                else
-                    Database.SetRanchBuilding14(this.Id, 0);
-                if (buildings[14] != null)
-                    Database.SetRanchBuilding15(this.Id, buildings[14].Id);
-                else
-                    Database.SetRanchBuilding15(this.Id, 0);
-                if (buildings[15] != null)
-                    Database.SetRanchBuilding16(this.Id, buildings[15].Id);
-                else
-                    Database.SetRanchBuilding16(this.Id, 0);
-            }
+            return count;
         }
+        private void updateBuildings()
+        {
+            if (buildings[0] != null)
+                Database.SetRanchBuilding1(this.Id, buildings[0].Id);
+            else
+                Database.SetRanchBuilding1(this.Id, 0);
+            if (buildings[1] != null)
+                Database.SetRanchBuilding2(this.Id, buildings[1].Id);
+            else
+                Database.SetRanchBuilding2(this.Id, 0);
+            if (buildings[2] != null)
+                Database.SetRanchBuilding3(this.Id, buildings[2].Id);
+            else
+                Database.SetRanchBuilding3(this.Id, 0);
+            if (buildings[3] != null)
+                Database.SetRanchBuilding4(this.Id, buildings[3].Id);
+            else
+                Database.SetRanchBuilding4(this.Id, 0);
+            if (buildings[4] != null)
+                Database.SetRanchBuilding5(this.Id, buildings[4].Id);
+            else
+                Database.SetRanchBuilding5(this.Id, 0);
+            if (buildings[5] != null)
+                Database.SetRanchBuilding6(this.Id, buildings[5].Id);
+            else
+                Database.SetRanchBuilding6(this.Id, 0);
+            if (buildings[6] != null)
+                Database.SetRanchBuilding7(this.Id, buildings[6].Id);
+            else
+                Database.SetRanchBuilding7(this.Id, 0);
+            if (buildings[7] != null)
+                Database.SetRanchBuilding8(this.Id, buildings[7].Id);
+            else
+                Database.SetRanchBuilding8(this.Id, 0);
+            if (buildings[8] != null)
+                Database.SetRanchBuilding9(this.Id, buildings[8].Id);
+            else
+                Database.SetRanchBuilding9(this.Id, 0);
+            if (buildings[9] != null)
+                Database.SetRanchBuilding10(this.Id, buildings[9].Id);
+            else
+                Database.SetRanchBuilding10(this.Id, 0);
+            if (buildings[10] != null)
+                Database.SetRanchBuilding11(this.Id, buildings[10].Id);
+            else
+                Database.SetRanchBuilding11(this.Id, 0);
+            if (buildings[11] != null)
+                Database.SetRanchBuilding12(this.Id, buildings[11].Id);
+            else
+                Database.SetRanchBuilding12(this.Id, 0);
+            if (buildings[12] != null)
+                Database.SetRanchBuilding13(this.Id, buildings[12].Id);
+            else
+                Database.SetRanchBuilding13(this.Id, 0);
+            if (buildings[13] != null)
+                Database.SetRanchBuilding14(this.Id, buildings[13].Id);
+            else
+                Database.SetRanchBuilding14(this.Id, 0);
+            if (buildings[14] != null)
+                Database.SetRanchBuilding15(this.Id, buildings[14].Id);
+            else
+                Database.SetRanchBuilding15(this.Id, 0);
+            if (buildings[15] != null)
+                Database.SetRanchBuilding16(this.Id, buildings[15].Id);
+            else
+                Database.SetRanchBuilding16(this.Id, 0);
+        }
+        public RanchBuilding GetBuilding(int buildingId)
+        {
+            return buildings[buildingId];
+        }
+        public void SetBuilding(int buildingId, RanchBuilding value)
+        {
+            buildings[buildingId] = value;
+            updateBuildings();
+        }
+
 
         public string GetSwf(bool mine)
         {
-            string swf  = "ranchviewer.swf?H=" + upgradedLevel+1.ToString();
+            string swf  = "ranchviewer.swf?H=" + (upgradedLevel+1).ToString();
             for(int i = 0; i < buildings.Length; i++)
             {
-                swf += "&B" + i.ToString() + "=";
+                swf += "&B" + (i+1).ToString() + "=";
                 if (buildings[i] != null)
                 {
                     swf += buildings[i].Id.ToString();
@@ -260,20 +323,20 @@ namespace HISP.Game
             Y = y;
             Id = id;
             Value = value;
-            Title = "";
-            Description = "";
-            UpgradedLevel = 0;
-            OwnerId = -1;
-            InvestedMoney = 0;
+            title = "";
+            description = "";
+            upgradedLevel = 0;
+            ownerId = -1;
+            investedMoney = 0;
             for (int i = 0; i < 16; i++)
                 buildings[i] = null;
-
-            if (Database.IsRanchOwned(id))
+            bool owned = Database.IsRanchOwned(id);
+            if (owned)
             {
-                UpgradedLevel = Database.GetRanchUpgradeLevel(id);
-                Title = Database.GetRanchTitle(id);
-                Description = Database.GetRanchDescription(id);
-                OwnerId = Database.GetRanchOwner(id);
+                upgradedLevel = Database.GetRanchUpgradeLevel(id);
+                title = Database.GetRanchTitle(id);
+                description = Database.GetRanchDescription(id);
+                ownerId = Database.GetRanchOwner(id);
                 int b1 = Database.GetRanchBuilding1(id);
                 int b2 = Database.GetRanchBuilding2(id);
                 int b3 = Database.GetRanchBuilding3(id);
@@ -329,6 +392,10 @@ namespace HISP.Game
             }
         }
 
+        public RanchUpgrade GetRanchUpgrade()
+        {
+            return RanchUpgrade.GetRanchUpgradeById(this.upgradedLevel + 1);
+        }
         public static bool IsRanchHere(int x, int y)
         {
             foreach (Ranch ranch in Ranches)

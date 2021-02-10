@@ -39,7 +39,12 @@ namespace HISP.Game
             else if (overlay && Treasure.IsTilePotOfGold(x, y))
                 return 186; // Pot of Gold tile.
             else if (overlay && Ranch.IsRanchHere(x, y))
-                return 170 + Ranch.GetRanchAt(x, y).UpgradedLevel; // Ranch Tile + Upgraded amount
+            {
+                int upgradeLevel = Ranch.GetRanchAt(x, y).UpgradedLevel;
+                if (upgradeLevel > 7)
+                    upgradeLevel = 7;
+                return 170 + upgradeLevel;
+            }
             else if (overlay)
                 return oMapData[pos];
             else if (!overlay)

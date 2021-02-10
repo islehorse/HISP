@@ -8,7 +8,6 @@ namespace HISP.Game
     public class Messages
     {
         public static int RequiredChatViolations;
-        public static int DefaultInventoryMax;
 
         // Mod isle
         public static string ModIsleMessage;
@@ -17,6 +16,8 @@ namespace HISP.Game
         public static string RanchUnownedRanchFormat;
         public static string RanchYouCouldPurchaseThisRanch;
         public static string RanchYouAllreadyOwnARanch;
+        public static string RanchSubscribersOnly;
+        public static string RanchDescriptionOthersFormat;
         public static string RanchUnownedRanchClicked;
         public static string RanchClickMessageFormat;
 
@@ -29,8 +30,11 @@ namespace HISP.Game
         public static string RanchDefaultRanchTitle;
 
         public static string RanchEditDescriptionMetaFormat;
-        public static string RanchYourRanchMetaFormat;
-        public static string RanchDescriptionFormat;
+        public static string RanchTitleFormat;
+        public static string RanchYourDescriptionFormat;
+
+        public static string RanchSellAreYouSure;
+        public static string RanchSoldFormat;
 
         // Ranch: Build.
         public static string RanchCanBuildOneOfTheFollowingInThisSpot;
@@ -654,8 +658,15 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
-
-        public static string FormatUnownedRanchMeta(int price)
+        public static string FormatRanchDescOthers(string description)
+        {
+            return RanchDescriptionOthersFormat.Replace("%DESCRIPTION%", description);
+        }
+        public static string FormatRanchSoldMessage(int price)
+        {
+            return RanchSoldFormat.Replace("%PRICE%", price.ToString("N0"));
+        }
+        public static string FormatRanchUnownedMeta(int price)
         {
             return RanchUnownedRanchFormat.Replace("%PRICE%", price.ToString("N0"));
         }
@@ -673,11 +684,11 @@ namespace HISP.Game
         }
         public static string FormatRanchTitle(string username, string title)
         {
-            return RanchYourRanchMetaFormat.Replace("%USERNAME%", username).Replace("%TITLE%", title);
+            return RanchTitleFormat.Replace("%USERNAME%", username).Replace("%TITLE%", title);
         }
-        public static string FormatRanchDescription(string description)
+        public static string FormatRanchYoursDescription(string description)
         {
-            return RanchDescriptionFormat.Replace("%DESCRIPTION%", description);
+            return RanchYourDescriptionFormat.Replace("%DESCRIPTION%", description);
         }
         public static string FormatBuildingEntry(string name, int price, int buildingId)
         {
@@ -687,9 +698,9 @@ namespace HISP.Game
         {
             return RanchBuildingInformationFormat.Replace("%BUILDINGNAME%", name).Replace("%BUILINGDESCRIPTION%", description);
         }
-        public static string FormatBuildingPlaced(string name, int buildingId, int price)
+        public static string FormatBuildingAlreadyPlaced(string name, int buildingId, int price)
         {
-            return RanchBuildingAlreadyHere.Replace("%BUILDINGNAME%", name).Replace("%BUILDINGID%", buildingId.ToString()).Replace("%PRICE%", price.ToString());
+            return RanchBuildingAlreadyHere.Replace("%BUILDINGNAME%", name).Replace("%BUILDINGID%", buildingId.ToString()).Replace("%PRICE%", price.ToString("N0"));
         }
         public static string FormatBuildingTornDown(int price)
         {
