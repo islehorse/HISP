@@ -61,8 +61,6 @@ namespace HISP.Server
                 Database.IncAllUsersFreeTime(1);
             }
 
-
-
             if (totalMinutesElapsed % 25 == 0)
             {
 
@@ -83,6 +81,11 @@ namespace HISP.Server
                     }
                 }
             }
+
+            foreach(GameClient client in ConnectedClients)
+                if (client.LoggedIn)
+                    if (!client.LoggedinUser.MetaPriority)
+                        UpdateArea(client);
 
             Treasure.AddValue();
             Database.IncPlayerTirednessForOfflineUsers();

@@ -51,24 +51,36 @@ namespace HISP.Game
                 string usersNorth = "";
                 string usersEast = "";
                 string usersSouth = "";
+                
                 foreach (User nearbyUser in nearbyUsers)
                 {
-                    if (nearbyUser.X < x)
+                    if (nearbyUser.X == x && nearbyUser.Y == y) // not yourself
+                        continue;
+
+                    int xDiff = x - nearbyUser.X;
+                    int yDiff = y - nearbyUser.Y;
+                    double angle =  (Math.Atan2(yDiff, xDiff) * 180.0 / Math.PI);
+                    angle -= 45;
+                    angle = (angle % 360 + 360) % 360;
+
+                    if (angle >= 270 && angle <= 360 )
                     {
                         usersWest += " " + nearbyUser.Username + " ";
                     }
-                    else if (nearbyUser.X > x)
+                    else if (angle >= 90 && angle <= 180)
                     {
                         usersEast += " " + nearbyUser.Username + " ";
                     }
-                    else if (nearbyUser.Y > y)
+                    else if (angle >= 180 && angle <= 270)
                     {
                         usersSouth += " " + nearbyUser.Username + " ";
                     }
-                    else if (nearbyUser.Y < y)
+                    else if (angle >= 0 && angle <= 90)
                     {
                         usersNorth += " " + nearbyUser.Username + " ";
                     }
+
+
                 }
 
                 if (usersEast != "")

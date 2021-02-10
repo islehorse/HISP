@@ -198,7 +198,7 @@ namespace HISP.Game
                 Database.SetServerTime(ServerTime.Minutes, ServerTime.Days, ServerTime.Years);
             
             // Ranch Windmill Payments
-            if(hours % 12 == 0)
+            if(ServerTime.Minutes % 720 == 0) // every 12 hours
             {
                 Logger.DebugPrint("Paying windmill owners . . . ");
                 foreach (Ranch ranch in Ranch.Ranches)
@@ -220,7 +220,7 @@ namespace HISP.Game
             {
                 ServerTime.Days += 1;
                 ServerTime.Minutes = 0;
-
+                
                 Database.DoIntrestPayments(ConfigReader.IntrestRate);
             }
 
