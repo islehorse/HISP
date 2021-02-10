@@ -129,6 +129,8 @@ namespace HISP.Game.Horse
                         return 0;
                 }
             }
+
+
             public int TackOffset
             {
                 get

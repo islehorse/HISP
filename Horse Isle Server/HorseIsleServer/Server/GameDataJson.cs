@@ -671,7 +671,7 @@ namespace HISP.Server
             Messages.RanchYouCouldPurchaseThisRanch = gameData.messages.meta.ranch.you_could_purchase_this;
             Messages.RanchYouAllreadyOwnARanch = gameData.messages.meta.ranch.ranch_already_owned;
             Messages.RanchSubscribersOnly = gameData.messages.meta.ranch.sub_only;
-            Messages.RanchDescriptionOthersFormat = gameData.meta.ranch.ranch_desc_others;
+            Messages.RanchDescriptionOthersFormat = gameData.messages.meta.ranch.ranch_desc_others;
             Messages.RanchUnownedRanchClicked = gameData.messages.meta.ranch.unowned_ranch_click;
             Messages.RanchClickMessageFormat = gameData.messages.meta.ranch.click_message;
 

@@ -11,4 +11,5 @@ namespace HISP.Game
     // Drawingroom
     public class DrawingroomException : Exception { };
     public class DrawingroomFullException : DrawingroomException { };
+
 }
