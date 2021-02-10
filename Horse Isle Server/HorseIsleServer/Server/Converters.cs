@@ -33,7 +33,7 @@ namespace HISP.Server
 
         public static Double PointsToDistance(int x1, int y1, int x2, int y2)
         {
-            return Math.Sqrt(Math.Pow(x1 - (-y1), 2) + Math.Pow(x2 - (-y2), 2));
+            return Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2));
         }
 
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
