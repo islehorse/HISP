@@ -17,16 +17,6 @@ namespace HISP.Game.Inventory
             }
         }
 
-        public int MaxHorses
-        { 
-            get
-            {
-                if (baseUser.Subscribed)
-                    return 11;
-
-                return 7; // will change when ranches are implemented.
-            }
-        }
         public HorseInventory(User user)
         {
             baseUser = user;
@@ -35,7 +25,7 @@ namespace HISP.Game.Inventory
 
         public void AddHorse(HorseInstance horse, bool addToDb=true)
         {
-            if (HorseList.Length + 1 > MaxHorses)
+            if (HorseList.Length + 1 > baseUser.MaxHorses)
                 throw new InventoryFullException();
 
             horse.Owner = baseUser.Id;

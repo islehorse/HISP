@@ -1166,7 +1166,25 @@ namespace HISP.Server
                                 break;
                             }
                             break;
-
+                        case 11: // Ranch Description Edit
+                            if (dynamicInput.Length >= 2)
+                            {
+                                string title = dynamicInput[1];
+                                string desc = dynamicInput[2];
+                                if(sender.LoggedinUser.OwnedRanch != null)
+                                {
+                                    sender.LoggedinUser.OwnedRanch.Title = title;
+                                    sender.LoggedinUser.OwnedRanch.Description = desc;
+                                }
+                                byte[] descriptionEditedMessage = PacketBuilder.CreateChat(Messages.RanchSavedRanchDescripton, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(descriptionEditedMessage);
+                            }
+                            else
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (ranch description, wrong size)");
+                                break;
+                            }
+                            break;
                         case 12: // Abuse Report
                             if (dynamicInput.Length >= 2)
                             {
@@ -1386,6 +1404,14 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAwardList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
+                case "27": // Ranch Edit
+                    if(sender.LoggedinUser.OwnedRanch != null)
+                    {
+                        sender.LoggedinUser.MetaPriority = true;
+                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRanchEdit(sender.LoggedinUser.OwnedRanch));
+                        sender.SendPacket(metaPacket);
+                    }
+                    break;
                 case "35": // Buddy List
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBuddyList(sender.LoggedinUser));
@@ -1438,6 +1464,11 @@ namespace HISP.Server
                 case "53": // Misc Stats / Tracked Items
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMiscStats(sender.LoggedinUser));
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "60": // Ranch Sell
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRanchSellConfirmation());
                     sender.SendPacket(metaPacket);
                     break;
                 case "28c1": // Abuse Report
@@ -2107,8 +2138,6 @@ namespace HISP.Server
             {
                 sender.LoggedinUser.MetaPriority = true;
                 string profilePage = sender.LoggedinUser.ProfilePage;
-                profilePage = profilePage.Replace("<", "[");
-                profilePage = profilePage.Replace(">", "]");
                 byte[] profilePacket = PacketBuilder.CreateProfilePacket(profilePage);
                 sender.SendPacket(profilePacket);
             }
@@ -2890,6 +2919,346 @@ namespace HISP.Server
 
          
         }
+        public static void OnRanchPacket(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent ranch packet when not logged in.");
+                return;
+            }
+            if (packet.Length < 4)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid ranch packet.");
+                return;
+            }
+            string packetStr = Encoding.UTF8.GetString(packet);
+            byte method = packet[1];
+
+            if (method == PacketBuilder.RANCH_INFO)
+            {
+                string buildingIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                int buildingId = 0;
+                try
+                {
+                    buildingId = int.Parse(buildingIdStr);
+                }
+                catch (FormatException)
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to get info for building id NaN");
+                    return;
+                }
+                if (Ranch.RanchBuilding.RanchBuildingExists(buildingId))
+                {
+                    Ranch.RanchBuilding building = Ranch.RanchBuilding.GetRanchBuildingById(buildingId);
+
+                    byte[] ranchBuild = PacketBuilder.CreateChat(Messages.FormatBuildingInformaton(building.Title, building.Description), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(ranchBuild);
+
+                    return;
+                }
+                else
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to get info for building id that didnt exist.");
+                    return;
+                }
+            }
+            else if (method == PacketBuilder.RANCH_SELL)
+            {
+                string NanSTR = packetStr.Substring(2, packetStr.Length - 4);
+                if (NanSTR == "NaN")
+                {
+                    if (sender.LoggedinUser.OwnedRanch == null)
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to sell there ranch when they didnt own one.");
+                        return;
+                    }
+                    int sellPrice = sender.LoggedinUser.OwnedRanch.GetSellPrice();
+                    sender.LoggedinUser.Money += sellPrice;
+                    byte[] sellPacket = PacketBuilder.CreateChat(Messages.FormatRanchSoldMessage(sellPrice), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.LoggedinUser.OwnedRanch.OwnerId = -1;
+                    sender.SendPacket(sellPacket);
+
+                    // Change map sprite.
+                    User[] users = GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true);
+                    foreach (User user in users)
+                    {
+                        byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+                        user.LoggedinClient.SendPacket(MovementPacket);
+                    }
+                    UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
+                }
+                else
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to sell there ranch without sending NaN.");
+                    return;
+                }
+            }
+            else if (method == PacketBuilder.RANCH_UPGRADE)
+            {
+                string NanSTR = packetStr.Substring(2, packetStr.Length - 4);
+                if (NanSTR == "NaN")
+                {
+                    if (sender.LoggedinUser.OwnedRanch != null)
+                    {
+                        Ranch.RanchUpgrade currentUpgrade = sender.LoggedinUser.OwnedRanch.GetRanchUpgrade();
+
+                        if (!Ranch.RanchUpgrade.RanchUpgradeExists(currentUpgrade.Id + 1))
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to upgrade there ranch when it was max upgrade.");
+                            return;
+                        }
+
+                        Ranch.RanchUpgrade nextUpgrade = Ranch.RanchUpgrade.GetRanchUpgradeById(currentUpgrade.Id + 1);
+                        if (sender.LoggedinUser.Money >= nextUpgrade.Cost)
+                        {
+                            sender.LoggedinUser.Money -= nextUpgrade.Cost;
+                            sender.LoggedinUser.OwnedRanch.InvestedMoney += nextUpgrade.Cost;
+                            sender.LoggedinUser.OwnedRanch.UpgradedLevel++;
+
+                            byte[] upgraded = PacketBuilder.CreateChat(Messages.UpgradedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(upgraded);
+
+                            // Change map sprite.
+                            User[] users = GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true);
+                            foreach (User user in users)
+                            {
+                                byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+                                user.LoggedinClient.SendPacket(MovementPacket);
+                            }
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
+                        }
+                        else
+                        {
+                            byte[] cantAfford = PacketBuilder.CreateChat(Messages.UpgradeCannotAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantAfford);
+                        }
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to upgrade there ranch when they didnt own one.");
+                    }
+                }
+                else
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to upgrade there ranch without sending NaN.");
+                    return;
+                }
+            }
+            else if (method == PacketBuilder.RANCH_REMOVE)
+            {
+                string buildingIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                int buildingId = 0;
+                try
+                {
+                    buildingId = int.Parse(buildingIdStr);
+                }
+                catch (FormatException)
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to get info for building id NaN");
+                    return;
+                }
+                if (Ranch.RanchBuilding.RanchBuildingExists(buildingId))
+                {
+                    Ranch.RanchBuilding building = Ranch.RanchBuilding.GetRanchBuildingById(buildingId);
+                    int ranchBuild = sender.LoggedinUser.LastClickedRanchBuilding;
+                    if (ranchBuild == 0)
+                        return;
+                    if (sender.LoggedinUser.OwnedRanch != null)
+                    {
+                        if (ranchBuild > sender.LoggedinUser.OwnedRanch.GetRanchUpgrade().Limit)
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to remove more buildings than the limit.");
+                            return;
+                        }
+                        Ranch.RanchBuilding ranchBuilding = sender.LoggedinUser.OwnedRanch.GetBuilding(ranchBuild - 1);
+                        if (ranchBuilding.Id == buildingId)
+                        {
+                            sender.LoggedinUser.OwnedRanch.SetBuilding(ranchBuild - 1, null);
+                            sender.LoggedinUser.Money += ranchBuilding.GetTeardownPrice();
+                            sender.LoggedinUser.OwnedRanch.InvestedMoney -= building.Cost;
+                            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatBuildingTornDown(ranchBuilding.GetTeardownPrice()), PacketBuilder.CHAT_BOTTOM_RIGHT);
+
+                            sender.SendPacket(chatPacket);
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
+                            return;
+                        }
+                        else
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to remove bulidingid: " + buildingId + " from building slot " + ranchBuild + " but the building was not found there.");
+                        }
+
+                    }
+                    Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to remove in a ranch when they dont own one.");
+                    return;
+                }
+                else
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to get info for building id that didnt exist.");
+                    return;
+                }
+            }
+            else if (method == PacketBuilder.RANCH_BUILD)
+            {
+                string buildingIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                int buildingId = 0;
+                try
+                {
+                    buildingId = int.Parse(buildingIdStr);
+                }
+                catch (FormatException)
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to get info for building id NaN");
+                    return;
+                }
+                if (Ranch.RanchBuilding.RanchBuildingExists(buildingId))
+                {
+                    Ranch.RanchBuilding building = Ranch.RanchBuilding.GetRanchBuildingById(buildingId);
+                    int ranchBuild = sender.LoggedinUser.LastClickedRanchBuilding;
+                    if (ranchBuild == 0)
+                        return;
+                    if (sender.LoggedinUser.OwnedRanch != null)
+                    {
+                        if (ranchBuild > sender.LoggedinUser.OwnedRanch.GetRanchUpgrade().Limit)
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to build more buildings than the limit.");
+                            return;
+                        }
+
+                        if (sender.LoggedinUser.Money >= building.Cost)
+                        {
+                            sender.LoggedinUser.OwnedRanch.SetBuilding(ranchBuild - 1, building);
+                            sender.LoggedinUser.OwnedRanch.InvestedMoney += building.Cost;
+                            sender.LoggedinUser.Money -= building.Cost;
+                            byte[] chatPacket = PacketBuilder.CreateChat(Messages.RanchBuildingComplete, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(chatPacket);
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
+                            return;
+
+                        }
+                        else
+                        {
+                            byte[] chatPacket = PacketBuilder.CreateChat(Messages.RanchCantAffordThisBuilding, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(chatPacket);
+                            return;
+                        }
+                    }
+                    Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to build in a ranch when they dont own one.");
+                    return;
+                }
+                else
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to get info for building id that didnt exist.");
+                    return;
+                }
+            }
+            else if (method == PacketBuilder.RANCH_BUY)
+            {
+                string nan = packetStr.Substring(2, packetStr.Length - 4);
+                if (nan == "NaN")
+                {
+                    if (Ranch.IsRanchHere(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                    {
+                        Ranch ranch = Ranch.GetRanchAt(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        if (sender.LoggedinUser.Money >= ranch.Value)
+                        {
+                            byte[] broughtRanch = PacketBuilder.CreateChat(Messages.FormatRanchBroughtMessage(ranch.Value), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(broughtRanch);
+                            sender.LoggedinUser.Money -= ranch.Value;
+                            ranch.OwnerId = sender.LoggedinUser.Id;
+                            ranch.InvestedMoney += ranch.Value;
+                            sender.LoggedinUser.OwnedRanch = ranch;
+                            sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(Item.DorothyShoes));
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
+
+                        }
+                        else
+                        {
+                            byte[] cantAfford = PacketBuilder.CreateChat(Messages.RanchCantAffordRanch, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantAfford);
+                        }
+                    }
+                    else
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to buy a non existant ranch.");
+                        return;
+                    }
+                }
+                else
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent RANCH_BUY without \"NaN\".");
+                    return;
+                }
+            }
+            else if (method == PacketBuilder.RANCH_CLICK)
+            {
+                if (packet.Length < 6)
+                {
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid ranch click packet.");
+                    return;
+                }
+                byte action = packet[2];
+                if (action == PacketBuilder.RANCH_CLICK_BUILD)
+                {
+                    if (Ranch.IsRanchHere(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                    {
+                        Ranch ranch = Ranch.GetRanchAt(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        if (sender.LoggedinUser.OwnedRanch != null)
+                        {
+                            if (sender.LoggedinUser.OwnedRanch.Id == ranch.Id)
+                            {
+                                int buildSlot = packet[3] - 40;
+                                sender.LoggedinUser.LastClickedRanchBuilding = buildSlot;
+
+                                if (buildSlot == 0)
+                                {
+                                    byte[] buildingsAvalible = PacketBuilder.CreateMetaPacket(Meta.BuildRanchUpgrade(ranch));
+                                    sender.SendPacket(buildingsAvalible);
+
+                                }
+                                else
+                                {
+                                    byte[] buildingsAvalible = PacketBuilder.CreateMetaPacket(Meta.BuildRanchBuildingsAvalible(ranch, buildSlot));
+                                    sender.SendPacket(buildingsAvalible);
+                                }
+
+
+                                return;
+                            }
+                        }
+                    }
+
+                    Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to build in a ranch they didnt own.");
+                    return;
+                }
+                else if (action == PacketBuilder.RANCH_CLICK_NORM)
+                {
+                    if (Ranch.IsRanchHere(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                    {
+                        Ranch ranch = Ranch.GetRanchAt(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        int buildSlot = packet[3] - 40;
+                        if (buildSlot == 0) // Main Building
+                        {
+                            byte[] upgradeDescription = PacketBuilder.CreateMetaPacket(Meta.BuildRanchBuilding(ranch, ranch.GetRanchUpgrade()));
+                            sender.SendPacket(upgradeDescription);
+                        }
+                        else // Other Building
+                        {
+                            byte[] buildingDescription = PacketBuilder.CreateMetaPacket(Meta.BuildRanchBuilding(ranch, ranch.GetBuilding(buildSlot - 1)));
+                            sender.SendPacket(buildingDescription);
+                        }
+                        return;
+                    }
+                    else
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " sent an Unknown ranch packet " + BitConverter.ToString(packet).Replace("-", " "));
+                    }
+                }
+            }
+            else
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " sent an Unknown ranch packet " + BitConverter.ToString(packet).Replace("-", " "));
+            }
+        }
         public static void OnChatPacket(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -3014,6 +3383,21 @@ namespace HISP.Server
                     World.SpecialTile tile = World.GetSpecialTile(x, y);
                     if (tile.Title != null)
                         returnedMsg = tile.Title;
+                }
+                if(Ranch.IsRanchHere(x, y))
+                {
+                    Ranch ranch = Ranch.GetRanchAt(x, y);
+                    if(ranch.OwnerId == -1)
+                    {
+                        returnedMsg = Messages.RanchUnownedRanchClicked;
+                    }
+                    else
+                    {
+                        string title = ranch.Title;
+                        if (title == null || title == "")
+                            title = Messages.RanchDefaultRanchTitle;
+                        returnedMsg = Messages.FormatRanchClickMessage(Database.GetUsername(ranch.OwnerId), title);
+                    }
                 }
 
                 byte[] tileInfoPacket = PacketBuilder.CreateClickTileInfoPacket(returnedMsg);
@@ -3220,6 +3604,53 @@ namespace HISP.Server
                         sender.SendPacket(itemRemovedMessage);
                     }
                     
+                    break;
+                case PacketBuilder.ITEM_USE:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    randomId = 0;
+
+                    try
+                    {
+                        randomId = Int32.Parse(randomIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        return;
+                    }
+                    if (sender.LoggedinUser.Inventory.HasItem(randomId))
+                    {
+                        InventoryItem itm = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
+                        if(itm.ItemId == Item.DorothyShoes)
+                        {
+                            if(World.InIsle(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                            {
+                                World.Isle isle = World.GetIsle(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                                if(isle.Name == "Prison Isle")
+                                {
+                                    byte[] dontWorkHere = PacketBuilder.CreateChat(Messages.RanchDorothyShoesPrisonIsleMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(dontWorkHere);
+                                    break;
+                                }
+                            }
+
+                            if(sender.LoggedinUser.OwnedRanch == null) // How????
+                            {
+                                Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to use Dorothy Shoes when they did *NOT* own a ranch.");
+                                sender.LoggedinUser.Inventory.Remove(itm.ItemInstances[0]);
+                                break;
+                            }
+                            byte[] noPlaceLIke127001 = PacketBuilder.CreateChat(Messages.RanchDorothyShoesMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(noPlaceLIke127001);
+
+                            sender.LoggedinUser.Teleport(sender.LoggedinUser.OwnedRanch.X, sender.LoggedinUser.OwnedRanch.Y);
+                        }
+                        else
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + "Tried to use item with undefined action- ID: " + itm.ItemId);
+                        }
+                    }
                     break;
                 case PacketBuilder.ITEM_WEAR:
                     packetStr = Encoding.UTF8.GetString(packet);
@@ -3772,7 +4203,7 @@ namespace HISP.Server
                                 }
 
                             }
-                            else if(sender.LoggedinUser.Inventory.Count + 1 > Messages.DefaultInventoryMax)
+                            else if(sender.LoggedinUser.Inventory.Count + 1 > sender.LoggedinUser.MaxItems)
                             {
                                 goto showError;
                             }
@@ -4372,13 +4803,13 @@ namespace HISP.Server
 
 
         }
-        public static void UpdateAreaForAll(int x, int y)
+        public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPrio=false)
         {
             foreach(GameClient client in ConnectedClients)
             {
                 if (client.LoggedIn)
                     if (client.LoggedinUser.X == x && client.LoggedinUser.Y == y)
-                        if(!client.LoggedinUser.MetaPriority)
+                        if(!client.LoggedinUser.MetaPriority || ignoreMetaPrio)
                             UpdateArea(client);
             }
         }

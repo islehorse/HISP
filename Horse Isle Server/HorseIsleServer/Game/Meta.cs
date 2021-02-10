@@ -1024,8 +1024,67 @@ namespace HISP.Game
 
             return message;
         }
+        public static string BuildRanchEdit(Ranch ranch)
+        {
+            return Messages.FormatRanchEditDescriptonMeta(ranch.Title, ranch.Description) + Messages.BackToMap + Messages.MetaTerminator;
+        }
+        public static string BuildRanchSellConfirmation()
+        {
+            return Messages.RanchSellAreYouSure + Messages.BackToMap + Messages.MetaTerminator;
+        }
+        public static string BuildRanchUpgrade(Ranch ranch)
+        {
+            string message = "";
+            Ranch.RanchUpgrade currentUpgrade = ranch.GetRanchUpgrade();
+            bool canUpgrade = Ranch.RanchUpgrade.RanchUpgradeExists(currentUpgrade.Id + 1);
+            
+            string upgrade = "";
+            if(canUpgrade)
+            {
+                Ranch.RanchUpgrade nextUpgrade = Ranch.RanchUpgrade.GetRanchUpgradeById(currentUpgrade.Id + 1);
+                upgrade = Messages.FormatNextUpgrade(nextUpgrade.Title, nextUpgrade.Cost);
+            }
+            message += Messages.FormatCurrentUpgrade(currentUpgrade.Title, currentUpgrade.Description, upgrade, ranch.GetSellPrice());
+            message += Messages.BackToMap;
+            return message;
+        }
+        public static string BuildRanchBuildingsAvalible(Ranch ranch, int slot)
+        {
+            string message = "";
+            if(ranch.GetBuilding(slot-1) != null)
+            {
+                Ranch.RanchBuilding building = ranch.GetBuilding(slot - 1);
+                message += Messages.FormatBuildingAlreadyPlaced(building.Title, building.Id, building.GetTeardownPrice());
+            }
+            else
+            {
+                message += Messages.RanchCanBuildOneOfTheFollowingInThisSpot;
+                foreach (Ranch.RanchBuilding building in Ranch.RanchBuilding.RanchBuildings)
+                {
+                    message += Messages.FormatBuildingEntry(building.Title, building.Cost, building.Id);
+                }
+            }
+
+            message += Messages.BackToMap;
+            return message;
+        }
+        public static string BuildRanchBuilding(Ranch ranch, Ranch.RanchUpgrade upgrade)
+        {
+            string message = "";
+            message += Messages.FormatViewBuilding(upgrade.Title, upgrade.Description);
+            message += Messages.BackToMap;
+            return message;
+        }
+        public static string BuildRanchBuilding(Ranch ranch, Ranch.RanchBuilding upgrade)
+        {
+            string message = "";
+            message += Messages.FormatViewBuilding(upgrade.Title, upgrade.Description);
+            message += Messages.BackToMap;
+            return message;
+        }
         private static string buildRanch(User user, int ranchId)
         {
+            
             string message = "";
             Ranch ranch = Ranch.GetRanchById(ranchId);
             bool mine = (ranch.OwnerId == user.Id);
@@ -1036,16 +1095,76 @@ namespace HISP.Game
 
             if (mine) // This is My DS.
             {
+                user.DoRanchActions();
+
+                string title = ranch.Title;
+                if (title == "" || title == null)
+                    title = Messages.RanchDefaultRanchTitle;
+                message += Messages.FormatRanchTitle(Database.GetUsername(ranch.OwnerId), title);
+                message += Messages.BuildingRestHere;
+
+                int numbBarns = ranch.GetBuildingCount(1);
+                int numbWaterWell = ranch.GetBuildingCount(2);
+                int numbGrainSilo = ranch.GetBuildingCount(3);
+                int numbTrainingPen = ranch.GetBuildingCount(6);
+                int numbWagon = ranch.GetBuildingCount(7);
+                int numbWindmill = ranch.GetBuildingCount(8);
+                int numbGarden = ranch.GetBuildingCount(9);
+                int numbBigBarn = ranch.GetBuildingCount(10);
+                int numbGoldBarn = ranch.GetBuildingCount(11);
                 
+
+                if (numbBarns > 0)
+                    message += Messages.FormatBuildingBarn(numbBarns, numbBarns * 4);
+                if (numbBigBarn > 0)
+                    message += Messages.FormatBuildingBarn(numbBigBarn, numbBigBarn * 8);
+                if (numbGoldBarn > 0)
+                    message += Messages.FormatBuildingBarn(numbGoldBarn, numbGoldBarn * 12);
+                if (numbBarns > 0 || numbBigBarn > 0 || numbGoldBarn > 0)
+                    message += Messages.RanchHorsesFullyRested;
+                if (numbWaterWell > 0)
+                    message += Messages.BuildingWaterWell;
+                if (numbGrainSilo > 0)
+                    message += Messages.BuildingGrainSilo;
+                if (numbWindmill > 0)
+                    message += Messages.FormatBuildingWindmill(numbWindmill, 5000 * numbWindmill);
+                if (numbGarden > 0)
+                    message += Messages.BuildingVegatableGarden;
+                if (numbWagon > 0)
+                    message += Messages.BuildingWagon;
+                if (numbTrainingPen > 0)
+                    message += Messages.BuildingTrainingPen;
+
+                message += Messages.FormatRanchYoursDescription(ranch.Description);
             }
             else if(ranch.OwnerId == -1) // No mans sky
             {
 
+                message += Messages.FormatRanchUnownedMeta(ranch.Value);
+                if (user.OwnedRanch == null)
+                {
+                    if (user.Subscribed)
+                        message += Messages.RanchYouCouldPurchaseThisRanch;
+                    else
+                        message += Messages.RanchSubscribersOnly;
+                }
+                else
+                {
+                    message += Messages.RanchYouAllreadyOwnARanch;
+                }
             }
             else
             {
+                string title = ranch.Title;
+                if (title == "" || title == null)
+                    title = Messages.RanchDefaultRanchTitle;
 
+                message += Messages.FormatRanchTitle(Database.GetUsername(ranch.OwnerId), title);
+                message += Messages.FormatRanchDescOthers(ranch.Description);
             }
+
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
 
             return message;
         }
@@ -1290,8 +1409,7 @@ namespace HISP.Game
         }
         public static string BuildHorseInventory(User user)
         {
-            // TODO: calculate max number based on ranch barns owned.
-            string message = Messages.FormatHorseHeader(user.HorseInventory.MaxHorses, user.HorseInventory.HorseList.Length);
+            string message = Messages.FormatHorseHeader(user.MaxHorses, user.HorseInventory.HorseList.Length);
 
             message += buildHorseList(user);
             message += Messages.ViewBaiscStats;
@@ -1322,7 +1440,7 @@ namespace HISP.Game
         public static string BuildInventoryInfo(PlayerInventory inv)
         {
             string message = "";
-            message += Messages.FormatPlayerInventoryHeaderMeta(inv.Count, Messages.DefaultInventoryMax);
+            message += Messages.FormatPlayerInventoryHeaderMeta(inv.Count, inv.BaseUser.MaxItems);
             InventoryItem[] items = inv.GetItemList();
             foreach(InventoryItem item in items)
             {
@@ -1335,7 +1453,7 @@ namespace HISP.Game
                 message += Messages.FormatPlayerInventoryItemMeta(itemInfo.IconId, item.ItemInstances.Count, title);
 
                 int randomId = item.ItemInstances[0].RandomId;
-                if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" && World.CanDropItems(inv.BaseUser.X, inv.BaseUser.Y))
+                if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" &&  !(itemInfo.Id == Item.Present || itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope) && World.CanDropItems(inv.BaseUser.X, inv.BaseUser.Y))
                     message += Messages.FormatItemDropButton(randomId);
 
                 if (itemInfo.Id == Item.Present || itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope)

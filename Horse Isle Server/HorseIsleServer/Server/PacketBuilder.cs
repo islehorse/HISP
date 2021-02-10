@@ -21,6 +21,7 @@ namespace HISP.Server
         public const byte PACKET_USERINFO = 0x81;
         public const byte PACKET_WORLD = 0x7A;
         public const byte PACKET_BASE_STATS = 0x7B;
+        public const byte PACKET_RANCH = 0x23;
         public const byte PACKET_SWF_CUTSCENE = 0x29;
         public const byte PACKET_SWF_MODULE_FORCE = 0x28;
         public const byte PACKET_SWF_MODULE_GENTLE = 0x2A;
@@ -45,6 +46,16 @@ namespace HISP.Server
         public const byte PACKET_INFORMATION = 0x28;
         public const byte PACKET_WISH = 0x2C;
         public const byte PACKET_SWFMODULE = 0x50;
+
+        public const byte RANCH_BUY = 0x14;
+        public const byte RANCH_INFO = 0x16;
+        public const byte RANCH_CLICK = 0x17;
+        public const byte RANCH_UPGRADE = 0x18;
+        public const byte RANCH_SELL = 0x15;
+        public const byte RANCH_BUILD = 0x19;
+        public const byte RANCH_REMOVE = 0x1A;
+        public const byte RANCH_CLICK_NORM = 0x14;
+        public const byte RANCH_CLICK_BUILD = 0x15;
 
         public const byte HORSE_LIST = 0x0A;
         public const byte HORSE_LOOK = 0x14;
@@ -138,6 +149,7 @@ namespace HISP.Server
         public const byte ITEM_BINOCULARS = 0x5C;
         public const byte ITEM_MAGNIFYING = 0x5D;
         public const byte ITEM_CRAFT = 0x64;
+        public const byte ITEM_USE = 0x5F;
         public const byte ITEM_RAKE = 0x5B;
         public const byte ITEM_SHOVEL = 0x5A;
 
