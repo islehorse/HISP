@@ -581,7 +581,7 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
-        public static string BuildTransportInfo(Transport.TransportPoint transportPoint)
+        public static string BuildTransportInfo(User user, Transport.TransportPoint transportPoint)
         {
             string message = "";
             // Build list of locations
@@ -589,7 +589,20 @@ namespace HISP.Game
             {
                 int transportLocationId = transportPoint.Locations[i];
                 Transport.TransportLocation transportLocation = Transport.GetTransportLocation(transportLocationId);
-                message += Messages.FormatTransportMessage(transportLocation.Type, transportLocation.LocationTitle, transportLocation.Cost, transportLocation.Id, transportLocation.GotoX, transportLocation.GotoY);
+                string costFormat = Messages.FormatTransportCost(transportLocation.Cost);
+                if(transportLocation.Type == "WAGON")
+                {
+                    if (user.OwnedRanch != null)
+                    {
+                        if (user.OwnedRanch.GetBuildingCount(7) > 0) // Wagon
+                        {
+                            costFormat = Messages.TransportWagonFree; 
+                        }
+                    }
+                }
+
+
+                message += Messages.FormatTransportMessage(transportLocation.Type, transportLocation.LocationTitle, costFormat, transportLocation.Id, transportLocation.GotoX, transportLocation.GotoY);
             }
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
@@ -1271,7 +1284,7 @@ namespace HISP.Game
                 if (TileCode == "TRANSPORT")
                 {
                     Transport.TransportPoint point = Transport.GetTransportPoint(specialTile.X, specialTile.Y);
-                    message += Meta.BuildTransportInfo(point);
+                    message += Meta.BuildTransportInfo(user, point);
                 }
 
                 if (TileCode == "STRAWPILE")
