@@ -83,7 +83,6 @@ namespace HISP.Game.Horse
             category = loadCategory;
             spoiled = loadSpoiled;
             magicUsed = loadMagicUsed;
-            TrainTimer = 0;
             RanchId = 0;
             Leaser = 0;
         }
@@ -117,7 +116,21 @@ namespace HISP.Game.Horse
         }
         public string Sex;
         public string Color;
-        public int TrainTimer;
+        public int TrainTimer
+        {
+            get
+            {
+                int timeout = Database.GetHorseTrainTimeout(this.RandomId);
+                if (timeout < 0)
+                    return 0;
+                else
+                    return timeout;
+            }
+            set
+            {
+                Database.SetHorseTrainTimeout(this.RandomId, value);
+            }
+        }
         public HorseInfo.Breed Breed;
         public HorseInfo.BasicStats BasicStats;
         public HorseInfo.AdvancedStats AdvancedStats;
