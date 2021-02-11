@@ -489,6 +489,40 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        public static string BuildRanchSearchResults(string search)
+        {
+            string message = "";
+            message += Messages.LibaryFindRanchResultsHeader;
+            int totalResults = 0;
+            foreach(Ranch ranch in Ranch.Ranches)
+            {
+                if(ranch.OwnerId != -1)
+                {
+                    string ranchOwnerName = Database.GetUsername(ranch.OwnerId);
+                    if(ranchOwnerName.ToLower().Contains(search.ToLower()))
+                    {
+                        message += Messages.FormatRanchSearchResult(ranchOwnerName, ranch.X, ranch.Y);
+                        totalResults++;
+                    }
+                }
+                if (totalResults >= 10)
+                    break;
+            }
+            if (totalResults == 0)
+                message += Messages.LibaryFindRanchResultsNoResults;
+
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildRanchSearchLibary()
+        {
+            string message = "";
+            message += Messages.LibaryFindRanch;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildAwardsLibary()
         {
             string message = "";

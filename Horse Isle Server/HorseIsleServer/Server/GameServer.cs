@@ -1194,7 +1194,8 @@ namespace HISP.Server
                                 }
                                 byte[] descriptionEditedMessage = PacketBuilder.CreateChat(Messages.RanchSavedRanchDescripton, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(descriptionEditedMessage);
-                                UpdateArea(sender);
+                                // Completely forgot! public server opens your stats menu when you save your ranch info like DUH!!
+                                UpdateStats(sender); 
                             }
                             else
                             {
@@ -1228,6 +1229,20 @@ namespace HISP.Server
                                     sender.SendPacket(chatPacket);
                                     break;
                                 }
+                            }
+                            else
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
+                                break;
+                            }
+                        case 13: // Libary Ranch Search
+                            if (dynamicInput.Length >= 2)
+                            {
+                                string searchQuery = dynamicInput[1];
+                                sender.LoggedinUser.MetaPriority = true;
+                                byte[] serachResponse = PacketBuilder.CreateMetaPacket(Meta.BuildRanchSearchResults(searchQuery));
+                                sender.SendPacket(serachResponse);
+                                break;
                             }
                             else
                             {
@@ -1484,12 +1499,17 @@ namespace HISP.Server
                         sender.SendPacket(metaPacket);
                     }
                     break;
+                case "31":
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRanchSearchLibary());
+                    sender.SendPacket(metaPacket);
+                    break;
                 case "35": // Buddy List
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBuddyList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
-                case "36":
+                case "36": // Nearby list
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildNearbyList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);

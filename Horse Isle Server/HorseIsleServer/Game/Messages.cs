@@ -151,6 +151,12 @@ namespace HISP.Game
         public static string LibaryFindNpcSearchNoResults;
         public static string LibaryFindNpcLimit5;
 
+        public static string LibaryFindRanch;
+        public static string LibaryFindRanchResultsHeader;
+        public static string LibaryFindRanchResultFormat;
+        public static string LibaryFindRanchResultsNoResults;
+
+
         public static string HorseBreedFormat;
         public static string HorseRelativeFormat;
         public static string BreedViewerFormat;
@@ -1183,6 +1189,11 @@ namespace HISP.Game
         public static string FormatHorseBreed(string name, int id)
         {
             return HorseBreedFormat.Replace("%NAME%", name).Replace("%ID%", id.ToString());
+        }
+        public static string FormatRanchSearchResult(string name, int x, int y)
+        {
+            string mapXy = FormatMapLocation(x, y);
+            return LibaryFindRanchResultFormat.Replace("%USERNAME%", name).Replace("%MAPXY%", mapXy);
         }
         public static string FormatNpcSearchResult(string name, string desc,int x, int y)
         {
