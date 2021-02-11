@@ -729,6 +729,7 @@ namespace HISP.Server
 
             // Treasure
             Messages.PirateTreasureFormat = gameData.messages.treasure.pirate_treasure;
+            Messages.PotOfGoldFormat = gameData.messages.treasure.pot_of_gold;
 
             // Records
             Messages.ProfileSavedMessage = gameData.messages.profile_save;

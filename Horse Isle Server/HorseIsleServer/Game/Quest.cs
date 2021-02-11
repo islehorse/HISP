@@ -336,7 +336,9 @@ namespace HISP.Game
                 // check Treasures
                 if (Treasure.IsTileTreasure(x, y))
                 {
-                    Treasure.GetTreasureAt(x, y).CollectTreasure(user);
+                    Treasure treasure = Treasure.GetTreasureAt(x, y);
+                    if(treasure.Type == "BURIED")
+                        treasure.CollectTreasure(user);
                     return true;
                 }
             }

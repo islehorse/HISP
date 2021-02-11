@@ -157,6 +157,9 @@ namespace HISP.Game
             }
             else if(this.Type == "RAINBOW")
             {
+                byte[] treasureReceivedPacket = PacketBuilder.CreateChat(Messages.FormatPotOfGold(this.Value), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                user.LoggedinClient.SendPacket(treasureReceivedPacket);
+                
                 user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PotOfGold).Count++;
 
                 if (user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PotOfGold).Count >= 3)

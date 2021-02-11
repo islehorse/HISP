@@ -419,6 +419,7 @@ namespace HISP.Game
 
         // Treasure
         public static string PirateTreasureFormat;
+        public static string PotOfGoldFormat;
 
 
         // Groomer
@@ -777,6 +778,10 @@ namespace HISP.Game
         public static string FormatPirateTreasure(int prize)
         {
             return PirateTreasureFormat.Replace("%PRIZE%", prize.ToString("N0"));
+        }
+        public static string FormatPotOfGold(int prize)
+        {
+            return PotOfGoldFormat.Replace("%PRIZE%", prize.ToString("N0"));
         }
         public static string FormatWorkshopCraftEntry(int iconId, string itemName, int price, int itemId, int craftId)
         {

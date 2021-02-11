@@ -2809,13 +2809,28 @@ namespace HISP.Server
                 return;
             }
 
-            if(loggedInUser.Y != newY || loggedInUser.X != newX)
+            
+            if (loggedInUser.Y != newY || loggedInUser.X != newX)
             {
                 loggedInUser.Facing = direction + (onHorse * 5);
                 if (moveTwo)
                     direction += 20;
                 loggedInUser.Y = newY;
                 loggedInUser.X = newX;
+
+
+                // check Treasures
+                if (Treasure.IsTileTreasure(loggedInUser.X, loggedInUser.Y))
+                {
+                    Treasure treasure = Treasure.GetTreasureAt(loggedInUser.X, loggedInUser.Y);
+                    if (treasure.Type == "RAINBOW")
+                    {
+                        treasure.CollectTreasure(loggedInUser);
+                        Update(sender);
+                        return;
+                    }
+                }
+
                 byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, direction, true);
                 sender.SendPacket(moveResponse);
             }
