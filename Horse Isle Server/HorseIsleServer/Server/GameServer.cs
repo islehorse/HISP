@@ -49,7 +49,7 @@ namespace HISP.Server
         private static void onGameTick(object state)
         {
             World.TickWorldClock();
-            
+            Database.DecHorseTrainTimeout();    
             gameTimer.Change(gameTickSpeed, gameTickSpeed);
         }
         private static void onMinuteTick(object state)
@@ -166,11 +166,11 @@ namespace HISP.Server
                     }
                     if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
-                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseFeedInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
 
-                        sender.LoggedinUser.LastViewedHorse = horseInst;
+                        sender.LoggedinUser.LastViewedHorse = horseFeedInst;
                         sender.LoggedinUser.MetaPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseFeedMenu(horseInst, sender.LoggedinUser));
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseFeedMenu(horseFeedInst, sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                         break;
                     }
@@ -195,24 +195,24 @@ namespace HISP.Server
                     }
                     if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
-                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
-                        sender.LoggedinUser.LastViewedHorse = horseInst;
+                        HorseInstance horsePetInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        sender.LoggedinUser.LastViewedHorse = horsePetInst;
                         int randMoodAddition = RandomNumberGenerator.Next(1, 20);
                         int randTiredMinus = RandomNumberGenerator.Next(1, 10);
 
 
 
                         string msgs = "";
-                        if (horseInst.BasicStats.Mood + randMoodAddition >= 1000)
+                        if (horsePetInst.BasicStats.Mood + randMoodAddition >= 1000)
                             msgs += Messages.HorsePetTooHappy;
-                        if (horseInst.BasicStats.Tiredness - randTiredMinus <= 0)
+                        if (horsePetInst.BasicStats.Tiredness - randTiredMinus <= 0)
                             msgs += Messages.HorsePetTooTired;
 
 
-                        
 
-                        horseInst.BasicStats.Tiredness -= randTiredMinus;
-                        horseInst.BasicStats.Mood += randMoodAddition;
+
+                        horsePetInst.BasicStats.Tiredness -= randTiredMinus;
+                        horsePetInst.BasicStats.Mood += randMoodAddition;
 
                         byte[] petMessagePacket = PacketBuilder.CreateChat(Messages.FormatHorsePetMessage(msgs,randMoodAddition, randTiredMinus), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(petMessagePacket);
@@ -284,8 +284,8 @@ namespace HISP.Server
                     }
                     if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
-                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
-                        sender.LoggedinUser.LastViewedHorse = horseInst;
+                        HorseInstance horseVetServiceInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        sender.LoggedinUser.LastViewedHorse = horseVetServiceInst;
 
                         if(World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
                         {
@@ -296,13 +296,13 @@ namespace HISP.Server
                                 int vetId = int.Parse(vetInfo[1]);
 
                                 Vet vet = Vet.GetVetById(vetId);
-                                int price = vet.CalculatePrice(horseInst.BasicStats.Health);
+                                int price = vet.CalculatePrice(horseVetServiceInst.BasicStats.Health);
                                 if(sender.LoggedinUser.Money >= price)
                                 {
-                                    horseInst.BasicStats.Health = 1000;
+                                    horseVetServiceInst.BasicStats.Health = 1000;
                                     sender.LoggedinUser.Money -= price;
 
-                                    byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatVetHorseAtFullHealthMessage(horseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatVetHorseAtFullHealthMessage(horseVetServiceInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(messagePacket);
                                 }
                                 else
@@ -450,10 +450,10 @@ namespace HISP.Server
                         }
 
 
-                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseReleaseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
                         if(sender.LoggedinUser.CurrentlyRidingHorse != null)
                         {
-                            if(horseInst.RandomId == sender.LoggedinUser.CurrentlyRidingHorse.RandomId) 
+                            if(horseReleaseInst.RandomId == sender.LoggedinUser.CurrentlyRidingHorse.RandomId) 
                             {
                                 byte[] errorChatPacket = PacketBuilder.CreateChat(Messages.HorseCantReleaseTheHorseYourRidingOn, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(errorChatPacket);
@@ -462,15 +462,15 @@ namespace HISP.Server
 
                         }
 
-                        if (horseInst.Description == "")
-                            horseInst.Description += Messages.FormatHorseReleasedBy(sender.LoggedinUser.Username);
+                        if (horseReleaseInst.Description == "")
+                            horseReleaseInst.Description += Messages.FormatHorseReleasedBy(sender.LoggedinUser.Username);
 
-                        Logger.InfoPrint(sender.LoggedinUser.Username + " RELEASED HORSE: " + horseInst.Name + " (a " + horseInst.Breed.Name + ").");
+                        Logger.InfoPrint(sender.LoggedinUser.Username + " RELEASED HORSE: " + horseReleaseInst.Name + " (a " + horseReleaseInst.Breed.Name + ").");
 
-                        sender.LoggedinUser.HorseInventory.DeleteHorse(horseInst);
-                        new WildHorse(horseInst, sender.LoggedinUser.X, sender.LoggedinUser.Y, 60, true);
+                        sender.LoggedinUser.HorseInventory.DeleteHorse(horseReleaseInst);
+                        new WildHorse(horseReleaseInst, sender.LoggedinUser.X, sender.LoggedinUser.Y, 60, true);
                         
-                        sender.LoggedinUser.LastViewedHorse = horseInst;
+                        sender.LoggedinUser.LastViewedHorse = horseReleaseInst;
                         sender.LoggedinUser.MetaPriority = true;
                         byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseReleased());
                         sender.SendPacket(metaPacket);
@@ -497,11 +497,11 @@ namespace HISP.Server
                     }
                     if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
-                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseTackInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
                         
-                        sender.LoggedinUser.LastViewedHorse = horseInst;
+                        sender.LoggedinUser.LastViewedHorse = horseTackInst;
                         sender.LoggedinUser.MetaPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackMenu(horseInst, sender.LoggedinUser));
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackMenu(horseTackInst, sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                         break;
                     }
@@ -536,25 +536,25 @@ namespace HISP.Server
                     }
                     if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
-                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseDrinkInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
 
-                        if(horseInst.BasicStats.Health < 200)
+                        if(horseDrinkInst.BasicStats.Health < 200)
                         {
-                            byte[] hpToLow = PacketBuilder.CreateChat(Messages.FormatPondHpLowMessage(horseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            byte[] hpToLow = PacketBuilder.CreateChat(Messages.FormatPondHpLowMessage(horseDrinkInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(hpToLow);
                             break;
                         }
 
-                        if(horseInst.BasicStats.Thirst < 1000)
+                        if(horseDrinkInst.BasicStats.Thirst < 1000)
                         {
-                            horseInst.BasicStats.Thirst = 1000;
-                            byte[] drinkFull = PacketBuilder.CreateChat(Messages.FormatPondDrinkFull(horseInst.Name),PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            horseDrinkInst.BasicStats.Thirst = 1000;
+                            byte[] drinkFull = PacketBuilder.CreateChat(Messages.FormatPondDrinkFull(horseDrinkInst.Name),PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(drinkFull);
 
                             if(RandomNumberGenerator.Next(0, 100) < 25)
                             {
-                                horseInst.BasicStats.Health -= 200;
-                                byte[] ohNoes = PacketBuilder.CreateChat(Messages.FormatPondDrinkOhNoes(horseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                horseDrinkInst.BasicStats.Health -= 200;
+                                byte[] ohNoes = PacketBuilder.CreateChat(Messages.FormatPondDrinkOhNoes(horseDrinkInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(ohNoes);
                             }
 
@@ -562,7 +562,7 @@ namespace HISP.Server
                         }
                         else
                         {
-                            byte[] notThirsty = PacketBuilder.CreateChat(Messages.FormatPondNotThirsty(horseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            byte[] notThirsty = PacketBuilder.CreateChat(Messages.FormatPondNotThirsty(horseDrinkInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(notThirsty);
                             break;
                         }
@@ -768,6 +768,7 @@ namespace HISP.Server
                         sender.LoggedinUser.Facing %= 5;
                         byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
                         sender.SendPacket(rideHorsePacket);
+                        sender.LoggedinUser.NoClip = false;
 
                         UpdateUserInfo(sender.LoggedinUser);
                     }
@@ -793,24 +794,24 @@ namespace HISP.Server
                     }
                     if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
-                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseMountInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
                         
-                        if(horseInst.Equipment.Saddle == null || horseInst.Equipment.SaddlePad == null || horseInst.Equipment.Bridle == null)
+                        if(horseMountInst.Equipment.Saddle == null || horseMountInst.Equipment.SaddlePad == null || horseMountInst.Equipment.Bridle == null)
                         {
                             byte[] horseNotTackedMessage = PacketBuilder.CreateChat(Messages.HorseCannotMountUntilTackedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(horseNotTackedMessage);
                             break;
                         }
 
-                        string ridingHorseMessage = Messages.FormatHorseRidingMessage(horseInst.Name);
+                        string ridingHorseMessage = Messages.FormatHorseRidingMessage(horseMountInst.Name);
                         byte[] ridingHorseMessagePacket = PacketBuilder.CreateChat(ridingHorseMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(ridingHorseMessagePacket);
 
-                        sender.LoggedinUser.CurrentlyRidingHorse = horseInst;
+                        sender.LoggedinUser.CurrentlyRidingHorse = horseMountInst;
 
                         // Determine what sprite to use;
                         int incBy = 0;
-                        switch(horseInst.Color)
+                        switch(horseMountInst.Color)
                         {
                             case "brown":
                                 incBy = 1;
@@ -846,34 +847,36 @@ namespace HISP.Server
                         }
 
 
-                        if(horseInst.Breed.Type == "zebra")
+                        if(horseMountInst.Breed.Type == "zebra")
                         {
                             incBy = 11;
                         }
-                        if(horseInst.Breed.Id == 5) // Appaloosa
+                        if(horseMountInst.Breed.Id == 5) // Appaloosa
                         {
-                            if(horseInst.Color == "brown")
+                            if(horseMountInst.Color == "brown")
                                 incBy = 12;
                         }
-                        if (horseInst.Breed.Type == "camel")
+                        if (horseMountInst.Breed.Type == "camel")
                         {
-                            if (horseInst.Color == "brown")
+                            if (horseMountInst.Color == "brown")
                                 incBy = 13;
-                            if (horseInst.Color == "white")
+                            if (horseMountInst.Color == "white")
                                 incBy = 14;
 
                         }
-                        if (horseInst.Breed.Type == "unicorn")
+                        if (horseMountInst.Breed.Type == "unicorn")
                         {
                             incBy = 15;
                         }
-                        if (horseInst.Breed.Type == "pegasus")
+                        if (horseMountInst.Breed.Type == "pegasus")
                         {
                             incBy = 16;
+                            sender.LoggedinUser.NoClip = true;
                         }
-                        if(horseInst.Breed.Id == 170) // Unipeg
+                        if(horseMountInst.Breed.Id == 170) // Unipeg
                         {
                             incBy = 17;
+                            sender.LoggedinUser.NoClip = true;
                         }
 
                         incBy *= 5;
@@ -896,6 +899,7 @@ namespace HISP.Server
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
                     randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    HorseInstance horseInst;
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -908,13 +912,22 @@ namespace HISP.Server
                     }
                     if(sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
-                        HorseInstance horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        horseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
                         UpdateHorseMenu(sender, horseInst);
                     }
                     else
                     {
-                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to look at a non existant horse.");
-                        break;
+                        try
+                        { // Not your horse? possibly viewed inside a ranch?
+                            horseInst = Database.GetPlayerHorse(randomId);
+                            UpdateHorseMenu(sender, horseInst);
+                            break;
+                        }
+                        catch(Exception)
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to look at a non existant horse.");
+                            break;
+                        }
                     }
 
                     break;
@@ -1426,6 +1439,17 @@ namespace HISP.Server
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigamesLibary());
                     sender.SendPacket(metaPacket);
+                    break;
+                case "13": // Train All (Ranch)
+                    if (sender.LoggedinUser.OwnedRanch != null)
+                    {
+                        if(sender.LoggedinUser.OwnedRanch.GetBuildingCount(6) > 0) // Training Pen
+                        {
+                            sender.LoggedinUser.MetaPriority = true;
+                            metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRanchTraining(sender.LoggedinUser));
+                            sender.SendPacket(metaPacket);
+                        }
+                    }
                     break;
                 case "20": // Minigame Rankings
                     sender.LoggedinUser.MetaPriority = true;
@@ -4790,7 +4814,10 @@ namespace HISP.Server
         {
             int TileID = Map.GetTileId(forClient.LoggedinUser.X, forClient.LoggedinUser.Y, false);
             string type = Map.TerrainTiles[TileID - 1].Type;
-            forClient.LoggedinUser.LastViewedHorse = horseInst;
+    
+            if(horseInst.Owner == forClient.LoggedinUser.Id)
+                forClient.LoggedinUser.LastViewedHorse = horseInst;
+
             forClient.LoggedinUser.MetaPriority = true;
             byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInformation(horseInst, forClient.LoggedinUser));
             forClient.SendPacket(metaPacket);

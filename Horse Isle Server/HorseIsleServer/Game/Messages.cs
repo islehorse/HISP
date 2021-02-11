@@ -66,7 +66,7 @@ namespace HISP.Game
         public static string BuildingVegatableGarden;
 
         public static string RanchTrainAllAttempt;
-        public static string RanchTrainSuccess;
+        public static string RanchTrainSuccessFormat;
         public static string RanchTrainCantTrain;
         public static string RanchHorsesFullyRested;
         public static string RanchWagonDroppedYouOff;
@@ -311,7 +311,8 @@ namespace HISP.Game
         public static string HorseBuckedYou;
 
         public static string HorseRidingMessageFormat;
-        public static string HorseNameFormat;
+        public static string HorseNameYoursFormat;
+        public static string HorseNameOthersFormat;
         public static string HorseDescriptionFormat;
         public static string HorseHandsHeightFormat;
         public static string HorseExperienceEarnedFormat;
@@ -333,6 +334,7 @@ namespace HISP.Game
         public static string HorseAutoSellPriceFormat;
         public static string HorseCantAutoSellTacked;
         public static string HorseCurrentlyCategoryFormat;
+        public static string HorseMarkAsCategory;
         public static string HorseStats;
         public static string HorseTacked;
         public static string HorseTackFormat;
@@ -365,6 +367,7 @@ namespace HISP.Game
 
         public static string HorseChangeAutoSell;
         public static string HorseSetAutoSell;
+        public static string HorseCompanionChangeButton;
 
         public static string HorseTackFailAutoSell;
         public static string HorseAreYouSureYouWantToReleaseFormat;
@@ -660,6 +663,15 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatRanchTrainFail(string horseName, int timeout)
+        {
+            return RanchTrainCantTrain.Replace("%HORSENAME%", horseName).Replace("%TIME%", timeout.ToString());            
+        }
+        public static string FormatRanchTrain(string horseName, int speed, int strength, int conformation, int agility, int endurance, int exp)
+        {
+            return RanchTrainSuccessFormat.Replace("%HORSENAME%", horseName).Replace("%SPEED%", speed.ToString("N0")).Replace("%STRENGTH%", strength.ToString("N0")).Replace("%CONFORMATION%", conformation.ToString("N0")).Replace("%AGILITY%", agility.ToString("N0")).Replace("%ENDURANCE%", endurance.ToString("N0")).Replace("%EXP%", exp.ToString("N0"));
+        }
         public static string FormatRanchDescOthers(string description)
         {
             return RanchDescriptionOthersFormat.Replace("%DESCRIPTION%", description);
@@ -742,7 +754,7 @@ namespace HISP.Game
         }
         public static string FormatTrainSuccess(string horseName)
         {
-            return RanchTrainSuccess.Replace("%HORSENAME%", horseName);
+            return RanchTrainSuccessFormat.Replace("%HORSENAME%", horseName);
         }
         public static string FormatCantTrain(string horseName)
         {
@@ -1044,9 +1056,13 @@ namespace HISP.Game
 
 
 
-        public static string FormatHorseName(string name)
+        public static string FormatHorseNameYours(string name)
         {
-            return HorseNameFormat.Replace("%NAME%", name);
+            return HorseNameYoursFormat.Replace("%NAME%", name);
+        }
+        public static string FormatHorseNameOthers(string name)
+        {
+            return HorseNameOthersFormat.Replace("%NAME%", name);
         }
         public static string FormatHorseDescription(string Description)
         {
@@ -1099,17 +1115,17 @@ namespace HISP.Game
             return HorseAutoSellFormat.Replace("%AUTOSELL%", autoSellStr);
         }
 
-        public static string FormatHorseCategory(string category)
+        public static string FormatHorseCategory(string category, string markAsCategoryButtons)
         {
-            return HorseCurrentlyCategoryFormat.Replace("%CATEGORY%", category);
+            return HorseCurrentlyCategoryFormat.Replace("%CATEGORY%", category).Replace("%MARKOPTIONS%", markAsCategoryButtons);
         }
         public static string FormatHorseTackEntry(int iconId, string name, int itemId)
         {
             return HorseTackFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", name).Replace("%ITEMID%", itemId.ToString());
         }
-        public static string FormatHorseCompanionEntry(int iconId, string name, int itemId)
+        public static string FormatHorseCompanionEntry(int iconId, string name, string companionChangeButton,  int itemId)
         {
-            return HorseCompanionFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", name).Replace("%ITEMID%", itemId.ToString());
+            return HorseCompanionFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", name).Replace("%ITEMID%", itemId.ToString()).Replace("%COMPANIONCHANGEBUTTON%", companionChangeButton);
         }
 
         public static string FormatHorseAdvancedStats(int spoiled, int magicUsed)

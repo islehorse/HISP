@@ -722,7 +722,7 @@ namespace HISP.Server
             Messages.BuildingVegatableGarden = gameData.messages.meta.ranch.special.vegatable_garden;
 
             Messages.RanchTrainAllAttempt = gameData.messages.meta.ranch.special.train_all;
-            Messages.RanchTrainSuccess = gameData.messages.meta.ranch.special.train_success;
+            Messages.RanchTrainSuccessFormat = gameData.messages.meta.ranch.special.train_success;
             Messages.RanchTrainCantTrain = gameData.messages.meta.ranch.special.train_cant_train;
             Messages.RanchHorsesFullyRested = gameData.messages.meta.ranch.special.fully_rested;
             Messages.RanchWagonDroppedYouOff = gameData.messages.meta.ranch.special.wagon_used;
@@ -938,7 +938,8 @@ namespace HISP.Server
             Messages.HorseBuckedYou = gameData.messages.meta.horse.horse_bucked;
 
             Messages.HorseRidingMessageFormat = gameData.messages.meta.horse.riding_message;
-            Messages.HorseNameFormat = gameData.messages.meta.horse.horse_inventory.your_horse_format;
+            Messages.HorseNameYoursFormat = gameData.messages.meta.horse.horse_inventory.your_horse_format;
+            Messages.HorseNameOthersFormat = gameData.messages.meta.horse.horse_inventory.horse_others_format;
             Messages.HorseDescriptionFormat = gameData.messages.meta.horse.horse_inventory.description_format;
             Messages.HorseHandsHeightFormat = gameData.messages.meta.horse.horse_inventory.hands_high;
             Messages.HorseExperienceEarnedFormat = gameData.messages.meta.horse.horse_inventory.experience;
@@ -962,12 +963,14 @@ namespace HISP.Server
             Messages.HorseCantAutoSellTacked = gameData.messages.meta.horse.horse_inventory.cannot_auto_sell_tacked;
 
             Messages.HorseCurrentlyCategoryFormat = gameData.messages.meta.horse.horse_inventory.marked_as;
+            Messages.HorseMarkAsCategory = gameData.messages.meta.horse.horse_inventory.marking_options;
             Messages.HorseStats = gameData.messages.meta.horse.horse_inventory.horse_stats;
             Messages.HorseTacked = gameData.messages.meta.horse.horse_inventory.wearing_tacked;
             Messages.HorseTackFormat = gameData.messages.meta.horse.horse_inventory.tacked_format;
 
             Messages.HorseCompanion = gameData.messages.meta.horse.horse_inventory.companion;
             Messages.HorseCompanionFormat = gameData.messages.meta.horse.horse_inventory.companion_selected;
+            Messages.HorseCompanionChangeButton = gameData.messages.meta.horse.companion_change_button;
             Messages.HorseNoCompanion = gameData.messages.meta.horse.horse_inventory.no_companion;
 
             Messages.HorseAdvancedStatsFormat = gameData.messages.meta.horse.horse_inventory.advanced_stats;

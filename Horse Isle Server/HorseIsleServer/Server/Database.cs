@@ -1420,6 +1420,60 @@ namespace HISP.Server
 
         }
 
+        public static HorseInstance ReadHorseInstance(MySqlDataReader reader)
+        {
+            int randomId = reader.GetInt32(0);
+            int breedId = reader.GetInt32(4);
+
+            HorseInfo.Breed horseBreed = HorseInfo.GetBreedById(breedId);
+            string name = reader.GetString(5);
+            string description = reader.GetString(6);
+            int spoiled = reader.GetInt32(32);
+            string category = reader.GetString(31);
+            int magicUsed = reader.GetInt32(33);
+            int autosell = reader.GetInt32(29);
+
+
+            HorseInstance inst = new HorseInstance(horseBreed, randomId, name, description, spoiled, category, magicUsed, autosell);
+            inst.Owner = reader.GetInt32(1);
+            inst.RanchId = reader.GetInt32(2);
+            inst.Leaser = reader.GetInt32(3);
+            inst.Sex = reader.GetString(7);
+            inst.Color = reader.GetString(8);
+
+
+            int health = reader.GetInt32(9);
+            int shoes = reader.GetInt32(10);
+            int hunger = reader.GetInt32(11);
+            int thirst = reader.GetInt32(12);
+            int mood = reader.GetInt32(13);
+            int groom = reader.GetInt32(14);
+            int tiredness = reader.GetInt32(15);
+            int experience = reader.GetInt32(16);
+            inst.BasicStats = new HorseInfo.BasicStats(inst, health, shoes, hunger, thirst, mood, groom, tiredness, experience);
+
+
+            int speed = reader.GetInt32(17);
+            int strength = reader.GetInt32(18);
+            int conformation = reader.GetInt32(19);
+            int agility = reader.GetInt32(20);
+            int endurance = reader.GetInt32(21);
+            int inteligence = reader.GetInt32(22);
+            int personality = reader.GetInt32(23);
+            int height = reader.GetInt32(24);
+            inst.AdvancedStats = new HorseInfo.AdvancedStats(inst, speed, strength, conformation, agility, inteligence, endurance, personality, height);
+
+            if (!reader.IsDBNull(25))
+                inst.Equipment.Saddle = Item.GetItemById(reader.GetInt32(25));
+            if (!reader.IsDBNull(26))
+                inst.Equipment.SaddlePad = Item.GetItemById(reader.GetInt32(26));
+            if (!reader.IsDBNull(27))
+                inst.Equipment.Bridle = Item.GetItemById(reader.GetInt32(27));
+            if (!reader.IsDBNull(28))
+                inst.Equipment.Companion = Item.GetItemById(reader.GetInt32(28));
+            return inst;
+        }
+
         public static void LoadHorseInventory(HorseInventory inv, int playerId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -1433,58 +1487,7 @@ namespace HISP.Server
 
                 while (reader.Read())
                 {
-                    int randomId = reader.GetInt32(0);
-                    int breedId = reader.GetInt32(4);
-
-                    HorseInfo.Breed horseBreed = HorseInfo.GetBreedById(breedId);
-                    string name = reader.GetString(5);
-                    string description = reader.GetString(6);
-                    int spoiled = reader.GetInt32(32);
-                    string category = reader.GetString(31);
-                    int magicUsed = reader.GetInt32(33);
-                    int autosell = reader.GetInt32(29);
-
-
-                    HorseInstance inst = new HorseInstance(horseBreed, randomId, name, description, spoiled, category, magicUsed, autosell);
-                    inst.Owner = reader.GetInt32(1);
-                    inst.RanchId = reader.GetInt32(2);
-                    inst.Leaser = reader.GetInt32(3);
-                    inst.Sex = reader.GetString(7);
-                    inst.Color = reader.GetString(8);
-
-
-                    int health = reader.GetInt32(9);
-                    int shoes = reader.GetInt32(10);
-                    int hunger = reader.GetInt32(11);
-                    int thirst = reader.GetInt32(12);
-                    int mood = reader.GetInt32(13);
-                    int groom = reader.GetInt32(14);
-                    int tiredness = reader.GetInt32(15);
-                    int experience = reader.GetInt32(16);
-                    inst.BasicStats = new HorseInfo.BasicStats(inst, health, shoes, hunger, thirst, mood, groom, tiredness, experience);
-
-
-                    int speed = reader.GetInt32(17);
-                    int strength = reader.GetInt32(18);
-                    int conformation = reader.GetInt32(19);
-                    int agility = reader.GetInt32(20);
-                    int endurance = reader.GetInt32(21);
-                    int inteligence = reader.GetInt32(22);
-                    int personality = reader.GetInt32(23);
-                    int height = reader.GetInt32(24);
-                    inst.AdvancedStats = new HorseInfo.AdvancedStats(inst, speed, strength, conformation, agility, inteligence, endurance, personality, height);
-
-                    if (!reader.IsDBNull(25))
-                        inst.Equipment.Saddle = Item.GetItemById(reader.GetInt32(25));
-                    if (!reader.IsDBNull(26))
-                        inst.Equipment.SaddlePad = Item.GetItemById(reader.GetInt32(26));
-                    if (!reader.IsDBNull(27))
-                        inst.Equipment.Bridle = Item.GetItemById(reader.GetInt32(27));
-                    if (!reader.IsDBNull(28))
-                        inst.Equipment.Companion = Item.GetItemById(reader.GetInt32(28));
-
-                    inst.TrainTimer = reader.GetInt32(30);
-                    inv.AddHorse(inst, false);
+                    inv.AddHorse(ReadHorseInstance(reader), false);
 
                 }
 
@@ -2142,6 +2145,95 @@ namespace HISP.Server
                 string Weather = sqlCommand.ExecuteScalar().ToString();
                 sqlCommand.Dispose();
                 return Weather;
+            }
+        }
+
+        public static void DecHorseTrainTimeout()
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET trainTimer=trainTimer-1 WHERE trainTimer-1 > -1";
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+
+        public static HorseInstance[] GetPlayerHorsesInCategory(int playerId, string category)
+        {
+
+            List<HorseInstance> instances = new List<HorseInstance>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM Horses WHERE ownerId=@playerId AND category=@category";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@category", category);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while(reader.Read())
+                {
+                    instances.Add(ReadHorseInstance(reader));
+                }
+                sqlCommand.Dispose();
+                return instances.ToArray(); 
+            }
+        }
+
+        public static HorseInstance GetPlayerHorse(int horseRandomId)
+        {
+            HorseInstance instance = null;
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM Horses WHERE randomId=@horseRandomId";
+                sqlCommand.Parameters.AddWithValue("@horseRandomId", horseRandomId);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    instance = ReadHorseInstance(reader);
+                    break;
+                }
+                
+                sqlCommand.Dispose();
+                if (instance == null)
+                    throw new KeyNotFoundException();
+                return instance;
+            }
+        }
+
+        public static int GetHorseTrainTimeout(int horseRandomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT trainTimer FROM Horses WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                int trainTimer = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return trainTimer;
+            }
+        }
+        public static void SetHorseTrainTimeout(int horseRandomId, int trainTimeout)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET trainTimer=@trainTimer WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@trainTimer", trainTimeout);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
             }
         }
 
