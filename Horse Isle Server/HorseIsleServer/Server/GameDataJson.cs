@@ -1050,6 +1050,11 @@ namespace HISP.Server
             Messages.LibaryFindNpcSearchNoResults = gameData.messages.meta.libary.find_npc_no_results;
             Messages.LibaryFindNpcLimit5 = gameData.messages.meta.libary.find_npc_limit5;
 
+            Messages.LibaryFindRanch = gameData.messages.meta.libary.find_ranch;
+            Messages.LibaryFindRanchResultsHeader = gameData.messages.meta.libary.find_ranch_match_closely;
+            Messages.LibaryFindRanchResultFormat = gameData.messages.meta.libary.find_ranch_result;
+            Messages.LibaryFindRanchResultsNoResults = gameData.messages.meta.libary.find_ranch_no_results;
+
             Messages.HorseBreedFormat = gameData.messages.meta.libary.horse_breed_format;
             Messages.HorseRelativeFormat = gameData.messages.meta.libary.horse_relative_format;
             Messages.BreedViewerFormat = gameData.messages.meta.libary.breed_preview_format;
