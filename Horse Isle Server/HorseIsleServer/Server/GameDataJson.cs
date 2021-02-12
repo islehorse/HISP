@@ -520,6 +520,8 @@ namespace HISP.Server
                 Tracking.TrackedItemsStatsMenu.Add(trackedItem);
                 Logger.DebugPrint("Registered Tracked Item: " + trackedItem.What + " value: " + trackedItem.Value);
             }
+            // Register Services
+
             int totalVets = gameData.services.vet.price_multipliers.Count;
             for (int i = 0; i < totalVets; i++)
             {
@@ -537,6 +539,22 @@ namespace HISP.Server
                 Groomer groomer = new Groomer(id, cost, max);
                 Logger.DebugPrint("Registered Groomer: " + groomer.Id + " selling at: " + groomer.PriceMultiplier.ToString(CultureInfo.InvariantCulture));
             }
+
+            int totalFarriers = gameData.services.farrier.price_multipliers.Count;
+            for (int i = 0; i < totalFarriers; i++)
+            {
+                int id = gameData.services.farrier.price_multipliers[i].id;
+                int steel = gameData.services.farrier.price_multipliers[i].steel;
+                int steelcost = gameData.services.farrier.price_multipliers[i].steel_cost;
+                int iron = gameData.services.farrier.price_multipliers[i].iron;
+                int ironcost = gameData.services.farrier.price_multipliers[i].iron_cost;
+
+                Farrier farrier = new Farrier(id, steel, steelcost, iron, ironcost);
+                Logger.DebugPrint("Registered Farrier: " + farrier.Id);
+            }
+
+
+            // Register Libary Books
             int totalBooks = gameData.books.Count;
             for (int i = 0; i < totalBooks; i++)
             {
@@ -548,6 +566,8 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Libary Book: " + book.Id + " " + book.Title + " by " + book.Author);
 
             }
+
+            // Register Crafts
             int totalWorkshops = gameData.workshop.Count;
             for (int i = 0; i < totalWorkshops; i++)
             {
@@ -829,6 +849,17 @@ namespace HISP.Server
             Messages.GroomerApplyServiceFormat = gameData.messages.meta.groomer.apply_service;
             Messages.GroomerApplyServiceForAllFormat = gameData.messages.meta.groomer.apply_all;
             Messages.GroomerCannotImprove = gameData.messages.meta.groomer.cannot_improve;
+
+            // Farrier
+            Messages.FarrierCurrentShoesFormat = gameData.messages.meta.farrier.current_shoes;
+            Messages.FarrierApplyIronShoesFormat = gameData.messages.meta.farrier.apply_iron;
+            Messages.FarrierApplySteelShoesFormat = gameData.messages.meta.farrier.apply_steel;
+            Messages.FarrierShoeAllFormat = gameData.messages.meta.farrier.shoe_all;
+
+            Messages.FarrierPutOnSteelShoesMessageFormat = gameData.messages.meta.farrier.put_on_steel_shoes;
+            Messages.FarrierPutOnIronShoesMessageFormat = gameData.messages.meta.farrier.put_on_iron_shoes;
+            Messages.FarrierPutOnSteelShoesAllMesssageFormat = gameData.messages.meta.farrier.put_on_steel_all;
+            Messages.FarrierShoesCantAffordMessage = gameData.messages.meta.farrier.cant_afford_farrier;
 
             // Vet
             Messages.VetServiceHorseFormat = gameData.messages.meta.vet.service_horse;

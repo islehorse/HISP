@@ -1330,6 +1330,30 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        private static string buildFarrier(User user, Farrier farrier)
+        {
+            string message = "";
+            int totalPrice = 0;
+            int maxShoes = 1000;
+            foreach (HorseInstance horse in user.HorseInventory.HorseList)
+            {
+                message += Messages.FormatFarrierCurrentShoes(horse.Name, horse.BasicStats.Shoes, maxShoes);
+                if (horse.BasicStats.Shoes < farrier.IronShoesAmount)
+                    message += Messages.FormatFarrierApplyIron(farrier.IronCost, farrier.IronShoesAmount, horse.RandomId);
+
+                if (horse.BasicStats.Shoes < farrier.SteelShoesAmount)
+                {
+                    totalPrice += farrier.SteelCost;
+                    message += Messages.FormatFarrierApplySteel(farrier.SteelCost, farrier.SteelShoesAmount, horse.RandomId);
+                }
+
+            }
+            if(totalPrice > 0)
+                message += Messages.FormatFarrierApplySteelToAll(totalPrice, farrier.SteelShoesAmount);
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         private static string buildRiddlerRiddle(User user)
         {
             Riddler riddle = Riddler.GetRandomRiddle(user);
@@ -1341,138 +1365,7 @@ namespace HISP.Game
             return message;
         }
 
-        public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)
-        {
-            string message = "";
-
-            if (specialTile.Code == null)
-                message += buildLocationString(specialTile.X, specialTile.Y);
-
-
-            if (specialTile.Title != null && specialTile.Title != "")
-                message += Messages.FormatTileName(specialTile.Title); 
-
-
-            if (specialTile.Description != null && specialTile.Description != "")
-                message += specialTile.Description;
-            
-            string npc = buildNpc(user, specialTile.X, specialTile.Y);
-            message += npc;
-
-            if (specialTile.Code == null || specialTile.Code == "")
-                message += buildCommonInfo(specialTile.X, specialTile.Y);
-            else
-            {
-
-                user.MetaPriority = true;
-
-                string TileCode = specialTile.Code;
-
-                string TileArg = "";
-                if (TileCode.Contains("-"))
-                {
-                    TileArg = TileCode.Split('-')[1];
-                    TileCode = TileCode.Split('-')[0];
-                }
-                if (TileCode == "EXITABLE")
-                    message += Messages.ExitThisPlace;
-
-                if (TileCode == "TRANSPORT")
-                {
-                    Transport.TransportPoint point = Transport.GetTransportPoint(specialTile.X, specialTile.Y);
-                    message += Meta.BuildTransportInfo(user, point);
-                }
-
-                if (TileCode == "STRAWPILE")
-                {
-                    if (user.Inventory.HasItemId(Item.Pitchfork))
-                        message += Messages.HasPitchforkMeta;
-                    else
-                        message += Messages.NoPitchforkMeta;
-                }
-
-                if (TileCode == "STORE")
-                {
-                    int ShopID = int.Parse(TileArg);
-                    Shop shop = Shop.GetShopById(ShopID);
-                    user.LastShoppedAt = shop;
-                    message += buildShopInfo(shop,user.Inventory);
-
-                }
-                if(TileCode == "VET")
-                {
-                    int VetId = int.Parse(TileArg);
-                    Vet vet = Vet.GetVetById(VetId);
-                    message += buildVet(vet, user);
-                }
-                if(TileCode == "BANK")
-                {
-                    message += buildBank(user);
-                }
-                if(TileCode == "WISHINGWELL")
-                {
-                    message += buildWishingWell(user);
-                }
-                if(TileCode == "VENUSFLYTRAP")
-                {
-                    message += buildVenusFlyTrap(user);
-                }
-                if(TileCode == "RIDDLER")
-                {
-                    message += buildRiddlerRiddle(user);
-                }
-                if(TileCode == "LIBRARY")
-                {
-                    message += buildLibary();
-                }
-                if(TileCode == "POND")
-                {
-                    message += buildPond(user);
-                }
-                if(TileCode == "WORKSHOP")
-                {
-                    message += buildWorkshop(user);
-                }
-                if(TileCode == "MUDHOLE")
-                {
-                    message += buildMudHole(user);
-                }
-                if(TileCode == "RANCH")
-                {
-                    message += buildRanch(user, int.Parse(TileArg));
-                }
-                if(TileCode == "MULTIROOM")
-                {
-                    user.MetaPriority = false; // acturally want to track updates here >-<
-                    if(TileArg != "")
-                        message += buildMultiroom(TileArg, user);
-                }
-                if(TileCode == "PASSWORD")
-                {
-                    message += buildPassword();
-                }
-                if(TileCode == "HORSEWHISPERER")
-                {
-                    message += buildHorseWhisperer();
-                }
-                if(TileCode == "INN")
-                {
-                    int InnID = int.Parse(TileArg);
-                    Inn inn = Inn.GetInnById(InnID);
-                    user.LastVisitedInn = inn;
-                    message += buildInn(inn);
-                }
-                if(TileCode == "FOUNTAIN")
-                {
-                    message += buildFountain();
-
-                }
-            }
-             
-
-
-            return message;
-        }
+       
         public static string BuildHorseEscapedMessage()
         {
             string message = Messages.HorseEvadedCapture;
@@ -1846,6 +1739,7 @@ namespace HISP.Game
             return message;
         }
 
+
         public static string BuildTackMenu(HorseInstance horse, User user)
         {
             string message = Messages.FormatTackedAsFollowedMessage(horse.Name);
@@ -1928,6 +1822,143 @@ namespace HISP.Game
             message += buildCommonInfo(x, y);
             return message;
         }
+        public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)
+        {
+            string message = "";
+
+            if (specialTile.Code == null)
+                message += buildLocationString(specialTile.X, specialTile.Y);
+
+
+            if (specialTile.Title != null && specialTile.Title != "")
+                message += Messages.FormatTileName(specialTile.Title);
+
+
+            if (specialTile.Description != null && specialTile.Description != "")
+                message += specialTile.Description;
+
+            string npc = buildNpc(user, specialTile.X, specialTile.Y);
+            message += npc;
+
+            if (specialTile.Code == null || specialTile.Code == "")
+                message += buildCommonInfo(specialTile.X, specialTile.Y);
+            else
+            {
+
+                user.MetaPriority = true;
+
+                string TileCode = specialTile.Code;
+
+                string TileArg = "";
+                if (TileCode.Contains("-"))
+                {
+                    TileArg = TileCode.Split('-')[1];
+                    TileCode = TileCode.Split('-')[0];
+                }
+                if (TileCode == "EXITABLE")
+                    message += Messages.ExitThisPlace;
+
+                if (TileCode == "TRANSPORT")
+                {
+                    Transport.TransportPoint point = Transport.GetTransportPoint(specialTile.X, specialTile.Y);
+                    message += Meta.BuildTransportInfo(user, point);
+                }
+
+                if (TileCode == "STRAWPILE")
+                {
+                    if (user.Inventory.HasItemId(Item.Pitchfork))
+                        message += Messages.HasPitchforkMeta;
+                    else
+                        message += Messages.NoPitchforkMeta;
+                }
+
+                if (TileCode == "STORE")
+                {
+                    int ShopID = int.Parse(TileArg);
+                    Shop shop = Shop.GetShopById(ShopID);
+                    user.LastShoppedAt = shop;
+                    message += buildShopInfo(shop, user.Inventory);
+
+                }
+                if (TileCode == "VET")
+                {
+                    int VetId = int.Parse(TileArg);
+                    Vet vet = Vet.GetVetById(VetId);
+                    message += buildVet(vet, user);
+                }
+                if (TileCode == "BANK")
+                {
+                    message += buildBank(user);
+                }
+                if (TileCode == "WISHINGWELL")
+                {
+                    message += buildWishingWell(user);
+                }
+                if (TileCode == "VENUSFLYTRAP")
+                {
+                    message += buildVenusFlyTrap(user);
+                }
+                if (TileCode == "RIDDLER")
+                {
+                    message += buildRiddlerRiddle(user);
+                }
+                if (TileCode == "LIBRARY")
+                {
+                    message += buildLibary();
+                }
+                if (TileCode == "POND")
+                {
+                    message += buildPond(user);
+                }
+                if (TileCode == "WORKSHOP")
+                {
+                    message += buildWorkshop(user);
+                }
+                if (TileCode == "MUDHOLE")
+                {
+                    message += buildMudHole(user);
+                }
+                if (TileCode == "RANCH")
+                {
+                    message += buildRanch(user, int.Parse(TileArg));
+                }
+                if(TileCode == "FARRIER")
+                {
+                    message += buildFarrier(user, Farrier.GetFarrierById(int.Parse(TileArg)));
+                }
+                if (TileCode == "MULTIROOM")
+                {
+                    user.MetaPriority = false; // acturally want to track updates here >-<
+                    if (TileArg != "")
+                        message += buildMultiroom(TileArg, user);
+                }
+                if (TileCode == "PASSWORD")
+                {
+                    message += buildPassword();
+                }
+                if (TileCode == "HORSEWHISPERER")
+                {
+                    message += buildHorseWhisperer();
+                }
+                if (TileCode == "INN")
+                {
+                    int InnID = int.Parse(TileArg);
+                    Inn inn = Inn.GetInnById(InnID);
+                    user.LastVisitedInn = inn;
+                    message += buildInn(inn);
+                }
+                if (TileCode == "FOUNTAIN")
+                {
+                    message += buildFountain();
+
+                }
+            }
+
+
+
+            return message;
+        }
+
 
     }
 }

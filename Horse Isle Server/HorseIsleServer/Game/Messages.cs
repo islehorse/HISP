@@ -425,11 +425,12 @@ namespace HISP.Game
         public static string FarrierCurrentShoesFormat;
         public static string FarrierApplyIronShoesFormat;
         public static string FarrierApplySteelShoesFormat;
-
+        public static string FarrierShoeAllFormat;
 
         public static string FarrierPutOnSteelShoesMessageFormat;
         public static string FarrierPutOnIronShoesMessageFormat;
-        public static string FarrierPutOnSteelShoesAllMessageFormat;
+        public static string FarrierPutOnSteelShoesAllMesssageFormat;
+        public static string FarrierShoesCantAffordMessage;
 
         // Groomer
 
@@ -679,6 +680,40 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+
+        // Farrier Formats
+        public static string FormatFarrierPutOnSteelShoesAllMesssage(int curShoes, int maxShoes)
+        {
+            return FarrierPutOnSteelShoesAllMesssageFormat.Replace("%TOTAL%", curShoes.ToString()).Replace("%MAX%", maxShoes.ToString());
+        }
+        public static string FormatFarrierPutOnIronShoesMessage(int curShoes, int maxShoes)
+        {
+            return FarrierPutOnIronShoesMessageFormat.Replace("%TOTAL%", curShoes.ToString()).Replace("%MAX%", maxShoes.ToString());
+        }
+        public static string FormatFarrierPutOnSteelShoesMessage(int curShoes, int maxShoes)
+        {
+            return FarrierPutOnSteelShoesMessageFormat.Replace("%TOTAL%", curShoes.ToString()).Replace("%MAX%", maxShoes.ToString());
+        }
+        public static string FormatFarrierApplySteelToAll(int price, int incBy)
+        {
+            return FarrierShoeAllFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%INCBY%", incBy.ToString());
+        }
+        public static string FormatFarrierApplySteel(int price, int incBy, int horseRandomid)
+        {
+            return FarrierApplySteelShoesFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%INCBY%", incBy.ToString()).Replace("%HORSERANDOMID%", horseRandomid.ToString());
+        }
+        public static string FormatFarrierApplyIron(int price, int incBy, int horseRandomid)
+        {
+            return FarrierApplyIronShoesFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%INCBY%", incBy.ToString()).Replace("%HORSERANDOMID%", horseRandomid.ToString());
+        }
+        public static string FormatFarrierCurrentShoes(string horseName, int curShoes, int maxShoes)
+        {
+            return FarrierCurrentShoesFormat.Replace("%HORSENAME%", horseName).Replace("%TOTAL%", curShoes.ToString()).Replace("%MAX%", maxShoes.ToString());
+        }
+
+
+        // Ranch Formats
 
         public static string FormatRanchTrainFail(string horseName, int timeout)
         {
