@@ -724,7 +724,7 @@ namespace HISP.Game
             return message;
         }
 
-        public static string BuildHorseList(User user)
+        public static string BuildWildHorseList(User user)
         {
             string message = "";
             WildHorse[] horses = WildHorse.GetHorsesAt(user.X, user.Y);
@@ -940,7 +940,7 @@ namespace HISP.Game
             return message;
         }
 
-        public static string BuildHorseList()
+        public static string BuildHorseBreedListLibary()
         {
             string message = "";
             foreach (HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name).ToList())
@@ -1921,7 +1921,7 @@ namespace HISP.Game
         {
             string message = "";
             message += buildLocationString(x, y);
-            message += BuildHorseList(user);
+            message += BuildWildHorseList(user);
             message += buildNpc(user, x, y);
 
 
