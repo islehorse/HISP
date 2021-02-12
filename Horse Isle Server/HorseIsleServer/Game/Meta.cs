@@ -271,7 +271,7 @@ namespace HISP.Game
 
             foreach (HorseInfo.Category category in HorseInfo.HorseCategories)
             {
-                HorseInstance[] horsesInCategory = Database.GetPlayerHorsesInCategory(userId, category.Name);
+                HorseInstance[] horsesInCategory = Database.GetPlayerHorsesInCategory(userId, category.Name).OrderBy(o => o.Name).ToArray();
                 if (horsesInCategory.Length > 0)
                 {
                     message += category.MetaOthers;
@@ -708,7 +708,7 @@ namespace HISP.Game
             message += Messages.FormatExperience(user.Experience);
             message += Messages.FormatHungryStat(Messages.FormatPlayerStat(SelectPlayerStatFormat(user.Hunger), Messages.StatHunger));
             message += Messages.FormatThirstStat(Messages.FormatPlayerStat(SelectPlayerStatFormat(user.Thirst), Messages.StatThirst));
-            message += Messages.FormatTiredStat(Messages.FormatPlayerStat(SelectPlayerStatFormat(user.Thirst), Messages.StatTired));
+            message += Messages.FormatTiredStat(Messages.FormatPlayerStat(SelectPlayerStatFormat(user.Tiredness), Messages.StatTired));
             message += Messages.FormatGenderStat(user.Gender);
             message += Messages.FormatJewelryStat(buildWornJewelery(user));
             message += Messages.FormatCompetitionGearStat(buildEquippedCompetitionGear(user));
@@ -1106,10 +1106,9 @@ namespace HISP.Game
             if (user.BankInterest > user.BankMoney)
             {
                 moneyMade = user.BankInterest - user.BankMoney;
-                user.BankMoney = user.BankInterest;
+                user.BankMoney += moneyMade;
 
             }
-            user.BankInterest = user.BankMoney;
 
             string message = "";
             moneyMade = Math.Floor(moneyMade);
@@ -1505,7 +1504,7 @@ namespace HISP.Game
             int i = 1;
             foreach (HorseInfo.Category category in HorseInfo.HorseCategories)
             {
-                HorseInstance[] horsesInCategory = user.HorseInventory.GetHorsesInCategory(category);
+                HorseInstance[] horsesInCategory = user.HorseInventory.GetHorsesInCategory(category).OrderBy(o => o.Name).ToArray(); 
                 if (horsesInCategory.Length > 0)
                 {
                     if (youView)

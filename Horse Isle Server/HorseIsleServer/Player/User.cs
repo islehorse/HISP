@@ -301,6 +301,7 @@ namespace HISP.Player
 
                 Database.SetPlayerBankMoney(value, Id);
                 bankMoney = value;
+                BankInterest = value;
             }
         }
 
