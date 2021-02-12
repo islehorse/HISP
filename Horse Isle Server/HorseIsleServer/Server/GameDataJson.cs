@@ -686,6 +686,9 @@ namespace HISP.Server
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
 
+            // Click
+            Messages.PlayerHereFormat = gameData.messages.player_here;
+
             // Ranch
             Messages.RanchUnownedRanchFormat = gameData.messages.meta.ranch.unowned_ranch;
             Messages.RanchYouCouldPurchaseThisRanch = gameData.messages.meta.ranch.you_could_purchase_this;
