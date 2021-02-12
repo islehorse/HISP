@@ -1005,7 +1005,7 @@ namespace HISP.Server
 
             Messages.HorseCompanion = gameData.messages.meta.horse.horse_inventory.companion;
             Messages.HorseCompanionFormat = gameData.messages.meta.horse.horse_inventory.companion_selected;
-            Messages.HorseCompanionChangeButton = gameData.messages.meta.horse.companion_change_button;
+            Messages.HorseCompanionChangeButton = gameData.messages.meta.horse.horse_inventory.companion_change_button;
             Messages.HorseNoCompanion = gameData.messages.meta.horse.horse_inventory.no_companion;
 
             Messages.HorseAdvancedStatsFormat = gameData.messages.meta.horse.horse_inventory.advanced_stats;
