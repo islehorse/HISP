@@ -23,7 +23,7 @@ namespace HISP.Game
 
             public NpcReply[] Replies;
         }
-        public struct NpcEntry
+        public class NpcEntry
         {
             public int Id;
             public string Name;
@@ -42,6 +42,95 @@ namespace HISP.Game
             public bool AdminOnly;
             public bool LibarySearchable;
             public int IconId;
+
+            private int udlrScriptPos = 0;
+
+            private bool canNpcBeHere(int x, int y)
+            {
+                // Horses cannot be in towns.
+                if (World.InTown(x, y))
+                    return false;
+                if (World.InSpecialTile(x, y))
+                    return false;
+
+                // Check Tile Type
+                int TileID = Map.GetTileId(x, y, false);
+                string TileType = Map.TerrainTiles[TileID - 1].Type;
+                if (TileType != this.StayOn)
+                    return false;
+
+                if (Map.CheckPassable(x, y)) // Can the player stand over here?
+                    return true;
+
+                return false;
+            }
+            public void RandomWander()
+            {
+                if(Moves)
+                {
+                    if(UDLRStartX == 0 && UDLRStartY == 0) // not scripted.
+                    {
+                        if (GameServer.GetUsersAt(this.X, this.Y, true, true).Length > 0)
+                            return;
+
+                        int direction = GameServer.RandomNumberGenerator.Next(0, 3);
+                        int tryX = this.X;
+                        int tryY = this.Y;
+
+                        switch (direction)
+                        {
+                            case 0:
+                                tryX += 1;
+                                break;
+                            case 1:
+                                tryX -= 1;
+                                break;
+                            case 2:
+                                tryY += 1;
+                                break;
+                            case 3:
+                                tryY -= 1;
+                                break;
+                        }
+
+                        if (canNpcBeHere(tryX, tryY))
+                        {
+                            X = tryX;
+                            Y = tryY;
+                        }
+                    }
+                    else // Is Scripted.
+                    {
+
+                        X = UDLRStartX;
+                        Y = UDLRStartY;
+                        for(int i = 0; i < udlrScriptPos; i++)
+                        {
+                            
+                            switch (UDLRScript.ToLower()[i])
+                            {
+                                case 'u':
+                                    Y++;
+                                    break;
+                                case 'd':
+                                    Y--;
+                                    break;
+                                case 'l':
+                                    X--;
+                                    break;
+                                case 'r':
+                                    X++;
+                                    break;
+                            }
+                        }
+
+                        udlrScriptPos++;
+
+                        if (udlrScriptPos > UDLRScript.Length)
+                            udlrScriptPos = 0;
+                    }
+                }
+            }
 
             public NpcChat[] Chatpoints;
         }
@@ -121,6 +210,16 @@ namespace HISP.Game
                     return npc;
             }
             throw new KeyNotFoundException("Npc id: " + id + " not found!");
+        }
+
+        public static void WanderNpcs()
+        {
+            Logger.DebugPrint("Making NPC's randomly wander.");
+            foreach(NpcEntry npc in NpcList)
+            {
+                if(GameServer.RandomNumberGenerator.Next(0,100) > 50)
+                    npc.RandomWander();
+            }
         }
 
         public static NpcEntry[] GetNpcByXAndY(int x, int y)

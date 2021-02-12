@@ -121,18 +121,18 @@ namespace HISP.Game
 
         public static bool CanComplete(User user, QuestEntry quest)
         {
+            // Has completed other required quests?
+            foreach (int questId in quest.RequiresQuestIdCompleted)
+                if (user.Quests.GetTrackedQuestAmount(questId) < 1)
+                    return false;
+
+            // Has NOT competed other MUST NOT BE required quests
+            foreach (int questId in quest.RequiresQuestIdNotCompleted)
+                if (user.Quests.GetTrackedQuestAmount(questId) > 1)
+                    return false;
+
             if (quest.Tracked)
             {
-
-                // Has completed other required quests?
-                foreach (int questId in quest.RequiresQuestIdCompleted)
-                    if (user.Quests.GetTrackedQuestAmount(questId) < 1)
-                        return false;
-
-                // Has NOT competed other MUST NOT BE required quests
-                foreach (int questId in quest.RequiresQuestIdNotCompleted)
-                    if (user.Quests.GetTrackedQuestAmount(questId) > 1)
-                        return false;
 
                 // Has allready tracked this quest?
                 if (user.Quests.GetTrackedQuestAmount(quest.Id) >= quest.MaxRepeats)
