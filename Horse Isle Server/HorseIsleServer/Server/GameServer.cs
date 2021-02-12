@@ -320,6 +320,121 @@ namespace HISP.Server
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to use vet services on a non existant horse.");
                         break;
                     }
+                case PacketBuilder.HORSE_SHOE_STEEL:
+                case PacketBuilder.HORSE_SHOE_IRON:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+
+                    if (randomIdStr == "NaN")
+                        break;
+
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        HorseInstance horseFarrierServiceInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        sender.LoggedinUser.LastViewedHorse = horseFarrierServiceInst;
+
+                        if (World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                        {
+                            World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            if (tile.Code.StartsWith("FARRIER-"))
+                            {
+                                string[] farrierInfo = tile.Code.Split('-');
+                                int farrierId = int.Parse(farrierInfo[1]);
+
+                                Farrier farrier = Farrier.GetFarrierById(farrierId);
+                                int price = 0;
+                                int incAmount = 0;
+                                string msg = "";
+
+                                if(method == PacketBuilder.HORSE_SHOE_STEEL)
+                                {
+                                    price = farrier.SteelCost;
+                                    incAmount = farrier.SteelShoesAmount;
+                                    msg = Messages.FormatFarrierPutOnSteelShoesMessage(incAmount, 1000);
+                                }
+                                else
+                                {
+                                    price = farrier.IronCost;
+                                    incAmount = farrier.IronShoesAmount;
+                                    msg = Messages.FormatFarrierPutOnIronShoesMessage(incAmount, 1000);
+                                }
+
+                                if (sender.LoggedinUser.Money >= price)
+                                {
+                                    horseFarrierServiceInst.BasicStats.Shoes = incAmount;
+                                    sender.LoggedinUser.Money -= price;
+
+                                    byte[] messagePacket = PacketBuilder.CreateChat(msg, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(messagePacket);
+                                }
+                                else
+                                {
+                                    byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.FarrierShoesCantAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordMessage);
+                                }
+                                UpdateArea(sender);
+                            }
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to use farrier services on a non existant horse.");
+                        break;
+                    }
+                case PacketBuilder.HORSE_SHOE_ALL:
+                    if (World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                    {
+                        World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        if (tile.Code.StartsWith("FARRIER-"))
+                        {
+                            string[] farrierInfo = tile.Code.Split('-');
+                            int farrierId = int.Parse(farrierInfo[1]);
+
+                            Farrier farrier = Farrier.GetFarrierById(farrierId);
+
+                            int totalPrice = 0;
+                            foreach (HorseInstance horse in sender.LoggedinUser.HorseInventory.HorseList)
+                            {
+                                if (horse.BasicStats.Shoes < farrier.SteelShoesAmount)
+                                {
+                                    totalPrice += farrier.SteelCost;
+                                }
+                            }
+
+                            if (sender.LoggedinUser.Money >= totalPrice)
+                            {
+                                foreach (HorseInstance horse in sender.LoggedinUser.HorseInventory.HorseList)
+                                {
+                                    if (horse.BasicStats.Shoes < farrier.SteelShoesAmount)
+                                    {
+                                        horse.BasicStats.Shoes = farrier.SteelShoesAmount;
+                                    }
+                                }
+                                sender.LoggedinUser.Money -= totalPrice;
+
+                                byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatFarrierPutOnSteelShoesAllMesssage(farrier.SteelShoesAmount, 1000), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(messagePacket);
+                            }
+                            else
+                            {
+                                byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.FarrierShoesCantAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cantAffordMessage);
+                            }
+                            UpdateArea(sender);
+                        }
+                    }
+                    break;
                 case PacketBuilder.HORSE_GIVE_FEED:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
