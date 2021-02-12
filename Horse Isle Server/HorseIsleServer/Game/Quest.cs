@@ -203,7 +203,7 @@ namespace HISP.Game
             res.QuestCompleted = true;
             if (npcActivation)
             {
-                if (quest.SuccessNpcChat != null)
+                if (quest.SuccessNpcChat != null && quest.SuccessNpcChat != "")
                     res.NpcChat = quest.SuccessNpcChat;
 
                 if(quest.SetNpcChatpoint != -1)
