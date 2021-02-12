@@ -1361,7 +1361,7 @@ namespace HISP.Server
                     break;
                 case "4": // View Horse Breeds
                     sender.LoggedinUser.MetaPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseList());
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseBreedListLibary());
                     sender.SendPacket(metaPacket);
                     break;
                 case "5": // Back to horse

@@ -421,6 +421,15 @@ namespace HISP.Game
         public static string PirateTreasureFormat;
         public static string PotOfGoldFormat;
 
+        // Farrier
+        public static string FarrierCurrentShoesFormat;
+        public static string FarrierApplyIronShoesFormat;
+        public static string FarrierApplySteelShoesFormat;
+
+
+        public static string FarrierPutOnSteelShoesMessageFormat;
+        public static string FarrierPutOnIronShoesMessageFormat;
+        public static string FarrierPutOnSteelShoesAllMessageFormat;
 
         // Groomer
 

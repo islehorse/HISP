@@ -487,7 +487,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET upgradeLevel=@upgradeLevel";
+                sqlCommand.CommandText = "UPDATE Ranches SET upgradeLevel=@upgradeLevel WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@upgradeLevel", upgradeLevel);
                 sqlCommand.Prepare();
@@ -501,7 +501,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET investedMoney=@investedMoney";
+                sqlCommand.CommandText = "UPDATE Ranches SET investedMoney=@investedMoney WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@investedMoney", investedMoney);
                 sqlCommand.Prepare();
@@ -515,7 +515,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET playerId=@ownerId";
+                sqlCommand.CommandText = "UPDATE Ranches SET playerId=@ownerId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@ownerId", ownerId);
                 sqlCommand.Prepare();
@@ -529,7 +529,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET description=@description";
+                sqlCommand.CommandText = "UPDATE Ranches SET description=@description WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@description", description);
                 sqlCommand.Prepare();
@@ -543,7 +543,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET title=@title";
+                sqlCommand.CommandText = "UPDATE Ranches SET title=@title WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@title", title);
                 sqlCommand.Prepare();
@@ -557,7 +557,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building16=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building16=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -571,7 +571,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building15=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building15=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -585,7 +585,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building14=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building14=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -599,7 +599,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building13=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building13=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -613,7 +613,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building12=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building12=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -627,7 +627,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building11=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building11=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -641,7 +641,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building10=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building10=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -655,7 +655,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building9=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building9=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -669,7 +669,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building8=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building8=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -683,7 +683,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building7=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building7=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -697,7 +697,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building6=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building6=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -711,7 +711,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building5=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building5=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -725,7 +725,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building4=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building4=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -739,7 +739,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building3=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building3=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -753,7 +753,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building2=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building2=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -767,7 +767,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building1=@buildingId";
+                sqlCommand.CommandText = "UPDATE Ranches SET building1=@buildingId WHERE ranchId=@ranchId";
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
