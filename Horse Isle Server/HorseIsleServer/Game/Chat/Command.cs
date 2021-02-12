@@ -50,6 +50,14 @@ namespace HISP.Game.Chat
                 try
                 {
                     questId = int.Parse(args[1]);
+                    if(args.Length >= 3)
+                    {
+                        if (args[2] == "FORCE")
+                        {
+                            Quest.CompleteQuest(user, Quest.GetQuestById(questId));
+                            goto msg;
+                        }
+                    }
                     Quest.ActivateQuest(user, Quest.GetQuestById(questId));
                 }
                 catch (Exception)
@@ -61,6 +69,7 @@ namespace HISP.Game.Chat
             {
                 return false;
             }
+        msg:;
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;

@@ -91,6 +91,7 @@ namespace HISP.Server
             Database.IncPlayerTirednessForOfflineUsers();
             DroppedItems.Update();
             WildHorse.Update();
+            Npc.WanderNpcs();
             minuteTimer.Change(oneMinute, oneMinute);
         }
 
@@ -1169,6 +1170,7 @@ namespace HISP.Server
                                 catch (Exception)
                                 {
                                     Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to deposit/witthdraw NaN money....");
+                                    UpdateArea(sender);
                                     break;
                                 }
 
@@ -1181,12 +1183,12 @@ namespace HISP.Server
                                     sender.SendPacket(chatPacket);
                                 }
 
-                                if ((moneyWithdrawn >= sender.LoggedinUser.BankMoney) && moneyWithdrawn != 0)
+                                if ((moneyWithdrawn <= sender.LoggedinUser.BankMoney) && moneyWithdrawn != 0)
                                 {
                                     sender.LoggedinUser.BankMoney -= moneyWithdrawn;
-                                    sender.LoggedinUser.Money += (int)moneyWithdrawn;
+                                    sender.LoggedinUser.Money += Convert.ToInt32(moneyWithdrawn);
 
-                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatWithdrawMoneyMessage((int)moneyWithdrawn), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatWithdrawMoneyMessage(Convert.ToInt32(moneyWithdrawn)), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(chatPacket);
                                 }
 
