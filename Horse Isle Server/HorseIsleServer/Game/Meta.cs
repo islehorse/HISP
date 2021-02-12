@@ -1197,6 +1197,13 @@ namespace HISP.Game
         {
             
             string message = "";
+
+            if(!Ranch.RanchExists(ranchId)) // Ghost ranchs exist.. apparently?
+            {
+                user.MetaPriority = false;
+                return BuildMetaInfo(user, user.X, user.Y);
+            }
+
             Ranch ranch = Ranch.GetRanchById(ranchId);
             bool mine = (ranch.OwnerId == user.Id);
             string swfModule = ranch.GetSwf(mine);

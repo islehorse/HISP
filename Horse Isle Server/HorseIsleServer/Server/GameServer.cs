@@ -3618,7 +3618,7 @@ namespace HISP.Server
                     if (tile.Title != null)
                         returnedMsg = tile.Title;
                 }
-                if(Ranch.IsRanchHere(x, y))
+                if(Ranch.IsRanchHere(x, y)) // Ranch here?
                 {
                     Ranch ranch = Ranch.GetRanchAt(x, y);
                     if(ranch.OwnerId == -1)
@@ -3632,6 +3632,10 @@ namespace HISP.Server
                             title = Messages.RanchDefaultRanchTitle;
                         returnedMsg = Messages.FormatRanchClickMessage(Database.GetUsername(ranch.OwnerId), title);
                     }
+                }
+                if(GetUsersAt(x,y, false, true).Length > 0) // Player here?
+                {
+                    returnedMsg = Messages.FormatPlayerHereMessage(GetUsersAt(x, y, false, true)[0].Username);
                 }
 
                 byte[] tileInfoPacket = PacketBuilder.CreateClickTileInfoPacket(returnedMsg);

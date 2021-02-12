@@ -405,6 +405,15 @@ namespace HISP.Game
             }
             return false;
         }
+        public static bool RanchExists(int ranchId)
+        {
+            foreach (Ranch ranch in Ranches)
+            {
+                if (ranch.Id == ranchId)
+                    return true;
+            }
+            return false;
+        }
         public static Ranch GetRanchById(int ranchId)
         {
             foreach (Ranch ranch in Ranches)

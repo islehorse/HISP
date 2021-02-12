@@ -12,6 +12,9 @@ namespace HISP.Game
         // Mod isle
         public static string ModIsleMessage;
 
+        // Click
+        public static string PlayerHereFormat;
+
         // Ranch
         public static string RanchUnownedRanchFormat;
         public static string RanchYouCouldPurchaseThisRanch;
@@ -681,6 +684,11 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+
+        public static string FormatPlayerHereMessage(string playerName)
+        {
+            return PlayerHereFormat.Replace("%USERNAME%", playerName);
+        }
 
         // Farrier Formats
         public static string FormatFarrierPutOnSteelShoesAllMesssage(int curShoes, int maxShoes)
