@@ -1045,13 +1045,13 @@ namespace HISP.Server
                             if (dynamicInput.Length >= 2)
                             {
                                 int moneyDeposited = 0;
-                                int moneyWithdrawn = 0;
+                                Int64 moneyWithdrawn = 0;
                                 try
                                 {
                                     moneyDeposited = int.Parse(dynamicInput[1]);
-                                    moneyWithdrawn = int.Parse(dynamicInput[2]);
+                                    moneyWithdrawn = Int64.Parse(dynamicInput[2]);
                                 }
-                                catch (FormatException)
+                                catch (Exception)
                                 {
                                     Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to deposit/witthdraw NaN money....");
                                     break;
@@ -1066,12 +1066,12 @@ namespace HISP.Server
                                     sender.SendPacket(chatPacket);
                                 }
 
-                                if ((Convert.ToUInt64(moneyWithdrawn) <= sender.LoggedinUser.BankMoney) && moneyWithdrawn != 0)
+                                if ((moneyWithdrawn >= sender.LoggedinUser.BankMoney) && moneyWithdrawn != 0)
                                 {
-                                    sender.LoggedinUser.BankMoney -= Convert.ToUInt64(moneyWithdrawn);
-                                    sender.LoggedinUser.Money += moneyWithdrawn;
+                                    sender.LoggedinUser.BankMoney -= moneyWithdrawn;
+                                    sender.LoggedinUser.Money += (int)moneyWithdrawn;
 
-                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatWithdrawMoneyMessage(moneyWithdrawn), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatWithdrawMoneyMessage((int)moneyWithdrawn), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(chatPacket);
                                 }
 
