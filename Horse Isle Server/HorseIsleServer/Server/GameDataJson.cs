@@ -1300,6 +1300,9 @@ namespace HISP.Server
             Messages.PasswordEntry = gameData.messages.meta.password_input;
             Messages.VenusFlyTrapFormat = gameData.messages.meta.venus_flytrap_format;
 
+            // Shortcut
+            Messages.NoTelescope = gameData.messages.no_telescope;
+
             // Inn
             Messages.InnBuyMeal = gameData.messages.meta.inn.buy_meal;
             Messages.InnBuyRest = gameData.messages.meta.inn.buy_rest;

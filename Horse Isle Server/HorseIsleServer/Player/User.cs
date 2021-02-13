@@ -82,6 +82,7 @@ namespace HISP.Player
         public Inn LastVisitedInn;
         public HorseInventory HorseInventory;
         public HorseInstance LastViewedHorse;
+        public int LastRiddenHorse = 0;
         public HorseInstance CurrentlyRidingHorse;
         public Tracking TrackedItems;
         public Ranch OwnedRanch = null;

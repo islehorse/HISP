@@ -283,6 +283,9 @@ namespace HISP.Server
                     case PacketBuilder.PACKET_NPC:
                         GameServer.OnNpcInteraction(this, Packet);
                         break;
+                    case PacketBuilder.PACKET_BIRDMAP:
+                        GameServer.OnBirdMapRequested(this, Packet);
+                        break;
                     case PacketBuilder.PACKET_SWFMODULE:
                         GameServer.OnSwfModuleCommunication(this, Packet);
                         break;

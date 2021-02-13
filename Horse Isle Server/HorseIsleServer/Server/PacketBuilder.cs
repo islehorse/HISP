@@ -26,6 +26,7 @@ namespace HISP.Server
         public const byte PACKET_SWF_MODULE_FORCE = 0x28;
         public const byte PACKET_SWF_MODULE_GENTLE = 0x2A;
         public const byte PACKET_PLACE_INFO = 0x1E;
+        public const byte PACKET_BIRDMAP = 0x76;
         public const byte PACKET_HORSE = 0x19;
         public const byte PACKET_AREA_DEFS = 0x79;
         public const byte PACKET_ITEM_INTERACTION = 0x1E;
@@ -173,6 +174,46 @@ namespace HISP.Server
         public const byte DIRECTION_TELEPORT = 4;
         public const byte DIRECTION_NONE = 10;
 
+
+        public static byte[] CreateBirdMap(int playerX, int playerY)
+        {
+            MemoryStream ms = new MemoryStream();
+
+            int xstart = playerX - 24;
+            int ystart = playerY - 15;
+
+            ms.WriteByte(PacketBuilder.PACKET_BIRDMAP);
+
+            for (int rely = 0; rely <= 30; rely++)
+            {
+                for (int relx = 0; relx <= 48; relx++)
+                {
+                    int tileId = Map.GetTileId(xstart + relx, ystart + rely, false);
+                    int otileId = Map.GetTileId(xstart + relx, ystart + rely, true);
+
+                    if (tileId >= 190)
+                    {
+                        ms.WriteByte((byte)190);
+                        tileId -= 100;
+                    }
+                    ms.WriteByte((byte)tileId);
+
+                    if (otileId >= 190)
+                    {
+                        ms.WriteByte((byte)190);
+                        otileId -= 100;
+                    }
+                    ms.WriteByte((byte)otileId);
+
+                }
+            }
+
+            
+
+            ms.WriteByte(PACKET_TERMINATOR);
+            ms.Seek(0x00, SeekOrigin.Begin);
+            return ms.ToArray();
+        }
         public static byte[] CreateDrawingUpdatePacket(string Drawing)
         {
             MemoryStream ms = new MemoryStream();
