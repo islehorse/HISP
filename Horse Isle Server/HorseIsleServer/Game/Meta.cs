@@ -1334,7 +1334,7 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
-        private static string buildVet(Vet vet, User user)
+        private static string buildVet(User user, Vet vet)
         {
             string message = "";
             int totalPrice = 0;
@@ -1354,6 +1354,31 @@ namespace HISP.Game
 
             }
             message += Messages.FormatVetApplyAllServiceMeta(totalPrice);
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        private static string buildBarn(User user, Barn barn)
+        {
+            string message = "";
+            int totalPrice = 0;
+            foreach (HorseInstance horse in user.HorseInventory.HorseList)
+            {
+                message += Messages.FormatBarnHorseStatus(horse.Name, horse.BasicStats.Tiredness, horse.BasicStats.Hunger, horse.BasicStats.Thirst);
+
+                int price = barn.CalculatePrice(horse.BasicStats.Tiredness, horse.BasicStats.Hunger, horse.BasicStats.Thirst);
+                if(price > 0)
+                {
+                    totalPrice += price;
+                    message += Messages.FormatBarnLetHorseRelax(price, horse.RandomId);
+                }
+                else
+                {
+                    message += Messages.BarnHorseMaxed;
+                }
+
+            }
+            message += Messages.FormatBarnLetAllHorsesReleax(totalPrice);
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
             return message;
@@ -1910,15 +1935,19 @@ namespace HISP.Game
                 }
                 if (TileCode == "VET")
                 {
-                    int VetId = int.Parse(TileArg);
-                    Vet vet = Vet.GetVetById(VetId);
-                    message += buildVet(vet, user);
+                    message += buildVet(user, Vet.GetVetById(int.Parse(TileArg)));
                 }
                 if(TileCode == "GROOMER")
                 {
-                    int groomId = int.Parse(TileArg);
-                    Groomer groomer = Groomer.GetGroomerById(groomId);
-                    message += buildGroomer(user, groomer);
+                    message += buildGroomer(user, Groomer.GetGroomerById(int.Parse(TileArg)));
+                }
+                if (TileCode == "FARRIER")
+                {
+                    message += buildFarrier(user, Farrier.GetFarrierById(int.Parse(TileArg)));
+                }
+                if(TileCode == "BARN")
+                {
+                    message += buildBarn(user, Barn.GetBarnById(int.Parse(TileArg)));
                 }
                 if (TileCode == "BANK")
                 {
@@ -1955,10 +1984,6 @@ namespace HISP.Game
                 if (TileCode == "RANCH")
                 {
                     message += buildRanch(user, int.Parse(TileArg));
-                }
-                if(TileCode == "FARRIER")
-                {
-                    message += buildFarrier(user, Farrier.GetFarrierById(int.Parse(TileArg)));
                 }
                 if (TileCode == "MULTIROOM")
                 {

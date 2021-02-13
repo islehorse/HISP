@@ -459,6 +459,17 @@ namespace HISP.Game
         public static string VetAllFullHealthRecoveredMessage;
         public static string VetCannotAffordMessage;
 
+        // Barn
+        public static string BarnHorseFullyFedFormat;
+        public static string BarnCantAffordService;
+        public static string BarnAllHorsesFullyFed;
+        public static string BarnServiceNotNeeded;
+
+        public static string BarnHorseStatusFormat;
+        public static string BarnHorseMaxed;
+        public static string BarnLetHorseRelaxFormat;
+        public static string BarnLetAllHorsesReleaxFormat;
+
         // Horse Whisperer
 
         public static string WhispererHorseLocateButtonFormat;
@@ -693,6 +704,23 @@ namespace HISP.Game
             return PlayerHereFormat.Replace("%USERNAME%", playerName);
         }
 
+        // Barn Formats
+        public static string FormatBarnLetAllHorsesReleax(int price)
+        {
+            return BarnLetAllHorsesReleaxFormat.Replace("%PRICE%", price.ToString("N0"));
+        }
+        public static string FormatBarnLetHorseRelax(int price, int randomId)
+        {
+            return BarnLetHorseRelaxFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%RANDOMID%", randomId.ToString());
+        }
+        public static string FormatBarnHorseStatus(string horseName, int tiredness, int hunger, int thirst)
+        {
+            return BarnHorseStatusFormat.Replace("%HORSENAME%", horseName).Replace("%TIREDNESS%", tiredness.ToString()).Replace("%HUNGER%", hunger.ToString()).Replace("%THIRST%", thirst.ToString());
+        }
+        public static string FormatBarnHorseFullyFed(string horseName)
+        {
+            return BarnHorseFullyFedFormat.Replace("%HORSENAME%", horseName);
+        }
         // Farrier Formats
         public static string FormatFarrierPutOnSteelShoesAllMesssage(int curShoes, int maxShoes)
         {
