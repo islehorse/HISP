@@ -98,7 +98,7 @@ namespace HISP.Game.Horse
             }
             set
             {
-                name = value;
+                name = value.Trim();
                 Database.SetHorseName(this.RandomId, name);
             }
         }
@@ -110,8 +110,8 @@ namespace HISP.Game.Horse
             }
             set
             {
-                description = value;
-                Database.SetHorseDescription(this.RandomId, value);
+                description = value.Trim();
+                Database.SetHorseDescription(this.RandomId, description);
             }
         }
         public string Sex;

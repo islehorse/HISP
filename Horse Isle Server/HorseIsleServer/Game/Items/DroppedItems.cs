@@ -61,11 +61,6 @@ namespace HISP.Game.Items
             foreach (DroppedItem droppedItem in items)
                 droppedItemsList.Add(droppedItem); 
         }
-        public static void Update()
-        {
-            DespawnItems();
-            GenerateItems(false);
-        }
         public static void RemoveDroppedItem(DroppedItem item)
         {
             int randomId = item.Instance.RandomId;
@@ -110,12 +105,12 @@ namespace HISP.Game.Items
         {
             Database.DecrementDroppedItemDespawnTimer();
 
-            for(int i = 0; i < droppedItemsList.Count; i++)
+            for (int i = 0; i < droppedItemsList.Count; i++)
             {
                 if (droppedItemsList[i] == null) // Item removed in another thread.
                     continue;
 
-                droppedItemsList[i].DespawnTimer--;
+                droppedItemsList[i].DespawnTimer-=5;
                 if(droppedItemsList[i].DespawnTimer <= 0)
                 {
                     if (GameServer.GetUsersAt(droppedItemsList[i].X, droppedItemsList[i].Y, true, true).Length > 0) // Dont despawn items players are standing on

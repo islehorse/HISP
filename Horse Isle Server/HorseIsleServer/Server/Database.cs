@@ -3753,7 +3753,7 @@ namespace HISP.Server
 
 
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE DroppedItems SET DespawnTimer=DespawnTimer-1";
+                sqlCommand.CommandText = "UPDATE DroppedItems SET DespawnTimer=DespawnTimer-5";
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
 

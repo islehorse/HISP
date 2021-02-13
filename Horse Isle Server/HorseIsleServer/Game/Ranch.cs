@@ -192,8 +192,8 @@ namespace HISP.Game
             }
             set
             {
-                title = value;
-                Database.SetRanchTitle(Id, value);
+                title = value.Trim();
+                Database.SetRanchTitle(Id, title);
             }
         }
         public string Description
@@ -204,7 +204,7 @@ namespace HISP.Game
             }
             set
             {
-                description = value;
+                description = value.Trim();
                 Database.SetRanchDescription(Id, value);
             }
         }

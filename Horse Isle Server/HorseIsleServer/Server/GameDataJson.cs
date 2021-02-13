@@ -9,6 +9,7 @@ using HISP.Game.SwfModules;
 using HISP.Game.Horse;
 using HISP.Game.Items;
 using System.Globalization;
+using HISP.Security;
 
 namespace HISP.Server
 {
@@ -687,6 +688,16 @@ namespace HISP.Server
 
             }
 
+            // Register BBCODE
+            int totalBBocdes = gameData.bbcode.Count;
+            for(int i = 0; i < totalBBocdes; i++)
+            {
+                string tag = gameData.bbcode[i].tag;
+                string meta = gameData.bbcode[i].meta;
+                BBCode code = new BBCode(tag, meta);
+                Logger.DebugPrint("Registered BBCODE: " + code.Tag + " to " + code.MetaTranslation);
+            }
+
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
             Item.Present = gameData.item.special.present;
@@ -769,7 +780,8 @@ namespace HISP.Server
 
             Messages.RanchTrainAllAttempt = gameData.messages.meta.ranch.special.train_all;
             Messages.RanchTrainSuccessFormat = gameData.messages.meta.ranch.special.train_success;
-            Messages.RanchTrainCantTrain = gameData.messages.meta.ranch.special.train_cant_train;
+            Messages.RanchTrainCantTrainFormat = gameData.messages.meta.ranch.special.train_cant_train;
+            Messages.RanchTrainBadMoodFormat = gameData.messages.meta.ranch.special.train_bad_mood;
             Messages.RanchHorsesFullyRested = gameData.messages.meta.ranch.special.fully_rested;
             Messages.RanchWagonDroppedYouOff = gameData.messages.meta.ranch.special.wagon_used;
 
