@@ -89,7 +89,14 @@ namespace HISP.Server
 
             Treasure.AddValue();
             Database.IncPlayerTirednessForOfflineUsers();
-            DroppedItems.Update();
+            
+
+            if (totalMinutesElapsed % 5 == 0)
+            {
+                DroppedItems.DespawnItems();
+                DroppedItems.GenerateItems(false);
+            }
+
             WildHorse.Update();
             Npc.WanderNpcs();
             minuteTimer.Change(oneMinute, oneMinute);
@@ -2581,8 +2588,6 @@ namespace HISP.Server
 
                 string profilePage = packetStr.Split('|')[1];
                 profilePage = profilePage.Substring(0, profilePage.Length - 2);
-                profilePage = profilePage.Replace("[", "<");
-                profilePage = profilePage.Replace("]", ">");
                 sender.LoggedinUser.CharacterId = characterId;
                 sender.LoggedinUser.ProfilePage = profilePage;
 

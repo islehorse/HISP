@@ -348,7 +348,7 @@ namespace HISP.Game.Chat
             foreach(Correction correct in CorrectedWords)
                 message = message.Replace(correct.FilteredWord, correct.ReplacedWord);
 
-            return message;
+            return message.Trim();
         }
         public static string EscapeMessage(string message)
         {

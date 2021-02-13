@@ -217,8 +217,9 @@ namespace HISP.Player
             set
             {
 
-                Database.SetPlayerNotes(Id, value);
-                privateNotes = value;
+                privateNotes = value.Trim();
+                Database.SetPlayerNotes(Id, privateNotes);
+                
             }
         }
         public string ProfilePage { 
@@ -227,10 +228,9 @@ namespace HISP.Player
                 return profilePage; 
             }
             set 
-            { 
-                
-                Database.SetPlayerProfile(value, Id);
-                profilePage = value;
+            {
+                profilePage = value.TrimEnd();
+                Database.SetPlayerProfile(profilePage, Id);
             } 
         }
 

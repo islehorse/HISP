@@ -646,6 +646,10 @@ namespace HISP.Game
             message += Messages.RanchTrainAllAttempt;
             foreach(HorseInstance horse in user.HorseInventory.HorseList)
             {
+                if(horse.BasicStats.Mood < 200)
+                {
+                    message += Messages.FormatRanchTrainBadMood(horse.Name);
+                }
                 if(horse.TrainTimer == 0)
                 {
                     horse.AdvancedStats.Speed += 1;

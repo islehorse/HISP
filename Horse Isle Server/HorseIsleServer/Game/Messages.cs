@@ -1,4 +1,5 @@
-﻿using HISP.Server;
+﻿using HISP.Security;
+using HISP.Server;
 using System;
 using System.Drawing;
 using System.Globalization;
@@ -70,7 +71,8 @@ namespace HISP.Game
 
         public static string RanchTrainAllAttempt;
         public static string RanchTrainSuccessFormat;
-        public static string RanchTrainCantTrain;
+        public static string RanchTrainBadMoodFormat;
+        public static string RanchTrainCantTrainFormat;
         public static string RanchHorsesFullyRested;
         public static string RanchWagonDroppedYouOff;
 
@@ -756,7 +758,11 @@ namespace HISP.Game
 
         public static string FormatRanchTrainFail(string horseName, int timeout)
         {
-            return RanchTrainCantTrain.Replace("%HORSENAME%", horseName).Replace("%TIME%", timeout.ToString());            
+            return RanchTrainCantTrainFormat.Replace("%HORSENAME%", horseName).Replace("%TIME%", timeout.ToString());            
+        }
+        public static string FormatRanchTrainBadMood(string horseName)
+        {
+            return RanchTrainBadMoodFormat.Replace("%HORSENAME%", horseName);
         }
         public static string FormatRanchTrain(string horseName, int speed, int strength, int conformation, int agility, int endurance, int exp)
         {
@@ -764,7 +770,7 @@ namespace HISP.Game
         }
         public static string FormatRanchDescOthers(string description)
         {
-            return RanchDescriptionOthersFormat.Replace("%DESCRIPTION%", description);
+            return RanchDescriptionOthersFormat.Replace("%DESCRIPTION%", BBCode.EncodeBBCodeToMeta(description));
         }
         public static string FormatRanchSoldMessage(int price)
         {
@@ -792,7 +798,7 @@ namespace HISP.Game
         }
         public static string FormatRanchYoursDescription(string description)
         {
-            return RanchYourDescriptionFormat.Replace("%DESCRIPTION%", description);
+            return RanchYourDescriptionFormat.Replace("%DESCRIPTION%", BBCode.EncodeBBCodeToMeta(description));
         }
         public static string FormatBuildingEntry(string name, int price, int buildingId)
         {
@@ -848,7 +854,7 @@ namespace HISP.Game
         }
         public static string FormatCantTrain(string horseName)
         {
-            return RanchTrainCantTrain.Replace("%HORSENAME%", horseName);
+            return RanchTrainCantTrainFormat.Replace("%HORSENAME%", horseName);
         }
         public static string FormatRiddlerRiddle(string riddle)
         {
@@ -1160,7 +1166,7 @@ namespace HISP.Game
         }
         public static string FormatHorseDescription(string Description)
         {
-            return HorseDescriptionFormat.Replace("%DESCRIPTION%", Description);
+            return HorseDescriptionFormat.Replace("%DESCRIPTION%", BBCode.EncodeBBCodeToMeta(Description));
         }
         public static string FormatHorseHandsHigh(string color, string breed,string sex, double handsHigh)
         {
@@ -1515,7 +1521,7 @@ namespace HISP.Game
         }
         public static string FormatPlayerDescriptionForStatsMenu(string description)
         {
-            return StatsDescriptionFormat.Replace("%PLAYERDESC%", description);
+            return StatsDescriptionFormat.Replace("%PLAYERDESC%", BBCode.EncodeBBCodeToMeta(description));
         }
 
         public static string FormatExperience(int expPoints)

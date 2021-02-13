@@ -32,7 +32,9 @@ namespace HISP.Game
         {
             int pos = ((x * Height) + y);
 
-            if (pos >= oMapData.Length && overlay)
+            if ((pos <= 0 || pos >= oMapData.Length) && overlay)
+                return 1;
+            else if ((pos <= 0 || pos >= MapData.Length) && !overlay) 
                 return 1;
             else if (overlay && Treasure.IsTileBuiredTreasure(x, y))
                 return 193; // Burried Treasure tile.
