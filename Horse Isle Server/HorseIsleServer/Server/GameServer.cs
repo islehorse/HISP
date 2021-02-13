@@ -310,6 +310,7 @@ namespace HISP.Server
                                 {
                                     byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.VetCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(cantAffordMessage);
+                                    break;
                                 }
                                 UpdateArea(sender);
                             }
@@ -382,6 +383,7 @@ namespace HISP.Server
                                 {
                                     byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.FarrierShoesCantAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(cantAffordMessage);
+                                    break;
                                 }
                                 UpdateArea(sender);
                             }
@@ -431,6 +433,113 @@ namespace HISP.Server
                             {
                                 byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.FarrierShoesCantAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(cantAffordMessage);
+                                break;
+                            }
+                            UpdateArea(sender);
+                        }
+                    }
+                    break;
+                case PacketBuilder.HORSE_GROOM_SERVICE:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+
+                    if (randomIdStr == "NaN")
+                        break;
+
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        HorseInstance groomHorseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        sender.LoggedinUser.LastViewedHorse = groomHorseInst;
+
+                        if (World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                        {
+                            World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            if (tile.Code.StartsWith("GROOMER-"))
+                            {
+                                string[] groomerInfo = tile.Code.Split('-');
+                                int groomerId = int.Parse(groomerInfo[1]);
+
+                                Groomer groomer = Groomer.GetGroomerById(groomerId);
+                                int price = groomer.CalculatePrice(groomHorseInst.BasicStats.Groom);
+
+
+                                if (sender.LoggedinUser.Money >= price)
+                                {
+                                    groomHorseInst.BasicStats.Groom = groomer.Max;
+                                    sender.LoggedinUser.Money -= price;
+
+                                    byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatHorseGroomedToBestAbilities(groomHorseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(messagePacket);
+                                }
+                                else
+                                {
+                                    byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.GroomerCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordMessage);
+                                    break;
+                                }
+                                UpdateArea(sender);
+                            }
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to use groomer services on a non existant horse.");
+                        break;
+                    }
+                case PacketBuilder.HORSE_GROOM_SERVICE_ALL:
+                    if (World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                    {
+                        World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        if (tile.Code.StartsWith("GROOMER-"))
+                        {
+                            string[] groomerInfo = tile.Code.Split('-');
+                            int groomId = int.Parse(groomerInfo[1]);
+                            Groomer groomer = Groomer.GetGroomerById(groomId);
+                            int price = 0;
+                            int count = 0;
+
+                            foreach (HorseInstance horse in sender.LoggedinUser.HorseInventory.HorseList)
+                            {
+                                if(horse.BasicStats.Groom < groomer.Max)
+                                {
+                                    price += groomer.CalculatePrice(horse.BasicStats.Groom);
+                                    count++;
+                                }
+                            }
+                            if (count == 0)
+                            {
+                                byte[] notNeededMessagePacket = PacketBuilder.CreateChat(Messages.GroomerDontNeed, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(notNeededMessagePacket);
+                                break;
+                            }
+                            else if (sender.LoggedinUser.Money >= price)
+                            {
+                                foreach (HorseInstance horse in sender.LoggedinUser.HorseInventory.HorseList)
+                                    if (horse.BasicStats.Groom < groomer.Max)
+                                        horse.BasicStats.Groom = groomer.Max;
+
+                                byte[] groomedAllHorsesPacket = PacketBuilder.CreateChat(Messages.GroomerBestToHisAbilitiesALL, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(groomedAllHorsesPacket);
+
+                                sender.LoggedinUser.Money -= price;
+
+                            }
+                            else
+                            {
+                                byte[] cannotAffordMessagePacket = PacketBuilder.CreateChat(Messages.GroomerCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cannotAffordMessagePacket);
+                                break;
                             }
                             UpdateArea(sender);
                         }

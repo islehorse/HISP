@@ -1313,6 +1313,27 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        private static string buildGroomer(User User, Groomer groomer)
+        {
+            string message = "";
+            int totalPrice = 0;
+            int count = 0;
+            foreach(HorseInstance horse in User.HorseInventory.HorseList)
+            {
+                message += Messages.FormatHorseGroomCurrentlyAt(horse.Name, horse.BasicStats.Groom, 1000);
+                if(horse.BasicStats.Groom < groomer.Max)
+                {
+                    int price = groomer.CalculatePrice(horse.BasicStats.Groom);
+                    totalPrice += price;
+                    count++;
+                    message += Messages.FormatGroomerApplyService(price, horse.RandomId);
+                }
+            }
+            message += Messages.FormatGroomerApplyAllService(count, totalPrice);
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         private static string buildVet(Vet vet, User user)
         {
             string message = "";
@@ -1892,6 +1913,12 @@ namespace HISP.Game
                     int VetId = int.Parse(TileArg);
                     Vet vet = Vet.GetVetById(VetId);
                     message += buildVet(vet, user);
+                }
+                if(TileCode == "GROOMER")
+                {
+                    int groomId = int.Parse(TileArg);
+                    Groomer groomer = Groomer.GetGroomerById(groomId);
+                    message += buildGroomer(user, groomer);
                 }
                 if (TileCode == "BANK")
                 {
