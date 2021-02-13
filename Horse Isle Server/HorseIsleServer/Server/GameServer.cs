@@ -115,7 +115,25 @@ namespace HISP.Server
             sender.SendPacket(crossDomainPolicyResponse);
         }
 
+        public static void OnBirdMapRequested(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Requested Bird Map when not logged in.");
+                return;
+            }
 
+            if(sender.LoggedinUser.Inventory.HasItemId(Item.Telescope))
+            {
+                byte[] birdMapPacket = PacketBuilder.CreateBirdMap(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                sender.SendPacket(birdMapPacket);
+            }
+            else
+            {
+                byte[] noTelescopeMessage = PacketBuilder.CreateChat(Messages.NoTelescope, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(noTelescopeMessage);
+            }
+        }
         public static void OnHorseInteraction(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -215,9 +233,6 @@ namespace HISP.Server
                             msgs += Messages.HorsePetTooHappy;
                         if (horsePetInst.BasicStats.Tiredness - randTiredMinus <= 0)
                             msgs += Messages.HorsePetTooTired;
-
-
-
 
                         horsePetInst.BasicStats.Tiredness -= randTiredMinus;
                         horsePetInst.BasicStats.Mood += randMoodAddition;
@@ -1087,6 +1102,21 @@ namespace HISP.Server
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
                     randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+
+                    if(randomIdStr == "") // F7 Shortcut
+                    { 
+                        if(sender.LoggedinUser.CurrentlyRidingHorse != null)
+                        {
+                            StopRidingHorse(sender);
+                        }
+                        else
+                        {
+                            if(sender.LoggedinUser.HorseInventory.HorseIdExist(sender.LoggedinUser.LastRiddenHorse))
+                               StartRidingHorse(sender, sender.LoggedinUser.LastRiddenHorse);
+                        }
+                        break;
+                    }
+
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -1099,18 +1129,7 @@ namespace HISP.Server
                     }
                     if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
-                        sender.LoggedinUser.CurrentlyRidingHorse = null;
-
-                        byte[] stopRidingHorseMessagePacket = PacketBuilder.CreateChat(Messages.HorseStopRidingMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        sender.SendPacket(stopRidingHorseMessagePacket);
-
-
-                        sender.LoggedinUser.Facing %= 5;
-                        byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
-                        sender.SendPacket(rideHorsePacket);
-                        sender.LoggedinUser.NoClip = false;
-
-                        UpdateUserInfo(sender.LoggedinUser);
+                        StopRidingHorse(sender);
                     }
                     else
                     {
@@ -1134,100 +1153,7 @@ namespace HISP.Server
                     }
                     if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
-                        HorseInstance horseMountInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
-                        
-                        if(horseMountInst.Equipment.Saddle == null || horseMountInst.Equipment.SaddlePad == null || horseMountInst.Equipment.Bridle == null)
-                        {
-                            byte[] horseNotTackedMessage = PacketBuilder.CreateChat(Messages.HorseCannotMountUntilTackedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(horseNotTackedMessage);
-                            break;
-                        }
-
-                        string ridingHorseMessage = Messages.FormatHorseRidingMessage(horseMountInst.Name);
-                        byte[] ridingHorseMessagePacket = PacketBuilder.CreateChat(ridingHorseMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        sender.SendPacket(ridingHorseMessagePacket);
-
-                        sender.LoggedinUser.CurrentlyRidingHorse = horseMountInst;
-
-                        // Determine what sprite to use;
-                        int incBy = 0;
-                        switch(horseMountInst.Color)
-                        {
-                            case "brown":
-                                incBy = 1;
-                                break;
-                            case "cremello":
-                            case "white":
-                                incBy = 2;
-                                break;
-                            case "black":
-                                incBy = 3;
-                                break;
-                            case "chestnut":
-                                incBy = 4;
-                                break;
-                            case "bay":
-                                incBy = 5;
-                                break;
-                            case "grey":
-                                incBy = 6;
-                                break;
-                            case "dun":
-                                incBy = 7;
-                                break;
-                            case "palomino":
-                                incBy = 8;
-                                break;
-                            case "roan":
-                                incBy = 9;
-                                break;
-                            case "pinto":
-                                incBy = 10;
-                                break;
-                        }
-
-
-                        if(horseMountInst.Breed.Type == "zebra")
-                        {
-                            incBy = 11;
-                        }
-                        if(horseMountInst.Breed.Id == 5) // Appaloosa
-                        {
-                            if(horseMountInst.Color == "brown")
-                                incBy = 12;
-                        }
-                        if (horseMountInst.Breed.Type == "camel")
-                        {
-                            if (horseMountInst.Color == "brown")
-                                incBy = 13;
-                            if (horseMountInst.Color == "white")
-                                incBy = 14;
-
-                        }
-                        if (horseMountInst.Breed.Type == "unicorn")
-                        {
-                            incBy = 15;
-                        }
-                        if (horseMountInst.Breed.Type == "pegasus")
-                        {
-                            incBy = 16;
-                            sender.LoggedinUser.NoClip = true;
-                        }
-                        if(horseMountInst.Breed.Id == 170) // Unipeg
-                        {
-                            incBy = 17;
-                            sender.LoggedinUser.NoClip = true;
-                        }
-
-                        incBy *= 5;
-                        sender.LoggedinUser.Facing %= 5;
-                        sender.LoggedinUser.Facing += incBy;
-
-
-                        byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
-                        sender.SendPacket(rideHorsePacket);
-
-                        UpdateUserInfo(sender.LoggedinUser);
+                        StartRidingHorse(sender, randomId);
                         break;
                     }
                     else
@@ -4112,6 +4038,11 @@ namespace HISP.Server
 
                             sender.LoggedinUser.Teleport(sender.LoggedinUser.OwnedRanch.X, sender.LoggedinUser.OwnedRanch.Y);
                         }
+                        if(itm.ItemId == Item.Telescope)
+                        {
+                            byte[] birdMap = PacketBuilder.CreateBirdMap(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            sender.SendPacket(birdMap);
+                        }
                         else
                         {
                             Logger.ErrorPrint(sender.LoggedinUser.Username + "Tried to use item with undefined action- ID: " + itm.ItemId);
@@ -4935,7 +4866,7 @@ namespace HISP.Server
          *  Get(Some Information)
          */
 
-
+       
         public static bool IsUserOnline(int id)
         {
             try
@@ -5330,6 +5261,119 @@ namespace HISP.Server
         /*
          *   Other...
          */
+        public static void StartRidingHorse(GameClient sender, int horseRandomId)
+        {
+            HorseInstance horseMountInst = sender.LoggedinUser.HorseInventory.GetHorseById(horseRandomId);
+
+            if (horseMountInst.Equipment.Saddle == null || horseMountInst.Equipment.SaddlePad == null || horseMountInst.Equipment.Bridle == null)
+            {
+                byte[] horseNotTackedMessage = PacketBuilder.CreateChat(Messages.HorseCannotMountUntilTackedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(horseNotTackedMessage);
+                return;
+            }
+
+            string ridingHorseMessage = Messages.FormatHorseRidingMessage(horseMountInst.Name);
+            byte[] ridingHorseMessagePacket = PacketBuilder.CreateChat(ridingHorseMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+            sender.SendPacket(ridingHorseMessagePacket);
+
+            sender.LoggedinUser.CurrentlyRidingHorse = horseMountInst;
+
+            // Determine what sprite to use;
+            int incBy = 0;
+            switch (horseMountInst.Color)
+            {
+                case "brown":
+                    incBy = 1;
+                    break;
+                case "cremello":
+                case "white":
+                    incBy = 2;
+                    break;
+                case "black":
+                    incBy = 3;
+                    break;
+                case "chestnut":
+                    incBy = 4;
+                    break;
+                case "bay":
+                    incBy = 5;
+                    break;
+                case "grey":
+                    incBy = 6;
+                    break;
+                case "dun":
+                    incBy = 7;
+                    break;
+                case "palomino":
+                    incBy = 8;
+                    break;
+                case "roan":
+                    incBy = 9;
+                    break;
+                case "pinto":
+                    incBy = 10;
+                    break;
+            }
+
+
+            if (horseMountInst.Breed.Type == "zebra")
+            {
+                incBy = 11;
+            }
+            if (horseMountInst.Breed.Id == 5) // Appaloosa
+            {
+                if (horseMountInst.Color == "brown")
+                    incBy = 12;
+            }
+            if (horseMountInst.Breed.Type == "camel")
+            {
+                if (horseMountInst.Color == "brown")
+                    incBy = 13;
+                if (horseMountInst.Color == "white")
+                    incBy = 14;
+
+            }
+            if (horseMountInst.Breed.Type == "unicorn")
+            {
+                incBy = 15;
+            }
+            if (horseMountInst.Breed.Type == "pegasus")
+            {
+                incBy = 16;
+                sender.LoggedinUser.NoClip = true;
+            }
+            if (horseMountInst.Breed.Id == 170) // Unipeg
+            {
+                incBy = 17;
+                sender.LoggedinUser.NoClip = true;
+            }
+
+            incBy *= 5;
+            sender.LoggedinUser.Facing %= 5;
+            sender.LoggedinUser.Facing += incBy;
+            sender.LoggedinUser.LastRiddenHorse = horseRandomId;
+
+
+            byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
+            sender.SendPacket(rideHorsePacket);
+
+            UpdateUserInfo(sender.LoggedinUser);
+        }
+        public static void StopRidingHorse(GameClient sender)
+        {
+            sender.LoggedinUser.CurrentlyRidingHorse = null;
+
+            byte[] stopRidingHorseMessagePacket = PacketBuilder.CreateChat(Messages.HorseStopRidingMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+            sender.SendPacket(stopRidingHorseMessagePacket);
+
+
+            sender.LoggedinUser.Facing %= 5;
+            byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
+            sender.SendPacket(rideHorsePacket);
+            sender.LoggedinUser.NoClip = false;
+
+            UpdateUserInfo(sender.LoggedinUser);
+        }
         public static bool ProcessMapCodeWithArg(GameClient forClient, World.SpecialTile tile)
         {
             string mapCode = tile.Code;

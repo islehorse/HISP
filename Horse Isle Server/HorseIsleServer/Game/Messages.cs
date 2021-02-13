@@ -643,6 +643,9 @@ namespace HISP.Game
         public static string LongFullLine;
         public static string MetaTerminator;
 
+        // Shortcuts
+        public static string NoTelescope;
+
         // Drawing room
         public static string DrawingLastToDrawFormat;
         public static string DrawingContentsSavedInSlotFormat;
