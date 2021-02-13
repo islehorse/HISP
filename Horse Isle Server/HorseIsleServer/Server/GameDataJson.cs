@@ -848,10 +848,14 @@ namespace HISP.Server
             // Groomer
             Messages.GroomerBestToHisAbilitiesFormat = gameData.messages.meta.groomer.groomed_best_it_can;
             Messages.GroomerCannotAffordMessage = gameData.messages.meta.groomer.cannot_afford_service;
+            Messages.GroomerCannotImprove = gameData.messages.meta.groomer.cannot_improve;
+            Messages.GroomerBestToHisAbilitiesALL = gameData.messages.meta.groomer.groomed_best_all;
+            Messages.GroomerDontNeed = gameData.messages.meta.groomer.dont_need;
+
+
             Messages.GroomerHorseCurrentlyAtFormat = gameData.messages.meta.groomer.currently_at;
             Messages.GroomerApplyServiceFormat = gameData.messages.meta.groomer.apply_service;
             Messages.GroomerApplyServiceForAllFormat = gameData.messages.meta.groomer.apply_all;
-            Messages.GroomerCannotImprove = gameData.messages.meta.groomer.cannot_improve;
 
             // Farrier
             Messages.FarrierCurrentShoesFormat = gameData.messages.meta.farrier.current_shoes;

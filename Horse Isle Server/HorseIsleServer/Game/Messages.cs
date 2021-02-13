@@ -439,6 +439,9 @@ namespace HISP.Game
 
         public static string GroomerBestToHisAbilitiesFormat;
         public static string GroomerCannotAffordMessage;
+        public static string GroomerBestToHisAbilitiesALL;
+        public static string GroomerDontNeed;
+
         public static string GroomerHorseCurrentlyAtFormat;
         public static string GroomerApplyServiceFormat;
         public static string GroomerApplyServiceForAllFormat;
@@ -872,9 +875,9 @@ namespace HISP.Game
         {
             return GroomerHorseCurrentlyAtFormat.Replace("%HORSENAME%", horseName).Replace("%TOTAL%", currentGroom.ToString()).Replace("%MAX%", maxGroom.ToString());
         }
-        public static string FormatHorseGroomedToBestAbilities(string breedName)
+        public static string FormatHorseGroomedToBestAbilities(string horseName)
         {
-            return GroomerBestToHisAbilitiesFormat.Replace("%HORSEBREED%", breedName);
+            return GroomerBestToHisAbilitiesFormat.Replace("%HORSENAME%", horseName);
         }
 
         public static string FormatBookReadMeta(string author, string title, string bookText)

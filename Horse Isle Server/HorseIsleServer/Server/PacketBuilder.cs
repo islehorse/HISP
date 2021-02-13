@@ -72,6 +72,8 @@ namespace HISP.Server
         public const byte HORSE_TACK_UNEQUIP = 0x3D;
         public const byte HORSE_VET_SERVICE = 0x2A;
         public const byte HORSE_VET_SERVICE_ALL = 0x2F;
+        public const byte HORSE_GROOM_SERVICE_ALL = 0x33;
+        public const byte HORSE_GROOM_SERVICE = 0x32;
         public const byte HORSE_MOUNT = 0x46;
         public const byte HORSE_SHOE_IRON = 0x28;
         public const byte HORSE_SHOE_STEEL = 0x29;
