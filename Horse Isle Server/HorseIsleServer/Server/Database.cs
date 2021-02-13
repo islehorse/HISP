@@ -36,6 +36,7 @@ namespace HISP.Server
                 string AbuseReorts = "CREATE TABLE AbuseReports(ReportCreator TEXT(1028), Reporting TEXT(1028), ReportReason TEXT(1028))";
                 string Leaderboards = "CREATE TABLE Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
                 string NpcStartPoint = "CREATE TABLE NpcStartPoint(playerId INT, npcId INT, chatpointId INT)";
+                string NpcPos = "CREATE TABLE NpcPos(npcId INT, X INT, Y INT, UdlrPointer INT)";
                 string PoetryRooms = "CREATE TABLE PoetryRooms(poetId INT, X INT, Y INT, roomId INT)";
                 string SavedDrawings = "CREATE TABLE SavedDrawings(playerId INT, Drawing1 TEXT(65535), Drawing2 TEXT(65535), Drawing3 TEXT(65535))";
                 string DrawingRooms = "CREATE TABLE DrawingRooms(roomId INT, Drawing TEXT(65535))";
@@ -48,6 +49,19 @@ namespace HISP.Server
                 string BannedPlayers = "CREATE TABLE BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))";
                 string RiddlesComplete = "CREATE TABLE RiddlesComplete(playerId INT, riddleId INT, solved TEXT(1028))";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+
+                try
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = NpcPos;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
 
                 try
                 {
@@ -3518,6 +3532,128 @@ namespace HISP.Server
                 int total = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 sqlCommand.Dispose();
                 return total >= 1;
+            }
+        }
+        public static bool HasNpcPos(int npcId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM NpcPos WHERE npcId=@npcId";
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Prepare();
+                int total = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return total >= 1;
+            }
+        }
+        public static void SetNpcY(int npcId, int x)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE NpcPos SET Y=@yPos WHERE npcId=@npcId";
+                sqlCommand.Parameters.AddWithValue("@yPos", x);
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetNpcX(int npcId, int x)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE NpcPos SET X=@xPos WHERE npcId=@npcId";
+                sqlCommand.Parameters.AddWithValue("@xPos", x);
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetNpcUdlrPointer(int npcId, int udlr)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE NpcPos SET UdlrPointer=@udlr WHERE npcId=@npcId";
+                sqlCommand.Parameters.AddWithValue("@udlr", udlr);
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static int GetNpcUdlrPointer(int npcId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT UdlrPointer FROM NpcPos WHERE npcId=@npcId";
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Prepare();
+                int udlrPointer = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return udlrPointer;
+            }
+        }
+        public static int GetNpcPosY(int npcId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT y FROM NpcPos WHERE npcId=@npcId";
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Prepare();
+                int y = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return y;
+            }
+        }
+        public static int GetNpcPosX(int npcId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT X FROM NpcPos WHERE npcId=@npcId";
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Prepare();
+                int x = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return x;
+            }
+        }
+        public static void AddNpcPos(int npcId, int X, int Y, int udlrPointer)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "INSERT INTO NpcPos VALUES(@npcId, @xPos, @yPos, @udlr)";
+                sqlCommand.Parameters.AddWithValue("@npcId", npcId);
+                sqlCommand.Parameters.AddWithValue("@xPos", X);
+                sqlCommand.Parameters.AddWithValue("@yPos", Y);
+                sqlCommand.Parameters.AddWithValue("@udlr", udlrPointer);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
             }
         }
         public static void AddNpcStartPoint(int playerId, int npcId, int startChatpoint)

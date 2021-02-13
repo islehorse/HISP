@@ -244,15 +244,27 @@ namespace HISP.Server
             int totalNpcs = gameData.npc_list.Count;
             for(int i = 0; i < totalNpcs; i++)
             {
-                Npc.NpcEntry npcEntry = new Npc.NpcEntry();
-                npcEntry.Id = gameData.npc_list[i].id;
+                int id = gameData.npc_list[i].id;
+                int x = gameData.npc_list[i].x;
+                int y = gameData.npc_list[i].y;
+                bool moves = gameData.npc_list[i].moves;
+
+                int udlrStartX = 0;
+                int udlrStartY = 0;
+
+                if (gameData.npc_list[i].udlr_start_x != null)
+                    udlrStartX = gameData.npc_list[i].udlr_start_x;
+                if (gameData.npc_list[i].udlr_start_y != null)
+                    udlrStartY = gameData.npc_list[i].udlr_start_y;
+
+                Npc.NpcEntry npcEntry = new Npc.NpcEntry(id, x, y, moves, udlrStartX, udlrStartY);
+                
                 npcEntry.Name = gameData.npc_list[i].name;
                 npcEntry.AdminDescription = gameData.npc_list[i].admin_description;
                 npcEntry.ShortDescription = gameData.npc_list[i].short_description;
                 npcEntry.LongDescription = gameData.npc_list[i].long_description;
-                npcEntry.Moves = gameData.npc_list[i].moves;
-                npcEntry.X = gameData.npc_list[i].x;
-                npcEntry.Y = gameData.npc_list[i].y;
+                
+
                 if (gameData.npc_list[i].stay_on != null)
                     npcEntry.StayOn = gameData.npc_list[i].stay_on;
                 if (gameData.npc_list[i].requires_questid_completed != null)
@@ -261,10 +273,7 @@ namespace HISP.Server
                     npcEntry.RequiresQuestIdNotCompleted = gameData.npc_list[i].requires_questid_not_completed;
                 if (gameData.npc_list[i].udlr_script != null)
                     npcEntry.UDLRScript = gameData.npc_list[i].udlr_script;
-                if (gameData.npc_list[i].udlr_start_x != null)
-                    npcEntry.UDLRStartX = gameData.npc_list[i].udlr_start_x;
-                if (gameData.npc_list[i].udlr_start_y != null)
-                    npcEntry.UDLRStartY = gameData.npc_list[i].udlr_start_y;
+
                 npcEntry.AdminOnly = gameData.npc_list[i].admin_only;
                 npcEntry.LibarySearchable = gameData.npc_list[i].libary_searchable;
                 npcEntry.IconId = gameData.npc_list[i].icon_id;

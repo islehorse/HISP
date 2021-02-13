@@ -25,14 +25,75 @@ namespace HISP.Game
         }
         public class NpcEntry
         {
-            public int Id;
+            public NpcEntry(int npcId, int posX, int posY, bool npcMoves, int udlrStartX=0, int udlrStartY=0)
+            {
+                id = npcId;
+                x = posX;
+                y = posY;
+                Moves = npcMoves;
+
+                UDLRStartX = udlrStartX;
+                UDLRStartY = udlrStartY;
+
+                if(Moves)
+                {
+                    if(Database.HasNpcPos(id))
+                    {
+                        udlrScriptPos = Database.GetNpcUdlrPointer(npcId);
+                        x = Database.GetNpcPosX(npcId);
+                        y = Database.GetNpcPosY(npcId);
+                    }
+                    else
+                    {
+                        if(udlrStartX != 0 && udlrStartY != 0)
+                        {
+                            x = udlrStartX;
+                            y = udlrStartY;
+                        }
+                        udlrScriptPos = 0;
+                        Database.AddNpcPos(npcId, x, Y, udlrScriptPos);
+                    }
+                }
+            }
+            private int id;
             public string Name;
             public string AdminDescription;
             public string ShortDescription;
             public string LongDescription;
             public bool Moves;
-            public int X;
-            public int Y;
+            private int x;
+            private int y;
+            public int Id
+            {
+                get
+                {
+                    return id;
+                }
+            }
+            public int X
+            {
+                get
+                {
+                    return x;
+                }
+                set
+                {
+                    Database.SetNpcX(id, value);
+                    x = value;
+                }
+            }
+            public int Y
+            {
+                get
+                {
+                    return y;
+                }
+                set
+                {
+                    Database.SetNpcY(id, value);
+                    y = value;
+                }
+            }
             public string StayOn;
             public int RequiresQuestIdCompleted;
             public int RequiresQuestIdNotCompleted;
@@ -45,6 +106,18 @@ namespace HISP.Game
 
             private int udlrScriptPos = 0;
 
+            public int UdlrScriptPos
+            {
+                get
+                {
+                    return udlrScriptPos;
+                }
+                set
+                {
+                    Database.SetNpcUdlrPointer(Id, value);
+                    udlrScriptPos = value;
+                }
+            }
             private bool canNpcBeHere(int x, int y)
             {
                 // Horses cannot be in towns.
@@ -101,33 +174,30 @@ namespace HISP.Game
                     }
                     else // Is Scripted.
                     {
+                        if (GameServer.GetUsersAt(this.X, this.Y, true, true).Length > 0)
+                            return;
 
-                        X = UDLRStartX;
-                        Y = UDLRStartY;
-                        for(int i = 0; i < udlrScriptPos; i++)
+                        if (UdlrScriptPos + 1 >= UDLRScript.Length)
+                            UdlrScriptPos = 0;
+                        else
+                            UdlrScriptPos++;
+
+                        switch (UDLRScript.ToLower()[UdlrScriptPos])
                         {
-                            
-                            switch (UDLRScript.ToLower()[i])
-                            {
-                                case 'u':
-                                    Y++;
-                                    break;
-                                case 'd':
-                                    Y--;
-                                    break;
-                                case 'l':
-                                    X--;
-                                    break;
-                                case 'r':
-                                    X++;
-                                    break;
-                            }
+                            case 'u':
+                                Y++;
+                                break;
+                            case 'd':
+                                Y--;
+                                break;
+                            case 'l':
+                                X--;
+                                break;
+                            case 'r':
+                                X++;
+                                break;
                         }
 
-                        udlrScriptPos++;
-
-                        if (udlrScriptPos > UDLRScript.Length)
-                            udlrScriptPos = 0;
                     }
                 }
             }
