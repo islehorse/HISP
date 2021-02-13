@@ -258,6 +258,7 @@ namespace HISP.Game.Chat
                         {
                             user.Teleport(waypnt.PosX, waypnt.PosY);
                             teleported = true;
+                            break;
                         }
                     }
                     if(!teleported)
@@ -268,7 +269,33 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
-            if(args[0].Contains(","))
+            else if(args[0] == "NPC")
+            {
+                if (args.Length < 2)
+                    return false;
+
+                try
+                {
+                    string npcName = string.Join(" ", args, 1, args.Length - 1);
+                    bool teleported = false;
+                    foreach (Npc.NpcEntry npc in Npc.NpcList)
+                    {
+                        if (npc.Name.ToLower().StartsWith(npcName.ToLower()))
+                        {
+                            user.Teleport(npc.X, npc.Y);
+                            teleported = true;
+                            break;
+                        }
+                    }
+                    if (!teleported)
+                        return false;
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
+            else if(args[0].Contains(","))
             {
                 try
                 {
@@ -281,6 +308,10 @@ namespace HISP.Game.Chat
                 {
                     return false;
                 }
+            }
+            else
+            {
+                return false;
             }
 
         
