@@ -530,6 +530,7 @@ namespace HISP.Server
                 Vet vet = new Vet(id, cost);
                 Logger.DebugPrint("Registered Vet: " + vet.Id + " selling at: " + vet.PriceMultiplier.ToString(CultureInfo.InvariantCulture));
             }
+
             int totalGroomers = gameData.services.groomer.price_multipliers.Count;
             for (int i = 0; i < totalGroomers; i++)
             {
@@ -551,6 +552,19 @@ namespace HISP.Server
 
                 Farrier farrier = new Farrier(id, steel, steelcost, iron, ironcost);
                 Logger.DebugPrint("Registered Farrier: " + farrier.Id);
+            }
+
+            int totalBarns = gameData.services.barn.price_multipliers.Count;
+            for (int i = 0; i < totalBarns; i++)
+            {
+                int id = gameData.services.barn.price_multipliers[i].id;
+                double tired_cost = gameData.services.barn.price_multipliers[i].tired_cost;
+                double hunger_cost = gameData.services.barn.price_multipliers[i].hunger_cost;
+                double thirst_cost = gameData.services.barn.price_multipliers[i].thirst_cost;
+
+
+                Barn barn = new Barn(id, tired_cost, hunger_cost, thirst_cost);
+                Logger.DebugPrint("Registered Barn: " + barn.Id);
             }
 
 
@@ -852,10 +866,20 @@ namespace HISP.Server
             Messages.GroomerBestToHisAbilitiesALL = gameData.messages.meta.groomer.groomed_best_all;
             Messages.GroomerDontNeed = gameData.messages.meta.groomer.dont_need;
 
-
             Messages.GroomerHorseCurrentlyAtFormat = gameData.messages.meta.groomer.currently_at;
             Messages.GroomerApplyServiceFormat = gameData.messages.meta.groomer.apply_service;
             Messages.GroomerApplyServiceForAllFormat = gameData.messages.meta.groomer.apply_all;
+
+            // Barn
+            Messages.BarnHorseFullyFedFormat = gameData.messages.meta.barn.fully_fed;
+            Messages.BarnCantAffordService = gameData.messages.meta.barn.cant_afford;
+            Messages.BarnAllHorsesFullyFed = gameData.messages.meta.barn.rested_all;
+            Messages.BarnServiceNotNeeded = gameData.messages.meta.barn.not_needed;
+
+            Messages.BarnHorseStatusFormat = gameData.messages.meta.barn.horse_status;
+            Messages.BarnHorseMaxed = gameData.messages.meta.barn.horse_maxed;
+            Messages.BarnLetHorseRelaxFormat = gameData.messages.meta.barn.let_relax;
+            Messages.BarnLetAllHorsesReleaxFormat = gameData.messages.meta.barn.relax_all;
 
             // Farrier
             Messages.FarrierCurrentShoesFormat = gameData.messages.meta.farrier.current_shoes;

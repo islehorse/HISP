@@ -545,6 +545,114 @@ namespace HISP.Server
                         }
                     }
                     break;
+                case PacketBuilder.HORSE_BARN_SERVICE:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+
+                    if (randomIdStr == "NaN")
+                        break;
+
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        HorseInstance barnHorseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        sender.LoggedinUser.LastViewedHorse = barnHorseInst;
+
+                        if (World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                        {
+                            World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            if (tile.Code.StartsWith("BARN-"))
+                            {
+                                string[] barnInfo = tile.Code.Split('-');
+                                int barnId = int.Parse(barnInfo[1]);
+
+                                Barn barn = Barn.GetBarnById(barnId);
+                                int price = barn.CalculatePrice(barnHorseInst.BasicStats.Tiredness, barnHorseInst.BasicStats.Hunger, barnHorseInst.BasicStats.Thirst); ;
+
+
+                                if (sender.LoggedinUser.Money >= price)
+                                {
+                                    barnHorseInst.BasicStats.Tiredness = 1000;
+                                    barnHorseInst.BasicStats.Hunger = 1000;
+                                    barnHorseInst.BasicStats.Thirst = 1000;
+                                    sender.LoggedinUser.Money -= price;
+
+                                    byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatBarnHorseFullyFed(barnHorseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(messagePacket);
+                                }
+                                else
+                                {
+                                    byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.BarnCantAffordService, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordMessage);
+                                    break;
+                                }
+                                UpdateArea(sender);
+                            }
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to use groomer services on a non existant horse.");
+                        break;
+                    }
+                case PacketBuilder.HORSE_BARN_SERVICE_ALL:
+                    if (World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                    {
+                        World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        if (tile.Code.StartsWith("BARN-"))
+                        {
+                            string[] barnInfo = tile.Code.Split('-');
+                            int barnId = int.Parse(barnInfo[1]);
+                            Barn barn = Barn.GetBarnById(barnId);
+                            int totalPrice = 0;
+
+                            foreach (HorseInstance horse in sender.LoggedinUser.HorseInventory.HorseList)
+                            {
+                                int price = barn.CalculatePrice(horse.BasicStats.Tiredness, horse.BasicStats.Hunger, horse.BasicStats.Thirst);
+                                if (price > 0)
+                                    totalPrice += price;
+                            }
+                            if (totalPrice == 0)
+                            {
+                                byte[] notNeededMessagePacket = PacketBuilder.CreateChat(Messages.BarnServiceNotNeeded, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(notNeededMessagePacket);
+                                break;
+                            }
+                            else if (sender.LoggedinUser.Money >= totalPrice)
+                            {
+                                foreach (HorseInstance horse in sender.LoggedinUser.HorseInventory.HorseList)
+                                {
+                                    horse.BasicStats.Tiredness = 1000;
+                                    horse.BasicStats.Thirst = 1000;
+                                    horse.BasicStats.Hunger = 1000;
+                                }
+
+                                byte[] barnedAllHorsesPacket = PacketBuilder.CreateChat(Messages.BarnAllHorsesFullyFed, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(barnedAllHorsesPacket);
+
+                                sender.LoggedinUser.Money -= totalPrice;
+
+                            }
+                            else
+                            {
+                                byte[] cannotAffordMessagePacket = PacketBuilder.CreateChat(Messages.BarnCantAffordService, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cannotAffordMessagePacket);
+                                break;
+                            }
+                            UpdateArea(sender);
+                        }
+                    }
+                    break;
                 case PacketBuilder.HORSE_GIVE_FEED:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
