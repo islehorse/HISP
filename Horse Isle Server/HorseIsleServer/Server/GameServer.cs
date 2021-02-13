@@ -1998,6 +1998,7 @@ namespace HISP.Server
                         {
                             cost = 10000;
                         }
+                        sender.LoggedinUser.MetaPriority = true;
 
                         byte[] pricingMessage = PacketBuilder.CreateChat(Messages.FormatWhispererPrice(cost), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(pricingMessage);
@@ -2022,6 +2023,7 @@ namespace HISP.Server
                             Logger.DebugPrint(sender.LoggedinUser.Username + " Sent invalid libary breed viewer request.");
                             break; 
                         };
+                        sender.LoggedinUser.MetaPriority = true;
                         string metaTag = Meta.BuildBreedViewerLibary(horseBreed);
                         metaPacket = PacketBuilder.CreateMetaPacket(metaTag);
                         sender.SendPacket(metaPacket);
@@ -2098,7 +2100,8 @@ namespace HISP.Server
 
             foreach (User nearbyUser in GameServer.GetNearbyUsers(sender.LoggedinUser.X, sender.LoggedinUser.Y, false, false))
                 if (nearbyUser.Id != sender.LoggedinUser.Id)
-                    UpdateArea(nearbyUser.LoggedinClient);
+                    if(!nearbyUser.MetaPriority)
+                        UpdateArea(nearbyUser.LoggedinClient);
 
             byte[] IsleData = PacketBuilder.CreatePlaceData(World.Isles.ToArray(), World.Towns.ToArray(), World.Areas.ToArray());
             sender.SendPacket(IsleData);
@@ -3664,6 +3667,7 @@ namespace HISP.Server
                             {
                                 int buildSlot = packet[3] - 40;
                                 sender.LoggedinUser.LastClickedRanchBuilding = buildSlot;
+                                sender.LoggedinUser.MetaPriority = true;
 
                                 if (buildSlot == 0)
                                 {
@@ -3692,6 +3696,8 @@ namespace HISP.Server
                     {
                         Ranch ranch = Ranch.GetRanchAt(sender.LoggedinUser.X, sender.LoggedinUser.Y);
                         int buildSlot = packet[3] - 40;
+                        sender.LoggedinUser.MetaPriority = true;
+
                         if (buildSlot == 0) // Main Building
                         {
                             byte[] upgradeDescription = PacketBuilder.CreateMetaPacket(Meta.BuildRanchBuilding(ranch, ranch.GetRanchUpgrade()));
