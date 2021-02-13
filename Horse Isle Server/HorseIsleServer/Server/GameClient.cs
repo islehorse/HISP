@@ -36,8 +36,11 @@ namespace HISP.Server
         private int warnInterval = GameServer.IdleWarning * 60 * 1000;
         private int kickInterval = GameServer.IdleTimeout * 60 * 1000;
 
+        private bool dcLock = false;
+
         private void minuteTimerTick(object state)
         {
+            dcLock = true;
             totalMinutesElapsed++;
             if (LoggedIn)
             {
@@ -46,7 +49,12 @@ namespace HISP.Server
                 {
                     LoggedinUser.FreeMinutes = 0;
                     if (!LoggedinUser.Subscribed && !LoggedinUser.Moderator && !LoggedinUser.Administrator)
+                    {
+                        dcLock = false;
                         Kick(Messages.KickReasonNoTime);
+                        return;
+                    }
+
                 }
 
                 // unsure of actural timings, would be more or less impossible to know
@@ -86,6 +94,7 @@ namespace HISP.Server
             }
 
             minuteTimer.Change(oneMinute, oneMinute);
+            dcLock = false;
         }
         private void keepAliveTimerTick(object state)
         {
@@ -173,13 +182,14 @@ namespace HISP.Server
                 }
                 catch(SocketException e)
                 {
-                    Logger.ErrorPrint("Socket exception occured: " + e.Message);
                     Disconnect();
                     break;
                 }
 
             }
 
+            while(dcLock) { }; // Refuse to shut down until dcLock is cleared. (prevents TOCTOU issues.)
+                
             // Shutdown sockets
             if(updateTimer != null)
                 updateTimer.Dispose();
