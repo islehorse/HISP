@@ -93,7 +93,8 @@ namespace HISP.Server
                     LoggedinUser.Tiredness--;
             }
 
-            minuteTimer.Change(oneMinute, oneMinute);
+            if(!isDisconnecting)
+               minuteTimer.Change(oneMinute, oneMinute);
             dcLock = false;
         }
         private void keepAliveTimerTick(object state)
@@ -148,7 +149,7 @@ namespace HISP.Server
             // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
             
 
-            while(ClientSocket.Connected)
+            while(ClientSocket.Connected && !isDisconnecting)
             {
                 if(isDisconnecting)
                     break;
@@ -180,7 +181,7 @@ namespace HISP.Server
                         }
                     }
                 }
-                catch(SocketException e)
+                catch(SocketException)
                 {
                     Disconnect();
                     break;
@@ -188,10 +189,11 @@ namespace HISP.Server
 
             }
 
-            while(dcLock) { }; // Refuse to shut down until dcLock is cleared. (prevents TOCTOU issues.)
-                
-            // Shutdown sockets
-            if(updateTimer != null)
+            while (dcLock) { }; // Refuse to shut down until dcLock is cleared. (prevents TOCTOU issues.)
+            
+
+            // Stop Timers
+            if (updateTimer != null)
                 updateTimer.Dispose();
             if(inactivityTimer != null)
                 inactivityTimer.Dispose();
@@ -200,14 +202,15 @@ namespace HISP.Server
             if(kickTimer != null)
                 kickTimer.Dispose();
             
+            // Call OnDisconnect
             GameServer.OnDisconnect(this);
             LoggedIn = false;
             LoggedinUser = null;
+            // Close Sockets
             ClientSocket.Close();
             ClientSocket.Dispose();
 
             return isDisconnecting; // Stop the thread.
-                
         }
 
         private void parsePackets(byte[] Packet)
