@@ -4038,7 +4038,7 @@ namespace HISP.Server
 
                             sender.LoggedinUser.Teleport(sender.LoggedinUser.OwnedRanch.X, sender.LoggedinUser.OwnedRanch.Y);
                         }
-                        if(itm.ItemId == Item.Telescope)
+                        else if(itm.ItemId == Item.Telescope)
                         {
                             byte[] birdMap = PacketBuilder.CreateBirdMap(sender.LoggedinUser.X, sender.LoggedinUser.Y);
                             sender.SendPacket(birdMap);

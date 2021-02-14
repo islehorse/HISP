@@ -161,31 +161,31 @@ namespace HISP.Game.Horse
                     string effects = effect.EffectsWhat;
                     switch (effects)
                     {
-                        case "AGILITYOFFSET":
+                        case "AGILITY":
                             if (horseStat == StatType.AGILITY)
                                 offsetBy += effect.EffectAmount;
                             break;
-                        case "CONFORMATIONOFFSET":
+                        case "CONFORMATION":
                             if (horseStat == StatType.CONFORMATION)
                                 offsetBy += effect.EffectAmount;
                             break;
-                        case "ENDURANCEOFFSET":
+                        case "ENDURANCE":
                             if (horseStat == StatType.ENDURANCE)
                                 offsetBy += effect.EffectAmount;
                             break;
-                        case "PERSONALITYOFFSET":
+                        case "PERSONALITY":
                             if (horseStat == StatType.PERSONALITY)
                                 offsetBy += effect.EffectAmount;
                             break;
-                        case "SPEEDOFFSET":
+                        case "SPEED":
                             if (horseStat == StatType.SPEED)
                                 offsetBy += effect.EffectAmount;
                             break;
-                        case "STRENGTHOFFSET":
+                        case "STRENGTH":
                             if (horseStat == StatType.STRENGTH)
                                 offsetBy += effect.EffectAmount;
                             break;
-                        case "INTELLIGENCEOFFSET":
+                        case "INTELLIGENCE":
                             if (horseStat == StatType.INTELIGENCE)
                                 offsetBy += effect.EffectAmount;
                             break;
