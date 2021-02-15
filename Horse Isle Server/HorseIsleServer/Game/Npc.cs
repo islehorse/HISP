@@ -177,7 +177,7 @@ namespace HISP.Game
                         if (GameServer.GetUsersAt(this.X, this.Y, true, true).Length > 0)
                             return;
 
-                        if (UdlrScriptPos > UDLRScript.Length)
+                        if (UdlrScriptPos >= UDLRScript.Length)
                             UdlrScriptPos = 0;
 
                         switch (UDLRScript.ToLower()[UdlrScriptPos])
