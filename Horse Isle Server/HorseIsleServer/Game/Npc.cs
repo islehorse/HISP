@@ -177,26 +177,31 @@ namespace HISP.Game
                         if (GameServer.GetUsersAt(this.X, this.Y, true, true).Length > 0)
                             return;
 
-                        if (UdlrScriptPos + 1 >= UDLRScript.Length)
-                            UdlrScriptPos = 0;
-                        else
-                            UdlrScriptPos++;
 
                         switch (UDLRScript.ToLower()[UdlrScriptPos])
                         {
                             case 'u':
-                                Y++;
-                                break;
-                            case 'd':
+                                Logger.DebugPrint(this.Name + " Moved up: was " + X + ", " + Y + " now: " + X + ", " + (Y + 1).ToString());
                                 Y--;
                                 break;
+                            case 'd':
+                                Logger.DebugPrint(this.Name + " Moved down: was " + X + ", " + Y + " now: " + X + ", " + (Y - 1).ToString());
+                                Y++;
+                                break;
                             case 'l':
+                                Logger.DebugPrint(this.Name + " Moved left: was " + X + ", " + Y + " now: " + (X - 1).ToString() + ", " + Y );
                                 X--;
                                 break;
                             case 'r':
+                                Logger.DebugPrint(this.Name + " Moved right: was " + X + ", " + Y + " now: " + (X + 1).ToString() + ", " + Y);
                                 X++;
                                 break;
                         }
+
+                        if (UdlrScriptPos > UDLRScript.Length)
+                            UdlrScriptPos = 0;
+                        else
+                            UdlrScriptPos++;
 
                     }
                 }

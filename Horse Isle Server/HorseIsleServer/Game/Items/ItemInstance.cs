@@ -6,7 +6,7 @@ namespace HISP.Game.Items
     {
         public int RandomId;
         public int ItemId;
-        
+        public int Data;
 
 
         public Item.ItemInformation GetItemInfo()
@@ -15,10 +15,10 @@ namespace HISP.Game.Items
 
         }
 
-        public ItemInstance(int id,int randomId = -1)
+        public ItemInstance(int id,int randomId = -1, int data=0)
         {
             RandomId = RandomID.NextRandomId(randomId);
-
+            Data = data;
             ItemId = id; 
 
         }

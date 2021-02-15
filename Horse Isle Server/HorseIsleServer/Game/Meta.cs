@@ -214,6 +214,7 @@ namespace HISP.Game
 
         private static string buildMultiroom(string id, User user)
         {
+
             string message = Messages.MultiroomPlayersParticipating;
             foreach (User userOnTile in GameServer.GetUsersOnSpecialTileCode("MULTIROOM-" + id))
             {
@@ -1523,11 +1524,14 @@ namespace HISP.Game
                 message += Messages.FormatPlayerInventoryItemMeta(itemInfo.IconId, item.ItemInstances.Count, title);
 
                 int randomId = item.ItemInstances[0].RandomId;
-                if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" &&  !(itemInfo.Id == Item.Present || itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope) && World.CanDropItems(inv.BaseUser.X, inv.BaseUser.Y))
+                if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" &&  !(itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope) && World.CanDropItems(inv.BaseUser.X, inv.BaseUser.Y))
                     message += Messages.FormatItemDropButton(randomId);
 
-                if (itemInfo.Id == Item.Present || itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope)
+                if (itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope)
                     message += Messages.FormatItemUseButton(randomId);
+
+                if (itemInfo.Id == Item.Present)
+                    message += Messages.FormatItemOpenButton(randomId);
 
                 if (itemInfo.Type == "CLOTHES" || itemInfo.Type == "JEWELRY")
                     message += Messages.FormatWearButton(randomId);
@@ -1740,7 +1744,7 @@ namespace HISP.Game
                 }
 
                 if (canRelease)
-                    message += Messages.HorseReleaseButton;
+                    message += Messages.FormatHorseReleaseButton(horse.Breed.Type.ToUpper());
             }
 
 
@@ -1935,14 +1939,28 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
-
+        private static string buildSanta(User user)
+        {
+            string message = Messages.SantaHiddenText;
+            InventoryItem[] items = user.Inventory.GetItemList();
+            foreach (InventoryItem item in items)
+            {
+                Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
+                int randomId = item.ItemInstances[0].RandomId;
+                if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" && itemInfo.Type != "COMPANION" && itemInfo.Id != Item.Present)
+                    message += Messages.FormatSantaItemEntry(itemInfo.IconId, itemInfo.Name, randomId);
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         private static string buildPawneer(User user)
         {
             string message = "";
             if (user.Inventory.HasItemId(Item.PawneerOrder))
                 message += Messages.PawneerOrderMeta;
             message += Messages.PawneerUntackedHorsesICanBuy;
-            foreach(HorseInstance horse in user.HorseInventory.HorseList)
+            foreach(HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).ToList())
             {
                 if(horse.Category == "TRADING" && horse.Equipment.Bridle == null && horse.Equipment.Saddle == null && horse.Equipment.SaddlePad == null && horse.Equipment.Companion == null)
                 {
@@ -2067,9 +2085,12 @@ namespace HISP.Game
                 {
                     message += buildRanch(user, int.Parse(TileArg));
                 }
+                if(TileCode == "SANTA")
+                {
+                    message += buildSanta(user);
+                }
                 if (TileCode == "MULTIROOM")
                 {
-                    user.MetaPriority = false; // acturally want to track updates here >-<
                     if (TileArg != "")
                         message += buildMultiroom(TileArg, user);
                 }

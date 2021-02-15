@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using HISP.Game;
@@ -149,7 +150,9 @@ namespace HISP.Server
         public const byte ITEM_BUY_5 = 0x35;
         public const byte ITEM_BUY_25 = 0x37;
         public const byte ITEM_SELL = 0x3C;
+        public const byte ITEM_WRAP = 0x17;
         public const byte ITEM_SELL_ALL = 0x3D;
+        public const byte ITEM_OPEN = 0x16;
         public const byte ITEM_WEAR = 0x46;
         public const byte ITEM_REMOVE = 0x47;
         public const byte ITEM_CONSUME = 0x51;
@@ -813,9 +816,9 @@ namespace HISP.Server
 
         public static byte[] CreatePlayerData(int money, int playerCount, int mail)
         {
-            byte[] moneyStrBytes = Encoding.UTF8.GetBytes(money.ToString("N0"));
-            byte[] playerStrBytes = Encoding.UTF8.GetBytes(playerCount.ToString("N0"));
-            byte[] mailStrBytes = Encoding.UTF8.GetBytes(mail.ToString("N0"));
+            byte[] moneyStrBytes = Encoding.UTF8.GetBytes(money.ToString("N0", CultureInfo.InvariantCulture));
+            byte[] playerStrBytes = Encoding.UTF8.GetBytes(playerCount.ToString("N0", CultureInfo.InvariantCulture));
+            byte[] mailStrBytes = Encoding.UTF8.GetBytes(mail.ToString("N0", CultureInfo.InvariantCulture));
 
             MemoryStream ms = new MemoryStream();
             ms.WriteByte(PACKET_BASE_STATS);

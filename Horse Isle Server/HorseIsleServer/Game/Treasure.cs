@@ -41,12 +41,12 @@ namespace HISP.Game
             if(type == "BURIED")
             {
                 if(moneyValue == -1)
-                    value = GameServer.RandomNumberGenerator.Next(100,5000);
+                    value = GameServer.RandomNumberGenerator.Next(100,1500);
             }
             else if(type == "RAINBOW")
             {
                 if (moneyValue == -1)
-                    value = GameServer.RandomNumberGenerator.Next(10000, 50000);
+                    value = GameServer.RandomNumberGenerator.Next(10000, 30000);
             }
 
             if (moneyValue != -1)

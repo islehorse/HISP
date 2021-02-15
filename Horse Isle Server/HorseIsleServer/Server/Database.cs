@@ -25,9 +25,9 @@ namespace HISP.Server
                 string BuddyTable = "CREATE TABLE BuddyList(Id INT, IdFriend INT, Pending BOOL)";
                 string WorldTable = "CREATE TABLE World(Time INT, Day INT, Year INT)";
                 string WeatherTable = "CREATE TABLE Weather(Area TEXT(1028), Weather TEXT(64))";
-                string InventoryTable = "CREATE TABLE Inventory(PlayerID INT, RandomID INT, ItemID INT)";
+                string InventoryTable = "CREATE TABLE Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)";
                 string ShopInventory = "CREATE TABLE ShopInventory(ShopID INT, RandomID INT, ItemID INT)";
-                string DroppedItems = "CREATE TABLE DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT)";
+                string DroppedItems = "CREATE TABLE DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT, Data INT)";
                 string TrackedQuest = "CREATE TABLE TrackedQuest(playerId INT, questId INT, timesCompleted INT)";
                 string OnlineUsers = "CREATE TABLE OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3))";
                 string CompetitionGear = "CREATE TABLE CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)";
@@ -3455,7 +3455,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT ItemId,RandomId FROM Inventory WHERE PlayerId=@playerId";
+                sqlCommand.CommandText = "SELECT ItemId,RandomId,Data FROM Inventory WHERE PlayerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
@@ -3463,7 +3463,7 @@ namespace HISP.Server
 
                 while (reader.Read())
                 {
-                    instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1)));
+                    instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2)));
                 }
                 sqlCommand.Dispose();
                 return instances;
@@ -3477,10 +3477,11 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
                 
-                sqlCommand.CommandText = "INSERT INTO Inventory VALUES(@playerId,@randomId,@itemId)";
+                sqlCommand.CommandText = "INSERT INTO Inventory VALUES(@playerId,@randomId,@itemId, @data)";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomId);
                 sqlCommand.Parameters.AddWithValue("@itemId", instance.ItemId);
+                sqlCommand.Parameters.AddWithValue("@data", instance.Data);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
@@ -3738,6 +3739,7 @@ namespace HISP.Server
                     droppedItem.X = reader.GetInt32(0);
                     droppedItem.Y = reader.GetInt32(1);
                     droppedItem.DespawnTimer = reader.GetInt32(4);
+                    droppedItem.Data = reader.GetInt32(5);
                     itemList.Add(droppedItem);
                 }
                 sqlCommand.Dispose();
@@ -3768,12 +3770,13 @@ namespace HISP.Server
 
 
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO DroppedItems VALUES(@x, @y, @randomId, @itemId, @despawnTimer)";
+                sqlCommand.CommandText = "INSERT INTO DroppedItems VALUES(@x, @y, @randomId, @itemId, @despawnTimer, @data)";
                 sqlCommand.Parameters.AddWithValue("@x", item.X);
                 sqlCommand.Parameters.AddWithValue("@y", item.Y);
                 sqlCommand.Parameters.AddWithValue("@randomId", item.Instance.RandomId);
                 sqlCommand.Parameters.AddWithValue("@itemId", item.Instance.ItemId);
                 sqlCommand.Parameters.AddWithValue("@despawnTimer", item.DespawnTimer);
+                sqlCommand.Parameters.AddWithValue("@data", item.Data);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();

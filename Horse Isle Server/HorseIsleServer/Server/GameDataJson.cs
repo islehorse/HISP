@@ -519,7 +519,7 @@ namespace HISP.Server
                 int price = gameData.horses.pawneer_base_price[i].price;
                 Pawneer pawneerPricing = new Pawneer(id, price);
                 Pawneer.PawneerPriceModels.Add(pawneerPricing);
-                Logger.DebugPrint("Registered Pawneer Base Price " + pawneerPricing.BreedId + " for $" + pawneerPricing.BasePrice.ToString("N0"));
+                Logger.DebugPrint("Registered Pawneer Base Price " + pawneerPricing.BreedId + " for $" + pawneerPricing.BasePrice.ToString("N0", CultureInfo.InvariantCulture));
             }
 
             int totalCategories = gameData.horses.categorys.Count;
@@ -923,6 +923,15 @@ namespace HISP.Server
             Messages.FarrierPutOnIronShoesMessageFormat = gameData.messages.meta.farrier.put_on_iron_shoes;
             Messages.FarrierPutOnSteelShoesAllMesssageFormat = gameData.messages.meta.farrier.put_on_steel_all;
             Messages.FarrierShoesCantAffordMessage = gameData.messages.meta.farrier.cant_afford_farrier;
+
+            // Santa
+            Messages.SantaHiddenText = gameData.messages.meta.santa.hidden_text;
+            Messages.SantaWrapItemFormat = gameData.messages.meta.santa.wrap_format;
+            Messages.SantaWrappedObjectMessage = gameData.messages.meta.santa.wrapped_object;
+            Messages.SantaCantWrapInvFull = gameData.messages.meta.santa.wrap_fail_inv_full;
+
+            Messages.SantaItemOpenedFormat = gameData.messages.meta.santa.open_format;
+            Messages.SantaItemCantOpenInvFull = gameData.messages.meta.santa.open_format;
 
             // Pawneer
             Messages.PawneerUntackedHorsesICanBuy = gameData.messages.meta.pawneer.untacked_i_can_buy;
@@ -1402,6 +1411,7 @@ namespace HISP.Server
             Messages.ItemThrowButton = gameData.messages.meta.inventory.item_throw_button;
             Messages.ItemConsumeButton = gameData.messages.meta.inventory.item_consume_button;
             Messages.ItemUseButton = gameData.messages.meta.inventory.item_use_button;
+            Messages.ItemOpenButton = gameData.messages.meta.inventory.item_open_button;
             Messages.ItemWearButton = gameData.messages.meta.inventory.item_wear_button;
             Messages.ItemReadButton = gameData.messages.meta.inventory.item_read_button;
 
