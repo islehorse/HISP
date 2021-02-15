@@ -191,7 +191,11 @@ namespace HISP.Game
                 for (int i = 0; i < itemInfo.Quantity; i++)
                 {
                     ItemInstance itm = new ItemInstance(itemInfo.ItemId);
-                    user.Inventory.AddIgnoringFull(itm);
+                    Item.ItemInformation itemInformation = itm.GetItemInfo();
+                    if (itemInformation.Type == "CONCEPTUAL")
+                        Item.ConsumeItem(user, itemInformation);
+                    else
+                        user.Inventory.AddIgnoringFull(itm);
                 }
             }
             if (quest.WarpX != 0 && quest.WarpY != 0)
