@@ -675,6 +675,104 @@ namespace HISP.Server
                         }
                     }
                     break;
+                case PacketBuilder.HORSE_TRAIN:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+
+                    if (randomIdStr == "NaN")
+                        break;
+
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        HorseInstance trainHorseInst = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        sender.LoggedinUser.LastViewedHorse = trainHorseInst;
+
+                        if (World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                        {
+                            World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            if (tile.Code.StartsWith("TRAINER-"))
+                            {
+                                if(trainHorseInst.TrainTimer > 0)
+                                {
+                                    byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainerCantTrainAgainIn(trainHorseInst.TrainTimer), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(trainSuccessfulMessage);
+                                    break;
+                                }
+                                string[] trainerInfo = tile.Code.Split('-');
+                                int trainerId = int.Parse(trainerInfo[1]);
+
+                                Trainer trainer = Trainer.GetTrainerById(trainerId);
+
+                                if(sender.LoggedinUser.Money >= trainer.MoneyCost)
+                                {
+                                    sender.LoggedinUser.Money -= trainer.MoneyCost;
+                                    trainHorseInst.BasicStats.Mood -= trainer.MoodCost;
+                                    trainHorseInst.BasicStats.Thirst -= trainer.ThirstCost;
+                                    trainHorseInst.BasicStats.Hunger -= trainer.HungerCost;
+
+
+                                    switch (trainer.ImprovesStat.ToUpper())
+                                    {
+                                        case "SPEED":
+                                            trainHorseInst.AdvancedStats.Speed += trainer.ImprovesAmount;
+                                            break;
+                                        case "STRENGTH":
+                                            trainHorseInst.AdvancedStats.Strength += trainer.ImprovesAmount;
+                                            break;
+                                        case "AGILITY":
+                                            trainHorseInst.AdvancedStats.Agility += trainer.ImprovesAmount;
+                                            break;
+                                        case "ENDURANCE":
+                                            trainHorseInst.AdvancedStats.Endurance += trainer.ImprovesAmount;
+                                            break;
+                                        case "CONFORMATION":
+                                            trainHorseInst.AdvancedStats.Conformation += trainer.ImprovesAmount;
+                                            break;
+                                        default:
+                                            trainHorseInst.AdvancedStats.Speed += trainer.ImprovesAmount;
+                                            break;
+                                    }
+                                    trainHorseInst.BasicStats.Experience += trainer.ExperienceGained;
+                                    trainHorseInst.TrainTimer = trainer.ImprovesAmount + trainer.ExperienceGained * 50;
+
+                                    byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainedInStatFormat(trainHorseInst.Name, trainer.ImprovesStat), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(trainSuccessfulMessage);
+
+
+                                    sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count++;
+
+                                    if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 1000)
+                                        sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(26)); // Pro Trainer
+                                    if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 10000)
+                                        sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(53)); // Top Trainer
+
+                                    UpdateArea(sender);
+                                }
+                                else
+                                {
+                                    byte[] cantAffordPacket = PacketBuilder.CreateChat(Messages.TrainerCantAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordPacket);
+                                }
+
+                            }
+                        }
+                        break;
+                    }
+                    else
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to use trauber services on a non existant horse.");
+                        break;
+                    }
                 case PacketBuilder.HORSE_GIVE_FEED:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
@@ -2068,6 +2166,8 @@ namespace HISP.Server
                             sender.LoggedinUser.Money += price;
                             byte[] soldHorseMessage = PacketBuilder.CreateChat(Messages.FormatPawneerSold(name, price), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(soldHorseMessage);
+
+                            sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorsePawn).Count++;
 
                             UpdateArea(sender);
 

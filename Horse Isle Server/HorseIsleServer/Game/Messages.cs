@@ -76,6 +76,14 @@ namespace HISP.Game
         public static string RanchHorsesFullyRested;
         public static string RanchWagonDroppedYouOff;
 
+        // Training Pen
+        public static string TrainedInStatFormat;
+        public static string TrainerHeaderFormat;
+        public static string TrainerHorseEntryFormat;
+        public static string TrainerHorseFullyTrainedFormat;
+        public static string TrainerCantTrainAgainInFormat;
+        public static string TrainerCantAfford;
+
         // Santa
         public static string SantaHiddenText; // Text that claims that it costs $10 to wrap a present thats sent to the client but never displayed for some reason. also wrapping is free on pinto so IDEK.
         public static string SantaWrapItemFormat;
@@ -732,6 +740,28 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatTrainerCantTrainAgainIn(int time)
+        {
+            return TrainerCantTrainAgainInFormat.Replace("%TIME%", time.ToString());
+        }
+        public static string FormatTrainerFullyTrained(string horseName, int curStat)
+        {
+            return TrainerHorseFullyTrainedFormat.Replace("%HORSENAME%", horseName).Replace("%STAT%", curStat.ToString());
+        }
+        public static string FormatTrainerTrainInEntry(string horseName, int curStat, int maxStat, int randomId)
+        {
+            return TrainerHorseEntryFormat.Replace("%HORSENAME%", horseName).Replace("%CURSTAT%", curStat.ToString()).Replace("%MAXSTAT%", maxStat.ToString()).Replace("%RANDOMID%", randomId.ToString());
+        }
+        public static string FormatTrainerHeaderFormat(string stat, int price, int amountInStat, int expamount)
+        {
+            return TrainerHeaderFormat.Replace("%STAT%", stat).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%AMOUNT%", amountInStat.ToString("N0", CultureInfo.InvariantCulture)).Replace("%EXPAMOUNT%", expamount.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatTrainedInStatFormat(string horseName, string stat)
+        {
+            return TrainedInStatFormat.Replace("%HORSENAME%", horseName).Replace("%STAT%", stat);
+        }
+
         public static string FormatSantaOpenPresent(string itemName)
         {
             return SantaItemOpenedFormat.Replace("%ITEM%", itemName);
@@ -1942,7 +1972,7 @@ namespace HISP.Game
         }
         public static string FormatDirectChatMessageForSender(string username,string toUsername, string message)
         {
-            return DirectChatFormatForSender.Replace("%FROMUSER%", username).Replace("%TOUSER%", toUsername).Replace(" %MESSAGE%", message);
+            return DirectChatFormatForSender.Replace("%FROMUSER%", username).Replace("%TOUSER%", toUsername).Replace("%MESSAGE%", message);
         }
         public static string FormatIdleWarningMessage()
         {

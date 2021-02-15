@@ -645,6 +645,7 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.RanchTrainAllAttempt;
+            int horsesTrained = 0;
             foreach(HorseInstance horse in user.HorseInventory.HorseList)
             {
                 if(horse.BasicStats.Mood < 200)
@@ -659,7 +660,8 @@ namespace HISP.Game
                     horse.AdvancedStats.Agility += 1;
                     horse.AdvancedStats.Endurance += 1;
                     horse.BasicStats.Experience += 1;
-                    horse.TrainTimer = 720; 
+                    horse.TrainTimer = 720;
+                    horsesTrained++;
                     message += Messages.FormatRanchTrain(horse.Name, 1, 1, 1, 1, 1, 1);
                 }
                 else
@@ -1111,6 +1113,8 @@ namespace HISP.Game
             if (user.BankInterest > user.BankMoney)
             {
                 moneyMade = user.BankInterest - user.BankMoney;
+                if (moneyMade > 100000000)
+                    moneyMade = 100000000;
                 user.BankMoney += moneyMade;
 
             }
@@ -1954,6 +1958,53 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        private static string buildTrainer(User user, Trainer trainer)
+        {
+            string message = "";
+            message += Messages.FormatTrainerHeaderFormat(trainer.ImprovesStat, trainer.MoneyCost, trainer.ImprovesAmount, trainer.ExperienceGained);
+
+            
+            foreach (HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).ToList())
+            {
+                HorseInfo.StatCalculator speedStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.SPEED);
+                HorseInfo.StatCalculator strengthStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.STRENGTH);
+                HorseInfo.StatCalculator conformationStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.CONFORMATION);
+                HorseInfo.StatCalculator agilityStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.AGILITY);
+                HorseInfo.StatCalculator enduranceStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.ENDURANCE);
+
+                HorseInfo.StatCalculator statCalculator;
+                switch (trainer.ImprovesStat.ToUpper())
+                {
+                    case "SPEED":
+                        statCalculator = speedStat;
+                        break;
+                    case "STRENGTH":
+                        statCalculator = strengthStat;
+                        break;
+                    case "AGILITY":
+                        statCalculator = agilityStat;
+                        break;
+                    case "ENDURANCE":
+                        statCalculator = enduranceStat;
+                        break;
+                    case "CONFORMATION":
+                        statCalculator = conformationStat;
+                        break;
+                    default:
+                        statCalculator = speedStat;
+                        break;
+                }
+                
+                if(statCalculator.BreedValue < statCalculator.MaxValue)
+                    message += Messages.FormatTrainerTrainInEntry(horse.Name, statCalculator.BreedValue, statCalculator.MaxValue, horse.RandomId);
+                else
+                    message += Messages.FormatTrainerFullyTrained(horse.Name, statCalculator.BreedValue);
+
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         private static string buildPawneer(User user)
         {
             string message = "";
@@ -2064,6 +2115,10 @@ namespace HISP.Game
                 if (TileCode == "RIDDLER")
                 {
                     message += buildRiddlerRiddle(user);
+                }
+                if(TileCode == "TRAINER")
+                {
+                    message += buildTrainer(user, Trainer.GetTrainerById(int.Parse(TileArg)));
                 }
                 if (TileCode == "LIBRARY")
                 {
