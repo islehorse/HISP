@@ -18,6 +18,7 @@ namespace HISP.Game.Items
             public int Y;
             public int DespawnTimer;
             public ItemInstance Instance;
+            public int Data;
         }
         private static List<DroppedItem> droppedItemsList = new List<DroppedItem>();
         public static int GetCountOfItem(Item.ItemInformation item)
@@ -110,13 +111,14 @@ namespace HISP.Game.Items
                 if (droppedItemsList[i] == null) // Item removed in another thread.
                     continue;
 
-                droppedItemsList[i].DespawnTimer-=5;
+                droppedItemsList[i].DespawnTimer -= 5;
+
                 if(droppedItemsList[i].DespawnTimer <= 0)
                 {
                     if (GameServer.GetUsersAt(droppedItemsList[i].X, droppedItemsList[i].Y, true, true).Length > 0) // Dont despawn items players are standing on
                         continue;
                     Logger.DebugPrint("Despawned Item at " + droppedItemsList[i].X + ", " + droppedItemsList[i].Y);
-                    RemoveDroppedItem(droppedItemsList[i]);
+                    droppedItemsList.Remove(droppedItemsList[i]);
                 }
             }
         }
@@ -130,7 +132,7 @@ namespace HISP.Game.Items
             droppedItemsList.Add(droppedItem);
             Database.AddDroppedItem(droppedItem);
         }
-        public static void GenerateItems(bool randomizeDespawnTime)
+        public static void GenerateItems()
         {
 
             Logger.InfoPrint("Generating items, (this may take awhile on a fresh database!)");
@@ -143,9 +145,7 @@ namespace HISP.Game.Items
                 {
 
                     count++;
-                    int despawnTimer = 1500;
-                    if(randomizeDespawnTime)
-                        despawnTimer = GameServer.RandomNumberGenerator.Next(900, 1500);
+                    int despawnTimer = 1440;
 
                     if (item.SpawnParamaters.SpawnInZone != null)
                     {
@@ -326,7 +326,7 @@ namespace HISP.Game.Items
         public static void Init()
         {
             ReadFromDatabase();
-            GenerateItems(true);
+            GenerateItems();
         }
 
     }

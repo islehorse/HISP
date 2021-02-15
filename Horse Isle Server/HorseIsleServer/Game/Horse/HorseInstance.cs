@@ -35,8 +35,10 @@ namespace HISP.Game.Horse
             {
                 name = loadName;
             }
-
-            Sex = breed.GenderTypes()[GameServer.RandomNumberGenerator.Next(0, 1)];
+            if(GameServer.RandomNumberGenerator.Next(0, 100) > 50)
+                Sex = breed.GenderTypes()[1];
+            else
+                Sex = breed.GenderTypes()[0];
 
             description = loadDescription;
             Breed = breed;

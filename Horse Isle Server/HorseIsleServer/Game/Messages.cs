@@ -76,6 +76,15 @@ namespace HISP.Game
         public static string RanchHorsesFullyRested;
         public static string RanchWagonDroppedYouOff;
 
+        // Santa
+        public static string SantaHiddenText; // Text that claims that it costs $10 to wrap a present thats sent to the client but never displayed for some reason. also wrapping is free on pinto so IDEK.
+        public static string SantaWrapItemFormat;
+        public static string SantaWrappedObjectMessage;
+        public static string SantaCantWrapInvFull;
+
+        public static string SantaItemOpenedFormat;
+        public static string SantaItemCantOpenInvFull;
+
         // Tools
         public static string BinocularsNothing;
         public static string MagnifyNothing;
@@ -497,6 +506,7 @@ namespace HISP.Game
         public static string ItemInformationByIdButton;
         public static string ItemConsumeButton;
         public static string ItemThrowButton;
+        public static string ItemOpenButton;
         public static string ItemUseButton;
         public static string ItemWearButton;
         public static string ItemReadButton;
@@ -722,6 +732,14 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+        public static string FormatSantaOpenPresent(string itemName)
+        {
+            return SantaItemOpenedFormat.Replace("%ITEM%", itemName);
+        }
+        public static string FormatSantaItemEntry(int iconId, string itemName, int randomId)
+        {
+            return SantaWrapItemFormat.Replace("%ICONID%", iconId.ToString()).Replace("%NAME%", itemName).Replace("%RANDOMID%", randomId.ToString());
+        }
         public static string FormatPawneerOrderHorseFound(string breedName, string color, string gender, int height, int personality, int inteligence)
         {
             return PawneerOrderHorseFoundFormat.Replace("%BREEDNAME%", breedName).Replace("%COLOR%", color).Replace("%GENDER%", gender).Replace("%HEIGHT%", height.ToString()).Replace("%PERSONALITY%", personality.ToString()).Replace("%INTELIGENCE%", inteligence.ToString());
@@ -749,7 +767,7 @@ namespace HISP.Game
         }
         public static string FormatPawneerHorseEntry(string horseName, int price, int randomId)
         {
-            return PawneerHorseFormat.Replace("%HORSENAME%", horseName).Replace("%PRICE%", price.ToString("N0")).Replace("%RANDOMID%", randomId.ToString());
+            return PawneerHorseFormat.Replace("%HORSENAME%", horseName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%RANDOMID%", randomId.ToString());
         }
         public static string FormatPawneerConfirmPawn(string breedName, int randomId)
         {
@@ -757,7 +775,7 @@ namespace HISP.Game
         }
         public static string FormatPawneerSold(string horseName, int price)
         {
-            return PawneerHorseSoldMessagesFormat.Replace("%HORSENAME%", horseName).Replace("%PRICE%", price.ToString("N0"));
+            return PawneerHorseSoldMessagesFormat.Replace("%HORSENAME%", horseName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
 
 
@@ -769,11 +787,11 @@ namespace HISP.Game
         // Barn Formats
         public static string FormatBarnLetAllHorsesReleax(int price)
         {
-            return BarnLetAllHorsesReleaxFormat.Replace("%PRICE%", price.ToString("N0"));
+            return BarnLetAllHorsesReleaxFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBarnLetHorseRelax(int price, int randomId)
         {
-            return BarnLetHorseRelaxFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%RANDOMID%", randomId.ToString());
+            return BarnLetHorseRelaxFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%RANDOMID%", randomId.ToString());
         }
         public static string FormatBarnHorseStatus(string horseName, int tiredness, int hunger, int thirst)
         {
@@ -798,15 +816,15 @@ namespace HISP.Game
         }
         public static string FormatFarrierApplySteelToAll(int price, int incBy)
         {
-            return FarrierShoeAllFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%INCBY%", incBy.ToString());
+            return FarrierShoeAllFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%INCBY%", incBy.ToString());
         }
         public static string FormatFarrierApplySteel(int price, int incBy, int horseRandomid)
         {
-            return FarrierApplySteelShoesFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%INCBY%", incBy.ToString()).Replace("%HORSERANDOMID%", horseRandomid.ToString());
+            return FarrierApplySteelShoesFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%INCBY%", incBy.ToString()).Replace("%HORSERANDOMID%", horseRandomid.ToString());
         }
         public static string FormatFarrierApplyIron(int price, int incBy, int horseRandomid)
         {
-            return FarrierApplyIronShoesFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%INCBY%", incBy.ToString()).Replace("%HORSERANDOMID%", horseRandomid.ToString());
+            return FarrierApplyIronShoesFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%INCBY%", incBy.ToString()).Replace("%HORSERANDOMID%", horseRandomid.ToString());
         }
         public static string FormatFarrierCurrentShoes(string horseName, int curShoes, int maxShoes)
         {
@@ -826,7 +844,7 @@ namespace HISP.Game
         }
         public static string FormatRanchTrain(string horseName, int speed, int strength, int conformation, int agility, int endurance, int exp)
         {
-            return RanchTrainSuccessFormat.Replace("%HORSENAME%", horseName).Replace("%SPEED%", speed.ToString("N0")).Replace("%STRENGTH%", strength.ToString("N0")).Replace("%CONFORMATION%", conformation.ToString("N0")).Replace("%AGILITY%", agility.ToString("N0")).Replace("%ENDURANCE%", endurance.ToString("N0")).Replace("%EXP%", exp.ToString("N0"));
+            return RanchTrainSuccessFormat.Replace("%HORSENAME%", horseName).Replace("%SPEED%", speed.ToString("N0", CultureInfo.InvariantCulture)).Replace("%STRENGTH%", strength.ToString("N0", CultureInfo.InvariantCulture)).Replace("%CONFORMATION%", conformation.ToString("N0", CultureInfo.InvariantCulture)).Replace("%AGILITY%", agility.ToString("N0", CultureInfo.InvariantCulture)).Replace("%ENDURANCE%", endurance.ToString("N0", CultureInfo.InvariantCulture)).Replace("%EXP%", exp.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatRanchDescOthers(string description)
         {
@@ -834,11 +852,11 @@ namespace HISP.Game
         }
         public static string FormatRanchSoldMessage(int price)
         {
-            return RanchSoldFormat.Replace("%PRICE%", price.ToString("N0"));
+            return RanchSoldFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatRanchUnownedMeta(int price)
         {
-            return RanchUnownedRanchFormat.Replace("%PRICE%", price.ToString("N0"));
+            return RanchUnownedRanchFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatRanchClickMessage(string owner, string title)
         {
@@ -846,7 +864,7 @@ namespace HISP.Game
         }
         public static string FormatRanchBroughtMessage(int price)
         {
-            return RanchRanchBroughtMessageFormat.Replace("%PRICE%", price.ToString("N0"));
+            return RanchRanchBroughtMessageFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatRanchEditDescriptonMeta(string curTitle, string curDesc)
         {
@@ -862,7 +880,7 @@ namespace HISP.Game
         }
         public static string FormatBuildingEntry(string name, int price, int buildingId)
         {
-            return RanchBuildingEntryFormat.Replace("%BUILDINGNAME%", name).Replace("%PRICE%", price.ToString("N0")).Replace("%BUILDINGID%", buildingId.ToString());
+            return RanchBuildingEntryFormat.Replace("%BUILDINGNAME%", name).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%BUILDINGID%", buildingId.ToString());
         }
         public static string FormatBuildingInformaton(string name, string description)
         {
@@ -870,11 +888,11 @@ namespace HISP.Game
         }
         public static string FormatBuildingAlreadyPlaced(string name, int buildingId, int price)
         {
-            return RanchBuildingAlreadyHere.Replace("%BUILDINGNAME%", name).Replace("%BUILDINGID%", buildingId.ToString()).Replace("%PRICE%", price.ToString("N0"));
+            return RanchBuildingAlreadyHere.Replace("%BUILDINGNAME%", name).Replace("%BUILDINGID%", buildingId.ToString()).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBuildingTornDown(int price)
         {
-            return RanchTornDownRanchBuildingFormat.Replace("%PRICE%", price.ToString("N0"));
+            return RanchTornDownRanchBuildingFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatViewBuilding(string name, string description)
         {
@@ -886,27 +904,27 @@ namespace HISP.Game
         }
         public static string FormatCurrentUpgrade(string curUpgradeName, string curUpgradeDesc, string YouCouldUpgrade, int ranchSellPrice)
         {
-            return UpgradeCurrentUpgradeFormat.Replace("%UPGRADENAME%", curUpgradeName).Replace("%UPGRADEDESC%", curUpgradeDesc).Replace("%YOUCOULDUPGRADE%", YouCouldUpgrade).Replace("%SELLPRICE%", ranchSellPrice.ToString("N0"));
+            return UpgradeCurrentUpgradeFormat.Replace("%UPGRADENAME%", curUpgradeName).Replace("%UPGRADEDESC%", curUpgradeDesc).Replace("%YOUCOULDUPGRADE%", YouCouldUpgrade).Replace("%SELLPRICE%", ranchSellPrice.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatNextUpgrade(string nextUpgrade, int cost)
         {
-            return UpgradeNextUpgradeFormat.Replace("%NEXTUPGRADE%", nextUpgrade).Replace("%COST%", cost.ToString("N0"));
+            return UpgradeNextUpgradeFormat.Replace("%NEXTUPGRADE%", nextUpgrade).Replace("%COST%", cost.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBuildingBarn(int numbBarns, int numbHorses)
         {
-            return BuildingBarnFormat.Replace("%COUNT%", numbBarns.ToString("N0")).Replace("%AMOUNT%", numbHorses.ToString("N0"));
+            return BuildingBarnFormat.Replace("%COUNT%", numbBarns.ToString("N0", CultureInfo.InvariantCulture)).Replace("%AMOUNT%", numbHorses.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBuildingBigBarn(int numbBarns, int numbHorses)
         {
-            return BuildingBigBarnFormat.Replace("%COUNT%", numbBarns.ToString("N0")).Replace("%AMOUNT%", numbHorses.ToString("N0"));
+            return BuildingBigBarnFormat.Replace("%COUNT%", numbBarns.ToString("N0", CultureInfo.InvariantCulture)).Replace("%AMOUNT%", numbHorses.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBuildingGoldBarn(int numbBarns, int numbHorses)
         {
-            return BuildingGoldBarnFormat.Replace("%COUNT%", numbBarns.ToString("N0")).Replace("%AMOUNT%", numbHorses.ToString("N0"));
+            return BuildingGoldBarnFormat.Replace("%COUNT%", numbBarns.ToString("N0", CultureInfo.InvariantCulture)).Replace("%AMOUNT%", numbHorses.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBuildingWindmill(int numbWindmills, int moneyEarns)
         {
-            return BuildingWindmillFormat.Replace("%COUNT%", numbWindmills.ToString("N0")).Replace("%AMOUNT%", moneyEarns.ToString("N0"));
+            return BuildingWindmillFormat.Replace("%COUNT%", numbWindmills.ToString("N0", CultureInfo.InvariantCulture)).Replace("%AMOUNT%", moneyEarns.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatTrainSuccess(string horseName)
         {
@@ -926,15 +944,15 @@ namespace HISP.Game
         }
         public static string FormatPirateTreasure(int prize)
         {
-            return PirateTreasureFormat.Replace("%PRIZE%", prize.ToString("N0"));
+            return PirateTreasureFormat.Replace("%PRIZE%", prize.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatPotOfGold(int prize)
         {
-            return PotOfGoldFormat.Replace("%PRIZE%", prize.ToString("N0"));
+            return PotOfGoldFormat.Replace("%PRIZE%", prize.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatWorkshopCraftEntry(int iconId, string itemName, int price, int itemId, int craftId)
         {
-            return WorkshopCraftEntryFormat.Replace("%ICONID%", iconId.ToString()).Replace("%ITEMNAME%", itemName).Replace("%PRICE%", price.ToString("N0")).Replace("%ITEMID%", itemId.ToString()).Replace("%CRAFTID%", craftId.ToString());
+            return WorkshopCraftEntryFormat.Replace("%ICONID%", iconId.ToString()).Replace("%ITEMNAME%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%ITEMID%", itemId.ToString()).Replace("%CRAFTID%", craftId.ToString());
         }
         public static string FormatWorkshopRequirements(string requiresTxt)
         {
@@ -942,16 +960,16 @@ namespace HISP.Game
         }
         public static string FormatWorkshopRequireEntry(int requiredCount, string itemNamePlural)
         {
-            return WorkshopRequireEntryFormat.Replace("%REQCOUNT%", requiredCount.ToString("N0")).Replace("%ITEMNAME%", itemNamePlural);
+            return WorkshopRequireEntryFormat.Replace("%REQCOUNT%", requiredCount.ToString("N0", CultureInfo.InvariantCulture)).Replace("%ITEMNAME%", itemNamePlural);
         }
 
         public static string FormatDrawingRoomSaved(int slot)
         {
-            return DrawingContentsSavedInSlotFormat.Replace("%SLOT%", slot.ToString("N0"));
+            return DrawingContentsSavedInSlotFormat.Replace("%SLOT%", slot.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatDrawingRoomLoaded(int slot)
         {
-            return DrawingContentsLoadedFromSlotFormat.Replace("%SLOT%", slot.ToString("N0"));
+            return DrawingContentsLoadedFromSlotFormat.Replace("%SLOT%", slot.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatLastToDraw(string username)
         {
@@ -959,11 +977,11 @@ namespace HISP.Game
         }
         public static string FormatGroomerApplyAllService(int count, int price)
         {
-            return GroomerApplyServiceForAllFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%COUNT%", count.ToString("N0"));
+            return GroomerApplyServiceForAllFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%COUNT%", count.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatGroomerApplyService(int price, int randomid)
         {
-            return GroomerApplyServiceFormat.Replace("%PRICE%", price.ToString("N0")).Replace("%RANDOMID%", randomid.ToString());
+            return GroomerApplyServiceFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%RANDOMID%", randomid.ToString());
         }
         public static string FormatHorseGroomCurrentlyAt(string horseName, int currentGroom, int maxGroom)
         {
@@ -988,7 +1006,7 @@ namespace HISP.Game
         }
         public static string FormatAwardEntry(int iconId, string awardName, int bonusMoney, string description)
         {
-            return AwardEntryFormat.Replace("%ICONID%", iconId.ToString()).Replace("%AWARDNAME%", awardName).Replace("%BONUSMONEY%",bonusMoney.ToString("N0")).Replace("%DESCRIPTION%",description);
+            return AwardEntryFormat.Replace("%ICONID%", iconId.ToString()).Replace("%AWARDNAME%", awardName).Replace("%BONUSMONEY%",bonusMoney.ToString("N0", CultureInfo.InvariantCulture)).Replace("%DESCRIPTION%",description);
         }
 
         public static string FormatLocationDescription(string description)
@@ -1032,7 +1050,7 @@ namespace HISP.Game
 
         public static string FormatWhispererPrice(int price)
         {
-            return WhispererServiceCostYouFormat.Replace("%MONEY%",price.ToString("N0"));
+            return WhispererServiceCostYouFormat.Replace("%MONEY%",price.ToString("N0", CultureInfo.InvariantCulture));
         }
 
         public static string FormatWhispererHorseBreedButton(string breedName, int breedId)
@@ -1108,11 +1126,11 @@ namespace HISP.Game
         }
         public static string FormatAllStatsEntry(string horseName, string color, string breedName, string sex, int exp)
         {
-            return HorseNameEntryFormat.Replace("%HORSENAME%", horseName).Replace("%COLOR%", color).Replace("%BREEDNAME%", breedName).Replace("%SEX%", sex).Replace("%EXP%", exp.ToString("N0"));
+            return HorseNameEntryFormat.Replace("%HORSENAME%", horseName).Replace("%COLOR%", color).Replace("%BREEDNAME%", breedName).Replace("%SEX%", sex).Replace("%EXP%", exp.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormaHorseAllBasicStatsEntry(string horseName, string color, string breedName, string sex, int exp)
         {
-            return HorseBasicStatEntryFormat.Replace("%HORSENAME%", horseName).Replace("%COLOR%", color).Replace("%BREEDNAME%", breedName).Replace("%SEX%", sex).Replace("%EXP%", exp.ToString("N0"));
+            return HorseBasicStatEntryFormat.Replace("%HORSENAME%", horseName).Replace("%COLOR%", color).Replace("%BREEDNAME%", breedName).Replace("%SEX%", sex).Replace("%EXP%", exp.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatHorseReleasedBy(string username)
         {
@@ -1140,7 +1158,7 @@ namespace HISP.Game
         }
         public static string FormatHorseCompanionOption(int icon, int count, string name, int id)
         {
-            return HorseCompanionEntryFormat.Replace("%ICONID%", icon.ToString()).Replace("%COUNT%", count.ToString("N0")).Replace("%NAME%", name).Replace("%ID%", id.ToString());
+            return HorseCompanionEntryFormat.Replace("%ICONID%", icon.ToString()).Replace("%COUNT%", count.ToString("N0", CultureInfo.InvariantCulture)).Replace("%NAME%", name).Replace("%ID%", id.ToString());
         }
         public static string FormatHorseDismountedBecauseTackedMessage(string horsename)
         {
@@ -1148,7 +1166,7 @@ namespace HISP.Game
         }
         public static string FormatAutoSellConfirmedMessage(int money)
         {
-            return HorseAutoSellConfirmedFormat.Replace("%MONEY%", money.ToString("N0"));
+            return HorseAutoSellConfirmedFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatAutoSellMenu(int currentAutoSellPrice)
         {
@@ -1177,7 +1195,7 @@ namespace HISP.Game
 
         public static string FormatHorseFeedEntry(int icon, int count, string name, int randomId)
         {
-            return HorsefeedFormat.Replace("%ICONID%", icon.ToString()).Replace("%COUNT%", count.ToString("N0")).Replace("%NAME%", name).Replace("%RANDOMID%", randomId.ToString());
+            return HorsefeedFormat.Replace("%ICONID%", icon.ToString()).Replace("%COUNT%", count.ToString("N0", CultureInfo.InvariantCulture)).Replace("%NAME%", name).Replace("%RANDOMID%", randomId.ToString());
         }
 
         public static string FormatHorseRidingMessage(string name)
@@ -1234,7 +1252,7 @@ namespace HISP.Game
         }
         public static string FormatHorseExperience(int experience)
         {
-            return HorseExperienceEarnedFormat.Replace("%EXP%", experience.ToString("N0"));
+            return HorseExperienceEarnedFormat.Replace("%EXP%", experience.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatTrainableIn(int minutes)
         {
@@ -1268,7 +1286,7 @@ namespace HISP.Game
 
         public static string FormatAutoSellPrice(int money)
         {
-            return HorseAutoSellPriceFormat.Replace("%MONEY%", money.ToString("N0"));
+            return HorseAutoSellPriceFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatAutoSell(string autoSellStr)
         {
@@ -1299,6 +1317,10 @@ namespace HISP.Game
         public static string FormatHorseHeight(int minHeight, int maxHeight)
         {
             return HorseHeightRangeFormat.Replace("%MIN%", minHeight.ToString()).Replace("%MAX%", maxHeight.ToString());
+        }
+        public static string FormatHorseReleaseButton(string type)
+        {
+            return HorseReleaseButton.Replace("%TYPE%", type);
         }
         public static string FormatPossibleColors(string[] colors)
         {
@@ -1364,33 +1386,33 @@ namespace HISP.Game
         }
         public static string FormatVenusFlyTrapMeta(int money)
         {
-            return VenusFlyTrapFormat.Replace("%MONEY%", money.ToString("N0"));
+            return VenusFlyTrapFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBankIntrestMadeMeta(UInt64 intrestMade)
         {
-            return BankMadeInIntrestFormat.Replace("%MONEY%", intrestMade.ToString("N0"));
+            return BankMadeInIntrestFormat.Replace("%MONEY%", intrestMade.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBankCarryingMeta(int money, UInt64 bankMoney)
         {
-            return BankCarryingFormat.Replace("%MONEY%", money.ToString("N0")).Replace("%BANKMONEY%", bankMoney.ToString("N0"));
+            return BankCarryingFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture)).Replace("%BANKMONEY%", bankMoney.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBankOptionsMeta(int money, UInt64 bankMoney)
         {
-            return BankOptionsFormat.Replace("%MONEY%", money.ToString("N0")).Replace("%BANKMONEY%", bankMoney.ToString("N0"));
+            return BankOptionsFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture)).Replace("%BANKMONEY%", bankMoney.ToString("N0", CultureInfo.InvariantCulture));
         }
 
         public static string FormatDepositedMoneyMessage(int money)
         {
-            return BankDepositedMoneyFormat.Replace("%MONEY%", money.ToString("N0"));
+            return BankDepositedMoneyFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatWithdrawMoneyMessage(int money)
         {
-            return BankWithdrewMoneyFormat.Replace("%MONEY%", money.ToString("N0"));
+            return BankWithdrewMoneyFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
         }
 
         public static string FormatNumberOfWishingCoins(int amount)
         {
-            return YouHaveWishingCoinsFormat.Replace("%AMOUNT%", amount.ToString("N0"));
+            return YouHaveWishingCoinsFormat.Replace("%AMOUNT%", amount.ToString("N0", CultureInfo.InvariantCulture));
         }
         
         public static string FormatWishThingsMessage(string item1, string item2)
@@ -1399,26 +1421,26 @@ namespace HISP.Game
         }
         public static string FormatWishMoneyMessage(int money)
         {
-            return WishMoneyFormat.Replace("%MONEY%", money.ToString("N0"));
+            return WishMoneyFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatWishWorldPeaceMessage(int money, string item)
         {
-            return WishWorldPeaceFormat.Replace("%MONEY%", money.ToString("N0")).Replace("%ITEM%", item);
+            return WishWorldPeaceFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture)).Replace("%ITEM%", item);
         }
 
 
 
         public static string FormatInnEnjoyedServiceMessage(string item, int price)
         {
-            return InnEnjoyedServiceFormat.Replace("%ITEM%", item).Replace("%PRICE%", price.ToString("N0"));
+            return InnEnjoyedServiceFormat.Replace("%ITEM%", item).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatInnItemEntry(int iconId, string itemName, int price, int itemId)
         {
-            return InnItemEntryFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", itemName).Replace("%PRICE%", price.ToString("N0")).Replace("%ID%", itemId.ToString());
+            return InnItemEntryFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%ID%", itemId.ToString());
         }
         public static string FormatDroppedMoneyMessage(int amount)
         {
-            return FountainDroppedMoneyFormat.Replace("%MONEY%", amount.ToString("N0"));
+            return FountainDroppedMoneyFormat.Replace("%MONEY%", amount.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatAbuseReportPlayerNotFound(string username)
         {
@@ -1441,16 +1463,16 @@ namespace HISP.Game
         public static string FormatPlayerEntry(string iconFormat, string username, int userId, int time, int x, int y, bool idle)
         {
             string xy = FormatMapLocation(x, y);
-            return PlayerListEntryFormat.Replace("%ICONFORMAT%", iconFormat).Replace("%USERNAME%", username).Replace("%PLAYERID%", userId.ToString()).Replace("%TIME%", time.ToString("N0")).Replace("%MAPXY%", xy).Replace("%IDLE%", idle ? PlayerListIdle : "");
+            return PlayerListEntryFormat.Replace("%ICONFORMAT%", iconFormat).Replace("%USERNAME%", username).Replace("%PLAYERID%", userId.ToString()).Replace("%TIME%", time.ToString("N0", CultureInfo.InvariantCulture)).Replace("%MAPXY%", xy).Replace("%IDLE%", idle ? PlayerListIdle : "");
         }
         public static string FormatOnlineBuddyEntry(string iconFormat, string username, int userId, int time, int x, int y)
         {
             string xy = FormatMapLocation(x, y);
-            return BuddyListOnlineBuddyEntryFormat.Replace("%ICONFORMAT%", iconFormat).Replace("%USERNAME%", username).Replace("%TIME%", time.ToString("N0")).Replace("%PLAYERID%", userId.ToString()).Replace("%MAPXY%", xy);
+            return BuddyListOnlineBuddyEntryFormat.Replace("%ICONFORMAT%", iconFormat).Replace("%USERNAME%", username).Replace("%TIME%", time.ToString("N0", CultureInfo.InvariantCulture)).Replace("%PLAYERID%", userId.ToString()).Replace("%MAPXY%", xy);
         }
         public static string FormatOfflineBuddyEntry(string username, int userId, int time)
         {
-            return BuddyListOfflineBuddyEntryFormat.Replace("%USERNAME%", username).Replace("%TIME%", time.ToString("N0")).Replace("%PLAYERID%", userId.ToString());
+            return BuddyListOfflineBuddyEntryFormat.Replace("%USERNAME%", username).Replace("%TIME%", time.ToString("N0", CultureInfo.InvariantCulture)).Replace("%PLAYERID%", userId.ToString());
         }
         public static string FormatConsumeItemMessaege(string itemName)
         {
@@ -1458,7 +1480,7 @@ namespace HISP.Game
         }
         public static string FormatAwardEntry(int iconId, string title, int moneyBonus)
         {
-            return AwardFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", title).Replace("%BONUS%", moneyBonus.ToString("N0"));
+            return AwardFormat.Replace("%ICON%", iconId.ToString()).Replace("%NAME%", title).Replace("%BONUS%", moneyBonus.ToString("N0", CultureInfo.InvariantCulture));
         }
 
         public static string FormatBestTimeHeader(string gameName)
@@ -1467,7 +1489,7 @@ namespace HISP.Game
         }
         public static string FormatBestTimeListEntry(int ranking, int score, string username, int totalplays)
         {
-            return GameBestTimeFormat.Replace("%RANKING%", ranking.ToString("N0")).Replace("%SCORE%", score.ToString().Insert(score.ToString().Length - 2, ".")).Replace("%USERNAME%", username).Replace("%TOTALPLAYS%", totalplays.ToString("N0"));
+            return GameBestTimeFormat.Replace("%RANKING%", ranking.ToString("N0", CultureInfo.InvariantCulture)).Replace("%SCORE%", score.ToString().Insert(score.ToString().Length - 2, ".")).Replace("%USERNAME%", username).Replace("%TOTALPLAYS%", totalplays.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatHighscoreHeader(string gameName)
         {
@@ -1475,19 +1497,19 @@ namespace HISP.Game
         }
         public static string FormatHighscoreListEntry(int ranking, int score, string username, int totalplays)
         {
-            return GameHighScoreFormat.Replace("%RANKING%", ranking.ToString("N0")).Replace("%SCORE%", score.ToString("N0")).Replace("%USERNAME%", username).Replace("%TOTALPLAYS%", totalplays.ToString("N0"));
+            return GameHighScoreFormat.Replace("%RANKING%", ranking.ToString("N0", CultureInfo.InvariantCulture)).Replace("%SCORE%", score.ToString("N0", CultureInfo.InvariantCulture)).Replace("%USERNAME%", username).Replace("%TOTALPLAYS%", totalplays.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatHighscoreStat(string gameTitle, int ranking, int score, int totalplays)
         {
-            return HighscoreFormat.Replace("%GAMETITLE%", gameTitle).Replace("%RANKING%", ranking.ToString("N0")).Replace("%SCORE%", score.ToString("N0")).Replace("%TOTALPLAYS%", totalplays.ToString("N0"));
+            return HighscoreFormat.Replace("%GAMETITLE%", gameTitle).Replace("%RANKING%", ranking.ToString("N0", CultureInfo.InvariantCulture)).Replace("%SCORE%", score.ToString("N0", CultureInfo.InvariantCulture)).Replace("%TOTALPLAYS%", totalplays.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBestTimeStat(string gameTitle, int ranking, int score, int totalplays)
         {
-            return BestTimeFormat.Replace("%GAMETITLE%", gameTitle).Replace("%RANKING%", ranking.ToString("N0")).Replace("%SCORE%", score.ToString()).Replace("%TOTALPLAYS%", totalplays.ToString("N0"));
+            return BestTimeFormat.Replace("%GAMETITLE%", gameTitle).Replace("%RANKING%", ranking.ToString("N0", CultureInfo.InvariantCulture)).Replace("%SCORE%", score.ToString()).Replace("%TOTALPLAYS%", totalplays.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatMoneyEarnedMessage(int money)
         {
-            return YouEarnedMoneyFormat.Replace("%MONEY%", money.ToString("N0"));
+            return YouEarnedMoneyFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatTimeBeatenMessage(int time)
         {
@@ -1501,11 +1523,11 @@ namespace HISP.Game
         {
             int questsComplete = Convert.ToInt32(Math.Floor(((decimal)totalQuestsComplete / (decimal)totalQuests) * (decimal)100.0));
             int questPointsComplete = Convert.ToInt32(Math.Floor(((decimal)questPoints / (decimal)totalQuestPoints) * (decimal)100.0));
-            return QuestFooterFormat.Replace("%TOTALCOMPLETED%", totalQuestsComplete.ToString("N0")).Replace("%TOTALQUESTS%", totalQuests.ToString("N0")).Replace("%TOTALPERCENT%", questsComplete.ToString()).Replace("%YOURQP%", questPoints.ToString("N0")).Replace("%YOURQP%", totalQuestPoints.ToString("N0")).Replace("%QPERCENT%", questPointsComplete.ToString()).Replace("%MAXQP%", totalQuestPoints.ToString("N0"));
+            return QuestFooterFormat.Replace("%TOTALCOMPLETED%", totalQuestsComplete.ToString("N0", CultureInfo.InvariantCulture)).Replace("%TOTALQUESTS%", totalQuests.ToString("N0", CultureInfo.InvariantCulture)).Replace("%TOTALPERCENT%", questsComplete.ToString()).Replace("%YOURQP%", questPoints.ToString("N0", CultureInfo.InvariantCulture)).Replace("%YOURQP%", totalQuestPoints.ToString("N0", CultureInfo.InvariantCulture)).Replace("%QPERCENT%", questPointsComplete.ToString()).Replace("%MAXQP%", totalQuestPoints.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatQuestLogQuest(string questTitle, int questPoints, string difficulty, string completionStatus)
         {
-            return QuestFormat.Replace("%TITLE%", questTitle).Replace("%QUESTPOINTS%", questPoints.ToString("N0")).Replace("%DIFFICULTY%", difficulty).Replace("%COMPLETION%", completionStatus);
+            return QuestFormat.Replace("%TITLE%", questTitle).Replace("%QUESTPOINTS%", questPoints.ToString("N0", CultureInfo.InvariantCulture)).Replace("%DIFFICULTY%", difficulty).Replace("%COMPLETION%", completionStatus);
         }
 
         public static string FormatPrivateNotes(string privateNotes)
@@ -1573,11 +1595,11 @@ namespace HISP.Game
         }
         public static string FormatMoneyStat(int money)
         {
-            return StatsMoneyFormat.Replace("%MONEY%", money.ToString("N0"));
+            return StatsMoneyFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatFreeTime(int freeMinutes)
         {
-            return StatsFreeTimeFormat.Replace("%FREEMINUTES%", freeMinutes.ToString("N0"));
+            return StatsFreeTimeFormat.Replace("%FREEMINUTES%", freeMinutes.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatPlayerDescriptionForStatsMenu(string description)
         {
@@ -1586,11 +1608,11 @@ namespace HISP.Game
 
         public static string FormatExperience(int expPoints)
         {
-            return StatsExpFormat.Replace("%EXPPOINTS%", expPoints.ToString("N0"));
+            return StatsExpFormat.Replace("%EXPPOINTS%", expPoints.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatQuestPoints(int questPoints)
         {
-            return StatsQuestpointsFormat.Replace("%QUESTPOINTS%", questPoints.ToString("N0"));
+            return StatsQuestpointsFormat.Replace("%QUESTPOINTS%", questPoints.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatHungryStat(string status)
         {
@@ -1640,27 +1662,27 @@ namespace HISP.Game
         }
         public static string FormatSellMessage(string itemName, int price)
         {
-            return Sold1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0"));
+            return Sold1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatSellAllMessage(string itemName, int price, int sellAmount)
         {
-            return SoldAllFormat.Replace("%AMOUNT%",sellAmount.ToString()).Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0"));
+            return SoldAllFormat.Replace("%AMOUNT%",sellAmount.ToString()).Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBuy25Message(string itemName, int price)
         {
-            return Brought25Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0"));
+            return Brought25Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBuy5Message(string itemName, int price)
         {
-            return Brought5Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0"));
+            return Brought5Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatBuyMessage(string itemName, int price)
         {
-            return Brought1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0"));
+            return Brought1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatShopEntry(int iconid, string count, string name, int price)
         {
-            return ShopEntryFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count).Replace("%TITLE%", name).Replace("%PRICE%", price.ToString("N0"));
+            return ShopEntryFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count).Replace("%TITLE%", name).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatWearButton(int randomId)
         {
@@ -1755,6 +1777,10 @@ namespace HISP.Game
         {
             return ItemDropButton.Replace("%RANDOMID%", randomid.ToString());
         }
+        public static string FormatItemOpenButton(int randomId)
+        {
+            return ItemOpenButton.Replace("%RANDOMID%", randomId.ToString());
+        }
         public static string FormatItemUseButton(int randomid)
         {
             return ItemUseButton.Replace("%RANDOMID%", randomid.ToString());
@@ -1776,11 +1802,11 @@ namespace HISP.Game
 
         public static string FormatPlayerBuddyList(int amount)
         {
-            return PlayerListOfBuddiesFormat.Replace("%AMOUNT%", amount.ToString("N0"));
+            return PlayerListOfBuddiesFormat.Replace("%AMOUNT%", amount.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatPlayerList(int amount)
         {
-            return PlayerListOfPlayersFormat.Replace("%AMOUNT%", amount.ToString("N0"));
+            return PlayerListOfPlayersFormat.Replace("%AMOUNT%", amount.ToString("N0", CultureInfo.InvariantCulture));
         }
 
         public static string FormatMapAllBuddiesList(string buddyxys)
@@ -1815,7 +1841,7 @@ namespace HISP.Game
 
         public static string FormatTransportCost(int cost)
         {
-            return TransportCostFormat.Replace("%COST%", cost.ToString("N0"));
+            return TransportCostFormat.Replace("%COST%", cost.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatTransportMessage(string method, string place, string costFormat, int id, int x, int y)
         {
@@ -1885,34 +1911,34 @@ namespace HISP.Game
         // For Sender
         public static string FormatBuddyChatMessageForSender(int numbBuddies, string username, string message)
         {
-            return BuddyChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbBuddies.ToString("N0"));
+            return BuddyChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbBuddies.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatHereChatMessageForSender(int numbHere, string username, string message)
         {
-            return HereChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbHere.ToString("N0"));
+            return HereChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbHere.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatNearChatMessageForSender(int numbNear, string username, string message)
         {
-            return NearChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbNear.ToString("N0"));
+            return NearChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbNear.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatIsleChatMessageForSender(int numbIsle, string username, string message)
         {
-            return IsleChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbIsle.ToString("N0"));
+            return IsleChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbIsle.ToString("N0", CultureInfo.InvariantCulture));
         }
 
         public static string FormatAdminChatForSender(int numbAdmins, string username, string message)
         {
-            return AdminChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbAdmins.ToString("N0"));
+            return AdminChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbAdmins.ToString("N0", CultureInfo.InvariantCulture));
         }
 
         public static string FormatAdsChatForSender(int numbListening, string username, string message)
         {
-            return AdsChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbListening.ToString("N0"));
+            return AdsChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbListening.ToString("N0", CultureInfo.InvariantCulture));
         }
 
         public static string FormatModChatForSender(int numbMods, string username, string message)
         {
-            return ModChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbMods.ToString("N0"));
+            return ModChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbMods.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatDirectChatMessageForSender(string username,string toUsername, string message)
         {

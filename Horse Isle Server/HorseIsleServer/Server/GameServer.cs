@@ -87,14 +87,14 @@ namespace HISP.Server
                     if (!client.LoggedinUser.MetaPriority)
                         UpdateArea(client);
 
-            Treasure.AddValue();
             Database.IncPlayerTirednessForOfflineUsers();
             
 
             if (totalMinutesElapsed % 5 == 0)
             {
+                Treasure.AddValue();
                 DroppedItems.DespawnItems();
-                DroppedItems.GenerateItems(false);
+                DroppedItems.GenerateItems();
             }
 
             WildHorse.Update();
@@ -2344,6 +2344,7 @@ namespace HISP.Server
                         {
                             room.Drawing += drawingToAdd;
                             Database.SetLastPlayer("D" + room.Id.ToString(), sender.LoggedinUser.Id);
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                         }
                         else
                         {
@@ -2399,6 +2400,7 @@ namespace HISP.Server
                         {
                             room.Drawing += drawing;
                             Database.SetLastPlayer("D" + room.Id.ToString(), sender.LoggedinUser.Id);
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                         }
                         else
                         {
@@ -2501,7 +2503,7 @@ namespace HISP.Server
                         if (Database.GetLastPlayer("P" + roomId) != sender.LoggedinUser.Id)
                         {
                             Database.SetLastPlayer("P" + roomId, sender.LoggedinUser.Id);
-                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                         }
 
                         break;
@@ -3226,10 +3228,9 @@ namespace HISP.Server
                 return;
             }
 
-            
+            loggedInUser.Facing = direction + (onHorse * 5);
             if (loggedInUser.Y != newY || loggedInUser.X != newX)
             {
-                loggedInUser.Facing = direction + (onHorse * 5);
                 if (moveTwo)
                     direction += 20;
                 loggedInUser.Y = newY;
@@ -4145,6 +4146,76 @@ namespace HISP.Server
                         sender.SendPacket(itemRemovedMessage);
                     }
                     
+                    break;
+                case PacketBuilder.ITEM_WRAP:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    randomId = 0;
+
+                    try
+                    {
+                        randomId = Int32.Parse(randomIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        return;
+                    }
+                    if (sender.LoggedinUser.Inventory.HasItem(randomId))
+                    {
+                        ItemInstance curItem = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId).ItemInstances[0];
+                        ItemInstance wrappedItem = new ItemInstance(Item.Present, -1, curItem.ItemId);
+
+                        try
+                        {
+                            sender.LoggedinUser.Inventory.Add(wrappedItem);
+                            sender.LoggedinUser.Inventory.Remove(curItem);
+                        }
+                        catch(InventoryException)
+                        {
+                            byte[] cantWrapPresent = PacketBuilder.CreateChat(Messages.SantaCantWrapInvFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantWrapPresent);
+                            UpdateArea(sender);
+                            break;
+                        }
+                    }
+                    byte[] wrappedObjectMessage = PacketBuilder.CreateChat(Messages.SantaWrappedObjectMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(wrappedObjectMessage);
+                    UpdateArea(sender);
+                    break;
+                case PacketBuilder.ITEM_OPEN:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    randomId = 0;
+
+                    try
+                    {
+                        randomId = Int32.Parse(randomIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        return;
+                    }
+                    if (sender.LoggedinUser.Inventory.HasItem(randomId))
+                    {
+                        InventoryItem item = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
+                        int newItem = item.ItemInstances[0].Data;
+                        try
+                        {
+                            sender.LoggedinUser.Inventory.Add(new ItemInstance(newItem));
+                            sender.LoggedinUser.Inventory.Remove(item.ItemInstances[0]);
+                        }
+                        catch(InventoryException)
+                        {
+                            byte[] cantOpenInvFull = PacketBuilder.CreateChat(Messages.SantaItemCantOpenInvFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantOpenInvFull);
+                            break;
+                        }
+                        byte[] itemOpened = PacketBuilder.CreateChat(Messages.FormatSantaOpenPresent(Item.GetItemById(newItem).Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(itemOpened);
+                        UpdateInventory(sender);
+                    }
                     break;
                 case PacketBuilder.ITEM_USE:
                     packetStr = Encoding.UTF8.GetString(packet);
