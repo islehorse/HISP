@@ -92,11 +92,7 @@ namespace HISP.Game.Items
                 return pos;
             }
         }
-        private static string capitalizeFirstLetter(string str)
-        {
-            char firstChar = char.ToUpper(str[0]);
-            return firstChar + str.Substring(1);
-        }
+
         private static List<TackSet> tackSets = new List<TackSet>();
         public static TackSet[] TackSets
         {
@@ -126,14 +122,13 @@ namespace HISP.Game.Items
 
                     try
                     {
-                        TackSet set = GetSetByName(capitalizeFirstLetter(itemInfo.EmbedSwf));
+                        TackSet set = GetSetByName(Converters.CapitalizeFirstLetter(itemInfo.EmbedSwf));
                         set.Add(itemInfo);
                     }
                     catch(KeyNotFoundException)
                     {                   
                         TackSet tackSet = new TackSet();
-                        tackSet.SetName = capitalizeFirstLetter(itemInfo.EmbedSwf);
-                        Logger.DebugPrint("Created Tack Set: "+tackSet.SetName); 
+                        tackSet.SetName = Converters.CapitalizeFirstLetter(itemInfo.EmbedSwf);
                         tackSet.Add(itemInfo);
                         tackSets.Add(tackSet);
                     }

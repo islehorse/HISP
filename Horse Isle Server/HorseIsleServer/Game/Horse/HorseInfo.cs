@@ -480,7 +480,7 @@ namespace HISP.Game.Horse
             private int experience;
         }
 
-        public struct Breed
+        public class Breed
         {
             public int Id;
             public string Name;
@@ -491,8 +491,29 @@ namespace HISP.Game.Horse
             public string SpawnInArea;
             public string Swf;
             public string Type;
-        }
 
+            public string[] GenderTypes()
+            {
+                string[] options = new string[2];
+                if (Type == "camel")
+                {
+                    options[0] = "cow";
+                    options[1] = "bull";
+                }
+                else if (Type == "llama")
+                {
+                    options[0] = "male";
+                    options[1] = "female";
+                }
+                else
+                {
+                    options[0] = "stallion";
+                    options[1] = "mare";
+                }
+                return options;
+            }
+
+        }
         public struct HorseEquips
         {
             public Item.ItemInformation Saddle;

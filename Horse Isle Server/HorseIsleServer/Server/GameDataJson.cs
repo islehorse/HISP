@@ -511,6 +511,17 @@ namespace HISP.Server
                 HorseInfo.Breeds.Add(horseBreed);
                 Logger.DebugPrint("Registered Horse Breed: #" + horseBreed.Id + ": " + horseBreed.Name);
             }
+            // Register Breed Prices @ Pawneer Order
+            int totalBreedPrices = gameData.horses.pawneer_base_price.Count;
+            for(int i = 0; i < totalBreedPrices; i++)
+            {
+                int id = gameData.horses.pawneer_base_price[i].breed_id;
+                int price = gameData.horses.pawneer_base_price[i].price;
+                Pawneer pawneerPricing = new Pawneer(id, price);
+                Pawneer.PawneerPriceModels.Add(pawneerPricing);
+                Logger.DebugPrint("Registered Pawneer Base Price " + pawneerPricing.BreedId + " for $" + pawneerPricing.BasePrice.ToString("N0"));
+            }
+
             int totalCategories = gameData.horses.categorys.Count;
             for(int i = 0; i < totalCategories; i++)
             {
@@ -913,6 +924,25 @@ namespace HISP.Server
             Messages.FarrierPutOnSteelShoesAllMesssageFormat = gameData.messages.meta.farrier.put_on_steel_all;
             Messages.FarrierShoesCantAffordMessage = gameData.messages.meta.farrier.cant_afford_farrier;
 
+            // Pawneer
+            Messages.PawneerUntackedHorsesICanBuy = gameData.messages.meta.pawneer.untacked_i_can_buy;
+            Messages.PawneerHorseFormat = gameData.messages.meta.pawneer.pawn_horse;
+            Messages.PawneerOrderMeta = gameData.messages.meta.pawneer.pawneer_order;
+            Messages.PawneerHorseConfirmationFormat = gameData.messages.meta.pawneer.are_you_sure;
+            Messages.PawneerHorseSoldMessagesFormat = gameData.messages.meta.pawneer.horse_sold;
+            Messages.PawneerHorseNotFound = gameData.messages.meta.pawneer.horse_not_found;
+
+            Messages.PawneerOrderSelectBreed = gameData.messages.meta.pawneer.order.select_breed;
+            Messages.PawneerOrderBreedEntryFormat = gameData.messages.meta.pawneer.order.breed_entry;
+
+            Messages.PawneerOrderSelectColorFormat = gameData.messages.meta.pawneer.order.select_color;
+            Messages.PawneerOrderColorEntryFormat = gameData.messages.meta.pawneer.order.color_entry;
+
+            Messages.PawneerOrderSelectGenderFormat = gameData.messages.meta.pawneer.order.select_gender;
+            Messages.PawneerOrderGenderEntryFormat = gameData.messages.meta.pawneer.order.gender_entry;
+
+            Messages.PawneerOrderHorseFoundFormat = gameData.messages.meta.pawneer.order.found;
+
             // Vet
             Messages.VetServiceHorseFormat = gameData.messages.meta.vet.service_horse;
             Messages.VetSerivcesNotNeeded = gameData.messages.meta.vet.not_needed;
@@ -1010,8 +1040,10 @@ namespace HISP.Server
             Messages.HorsesHere = gameData.messages.meta.horse.horses_here;
             Messages.WildHorseFormat = gameData.messages.meta.horse.wild_horse;
             Messages.HorseCaptureTimer = gameData.messages.meta.horse.horse_timer;
-            Messages.YouCapturedTheHorse = gameData.messages.meta.horse.hore_caught;
+
+            Messages.YouCapturedTheHorse = gameData.messages.meta.horse.horse_caught;
             Messages.HorseEvadedCapture = gameData.messages.meta.horse.horse_escaped;
+            Messages.HorseEscapedAnyway = gameData.messages.meta.horse.horse_escaped_anyway;
 
             Messages.HorsesMenuHeader = gameData.messages.meta.horse.horses_menu;
             Messages.TooManyHorses = gameData.messages.meta.horse.too_many_horses;

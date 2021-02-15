@@ -5,6 +5,7 @@ using HISP.Game.Horse;
 using HISP.Game.SwfModules;
 using HISP.Security;
 using HISP.Server;
+using HISP.Game.Services;
 
 namespace HISP
 {
@@ -27,6 +28,7 @@ namespace HISP
             Brickpoet.LoadPoetryRooms();
             Drawingroom.LoadAllDrawingRooms();
             Item.DoSpecialCases();
+
             GameServer.StartServer();
 
         }

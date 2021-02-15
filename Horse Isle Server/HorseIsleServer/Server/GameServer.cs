@@ -1203,16 +1203,16 @@ namespace HISP.Server
                         WildHorse capturing = WildHorse.GetHorseById(sender.LoggedinUser.CapturingHorseId);
                         sender.LoggedinUser.CapturingHorseId = 0;
 
-                        capturing.Escape();
-                        Logger.InfoPrint(sender.LoggedinUser.Username + " Failed to capture: " + capturing.Instance.Breed.Name + " new location: " + capturing.X + ", " + capturing.Y);
+                        if (capturing.X == sender.LoggedinUser.X && capturing.Y == sender.LoggedinUser.Y)
+                        {
+                            capturing.Escape();
+                            Logger.InfoPrint(sender.LoggedinUser.Username + " Failed to capture: " + capturing.Instance.Breed.Name + " new location: " + capturing.X + ", " + capturing.Y);
 
-                        sender.LoggedinUser.MetaPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseEscapedMessage());
-                        sender.SendPacket(metaPacket);
-
-                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        }
                     }
-
+                    sender.LoggedinUser.MetaPriority = true;
+                    byte[] hoseEscaped = PacketBuilder.CreateMetaPacket(Meta.BuildHorseEscapedMessage());
+                    sender.SendPacket(hoseEscaped);
                     break;
                 case PacketBuilder.HORSE_CAUGHT:
                     if (WildHorse.DoesHorseExist(sender.LoggedinUser.CapturingHorseId))
@@ -1220,33 +1220,38 @@ namespace HISP.Server
                         WildHorse capturing = WildHorse.GetHorseById(sender.LoggedinUser.CapturingHorseId);
                         sender.LoggedinUser.CapturingHorseId = 0;
 
-                        try
+                        if (capturing.X == sender.LoggedinUser.X && capturing.Y == sender.LoggedinUser.Y) 
                         {
-                            capturing.Capture(sender.LoggedinUser);
-                        }
-                        catch(InventoryFullException)
-                        {
-                            byte[] chatMsg = PacketBuilder.CreateChat(Messages.TooManyHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(chatMsg);
+                            try
+                            {
+                                capturing.Capture(sender.LoggedinUser);
+                            }
+                            catch (InventoryFullException)
+                            {
+                                byte[] chatMsg = PacketBuilder.CreateChat(Messages.TooManyHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(chatMsg);
+                                break;
+                            }
+
+                            sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count++;
+
+                            if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count >= 100)
+                                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(24)); // Wrangler
+                            if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count >= 1000)
+                                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(25)); // Pro Wrangler
+
+                            Logger.InfoPrint(sender.LoggedinUser.Username + " Captured a: " + capturing.Instance.Breed.Name);
+
+                            sender.LoggedinUser.MetaPriority = true;
+                            byte[] horseCaught = PacketBuilder.CreateMetaPacket(Meta.BuildHorseCaughtMessage());
+                            sender.SendPacket(horseCaught);
+
                             break;
                         }
-
-                        sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count++;
-
-                        if(sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count >= 100)
-                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(24)); // Wrangler
-                        if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count >= 1000)
-                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(25)); // Pro Wrangler
-
-                        Logger.InfoPrint(sender.LoggedinUser.Username + " Captured a: " + capturing.Instance.Breed.Name + " new location: " + capturing.X + ", " + capturing.Y);
-
-                        sender.LoggedinUser.MetaPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseCaughtMessage());
-                        sender.SendPacket(metaPacket);
-
-                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
                     }
-
+                    sender.LoggedinUser.MetaPriority = true;
+                    byte[] horseAllreadyCaught = PacketBuilder.CreateMetaPacket(Meta.BuildHorseEscapedAnyway());
+                    sender.SendPacket(horseAllreadyCaught);
                     break;
                 case PacketBuilder.HORSE_TRY_CAPTURE:
                     randomId = 0;
@@ -1820,6 +1825,11 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBooksLibary());
                     sender.SendPacket(metaPacket);
                     break;
+                case "47":
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPawneerOrderBreedList());
+                    sender.SendPacket(metaPacket);
+                    break;
                 case "53": // Misc Stats / Tracked Items
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMiscStats(sender.LoggedinUser));
@@ -1887,7 +1897,7 @@ namespace HISP.Server
                         }
                         break;
                     }
-                    if(buttonIdStr.StartsWith("32c")) // Horse Whisperer
+                    if (buttonIdStr.StartsWith("32c")) // Horse Whisperer
                     {
                         string idStr = buttonIdStr.Substring(3);
                         int breedId = -1;
@@ -1895,12 +1905,13 @@ namespace HISP.Server
                         {
                             breedId = int.Parse(idStr);
                         }
-                        catch (FormatException) {
+                        catch (FormatException)
+                        {
                             Logger.DebugPrint(sender.LoggedinUser.Username + " Tried to whisper a horse with BreedId NaN.");
-                            break; 
+                            break;
                         };
-                        
-                        if(sender.LoggedinUser.Money < 50000)
+
+                        if (sender.LoggedinUser.Money < 50000)
                         {
                             byte[] cannotAffordMessage = PacketBuilder.CreateChat(Messages.WhispererServiceCannotAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(cannotAffordMessage);
@@ -1908,15 +1919,15 @@ namespace HISP.Server
                         }
 
                         List<WildHorse> horsesFound = new List<WildHorse>();
-                        foreach(WildHorse horse in WildHorse.WildHorses)
+                        foreach (WildHorse horse in WildHorse.WildHorses)
                         {
-                            if(horse.Instance.Breed.Id == breedId)
+                            if (horse.Instance.Breed.Id == breedId)
                             {
                                 horsesFound.Add(horse);
                             }
                         }
                         int cost = 0;
-                        if(horsesFound.Count >= 1)
+                        if (horsesFound.Count >= 1)
                         {
                             cost = 50000;
                         }
@@ -1931,11 +1942,11 @@ namespace HISP.Server
 
                         byte[] serachResultMeta = PacketBuilder.CreateMetaPacket(Meta.BuildWhisperSearchResults(horsesFound.ToArray()));
                         sender.SendPacket(serachResultMeta);
-                        
+
                         sender.LoggedinUser.Money -= cost;
                         break;
                     }
-                    else if(buttonIdStr.StartsWith("4c")) // Libary Breed Search
+                    else if (buttonIdStr.StartsWith("4c")) // Libary Breed Search
                     {
                         string idStr = buttonIdStr.Substring(2);
                         int breedId = -1;
@@ -1945,9 +1956,10 @@ namespace HISP.Server
                             breedId = int.Parse(idStr);
                             horseBreed = HorseInfo.GetBreedById(breedId);
                         }
-                        catch (Exception) {
+                        catch (Exception)
+                        {
                             Logger.DebugPrint(sender.LoggedinUser.Username + " Sent invalid libary breed viewer request.");
-                            break; 
+                            break;
                         };
                         sender.LoggedinUser.MetaPriority = true;
                         string metaTag = Meta.BuildBreedViewerLibary(horseBreed);
@@ -1959,7 +1971,144 @@ namespace HISP.Server
                         sender.SendPacket(loadSwf);
 
                         break;
-                        
+
+                    }
+                    else if(buttonIdStr.StartsWith("50c"))
+                    {
+                        string gender = buttonIdStr.Substring(3);
+                        if (sender.LoggedinUser.PawneerOrderBreed != null)
+                        {
+                            if (sender.LoggedinUser.PawneerOrderBreed.GenderTypes().Contains(gender))
+                            {
+                                if(sender.LoggedinUser.Inventory.HasItemId(Item.PawneerOrder))
+                                {
+                                    sender.LoggedinUser.PawneerOrderGender = gender;
+
+                                    HorseInstance horseInstance = new HorseInstance(sender.LoggedinUser.PawneerOrderBreed);
+                                    horseInstance.Color = sender.LoggedinUser.PawneerOrderColor;
+                                    horseInstance.Sex = sender.LoggedinUser.PawneerOrderGender;
+                                    horseInstance.Name = "Pawneer Order";
+
+                                    sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(Item.PawneerOrder).ItemInstances[0]);
+                                    sender.LoggedinUser.HorseInventory.AddHorse(horseInstance);
+
+                                    sender.LoggedinUser.MetaPriority = true;
+                                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPawneerOrderFound(horseInstance));
+                                    sender.SendPacket(metaPacket);
+                                    break;
+                                }
+                            }
+                        }
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Error occured when doing a Pawneer Order.");
+                        break;
+                    }    
+                    else if(buttonIdStr.StartsWith("49c"))
+                    {
+                        string color = buttonIdStr.Substring(3);
+                        if(sender.LoggedinUser.PawneerOrderBreed != null)
+                        {
+                            if(sender.LoggedinUser.PawneerOrderBreed.Colors.Contains(color))
+                            {
+                                sender.LoggedinUser.PawneerOrderColor = color;
+
+                                sender.LoggedinUser.MetaPriority = true;
+                                metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPawneerOrderGenderList(sender.LoggedinUser.PawneerOrderBreed, color));
+                                sender.SendPacket(metaPacket);
+                                break;
+                            }
+                        }
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Asked for a horse of an unknown color " + color);
+                        break;
+                    }
+                    else if (buttonIdStr.StartsWith("48c")) // Pawneer Order Breed Select
+                    {
+                        string idStr = buttonIdStr.Substring(3);
+                        int breedId = -1;
+                        HorseInfo.Breed breed;
+                        try
+                        {
+                            breedId = int.Parse(idStr);
+                            breed = HorseInfo.GetBreedById(breedId);
+                        }
+                        catch (Exception)
+                        {
+                            Logger.DebugPrint(sender.LoggedinUser.Username + " Tried to pawner order a horse with id NaN.");
+                            break;
+                        }
+                        sender.LoggedinUser.PawneerOrderBreed = breed;
+
+                        sender.LoggedinUser.MetaPriority = true;
+                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPawneerOrderColorList(breed));
+                        sender.SendPacket(metaPacket);
+                        break;
+                    }
+                    else if (buttonIdStr.StartsWith("43c")) // Pawn Horse Confirm
+                    {
+                        string idStr = buttonIdStr.Substring(3);
+                        int horseId = -1;
+                        try
+                        {
+                            horseId = int.Parse(idStr);
+                        }
+                        catch (FormatException)
+                        {
+                            Logger.DebugPrint(sender.LoggedinUser.Username + " Tried to pawn a horse with id NaN.");
+                            break;
+                        }
+
+                        if (sender.LoggedinUser.HorseInventory.HorseIdExist(horseId))
+                        {
+                            HorseInstance inst = sender.LoggedinUser.HorseInventory.GetHorseById(horseId);
+                            int price = Pawneer.CalculateTotalPrice(inst);
+                            string name = inst.Name;
+
+                            sender.LoggedinUser.HorseInventory.DeleteHorse(inst); // 1000% a "distant land.."
+                            sender.LoggedinUser.LastViewedHorse = null;
+
+                            sender.LoggedinUser.Money += price;
+                            byte[] soldHorseMessage = PacketBuilder.CreateChat(Messages.FormatPawneerSold(name, price), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(soldHorseMessage);
+
+                            UpdateArea(sender);
+
+                            break;
+                        }
+                        else
+                        {
+                            byte[] cantFindHorse = PacketBuilder.CreateChat(Messages.PawneerHorseNotFound, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantFindHorse);
+                        }
+                        break;
+                    }
+                    else if (buttonIdStr.StartsWith("51c")) // Pawn Horse
+                    {
+                        string idStr = buttonIdStr.Substring(3);
+                        int horseId = -1;
+                        try
+                        {
+                            horseId = int.Parse(idStr);
+                        }
+                        catch (FormatException)
+                        {
+                            Logger.DebugPrint(sender.LoggedinUser.Username + " Tried to pawn a horse with id NaN.");
+                            break;
+                        }
+
+                        if (sender.LoggedinUser.HorseInventory.HorseIdExist(horseId))
+                        {
+                            HorseInstance inst = sender.LoggedinUser.HorseInventory.GetHorseById(horseId);
+
+                            sender.LoggedinUser.MetaPriority = true;
+                            byte[] confirmScreen = PacketBuilder.CreateMetaPacket(Meta.BuildPawneerConfimation(inst));
+                            sender.SendPacket(confirmScreen);
+                            break;
+                        }
+                        else
+                        {
+                            byte[] cantFindHorse = PacketBuilder.CreateChat(Messages.PawneerHorseNotFound, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantFindHorse);
+                        }
+                        break;
                     }
                     if(AbuseReport.DoesReasonExist(buttonIdStr))
                     {

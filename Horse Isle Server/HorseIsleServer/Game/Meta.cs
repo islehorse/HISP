@@ -1430,7 +1430,13 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
-
+        public static string BuildHorseEscapedAnyway()
+        {
+            string message = Messages.HorseEscapedAnyway;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildHorseCaughtMessage()
         {
             string message = Messages.YouCapturedTheHorse;
@@ -1879,6 +1885,74 @@ namespace HISP.Game
             message += buildCommonInfo(x, y);
             return message;
         }
+        public static string BuildPawneerOrderFound(HorseInstance instance)
+        {
+            string message = Messages.FormatPawneerOrderHorseFound(instance.Breed.Name, instance.Color, instance.Sex, instance.AdvancedStats.Height, instance.AdvancedStats.Personality, instance.AdvancedStats.Inteligence);
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildPawneerOrderGenderList(HorseInfo.Breed breed, string color)
+        {
+            string message = Messages.FormatPawneerOrderSelectGender(color, breed.Name);
+            foreach (string gender in breed.GenderTypes())
+                message += Messages.FormatPawneerOrderGenderEntry(Converters.CapitalizeFirstLetter(gender), gender);
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildPawneerOrderColorList(HorseInfo.Breed breed)
+        {
+            string message = Messages.FormatPawneerOrderSelectColor(breed.Name);
+            foreach (string color in breed.Colors)
+                message += Messages.FormatPawneerOrderColorEntry(color);
+
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+
+        }
+        public static string BuildPawneerOrderBreedList()
+        {
+            string message = Messages.PawneerOrderSelectBreed;
+            foreach (HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name).ToList())
+            {
+                if (breed.Swf == "")
+                    continue;
+                if (breed.SpawnInArea == "none")
+                    continue;
+                message += Messages.FormatPawneerOrderBreedEntry(breed.Name, breed.Id);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildPawneerConfimation(HorseInstance horse)
+        {
+            string message = "";
+            message += Messages.FormatPawneerConfirmPawn(horse.Breed.Name, horse.RandomId);
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+
+        private static string buildPawneer(User user)
+        {
+            string message = "";
+            if (user.Inventory.HasItemId(Item.PawneerOrder))
+                message += Messages.PawneerOrderMeta;
+            message += Messages.PawneerUntackedHorsesICanBuy;
+            foreach(HorseInstance horse in user.HorseInventory.HorseList)
+            {
+                if(horse.Category == "TRADING" && horse.Equipment.Bridle == null && horse.Equipment.Saddle == null && horse.Equipment.SaddlePad == null && horse.Equipment.Companion == null)
+                {
+                    message += Messages.FormatPawneerHorseEntry(horse.Name, Pawneer.CalculateTotalPrice(horse), horse.RandomId);
+                }
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)
         {
             string message = "";
@@ -1960,6 +2034,10 @@ namespace HISP.Game
                 if (TileCode == "WISHINGWELL")
                 {
                     message += buildWishingWell(user);
+                }
+                if(TileCode == "HORSEPAWNEER")
+                {
+                    message += buildPawneer(user);
                 }
                 if (TileCode == "VENUSFLYTRAP")
                 {
