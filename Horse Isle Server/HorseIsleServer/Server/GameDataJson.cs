@@ -708,6 +708,21 @@ namespace HISP.Server
                 BBCode code = new BBCode(tag, meta);
                 Logger.DebugPrint("Registered BBCODE: " + code.Tag + " to " + code.MetaTranslation);
             }
+            int totalTrainingPens = gameData.training_pens.Count;
+            for (int i = 0; i < totalTrainingPens; i++)
+            {
+                Trainer trainer = new Trainer();
+                trainer.Id = gameData.training_pens[i].trainer_id;
+                trainer.ImprovesStat = gameData.training_pens[i].improves_stat;
+                trainer.ImprovesAmount = gameData.training_pens[i].improves_amount;
+                trainer.ThirstCost = gameData.training_pens[i].thirst_cost;
+                trainer.MoodCost = gameData.training_pens[i].mood_cost;
+                trainer.HungerCost = gameData.training_pens[i].hunger_cost;
+                trainer.MoneyCost = gameData.training_pens[i].money_cost;
+                trainer.ExperienceGained = gameData.training_pens[i].experience;
+                Trainer.Trainers.Add(trainer);
+                Logger.DebugPrint("Registered Training Pen: " + trainer.Id + " for " + trainer.ImprovesStat);
+            }
 
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
@@ -923,6 +938,14 @@ namespace HISP.Server
             Messages.FarrierPutOnIronShoesMessageFormat = gameData.messages.meta.farrier.put_on_iron_shoes;
             Messages.FarrierPutOnSteelShoesAllMesssageFormat = gameData.messages.meta.farrier.put_on_steel_all;
             Messages.FarrierShoesCantAffordMessage = gameData.messages.meta.farrier.cant_afford_farrier;
+
+            // Trainng Pen
+            Messages.TrainedInStatFormat = gameData.messages.meta.trainer_pen.train_success;
+            Messages.TrainerHeaderFormat = gameData.messages.meta.trainer_pen.train_header;
+            Messages.TrainerHorseEntryFormat = gameData.messages.meta.trainer_pen.train_format;
+            Messages.TrainerHorseFullyTrainedFormat = gameData.messages.meta.trainer_pen.fully_trained;
+            Messages.TrainerCantTrainAgainInFormat = gameData.messages.meta.trainer_pen.train_again_in;
+            Messages.TrainerCantAfford = gameData.messages.meta.trainer_pen.cant_afford;
 
             // Santa
             Messages.SantaHiddenText = gameData.messages.meta.santa.hidden_text;
