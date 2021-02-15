@@ -16,57 +16,27 @@ namespace HISP.Game.Horse
                 if (breed.Type == "camel")
                 {
                     name = "Wild Camel";
-                    if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
-                    {
-                        Sex = "cow";
-                    }
-                    else
-                    {
-                        Sex = "bull";
-                    }
 
                 }
                 else if (breed.Type == "llama")
                 {
                     name = "Jungle Llama";
-                    if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
-                    {
-                        Sex = "male";
-                    }
-                    else
-                    {
-                        Sex = "female";
-                    }
                 }
                 else if (breed.Type == "zebra")
                 {
                     name = "Wild Zebra";
-                    if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
-                    {
-                        Sex = "stallion";
-                    }
-                    else
-                    {
-                        Sex = "mare";
-                    }
                 }
                 else
                 {
                     name = "Wild Horse";
-                    if (GameServer.RandomNumberGenerator.Next(0, 100) >= 50)
-                    {
-                        Sex = "stallion";
-                    }
-                    else
-                    {
-                        Sex = "mare";
-                    }
                 }
             }
             else
             {
                 name = loadName;
             }
+
+            Sex = breed.GenderTypes()[GameServer.RandomNumberGenerator.Next(0, 1)];
 
             description = loadDescription;
             Breed = breed;

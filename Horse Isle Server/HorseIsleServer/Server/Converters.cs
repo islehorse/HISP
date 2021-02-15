@@ -28,11 +28,15 @@ namespace HISP.Server
 
 
 
-        public static Double PointsToDistance(int x1, int y1, int x2, int y2)
+        public static double PointsToDistance(int x1, int y1, int x2, int y2)
         {
             return Math.Sqrt(Math.Pow((x2 - x1), 2) + Math.Pow((y2 - y1), 2));
         }
-
+        public static string CapitalizeFirstLetter(string str)
+        {
+            char firstChar = char.ToUpper(str[0]);
+            return firstChar + str.Substring(1);
+        }
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch

@@ -73,6 +73,10 @@ namespace HISP.Player
                 return 7; // will change when ranches are implemented.
             }
         }
+        public HorseInfo.Breed PawneerOrderBreed = null;
+        public string PawneerOrderColor = "";
+        public string PawneerOrderGender = "";
+
         public Mailbox MailBox;
         public Friends Friends;
         public string Password; // For chat filter.

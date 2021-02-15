@@ -313,6 +313,7 @@ namespace HISP.Game
         public static string HorseCaptureTimer;
         public static string YouCapturedTheHorse;
         public static string HorseEvadedCapture;
+        public static string HorseEscapedAnyway;
         public static string TooManyHorses;
         public static string HorsesMenuHeader;
         public static string UpdateHorseCategory;
@@ -643,6 +644,25 @@ namespace HISP.Game
         public static string LongFullLine;
         public static string MetaTerminator;
 
+        // Pawneer
+        public static string PawneerUntackedHorsesICanBuy;
+        public static string PawneerHorseFormat;
+        public static string PawneerOrderMeta;
+        public static string PawneerHorseConfirmationFormat;
+        public static string PawneerHorseSoldMessagesFormat;
+        public static string PawneerHorseNotFound;
+
+        public static string PawneerOrderSelectBreed;
+        public static string PawneerOrderBreedEntryFormat;
+
+        public static string PawneerOrderSelectColorFormat;
+        public static string PawneerOrderColorEntryFormat;
+
+        public static string PawneerOrderSelectGenderFormat;
+        public static string PawneerOrderGenderEntryFormat;
+
+        public static string PawneerOrderHorseFoundFormat;
+
         // Shortcuts
         public static string NoTelescope;
 
@@ -702,6 +722,43 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+        public static string FormatPawneerOrderHorseFound(string breedName, string color, string gender, int height, int personality, int inteligence)
+        {
+            return PawneerOrderHorseFoundFormat.Replace("%BREEDNAME%", breedName).Replace("%COLOR%", color).Replace("%GENDER%", gender).Replace("%HEIGHT%", height.ToString()).Replace("%PERSONALITY%", personality.ToString()).Replace("%INTELIGENCE%", inteligence.ToString());
+        }
+        public static string FormatPawneerOrderGenderEntry(string genderName, string genderInternal)
+        {
+            return PawneerOrderGenderEntryFormat.Replace("%GENDERNAME%", genderName).Replace("%GENDERINTERNAL%", genderInternal);
+        }
+        public static string FormatPawneerOrderSelectGender(string color, string breedName)
+        {
+            return PawneerOrderSelectGenderFormat.Replace("%BREEDNAME%", breedName).Replace("%COLOR%", color);
+        }
+
+        public static string FormatPawneerOrderColorEntry(string color)
+        {
+            return PawneerOrderColorEntryFormat.Replace("%COLOR%", color);
+        }
+        public static string FormatPawneerOrderSelectColor(string breedName)
+        {
+            return PawneerOrderSelectColorFormat.Replace("%BREEDNAME%", breedName);
+        }
+        public static string FormatPawneerOrderBreedEntry(string breedName, int breedId)
+        {
+            return PawneerOrderBreedEntryFormat.Replace("%BREEDNAME%", breedName).Replace("%BREEDID%", breedId.ToString());
+        }
+        public static string FormatPawneerHorseEntry(string horseName, int price, int randomId)
+        {
+            return PawneerHorseFormat.Replace("%HORSENAME%", horseName).Replace("%PRICE%", price.ToString("N0")).Replace("%RANDOMID%", randomId.ToString());
+        }
+        public static string FormatPawneerConfirmPawn(string breedName, int randomId)
+        {
+            return PawneerHorseConfirmationFormat.Replace("%BREEDNAME%", breedName).Replace("%RANDOMID%", randomId.ToString());
+        }
+        public static string FormatPawneerSold(string horseName, int price)
+        {
+            return PawneerHorseSoldMessagesFormat.Replace("%HORSENAME%", horseName).Replace("%PRICE%", price.ToString("N0"));
+        }
 
 
         public static string FormatPlayerHereMessage(string playerName)
