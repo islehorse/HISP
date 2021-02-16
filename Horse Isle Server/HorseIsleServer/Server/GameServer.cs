@@ -5869,7 +5869,6 @@ namespace HISP.Server
                     incBy = 13;
                 if (horseMountInst.Color == "white")
                     incBy = 14;
-
             }
             if (horseMountInst.Breed.Type == "unicorn")
             {
