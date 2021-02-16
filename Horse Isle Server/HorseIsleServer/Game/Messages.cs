@@ -16,6 +16,57 @@ namespace HISP.Game
         // Click
         public static string PlayerHereFormat;
 
+        // City Hall
+        public static string CityHallMenu;
+        public static string CityHallMailSendMeta;
+        public static string CityHallSentMessageFormat;
+        public static string CityHallCantAffordPostageMessage;
+        public static string CityHallCantFindPlayerMessageFormat;
+
+        // City Hall : Auto Sell
+        public static string CityHallCheapestAutoSells;
+        public static string CityHallCheapestAutoSellHorseEntryFormat;
+        public static string CityHallMostExpAutoSells;
+        public static string CityHallMostExpAutoSellHorseEntryFormat;
+
+        // City Hall : Ranch Investment
+        public static string CityHallTop25Ranches;
+        public static string CityHallRanchEntryFormat;
+
+        // City Hall : Richest Players
+        public static string CityHallTop25Players;
+        public static string CityHallRichPlayerFormat;
+
+        // City Hall : Spoiled Horses
+        public static string CityHallTop100SpoiledHorses;
+        public static string CityHallSpoiledHorseEntryFormat;
+
+        // City Hall : Most Adventurous Players
+        public static string CityHallTop25AdventurousPlayers;
+        public static string CityHallAdventurousPlayerEntryFormat;
+
+        // City Hall : Most Experienced Players
+        public static string CityHallTop25ExperiencedPlayers;
+        public static string CityHallExperiencePlayerEntryFormat;
+
+        // City Hall : Most Played Minigames
+        public static string CityHallTop25MinigamePlayers;
+        public static string CityHallMinigamePlayerEntryFormat;
+
+        // City Hall : Most Experienced Horses
+        public static string CityHallTop25ExperiencedHorses;
+        public static string CityHallExperiencedHorseEntryFormat;
+
+
+        // Mail Messages
+        public static string MailReceivedMessage;
+        public static string MailSe;
+        public static string MailSelectFromFollowing;
+
+        public static string MailEntryFormat;
+        public static string MailReadMetaFormat;
+        public static string MailRippedMessage;
+
         // Ranch
         public static string RanchUnownedRanchFormat;
         public static string RanchYouCouldPurchaseThisRanch;
@@ -740,6 +791,62 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatCityHallCantFindPlayerMessage(string playerName)
+        {
+            return CityHallCantFindPlayerMessageFormat.Replace("%PLAYERNAME%", playerName); 
+        }
+        public static string FormatCityHallTopExperiencedHorses(int placing, int experiencePoints, string playerName, string horseName)
+        {
+            return CityHallExperiencedHorseEntryFormat.Replace("%PLACING%", placing.ToString()).Replace("%EXP%", experiencePoints.ToString("N0", CultureInfo.InvariantCulture)).Replace("%PLAYERNAME%", playerName).Replace("%HORSENAME%", horseName);
+        }
+        public static string FormatCityHallTopMinigamePlayers(int placing, int gamesPlayed, string playerName)
+        {
+            return CityHallMinigamePlayerEntryFormat.Replace("%PLACING%", placing.ToString()).Replace("%GAMESPLAYED%", gamesPlayed.ToString("N0", CultureInfo.InvariantCulture)).Replace("%PLAYERNAME%", playerName);
+        }
+        public static string FormatCityHallTopExperiencedPlayersEntry(int placing, int experiencePoints, string playerName)
+        {
+            return CityHallExperiencePlayerEntryFormat.Replace("%PLACING%", placing.ToString()).Replace("%EXP%", experiencePoints.ToString()).Replace("%PLAYERNAME%", playerName);
+        }
+        public static string FormatCityHallTopAdventurousPlayersEntry(int placing, int questPoints, string playerName)
+        {
+            return CityHallAdventurousPlayerEntryFormat.Replace("%PLACING%", placing.ToString()).Replace("%QUESTPOINTS%", questPoints.ToString("N0", CultureInfo.InvariantCulture)).Replace("%PLAYERNAME%", playerName);
+        }
+        public static string FormatCityHallTopSpoiledHorseEntry(int spoiled, string playerName, string horseName)
+        {
+            return CityHallSpoiledHorseEntryFormat.Replace("%SPOILED%", spoiled.ToString()).Replace("%PLAYERNAME%", playerName).Replace("%HORSENAME%", horseName); 
+        }
+        public static string FormatCityHallTopPlayerEntry(int placing, double money, string playerName)
+        {
+            return CityHallRichPlayerFormat.Replace("%PLACING%", placing.ToString()).Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture)).Replace("%PLAYERNAME%", playerName);
+        }
+        public static string FormatCityHallTopRanchEntry(int placing, string playerName, int value, string mapxy)
+        {
+            return CityHallRanchEntryFormat.Replace("%PLACING%", placing.ToString()).Replace("%PLAYERNAME%", playerName).Replace("%VALUE%", value.ToString("N0", CultureInfo.InvariantCulture)).Replace("%MAPXY%", mapxy);
+        }
+        public static string FormatCityHallBestExpAutoSellEntry(int exp, string playerName, string horseName, int price, string color, string breed)
+        {
+            return CityHallMostExpAutoSellHorseEntryFormat.Replace("%EXP%", exp.ToString()).Replace("%PLAYERNAME%", playerName).Replace("%HORSENAME%", horseName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%COLOR%", color).Replace("%BREED%", breed);
+        }
+        public static string FormatCityHallCheapAutoSellEntry(int price, string playerName, string horseName, string color, string breed, int exp)
+        {
+            return CityHallCheapestAutoSellHorseEntryFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%PLAYERNAME%", playerName).Replace("%HORSENAME%", horseName).Replace("%COLOR%", color).Replace("%BREED%", breed).Replace("%EXP%", exp.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatCityHallSendMailMessage(string playerName)
+        {
+            return CityHallSentMessageFormat.Replace("%PLAYERNAME%", playerName);
+        }
+
+
+
+        public static string FormatMailReadMessage(string fromUser, string date, string subject, string message, int randomId)
+        {
+            return MailReadMetaFormat.Replace("%PLAYERNAME%", fromUser).Replace("%DATE%", date).Replace("%SUBJECT%", subject).Replace("%MESSAGE%", message).Replace("%RANDOMID%", randomId.ToString());
+        }
+        public static string FormatMailEntry(string subject, string fromUser, int randomId)
+        {
+            return MailEntryFormat.Replace("%SUBJECT%", subject).Replace("%PLAYERNAME%", fromUser).Replace("%RANDOMID%", randomId.ToString());
+        }
 
         public static string FormatTrainerCantTrainAgainIn(int time)
         {
@@ -1817,7 +1924,7 @@ namespace HISP.Game
         }
         public static string FormatItemReadButton(int randomid)
         {
-            return ItemReadButton.Replace("%RANDOMID%", randomid.ToString());
+            return ItemReadButton.Replace("%ITEMID%", randomid.ToString());
         }
 
         // Meta

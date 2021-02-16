@@ -84,11 +84,24 @@ namespace HISP.Server
 
             foreach(GameClient client in ConnectedClients)
                 if (client.LoggedIn)
+                {
                     if (!client.LoggedinUser.MetaPriority)
-                        UpdateArea(client);
+                        Update(client);
+                    byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(client.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), client.LoggedinUser.MailBox.UnreadMailCount);
+                    client.SendPacket(BaseStatsPacketData);
+                }
+  
 
             Database.IncPlayerTirednessForOfflineUsers();
-            
+            if(totalMinutesElapsed % 60 == 0)
+            {
+                foreach (HorseInstance horse in Database.GetMostSpoiledHorses())
+                {
+                    horse.BasicStats.Tiredness = 1000;
+                    horse.BasicStats.Hunger = 1000;
+                    horse.BasicStats.Thirst = 1000;
+                }
+            }
 
             if (totalMinutesElapsed % 5 == 0)
             {
@@ -1453,6 +1466,56 @@ namespace HISP.Server
                                 Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (private notes, wrong size)");
                                 break;
                             }
+                        case 2: // Send Mail
+                            if(dynamicInput.Length >= 4)
+                            {
+                                string to = dynamicInput[1];
+                                string subject = dynamicInput[2];
+                                string message = dynamicInput[3];
+
+                                if(sender.LoggedinUser.Money >= 3)
+                                {
+                                    if(Database.CheckUserExist(to))
+                                    {
+                                        int playerId = Database.GetUserid(to);
+
+                                        sender.LoggedinUser.Money -= 3;
+                                        Mailbox.Mail mailMessage = new Mailbox.Mail();
+                                        mailMessage.RandomId = RandomID.NextRandomId();
+                                        mailMessage.FromUser = sender.LoggedinUser.Id;
+                                        mailMessage.ToUser = playerId;
+                                        mailMessage.Timestamp = Convert.ToInt32((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
+                                        mailMessage.Read = false;
+                                        mailMessage.Subject = subject;
+                                        mailMessage.Message = message;
+
+                                        if(IsUserOnline(playerId))
+                                        {
+                                            User user = GetUserById(playerId);
+                                            user.MailBox.AddMail(mailMessage);
+
+                                            byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(user.Money, GameServer.GetNumberOfPlayers(), user.MailBox.UnreadMailCount);
+                                            user.LoggedinClient.SendPacket(BaseStatsPacketData);
+                                        }
+                                        else
+                                        {
+                                            Database.AddMail(mailMessage.RandomId, mailMessage.ToUser, mailMessage.FromUser, mailMessage.Subject, mailMessage.Message, mailMessage.Timestamp, mailMessage.Read);
+                                        }
+
+                                        byte[] mailMessageSent = PacketBuilder.CreateChat(Messages.FormatCityHallSendMailMessage(to.ToLower()),PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(mailMessageSent);
+
+                                        UpdateArea(sender);
+                                    }
+                                    else
+                                    {
+                                        byte[] userDontExistFormat = PacketBuilder.CreateChat(Messages.FormatCityHallCantFindPlayerMessage(to), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(userDontExistFormat);
+                                    }
+                                }
+ 
+                            }
+                            break;
                         case 6: // Riddle Room
                             if (dynamicInput.Length >= 2)
                             {
@@ -1724,9 +1787,20 @@ namespace HISP.Server
 
             switch(buttonIdStr)
             {
+                case "2": // Compose Mail
+                    if(sender.LoggedinUser.Money <= 3)
+                    {
+                        byte[] cantAffordPostage = PacketBuilder.CreateChat(Messages.CityHallCantAffordPostageMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(cantAffordPostage);
+                        break;
+                    }
+                    sender.LoggedinUser.MetaPriority = true;
+                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildComposeMailMenu());
+                    sender.SendPacket(metaPacket);
+                    break;
                 case "3": // Quest Log
                     sender.LoggedinUser.MetaPriority = true;
-                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildQuestLog(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildQuestLog(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "4": // View Horse Breeds
@@ -1836,6 +1910,36 @@ namespace HISP.Server
                         }
                     }
                     break;
+                case "14": // Most Valued Ranches
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMostValuedRanches());
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "15": // Most Richest Players
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRichestPlayers());
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "16": // Most Adventurous Players
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAdventurousPlayers());
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "17": // Most Experienced Players
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildExperiencedPlayers());
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "18": // Best Minigame Players
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigamePlayers());
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "19": // Most Experienced Horses
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMostExperienedHoses());
+                    sender.SendPacket(metaPacket);
+                    break;
                 case "20": // Minigame Rankings
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigameRankingsForUser(sender.LoggedinUser));
@@ -1868,6 +1972,11 @@ namespace HISP.Server
                         metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRanchEdit(sender.LoggedinUser.OwnedRanch));
                         sender.SendPacket(metaPacket);
                     }
+                    break;
+                case "29": // Auto Sell Horses
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTopAutoSellHorses());
+                    sender.SendPacket(metaPacket);
                     break;
                 case "31":
                     sender.LoggedinUser.MetaPriority = true;
@@ -1936,6 +2045,11 @@ namespace HISP.Server
                 case "60": // Ranch Sell
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRanchSellConfirmation());
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "61": // Most Spoiled Horse
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMostSpoiledHorses());
                     sender.SendPacket(metaPacket);
                     break;
                 case "28c1": // Abuse Report
@@ -2256,7 +2370,7 @@ namespace HISP.Server
             byte[] SecCodePacket = PacketBuilder.CreateSecCode(user.SecCodeSeeds, user.SecCodeInc, user.Administrator, user.Moderator);
             sender.SendPacket(SecCodePacket);
 
-            byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(user.Money, GameServer.GetNumberOfPlayers(), user.MailBox.MailCount);
+            byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(user.Money, GameServer.GetNumberOfPlayers(), user.MailBox.UnreadMailCount);
             sender.SendPacket(BaseStatsPacketData);
 
             UpdateArea(sender);
@@ -4993,7 +5107,111 @@ namespace HISP.Server
                         sender.SendPacket(inventoryFullMessage);
                     }
                     break;
+                case PacketBuilder.ITEM_RIP:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    randomId = 0;
+                    try
+                    {
+                        randomId = Int32.Parse(randomIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        return;
+                    }
 
+                    if (!sender.LoggedinUser.Inventory.HasItem(randomId))
+                    {
+                        Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to rip someone elses mail. " + randomId.ToString());
+                        return;
+                    }
+
+                    InventoryItem ripItems = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
+                    foreach (ItemInstance item in ripItems.ItemInstances)
+                    {
+                        if (item.RandomId == randomId)
+                        {
+                            if (item.Data == 0)
+                                continue;
+                            sender.LoggedinUser.MailBox.RipUpMessage(sender.LoggedinUser.MailBox.GetMessageByRandomId(item.Data));
+                            break;
+                        }
+                    }
+                    break;
+                case PacketBuilder.ITEM_VIEW:
+                    byte method = packet[2];
+                    if (method == PacketBuilder.ITEM_LOOK)
+                    {
+                        packetStr = Encoding.UTF8.GetString(packet);
+                        itemIdStr = packetStr.Substring(3, packet.Length - 3);
+                        itemId = 0;
+                        try
+                        {
+                            itemId = Int32.Parse(itemIdStr);
+                        }
+                        catch (FormatException)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                            return;
+                        }
+
+                        if (itemId == Item.MailMessage)
+                        {
+                            if (!sender.LoggedinUser.Inventory.HasItemId(Item.MailMessage))
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to view a mail message when they didnt have one.");
+                                return;
+                            }
+
+                            sender.LoggedinUser.MetaPriority = true;
+                            byte[] mailList = PacketBuilder.CreateMetaPacket(Meta.BuildMailList(sender.LoggedinUser, sender.LoggedinUser.Inventory.GetItemByItemId(Item.MailMessage)));
+                            sender.SendPacket(mailList);
+                            break;
+                        }
+                    }
+                    else if(method == PacketBuilder.ITEM_READ)
+                    {
+                        packetStr = Encoding.UTF8.GetString(packet);
+                        randomIdStr = packetStr.Substring(3, packet.Length - 3);
+                        randomId = 0;
+                        try
+                        {
+                            randomId = Int32.Parse(randomIdStr);
+                        }
+                        catch (FormatException)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                            return;
+                        }
+
+                        if (!sender.LoggedinUser.Inventory.HasItem(randomId))
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to view someone elses mail. " + randomId.ToString());
+                            return;
+                        }
+
+                        InventoryItem items = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
+                        foreach (ItemInstance item in items.ItemInstances)
+                        {
+                            if (item.RandomId == randomId)
+                            {
+                                if (item.Data == 0)
+                                    continue;
+
+                                sender.LoggedinUser.MetaPriority = true;
+                                byte[] readMail = PacketBuilder.CreateMetaPacket(Meta.BuildMailLetter(sender.LoggedinUser.MailBox.GetMessageByRandomId(item.Data), randomId));
+                                sender.SendPacket(readMail);
+                                break;
+                            }
+                        }
+                        break;
+
+                    }
+
+
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Unknown Method- " + method.ToString("X") + "  " + BitConverter.ToString(packet).Replace("-", " "));
+                    break;
                 case PacketBuilder.PACKET_INFORMATION:
                     packetStr = Encoding.UTF8.GetString(packet);
                     string valueStr = packetStr.Substring(3, packet.Length - 3);

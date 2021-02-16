@@ -6,6 +6,7 @@ using HISP.Player;
 using HISP.Game.Horse;
 using HISP.Game.Inventory;
 using HISP.Game.Items;
+using HISP.Security;
 
 namespace HISP.Server
 {
@@ -21,8 +22,8 @@ namespace HISP.Server
                 db.Open();
                 string UserTable = "CREATE TABLE Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
                 string ExtTable = "CREATE TABLE UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(1028),IpAddress TEXT(1028),PrivateNotes Text(1028), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT)";
-                string MailTable = "CREATE TABLE Mailbox(IdTo INT, PlayerFrom TEXT(16),Subject TEXT(128), Message Text(1028), TimeSent INT)";
-                string BuddyTable = "CREATE TABLE BuddyList(Id INT, IdFriend INT, Pending BOOL)";
+                string MailTable = "CREATE TABLE Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(128), Message Text(1028), TimeSent INT, BeenRead TEXT(3))";
+                string BuddyTable = "CREATE TABLE BuddyList(Id INT, IdFriend INT, Pending TEXT(3))";
                 string WorldTable = "CREATE TABLE World(Time INT, Day INT, Year INT)";
                 string WeatherTable = "CREATE TABLE Weather(Area TEXT(1028), Weather TEXT(64))";
                 string InventoryTable = "CREATE TABLE Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)";
@@ -2713,22 +2714,6 @@ namespace HISP.Server
             }
         }
 
-        public static int CheckMailcount(int id)
-        {
-            using (MySqlConnection db = new MySqlConnection(ConnectionString))
-            {
-                db.Open();
-                MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM Mailbox WHERE IdTo=@id";
-                sqlCommand.Parameters.AddWithValue("@id", id);
-                sqlCommand.Prepare();
-                Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-
-                sqlCommand.Dispose();
-                return count;
-            }
-        }
-
         public static bool HasJewelry(int playerId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -3803,20 +3788,81 @@ namespace HISP.Server
             }
 
         }
-        public static void AddMail(int toId, string fromName, string subject, string message)
+        public static Mailbox.Mail[] LoadMailbox(int toId)
+        {
+            List<Mailbox.Mail> mailList = new List<Mailbox.Mail>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+
+                sqlCommand.CommandText = "SELECT * FROM Mailbox WHERE IdTo=@toId";
+                sqlCommand.Parameters.AddWithValue("@toId", toId);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while(reader.Read())
+                {
+                    Mailbox.Mail MailMessage = new Mailbox.Mail();
+                    MailMessage.RandomId = RandomID.NextRandomId(reader.GetInt32(0));
+                    MailMessage.ToUser = reader.GetInt32(1);
+                    MailMessage.FromUser = reader.GetInt32(2);
+                    MailMessage.Subject = reader.GetString(3);
+                    MailMessage.Message = reader.GetString(4);
+                    MailMessage.Timestamp = reader.GetInt32(5);
+                    MailMessage.Read = reader.GetString(6) == "YES";
+                    mailList.Add(MailMessage);
+                }
+                sqlCommand.Dispose();
+            }
+            return mailList.ToArray();
+        }
+        public static void ReadAllMail(int toId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                int epoch = (int)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
 
-                sqlCommand.CommandText = "INSERT INTO Mailbox VALUES(@toId,@from,@subject,@message,@time)";
+
+                sqlCommand.CommandText = "UPDATE Mailbox SET BeenRead='YES' WHERE IdTo=@toId";
                 sqlCommand.Parameters.AddWithValue("@toId", toId);
-                sqlCommand.Parameters.AddWithValue("@from", fromName);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void DeleteMail(int randomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+
+                sqlCommand.CommandText = "DELETE FROM Mailbox WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void AddMail(int randomId, int toId, int fromId, string subject, string message, int timestamp, bool read)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+
+                sqlCommand.CommandText = "INSERT INTO Mailbox VALUES(@randomId, @toId,@from,@subject,@message,@time,@read)";
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
+                sqlCommand.Parameters.AddWithValue("@toId", toId);
+                sqlCommand.Parameters.AddWithValue("@from", fromId);
                 sqlCommand.Parameters.AddWithValue("@subject", subject);
-                sqlCommand.Parameters.AddWithValue("@mesasge", message);
-                sqlCommand.Parameters.AddWithValue("@time", epoch);
+                sqlCommand.Parameters.AddWithValue("@message", message);
+                sqlCommand.Parameters.AddWithValue("@time", timestamp);
+                sqlCommand.Parameters.AddWithValue("@read", read ? "YES" : "NO");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
@@ -3927,7 +3973,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE Id=@id OR IdFriend=@id AND Pending=false";
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE Id=@id OR IdFriend=@id AND Pending='NO'";
                 sqlCommand.Parameters.AddWithValue("@id", id);
                 sqlCommand.Prepare();
 
@@ -3949,7 +3995,7 @@ namespace HISP.Server
                 List<int> BuddyList = new List<int>();
 
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Id,IdFriend FROM BuddyList WHERE Id=@id OR IdFriend=@id AND Pending=false";
+                sqlCommand.CommandText = "SELECT Id,IdFriend FROM BuddyList WHERE Id=@id OR IdFriend=@id AND Pending='NO'";
                 sqlCommand.Parameters.AddWithValue("@id", id);
                 sqlCommand.Prepare();
                 MySqlDataReader dataReader = sqlCommand.ExecuteReader();
@@ -3975,7 +4021,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id) AND Pending=true";
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id) AND Pending='YES'";
                 sqlCommand.Parameters.AddWithValue("@id", id);
                 sqlCommand.Parameters.AddWithValue("@friendId", friendId);
                 sqlCommand.Prepare();
@@ -4020,7 +4066,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO BuddyList VALUES(@id,@friendId,true)";
+                sqlCommand.CommandText = "INSERT INTO BuddyList VALUES(@id,@friendId,'YES')";
                 sqlCommand.Parameters.AddWithValue("@id", id);
                 sqlCommand.Parameters.AddWithValue("@friendId", friendId);
                 sqlCommand.Prepare();
@@ -4406,6 +4452,180 @@ namespace HISP.Server
                 {
                     throw new KeyNotFoundException("Id " + id + " not found in database.");
                 }
+            }
+        }
+
+        public static HorseInstance[] GetMostExperiencedHorses()
+        {
+            List<HorseInstance> inst = new List<HorseInstance>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM Horses ORDER BY experience DESC LIMIT 25";
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    inst.Add(ReadHorseInstance(reader));
+                }
+                sqlCommand.Dispose();
+            }
+            return inst.ToArray();
+        }
+        public static int[] GetMinigamePlayers()
+        {
+            List<int> userIds = new List<int>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT DISTINCT playerId, SUM(timesplayed) OVER (PARTITION BY playerId) AS totalPlays FROM leaderboards ORDER BY totalPlays DESC LIMIT 25";
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    userIds.Add(reader.GetInt32(0));
+                }
+                sqlCommand.Dispose();
+            }
+            return userIds.ToArray();
+        }
+        
+        
+        public static int[] GetExperiencedPlayers()
+        {
+            List<int> userIds = new List<int>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT id FROM UserExt ORDER BY Experience DESC LIMIT 25";
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    userIds.Add(reader.GetInt32(0));
+                }
+                sqlCommand.Dispose();
+            }
+            return userIds.ToArray();
+
+        }
+        public static int[] GetAdventurousPlayers()
+        {
+            List<int> userIds = new List<int>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT id FROM UserExt ORDER BY QuestPoints DESC LIMIT 25";
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    userIds.Add(reader.GetInt32(0));
+                }
+                sqlCommand.Dispose();
+            }
+            return userIds.ToArray();
+
+        }
+        public static int[] GetRichestPlayers()
+        {
+            List<int> userIds = new List<int>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT id FROM UserExt ORDER BY Money+BankBalance DESC LIMIT 25";
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    userIds.Add(reader.GetInt32(0));
+                }
+                sqlCommand.Dispose();
+            }
+            return userIds.ToArray();
+            
+        }
+        public static HorseInstance[] GetMostSpoiledHorses()
+        {
+            List<HorseInstance> inst = new List<HorseInstance>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM Horses ORDER BY spoiled DESC LIMIT 100";
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    inst.Add(ReadHorseInstance(reader));
+                }
+                sqlCommand.Dispose();
+            }
+            return inst.ToArray();
+        }
+        public static HorseInstance[] GetBiggestExpAutoSell()
+        {
+            List<HorseInstance> inst = new List<HorseInstance>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM Horses ORDER BY experience DESC LIMIT 50";
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    inst.Add(ReadHorseInstance(reader));
+                }
+                sqlCommand.Dispose();
+            }
+            return inst.ToArray();
+        }
+        public static HorseInstance[] GetCheapestHorseAutoSell()
+        {
+            List<HorseInstance> inst = new List<HorseInstance>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM Horses ORDER BY autoSell LIMIT 100";
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while(reader.Read())
+                {
+                    inst.Add(ReadHorseInstance(reader));
+                }
+                sqlCommand.Dispose();
+            }
+            return inst.ToArray();
+        }
+        public static int GetPlayerTotalMinigamesPlayed(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT SUM(timesplayed) FROM Leaderboards WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                sqlCommand.Dispose();
+                return count;
             }
         }
 
