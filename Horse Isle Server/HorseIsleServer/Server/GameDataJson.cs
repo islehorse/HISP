@@ -746,6 +746,10 @@ namespace HISP.Server
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
 
+            // Horse Games
+            Messages.HorseGamesSelectHorse = gameData.messages.meta.horse_games.select_a_horse;
+            Messages.HorseGamesHorseEntryFormat = gameData.messages.meta.horse_games.horse_entry;
+
             // City Hall
             Messages.CityHallMenu = gameData.messages.meta.city_hall.menu;
             Messages.CityHallMailSendMeta = gameData.messages.meta.city_hall.mail_send_meta;
