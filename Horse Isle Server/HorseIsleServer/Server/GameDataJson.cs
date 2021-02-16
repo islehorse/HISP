@@ -746,8 +746,53 @@ namespace HISP.Server
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
 
+            // City Hall
+            Messages.CityHallMenu = gameData.messages.meta.city_hall.menu;
+            Messages.CityHallMailSendMeta = gameData.messages.meta.city_hall.mail_send_meta;
+
+            Messages.CityHallSentMessageFormat = gameData.messages.meta.city_hall.sent_mail;
+            Messages.CityHallCantAffordPostageMessage = gameData.messages.meta.city_hall.cant_afford_postage;
+            Messages.CityHallCantFindPlayerMessageFormat = gameData.messages.meta.city_hall.cant_find_player;
+
+            Messages.CityHallCheapestAutoSells = gameData.messages.meta.city_hall.auto_sell.top_100_cheapest;
+            Messages.CityHallCheapestAutoSellHorseEntryFormat = gameData.messages.meta.city_hall.auto_sell.cheap_horse_entry;
+
+            Messages.CityHallMostExpAutoSells = gameData.messages.meta.city_hall.auto_sell.top_50_most_exp;
+            Messages.CityHallMostExpAutoSellHorseEntryFormat = gameData.messages.meta.city_hall.auto_sell.exp_horse_entry;
+
+            Messages.CityHallTop25Ranches = gameData.messages.meta.city_hall.ranch_investment.top_25;
+            Messages.CityHallRanchEntryFormat = gameData.messages.meta.city_hall.ranch_investment.ranch_entry;
+
+            Messages.CityHallTop25Players = gameData.messages.meta.city_hall.richest_players.top_25;
+            Messages.CityHallRichPlayerFormat = gameData.messages.meta.city_hall.richest_players.rich_player_format;
+
+            Messages.CityHallTop100SpoiledHorses = gameData.messages.meta.city_hall.spoiled_horses.top_100;
+            Messages.CityHallSpoiledHorseEntryFormat = gameData.messages.meta.city_hall.spoiled_horses.spoiled_horse_entry;
+
+            Messages.CityHallTop25AdventurousPlayers = gameData.messages.meta.city_hall.most_adventurous_players.top_25;
+            Messages.CityHallAdventurousPlayerEntryFormat = gameData.messages.meta.city_hall.most_adventurous_players.adventurous_player_entry;
+
+            Messages.CityHallTop25ExperiencedPlayers = gameData.messages.meta.city_hall.most_experinced_players.top_25;
+            Messages.CityHallExperiencePlayerEntryFormat = gameData.messages.meta.city_hall.most_experinced_players.experienced_player_entry;
+
+            Messages.CityHallTop25MinigamePlayers = gameData.messages.meta.city_hall.most_active_minigame_players.top_25;
+            Messages.CityHallMinigamePlayerEntryFormat = gameData.messages.meta.city_hall.most_active_minigame_players.minigame_player_entry;
+
+            Messages.CityHallTop25ExperiencedHorses = gameData.messages.meta.city_hall.most_experienced_horses.top_25;
+            Messages.CityHallExperiencedHorseEntryFormat = gameData.messages.meta.city_hall.most_experienced_horses.experienced_horse_entry;
+
+            // Mail Messages
+            Messages.MailReceivedMessage = gameData.messages.meta.mail.mail_received;
+            Messages.MailSelectFromFollowing = gameData.messages.meta.mail.mail_select;
+            Messages.MailSe = gameData.messages.meta.mail.mail_se;
+
+            Messages.MailReadMetaFormat = gameData.messages.meta.mail.mail_read;
+            Messages.MailEntryFormat = gameData.messages.meta.mail.mail_entry;
+            Messages.MailRippedMessage = gameData.messages.meta.mail.mail_ripped;
+
             // Click
             Messages.PlayerHereFormat = gameData.messages.player_here;
+
 
             // Ranch
             Messages.RanchUnownedRanchFormat = gameData.messages.meta.ranch.unowned_ranch;

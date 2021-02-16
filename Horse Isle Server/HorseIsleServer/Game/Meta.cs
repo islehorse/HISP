@@ -666,7 +666,7 @@ namespace HISP.Game
                 }
                 else
                 {
-                    message += Messages.FormatRanchTrainFail(horse.Name, horse.TrainTimer);
+                    message += Messages.FormatRanchTrainFail(horse.Name, horse.TrainTimer);                                                                                                   
                 }
             }
             message += Messages.BackToMap;
@@ -1133,6 +1133,137 @@ namespace HISP.Game
 
             return message;
         }
+        public static string BuildMinigamePlayers()
+        {
+            string message = Messages.CityHallTop25MinigamePlayers;
+            int placing = 1;
+            foreach (int userId in Database.GetMinigamePlayers())
+            {
+                string username = Database.GetUsername(userId);
+                int totalMinigames = Database.GetPlayerTotalMinigamesPlayed(userId);
+
+                message += Messages.FormatCityHallTopMinigamePlayers(placing, totalMinigames, username);
+                placing++;
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildMostExperienedHoses()
+        {
+            string message = Messages.CityHallTop25ExperiencedHorses;
+
+            int placing = 1;
+            foreach (HorseInstance horse in Database.GetMostExperiencedHorses())
+            {
+                message += Messages.FormatCityHallTopExperiencedHorses(placing, horse.BasicStats.Experience, Database.GetUsername(horse.Owner), horse.Name);
+                placing++;
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildExperiencedPlayers()
+        {
+            string message = Messages.CityHallTop25ExperiencedPlayers;
+            int placing = 1;
+            foreach (int userId in Database.GetAdventurousPlayers())
+            {
+                string username = Database.GetUsername(userId);
+                int exp = Database.GetExperience(userId);
+
+                message += Messages.FormatCityHallTopExperiencedPlayersEntry(placing, exp, username);
+                placing++;
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildAdventurousPlayers()
+        {
+            string message = Messages.CityHallTop25AdventurousPlayers;
+            int placing = 1;
+            foreach (int userId in Database.GetAdventurousPlayers())
+            {
+                string username = Database.GetUsername(userId);
+                int questPoints = Database.GetPlayerQuestPoints(userId);
+
+                message += Messages.FormatCityHallTopAdventurousPlayersEntry(placing, questPoints, username);
+                placing++;
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildMostSpoiledHorses()
+        {
+            string message = Messages.CityHallTop100SpoiledHorses;
+            foreach(HorseInstance horse in Database.GetMostSpoiledHorses())
+            {
+                message += Messages.FormatCityHallTopSpoiledHorseEntry(horse.Spoiled, Database.GetUsername(horse.Owner), horse.Name);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildRichestPlayers()
+        {
+            string message = Messages.CityHallTop25Players;
+            int placing = 1;
+            foreach(int userId in Database.GetRichestPlayers())
+            {
+                string username = Database.GetUsername(userId);
+                double totalMoney = Math.Floor(Database.GetPlayerMoney(userId) + Database.GetPlayerBankMoney(userId));
+
+                message += Messages.FormatCityHallTopPlayerEntry(placing, totalMoney, username);
+                placing++;
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildMostValuedRanches()
+        {
+            string message = Messages.CityHallTop25Ranches;
+            int total = 1;
+
+            foreach(Ranch ranch in Ranch.Ranches.OrderBy(o => o.InvestedMoney).Reverse().ToList())
+            {
+                if (ranch.OwnerId == -1)
+                    continue;
+
+
+                message += Messages.FormatCityHallTopRanchEntry(total, Database.GetUsername(ranch.OwnerId), ranch.InvestedMoney, Messages.FormatMapLocation(ranch.X, ranch.Y));
+
+                if (total > 26)
+                    break;
+
+                total++;
+            }
+
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+
+        public static string BuildTopAutoSellHorses()
+        {
+            string message = Messages.CityHallCheapestAutoSells;
+            HorseInstance[] horses = Database.GetCheapestHorseAutoSell();
+            foreach(HorseInstance horse in horses)
+            {
+                message += Messages.FormatCityHallCheapAutoSellEntry(horse.AutoSell, Database.GetUsername(horse.Owner), horse.Name, horse.Color, horse.Breed.Name, horse.BasicStats.Experience);
+            }
+            message += Messages.CityHallMostExpAutoSells;
+            horses = Database.GetBiggestExpAutoSell();
+            foreach (HorseInstance horse in horses)
+            {
+                message += Messages.FormatCityHallBestExpAutoSellEntry(horse.BasicStats.Experience, Database.GetUsername(horse.Owner), horse.Name, horse.AutoSell, horse.Color, horse.Breed.Name);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildRanchEdit(Ranch ranch)
         {
             return Messages.FormatRanchEditDescriptonMeta(ranch.Title, ranch.Description) + Messages.BackToMap + Messages.MetaTerminator;
@@ -1512,6 +1643,45 @@ namespace HISP.Game
 
             return message;
         }
+        public static string BuildMailLetter(Mailbox.Mail mailMessage, int itemRandomId)
+        {
+            DateTime time = Converters.UnixTimeStampToDateTime(mailMessage.Timestamp);
+            string amOrPm = "am";
+            string[] months = new string[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+            string minutes = time.Minute.ToString();
+            if (minutes.Length <= 1)
+                minutes = "0" + minutes;
+            int hours = time.Hour;
+            if (hours == 0)
+            {
+                amOrPm = "am";
+                hours = 12;
+            }
+            if (hours > 12)
+            {
+                hours -= 12;
+                amOrPm = "pm";
+            }
+
+           
+            string date = months[time.Month-1] + " " + time.Day + ", " + time.Year + " " + hours + ":" + minutes + amOrPm;
+            string message = Messages.FormatMailReadMessage(Database.GetUsername(mailMessage.FromUser), date, mailMessage.Subject, mailMessage.Message, itemRandomId);
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildMailList(User user, InventoryItem mailMessageForPlayer)
+        {
+            string message = Messages.MailSelectFromFollowing;
+            foreach(ItemInstance inst in mailMessageForPlayer.ItemInstances)
+            {
+                Mailbox.Mail mail = user.MailBox.GetMessageByRandomId(inst.Data);
+                message += Messages.FormatMailEntry(mail.Subject, Database.GetUsername(mail.FromUser), inst.RandomId);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildInventoryInfo(PlayerInventory inv)
         {
             string message = "";
@@ -1541,7 +1711,7 @@ namespace HISP.Game
                     message += Messages.FormatWearButton(randomId);
 
                 if (itemInfo.Type == "TEXT")
-                    message += Messages.FormatItemReadButton(randomId);
+                    message += Messages.FormatItemReadButton(item.ItemId);
 
                 if (itemInfo.Type == "PLAYERFOOD")
                     message += Messages.FormatItemConsumeButton(randomId);
@@ -2022,6 +2192,32 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        public static string BuildComposeMailMenu()
+        {
+            string message = Messages.CityHallMailSendMeta;
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        private static string buildTownHall(User user)
+        {
+            if(user.MailBox.UnreadMailCount > 0)
+            {
+                
+                byte[] RipOffAOLSound = PacketBuilder.CreatePlaysoundPacket(Messages.MailSe);
+                user.LoggedinClient.SendPacket(RipOffAOLSound);
+
+                byte[] mailReceivedText = PacketBuilder.CreateChat(Messages.MailReceivedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                user.LoggedinClient.SendPacket(mailReceivedText);
+
+                user.MailBox.ReadAllMail();
+            }
+
+            string message = Messages.CityHallMenu;
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)
         {
             string message = "";
@@ -2079,6 +2275,10 @@ namespace HISP.Game
                     user.LastShoppedAt = shop;
                     message += buildShopInfo(shop, user.Inventory);
 
+                }
+                if(TileCode == "TOWNHALL")
+                {
+                    message += buildTownHall(user);
                 }
                 if (TileCode == "VET")
                 {

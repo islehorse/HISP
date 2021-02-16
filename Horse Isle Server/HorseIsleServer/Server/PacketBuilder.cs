@@ -153,6 +153,10 @@ namespace HISP.Server
         public const byte ITEM_SELL = 0x3C;
         public const byte ITEM_WRAP = 0x17;
         public const byte ITEM_SELL_ALL = 0x3D;
+        public const byte ITEM_VIEW = 0x2A;
+        public const byte ITEM_LOOK = 0x4C;
+        public const byte ITEM_READ = 0x52;
+        public const byte ITEM_RIP = 0x2B;
         public const byte ITEM_OPEN = 0x16;
         public const byte ITEM_WEAR = 0x46;
         public const byte ITEM_REMOVE = 0x47;
