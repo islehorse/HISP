@@ -16,6 +16,10 @@ namespace HISP.Game
         // Click
         public static string PlayerHereFormat;
 
+        // Horse Games
+        public static string HorseGamesSelectHorse;
+        public static string HorseGamesHorseEntryFormat;
+
         // City Hall
         public static string CityHallMenu;
         public static string CityHallMailSendMeta;
@@ -792,6 +796,10 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatHorseGamesEntry(int placing, string horseName, string Swf)
+        {
+            return HorseGamesHorseEntryFormat.Replace("%PLACING%", placing.ToString()).Replace("%HORSENAME%", horseName).Replace("%SWF%", Swf);
+        }
         public static string FormatCityHallCantFindPlayerMessage(string playerName)
         {
             return CityHallCantFindPlayerMessageFormat.Replace("%PLAYERNAME%", playerName); 

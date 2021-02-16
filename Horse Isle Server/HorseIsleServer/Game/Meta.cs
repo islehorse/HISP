@@ -1222,6 +1222,18 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        private static string buildHorseGame(User user, string swf)
+        {
+            string message = Messages.HorseGamesSelectHorse;
+            int placing = 1;
+            foreach(HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).ToArray())
+            {
+                message += Messages.FormatHorseGamesEntry(placing, horse.Name, swf + ".swf?ID=" + horse.RandomId + "&SP=" + horse.AdvancedStats.Speed + "&ST=" + horse.AdvancedStats.Strength + "&CO=" + horse.AdvancedStats.Conformation + "&AG=" + horse.AdvancedStats.Agility + "&EN=" + horse.AdvancedStats.Endurance + "&IN=" + horse.AdvancedStats.Inteligence + "&PE=" + horse.AdvancedStats.Personality + "&");
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildMostValuedRanches()
         {
             string message = Messages.CityHallTop25Ranches;
@@ -2327,6 +2339,10 @@ namespace HISP.Game
                 if (TileCode == "POND")
                 {
                     message += buildPond(user);
+                }
+                if(TileCode == "HORSES")
+                {
+                    message += buildHorseGame(user, TileArg);
                 }
                 if (TileCode == "WORKSHOP")
                 {
