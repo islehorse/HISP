@@ -5860,7 +5860,7 @@ namespace HISP.Server
             }
             if (horseMountInst.Breed.Id == 5) // Appaloosa
             {
-                if (horseMountInst.Color == "brown")
+                if (horseMountInst.Color == "cremello")
                     incBy = 12;
             }
             if (horseMountInst.Breed.Type == "camel")
