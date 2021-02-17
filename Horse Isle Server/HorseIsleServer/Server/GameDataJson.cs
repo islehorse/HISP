@@ -723,6 +723,19 @@ namespace HISP.Server
                 Trainer.Trainers.Add(trainer);
                 Logger.DebugPrint("Registered Training Pen: " + trainer.Id + " for " + trainer.ImprovesStat);
             }
+            int totalArenas = gameData.arena.Count;
+            for(int i = 0; i < totalArenas; i++)
+            {
+                int arenaId = gameData.arena[i].arena_id;
+                string arenaType = gameData.arena[i].arena_type;
+                int arenaEntryCost = gameData.arena[i].entry_cost;
+                int raceEvery = gameData.arena[i].race_every;
+                int slots = gameData.arena[i].slots;
+                int timeout = gameData.arena[i].timeout;
+
+                Arena arena = new Arena(arenaId, arenaType, arenaEntryCost, raceEvery, slots, timeout);
+                Logger.DebugPrint("Registered Arena: " + arena.Id.ToString()+" as " + arena.Type);
+            }
 
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
@@ -745,6 +758,50 @@ namespace HISP.Server
             Messages.ModIsleMessage = gameData.messages.commands.mod_isle.message;
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
+
+            // Hammock Text
+            Messages.HammockText = gameData.messages.meta.hammock;
+
+            // Competitions
+            Messages.ArenaResultsMessage = gameData.messages.meta.arena.results;
+            Messages.ArenaPlacingFormat = gameData.messages.meta.arena.placing;
+            Messages.ArenaAlreadyEntered = gameData.messages.meta.arena.already_entered;
+
+            Messages.ArenaFirstPlace = gameData.messages.meta.arena.first_place;
+            Messages.ArenaSecondPlace = gameData.messages.meta.arena.second_place;
+            Messages.ArenaThirdPlace = gameData.messages.meta.arena.thirst_place;
+            Messages.ArenaFourthPlace = gameData.messages.meta.arena.fourth_place;
+            Messages.ArenaFifthPlace = gameData.messages.meta.arena.fifth_place;
+            Messages.ArenaSixthPlace = gameData.messages.meta.arena.sixth_place;
+
+            Messages.ArenaEnteredInto = gameData.messages.meta.arena.enter_into;
+            Messages.ArenaCantAfford = gameData.messages.meta.arena.cant_afford;
+
+            Messages.ArenaYourScoreFormat = gameData.messages.meta.arena.your_score;
+
+            Messages.ArenaJumpingStartup = gameData.messages.meta.arena.jumping_start_up;
+            Messages.ArenaDraftStartup = gameData.messages.meta.arena.draft_start_up;
+            Messages.ArenaRacingStartup = gameData.messages.meta.arena.racing_start_up;
+            Messages.ArenaConformationStartup = gameData.messages.meta.arena.conformation_start_up;
+
+            Messages.ArenaYouWinFormat = gameData.messages.meta.arena.winner;
+            Messages.ArenaOnlyWinnerWins = gameData.messages.meta.arena.only_winner_wins;
+
+            Messages.ArenaTooHungry = gameData.messages.meta.arena.too_hungry;
+            Messages.ArenaTooThirsty = gameData.messages.meta.arena.too_thisty;
+            Messages.ArenaNeedsFarrier = gameData.messages.meta.arena.farrier;
+            Messages.ArenaTooTired = gameData.messages.meta.arena.too_tired;
+            Messages.ArenaNeedsVet = gameData.messages.meta.arena.needs_vet;
+
+            Messages.ArenaEventNameFormat = gameData.messages.meta.arena.event_name;
+            Messages.ArenaCurrentlyTakingEntriesFormat = gameData.messages.meta.arena.currently_taking_entries;
+            Messages.ArenaCompetitionInProgress = gameData.messages.meta.arena.competition_in_progress;
+            Messages.ArenaYouHaveHorseEntered = gameData.messages.meta.arena.horse_entered;
+            Messages.ArenaCompetitionFull = gameData.messages.meta.arena.competiton_full;
+
+            Messages.ArenaEnterHorseFormat = gameData.messages.meta.arena.enter_horse;
+            Messages.ArenaCurrentCompetitors = gameData.messages.meta.arena.current_competitors;
+            Messages.ArenaCompetingHorseFormat = gameData.messages.meta.arena.competing_horses;
 
             // Horse Games
             Messages.HorseGamesSelectHorse = gameData.messages.meta.horse_games.select_a_horse;

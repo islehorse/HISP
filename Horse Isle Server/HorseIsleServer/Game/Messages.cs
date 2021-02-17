@@ -16,9 +16,56 @@ namespace HISP.Game
         // Click
         public static string PlayerHereFormat;
 
+        // Hammock
+        public static string HammockText;
+
         // Horse Games
         public static string HorseGamesSelectHorse;
         public static string HorseGamesHorseEntryFormat;
+
+        // Competitions
+        public static string ArenaResultsMessage;
+        public static string ArenaPlacingFormat;
+
+        public static string ArenaFirstPlace;
+        public static string ArenaSecondPlace;
+        public static string ArenaThirdPlace;
+        public static string ArenaFourthPlace;
+        public static string ArenaFifthPlace;
+        public static string ArenaSixthPlace;
+
+        public static string ArenaEnteredInto;
+
+        public static string ArenaAlreadyEntered;
+        public static string ArenaCantAfford;
+
+        public static string ArenaYourScoreFormat;
+
+        public static string ArenaJumpingStartup;
+        public static string ArenaDraftStartup;
+        public static string ArenaRacingStartup;
+        public static string ArenaConformationStartup;
+
+        public static string ArenaYouWinFormat;
+        public static string ArenaOnlyWinnerWins;
+
+        public static string ArenaTooHungry;
+        public static string ArenaTooThirsty;
+        public static string ArenaNeedsFarrier;
+        public static string ArenaTooTired;
+        public static string ArenaNeedsVet;
+
+        public static string ArenaEventNameFormat;
+
+        public static string ArenaCurrentlyTakingEntriesFormat;
+        public static string ArenaCompetitionInProgress;
+        public static string ArenaYouHaveHorseEntered;
+        public static string ArenaCompetitionFull;
+
+        public static string ArenaEnterHorseFormat;
+        public static string ArenaCurrentCompetitors;
+        public static string ArenaCompetingHorseFormat;
+
 
         // City Hall
         public static string CityHallMenu;
@@ -795,6 +842,38 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+        public static string FormatArenaCompetingHorseEntry(string userName, string horseName, int horseRandomId)
+        {
+            return ArenaCompetingHorseFormat.Replace("%USERNAME%", userName).Replace("%HORSENAME%", horseName).Replace("%HORSERANDOMID%", horseRandomId.ToString());
+        }
+        public static string FormatArenaEnterHorseButton(string horseName, int entryCost, int horseRandomId)
+        {
+            return ArenaEnterHorseFormat.Replace("%HORSENAME%", horseName).Replace("%ENTRYCOST%", entryCost.ToString("N0", CultureInfo.InvariantCulture)).Replace("%HORSERANDOMID%", horseRandomId.ToString());
+        }
+        public static string FormatArenaCurrentlyTakingEntries(int hour, int minute, string amOrPm, int timeUntil)
+        {
+            return ArenaCurrentlyTakingEntriesFormat.Replace("%HOUR%", hour.ToString()).Replace("%MINUTE%", minute.ToString("00")).Replace("%AMORPM%", amOrPm).Replace("%TIMEUNTIL%", timeUntil.ToString());
+        }
+        public static string FormatArenaEventName(string eventName)
+        {
+            return ArenaEventNameFormat.Replace("%EVENTNAME%", eventName);
+        }
+        public static string FormatArenaOnlyWinnerWinsMessage(int experience)
+        {
+            return ArenaOnlyWinnerWins.Replace("%EXP%", experience.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatArenaYouWinMessage(int prizeMoney, int experience)
+        {
+            return ArenaYouWinFormat.Replace("%PRIZE%", prizeMoney.ToString("N0", CultureInfo.InvariantCulture)).Replace("%EXP%", experience.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatArenaYourScore(int score)
+        {
+            return ArenaYourScoreFormat.Replace("%SCORE%", score.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatArenaPlacing(string place, string playerName, int score)
+        {
+            return ArenaPlacingFormat.Replace("%PLACE%", place).Replace("%USERNAME%", playerName).Replace("%SCORE%", score.ToString("N0", CultureInfo.InvariantCulture));
+        }
 
         public static string FormatHorseGamesEntry(int placing, string horseName, string Swf)
         {

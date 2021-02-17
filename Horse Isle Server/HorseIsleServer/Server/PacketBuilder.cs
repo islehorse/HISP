@@ -37,6 +37,7 @@ namespace HISP.Server
         public const byte PACKET_KEEP_ALIVE = 0x7C;
         public const byte PACKET_DYNAMIC_BUTTON = 0x45;
         public const byte PACKET_DYNAMIC_INPUT = 0x46;
+        public const byte PACKET_ARENA_SCORE = 0x2D;
         public const byte PACKET_PLAYER = 0x18;
         public const byte PACKET_INVENTORY = 0x17;
         public const byte PACKET_TRANSPORT = 0x29;
@@ -62,6 +63,7 @@ namespace HISP.Server
         public const byte HORSE_LIST = 0x0A;
         public const byte HORSE_LOOK = 0x14;
         public const byte HORSE_FEED = 0x15;
+        public const byte HORSE_ENTER_ARENA = 0x2D;
         public const byte HORSE_PET = 0x18;
         public const byte HORSE_PROFILE = 0x2C;
         public const byte HORSE_PROFILE_EDIT = 0x14;

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HISP.Player;
 using HISP.Server;
 
@@ -155,9 +156,16 @@ namespace HISP.Game
         }
 
 
-        public struct Time
+        public class Time
         {
-            public int Minutes;
+            public double PreciseMinutes;
+            public int Minutes
+            {
+                get
+                {
+                    return Convert.ToInt32(Math.Floor(PreciseMinutes));
+                }
+            }
             public int Days;
             public int Years;
         }
@@ -189,42 +197,18 @@ namespace HISP.Game
 
         public static void TickWorldClock() 
         {
-            ServerTime.Minutes += 1;
-
-            int hours = ServerTime.Minutes / 60;
-
-            // Periodically write time to database:
-            if (ServerTime.Minutes % 10 == 0) // every 10-in-game minutes)
-                Database.SetServerTime(ServerTime.Minutes, ServerTime.Days, ServerTime.Years);
-            
-            // Ranch Windmill Payments
-            if(ServerTime.Minutes % 720 == 0) // every 12 hours
-            {
-                Logger.DebugPrint("Paying windmill owners . . . ");
-                foreach (Ranch ranch in Ranch.Ranches)
-                {
-                    int ranchOwner = ranch.OwnerId;
-                    if (ranchOwner != -1)
-                    {
-                        int moneyToAdd = 5000 * ranch.GetBuildingCount(8); // Windmill
-                        if (GameServer.IsUserOnline(ranchOwner))
-                            GameServer.GetUserById(ranchOwner).Money += moneyToAdd;
-                        else
-                            Database.SetPlayerMoney(Database.GetPlayerMoney(ranchOwner) + moneyToAdd, ranchOwner);
-                    }
-                }
-            }
+            ServerTime.PreciseMinutes += 0.1;
 
 
-            if (hours == 24) // 1 day
+            if (ServerTime.Minutes > 1440) // 1 day
             {
                 ServerTime.Days += 1;
-                ServerTime.Minutes = 0;
+                ServerTime.PreciseMinutes = 0.0;
                 
                 Database.DoIntrestPayments(ConfigReader.IntrestRate);
             }
 
-            if (ServerTime.Days == 366)  // 1 year!
+            if (ServerTime.Days > 365)  // 1 year!
             {
                 ServerTime.Days = 0;
                 ServerTime.Years += 1;
@@ -234,7 +218,7 @@ namespace HISP.Game
         public static void ReadWorldData()
         {
             Logger.DebugPrint("Reading time from database...");
-            ServerTime.Minutes = Database.GetServerTime();
+            ServerTime.PreciseMinutes = Database.GetServerTime();
             ServerTime.Days = Database.GetServerDay();
             ServerTime.Years = Database.GetServerYear();
             Logger.InfoPrint("It is " + ServerTime.Minutes / 60 + ":" + ServerTime.Minutes % 60 + " on Day " + ServerTime.Days + " in Year " + ServerTime.Years + "!!!");
