@@ -5,9 +5,7 @@ using HISP.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace HISP.Game
 {
@@ -90,48 +88,47 @@ namespace HISP.Game
                     return "jumpingarena2.swf?BONUS=" + bonus + "&STRENGTH=" + strengthCalculator.Total + "&SPEED=" + speedCalculator.Total + "&ENDURANCE=" + enduranceCalculator.Total + "&JUNK=";
                 case "CONFORMATION":
                     int baseScore = conformationCalculator.Total + ((entry.EnteredHorse.BasicStats.Groom > 750) ? 1000 : 500);
-                    int pos = GetUserPos(entry.EnteredUser);
                     string swf = "dressagearena.swf?BASESCORE=" + baseScore;
                     int i = 1;
                     foreach (ArenaEntry ent in Entries.ToArray())
+                    {
                         swf += "&HN" + i.ToString() + "=" + ent.EnteredUser.Username;
-                    swf += "&POS="+pos+"&JUNK=";
+                        if (ent.EnteredUser.Id == entry.EnteredUser.Id)
+                            swf += "&POS=" + i.ToString();
+                        i++;
+                    }
+                    swf += "&JUNK=";
                     return swf;
                 case "DRAFT":
                     int draftAbility = Convert.ToInt32(Math.Round((((double)entry.EnteredHorse.BasicStats.Health * 2.0 + (double)entry.EnteredHorse.BasicStats.Shoes * 2.0) + (double)entry.EnteredHorse.BasicStats.Hunger + (double)entry.EnteredHorse.BasicStats.Thirst) / 6.0 + (double)strengthCalculator.Total + ((double)enduranceCalculator.Total / 2.0)));
-                    pos = GetUserPos(entry.EnteredUser);
                     swf = "draftarena.swf?DRAFTABILITY=" + draftAbility;
                     i = 1;
                     foreach (ArenaEntry ent in Entries.ToArray())
+                    {
                         swf += "&HN" + i.ToString() + "=" + ent.EnteredUser.Username;
-                    swf += "&POS="+pos+"&J=";
+                        if (ent.EnteredUser.Id == entry.EnteredUser.Id)
+                            swf += "&POS=" + i.ToString();
+                        i++;
+                    }
+                    swf += "&J=";
                     return swf;
                 case "RACING":
                     int baseSpeed = Convert.ToInt32(Math.Round((((double)entry.EnteredHorse.BasicStats.Health * 2.0 + (double)entry.EnteredHorse.BasicStats.Shoes * 2.0) + (double)entry.EnteredHorse.BasicStats.Hunger + (double)entry.EnteredHorse.BasicStats.Thirst) / 6.0 + (double)speedCalculator.Total));
-                    pos = GetUserPos(entry.EnteredUser);
                     swf = "racingarena.swf?BASESPEED=" + baseSpeed + "&ENDURANCE=" + enduranceCalculator.Total;
                     i = 1;
                     foreach (ArenaEntry ent in Entries.ToArray())
+                    {
                         swf += "&HN" + i.ToString() + "=" + ent.EnteredUser.Username;
-                    swf += "&POS=" + pos + "&JUNK=";
+                        if (ent.EnteredUser.Id == entry.EnteredUser.Id)
+                            swf += "&POS=" + i.ToString();
+                        i++;
+                    }
+                    swf += "&JUNK=";
                     return swf;
                 default:
                     return "test.swf";
             }
 
-        }
-        public int GetUserPos(User user)
-        {
-            int pos = 0;
-            foreach (ArenaEntry entry in Entries.ToArray())
-            {
-                pos++;
-                if (entry.EnteredUser.Id != user.Id)
-                    break;
-            }
-
-        
-            return pos;
         }
         public void Start()
         {
@@ -183,6 +180,7 @@ namespace HISP.Game
                 }
                 byte[] startingUpEventPacket = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(swf, PacketBuilder.PACKET_SWF_CUTSCENE);
+                Logger.DebugPrint(entry.EnteredUser.Username + " Loading swf: " + swf);
                 entry.EnteredUser.LoggedinClient.SendPacket(swfModulePacket);
                 entry.EnteredUser.LoggedinClient.SendPacket(startingUpEventPacket);
             }

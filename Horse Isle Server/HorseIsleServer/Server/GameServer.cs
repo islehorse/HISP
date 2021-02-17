@@ -944,70 +944,72 @@ namespace HISP.Server
                     if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
                         HorseInstance horseInstance = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
-                        World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
-                        if (tile.Code.StartsWith("ARENA-"))
+                        if(World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
                         {
-                            string[] arenaInfo = tile.Code.Split('-');
-                            int arenaId = int.Parse(arenaInfo[1]);
-                            Arena arena = Arena.GetAreaById(arenaId);
-                            if(!Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
+                            World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            if (tile.Code.StartsWith("ARENA-"))
                             {
-                                if(horseInstance.BasicStats.Thirst <= 300)
+                                string[] arenaInfo = tile.Code.Split('-');
+                                int arenaId = int.Parse(arenaInfo[1]);
+                                Arena arena = Arena.GetAreaById(arenaId);
+                                if (!Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
                                 {
-                                    byte[] tooThirsty = PacketBuilder.CreateChat(Messages.ArenaTooThirsty, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(tooThirsty);
-                                    break;
-                                }
-                                else if (horseInstance.BasicStats.Hunger <= 300)
-                                {
-                                    byte[] tooHungry = PacketBuilder.CreateChat(Messages.ArenaTooHungry, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(tooHungry);
-                                    break;
-                                }
-                                else if (horseInstance.BasicStats.Shoes <= 300)
-                                {
-                                    byte[] needsFarrier = PacketBuilder.CreateChat(Messages.ArenaNeedsFarrier, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(needsFarrier);
-                                    break;
-                                }
-                                else if (horseInstance.BasicStats.Tiredness <= 300)
-                                {
-                                    byte[] tooTired = PacketBuilder.CreateChat(Messages.ArenaTooTired, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(tooTired);
-                                    break;
-                                }
-                                else if (horseInstance.BasicStats.Health <= 300)
-                                {
-                                    byte[] needsVet = PacketBuilder.CreateChat(Messages.ArenaNeedsVet, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(needsVet);
-                                    break;
-                                }
+                                    if (horseInstance.BasicStats.Thirst <= 300)
+                                    {
+                                        byte[] tooThirsty = PacketBuilder.CreateChat(Messages.ArenaTooThirsty, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(tooThirsty);
+                                        break;
+                                    }
+                                    else if (horseInstance.BasicStats.Hunger <= 300)
+                                    {
+                                        byte[] tooHungry = PacketBuilder.CreateChat(Messages.ArenaTooHungry, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(tooHungry);
+                                        break;
+                                    }
+                                    else if (horseInstance.BasicStats.Shoes <= 300)
+                                    {
+                                        byte[] needsFarrier = PacketBuilder.CreateChat(Messages.ArenaNeedsFarrier, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(needsFarrier);
+                                        break;
+                                    }
+                                    else if (horseInstance.BasicStats.Tiredness <= 300)
+                                    {
+                                        byte[] tooTired = PacketBuilder.CreateChat(Messages.ArenaTooTired, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(tooTired);
+                                        break;
+                                    }
+                                    else if (horseInstance.BasicStats.Health <= 300)
+                                    {
+                                        byte[] needsVet = PacketBuilder.CreateChat(Messages.ArenaNeedsVet, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(needsVet);
+                                        break;
+                                    }
 
 
 
-                                if (sender.LoggedinUser.Money >= arena.EntryCost)
-                                {
-                                    arena.AddEntry(sender.LoggedinUser, horseInstance);
-                                    sender.LoggedinUser.Money -= arena.EntryCost;
+                                    if (sender.LoggedinUser.Money >= arena.EntryCost)
+                                    {
+                                        arena.AddEntry(sender.LoggedinUser, horseInstance);
+                                        sender.LoggedinUser.Money -= arena.EntryCost;
 
-                                    byte[] enteredIntoCompetition = PacketBuilder.CreateChat(Messages.ArenaEnteredInto, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(enteredIntoCompetition);
-                                    UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
-                                    break;
+                                        byte[] enteredIntoCompetition = PacketBuilder.CreateChat(Messages.ArenaEnteredInto, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(enteredIntoCompetition);
+                                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        byte[] cantAffordEntryFee = PacketBuilder.CreateChat(Messages.ArenaCantAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(cantAffordEntryFee);
+                                        break;
+                                    }
                                 }
                                 else
                                 {
-                                    byte[] cantAffordEntryFee = PacketBuilder.CreateChat(Messages.ArenaCantAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(cantAffordEntryFee);
-                                    break;
+                                    byte[] allreadyEntered = PacketBuilder.CreateChat(Messages.ArenaAlreadyEntered, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(allreadyEntered);
                                 }
                             }
-                            else
-                            {
-                                byte[] allreadyEntered = PacketBuilder.CreateChat(Messages.ArenaAlreadyEntered, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                sender.SendPacket(allreadyEntered);
-                            }
-
                         }
                     }
                     else
@@ -2486,6 +2488,9 @@ namespace HISP.Server
 
             if(Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
             {
+                byte[] waitingOnResults = PacketBuilder.CreateChat(Messages.FormatArenaYourScore(score), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(waitingOnResults);
+
                 Arena enteredArena = Arena.GetArenaUserEnteredIn(sender.LoggedinUser);
                 enteredArena.SubmitScore(sender.LoggedinUser, score);
             }
@@ -2888,6 +2893,21 @@ namespace HISP.Server
                         break;
                     }
 
+                    break;
+                case PacketBuilder.SWFMODULE_ARENA:
+                    if (Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
+                    { 
+                        Arena arena = Arena.GetArenaUserEnteredIn(sender.LoggedinUser);
+                        byte[] response = PacketBuilder.CreateForwardedSwfRequest(packet);
+                        foreach (Arena.ArenaEntry entry in arena.Entries.ToArray())
+                        {
+                            if (entry.EnteredUser.Id == sender.LoggedinUser.Id)
+                                continue;
+                            if(entry.EnteredUser.LoggedinClient.LoggedIn)
+                            entry.EnteredUser.LoggedinClient.SendPacket(response);
+                        }
+                        
+                    }
                     break;
                 default:
                     Logger.DebugPrint("Unknown moduleid : " + module + " packet dump: " + BitConverter.ToString(packet).Replace("-"," "));

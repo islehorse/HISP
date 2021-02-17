@@ -89,6 +89,7 @@ namespace HISP.Server
         public const byte HORSE_ESCAPE = 0x1E;
         public const byte HORSE_CAUGHT = 0x1D;
 
+        public const byte SWFMODULE_ARENA = 0x52;
         public const byte SWFMODULE_BRICKPOET = 0x5A;
         public const byte SWFMODULE_DRAWINGROOM = 0x5B;
 
@@ -184,7 +185,17 @@ namespace HISP.Server
         public const byte DIRECTION_TELEPORT = 4;
         public const byte DIRECTION_NONE = 10;
 
-
+        public static byte[] CreateForwardedSwfRequest(byte[] request)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PacketBuilder.PACKET_SWFMODULE);
+            ms.Write(request, 0x2, request.Length - 0x4);
+            ms.WriteByte(PacketBuilder.PACKET_TERMINATOR);
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] response = ms.ToArray();
+            ms.Dispose();
+            return response;
+        }
         public static byte[] CreateBirdMap(int playerX, int playerY)
         {
             MemoryStream ms = new MemoryStream();
@@ -899,7 +910,6 @@ namespace HISP.Server
             ms.Seek(0x00, SeekOrigin.Begin);
             byte[] Packet = ms.ToArray();
             ms.Dispose();
-            Logger.DebugPrint("Sending load "+(char)type + swf + " packet");
             return Packet;
         }
         public static byte[] CreateAnnouncement(string announcement)
