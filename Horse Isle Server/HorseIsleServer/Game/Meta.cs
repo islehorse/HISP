@@ -1239,7 +1239,7 @@ namespace HISP.Game
             string message = Messages.CityHallTop25Ranches;
             int total = 1;
 
-            foreach(Ranch ranch in Ranch.Ranches.OrderBy(o => o.InvestedMoney).Reverse().ToList())
+            foreach(Ranch ranch in Ranch.Ranches.OrderByDescending(o => o.InvestedMoney).ToList())
             {
                 if (ranch.OwnerId == -1)
                     continue;
@@ -1264,13 +1264,15 @@ namespace HISP.Game
             HorseInstance[] horses = Database.GetCheapestHorseAutoSell();
             foreach(HorseInstance horse in horses)
             {
-                message += Messages.FormatCityHallCheapAutoSellEntry(horse.AutoSell, Database.GetUsername(horse.Owner), horse.Name, horse.Color, horse.Breed.Name, horse.BasicStats.Experience);
+                if(horse.AutoSell > 0)
+                    message += Messages.FormatCityHallCheapAutoSellEntry(horse.AutoSell, Database.GetUsername(horse.Owner), horse.Name, horse.Color, horse.Breed.Name, horse.BasicStats.Experience);
             }
             message += Messages.CityHallMostExpAutoSells;
             horses = Database.GetBiggestExpAutoSell();
             foreach (HorseInstance horse in horses)
             {
-                message += Messages.FormatCityHallBestExpAutoSellEntry(horse.BasicStats.Experience, Database.GetUsername(horse.Owner), horse.Name, horse.AutoSell, horse.Color, horse.Breed.Name);
+                if(horse.AutoSell > 0)
+                    message += Messages.FormatCityHallBestExpAutoSellEntry(horse.BasicStats.Experience, Database.GetUsername(horse.Owner), horse.Name, horse.AutoSell, horse.Color, horse.Breed.Name);
             }
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
@@ -2230,6 +2232,62 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        private static string buildArena(User user, Arena arena)
+        {
+            string message = Messages.FormatArenaEventName(arena.Type);
+            if(arena.Mode == "TAKINGENTRIES")
+            {
+                int minutes = World.ServerTime.Minutes % 60;
+
+                int lastMinutes = minutes - (minutes % arena.RaceEvery);
+                int lastHours = (lastMinutes / 60);
+
+                string amOrPm = "am";
+                if (lastHours == 0)
+                {
+                    amOrPm = "am";
+                    lastHours = 12;
+                }
+                if (lastHours > 12)
+                {
+                    lastHours -= 12;
+                    amOrPm = "pm";
+                }
+
+                message += Messages.FormatArenaCurrentlyTakingEntries(lastHours, lastMinutes, amOrPm, arena.RaceEvery - minutes);
+                if (arena.Entries.Count > arena.Slots)
+                {
+                    message += Messages.ArenaCompetitionFull;
+                }
+                else if (!arena.UserHasHorseEntered(user))
+                {
+                    
+                    foreach(HorseInstance horseInstance in user.HorseInventory.HorseList)
+                    {
+                        if(horseInstance.Equipment.Saddle != null && horseInstance.Equipment.SaddlePad != null && horseInstance.Equipment.Bridle != null)
+                            message += Messages.FormatArenaEnterHorseButton(horseInstance.Name, arena.EntryCost, horseInstance.RandomId);
+                    }
+                }
+                else
+                {
+                    message += Messages.ArenaYouHaveHorseEntered;
+                }
+                
+            }
+            else if(arena.Mode == "COMPETING")
+            {
+                message += Messages.ArenaCompetitionInProgress;
+            }
+
+            message += Messages.ArenaCurrentCompetitors;
+            foreach(Arena.ArenaEntry entries in arena.Entries)
+            {
+                message += Messages.FormatArenaCompetingHorseEntry(entries.EnteredUser.Username, entries.EnteredHorse.Name, entries.EnteredHorse.RandomId);
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildSpecialTileInfo(User user, World.SpecialTile specialTile)
         {
             string message = "";
@@ -2327,6 +2385,10 @@ namespace HISP.Game
                 if (TileCode == "RIDDLER")
                 {
                     message += buildRiddlerRiddle(user);
+                }
+                if(TileCode == "ARENA")
+                {
+                    message += buildArena(user, Arena.GetAreaById(int.Parse(TileArg)));
                 }
                 if(TileCode == "TRAINER")
                 {

@@ -3,6 +3,7 @@ using HISP.Game.Items;
 
 using System.Collections.Generic;
 using System.Globalization;
+using HISP.Player;
 
 namespace HISP.Game.Horse
 {
@@ -20,14 +21,15 @@ namespace HISP.Game.Horse
         }
         public class StatCalculator
         {
-            public StatCalculator(HorseInstance horse, StatType type)
+            public StatCalculator(HorseInstance horse, StatType type, User user=null)
             {
                 baseHorse = horse;
                 horseStat = type;
+                baseUser = user;
             }
             private StatType horseStat;
             private HorseInstance baseHorse;
-
+            private User baseUser;
             public int BaseValue
             {
                 get
@@ -119,6 +121,31 @@ namespace HISP.Game.Horse
                     }
                 }
             }
+            public int CompetitionGearOffset
+            { 
+                get
+                {
+                    if(baseUser != null)
+                    {
+                        int offsetBy = 0;
+                        if(baseUser.EquipedCompetitionGear.Head != null)
+                            offsetBy += getOffsetFrom(baseUser.EquipedCompetitionGear.Head);
+                        if (baseUser.EquipedCompetitionGear.Body != null)
+                            offsetBy += getOffsetFrom(baseUser.EquipedCompetitionGear.Body);
+                        if (baseUser.EquipedCompetitionGear.Legs != null)
+                            offsetBy += getOffsetFrom(baseUser.EquipedCompetitionGear.Legs);
+                        if (baseUser.EquipedCompetitionGear.Feet != null)
+                            offsetBy += getOffsetFrom(baseUser.EquipedCompetitionGear.Feet);
+                        return offsetBy;
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+
+                }
+            }
+
             public int CompanionOffset
             {
                 get
@@ -149,7 +176,7 @@ namespace HISP.Game.Horse
             {
                 get
                 {
-                    return BreedValue + CompanionOffset + TackOffset;
+                    return BreedValue + CompanionOffset + TackOffset + CompetitionGearOffset;
                 }
             }
 
@@ -414,10 +441,13 @@ namespace HISP.Game.Horse
                 }
                 set
                 {
+                    // Lol turns out pinto forgot to do this and u can have negative mood :D
+                    /*
                     if (value > 1000)
                         value = 1000;
                     if (value < 0)
                         value = 0;
+                    */
                     mood = value;
                     Database.SetHorseMood(baseHorse.RandomId, value);
                 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net.Sockets;
-using System.Net;
 using System.Text;
 using System.Threading;
 using HISP.Player;
@@ -20,7 +19,6 @@ namespace HISP.Server
 
         private Thread recvPackets;
         
-        private Timer updateTimer;
         private Timer inactivityTimer;
 
         private Timer warnTimer;
@@ -29,7 +27,6 @@ namespace HISP.Server
 
         private bool isDisconnecting = false;
         private int keepAliveInterval = 60 * 1000;
-        private int updateInterval = 60 * 1000;
 
         private int totalMinutesElapsed = 0;
         private int oneMinute = 60 * 1000;
@@ -57,24 +54,19 @@ namespace HISP.Server
 
                 }
 
-                // unsure of actural timings, would be more or less impossible to know
-                // without the original source code :(
-                // From testing hunger seemed to go down fastest, then thirst, and finally tiredness.
-
-
                 foreach(HorseInstance horse in LoggedinUser.HorseInventory.HorseList)
                 {
                     if (totalMinutesElapsed % 2 == 0)
                     {
                         horse.BasicStats.Thirst--;
                         horse.BasicStats.Hunger--;
+
+                        if (horse.BasicStats.Thirst <= 0)
+                            horse.BasicStats.Health -= 5;
                     }
-                    if (totalMinutesElapsed % 2 == 0 && (horse.BasicStats.Thirst <= 100 || horse.BasicStats.Thirst <= 100 || horse.BasicStats.Tiredness <= 100)) 
-                        horse.BasicStats.Health--;
 
                     if (totalMinutesElapsed % 60 == 0)
                     {
-                        horse.BasicStats.Mood--;
                         horse.BasicStats.Shoes--;
                         horse.BasicStats.Tiredness--;
                     }
@@ -83,11 +75,12 @@ namespace HISP.Server
                 }
 
 
-                if (totalMinutesElapsed % 1 == 0)
+                if (totalMinutesElapsed % 2 == 0)
+                {
                     LoggedinUser.Thirst--;
-
-                if (totalMinutesElapsed % 5 == 0)
                     LoggedinUser.Hunger--;
+                }
+
 
                 if (totalMinutesElapsed % 10 == 0)
                     LoggedinUser.Tiredness--;
@@ -120,11 +113,7 @@ namespace HISP.Server
         {
             Kick(Messages.FormatIdleKickMessage());
         }
-        private void updateTimerTick(object state)
-        {
-            GameServer.UpdateWorld(this);
-            GameServer.UpdatePlayer(this);
-        }
+
         public void Login(int id)
         {
             // Check for duplicate
@@ -141,7 +130,6 @@ namespace HISP.Server
 
             Database.SetIpAddress(id, RemoteIp);
 
-            updateTimer = new Timer(new TimerCallback(updateTimerTick), null, updateInterval, updateInterval);
             inactivityTimer = new Timer(new TimerCallback(keepAliveTimerTick), null, keepAliveInterval, keepAliveInterval);
         }
         private bool receivePackets()
@@ -193,8 +181,6 @@ namespace HISP.Server
             
 
             // Stop Timers
-            if (updateTimer != null)
-                updateTimer.Dispose();
             if(inactivityTimer != null)
                 inactivityTimer.Dispose();
             if(warnTimer != null)
@@ -289,6 +275,9 @@ namespace HISP.Server
                         break;
                     case PacketBuilder.PACKET_ITEM_INTERACTION:
                         GameServer.OnItemInteraction(this,Packet);
+                        break;
+                    case PacketBuilder.PACKET_ARENA_SCORE:
+                        GameServer.OnArenaScored(this, Packet);
                         break;
                     case PacketBuilder.PACKET_QUIT:
                         GameServer.OnQuitPacket(this, Packet);

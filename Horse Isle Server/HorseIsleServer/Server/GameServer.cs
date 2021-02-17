@@ -40,17 +40,46 @@ namespace HISP.Server
         /*
          *  Private stuff 
          */
-        private static int gameTickSpeed = 4320; // Changing this to ANYTHING else will cause desync with the client.
+        private static int gameTickSpeed = 480; // Changing this to ANYTHING else will cause desync with the client.
         private static int totalMinutesElapsed = 0;
         private static int oneMinute = 1000 * 60;
         private static List<GameClient> connectedClients = new List<GameClient>();
         private static Timer gameTimer; // Controls in-game time.
         private static Timer minuteTimer; // ticks every real world minute.
+        private static int lastServerTime = 0;
         private static void onGameTick(object state)
         {
             World.TickWorldClock();
-            Database.DecHorseTrainTimeout();    
-            gameTimer.Change(gameTickSpeed, gameTickSpeed);
+            if(World.ServerTime.Minutes != lastServerTime)
+            {
+                Arena.StartArenas(World.ServerTime.Minutes);
+
+                Database.DecHorseTrainTimeout();
+
+                // write time to database:
+                Database.SetServerTime(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years);
+
+                // Ranch Windmill Payments
+                if (World.ServerTime.Minutes % 720 == 0) // every 12 hours
+                {
+                    Logger.DebugPrint("Paying windmill owners . . . ");
+                    foreach (Ranch ranch in Ranch.Ranches)
+                    {
+                        int ranchOwner = ranch.OwnerId;
+                        if (ranchOwner != -1)
+                        {
+                            int moneyToAdd = 5000 * ranch.GetBuildingCount(8); // Windmill
+                            if (GameServer.IsUserOnline(ranchOwner))
+                                GameServer.GetUserById(ranchOwner).Money += moneyToAdd;
+                            else
+                                Database.SetPlayerMoney(Database.GetPlayerMoney(ranchOwner) + moneyToAdd, ranchOwner);
+                        }
+                    }
+                }
+                gameTimer.Change(gameTickSpeed, gameTickSpeed);
+                lastServerTime = World.ServerTime.Minutes;
+            }
+
         }
         private static void onMinuteTick(object state)
         {
@@ -89,15 +118,20 @@ namespace HISP.Server
                         Update(client);
                     byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(client.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), client.LoggedinUser.MailBox.UnreadMailCount);
                     client.SendPacket(BaseStatsPacketData);
+
+                    UpdateWorld(client);
+                    UpdatePlayer(client);
                 }
   
 
             Database.IncPlayerTirednessForOfflineUsers();
+
             if(totalMinutesElapsed % 60 == 0)
             {
                 foreach (HorseInstance horse in Database.GetMostSpoiledHorses())
                 {
-                    horse.BasicStats.Tiredness = 1000;
+                    horse.BasicStats.Health = 1000;
+                    horse.BasicStats.Mood = 1000;
                     horse.BasicStats.Hunger = 1000;
                     horse.BasicStats.Thirst = 1000;
                 }
@@ -756,7 +790,7 @@ namespace HISP.Server
                                             break;
                                     }
                                     trainHorseInst.BasicStats.Experience += trainer.ExperienceGained;
-                                    trainHorseInst.TrainTimer = trainer.ImprovesAmount + trainer.ExperienceGained * 50;
+                                    trainHorseInst.TrainTimer = 1440;
 
                                     byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainedInStatFormat(trainHorseInst.Name, trainer.ImprovesStat), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(trainSuccessfulMessage);
@@ -893,6 +927,95 @@ namespace HISP.Server
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to feed a non existant item to a horse.");
                         break;
                     }
+                case PacketBuilder.HORSE_ENTER_ARENA:
+                    randomId = 0;
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    randomIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    try
+                    {
+                        randomId = int.Parse(randomIdStr);
+
+                    }
+                    catch (Exception)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid randomid to horse interaction packet ");
+                        break;
+                    }
+                    if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
+                    {
+                        HorseInstance horseInstance = sender.LoggedinUser.HorseInventory.GetHorseById(randomId);
+                        World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        if (tile.Code.StartsWith("ARENA-"))
+                        {
+                            string[] arenaInfo = tile.Code.Split('-');
+                            int arenaId = int.Parse(arenaInfo[1]);
+                            Arena arena = Arena.GetAreaById(arenaId);
+                            if(!Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
+                            {
+                                if(horseInstance.BasicStats.Thirst <= 300)
+                                {
+                                    byte[] tooThirsty = PacketBuilder.CreateChat(Messages.ArenaTooThirsty, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(tooThirsty);
+                                    break;
+                                }
+                                else if (horseInstance.BasicStats.Hunger <= 300)
+                                {
+                                    byte[] tooHungry = PacketBuilder.CreateChat(Messages.ArenaTooHungry, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(tooHungry);
+                                    break;
+                                }
+                                else if (horseInstance.BasicStats.Shoes <= 300)
+                                {
+                                    byte[] needsFarrier = PacketBuilder.CreateChat(Messages.ArenaNeedsFarrier, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(needsFarrier);
+                                    break;
+                                }
+                                else if (horseInstance.BasicStats.Tiredness <= 300)
+                                {
+                                    byte[] tooTired = PacketBuilder.CreateChat(Messages.ArenaTooTired, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(tooTired);
+                                    break;
+                                }
+                                else if (horseInstance.BasicStats.Health <= 300)
+                                {
+                                    byte[] needsVet = PacketBuilder.CreateChat(Messages.ArenaNeedsVet, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(needsVet);
+                                    break;
+                                }
+
+
+
+                                if (sender.LoggedinUser.Money >= arena.EntryCost)
+                                {
+                                    arena.AddEntry(sender.LoggedinUser, horseInstance);
+                                    sender.LoggedinUser.Money -= arena.EntryCost;
+
+                                    byte[] enteredIntoCompetition = PacketBuilder.CreateChat(Messages.ArenaEnteredInto, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(enteredIntoCompetition);
+                                    UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
+                                    break;
+                                }
+                                else
+                                {
+                                    byte[] cantAffordEntryFee = PacketBuilder.CreateChat(Messages.ArenaCantAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordEntryFee);
+                                    break;
+                                }
+                            }
+                            else
+                            {
+                                byte[] allreadyEntered = PacketBuilder.CreateChat(Messages.ArenaAlreadyEntered, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(allreadyEntered);
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to enter a non existant horse into a competition.");
+                        break;
+                    }
+                    break;
                 case PacketBuilder.HORSE_RELEASE:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
@@ -2336,6 +2459,43 @@ namespace HISP.Server
                     break;
             }
         }
+        public static void OnArenaScored(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
+                return;
+            }
+            if(packet.Length <= 3)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + "Sent invalid Arena Scored Packet.");
+                return;
+            }
+            string packetStr = Encoding.UTF8.GetString(packet);
+            string scoreStr = packetStr.Substring(1, packet.Length - 3);
+            int score = -1;
+            try
+            {
+                score = int.Parse(scoreStr);
+            }
+            catch(FormatException)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Scored NAN in an arena.");
+                return;
+            }
+
+            if(Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
+            {
+                Arena enteredArena = Arena.GetArenaUserEnteredIn(sender.LoggedinUser);
+                enteredArena.SubmitScore(sender.LoggedinUser, score);
+            }
+            else
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Scored in an arena while not in one");
+            }
+            return;
+
+        }
         public static void OnUserInfoRequest(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
@@ -2984,16 +3144,33 @@ namespace HISP.Server
                             sender.SendPacket(bestScoreBeaten);
                             sender.LoggedinUser.Money += 2500;
                         }
-                        else if (newHighscore && !time)
+                        else if (newHighscore)
                         {
-                            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatHighscoreBeatenMessage(value), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(chatPacket);
+                            if(time)
+                            {
+                                byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatTimeBeatenMessage(value), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(chatPacket);
+                            }
+                            else
+                            {
+                                byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatHighscoreBeatenMessage(value), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(chatPacket);
+                            }
+
                         }
-                        else
-                        {
-                            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatTimeBeatenMessage(value), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(chatPacket);
-                        }
+                        
+                        if(sender.LoggedinUser.Highscores.HighscoreList.Length >= 30)
+                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(12)); // Minigame Player
+
+                        if (sender.LoggedinUser.Highscores.HighscoreList.Length >= 60)
+                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(13)); // Minigame Master
+
+                        if (Database.GetPlayerTotalMinigamesPlayed(sender.LoggedinUser.Id) >= 1000)
+                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(14)); // Minigame Nut
+
+                        if (Database.GetPlayerTotalMinigamesPlayed(sender.LoggedinUser.Id) >= 10000)
+                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(15)); // Minigame Crazy
+
                     }
                     else
                     {
@@ -5377,12 +5554,19 @@ namespace HISP.Server
 
         public static void OnDisconnect(GameClient sender)
         {
-            connectedClients.Remove(sender);
             if (sender.LoggedIn)
             {
                 Database.SetPlayerLastLogin(Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()), sender.LoggedinUser.Id); // Set last login date
 
                 Database.RemoveOnlineUser(sender.LoggedinUser.Id);
+
+                // Delete Arena Entries
+                if(Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
+                {
+                    Arena arena = Arena.GetArenaUserEnteredIn(sender.LoggedinUser);
+                    arena.DeleteEntry(sender.LoggedinUser);
+                }
+
                 // Send disconnect message
                 byte[] logoutMessageBytes = PacketBuilder.CreateChat(Messages.FormatLogoutMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
                 foreach (GameClient client in ConnectedClients)
@@ -5397,6 +5581,7 @@ namespace HISP.Server
                         if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
                             client.SendPacket(playerRemovePacket);
             }
+            connectedClients.Remove(sender);
 
         }
 
@@ -5404,7 +5589,7 @@ namespace HISP.Server
          *  Get(Some Information)
          */
 
-       
+
         public static bool IsUserOnline(int id)
         {
             try
@@ -5948,6 +6133,17 @@ namespace HISP.Server
                             return true;
                         }
                     }
+                }
+            }
+            if(mapCode == "HAMMOCK")
+            {
+                byte[] hammockText = PacketBuilder.CreateChat(Messages.HammockText, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                forClient.SendPacket(hammockText);
+
+                forClient.LoggedinUser.Tiredness = 1000;
+                foreach(HorseInstance horse in forClient.LoggedinUser.HorseInventory.HorseList)
+                {
+                    horse.BasicStats.Tiredness = 1000;
                 }
             }
             return true;
