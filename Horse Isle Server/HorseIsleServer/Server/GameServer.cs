@@ -5965,6 +5965,9 @@ namespace HISP.Server
                 return;
             }
 
+
+            forClient.LoggedinUser.MetaPriority = false;
+
             string LocationStr = "";
             if (!World.InSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y))
             {
@@ -5986,7 +5989,6 @@ namespace HISP.Server
 
             byte[] AreaMessage = PacketBuilder.CreateMetaPacket(LocationStr);
             forClient.SendPacket(AreaMessage);
-            forClient.LoggedinUser.MetaPriority = false;
 
         }
         public static void UpdateStats(GameClient client)
