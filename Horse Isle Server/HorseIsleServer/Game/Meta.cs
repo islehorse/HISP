@@ -1228,6 +1228,9 @@ namespace HISP.Game
             int placing = 1;
             foreach(HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).ToArray())
             {
+                if (horse.Leaser > 0)
+                    continue;
+
                 message += Messages.FormatHorseGamesEntry(placing, horse.Name, swf + ".swf?ID=" + horse.RandomId + "&SP=" + horse.AdvancedStats.Speed + "&ST=" + horse.AdvancedStats.Strength + "&CO=" + horse.AdvancedStats.Conformation + "&AG=" + horse.AdvancedStats.Agility + "&EN=" + horse.AdvancedStats.Endurance + "&IN=" + horse.AdvancedStats.Inteligence + "&PE=" + horse.AdvancedStats.Personality + "&");
             }
             message += Messages.ExitThisPlace;
@@ -2306,6 +2309,9 @@ namespace HISP.Game
                     
                     foreach(HorseInstance horseInstance in user.HorseInventory.HorseList)
                     {
+                        if (horseInstance.Leaser > 0)
+                            continue;
+
                         if(horseInstance.Equipment.Saddle != null && horseInstance.Equipment.SaddlePad != null && horseInstance.Equipment.Bridle != null)
                             message += Messages.FormatArenaEnterHorseButton(horseInstance.Name, arena.EntryCost, horseInstance.RandomId);
                     }
