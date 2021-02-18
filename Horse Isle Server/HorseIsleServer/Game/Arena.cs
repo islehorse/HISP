@@ -185,13 +185,19 @@ namespace HISP.Game
                 entry.EnteredUser.LoggedinClient.SendPacket(startingUpEventPacket);
             }
 
-            arenaTimeout = new Timer(new TimerCallback(ArenaTimedOut), null, Timeout * 60 * 1000, Timeout * 60 * 1000);
+            arenaTimeout = new Timer(new TimerCallback(arenaTimedOut), null, Timeout * 60 * 1000, Timeout * 60 * 1000);
 
-            foreach(World.SpecialTile tile in World.SpecialTiles)
+            updateWaitingPlayers();
+
+        }
+
+        private void updateWaitingPlayers()
+        {
+            foreach (World.SpecialTile tile in World.SpecialTiles)
             {
                 if (tile.Code == null)
                     continue;
-                if(tile.Code.StartsWith("ARENA-"))
+                if (tile.Code.StartsWith("ARENA-"))
                 {
                     string arenaId = tile.Code.Split('-')[1];
                     int id = int.Parse(arenaId);
@@ -201,7 +207,7 @@ namespace HISP.Game
             }
         }
 
-        private void ArenaTimedOut(object state)
+        private void arenaTimedOut(object state)
         {
             End();
         }
@@ -286,6 +292,7 @@ namespace HISP.Game
 
             }
             reset();
+            updateWaitingPlayers();
         }
         public void DeleteEntry(User user)
         {
