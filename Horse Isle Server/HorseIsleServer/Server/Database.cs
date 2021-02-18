@@ -4773,7 +4773,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM Horses WHERE ownerId NOT IN (SELECT playerId FROM onlineusers) AND leaseTime <= 0 AND leaser > 0";
+                sqlCommand.CommandText = "DELETE FROM Horses WHERE ownerId NOT IN (SELECT playerId FROM OnlineUsers) AND leaseTime <= 0 AND leaser > 0";
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
@@ -4788,7 +4788,7 @@ namespace HISP.Server
                 db.Open();
 
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT ownerId, breed, leaser FROM Horses WHERE ownerId NOT IN (SELECT playerId FROM onlineusers) AND leaseTime <= 0 AND leaser > 0";
+                sqlCommand.CommandText = "SELECT ownerId, breed, leaser FROM Horses WHERE ownerId NOT IN (SELECT playerId FROM OnlineUsers) AND leaseTime <= 0 AND leaser > 0";
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
 
@@ -4830,7 +4830,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET leaseTime = leaseTime - 1 WHERE ownerId NOT IN (SELECT playerId FROM onlineusers) AND leaseTime > 0 AND leaser > 0";
+                sqlCommand.CommandText = "UPDATE Horses SET leaseTime = leaseTime - 1 WHERE ownerId NOT IN (SELECT playerId FROM OnlineUsers) AND leaseTime > 0 AND leaser > 0";
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
