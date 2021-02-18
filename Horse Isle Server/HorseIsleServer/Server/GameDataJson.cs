@@ -708,6 +708,8 @@ namespace HISP.Server
                 BBCode code = new BBCode(tag, meta);
                 Logger.DebugPrint("Registered BBCODE: " + code.Tag + " to " + code.MetaTranslation);
             }
+
+            // Register Training Pens
             int totalTrainingPens = gameData.training_pens.Count;
             for (int i = 0; i < totalTrainingPens; i++)
             {
@@ -723,6 +725,8 @@ namespace HISP.Server
                 Trainer.Trainers.Add(trainer);
                 Logger.DebugPrint("Registered Training Pen: " + trainer.Id + " for " + trainer.ImprovesStat);
             }
+
+            // Register Arenas
             int totalArenas = gameData.arena.Count;
             for(int i = 0; i < totalArenas; i++)
             {
@@ -735,6 +739,58 @@ namespace HISP.Server
 
                 Arena arena = new Arena(arenaId, arenaType, arenaEntryCost, raceEvery, slots, timeout);
                 Logger.DebugPrint("Registered Arena: " + arena.Id.ToString()+" as " + arena.Type);
+            }
+            // Register Leaser
+            int totalLeasers = gameData.leaser.Count;
+            for (int i = 0; i < totalLeasers; i++)
+            {
+                int breedId = gameData.leaser[i].horse.breed;
+
+                int saddle = -1;
+                int saddlePad = -1;
+                int bridle = -1;
+
+                if (gameData.leaser[i].horse.tack.saddle != null)
+                    saddle = gameData.leaser[i].horse.tack.saddle;
+
+                if (gameData.leaser[i].horse.tack.saddle_pad != null)
+                    saddlePad = gameData.leaser[i].horse.tack.saddle_pad;
+
+                if (gameData.leaser[i].horse.tack.bridle != null)
+                    bridle = gameData.leaser[i].horse.tack.bridle;
+
+                Leaser leaser = new Leaser(breedId, saddle, saddlePad, bridle);
+                leaser.LeaseId = gameData.leaser[i].lease_id;
+                leaser.ButtonId = gameData.leaser[i].button_id;
+                leaser.Info = gameData.leaser[i].info;
+                leaser.OnLeaseText = gameData.leaser[i].on_lease;
+                leaser.Price = gameData.leaser[i].price;
+                leaser.Minutes = gameData.leaser[i].minutes;
+
+                leaser.Color = gameData.leaser[i].horse.color;
+                leaser.Gender = gameData.leaser[i].horse.gender;
+                leaser.Height = gameData.leaser[i].horse.hands;
+                leaser.Experience = gameData.leaser[i].horse.exp;
+                leaser.HorseName = gameData.leaser[i].horse.name; 
+
+                leaser.Health = gameData.leaser[i].horse.basic_stats.health;
+                leaser.Hunger = gameData.leaser[i].horse.basic_stats.hunger;
+                leaser.Thirst = gameData.leaser[i].horse.basic_stats.thirst;
+                leaser.Mood = gameData.leaser[i].horse.basic_stats.mood;
+                leaser.Tiredness = gameData.leaser[i].horse.basic_stats.energy;
+                leaser.Groom = gameData.leaser[i].horse.basic_stats.groom;
+                leaser.Shoes = gameData.leaser[i].horse.basic_stats.shoes;
+
+                leaser.Speed = gameData.leaser[i].horse.advanced_stats.speed;
+                leaser.Strength = gameData.leaser[i].horse.advanced_stats.strength;
+                leaser.Conformation = gameData.leaser[i].horse.advanced_stats.conformation;
+                leaser.Agility = gameData.leaser[i].horse.advanced_stats.agility;
+                leaser.Endurance = gameData.leaser[i].horse.advanced_stats.endurance;
+                leaser.Inteligence = gameData.leaser[i].horse.advanced_stats.inteligence;
+                leaser.Personality = gameData.leaser[i].horse.advanced_stats.personality;
+
+                Leaser.HorseLeasers.Add(leaser);
+                Logger.DebugPrint("Registered Leaser: " + leaser.LeaseId.ToString() + " For a " + leaser.HorseName);
             }
 
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
@@ -761,6 +817,16 @@ namespace HISP.Server
 
             // Hammock Text
             Messages.HammockText = gameData.messages.meta.hammock;
+
+            // Horse Leaser
+            Messages.HorseLeaserCantAffordMessage = gameData.messages.horse_leaser.cant_afford;
+            Messages.HorseLeaserTemporaryHorseAdded = gameData.messages.horse_leaser.temporary_horse_added;
+            Messages.HorseLeaserHorsesFull = gameData.messages.horse_leaser.horses_full;
+
+            Messages.HorseLeaserReturnedToUniterPegasus = gameData.messages.horse_leaser.returned_to_uniter_pegasus;
+
+            Messages.HorseLeaserReturnedToUniterFormat = gameData.messages.horse_leaser.returned_to_uniter;
+            Messages.HorseLeaserReturnedToOwnerFormat = gameData.messages.horse_leaser.returned_to_owner;
 
             // Competitions
             Messages.ArenaResultsMessage = gameData.messages.meta.arena.results;
@@ -1200,6 +1266,7 @@ namespace HISP.Server
             
             Messages.HorseTrainableInFormat = gameData.messages.meta.horse.horse_inventory.trainable_in;
             Messages.HorseIsTrainable = gameData.messages.meta.horse.horse_inventory.currently_trainable;
+            Messages.HorseLeasedRemainingTimeFormat = gameData.messages.meta.horse.horse_inventory.leased_horse;
 
             Messages.HorseCannotMountUntilTackedMessage = gameData.messages.meta.horse.cannot_mount_tacked;
             Messages.HorseDismountedBecauseNotTackedMessageFormat = gameData.messages.meta.horse.dismount_because_tack;
