@@ -102,6 +102,9 @@ namespace HISP.Game.Chat
 
                 else if (message.StartsWith("!MUTE"))
                     return Command.Mute(message, args, user);
+                else if (message.StartsWith("!WARP"))
+                    return Command.Warp(message, args, user);
+                
             }
             return false;
         }

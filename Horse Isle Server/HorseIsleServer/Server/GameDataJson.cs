@@ -810,6 +810,12 @@ namespace HISP.Server
             Map.NewUserStartX = gameData.messages.new_user.starting_x;
             Map.NewUserStartY = gameData.messages.new_user.starting_y;
 
+            // Warp Command
+            Messages.SuccessfullyWarpedToPlayer = gameData.messages.commands.warp.player;
+            Messages.SuccessfullyWarpedToLocation = gameData.messages.commands.warp.location;
+            Messages.OnlyUnicornCanWarp = gameData.messages.commands.warp.only_unicorn;
+            Messages.FailedToUnderstandLocation = gameData.messages.commands.warp.location_unknown;
+
             // Mod Isle
             Messages.ModIsleMessage = gameData.messages.commands.mod_isle.message;
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;

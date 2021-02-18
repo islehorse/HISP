@@ -12,6 +12,11 @@ namespace HISP.Game
 
         // Mod isle
         public static string ModIsleMessage;
+        // Warp Command
+        public static string SuccessfullyWarpedToLocation;
+        public static string SuccessfullyWarpedToPlayer;
+        public static string OnlyUnicornCanWarp;
+        public static string FailedToUnderstandLocation;
 
         // Click
         public static string PlayerHereFormat;
@@ -321,6 +326,7 @@ namespace HISP.Game
 
         public static string AdminCommandFormat;
         public static string PlayerCommandFormat;
+
         public static string MuteHelp;
 
         public static string GlobalChatFormatForModerators;

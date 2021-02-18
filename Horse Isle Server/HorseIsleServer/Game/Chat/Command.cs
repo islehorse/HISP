@@ -222,7 +222,6 @@ namespace HISP.Game.Chat
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
-
         public static bool Goto(string message, string[] args, User user)
         {
             if (args.Length <= 0)
@@ -320,6 +319,73 @@ namespace HISP.Game.Chat
             user.LoggedinClient.SendPacket(chatPacket);
 
             
+            return true;
+        }
+        public static bool Warp(string message, string[] args, User user)
+        {
+
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+
+            if (user.CurrentlyRidingHorse == null)
+                goto onlyRiddenUnicorn;
+
+            if (user.CurrentlyRidingHorse.Breed.Type == "unicorn")
+                goto doCommand;
+
+            goto onlyRiddenUnicorn;
+
+            onlyRiddenUnicorn:;
+            formattedmessage = Messages.OnlyUnicornCanWarp;
+            goto sendText;
+            
+
+            cantUnderstandCommand:;
+            formattedmessage += Messages.FailedToUnderstandLocation;
+            goto sendText;
+
+
+            doCommand:;
+            if (args.Length <= 0)
+            {
+                goto cantUnderstandCommand;
+            }
+            else
+            {
+                foreach (GameClient client in GameServer.ConnectedClients)
+                {
+                    if (client.LoggedIn)
+                    {
+                        if(client.LoggedinUser.Username.ToLower().Contains(args[0].ToLower()))
+                        {
+                            user.Teleport(client.LoggedinUser.X, client.LoggedinUser.Y);
+                            formattedmessage += Messages.SuccessfullyWarpedToPlayer;
+                            goto playSwf;
+                        }
+                    }
+                }
+
+                foreach(World.Waypoint waypoint in World.Waypoints)
+                {
+                    if(waypoint.Name.ToLower().Contains(args[0].ToLower()))
+                    {
+                        user.Teleport(waypoint.PosX, waypoint.PosY);
+                        formattedmessage += Messages.SuccessfullyWarpedToLocation;
+                        goto playSwf;
+                    }
+                }
+
+                goto cantUnderstandCommand;
+            }
+
+            playSwf:;
+            byte[] swfPacket = PacketBuilder.CreateSwfModulePacket("warpcutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
+            user.LoggedinClient.SendPacket(swfPacket);
+
+
+            sendText:;
+            byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+
             return true;
         }
         public static bool Mute(string message, string[] args, User user)
