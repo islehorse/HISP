@@ -2381,9 +2381,9 @@ namespace HISP.Game
                 if (TileCode == "STRAWPILE")
                 {
                     if (user.Inventory.HasItemId(Item.Pitchfork))
-                        message += Messages.HasPitchforkMeta;
+                        message += Messages.HasPitchforkMeta + Messages.ExitThisPlace + Messages.MetaTerminator;
                     else
-                        message += Messages.NoPitchforkMeta;
+                        message += Messages.NoPitchforkMeta + Messages.ExitThisPlace + Messages.MetaTerminator;
                 }
 
                 if (TileCode == "STORE")
