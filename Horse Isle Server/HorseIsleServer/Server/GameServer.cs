@@ -111,22 +111,10 @@ namespace HISP.Server
                 }
             }
 
-            foreach(GameClient client in ConnectedClients)
-                if (client.LoggedIn)
-                {
-                    if (!client.LoggedinUser.MetaPriority)
-                        Update(client);
-                    byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(client.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), client.LoggedinUser.MailBox.UnreadMailCount);
-                    client.SendPacket(BaseStatsPacketData);
 
-                    UpdateWorld(client);
-                    UpdatePlayer(client);
-                }
-  
 
-            Database.IncPlayerTirednessForOfflineUsers();
 
-            if(totalMinutesElapsed % 60 == 0)
+            if (totalMinutesElapsed % 60 == 0)
             {
                 foreach (HorseInstance horse in Database.GetMostSpoiledHorses())
                 {
@@ -143,6 +131,32 @@ namespace HISP.Server
                 DroppedItems.DespawnItems();
                 DroppedItems.GenerateItems();
             }
+
+
+            foreach (GameClient client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                {
+                    if (!client.LoggedinUser.MetaPriority)
+                        Update(client);
+                    byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(client.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), client.LoggedinUser.MailBox.UnreadMailCount);
+                    client.SendPacket(BaseStatsPacketData);
+
+                    UpdateWorld(client);
+                    UpdatePlayer(client);
+                }
+            }
+
+
+
+            Database.IncPlayerTirednessForOfflineUsers();
+
+            // Offline player handling w sql magic...
+
+            Database.DecrementHorseLeaseTimeForOfflinePlayers();
+            Database.TpOfflinePlayersBackToUniterForOfflinePlayers();
+            Database.DeleteExpiredLeasedHorsesForOfflinePlayers();
+
 
             WildHorse.Update();
             Npc.WanderNpcs();
@@ -2323,7 +2337,7 @@ namespace HISP.Server
 
                                     HorseInstance horseInstance = new HorseInstance(sender.LoggedinUser.PawneerOrderBreed);
                                     horseInstance.Color = sender.LoggedinUser.PawneerOrderColor;
-                                    horseInstance.Sex = sender.LoggedinUser.PawneerOrderGender;
+                                    horseInstance.Gender = sender.LoggedinUser.PawneerOrderGender;
                                     horseInstance.Name = "Pawneer Order";
 
                                     sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(Item.PawneerOrder).ItemInstances[0]);
@@ -2448,6 +2462,43 @@ namespace HISP.Server
                             sender.SendPacket(cantFindHorse);
                         }
                         break;
+                    }
+
+                    if(Leaser.LeaserButtonIdExists(buttonIdStr))
+                    {
+                        Leaser horseLeaser = Leaser.GetLeaserByButtonId(buttonIdStr);
+
+                        if(sender.LoggedinUser.Money >= horseLeaser.Price)
+                        {
+                            if(sender.LoggedinUser.HorseInventory.HorseList.Length + 1 > sender.LoggedinUser.MaxHorses)
+                            {
+                                byte[] cantManageHorses = PacketBuilder.CreateChat(Messages.HorseLeaserHorsesFull, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cantManageHorses);
+                                break;
+                            }
+                            else
+                            {
+                                sender.LoggedinUser.MetaPriority = true;
+                                sender.LoggedinUser.Money -= horseLeaser.Price;
+
+                                sender.LoggedinUser.HorseInventory.AddHorse(horseLeaser.GenerateLeaseHorse());
+
+                                byte[] addedHorseMeta = PacketBuilder.CreateMetaPacket(Meta.BuildLeaserOnLeaseInfo(horseLeaser));
+                                sender.SendPacket(addedHorseMeta);
+
+                                byte[] addedNewTempHorseMessage = PacketBuilder.CreateChat(Messages.HorseLeaserTemporaryHorseAdded, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(addedNewTempHorseMessage);
+                                break;
+
+                            }
+                        }
+                        else
+                        {
+                            byte[] cantAffordLease = PacketBuilder.CreateChat(Messages.HorseLeaserCantAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantAffordLease);
+                            break;
+                        }
+                        
                     }
                     if(AbuseReport.DoesReasonExist(buttonIdStr))
                     {
@@ -6010,12 +6061,16 @@ namespace HISP.Server
         {
             HorseInstance horseMountInst = sender.LoggedinUser.HorseInventory.GetHorseById(horseRandomId);
 
-            if (horseMountInst.Equipment.Saddle == null || horseMountInst.Equipment.SaddlePad == null || horseMountInst.Equipment.Bridle == null)
+            if (horseMountInst.Breed.Type != "unicorn" && horseMountInst.Breed.Type != "pegasus")
             {
-                byte[] horseNotTackedMessage = PacketBuilder.CreateChat(Messages.HorseCannotMountUntilTackedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                sender.SendPacket(horseNotTackedMessage);
-                return;
+                if (horseMountInst.Equipment.Saddle == null || horseMountInst.Equipment.SaddlePad == null || horseMountInst.Equipment.Bridle == null)
+                {
+                    byte[] horseNotTackedMessage = PacketBuilder.CreateChat(Messages.HorseCannotMountUntilTackedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(horseNotTackedMessage);
+                    return;
+                }
             }
+
 
             string ridingHorseMessage = Messages.FormatHorseRidingMessage(horseMountInst.Name);
             byte[] ridingHorseMessagePacket = PacketBuilder.CreateChat(ridingHorseMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);

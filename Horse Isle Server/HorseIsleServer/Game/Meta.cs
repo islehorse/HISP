@@ -1801,7 +1801,7 @@ namespace HISP.Game
             string message = Messages.HorseAllBasicStats;
             foreach(HorseInstance horse in user.HorseInventory.HorseList)
             {
-                message += Messages.FormaHorseAllBasicStatsEntry(horse.Name, horse.Color, horse.Breed.Name, horse.Sex, horse.BasicStats.Experience);
+                message += Messages.FormaHorseAllBasicStatsEntry(horse.Name, horse.Color, horse.Breed.Name, horse.Gender, horse.BasicStats.Experience);
                 message += Messages.FormatHorseBasicStat(horse.BasicStats.Health, horse.BasicStats.Hunger, horse.BasicStats.Thirst, horse.BasicStats.Mood, horse.BasicStats.Tiredness, horse.BasicStats.Groom, horse.BasicStats.Shoes);
             }
             message += Messages.BackToMap;
@@ -1825,15 +1825,21 @@ namespace HISP.Game
                 message += Messages.FormatHorseNameOthers(horse.Name);
 
             message += Messages.FormatHorseDescription(horse.Description);
-            message += Messages.FormatHorseHandsHigh(horse.Color, horse.Breed.Name, horse.Sex, HorseInfo.CalculateHands(horse.AdvancedStats.Height, false));
+            message += Messages.FormatHorseHandsHigh(horse.Color, horse.Breed.Name, horse.Gender, HorseInfo.CalculateHands(horse.AdvancedStats.Height, false));
             message += Messages.FormatHorseExperience(horse.BasicStats.Experience);
             
+
             if (horse.TrainTimer > 0)
                 message += Messages.FormatTrainableIn(horse.TrainTimer);
             else
                 message += Messages.HorseIsTrainable;
+            
+            if(horse.Leaser != 0)
+            {
+                message += Messages.FormatHorseIsLeased(horse.LeaseTime);
+            }
 
-            if(isMyHorse)
+            if (isMyHorse)
             {
                 if (user.CurrentlyRidingHorse == null)
                     message += Messages.FormatMountButton(horse.RandomId);
@@ -1842,33 +1848,45 @@ namespace HISP.Game
 
 
                 message += Messages.FormatFeedButton(horse.RandomId);
-                message += Messages.FormatTackButton(horse.RandomId);
-                message += Messages.FormatPetButton(horse.RandomId);
-                message += Messages.FormatProfileButton(horse.RandomId);
-
-                if (horse.Equipment.Saddle == null && horse.Equipment.SaddlePad == null && horse.Equipment.Bridle == null && horse.Equipment.Companion == null)
+                if (horse.Leaser == 0)
                 {
-                    string autoSellMessage = Messages.HorseNoAutoSell;
-                    if (horse.AutoSell > 0)
-                        autoSellMessage = Messages.FormatAutoSellPrice(horse.AutoSell);
-                    message += Messages.FormatAutoSell(autoSellMessage);
-                    if (horse.AutoSell > 0)
-                        message += Messages.HorseChangeAutoSell;
+                    message += Messages.FormatTackButton(horse.RandomId);
+                }
+                message += Messages.FormatPetButton(horse.RandomId);
+                if (horse.Leaser == 0)
+                {
+                    message += Messages.FormatProfileButton(horse.RandomId);
+
+                    if (horse.Equipment.Saddle == null && horse.Equipment.SaddlePad == null && horse.Equipment.Bridle == null && horse.Equipment.Companion == null)
+                    {
+                        string autoSellMessage = Messages.HorseNoAutoSell;
+                        if (horse.AutoSell > 0)
+                            autoSellMessage = Messages.FormatAutoSellPrice(horse.AutoSell);
+                        message += Messages.FormatAutoSell(autoSellMessage);
+                        if (horse.AutoSell > 0)
+                            message += Messages.HorseChangeAutoSell;
+                        else
+                            message += Messages.HorseSetAutoSell;
+                    }
                     else
-                        message += Messages.HorseSetAutoSell;
+                    {
+                        message += Messages.HorseCantAutoSellTacked;
+                    }
                 }
                 else
                 {
-                    message += Messages.HorseCantAutoSellTacked;
+                    message += "^R1";
                 }
             }
 
 
-
-            if(isMyHorse)
-                message += Messages.FormatHorseCategory(horse.Category, Messages.HorseMarkAsCategory);
-            else
-                message += Messages.FormatHorseCategory(horse.Category, "");
+            if (horse.Leaser == 0)
+            {
+                if (isMyHorse)
+                    message += Messages.FormatHorseCategory(horse.Category, Messages.HorseMarkAsCategory);
+                else
+                    message += Messages.FormatHorseCategory(horse.Category, "");
+            }
 
             message += Messages.HorseStats;
 
@@ -1884,15 +1902,18 @@ namespace HISP.Game
             if (horse.Equipment.Bridle != null)
                 message += Messages.FormatHorseTackEntry(horse.Equipment.Bridle.IconId, horse.Equipment.Bridle.Name, horse.Equipment.Bridle.Id);
 
-            message += Messages.HorseCompanion;
-            if (horse.Equipment.Companion != null)
-                if(isMyHorse)
-                    message += Messages.FormatHorseCompanionEntry(horse.Equipment.Companion.IconId, horse.Equipment.Companion.Name, Messages.HorseCompanionChangeButton, horse.Equipment.Companion.Id);
+            if(horse.Leaser == 0)
+            {
+                message += Messages.HorseCompanion;
+                if (horse.Equipment.Companion != null)
+                    if (isMyHorse)
+                        message += Messages.FormatHorseCompanionEntry(horse.Equipment.Companion.IconId, horse.Equipment.Companion.Name, Messages.HorseCompanionChangeButton, horse.Equipment.Companion.Id);
+                    else
+                        message += Messages.FormatHorseCompanionEntry(horse.Equipment.Companion.IconId, horse.Equipment.Companion.Name, "", horse.Equipment.Companion.Id);
                 else
-                    message += Messages.FormatHorseCompanionEntry(horse.Equipment.Companion.IconId, horse.Equipment.Companion.Name, "", horse.Equipment.Companion.Id);
-            else
-                if(isMyHorse)
+                    if (isMyHorse)
                     message += Messages.HorseNoCompanion;
+            }
 
             message += Messages.FormatHorseAdvancedStats(horse.Spoiled, horse.MagicUsed);
 
@@ -1916,23 +1937,25 @@ namespace HISP.Game
             message += Messages.FormatHorseHeight(Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MinHeight,false))), Convert.ToInt32(Math.Floor(HorseInfo.CalculateHands(horse.Breed.BaseStats.MaxHeight,false))));
             
             message += Messages.FormatPossibleColors(horse.Breed.Colors);
-
-            if(isMyHorse)
+            if (horse.Leaser == 0)
             {
-                bool canRelease = true;
-                if (World.InTown(user.X, user.Y))
-                    canRelease = false;
-
-
-                if (World.InSpecialTile(user.X, user.Y))
+                if (isMyHorse)
                 {
-                    World.SpecialTile tile = World.GetSpecialTile(user.X, user.Y);
-                    if (tile.Code != null)
+                    bool canRelease = true;
+                    if (World.InTown(user.X, user.Y))
                         canRelease = false;
-                }
 
-                if (canRelease)
-                    message += Messages.FormatHorseReleaseButton(horse.Breed.Type.ToUpper());
+
+                    if (World.InSpecialTile(user.X, user.Y))
+                    {
+                        World.SpecialTile tile = World.GetSpecialTile(user.X, user.Y);
+                        if (tile.Code != null)
+                            canRelease = false;
+                    }
+
+                    if (canRelease)
+                        message += Messages.FormatHorseReleaseButton(horse.Breed.Type.ToUpper());
+                }
             }
 
 
@@ -1962,7 +1985,7 @@ namespace HISP.Game
                 HorseInfo.StatCalculator inteligenceStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.INTELIGENCE);
                 HorseInfo.StatCalculator personalityStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.PERSONALITY);
 
-                message += Messages.FormatAllStatsEntry(horse.Name, horse.Color, horse.Breed.Name, horse.Sex, horse.BasicStats.Experience);
+                message += Messages.FormatAllStatsEntry(horse.Name, horse.Color, horse.Breed.Name, horse.Gender, horse.BasicStats.Experience);
                 message += Messages.FormatCompactedBasicStats(horse.BasicStats.Health, horse.BasicStats.Hunger, horse.BasicStats.Thirst, horse.BasicStats.Mood, horse.BasicStats.Tiredness, horse.BasicStats.Groom, horse.BasicStats.Shoes);
                 message += Messages.FormatCompactedAdvancedStats(speedStat.Total, strengthStat.Total, conformationStat.Total, agilityStat.Total, enduranceStat.Total, inteligenceStat.Total, personalityStat.Total);
             }
@@ -2079,7 +2102,7 @@ namespace HISP.Game
         }
         public static string BuildPawneerOrderFound(HorseInstance instance)
         {
-            string message = Messages.FormatPawneerOrderHorseFound(instance.Breed.Name, instance.Color, instance.Sex, instance.AdvancedStats.Height, instance.AdvancedStats.Personality, instance.AdvancedStats.Inteligence);
+            string message = Messages.FormatPawneerOrderHorseFound(instance.Breed.Name, instance.Color, instance.Gender, instance.AdvancedStats.Height, instance.AdvancedStats.Personality, instance.AdvancedStats.Inteligence);
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;
@@ -2201,6 +2224,25 @@ namespace HISP.Game
                 {
                     message += Messages.FormatPawneerHorseEntry(horse.Name, Pawneer.CalculateTotalPrice(horse), horse.RandomId);
                 }
+            }
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildLeaserOnLeaseInfo(Leaser leaser)
+        {
+            string mesasge = "";
+            mesasge += leaser.OnLeaseText;
+            mesasge += Messages.BackToMap;
+            mesasge += Messages.MetaTerminator;
+            return mesasge;
+        }
+        private static string buildLeaser(User user, Leaser[] leasers)
+        {
+            string message = "";
+            foreach(Leaser leaser in leasers)
+            {
+                message += leaser.Info;
             }
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
@@ -2393,6 +2435,10 @@ namespace HISP.Game
                 if(TileCode == "TRAINER")
                 {
                     message += buildTrainer(user, Trainer.GetTrainerById(int.Parse(TileArg)));
+                }
+                if(TileCode == "HORSELEASER")
+                {
+                    message += buildLeaser(user, Leaser.GetLeasersById(int.Parse(TileArg)));
                 }
                 if (TileCode == "LIBRARY")
                 {

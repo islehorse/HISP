@@ -71,6 +71,82 @@ namespace HISP.Server
                         horse.BasicStats.Tiredness--;
                     }
 
+                    if(horse.Leaser > 0)
+                    {
+                        horse.LeaseTime--;
+
+                        if (horse.LeaseTime <= 0)
+                        {
+                            int tpX = 0;
+                            int tpY = 0;
+                            if(horse.Breed.Type == "unicorn" || horse.Breed.Type == "pegasus")
+                            {
+                                foreach (World.SpecialTile tile in World.SpecialTiles)
+                                {
+                                    if (tile.Code == null)
+                                        continue;
+
+                                    if (tile.Code.StartsWith("HORSELEASER-"))
+                                    {
+                                        int id = int.Parse(tile.Code.Split("-")[1]);
+                                        if (horse.Leaser == id)
+                                        {
+                                            string msg = Messages.FormatHorseReturnedToUniter(horse.Breed.Name);
+                                            if (horse.Breed.Type == "pegasus")
+                                                msg = Messages.HorseLeaserReturnedToUniterPegasus;
+
+                                            byte[] youWereTeleportedToUniter = PacketBuilder.CreateChat(msg, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                            SendPacket(youWereTeleportedToUniter);
+
+                                            tpX = tile.X;
+                                            tpY = tile.Y;
+
+                                            if(tile.ExitX != 0 && tile.ExitY != 0)
+                                            {
+                                                tpX = tile.ExitX;
+                                                tpY = tile.ExitY;
+                                            }
+                                            else
+                                            {
+                                                tpY++;
+                                            }
+
+                                        }
+                                    }
+                                }
+                                
+                            }
+
+                            byte[] horseReturned = PacketBuilder.CreateChat(Messages.FormatHorseReturnedToOwner(horse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            SendPacket(horseReturned);
+
+                            if(tpX != 0 && tpY != 0)
+                                LoggedinUser.Teleport(tpX, tpY);
+
+
+                            if (LoggedinUser.CurrentlyRidingHorse != null)
+                            {
+                                if(LoggedinUser.CurrentlyRidingHorse.RandomId == horse.RandomId)
+                                {
+                                    GameServer.StopRidingHorse(this);
+                                }
+                                
+                             }
+
+                            if(LoggedinUser.LastViewedHorse != null)
+                            {
+                                if(LoggedinUser.LastViewedHorse.RandomId == horse.RandomId)
+                                {
+                                    LoggedinUser.LastViewedHorse = null;
+                                }
+                            }    
+
+
+                             LoggedinUser.HorseInventory.DeleteHorse(horse);
+                        }
+
+                        
+                    }
 
                 }
 

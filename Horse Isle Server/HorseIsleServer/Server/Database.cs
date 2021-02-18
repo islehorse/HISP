@@ -41,7 +41,7 @@ namespace HISP.Server
                 string PoetryRooms = "CREATE TABLE PoetryRooms(poetId INT, X INT, Y INT, roomId INT)";
                 string SavedDrawings = "CREATE TABLE SavedDrawings(playerId INT, Drawing1 TEXT(65535), Drawing2 TEXT(65535), Drawing3 TEXT(65535))";
                 string DrawingRooms = "CREATE TABLE DrawingRooms(roomId INT, Drawing TEXT(65535))";
-                string Horses = "CREATE TABLE Horses(randomId INT, ownerId INT, ranchId INT, leaser INT, breed INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
+                string Horses = "CREATE TABLE Horses(randomId INT, ownerId INT, leaseTime INT, leaser INT, breed INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string WildHorse = "CREATE TABLE WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string LastPlayer = "CREATE TABLE LastPlayer(roomId TEXT(1028), playerId INT)";
                 string TrackingStats = "CREATE TABLE Tracking(playerId INT, what TEXT(128), count INT)";
@@ -1367,16 +1367,16 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Horses VALUES(@randomId,@originalOwner,@ranch,@leaser,@breed,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@autosell,@training,@category,@spoiled,@magicused)";
+                sqlCommand.CommandText = "INSERT INTO Horses VALUES(@randomId,@originalOwner,@leaseTime,@leaser,@breed,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@autosell,@training,@category,@spoiled,@magicused)";
 
                 sqlCommand.Parameters.AddWithValue("@randomId", horse.RandomId);
                 sqlCommand.Parameters.AddWithValue("@originalOwner", horse.Owner);
-                sqlCommand.Parameters.AddWithValue("@ranch", horse.RanchId);
+                sqlCommand.Parameters.AddWithValue("@leaseTime", horse.LeaseTime);
                 sqlCommand.Parameters.AddWithValue("@leaser", horse.Leaser);
                 sqlCommand.Parameters.AddWithValue("@breed", horse.Breed.Id);
                 sqlCommand.Parameters.AddWithValue("@name", horse.Name);
                 sqlCommand.Parameters.AddWithValue("@description", horse.Description);
-                sqlCommand.Parameters.AddWithValue("@sex", horse.Sex);
+                sqlCommand.Parameters.AddWithValue("@sex", horse.Gender);
                 sqlCommand.Parameters.AddWithValue("@color", horse.Color);
 
                 sqlCommand.Parameters.AddWithValue("@health", horse.BasicStats.Health);
@@ -1447,13 +1447,12 @@ namespace HISP.Server
             string category = reader.GetString(31);
             int magicUsed = reader.GetInt32(33);
             int autosell = reader.GetInt32(29);
+            int leaseTime = reader.GetInt32(2);
 
-
-            HorseInstance inst = new HorseInstance(horseBreed, randomId, name, description, spoiled, category, magicUsed, autosell);
+            HorseInstance inst = new HorseInstance(horseBreed, randomId, name, description, spoiled, category, magicUsed, autosell, leaseTime);
             inst.Owner = reader.GetInt32(1);
-            inst.RanchId = reader.GetInt32(2);
             inst.Leaser = reader.GetInt32(3);
-            inst.Sex = reader.GetString(7);
+            inst.Gender = reader.GetString(7);
             inst.Color = reader.GetString(8);
 
 
@@ -1583,7 +1582,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@y", horse.Y);
                 sqlCommand.Parameters.AddWithValue("@name", horse.Instance.Name);
                 sqlCommand.Parameters.AddWithValue("@description", horse.Instance.Description);
-                sqlCommand.Parameters.AddWithValue("@sex", horse.Instance.Sex);
+                sqlCommand.Parameters.AddWithValue("@sex", horse.Instance.Gender);
                 sqlCommand.Parameters.AddWithValue("@color", horse.Instance.Color);
 
                 sqlCommand.Parameters.AddWithValue("@health", horse.Instance.BasicStats.Health);
@@ -1664,7 +1663,7 @@ namespace HISP.Server
                     inst.Owner = reader.GetInt32(1);
                     inst.Name = reader.GetString(5);
                     inst.Description = reader.GetString(6);
-                    inst.Sex = reader.GetString(7);
+                    inst.Gender = reader.GetString(7);
                     inst.Color = reader.GetString(8);
 
                     inst.BasicStats.Health = reader.GetInt32(9);
@@ -2289,6 +2288,20 @@ namespace HISP.Server
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "UPDATE Horses SET magicused=@magicused WHERE randomId=@randomId";
                 sqlCommand.Parameters.AddWithValue("@magicused", MagicUsed);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void SetLeaseTime(int horseRandomId, int leaseTime)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET leaseTime=@leaseTime WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@leaseTime", leaseTime);
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -4754,7 +4767,78 @@ namespace HISP.Server
             }
         }
 
+        public static void DeleteExpiredLeasedHorsesForOfflinePlayers()
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM Horses WHERE ownerId NOT IN (SELECT playerId FROM onlineusers) AND leaseTime <= 0 AND leaser > 0";
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
 
+                sqlCommand.Dispose();
+                return;
+            }
+        }
+        public static void TpOfflinePlayersBackToUniterForOfflinePlayers()
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT ownerId, breed, leaser FROM Horses WHERE ownerId NOT IN (SELECT playerId FROM onlineusers) AND leaseTime <= 0 AND leaser > 0";
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+
+                while(reader.Read())
+                {
+                    int playerId = reader.GetInt32(0);
+                    string horseType = HorseInfo.GetBreedById(reader.GetInt32(1)).Type;
+                    int leaserId = reader.GetInt32(2);
+
+                    if(horseType == "pegasus" || horseType == "unicorn")
+                    {
+                        foreach(World.SpecialTile tile in World.SpecialTiles)
+                        {
+                            if (tile.Code == null)
+                                continue;
+                            if(tile.Code.StartsWith("HORSELEASER-"))
+                            {
+                                int id = int.Parse(tile.Code.Split("-")[1]);
+                                if(leaserId == id)
+                                {
+                                    SetPlayerX(tile.X, playerId);
+                                    SetPlayerY(tile.Y, playerId);
+                                }
+                            }
+                        }
+                    }
+
+
+                }
+
+                sqlCommand.Dispose();
+                return;
+            }
+        }
+
+        public static void DecrementHorseLeaseTimeForOfflinePlayers()
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET leaseTime = leaseTime - 1 WHERE ownerId NOT IN (SELECT playerId FROM onlineusers) AND leaseTime > 0 AND leaser > 0";
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+                return;
+            }
+            
+        }
         public static void IncPlayerTirednessForOfflineUsers()
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

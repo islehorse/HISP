@@ -6,7 +6,7 @@ namespace HISP.Game.Horse
 {
     public class HorseInstance
     {
-        public HorseInstance(HorseInfo.Breed breed, int randomId = -1, string loadName=null, string loadDescription = "", int loadSpoiled=0, string loadCategory="KEEPER", int loadMagicUsed=0, int loadAutoSell=0)
+        public HorseInstance(HorseInfo.Breed breed, int randomId = -1, string loadName=null, string loadDescription = "", int loadSpoiled=0, string loadCategory="KEEPER", int loadMagicUsed=0, int loadAutoSell=0, int leaseTimer=0)
         {
             RandomId = RandomID.NextRandomId(randomId);
             Owner = 0;
@@ -36,9 +36,9 @@ namespace HISP.Game.Horse
                 name = loadName;
             }
             if(GameServer.RandomNumberGenerator.Next(0, 100) > 50)
-                Sex = breed.GenderTypes()[1];
+                Gender = breed.GenderTypes()[1];
             else
-                Sex = breed.GenderTypes()[0];
+                Gender = breed.GenderTypes()[0];
 
             description = loadDescription;
             Breed = breed;
@@ -55,13 +55,24 @@ namespace HISP.Game.Horse
             category = loadCategory;
             spoiled = loadSpoiled;
             magicUsed = loadMagicUsed;
-            RanchId = 0;
+            leaseTime = leaseTimer;
             Leaser = 0;
         }
-        public int RanchId;
         public int Leaser;
         public int RandomId;
         public int Owner;
+        public int LeaseTime
+        {
+            get
+            {
+                return leaseTime;
+            }
+            set
+            {
+                leaseTime = value;
+                Database.SetLeaseTime(this.RandomId, leaseTime);
+            }
+        }
         public string Name
         {
             get
@@ -86,7 +97,7 @@ namespace HISP.Game.Horse
                 Database.SetHorseDescription(this.RandomId, description);
             }
         }
-        public string Sex;
+        public string Gender;
         public string Color;
         public int TrainTimer
         {
@@ -159,6 +170,7 @@ namespace HISP.Game.Horse
         private string name;
         private string description;
         private int spoiled;
+        private int leaseTime;
         private int magicUsed;
         private int autosell;
         private string category;

@@ -19,6 +19,16 @@ namespace HISP.Game
         // Hammock
         public static string HammockText;
 
+        // Horse Leaser
+        public static string HorseLeaserCantAffordMessage;
+        public static string HorseLeaserTemporaryHorseAdded;
+        public static string HorseLeaserHorsesFull;
+
+        public static string HorseLeaserReturnedToUniterPegasus;
+
+        public static string HorseLeaserReturnedToUniterFormat;
+        public static string HorseLeaserReturnedToOwnerFormat;
+
         // Horse Games
         public static string HorseGamesSelectHorse;
         public static string HorseGamesHorseEntryFormat;
@@ -451,6 +461,8 @@ namespace HISP.Game
         public static string HorseTrainableInFormat;
         public static string HorseIsTrainable;
 
+        public static string HorseLeasedRemainingTimeFormat;
+
         public static string HorseCannotMountUntilTackedMessage;
         public static string HorseDismountedBecauseNotTackedMessageFormat;
         public static string HorseMountButtonFormat;
@@ -842,6 +854,16 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatHorseReturnedToOwner(string horseName)
+        {
+            return HorseLeaserReturnedToOwnerFormat.Replace("%HORSENAME%", horseName);
+        }
+        public static string FormatHorseReturnedToUniter(string horseName)
+        {
+            return HorseLeaserReturnedToUniterFormat.Replace("%HORSENAME%", horseName);
+        }
+
         public static string FormatArenaCompetingHorseEntry(string userName, string horseName, int horseRandomId)
         {
             return ArenaCompetingHorseFormat.Replace("%USERNAME%", userName).Replace("%HORSENAME%", horseName).Replace("%HORSERANDOMID%", horseRandomId.ToString());
@@ -1481,6 +1503,10 @@ namespace HISP.Game
         public static string FormatTrainableIn(int minutes)
         {
             return HorseTrainableInFormat.Replace("%TIME%", minutes.ToString());
+        }
+        public static string FormatHorseIsLeased(int minutes)
+        {
+            return HorseLeasedRemainingTimeFormat.Replace("%TIME%", minutes.ToString());
         }
 
         public static string FormatDisMountButton(int randomId)
