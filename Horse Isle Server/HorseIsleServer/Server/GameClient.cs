@@ -388,6 +388,9 @@ namespace HISP.Server
                     case PacketBuilder.PACKET_RANCH:
                         GameServer.OnRanchPacket(this, Packet);
                         break;
+                    case PacketBuilder.PACKET_AUCTION:
+                        GameServer.OnAuctionPacket(this, Packet);
+                        break;
                     default:
                         Logger.ErrorPrint("Unimplemented Packet: " + BitConverter.ToString(Packet).Replace('-', ' '));
                         break;

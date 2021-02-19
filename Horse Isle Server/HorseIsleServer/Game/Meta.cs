@@ -1467,9 +1467,18 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.AuctionsRunning;
-            foreach(Auction.AuctionEntry entry in auction.AuctionEntries)
+            foreach(Auction.AuctionEntry entry in auction.AuctionEntries.ToArray())
             {
-                message += Messages.FormatAuctionHorseEntry(Database.GetUsername(entry.OwnerId), entry.Horse.Color, entry.Horse.Breed.Name, entry.Horse.Gender, entry.Horse.BasicStats.Experience, entry.Horse.RandomId, entry.TimeRemaining, Database.GetUsername(entry.HighestBidder), entry.HighestBid, entry.RandomId);
+                message += Messages.FormatAuctionHorseEntry(Database.GetUsername(entry.OwnerId), entry.Horse.Color, entry.Horse.Breed.Name, entry.Horse.Gender, entry.Horse.BasicStats.Experience, entry.Horse.RandomId);
+                if (!entry.Completed)
+                    message += Messages.FormatAuctionGoingTo(entry.TimeRemaining, Database.GetUsername(entry.HighestBidder), entry.HighestBid, entry.RandomId);
+                else
+                {
+                    if (entry.HighestBidder == entry.OwnerId)
+                        message += Messages.AuctionNotSold;
+                    else
+                        message += Messages.FormatAuctionSoldTo(Database.GetUsername(entry.HighestBidder), entry.HighestBid);
+                }
             }
             User[] users = GameServer.GetUsersAt(user.X, user.Y, true, true);
             List<string> usernames = new List<string>();

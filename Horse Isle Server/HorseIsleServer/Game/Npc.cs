@@ -129,6 +129,7 @@ namespace HISP.Game
                 // Check Tile Type
                 int TileID = Map.GetTileId(x, y, false);
                 string TileType = Map.TerrainTiles[TileID - 1].Type;
+
                 if (TileType != this.StayOn)
                     return false;
 
@@ -149,7 +150,7 @@ namespace HISP.Game
                         int tries = 0;
                         while(true)
                         {
-                            int direction = GameServer.RandomNumberGenerator.Next(0, 3);
+                            int direction = GameServer.RandomNumberGenerator.Next(0, 4);
                             int tryX = this.X;
                             int tryY = this.Y;
 

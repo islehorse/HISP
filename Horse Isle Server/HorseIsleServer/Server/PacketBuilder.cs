@@ -49,6 +49,15 @@ namespace HISP.Server
         public const byte PACKET_INFORMATION = 0x28;
         public const byte PACKET_WISH = 0x2C;
         public const byte PACKET_SWFMODULE = 0x50;
+        public const byte PACKET_AUCTION = 0x24;
+
+        public const byte AUCTION_BID_100 = 0x29;
+        public const byte AUCTION_BID_1K = 0x2A;
+        public const byte AUCTION_BID_10K = 0x2B;
+        public const byte AUCTION_BID_100K = 0x2C;
+        public const byte AUCTION_BID_1M = 0x2D;
+        public const byte AUCTION_BID_10M = 0x2E;
+        public const byte AUCITON_BID_100M = 0x2F;
 
         public const byte RANCH_BUY = 0x14;
         public const byte RANCH_INFO = 0x16;
