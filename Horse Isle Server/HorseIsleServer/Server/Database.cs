@@ -41,7 +41,7 @@ namespace HISP.Server
                 string PoetryRooms = "CREATE TABLE PoetryRooms(poetId INT, X INT, Y INT, roomId INT)";
                 string SavedDrawings = "CREATE TABLE SavedDrawings(playerId INT, Drawing1 TEXT(65535), Drawing2 TEXT(65535), Drawing3 TEXT(65535))";
                 string DrawingRooms = "CREATE TABLE DrawingRooms(roomId INT, Drawing TEXT(65535))";
-                string Horses = "CREATE TABLE Horses(randomId INT, ownerId INT, leaseTime INT, leaser INT, breed INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
+                string Horses = "CREATE TABLE Horses(randomId INT, ownerId INT, leaseTime INT, leaser INT, breed INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT, hidden TEXT(3))";
                 string WildHorse = "CREATE TABLE WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string LastPlayer = "CREATE TABLE LastPlayer(roomId TEXT(1028), playerId INT)";
                 string TrackingStats = "CREATE TABLE Tracking(playerId INT, what TEXT(128), count INT)";
@@ -1157,8 +1157,24 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Treasure SET value=@value";
+                sqlCommand.CommandText = "UPDATE Treasure SET value=@value WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Parameters.AddWithValue("@value", value);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void DeleteTreasure(int randomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM Treasure  WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
@@ -1448,6 +1464,7 @@ namespace HISP.Server
             int magicUsed = reader.GetInt32(33);
             int autosell = reader.GetInt32(29);
             int leaseTime = reader.GetInt32(2);
+            bool hidden = reader.GetString(33) == "YES";
 
             HorseInstance inst = new HorseInstance(horseBreed, randomId, name, description, spoiled, category, magicUsed, autosell, leaseTime);
             inst.Owner = reader.GetInt32(1);
@@ -1485,6 +1502,8 @@ namespace HISP.Server
                 inst.Equipment.Bridle = Item.GetItemById(reader.GetInt32(27));
             if (!reader.IsDBNull(28))
                 inst.Equipment.Companion = Item.GetItemById(reader.GetInt32(28));
+
+            
             return inst;
         }
 
@@ -1641,6 +1660,7 @@ namespace HISP.Server
             }
 
         }
+
 
         public static void LoadWildHorses()
         {
@@ -2106,6 +2126,8 @@ namespace HISP.Server
         }
 
 
+
+
         public static bool WeatherExists(string Area)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -2234,6 +2256,22 @@ namespace HISP.Server
                 int trainTimer = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 sqlCommand.Dispose();
                 return trainTimer;
+            }
+        }
+
+
+        public static void SetHorseHidden(int randomId, bool hidden)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET hidden=@hidden WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@hidden", hidden ? "YES" : "NO");
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
             }
         }
         public static void SetHorseTrainTimeout(int horseRandomId, int trainTimeout)

@@ -53,7 +53,7 @@ namespace HISP.Server
                     }
 
                 }
-
+                bool gotoPrision = false;
                 foreach(HorseInstance horse in LoggedinUser.HorseInventory.HorseList)
                 {
                     if (totalMinutesElapsed % 2 == 0)
@@ -61,16 +61,21 @@ namespace HISP.Server
                         horse.BasicStats.Thirst--;
                         horse.BasicStats.Hunger--;
 
-                        if (horse.BasicStats.Thirst <= 0)
+                        if (horse.BasicStats.Thirst <= 0 && horse.BasicStats.Hunger <= 0)
+                        {
                             horse.BasicStats.Health -= 5;
+                            if(horse.BasicStats.Hunger <= 0)
+                            {
+                                gotoPrision = true; // Goto jail, go directly to jail, do not pass go, do not collect 200$
+
+                                horse.BasicStats.Health = 10;
+                                horse.BasicStats.Hunger = 500;
+                                horse.BasicStats.Thirst = 500;
+                            }
+                        }
                     }
 
-                    if (totalMinutesElapsed % 60 == 0)
-                    {
-                        horse.BasicStats.Shoes--;
-                        horse.BasicStats.Tiredness--;
-                    }
-
+                  
                     if(horse.Leaser > 0)
                     {
                         horse.LeaseTime--;
@@ -149,7 +154,12 @@ namespace HISP.Server
                     }
 
                 }
-
+                if(gotoPrision)
+                {
+                    byte[] sendToPrision = PacketBuilder.CreateChat(Messages.YouWereSentToPrisionIsle, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    SendPacket(sendToPrision);
+                    LoggedinUser.Teleport(45, 35);
+                }
 
                 if (totalMinutesElapsed % 2 == 0)
                 {
@@ -162,7 +172,9 @@ namespace HISP.Server
                     LoggedinUser.Tiredness--;
             }
 
-            if(!isDisconnecting)
+
+
+            if (!isDisconnecting)
                minuteTimer.Change(oneMinute, oneMinute);
             dcLock = false;
         }

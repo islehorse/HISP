@@ -5128,7 +5128,7 @@ namespace HISP.Server
 
                             sender.LoggedinUser.Money += sellPrice;
 
-                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                             if(message == 1)
                             {
                                 byte[] soldItemMessage = PacketBuilder.CreateChat(Messages.FormatSellMessage(itemInfo.Name, sellPrice), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -5306,7 +5306,7 @@ namespace HISP.Server
 
 
                             // Send chat message to client.
-                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                             if (message == 1)
                             {
                                 byte[] broughtItemMessage = PacketBuilder.CreateChat(Messages.FormatBuyMessage(itemInfo.Name, buyCost), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -5898,7 +5898,6 @@ namespace HISP.Server
                     if(!nearbyUser.MetaPriority)
                         UpdateArea(nearbyUser.LoggedinClient);
 
-            UpdateWeather(client);
             UpdateUserInfo(client.LoggedinUser);
         }
 
