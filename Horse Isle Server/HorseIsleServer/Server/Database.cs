@@ -1383,7 +1383,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Horses VALUES(@randomId,@originalOwner,@leaseTime,@leaser,@breed,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@autosell,@training,@category,@spoiled,@magicused)";
+                sqlCommand.CommandText = "INSERT INTO Horses VALUES(@randomId,@originalOwner,@leaseTime,@leaser,@breed,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@autosell,@training,@category,@spoiled,@magicused,@hidden)";
 
                 sqlCommand.Parameters.AddWithValue("@randomId", horse.RandomId);
                 sqlCommand.Parameters.AddWithValue("@originalOwner", horse.Owner);
@@ -1443,6 +1443,8 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@spoiled", horse.Spoiled);
                 sqlCommand.Parameters.AddWithValue("@magicused", horse.MagicUsed);
 
+                sqlCommand.Parameters.AddWithValue("@hidden", horse.Hidden ? "YES" : "NO");
+
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
@@ -1464,7 +1466,7 @@ namespace HISP.Server
             int magicUsed = reader.GetInt32(33);
             int autosell = reader.GetInt32(29);
             int leaseTime = reader.GetInt32(2);
-            bool hidden = reader.GetString(33) == "YES";
+            bool hidden = reader.GetString(34) == "YES";
 
             HorseInstance inst = new HorseInstance(horseBreed, randomId, name, description, spoiled, category, magicUsed, autosell, leaseTime);
             inst.Owner = reader.GetInt32(1);

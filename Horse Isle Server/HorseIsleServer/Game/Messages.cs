@@ -12,6 +12,11 @@ namespace HISP.Game
 
         // Mod isle
         public static string ModIsleMessage;
+
+        // Auction House
+        public static string AuctionCurrentRunning;
+
+
         // Warp Command
         public static string SuccessfullyWarpedToLocation;
         public static string SuccessfullyWarpedToPlayer;
@@ -1599,9 +1604,9 @@ namespace HISP.Game
         }
 
 
-        public static string FormatWildHorse(string name, string breed, int randomId)
+        public static string FormatWildHorse(string name, string breed, int randomId, bool vowel)
         {
-            return WildHorseFormat.Replace("%NAME%", name).Replace("%BREED%", breed).Replace("%RANDOMID%", randomId.ToString());
+            return WildHorseFormat.Replace("%NAME%", name).Replace("%BREED%", breed).Replace("%RANDOMID%", randomId.ToString()).Replace("%N%", vowel ? "n" : "");
         }
         public static string FormatHorseBreedPreview(string name, string description)
         {
