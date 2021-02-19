@@ -48,7 +48,7 @@ namespace HISP.Game.Horse
 
             return false;
         }
-        public WildHorse(HorseInstance horse, int MapX = -1, int MapY = -1, int despawnTimeout=60, bool addToDatabase = true)
+        public WildHorse(HorseInstance horse, int MapX = -1, int MapY = -1, int despawnTimeout=1440, bool addToDatabase = true)
         {
             Instance = horse;
             timeout = despawnTimeout;

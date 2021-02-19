@@ -14,8 +14,28 @@ namespace HISP.Game
         public static string ModIsleMessage;
 
         // Auction House
-        public static string AuctionCurrentRunning;
+        public static string AuctionsRunning;
+        public static string AuctionHorseEntryFormat;
+        public static string AuctionPlayersHereFormat;
 
+        public static string AuctionAHorse;
+        public static string AuctionListHorse;
+
+        public static string AuctionHorseListEntryFormat;
+        public static string AuctionHorseIsTacked;
+
+        public static string AuctionBidRaisedFormat;
+        public static string AuctionTopBid;
+        public static string AuctionExistingBidHigher;
+
+        public static string AuctionYouveBeenOutbidFormat;
+        public static string AuctionCantAffordBid;
+        public static string AuctionCantAffordAuctionFee;
+
+        public static string AuctionYouBroughtAHorseFormat;
+        public static string AuctionNoHorseBrought;
+
+        public static string AuctionHorseSoldFormat;
 
         // Warp Command
         public static string SuccessfullyWarpedToLocation;
@@ -867,6 +887,37 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        public static string FormatAuctionHorseSold(int money)
+        {
+            return AuctionHorseSoldFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatAuctionBroughtHorse(int money)
+        {
+            return AuctionYouBroughtAHorseFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatAuctionYourOutbidBy(string username, int amount)
+        {
+            return AuctionYouveBeenOutbidFormat.Replace("%USERNAME%", username).Replace("%AMOUNT%", amount.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatAuctionBidRaised(int prevAmount, int newAmount)
+        {
+            return AuctionBidRaisedFormat.Replace("%AMOUNT%", prevAmount.ToString("N0", CultureInfo.InvariantCulture)).Replace("%NEWAMOUNT%", newAmount.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatAuctionHorseListEntry(string horseName, bool tacked, int randomId)
+        {
+            return AuctionHorseListEntryFormat.Replace("%HORSENAME%", horseName).Replace("%TACKEDORNO%", tacked ? Messages.AuctionHorseIsTacked : "").Replace("%RANDOMID%", randomId.ToString());
+        }
+        public static string FormatAuctionHorseEntry(string username, string color, string breedName, string gender, int experience, int horseRandomId, int timeRemaining, string winningPlayer, int winningBid, int auctionRandomId)
+        {
+            return AuctionHorseEntryFormat.Replace("%USERNAME%", username).Replace("%COLOR%", color).Replace("%BREED%", breedName).Replace("%GENDER%", gender).Replace("%EXP%", experience.ToString("N0", CultureInfo.InvariantCulture)).Replace("%RANDOMID%", horseRandomId.ToString()).Replace("%TIME%", timeRemaining.ToString()).Replace("%WINNINGPLAYER%", winningPlayer).Replace("%WINNINGBID%", winningBid.ToString("N0", CultureInfo.InvariantCulture)).Replace("%AUCTIONRANDOMID%", auctionRandomId.ToString());
+
+        }
+        public static string FormatAuctionPlayersHere(string usernames)
+        {
+            return AuctionPlayersHereFormat.Replace("%USERNAMES%", usernames);
+        }
+
 
         public static string FormatHorseReturnedToOwner(string horseName)
         {

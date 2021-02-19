@@ -1444,6 +1444,46 @@ namespace HISP.Game
 
             return message;
         }
+        public static string BuildAuctionHorseList(User user)
+        {
+            string message = Messages.AuctionListHorse;
+            foreach(HorseInstance horse in user.HorseInventory.HorseList)
+            {
+                if (horse.Leaser > 0)
+                    continue;
+                if (horse.Category != "TRADING")
+                    continue;
+
+                bool tacked = (horse.Equipment.Saddle != null || horse.Equipment.SaddlePad != null || horse.Equipment.Bridle != null || horse.Equipment.Companion != null);
+
+                message += Messages.FormatAuctionHorseListEntry(horse.Name, tacked, horse.RandomId);
+            }
+
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        private static string buildAuction(User user, Auction auction)
+        {
+            string message = "";
+            message += Messages.AuctionsRunning;
+            foreach(Auction.AuctionEntry entry in auction.AuctionEntries)
+            {
+                message += Messages.FormatAuctionHorseEntry(Database.GetUsername(entry.OwnerId), entry.Horse.Color, entry.Horse.Breed.Name, entry.Horse.Gender, entry.Horse.BasicStats.Experience, entry.Horse.RandomId, entry.TimeRemaining, Database.GetUsername(entry.HighestBidder), entry.HighestBid, entry.RandomId);
+            }
+            User[] users = GameServer.GetUsersAt(user.X, user.Y, true, true);
+            List<string> usernames = new List<string>();
+            foreach(User userInst in users)
+            {
+                usernames.Add(userInst.Username);
+            }
+            message += Messages.FormatAuctionPlayersHere(string.Join(", ", usernames.ToArray()));
+            message += Messages.AuctionAHorse;
+
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         private static string buildWorkshop(User user)
         {
             Workshop shop = Workshop.GetWorkshopAt(user.X, user.Y);
@@ -2442,6 +2482,11 @@ namespace HISP.Game
                 {
                     message += buildArena(user, Arena.GetAreaById(int.Parse(TileArg)));
                 }
+                if(TileCode == "AUCTION")
+                {
+                    user.MetaPriority = false;
+                    message += buildAuction(user, Auction.GetAuctionRoomById(int.Parse(TileArg)));
+                }
                 if(TileCode == "TRAINER")
                 {
                     message += buildTrainer(user, Trainer.GetTrainerById(int.Parse(TileArg)));
@@ -2480,6 +2525,7 @@ namespace HISP.Game
                 }
                 if (TileCode == "MULTIROOM")
                 {
+                    user.MetaPriority = false;
                     if (TileArg != "")
                         message += buildMultiroom(TileArg, user);
                 }

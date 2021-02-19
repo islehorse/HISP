@@ -804,7 +804,10 @@ namespace HISP.Server
                                             break;
                                     }
                                     trainHorseInst.BasicStats.Experience += trainer.ExperienceGained;
-                                    trainHorseInst.TrainTimer = 1440;
+                                    if(sender.LoggedinUser.Subscribed)
+                                        trainHorseInst.TrainTimer = 1440;
+                                    else
+                                        trainHorseInst.TrainTimer = 720;
 
                                     byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainedInStatFormat(trainHorseInst.Name, trainer.ImprovesStat), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(trainSuccessfulMessage);
@@ -2169,6 +2172,11 @@ namespace HISP.Server
                 case "38": // Read Books
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBooksLibary());
+                    sender.SendPacket(metaPacket);
+                    break;
+                case "41": // Put horse into auction
+                    sender.LoggedinUser.MetaPriority = true;
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAuctionHorseList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "47":
