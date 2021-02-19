@@ -112,8 +112,6 @@ namespace HISP.Server
             }
 
 
-
-
             if (totalMinutesElapsed % 60 == 0)
             {
                 foreach (HorseInstance horse in Database.GetMostSpoiledHorses())
@@ -147,7 +145,20 @@ namespace HISP.Server
                 }
             }
 
+            foreach(Auction auction in Auction.AuctionRooms.ToArray())
+            {
+                foreach(Auction.AuctionEntry entry in auction.AuctionEntries.ToArray())
+                {
+                   entry.TimeRemaining--;
+                   if (entry.Completed)
+                        auction.DeleteEntry(entry);
 
+                   if (entry.TimeRemaining <= 0)
+                        entry.Completed = true;
+
+                    auction.UpdateAuctionRoom();
+                }
+            }
 
             Database.IncPlayerTirednessForOfflineUsers();
 
@@ -194,6 +205,80 @@ namespace HISP.Server
                 byte[] noTelescopeMessage = PacketBuilder.CreateChat(Messages.NoTelescope, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 sender.SendPacket(noTelescopeMessage);
             }
+        }
+
+        public static void OnAuctionPacket(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Sent auction packet when not logged in.");
+                return;
+            }
+            if (packet.Length < 4)
+            {
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid sized auction packet: " + BitConverter.ToString(packet).Replace("-", " "));
+                return;
+            }
+            byte method = packet[1];
+            int bidAmount = 0;
+            switch (method)
+            {
+                case PacketBuilder.AUCTION_BID_100:
+                    bidAmount = 100;
+                    goto doBids;
+                case PacketBuilder.AUCTION_BID_1K:
+                    bidAmount = 1000;
+                    goto doBids;
+                case PacketBuilder.AUCTION_BID_10K:
+                    bidAmount = 10000;
+                    goto doBids;
+                case PacketBuilder.AUCTION_BID_100K:
+                    bidAmount = 100000;
+                    goto doBids;
+                case PacketBuilder.AUCTION_BID_1M:
+                    bidAmount = 1000000;
+                    goto doBids;
+                case PacketBuilder.AUCTION_BID_10M:
+                    bidAmount = 10000000;
+                    goto doBids;
+                case PacketBuilder.AUCITON_BID_100M:
+                    bidAmount = 100000000;
+                    doBids:;
+                    if(World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                    {
+                        World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                        if(tile.Code != null)
+                        {
+                            if(tile.Code.StartsWith("AUCTION-"))
+                            {
+                                Auction auctionRoom = Auction.GetAuctionRoomById(int.Parse(tile.Code.Split('-')[1]));
+                                int auctionEntryId = -1;
+                                string packetStr = Encoding.UTF8.GetString(packet);
+                                string auctionEntryStr = packetStr.Substring(2, packetStr.Length - 4);
+                                try
+                                {
+                                    auctionEntryId = int.Parse(auctionEntryStr);
+                                }
+                                catch(FormatException)
+                                {
+                                    Logger.ErrorPrint("Cant find auciton entry id NaN.");
+                                    break;
+                                }
+                                if (!auctionRoom.HasAuctionEntry(auctionEntryId))
+                                    break;
+                                Auction.AuctionEntry entry = auctionRoom.GetAuctionEntry(auctionEntryId);
+                                entry.Bid(sender.LoggedinUser, bidAmount);
+
+                            }
+                        }
+                    }
+                    break;
+                default:
+                    Logger.ErrorPrint("Unknown method id: 0x" + method.ToString("X"));
+                    break;
+            
+            }
+
         }
         public static void OnHorseInteraction(GameClient sender, byte[] packet)
         {
@@ -2332,14 +2417,14 @@ namespace HISP.Server
                         break;
 
                     }
-                    else if(buttonIdStr.StartsWith("50c"))
+                    else if (buttonIdStr.StartsWith("50c"))
                     {
                         string gender = buttonIdStr.Substring(3);
                         if (sender.LoggedinUser.PawneerOrderBreed != null)
                         {
                             if (sender.LoggedinUser.PawneerOrderBreed.GenderTypes().Contains(gender))
                             {
-                                if(sender.LoggedinUser.Inventory.HasItemId(Item.PawneerOrder))
+                                if (sender.LoggedinUser.Inventory.HasItemId(Item.PawneerOrder))
                                 {
                                     sender.LoggedinUser.PawneerOrderGender = gender;
 
@@ -2360,13 +2445,13 @@ namespace HISP.Server
                         }
                         Logger.ErrorPrint(sender.LoggedinUser.Username + " Error occured when doing a Pawneer Order.");
                         break;
-                    }    
-                    else if(buttonIdStr.StartsWith("49c"))
+                    }
+                    else if (buttonIdStr.StartsWith("49c"))
                     {
                         string color = buttonIdStr.Substring(3);
-                        if(sender.LoggedinUser.PawneerOrderBreed != null)
+                        if (sender.LoggedinUser.PawneerOrderBreed != null)
                         {
-                            if(sender.LoggedinUser.PawneerOrderBreed.Colors.Contains(color))
+                            if (sender.LoggedinUser.PawneerOrderBreed.Colors.Contains(color))
                             {
                                 sender.LoggedinUser.PawneerOrderColor = color;
 
@@ -2471,8 +2556,59 @@ namespace HISP.Server
                         }
                         break;
                     }
+                    else if (buttonIdStr.StartsWith("42c"))
+                    {
+                        string idStr = buttonIdStr.Substring(3);
+                        int horseId = -1;
+                        try
+                        {
+                            horseId = int.Parse(idStr);
+                        }
+                        catch (FormatException)
+                        {
+                            Logger.DebugPrint(sender.LoggedinUser.Username + " Tried to auction a horse with id NaN.");
+                            break;
+                        }
+                        if (sender.LoggedinUser.HorseInventory.HorseIdExist(horseId))
+                        {
+                            HorseInstance inst = sender.LoggedinUser.HorseInventory.GetHorseById(horseId);
 
-                    if(Leaser.LeaserButtonIdExists(buttonIdStr))
+                            if(World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                            {
+                                World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
+                                if(tile.Code == null || !tile.Code.StartsWith("AUCTION-"))
+                                {
+                                    Logger.ErrorPrint("Cant find auction room that " + sender.LoggedinUser.Username + " Is trying to place a horse in.");
+                                    return;
+                                }
+                                Auction auctionRoom = Auction.GetAuctionRoomById(int.Parse(tile.Code.Split('-')[1]));
+
+                                if (sender.LoggedinUser.Money >= 1000)
+                                {
+                                    sender.LoggedinUser.Money -= 1000;
+                                    Auction.AuctionEntry entry = new Auction.AuctionEntry(8, 0, sender.LoggedinUser.Id);
+                                    entry.Horse = inst;
+                                    entry.OwnerId = sender.LoggedinUser.Id;
+                                    entry.Completed = false;
+                                    inst.Hidden = true;
+                                    auctionRoom.AddEntry(entry);
+                                    UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
+                                    break;
+                                }
+                                else
+                                {
+                                    byte[] cantAffordAuctionMsg = PacketBuilder.CreateChat(Messages.AuctionCantAffordAuctionFee, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordAuctionMsg);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to auction a horse they did not have.");
+                            break;
+                        }
+                    }
+                    if (Leaser.LeaserButtonIdExists(buttonIdStr))
                     {
                         Leaser horseLeaser = Leaser.GetLeaserByButtonId(buttonIdStr);
 

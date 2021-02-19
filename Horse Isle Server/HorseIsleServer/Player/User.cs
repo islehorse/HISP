@@ -34,9 +34,10 @@ namespace HISP.Player
         public bool NoClip = false;
         public string Gender;
         public bool MetaPriority = false;
-
+        public List<Auction.AuctionBid> Bids = new List<Auction.AuctionBid>();
         public bool Idle;
         public int Facing;
+
         public int MaxItems
         {
             get

@@ -842,6 +842,10 @@ namespace HISP.Server
             Messages.AuctionYouBroughtAHorseFormat = gameData.messages.meta.auction.brought_horse;
             Messages.AuctionNoHorseBrought = gameData.messages.meta.auction.no_one_brought;
             Messages.AuctionHorseSoldFormat = gameData.messages.meta.auction.horse_sold;
+            
+            Messages.AuctionSoldToFormat = gameData.messages.meta.auction.sold_to;
+            Messages.AuctionNotSold = gameData.messages.meta.auction.not_sold;
+            Messages.AuctionGoingToFormat = gameData.messages.meta.auction.going_to;
 
             // Hammock Text
             Messages.HammockText = gameData.messages.meta.hammock;

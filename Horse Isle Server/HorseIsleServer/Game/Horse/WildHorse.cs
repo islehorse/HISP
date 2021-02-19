@@ -52,7 +52,6 @@ namespace HISP.Game.Horse
         {
             Instance = horse;
             timeout = despawnTimeout;
-
             if(MapX == -1 && MapY == -1)
             {
                 while (true)
@@ -113,35 +112,47 @@ namespace HISP.Game.Horse
             if (GameServer.GetUsersAt(this.X, this.Y, true, true).Length > 0)
                 return;
 
-            int direction = GameServer.RandomNumberGenerator.Next(0, 3);
-            int tryX = this.X;
-            int tryY = this.Y;
-
-            switch (direction)
+            int tries = 0;
+            while(true)
             {
-                case 0:
-                    tryX += 1;
-                    break;
-                case 1:
-                    tryX -= 1;
-                    break;
-                case 2:
-                    tryY += 1;
-                    break;
-                case 3:
-                    tryY -= 1;
-                    break;
+                int direction = GameServer.RandomNumberGenerator.Next(0, 4);
+                int tryX = this.X;
+                int tryY = this.Y;
+
+                switch (direction)
+                {
+                    case 0:
+                        tryX += 1;
+                        break;
+                    case 1:
+                        tryX -= 1;
+                        break;
+                    case 2:
+                        tryY += 1;
+                        break;
+                    case 3:
+                        tryY -= 1;
+                        break;
 
 
+                }
+                bool check = CanHorseBeHere(this.X, this.Y); // if the horse is allready in an invalid position..
+
+                if (CanHorseBeHere(tryX, tryY, check))
+                {
+                    x = tryX;
+                    y = tryY;
+                    break;
+                }
+
+                if(tries >= 100)
+                {
+                    Logger.ErrorPrint("Wild Horse: " + Instance.Name + " " + Instance.Breed + " is stuck (cant move after 100 tries)");
+                    break;
+                }
+                tries++;
             }
-            bool check = CanHorseBeHere(this.X, this.Y); // if the horse is allready in an invalid position..
 
-            if (CanHorseBeHere(tryX, tryY, check))
-            {
-                x = tryX;
-                y = tryY;
-            }
-            
         }
 
         public void Escape()

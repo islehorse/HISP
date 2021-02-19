@@ -50,7 +50,7 @@ namespace HISP.Server
                 string Ranches = "CREATE TABLE Ranches(ranchId INT, playerId INT, title TEXT(1028), description TEXT(1028), upgradeLevel INT, building1 INT, building2 INT, building3 INT, building4 INT, building5 INT, building6 INT, building7 INT, building8 INT, building9 INT, building10 INT, building11 INT, building12 INT, building13 INT, building14 INT, building15 INT, building16 INT, investedMoney INT)";
                 string BannedPlayers = "CREATE TABLE BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))";
                 string RiddlesComplete = "CREATE TABLE RiddlesComplete(playerId INT, riddleId INT, solved TEXT(1028))";
-                string AuctionTable = "CREATE TABLE Auctions(roomId INT, randomId INT, horseRandomId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT)";
+                string AuctionTable = "CREATE TABLE Auctions(roomId INT, randomId INT, horseRandomId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT, Done TEXT(3))";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
                 try
@@ -1567,7 +1567,7 @@ namespace HISP.Server
 
                     auctionEntry.Horse = GetPlayerHorse(horseId);
                     auctionEntry.OwnerId = reader.GetInt32(3);
-
+                    auctionEntry.Completed = reader.GetString(7) == "YES";
                     auction.AuctionEntries.Add(auctionEntry);
 
                 }
@@ -1576,13 +1576,26 @@ namespace HISP.Server
             }
         }
 
+        public static void DeleteAuctionRoom(int randomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM Auctions WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
         public static void AddAuctionRoom(Auction.AuctionEntry entry, int roomId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Auctions VALUES(@roomId, @randomId, @horseRandomId, @ownerId, @timeRemaining, @highestBid, @highestBidder)";
+                sqlCommand.CommandText = "INSERT INTO Auctions VALUES(@roomId, @randomId, @horseRandomId, @ownerId, @timeRemaining, @highestBid, @highestBidder, @done)";
                 sqlCommand.Parameters.AddWithValue("@roomId", roomId);
                 sqlCommand.Parameters.AddWithValue("@randomId", entry.RandomId);
                 sqlCommand.Parameters.AddWithValue("@horseRandomId", entry.Horse.RandomId);
@@ -1590,6 +1603,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@timeRemaining", entry.TimeRemaining);
                 sqlCommand.Parameters.AddWithValue("@highestBid", entry.HighestBid);
                 sqlCommand.Parameters.AddWithValue("@highestBidder", entry.HighestBidder);
+                sqlCommand.Parameters.AddWithValue("@done", entry.Completed ? "YES" : "NO");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
@@ -2324,6 +2338,21 @@ namespace HISP.Server
                 int trainTimer = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 sqlCommand.Dispose();
                 return trainTimer;
+            }
+        }
+
+        public static void SetAuctionDone(int randomId, bool done)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Auctions SET done=@done WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@done", done ? "YES" : "NO");
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
             }
         }
 

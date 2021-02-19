@@ -37,6 +37,10 @@ namespace HISP.Game
 
         public static string AuctionHorseSoldFormat;
 
+        public static string AuctionSoldToFormat;
+        public static string AuctionNotSold;
+        public static string AuctionGoingToFormat;
+
         // Warp Command
         public static string SuccessfullyWarpedToLocation;
         public static string SuccessfullyWarpedToPlayer;
@@ -888,6 +892,14 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatAuctionSoldTo(string playerName, int money)
+        {
+            return AuctionSoldToFormat.Replace("%PLAYERNAME%", playerName).Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatAuctionGoingTo(int timeRemaining, string winningPlayer, int winningBid, int auctionRandomId)
+        {
+            return AuctionGoingToFormat.Replace("%TIME%", timeRemaining.ToString()).Replace("%WINNINGPLAYER%", winningPlayer).Replace("%WINNINGBID%", winningBid.ToString("N0", CultureInfo.InvariantCulture)).Replace("%AUCTIONRANDOMID%", auctionRandomId.ToString());
+        }
         public static string FormatAuctionHorseSold(int money)
         {
             return AuctionHorseSoldFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
@@ -908,9 +920,9 @@ namespace HISP.Game
         {
             return AuctionHorseListEntryFormat.Replace("%HORSENAME%", horseName).Replace("%TACKEDORNO%", tacked ? Messages.AuctionHorseIsTacked : "").Replace("%RANDOMID%", randomId.ToString());
         }
-        public static string FormatAuctionHorseEntry(string username, string color, string breedName, string gender, int experience, int horseRandomId, int timeRemaining, string winningPlayer, int winningBid, int auctionRandomId)
+        public static string FormatAuctionHorseEntry(string username, string color, string breedName, string gender, int experience, int horseRandomId)
         {
-            return AuctionHorseEntryFormat.Replace("%USERNAME%", username).Replace("%COLOR%", color).Replace("%BREED%", breedName).Replace("%GENDER%", gender).Replace("%EXP%", experience.ToString("N0", CultureInfo.InvariantCulture)).Replace("%RANDOMID%", horseRandomId.ToString()).Replace("%TIME%", timeRemaining.ToString()).Replace("%WINNINGPLAYER%", winningPlayer).Replace("%WINNINGBID%", winningBid.ToString("N0", CultureInfo.InvariantCulture)).Replace("%AUCTIONRANDOMID%", auctionRandomId.ToString());
+            return AuctionHorseEntryFormat.Replace("%USERNAME%", username).Replace("%COLOR%", color).Replace("%BREED%", breedName).Replace("%GENDER%", gender).Replace("%EXP%", experience.ToString("N0", CultureInfo.InvariantCulture)).Replace("%RANDOMID%", horseRandomId.ToString());
 
         }
         public static string FormatAuctionPlayersHere(string usernames)
