@@ -1495,6 +1495,8 @@ namespace HISP.Game
         {
             string message = "";
             int totalPrice = 0;
+
+
             foreach (HorseInstance horse in user.HorseInventory.HorseList)
             {
                 message += Messages.FormatVetServiceHorseMeta(horse.Name, horse.BasicStats.Health, 1000);
@@ -1510,7 +1512,8 @@ namespace HISP.Game
                 }
 
             }
-            message += Messages.FormatVetApplyAllServiceMeta(totalPrice);
+            if (user.HorseInventory.HorseList.Length > 0)
+                message += Messages.FormatVetApplyAllServiceMeta(totalPrice);
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
             return message;

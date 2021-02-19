@@ -456,6 +456,7 @@ namespace HISP.Player
 
             byte[] MovementPacket = PacketBuilder.CreateMovementPacket(X, Y, CharacterId, Facing, PacketBuilder.DIRECTION_TELEPORT, true);
             LoggedinClient.SendPacket(MovementPacket);
+            GameServer.UpdateWeather(LoggedinClient);
             GameServer.Update(LoggedinClient);
         }
 

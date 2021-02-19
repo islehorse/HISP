@@ -1395,6 +1395,7 @@ namespace HISP.Server
             Messages.GlobalChatFormatForModerators = gameData.messages.chat.for_others.global_format_moderator;
             Messages.DirectChatFormatForModerators = gameData.messages.chat.for_others.dm_format_moderator;
 
+            Messages.YouWereSentToPrisionIsle = gameData.messages.starved_horse;
 
             Messages.HereChatFormat = gameData.messages.chat.for_others.here_format;
             Messages.IsleChatFormat = gameData.messages.chat.for_others.isle_format;

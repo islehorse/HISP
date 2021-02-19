@@ -324,6 +324,8 @@ namespace HISP.Game
         public static string ModChatFormat;
         public static string AdminChatFormat;
 
+        public static string YouWereSentToPrisionIsle;
+
         public static string AdminCommandFormat;
         public static string PlayerCommandFormat;
 
