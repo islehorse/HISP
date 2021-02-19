@@ -740,7 +740,8 @@ namespace HISP.Game
                 message = Messages.HorsesHere;
                 foreach (WildHorse horse in horses)
                 {
-                    message += Messages.FormatWildHorse(horse.Instance.Name, horse.Instance.Breed.Name, horse.Instance.RandomId);
+                    bool vowel = (horse.Instance.Breed.Name[0].ToString().ToLower() == "a" || horse.Instance.Breed.Name[0].ToString().ToLower() == "i" || horse.Instance.Breed.Name[0].ToString().ToLower() == "u" || horse.Instance.Breed.Name[0].ToString().ToLower() == "e" || horse.Instance.Breed.Name[0].ToString().ToLower() == "o");
+                    message += Messages.FormatWildHorse(horse.Instance.Name, horse.Instance.Breed.Name, horse.Instance.RandomId, vowel);
                 }
             }
             return message;

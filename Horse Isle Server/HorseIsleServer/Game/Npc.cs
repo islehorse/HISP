@@ -146,31 +146,43 @@ namespace HISP.Game
                         if (GameServer.GetUsersAt(this.X, this.Y, true, true).Length > 0)
                             return;
 
-                        int direction = GameServer.RandomNumberGenerator.Next(0, 3);
-                        int tryX = this.X;
-                        int tryY = this.Y;
-
-                        switch (direction)
+                        int tries = 0;
+                        while(true)
                         {
-                            case 0:
-                                tryX += 1;
-                                break;
-                            case 1:
-                                tryX -= 1;
-                                break;
-                            case 2:
-                                tryY += 1;
-                                break;
-                            case 3:
-                                tryY -= 1;
-                                break;
-                        }
+                            int direction = GameServer.RandomNumberGenerator.Next(0, 3);
+                            int tryX = this.X;
+                            int tryY = this.Y;
 
-                        if (canNpcBeHere(tryX, tryY))
-                        {
-                            X = tryX;
-                            Y = tryY;
+                            switch (direction)
+                            {
+                                case 0:
+                                    tryX += 1;
+                                    break;
+                                case 1:
+                                    tryX -= 1;
+                                    break;
+                                case 2:
+                                    tryY += 1;
+                                    break;
+                                case 3:
+                                    tryY -= 1;
+                                    break;
+                            }
+
+                            if (canNpcBeHere(tryX, tryY))
+                            {
+                                X = tryX;
+                                Y = tryY;
+                                break;
+                            }
+                            tries++;
+                            if (tries > 100) // yo stuck lol
+                            {
+                                Logger.ErrorPrint("NPC: " + this.Name + " is probably stuck (cant move after 100 tries)");
+                                break;
+                            }
                         }
+                        
                     }
                     else // Is Scripted.
                     {
@@ -292,8 +304,7 @@ namespace HISP.Game
             Logger.DebugPrint("Making NPC's randomly wander.");
             foreach(NpcEntry npc in NpcList)
             {
-                if(GameServer.RandomNumberGenerator.Next(0,100) > 50)
-                    npc.RandomWander();
+                npc.RandomWander();
             }
         }
 
