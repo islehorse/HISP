@@ -7,6 +7,7 @@ using HISP.Game.Horse;
 using HISP.Game.Inventory;
 using HISP.Game.Items;
 using HISP.Security;
+using HISP.Game.Services;
 
 namespace HISP.Server
 {
@@ -49,7 +50,20 @@ namespace HISP.Server
                 string Ranches = "CREATE TABLE Ranches(ranchId INT, playerId INT, title TEXT(1028), description TEXT(1028), upgradeLevel INT, building1 INT, building2 INT, building3 INT, building4 INT, building5 INT, building6 INT, building7 INT, building8 INT, building9 INT, building10 INT, building11 INT, building12 INT, building13 INT, building14 INT, building15 INT, building16 INT, investedMoney INT)";
                 string BannedPlayers = "CREATE TABLE BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))";
                 string RiddlesComplete = "CREATE TABLE RiddlesComplete(playerId INT, riddleId INT, solved TEXT(1028))";
+                string AuctionTable = "CREATE TABLE Auctions(roomId INT, randomId INT, horseRandomId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+
+                try
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = AuctionTable;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
 
                 try
                 {
@@ -1530,6 +1544,58 @@ namespace HISP.Server
             }
         }
 
+        public static void LoadAuctionRoom(Auction auction, int roomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM Auctions WHERE roomId=@roomId";
+                sqlCommand.Parameters.AddWithValue("@roomId", roomId);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    int randomId = reader.GetInt32(1);
+                    int timeRemaining = reader.GetInt32(4);
+                    int highestBid = reader.GetInt32(5);
+                    int highestBidder = reader.GetInt32(6);
+                    int horseId = reader.GetInt32(2);
+
+                    Auction.AuctionEntry auctionEntry = new Auction.AuctionEntry(timeRemaining, highestBid, highestBidder, randomId);
+
+                    auctionEntry.Horse = GetPlayerHorse(horseId);
+                    auctionEntry.OwnerId = reader.GetInt32(3);
+
+                    auction.AuctionEntries.Add(auctionEntry);
+
+                }
+
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void AddAuctionRoom(Auction.AuctionEntry entry, int roomId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO Auctions VALUES(@roomId, @randomId, @horseRandomId, @ownerId, @timeRemaining, @highestBid, @highestBidder)";
+                sqlCommand.Parameters.AddWithValue("@roomId", roomId);
+                sqlCommand.Parameters.AddWithValue("@randomId", entry.RandomId);
+                sqlCommand.Parameters.AddWithValue("@horseRandomId", entry.Horse.RandomId);
+                sqlCommand.Parameters.AddWithValue("@ownerId", entry.OwnerId);
+                sqlCommand.Parameters.AddWithValue("@timeRemaining", entry.TimeRemaining);
+                sqlCommand.Parameters.AddWithValue("@highestBid", entry.HighestBid);
+                sqlCommand.Parameters.AddWithValue("@highestBidder", entry.HighestBidder);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
         public static void BanUser(int userId, string ip, string reason)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -2258,6 +2324,51 @@ namespace HISP.Server
                 int trainTimer = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 sqlCommand.Dispose();
                 return trainTimer;
+            }
+        }
+
+        public static void SetAuctionTimeout(int randomId, int timeRemaining)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Auctions SET timeRemaining=@timeRemaining WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@timeRemaining", timeRemaining);
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetAuctionHighestBid(int randomId, int highestBid)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Auctions SET highestBid=@highestBid WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@highestBid", highestBid);
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetAuctionHighestBidder(int randomId, int highestBidder)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Auctions SET highestBidder=@highestBidder WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@highestBidder", highestBidder);
+                sqlCommand.Parameters.AddWithValue("@randomId", randomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
             }
         }
 

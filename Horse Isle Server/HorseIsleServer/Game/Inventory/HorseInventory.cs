@@ -13,7 +13,14 @@ namespace HISP.Game.Inventory
         {
             get
             {
-                return horsesList.ToArray();
+                List<HorseInstance> filteredHorseList = new List<HorseInstance>();
+                foreach(HorseInstance horse in horsesList)
+                {
+                    if (!horse.Hidden)
+                        filteredHorseList.Add(horse);
+                }
+
+                return filteredHorseList.ToArray();
             }
         }
 

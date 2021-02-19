@@ -821,6 +821,28 @@ namespace HISP.Server
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
 
+            // Auction
+            Messages.AuctionsRunning = gameData.messages.meta.auction.auctions_running;
+            Messages.AuctionPlayersHereFormat = gameData.messages.meta.auction.players_here;
+            Messages.AuctionHorseEntryFormat = gameData.messages.meta.auction.auction_horse_entry;
+            Messages.AuctionAHorse = gameData.messages.meta.auction.auction_horse;
+
+            Messages.AuctionListHorse = gameData.messages.meta.auction.list_horse;
+            Messages.AuctionHorseListEntryFormat = gameData.messages.meta.auction.horse_list_entry;
+            Messages.AuctionHorseIsTacked = gameData.messages.meta.auction.tacked;
+
+            Messages.AuctionBidRaisedFormat = gameData.messages.meta.auction.bid_raised;
+            Messages.AuctionTopBid = gameData.messages.meta.auction.top_bid;
+            Messages.AuctionExistingBidHigher = gameData.messages.meta.auction.existing_higher;
+
+            Messages.AuctionYouveBeenOutbidFormat = gameData.messages.meta.auction.outbid_by;
+            Messages.AuctionCantAffordBid = gameData.messages.meta.auction.cant_afford_bid;
+            Messages.AuctionCantAffordAuctionFee = gameData.messages.meta.auction.cant_afford_listing;
+
+            Messages.AuctionYouBroughtAHorseFormat = gameData.messages.meta.auction.brought_horse;
+            Messages.AuctionNoHorseBrought = gameData.messages.meta.auction.no_one_brought;
+            Messages.AuctionHorseSoldFormat = gameData.messages.meta.auction.horse_sold;
+
             // Hammock Text
             Messages.HammockText = gameData.messages.meta.hammock;
 

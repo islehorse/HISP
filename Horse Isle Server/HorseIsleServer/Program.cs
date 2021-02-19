@@ -26,6 +26,7 @@ namespace HISP
             DroppedItems.Init();
             WildHorse.Init();
             Brickpoet.LoadPoetryRooms();
+            Auction.LoadAllAuctionRooms();
             Drawingroom.LoadAllDrawingRooms();
             Item.DoSpecialCases();
 
