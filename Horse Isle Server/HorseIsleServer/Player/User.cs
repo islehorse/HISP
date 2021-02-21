@@ -555,6 +555,29 @@ namespace HISP.Player
             LoggedinClient = baseClient;
             Inventory = new PlayerInventory(this);
             Quests = new PlayerQuests(this);
+
+            // Get auctions
+            foreach(Auction auction in Auction.AuctionRooms)
+            {
+                foreach(Auction.AuctionEntry auctionEntry in auction.AuctionEntries)
+                {
+                    if(auctionEntry.HighestBidder == this.Id)
+                    {
+                        Auction.AuctionBid bid = new Auction.AuctionBid();
+                        bid.BidUser = this;
+                        bid.BidAmount = auctionEntry.HighestBid;
+                        bid.AuctionItem = auctionEntry;
+
+                        if(bid.BidAmount > 0)
+                        {
+                            Bids.Add(bid);
+                            auctionEntry.Bidders.Add(bid);
+                        }
+
+                    }
+                }
+            }
+
         }
     }
 }

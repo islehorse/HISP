@@ -22,8 +22,10 @@ namespace HISP.Game
         public static string AuctionListHorse;
 
         public static string AuctionHorseListEntryFormat;
+        public static string AuctionHorseViewButton;
         public static string AuctionHorseIsTacked;
 
+        public static string AuctionBidMax;
         public static string AuctionBidRaisedFormat;
         public static string AuctionTopBid;
         public static string AuctionExistingBidHigher;
@@ -31,6 +33,7 @@ namespace HISP.Game
         public static string AuctionYouveBeenOutbidFormat;
         public static string AuctionCantAffordBid;
         public static string AuctionCantAffordAuctionFee;
+        public static string AuctionOneHorsePerPlayer;
 
         public static string AuctionYouBroughtAHorseFormat;
         public static string AuctionNoHorseBrought;
@@ -40,6 +43,8 @@ namespace HISP.Game
         public static string AuctionSoldToFormat;
         public static string AuctionNotSold;
         public static string AuctionGoingToFormat;
+
+        public static string AuctionNoOtherTransactionAllowed;
 
         // Warp Command
         public static string SuccessfullyWarpedToLocation;
@@ -894,7 +899,7 @@ namespace HISP.Game
 
         public static string FormatAuctionSoldTo(string playerName, int money)
         {
-            return AuctionSoldToFormat.Replace("%PLAYERNAME%", playerName).Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
+            return AuctionSoldToFormat.Replace("%PLAYERNAME%", playerName).Replace("%PRICE%", money.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatAuctionGoingTo(int timeRemaining, string winningPlayer, int winningBid, int auctionRandomId)
         {
@@ -920,10 +925,14 @@ namespace HISP.Game
         {
             return AuctionHorseListEntryFormat.Replace("%HORSENAME%", horseName).Replace("%TACKEDORNO%", tacked ? Messages.AuctionHorseIsTacked : "").Replace("%RANDOMID%", randomId.ToString());
         }
-        public static string FormatAuctionHorseEntry(string username, string color, string breedName, string gender, int experience, int horseRandomId)
+        public static string FormatAuctionHorseEntry(string username, string color, string breedName, string gender, int experience, string lookButton)
         {
-            return AuctionHorseEntryFormat.Replace("%USERNAME%", username).Replace("%COLOR%", color).Replace("%BREED%", breedName).Replace("%GENDER%", gender).Replace("%EXP%", experience.ToString("N0", CultureInfo.InvariantCulture)).Replace("%RANDOMID%", horseRandomId.ToString());
+            return AuctionHorseEntryFormat.Replace("%USERNAME%", username).Replace("%COLOR%", color).Replace("%BREED%", breedName).Replace("%GENDER%", gender).Replace("%EXP%", experience.ToString("N0", CultureInfo.InvariantCulture)).Replace("%LOOKBUTTON%", lookButton);
 
+        }
+        public static string FormatAuctionViewHorseButton(int randomId)
+        {
+            return AuctionHorseViewButton.Replace("%RANDOMID%", randomId.ToString());
         }
         public static string FormatAuctionPlayersHere(string usernames)
         {

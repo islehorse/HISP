@@ -15,10 +15,10 @@ namespace HISP.Server
 {
     public class GameDataJson
     {
-        
+
         public static void ReadGamedata()
         {
-            if(!File.Exists(ConfigReader.GameDataFile))
+            if (!File.Exists(ConfigReader.GameDataFile))
             {
                 Logger.ErrorPrint("Game Data JSON File: " + ConfigReader.GameDataFile + " Does not exist!");
                 throw new FileNotFoundException(ConfigReader.GameDataFile + " Not found :(");
@@ -76,7 +76,7 @@ namespace HISP.Server
 
             // Register Isles
             int totalIsles = gameData.places.isles.Count;
-            for(int i = 0; i < totalIsles; i++)
+            for (int i = 0; i < totalIsles; i++)
             {
 
                 World.Isle isle = new World.Isle();
@@ -92,7 +92,7 @@ namespace HISP.Server
             }
 
             int totalWaypoints = gameData.places.waypoints.Count;
-            for(int i = 0; i < totalWaypoints; i++)
+            for (int i = 0; i < totalWaypoints; i++)
             {
                 World.Waypoint waypoint = new World.Waypoint();
                 waypoint.Name = gameData.places.waypoints[i].name;
@@ -101,7 +101,7 @@ namespace HISP.Server
                 waypoint.Type = gameData.places.waypoints[i].type;
                 waypoint.Description = gameData.places.waypoints[i].description;
                 waypoint.WeatherTypesAvalible = gameData.places.waypoints[i].weather_avalible.ToObject<string[]>();
-                Logger.DebugPrint("Registered Waypoint: "+waypoint.PosX.ToString()+", "+waypoint.PosY.ToString() +" TYPE: "+waypoint.Type);
+                Logger.DebugPrint("Registered Waypoint: " + waypoint.PosX.ToString() + ", " + waypoint.PosY.ToString() + " TYPE: " + waypoint.Type);
                 World.Waypoints.Add(waypoint);
             }
 
@@ -116,9 +116,9 @@ namespace HISP.Server
                 specialTile.Title = gameData.places.special_tiles[i].title;
                 specialTile.Description = gameData.places.special_tiles[i].description;
                 specialTile.Code = gameData.places.special_tiles[i].code;
-                if(gameData.places.special_tiles[i].exit_x != null)
+                if (gameData.places.special_tiles[i].exit_x != null)
                     specialTile.ExitX = gameData.places.special_tiles[i].exit_x;
-                if(gameData.places.special_tiles[i].exit_x != null)
+                if (gameData.places.special_tiles[i].exit_x != null)
                     specialTile.ExitY = gameData.places.special_tiles[i].exit_y;
                 specialTile.AutoplaySwf = gameData.places.special_tiles[i].autoplay_swf;
                 specialTile.TypeFlag = gameData.places.special_tiles[i].type_flag;
@@ -129,7 +129,7 @@ namespace HISP.Server
 
             // Register Filter Reasons
             int totalReasons = gameData.messages.chat.reason_messages.Count;
-            for(int i = 0; i < totalReasons; i++)
+            for (int i = 0; i < totalReasons; i++)
             {
                 Chat.Reason reason = new Chat.Reason();
                 reason.Name = gameData.messages.chat.reason_messages[i].name;
@@ -141,7 +141,7 @@ namespace HISP.Server
             // Register Filters
 
             int totalFilters = gameData.messages.chat.filter.Count;
-            for(int i = 0; i < totalFilters; i++)
+            for (int i = 0; i < totalFilters; i++)
             {
                 Chat.Filter filter = new Chat.Filter();
                 filter.FilteredWord = gameData.messages.chat.filter[i].word;
@@ -149,7 +149,7 @@ namespace HISP.Server
                 filter.Reason = Chat.GetReason((string)gameData.messages.chat.filter[i].reason_type);
                 Chat.FilteredWords.Add(filter);
 
-                Logger.DebugPrint("Registered Filtered Word: " + filter.FilteredWord + " With reason: "+filter.Reason.Name+" (Matching all: " + filter.MatchAll + ")");
+                Logger.DebugPrint("Registered Filtered Word: " + filter.FilteredWord + " With reason: " + filter.Reason.Name + " (Matching all: " + filter.MatchAll + ")");
             }
 
             // Register Corrections
@@ -161,7 +161,7 @@ namespace HISP.Server
                 correction.ReplacedWord = gameData.messages.chat.correct[i].new_word;
                 Chat.CorrectedWords.Add(correction);
 
-                Logger.DebugPrint("Registered Word Correction: " + correction.FilteredWord + " to "+correction.ReplacedWord);
+                Logger.DebugPrint("Registered Word Correction: " + correction.FilteredWord + " to " + correction.ReplacedWord);
             }
 
             // Register Transports
@@ -190,7 +190,7 @@ namespace HISP.Server
                 transportPlace.LocationTitle = gameData.transport.transport_places[i].place_title;
                 Transport.TransportLocations.Add(transportPlace);
 
-                Logger.DebugPrint("Registered Transport Location: "+ transportPlace.LocationTitle+" To Goto X: " + transportPlace.GotoX + " Y: " + transportPlace.GotoY);
+                Logger.DebugPrint("Registered Transport Location: " + transportPlace.LocationTitle + " To Goto X: " + transportPlace.GotoX + " Y: " + transportPlace.GotoY);
             }
 
             // Register Items
@@ -212,7 +212,7 @@ namespace HISP.Server
                 int effectsCount = gameData.item.item_list[i].effects.Count;
 
                 Item.Effects[] effectsList = new Item.Effects[effectsCount];
-                for(int ii = 0; ii < effectsCount; ii++)
+                for (int ii = 0; ii < effectsCount; ii++)
                 {
                     effectsList[ii] = new Item.Effects();
                     effectsList[ii].EffectsWhat = gameData.item.item_list[i].effects[ii].effect_what;
@@ -227,12 +227,12 @@ namespace HISP.Server
                 item.SpawnParamaters.SpawnOnSpecialTile = gameData.item.item_list[i].spawn_parameters.spawn_on_special_tile;
                 item.SpawnParamaters.SpawnNearSpecialTile = gameData.item.item_list[i].spawn_parameters.spawn_near_special_tile;
 
-                Logger.DebugPrint("Registered Item ID: " + item.Id + " Name: " + item.Name + " spawns on: "+item.SpawnParamaters.SpawnOnTileType);
+                Logger.DebugPrint("Registered Item ID: " + item.Id + " Name: " + item.Name + " spawns on: " + item.SpawnParamaters.SpawnOnTileType);
                 Item.Items.Add(item);
             }
 
             int totalThrowable = gameData.item.throwable.Count;
-            for(int i = 0; i < totalThrowable; i++)
+            for (int i = 0; i < totalThrowable; i++)
             {
                 Item.ThrowableItem throwableItem = new Item.ThrowableItem();
                 throwableItem.Id = gameData.item.throwable[i].id;
@@ -243,7 +243,7 @@ namespace HISP.Server
             // Register NPCs
             Logger.DebugPrint("Registering NPCS: ");
             int totalNpcs = gameData.npc_list.Count;
-            for(int i = 0; i < totalNpcs; i++)
+            for (int i = 0; i < totalNpcs; i++)
             {
                 int id = gameData.npc_list[i].id;
                 int x = gameData.npc_list[i].x;
@@ -259,12 +259,12 @@ namespace HISP.Server
                     udlrStartY = gameData.npc_list[i].udlr_start_y;
 
                 Npc.NpcEntry npcEntry = new Npc.NpcEntry(id, x, y, moves, udlrStartX, udlrStartY);
-                
+
                 npcEntry.Name = gameData.npc_list[i].name;
                 npcEntry.AdminDescription = gameData.npc_list[i].admin_description;
                 npcEntry.ShortDescription = gameData.npc_list[i].short_description;
                 npcEntry.LongDescription = gameData.npc_list[i].long_description;
-                
+
 
                 if (gameData.npc_list[i].stay_on != null)
                     npcEntry.StayOn = gameData.npc_list[i].stay_on;
@@ -320,12 +320,12 @@ namespace HISP.Server
 
             Logger.DebugPrint("Registering Quests: ");
             int totalQuests = gameData.quest_list.Count;
-            for(int i = 0; i < totalQuests; i++)
+            for (int i = 0; i < totalQuests; i++)
             {
                 Quest.QuestEntry quest = new Quest.QuestEntry();
                 quest.Id = gameData.quest_list[i].id;
                 quest.Notes = gameData.quest_list[i].notes;
-                if(gameData.quest_list[i].title != null)
+                if (gameData.quest_list[i].title != null)
                     quest.Title = gameData.quest_list[i].title;
                 quest.RequiresQuestIdCompleteStatsMenu = gameData.quest_list[i].requires_questid_statsmenu.ToObject<int[]>();
                 if (gameData.quest_list[i].alt_activation != null)
@@ -341,7 +341,7 @@ namespace HISP.Server
                 int itemsRequiredCount = gameData.quest_list[i].items_required.Count;
 
                 List<Quest.QuestItemInfo> itmInfo = new List<Quest.QuestItemInfo>();
-                for(int ii = 0; ii < itemsRequiredCount; ii++)
+                for (int ii = 0; ii < itemsRequiredCount; ii++)
                 {
                     Quest.QuestItemInfo itemInfo = new Quest.QuestItemInfo();
                     itemInfo.ItemId = gameData.quest_list[i].items_required[ii].item_id;
@@ -349,7 +349,7 @@ namespace HISP.Server
                     itmInfo.Add(itemInfo);
                 }
                 quest.ItemsRequired = itmInfo.ToArray();
-                if(gameData.quest_list[i].fail_npc_chat != null)
+                if (gameData.quest_list[i].fail_npc_chat != null)
                     quest.FailNpcChat = gameData.quest_list[i].fail_npc_chat;
                 quest.MoneyEarned = gameData.quest_list[i].money_gained;
 
@@ -367,13 +367,13 @@ namespace HISP.Server
                 quest.QuestPointsEarned = gameData.quest_list[i].quest_points;
                 quest.SetNpcChatpoint = gameData.quest_list[i].set_npc_chatpoint;
                 quest.GotoNpcChatpoint = gameData.quest_list[i].goto_npc_chatpoint;
-                if(gameData.quest_list[i].warp_x != null)
+                if (gameData.quest_list[i].warp_x != null)
                     quest.WarpX = gameData.quest_list[i].warp_x;
-                if(gameData.quest_list[i].warp_y != null)
+                if (gameData.quest_list[i].warp_y != null)
                     quest.WarpY = gameData.quest_list[i].warp_y;
-                if(gameData.quest_list[i].success_message != null)
+                if (gameData.quest_list[i].success_message != null)
                     quest.SuccessMessage = gameData.quest_list[i].success_message;
-                if(gameData.quest_list[i].success_npc_chat != null)
+                if (gameData.quest_list[i].success_npc_chat != null)
                     quest.SuccessNpcChat = gameData.quest_list[i].success_npc_chat;
                 if (gameData.quest_list[i].requires_awardid != null)
                     quest.AwardRequired = gameData.quest_list[i].requires_awardid;
@@ -387,12 +387,12 @@ namespace HISP.Server
                 if (gameData.quest_list[i].chained_questid != null)
                     quest.ChainedQuestId = gameData.quest_list[i].chained_questid;
                 quest.Minigame = gameData.quest_list[i].minigame;
-                Logger.DebugPrint("Registered Quest: " + quest.Id +" - "+ quest.Title);
+                Logger.DebugPrint("Registered Quest: " + quest.Id + " - " + quest.Title);
                 Quest.QuestList.Add(quest);
             }
 
             int totalShops = gameData.shop_list.Count;
-            for(int i = 0; i < totalShops; i++)
+            for (int i = 0; i < totalShops; i++)
             {
 
                 Shop shop = new Shop(gameData.shop_list[i].stocks_itemids.ToObject<int[]>());
@@ -400,8 +400,8 @@ namespace HISP.Server
                 shop.BuyPricePercentage = gameData.shop_list[i].buy_percent;
                 shop.SellPricePercentage = gameData.shop_list[i].sell_percent;
                 shop.BuysItemTypes = gameData.shop_list[i].buys_item_types.ToObject<string[]>();
-                
-                Logger.DebugPrint("Registered Shop ID: "+ shop.Id + " Selling items at " + shop.SellPricePercentage + "% and buying at " + shop.BuyPricePercentage);
+
+                Logger.DebugPrint("Registered Shop ID: " + shop.Id + " Selling items at " + shop.SellPricePercentage + "% and buying at " + shop.BuyPricePercentage);
             }
 
             // Register awards
@@ -412,7 +412,7 @@ namespace HISP.Server
             {
 
                 Award.AwardEntry award = new Award.AwardEntry();
-                award.Id = i+1;
+                award.Id = i + 1;
                 award.Sort = gameData.award_list[i].sort_by;
                 award.Title = gameData.award_list[i].title;
                 award.IconId = gameData.award_list[i].icon_id;
@@ -428,7 +428,7 @@ namespace HISP.Server
             // Register Abuse Report Reasons
 
             int totalAbuseReportReasons = gameData.messages.meta.abuse_report.reasons.Count;
-            for(int i = 0; i < totalAbuseReportReasons; i++)
+            for (int i = 0; i < totalAbuseReportReasons; i++)
             {
                 AbuseReport.ReportReason reason = new AbuseReport.ReportReason();
                 reason.Id = gameData.messages.meta.abuse_report.reasons[i].id;
@@ -469,7 +469,7 @@ namespace HISP.Server
             }
 
             int totalPoets = gameData.poetry.Count;
-            for(int i = 0; i < totalPoets; i++)
+            for (int i = 0; i < totalPoets; i++)
             {
                 Brickpoet.PoetryEntry entry = new Brickpoet.PoetryEntry();
                 entry.Id = gameData.poetry[i].id;
@@ -482,7 +482,7 @@ namespace HISP.Server
 
             // Register Horse Breeds
             int totalBreeds = gameData.horses.breeds.Count;
-            for(int i = 0; i < totalBreeds; i++)
+            for (int i = 0; i < totalBreeds; i++)
             {
                 HorseInfo.Breed horseBreed = new HorseInfo.Breed();
 
@@ -513,7 +513,7 @@ namespace HISP.Server
             }
             // Register Breed Prices @ Pawneer Order
             int totalBreedPrices = gameData.horses.pawneer_base_price.Count;
-            for(int i = 0; i < totalBreedPrices; i++)
+            for (int i = 0; i < totalBreedPrices; i++)
             {
                 int id = gameData.horses.pawneer_base_price[i].breed_id;
                 int price = gameData.horses.pawneer_base_price[i].price;
@@ -523,7 +523,7 @@ namespace HISP.Server
             }
 
             int totalCategories = gameData.horses.categorys.Count;
-            for(int i = 0; i < totalCategories; i++)
+            for (int i = 0; i < totalCategories; i++)
             {
                 HorseInfo.Category category = new HorseInfo.Category();
                 category.Name = gameData.horses.categorys[i].name;
@@ -533,7 +533,7 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered horse category type: " + category.Name);
             }
             int totalTrackedItems = gameData.messages.meta.misc_stats.tracked_items.Count;
-            for(int i = 0; i < totalTrackedItems; i++)
+            for (int i = 0; i < totalTrackedItems; i++)
             {
                 Tracking.TrackedItemStatsMenu trackedItem = new Tracking.TrackedItemStatsMenu();
                 trackedItem.What = gameData.messages.meta.misc_stats.tracked_items[i].id;
@@ -610,14 +610,14 @@ namespace HISP.Server
                 wkShop.X = gameData.workshop[i].pos_x;
                 wkShop.Y = gameData.workshop[i].pos_y;
                 int totalCraftableItems = gameData.workshop[i].craftable_items.Count;
-                for(int ii = 0; ii < totalCraftableItems; ii++)
+                for (int ii = 0; ii < totalCraftableItems; ii++)
                 {
                     Workshop.CraftableItem craftableItem = new Workshop.CraftableItem();
                     craftableItem.Id = gameData.workshop[i].craftable_items[ii].id;
                     craftableItem.GiveItemId = gameData.workshop[i].craftable_items[ii].give_item;
                     craftableItem.MoneyCost = gameData.workshop[i].craftable_items[ii].money_cost;
                     int totalItemsRequired = gameData.workshop[i].craftable_items[ii].required_items.Count;
-                    for(int iii = 0; iii < totalItemsRequired; iii++)
+                    for (int iii = 0; iii < totalItemsRequired; iii++)
                     {
                         Workshop.RequiredItem requiredItem = new Workshop.RequiredItem();
                         requiredItem.RequiredItemId = gameData.workshop[i].craftable_items[ii].required_items[iii].req_item;
@@ -646,9 +646,9 @@ namespace HISP.Server
                 building.Cost = cost;
                 building.Title = title;
                 building.Description = description;
-                
+
                 Ranch.RanchBuilding.RanchBuildings.Add(building);
-                Logger.DebugPrint("Registered Ranch Building: "+building.Title);
+                Logger.DebugPrint("Registered Ranch Building: " + building.Title);
 
             }
             // Register Ranch Upgrades
@@ -701,7 +701,7 @@ namespace HISP.Server
 
             // Register BBCODE
             int totalBBocdes = gameData.bbcode.Count;
-            for(int i = 0; i < totalBBocdes; i++)
+            for (int i = 0; i < totalBBocdes; i++)
             {
                 string tag = gameData.bbcode[i].tag;
                 string meta = gameData.bbcode[i].meta;
@@ -728,7 +728,7 @@ namespace HISP.Server
 
             // Register Arenas
             int totalArenas = gameData.arena.Count;
-            for(int i = 0; i < totalArenas; i++)
+            for (int i = 0; i < totalArenas; i++)
             {
                 int arenaId = gameData.arena[i].arena_id;
                 string arenaType = gameData.arena[i].arena_type;
@@ -738,7 +738,7 @@ namespace HISP.Server
                 int timeout = gameData.arena[i].timeout;
 
                 Arena arena = new Arena(arenaId, arenaType, arenaEntryCost, raceEvery, slots, timeout);
-                Logger.DebugPrint("Registered Arena: " + arena.Id.ToString()+" as " + arena.Type);
+                Logger.DebugPrint("Registered Arena: " + arena.Id.ToString() + " as " + arena.Type);
             }
             // Register Leaser
             int totalLeasers = gameData.leaser.Count;
@@ -771,7 +771,7 @@ namespace HISP.Server
                 leaser.Gender = gameData.leaser[i].horse.gender;
                 leaser.Height = gameData.leaser[i].horse.hands;
                 leaser.Experience = gameData.leaser[i].horse.exp;
-                leaser.HorseName = gameData.leaser[i].horse.name; 
+                leaser.HorseName = gameData.leaser[i].horse.name;
 
                 leaser.Health = gameData.leaser[i].horse.basic_stats.health;
                 leaser.Hunger = gameData.leaser[i].horse.basic_stats.hunger;
@@ -829,15 +829,19 @@ namespace HISP.Server
 
             Messages.AuctionListHorse = gameData.messages.meta.auction.list_horse;
             Messages.AuctionHorseListEntryFormat = gameData.messages.meta.auction.horse_list_entry;
+            Messages.AuctionHorseViewButton = gameData.messages.meta.auction.view_button;
             Messages.AuctionHorseIsTacked = gameData.messages.meta.auction.tacked;
 
+            Messages.AuctionBidMax = gameData.messages.meta.auction.max_bid;
             Messages.AuctionBidRaisedFormat = gameData.messages.meta.auction.bid_raised;
             Messages.AuctionTopBid = gameData.messages.meta.auction.top_bid;
             Messages.AuctionExistingBidHigher = gameData.messages.meta.auction.existing_higher;
 
+            Messages.AuctionOneHorsePerPlayer = gameData.messages.meta.auction.one_horse_at_a_time;
             Messages.AuctionYouveBeenOutbidFormat = gameData.messages.meta.auction.outbid_by;
             Messages.AuctionCantAffordBid = gameData.messages.meta.auction.cant_afford_bid;
             Messages.AuctionCantAffordAuctionFee = gameData.messages.meta.auction.cant_afford_listing;
+            Messages.AuctionNoOtherTransactionAllowed = gameData.messages.meta.auction.no_other_transaction_allowed;
 
             Messages.AuctionYouBroughtAHorseFormat = gameData.messages.meta.auction.brought_horse;
             Messages.AuctionNoHorseBrought = gameData.messages.meta.auction.no_one_brought;

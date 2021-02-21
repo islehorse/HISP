@@ -6,10 +6,10 @@ namespace HISP.Game.Horse
 {
     public class HorseInstance
     {
-        public HorseInstance(HorseInfo.Breed breed, int randomId = -1, string loadName=null, string loadDescription = "", int loadSpoiled=0, string loadCategory="KEEPER", int loadMagicUsed=0, int loadAutoSell=0, int leaseTimer=0, bool loadHidden=false)
+        public HorseInstance(HorseInfo.Breed breed, int randomId = -1, string loadName=null, string loadDescription = "", int loadSpoiled=0, string loadCategory="KEEPER", int loadMagicUsed=0, int loadAutoSell=0, int leaseTimer=0, bool loadHidden=false, int loadOwner=0)
         {
             RandomId = RandomID.NextRandomId(randomId);
-            Owner = 0;
+            owner = loadOwner;
             if(loadName == null)
             {
 
@@ -61,7 +61,19 @@ namespace HISP.Game.Horse
         }
         public int Leaser;
         public int RandomId;
-        public int Owner;
+        public int owner;
+        public int Owner 
+        {
+            get
+            {
+                return owner;
+            }
+            set
+            {
+                owner = value;
+                Database.SetHorseOwner(RandomId, owner);
+            }
+        }
 
         public bool Hidden
         {

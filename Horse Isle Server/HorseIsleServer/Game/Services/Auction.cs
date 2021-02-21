@@ -18,19 +18,44 @@ namespace HISP.Game.Services
 
         public class AuctionBid
         {
+            public const int MAX_BID = 2000000000;
             public User BidUser;
             public AuctionEntry AuctionItem;
             public int BidAmount;
+
 
             public void PlaceBid(int bidAmount)
             {
                 string yourBidRaisedTo = Messages.FormatAuctionBidRaised(BidAmount, BidAmount + bidAmount);
 
+                if(BidAmount >= MAX_BID)
+                {
+                    byte[] maxBidReached = PacketBuilder.CreateChat(Messages.AuctionBidMax, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    BidUser.LoggedinClient.SendPacket(maxBidReached);
+                    return;
+                }
+
+                if (BidAmount + bidAmount > BidUser.Money && (AuctionItem.OwnerId != BidUser.Id))
+                {
+
+                    byte[] cantAffordBid = PacketBuilder.CreateChat(Messages.AuctionCantAffordBid, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    BidUser.LoggedinClient.SendPacket(cantAffordBid);
+                    return;
+                }
+
+
                 BidAmount += bidAmount;
+                if(BidAmount > MAX_BID) // no u
+                {
+                    yourBidRaisedTo = Messages.FormatAuctionBidRaised(BidAmount, MAX_BID);
+                    BidAmount = MAX_BID;
+                }
+                
                 if (BidAmount > AuctionItem.HighestBid)
                 {
-                    AuctionItem.HighestBid += BidAmount;
-                    if(AuctionItem.HighestBidder != BidUser.Id)
+                    int oldBid = AuctionItem.HighestBid;
+                    AuctionItem.HighestBid = BidAmount;
+                    if(AuctionItem.HighestBidder != BidUser.Id && oldBid > 0)
                     {
                         if (GameServer.IsUserOnline(AuctionItem.HighestBidder))
                         {
@@ -42,7 +67,6 @@ namespace HISP.Game.Services
 
                     AuctionItem.HighestBidder = BidUser.Id;
                     yourBidRaisedTo += Messages.AuctionTopBid;
-
                 }
                 else
                 {
@@ -51,6 +75,7 @@ namespace HISP.Game.Services
 
                 byte[] bidPlacedMsg = PacketBuilder.CreateChat(yourBidRaisedTo, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 BidUser.LoggedinClient.SendPacket(bidPlacedMsg);
+
             }
         }
         public class AuctionEntry
@@ -65,7 +90,8 @@ namespace HISP.Game.Services
 
             public HorseInstance Horse;
             public int OwnerId;
-        
+            public List<AuctionBid> Bidders = new List<AuctionBid>();
+
             public bool Completed 
             {
                 get
@@ -77,8 +103,21 @@ namespace HISP.Game.Services
                     done = value;
                     if(done)
                     {
-                        Horse.Owner = HighestBidder;
+                        Horse.Owner = highestBidder;
                         Horse.Hidden = false;
+
+                        if(OwnerId == highestBidder)
+                        {
+                            if(GameServer.IsUserOnline(OwnerId))
+                            {
+                                User auctionRunner = GameServer.GetUserById(highestBidder);
+                                auctionRunner.HorseInventory.UnHide(Horse.RandomId);
+                                byte[] notSold = PacketBuilder.CreateChat(Messages.AuctionNoHorseBrought, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                auctionRunner.LoggedinClient.SendPacket(notSold);
+                            }
+                            return;
+                        }
+
 
                         if(GameServer.IsUserOnline(highestBidder))
                         {
@@ -86,17 +125,20 @@ namespace HISP.Game.Services
                             byte[] wonAuction = PacketBuilder.CreateChat(Messages.FormatAuctionBroughtHorse(highestBid), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             userWon.LoggedinClient.SendPacket(wonAuction);
                             userWon.Money -= highestBid;
+                            userWon.HorseInventory.AddHorse(Horse, false);
                         }
                         else
                         {
                             Database.SetPlayerMoney(Database.GetPlayerMoney(highestBidder) - highestBid, highestBidder);
                         }
+
                         if(GameServer.IsUserOnline(OwnerId))
                         {
-                            User userSold = GameServer.GetUserById(highestBidder);
+                            User userSold = GameServer.GetUserById(OwnerId);
                             byte[] horseSold = PacketBuilder.CreateChat(Messages.FormatAuctionHorseSold(highestBid), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             userSold.LoggedinClient.SendPacket(horseSold);
                             userSold.Money += highestBid;
+                            userSold.HorseInventory.DeleteHorse(Horse, false);
                         }
                         else
                         {
@@ -104,6 +146,13 @@ namespace HISP.Game.Services
                         }
                     }
                     Database.SetAuctionDone(RandomId, done);
+
+                    foreach(AuctionBid bid in Bidders) // Cleanup some stuffs
+                    {
+                        if(bid.BidUser != null)
+                            bid.BidUser.Bids.Remove(bid);
+                    }
+                    Bidders.Clear();
                 }
             }
 
@@ -115,6 +164,7 @@ namespace HISP.Game.Services
                     if (bid.AuctionItem.RandomId == this.RandomId)
                     {
                         bid.PlaceBid(bidAmount);
+                        auctionRoomPlacedIn.UpdateAuctionRoom();
                         return;
                     }
                 }
@@ -122,11 +172,17 @@ namespace HISP.Game.Services
                 AuctionBid newBid = new AuctionBid();
                 newBid.AuctionItem = this;
                 newBid.BidUser = bidder;
-                newBid.BidAmount = 0;
+                if (HighestBidder == bidder.Id)
+                    newBid.BidAmount = HighestBid;
+                else
+                    newBid.BidAmount = 0;
                 newBid.PlaceBid(bidAmount);
                 bidder.Bids.Add(newBid);
+                Bidders.Add(newBid);
+                auctionRoomPlacedIn.UpdateAuctionRoom();
             }
 
+            public Auction auctionRoomPlacedIn;
             public int RandomId;
             private int timeRemaining;
             private bool done;
@@ -200,6 +256,7 @@ namespace HISP.Game.Services
 
         public void AddEntry(AuctionEntry entry)
         {
+            entry.auctionRoomPlacedIn = this;
             Database.AddAuctionRoom(entry, this.RoomId);
             AuctionEntries.Add(entry);
             
@@ -232,6 +289,15 @@ namespace HISP.Game.Services
             throw new KeyNotFoundException("Auction Entry with RandomID: " + randomId + " NOT FOUND");
         }
 
+        public bool HasUserPlacedAuctionAllready(User user)
+        {
+            foreach(AuctionEntry entry in AuctionEntries)
+            {
+                if (entry.OwnerId == user.Id)
+                    return true; 
+            }
+            return false;
+        }
         public static Auction GetAuctionRoomById(int roomId)
         {
             foreach(Auction auction in AuctionRooms)
