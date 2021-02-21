@@ -152,8 +152,7 @@ namespace HISP.Server
                    entry.TimeRemaining--;
                    if (entry.Completed)
                         auction.DeleteEntry(entry);
-
-                   if (entry.TimeRemaining <= 0)
+                   else if (entry.TimeRemaining <= 0)
                         entry.Completed = true;
 
                     auction.UpdateAuctionRoom();
@@ -2582,7 +2581,12 @@ namespace HISP.Server
                                     return;
                                 }
                                 Auction auctionRoom = Auction.GetAuctionRoomById(int.Parse(tile.Code.Split('-')[1]));
-
+                                if(auctionRoom.HasUserPlacedAuctionAllready(sender.LoggedinUser))
+                                {
+                                    byte[] cantPlaceAuction = PacketBuilder.CreateChat(Messages.AuctionOneHorsePerPlayer, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantPlaceAuction);
+                                    break;
+                                }
                                 if (sender.LoggedinUser.Money >= 1000)
                                 {
                                     sender.LoggedinUser.Money -= 1000;
@@ -4020,6 +4024,14 @@ namespace HISP.Server
                     }
                 }
 
+                if (sender.LoggedinUser.Bids.Count > 0)
+                {
+                    byte[] cantBuyWhileAuctioning = PacketBuilder.CreateChat(Messages.AuctionNoOtherTransactionAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(cantBuyWhileAuctioning);
+                    return;
+                }
+
+
                 if (sender.LoggedinUser.Money >= cost)
                 {
                     string swfToLoad = Messages.BoatCutscene;
@@ -5401,6 +5413,13 @@ namespace HISP.Server
                     if (shop != null)
                     {
                         int buyCost = shop.CalculateBuyCost(itemInfo) * count;
+                        if (sender.LoggedinUser.Bids.Count > 0)
+                        {
+                            byte[] cantBuyWhileAuctioning = PacketBuilder.CreateChat(Messages.AuctionNoOtherTransactionAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantBuyWhileAuctioning);
+                            return;
+                        }
+
                         if (sender.LoggedinUser.Money < buyCost)
                         {
                             byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.CantAfford1, PacketBuilder.CHAT_BOTTOM_RIGHT);

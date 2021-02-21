@@ -30,6 +30,17 @@ namespace HISP.Game.Inventory
             Database.LoadHorseInventory(this, baseUser.Id);
         }
 
+        public void UnHide(int randomId)
+        {
+            foreach(HorseInstance inst in horsesList)
+            {
+                if (inst.RandomId == randomId)
+                {
+                    inst.Hidden = false;
+                    break;
+                }
+            }
+        }
         public void AddHorse(HorseInstance horse, bool addToDb=true)
         {
             if (HorseList.Length + 1 > baseUser.MaxHorses)
@@ -41,9 +52,10 @@ namespace HISP.Game.Inventory
             horsesList.Add(horse);
         }
 
-        public void DeleteHorse(HorseInstance horse)
+        public void DeleteHorse(HorseInstance horse, bool removeFromDb=true)
         {
-            Database.RemoveHorse(horse.RandomId);
+            if(removeFromDb)
+                Database.RemoveHorse(horse.RandomId);
             horsesList.Remove(horse);
         }
         

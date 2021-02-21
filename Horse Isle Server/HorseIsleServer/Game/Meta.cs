@@ -1469,7 +1469,7 @@ namespace HISP.Game
             message += Messages.AuctionsRunning;
             foreach(Auction.AuctionEntry entry in auction.AuctionEntries.ToArray())
             {
-                message += Messages.FormatAuctionHorseEntry(Database.GetUsername(entry.OwnerId), entry.Horse.Color, entry.Horse.Breed.Name, entry.Horse.Gender, entry.Horse.BasicStats.Experience, entry.Horse.RandomId);
+                message += Messages.FormatAuctionHorseEntry(Database.GetUsername(entry.OwnerId), entry.Horse.Color, entry.Horse.Breed.Name, entry.Horse.Gender, entry.Horse.BasicStats.Experience, entry.Completed ? "" : Messages.FormatAuctionViewHorseButton(entry.Horse.RandomId));
                 if (!entry.Completed)
                     message += Messages.FormatAuctionGoingTo(entry.TimeRemaining, Database.GetUsername(entry.HighestBidder), entry.HighestBid, entry.RandomId);
                 else
