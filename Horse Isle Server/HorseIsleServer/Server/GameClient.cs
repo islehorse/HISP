@@ -14,7 +14,21 @@ namespace HISP.Server
         public Socket ClientSocket;
         public string RemoteIp;
 
-        public bool LoggedIn = false;
+        private bool loggedIn = false;
+        public bool LoggedIn 
+        {
+            get
+            {
+                bool login = loggedIn;
+                if (LoggedinUser == null)
+                    login = false;
+                return login;
+            }
+            set
+            {
+                loggedIn = value;
+            }
+        }
         public User LoggedinUser;
 
         private Thread recvPackets;
