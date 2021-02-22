@@ -66,7 +66,7 @@ namespace HISP.Game.Services
                     {
                         foreach(Auction.AuctionEntry entry in room.AuctionEntries)
                         {
-                            if(entry.RandomId != AuctionItem.RandomId)
+                            if(entry.RandomId != AuctionItem.RandomId && entry.HighestBidder == BidUser.Id)
                             {
                                 byte[] cantWinTooMuch = PacketBuilder.CreateChat(Messages.AuctionOnlyOneWinningBidAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 BidUser.LoggedinClient.SendPacket(cantWinTooMuch);
