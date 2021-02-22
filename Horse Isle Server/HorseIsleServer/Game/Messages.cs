@@ -35,6 +35,9 @@ namespace HISP.Game
         public static string AuctionCantAffordAuctionFee;
         public static string AuctionOneHorsePerPlayer;
 
+        public static string AuctionYouHaveTooManyHorses;
+        public static string AuctionOnlyOneWinningBidAllowed;
+
         public static string AuctionYouBroughtAHorseFormat;
         public static string AuctionNoHorseBrought;
 

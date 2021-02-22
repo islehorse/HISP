@@ -51,7 +51,21 @@ namespace HISP.Server
                 string BannedPlayers = "CREATE TABLE BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))";
                 string RiddlesComplete = "CREATE TABLE RiddlesComplete(playerId INT, riddleId INT, solved TEXT(1028))";
                 string AuctionTable = "CREATE TABLE Auctions(roomId INT, randomId INT, horseRandomId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT, Done TEXT(3))";
+                string SolvedRealTimeRiddle = "CREATE TABLE SolvedRealTimeRiddles(playerId INT, riddleId INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+
+
+                try
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = SolvedRealTimeRiddle;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
 
                 try
                 {
@@ -496,6 +510,26 @@ namespace HISP.Server
                 return count >= 1;
             }
         }
+        public static int[] GetSolvedRealTimeRiddles(int playerId)
+        {
+            List<int> solvedRiddleId = new List<int>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT riddleId FROM SolvedRealTimeRiddles WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while(reader.Read())
+                {
+                    solvedRiddleId.Add(reader.GetInt32(0));
+                }
+                sqlCommand.Dispose();
+                return solvedRiddleId.ToArray();
+            }
+        }
+
         public static int GetRanchInvestment(int ranchId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

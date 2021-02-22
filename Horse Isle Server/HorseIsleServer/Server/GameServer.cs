@@ -16,6 +16,7 @@ using HISP.Game.Services;
 using HISP.Game.Inventory;
 using HISP.Game.SwfModules;
 using HISP.Game.Horse;
+using HISP.Game.Events;
 using HISP.Game.Items;
 
 namespace HISP.Server
@@ -36,6 +37,9 @@ namespace HISP.Server
         public static int IdleWarning;
 
         public static Random RandomNumberGenerator = new Random();
+
+        // Events
+        public static RealTimeRiddle ActiveRiddleEvent;
 
         /*
          *  Private stuff 

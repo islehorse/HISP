@@ -837,6 +837,9 @@ namespace HISP.Server
             Messages.AuctionTopBid = gameData.messages.meta.auction.top_bid;
             Messages.AuctionExistingBidHigher = gameData.messages.meta.auction.existing_higher;
 
+            Messages.AuctionYouHaveTooManyHorses = gameData.messages.meta.auction.you_have_too_many_horses;
+            Messages.AuctionOnlyOneWinningBidAllowed = gameData.messages.meta.auction.only_one_winning_bid_allowed;
+
             Messages.AuctionOneHorsePerPlayer = gameData.messages.meta.auction.one_horse_at_a_time;
             Messages.AuctionYouveBeenOutbidFormat = gameData.messages.meta.auction.outbid_by;
             Messages.AuctionCantAffordBid = gameData.messages.meta.auction.cant_afford_bid;
