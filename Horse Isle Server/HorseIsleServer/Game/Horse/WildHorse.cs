@@ -147,7 +147,7 @@ namespace HISP.Game.Horse
 
                 if(tries >= 100)
                 {
-                    Logger.ErrorPrint("Wild Horse: " + Instance.Name + " " + Instance.Breed + " is stuck (cant move after 100 tries)");
+                    Logger.ErrorPrint("Wild Horse: " + Instance.Name + " " + Instance.Breed.Name + " is stuck (cant move after 100 tries) at " + x.ToString() + ", " + y.ToString());
                     break;
                 }
                 tries++;
@@ -159,8 +159,8 @@ namespace HISP.Game.Horse
         {
             while(true)
             {
-                int tryX = X + GameServer.RandomNumberGenerator.Next(-15, 15);
-                int tryY = Y + GameServer.RandomNumberGenerator.Next(-15, 15);
+                int tryX = X + GameServer.RandomNumberGenerator.Next(-5, 5);
+                int tryY = Y + GameServer.RandomNumberGenerator.Next(-5, 5);
 
                 bool check = CanHorseBeHere(this.X, this.Y); // if the horse is allready in an invalid position..
 

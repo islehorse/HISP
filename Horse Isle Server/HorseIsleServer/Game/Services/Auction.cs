@@ -26,6 +26,13 @@ namespace HISP.Game.Services
 
             public void PlaceBid(int bidAmount)
             {
+                if(BidUser.HorseInventory.HorseList.Length >= BidUser.MaxHorses)
+                {
+                    byte[] tooManyHorses = PacketBuilder.CreateChat(Messages.AuctionYouHaveTooManyHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    BidUser.LoggedinClient.SendPacket(tooManyHorses);
+                    return;
+                }
+
                 string yourBidRaisedTo = Messages.FormatAuctionBidRaised(BidAmount, BidAmount + bidAmount);
 
                 if(BidAmount >= MAX_BID)
@@ -34,6 +41,7 @@ namespace HISP.Game.Services
                     BidUser.LoggedinClient.SendPacket(maxBidReached);
                     return;
                 }
+
 
                 if (BidAmount + bidAmount > BidUser.Money && (AuctionItem.OwnerId != BidUser.Id))
                 {
@@ -53,6 +61,20 @@ namespace HISP.Game.Services
                 
                 if (BidAmount > AuctionItem.HighestBid)
                 {
+
+                    foreach(Auction room in AuctionRooms)
+                    {
+                        foreach(Auction.AuctionEntry entry in room.AuctionEntries)
+                        {
+                            if(entry.RandomId != AuctionItem.RandomId)
+                            {
+                                byte[] cantWinTooMuch = PacketBuilder.CreateChat(Messages.AuctionOnlyOneWinningBidAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                BidUser.LoggedinClient.SendPacket(cantWinTooMuch);
+                                return;
+                            }
+                        }
+                    }
+
                     int oldBid = AuctionItem.HighestBid;
                     AuctionItem.HighestBid = BidAmount;
                     if(AuctionItem.HighestBidder != BidUser.Id && oldBid > 0)
