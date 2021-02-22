@@ -29,6 +29,14 @@ namespace HISP.Player
 
         }
 
+        public bool IsFriend(int friendUserId)
+        {
+            foreach (int userId in List)
+                if (userId == friendUserId)
+                    return true;
+            return false;
+        }
+
         public void RemoveFriend(int userid)
         {
             Database.RemoveBuddy(baseUser.Id, userid);
@@ -39,9 +47,10 @@ namespace HISP.Player
 
                 User removeFrom = GameServer.GetUserById(userid);
                 removeFrom.Friends.List.Remove(baseUser.Id);
+
             }
             catch (KeyNotFoundException) { /* User is ofline, remove from database is sufficent */ };
-
+ 
 
             baseUser.Friends.List.Remove(userid);
         }

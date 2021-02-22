@@ -35,12 +35,48 @@ namespace HISP.Game
             return locationString;
         }
 
+        private static string buildPlayersHere(User fromUser, int x, int y)
+        {
+            string playersHere = "";
+            User[] playersAt = GameServer.GetUsersAt(x, y, true, true);
+            if(playersAt.Length > 1)
+            {
+                playersHere += Messages.PlayersHere;
+                int count = 0;
+                foreach(User playerAt in playersAt)
+                {
+                    if (playerAt.Id == fromUser.Id)
+                        continue;
+                    string buttons = "";
+                    buttons += Messages.FormatPlayerHereProfileButton(playerAt.Id);
+                    buttons += Messages.FormatPlayerHereSocialButtton(playerAt.Id);
+                    buttons += Messages.FormatPlayerHereTradeButton(playerAt.Id);
+                    if (fromUser.Friends.IsFriend(playerAt.Id))
+                        buttons += Messages.FormatPlayerHereTagButton(playerAt.Id);
+                    else
+                        buttons += Messages.FormatPlayerHereBuddyButton(playerAt.Id);
+                    buttons += Messages.FormatPlayerHerePMButton(playerAt.Username);
+
+                    playersHere += Messages.FormatPlayerHereMenu(playerAt.GetPlayerListIcon(), playerAt.Username,buttons);
+                    count++;
+                }
+
+                if(count >= 2)
+                    playersHere += Messages.PlayerHereMulitpleMenuFormat;
+
+                if (count <= 0)
+                    return "";
+            }
+
+            return playersHere;
+        }
 
         private static string buildNearbyString(int x, int y)
         {
             string playersNearby = "";
 
             User[] nearbyUsers = GameServer.GetNearbyUsers(x, y, true, true);
+            int count = 0;
             if (nearbyUsers.Length > 1)
             {
                 playersNearby += Messages.Seperator;
@@ -71,6 +107,9 @@ namespace HISP.Game
                         usersSouth += " " + nearbyUser.Username + " ";
                     else if (angle >= 0 && angle <= 90)
                         usersNorth += " " + nearbyUser.Username + " ";
+
+
+                    count++;
                 }
 
                 if (usersEast != "")
@@ -85,7 +124,10 @@ namespace HISP.Game
 
 
             }
-
+            if(count <= 0)
+            {
+                return "";
+            }
             return playersNearby;
 
         }
@@ -171,9 +213,10 @@ namespace HISP.Game
 
         }
 
-        private static string buildCommonInfo(int x, int y)
+        private static string buildCommonInfo(User user, int x, int y)
         {
             string message = "";
+            message += buildPlayersHere(user, x, y);
             message += buildNearbyString(x, y);
 
             // Dropped Items
@@ -2152,8 +2195,7 @@ namespace HISP.Game
             message += BuildWildHorseList(user);
             message += buildNpc(user, x, y);
 
-
-            message += buildCommonInfo(x, y);
+            message += buildCommonInfo(user, x, y);
             return message;
         }
         public static string BuildPawneerOrderFound(HorseInstance instance)
@@ -2408,7 +2450,7 @@ namespace HISP.Game
             message += npc;
 
             if (specialTile.Code == null || specialTile.Code == "")
-                message += buildCommonInfo(specialTile.X, specialTile.Y);
+                message += buildCommonInfo(user, specialTile.X, specialTile.Y);
             else
             {
 

@@ -806,20 +806,36 @@ namespace HISP.Server
             Item.Earthworm = gameData.item.special.earthworm;
 
             // New Users
+            
             Messages.NewUserMessage = gameData.messages.new_user.starting_message;
             Map.NewUserStartX = gameData.messages.new_user.starting_x;
             Map.NewUserStartY = gameData.messages.new_user.starting_y;
 
             // Warp Command
+            
             Messages.SuccessfullyWarpedToPlayer = gameData.messages.commands.warp.player;
             Messages.SuccessfullyWarpedToLocation = gameData.messages.commands.warp.location;
             Messages.OnlyUnicornCanWarp = gameData.messages.commands.warp.only_unicorn;
             Messages.FailedToUnderstandLocation = gameData.messages.commands.warp.location_unknown;
 
             // Mod Isle
+            
             Messages.ModIsleMessage = gameData.messages.commands.mod_isle.message;
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
+
+            // Player Interation
+
+            Messages.PlayerHereMenuFormat = gameData.messages.meta.player_interaction.menu;
+            Messages.PlayerHereMulitpleMenuFormat = gameData.messages.meta.player_interaction.multiple_players_menu;
+
+            Messages.PlayerHereProfileButton = gameData.messages.meta.player_interaction.profiile_button;
+            Messages.PlayerHereSocialButton = gameData.messages.meta.player_interaction.social_button;
+            Messages.PlayerHereTradeButton = gameData.messages.meta.player_interaction.trade_button;
+            Messages.PlayerHereAddBuddyButton = gameData.messages.meta.player_interaction.buddy_button;
+            Messages.PlayerHereTagButton = gameData.messages.meta.player_interaction.tag_button;
+            Messages.PlayerHerePmButton = gameData.messages.meta.player_interaction.pm_button;
+
 
             // Auction
             Messages.AuctionsRunning = gameData.messages.meta.auction.auctions_running;
@@ -957,7 +973,7 @@ namespace HISP.Server
             Messages.MailRippedMessage = gameData.messages.meta.mail.mail_ripped;
 
             // Click
-            Messages.PlayerHereFormat = gameData.messages.player_here;
+            Messages.ClickPlayerHereFormat = gameData.messages.player_here;
 
 
             // Ranch
@@ -1565,6 +1581,7 @@ namespace HISP.Server
             Messages.LongFullLine = gameData.messages.meta.long_full_line;
             Messages.MetaTerminator = gameData.messages.meta.end_of_meta;
 
+            Messages.PlayersHere = gameData.messages.meta.player_interaction.players_here;
             Messages.NearbyPlayers = gameData.messages.meta.nearby.players_nearby;
             Messages.North = gameData.messages.meta.nearby.north;
             Messages.East = gameData.messages.meta.nearby.east;

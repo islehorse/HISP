@@ -13,6 +13,18 @@ namespace HISP.Game
         // Mod isle
         public static string ModIsleMessage;
 
+        // Player Interaction
+        public static string PlayerHereMenuFormat;
+        public static string PlayerHereMulitpleMenuFormat;
+
+        public static string PlayerHereProfileButton;
+        public static string PlayerHereSocialButton;
+        public static string PlayerHereTradeButton;
+        public static string PlayerHereAddBuddyButton;
+        public static string PlayerHereTagButton;
+
+        public static string PlayerHerePmButton;
+
         // Auction House
         public static string AuctionsRunning;
         public static string AuctionHorseEntryFormat;
@@ -56,7 +68,7 @@ namespace HISP.Game
         public static string FailedToUnderstandLocation;
 
         // Click
-        public static string PlayerHereFormat;
+        public static string ClickPlayerHereFormat;
 
         // Hammock
         public static string HammockText;
@@ -804,6 +816,7 @@ namespace HISP.Game
         public static string TownFormat;
         public static string AreaFormat;
         public static string LocationFormat;
+        public static string PlayersHere;
         public static string NearbyPlayers;
         public static string North;
         public static string East;
@@ -900,6 +913,38 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+
+        // Player Interactions
+        public static string FormatPlayerHerePMButton(string playerName)
+        {
+            return PlayerHerePmButton.Replace("%PLAYERNAME%", playerName);
+        }
+        public static string FormatPlayerHereTagButton(int playerId)
+        {
+            return PlayerHereTagButton.Replace("%PLAYERID%", playerId.ToString());
+        }
+        public static string FormatPlayerHereBuddyButton(int playerId)
+        {
+            return PlayerHereAddBuddyButton.Replace("%PLAYERID%", playerId.ToString());
+        }
+        public static string FormatPlayerHereTradeButton(int playerId)
+        {
+            return PlayerHereTradeButton.Replace("%PLAYERID%", playerId.ToString());
+        }
+        public static string FormatPlayerHereSocialButtton(int playerId)
+        {
+            return PlayerHereSocialButton.Replace("%PLAYERID%", playerId.ToString());
+        }
+        public static string FormatPlayerHereProfileButton(int playerId)
+        {
+            return PlayerHereProfileButton.Replace("%PLAYERID%", playerId.ToString());
+        }
+        public static string FormatPlayerHereMenu(int playerIcon, string playerName, string button)
+        {
+            return PlayerHereMenuFormat.Replace("%PLAYERICON%", playerIcon.ToString()).Replace("%PLAYERNAME%", playerName).Replace("%BUTTONS%", button);
+        }
+
+        // Auctions
         public static string FormatAuctionSoldTo(string playerName, int money)
         {
             return AuctionSoldToFormat.Replace("%PLAYERNAME%", playerName).Replace("%PRICE%", money.ToString("N0", CultureInfo.InvariantCulture));
@@ -1115,7 +1160,7 @@ namespace HISP.Game
 
         public static string FormatPlayerHereMessage(string playerName)
         {
-            return PlayerHereFormat.Replace("%USERNAME%", playerName);
+            return ClickPlayerHereFormat.Replace("%USERNAME%", playerName);
         }
 
         // Barn Formats

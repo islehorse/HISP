@@ -420,7 +420,7 @@ namespace HISP.Player
         private int thirst;
         private int tired;
 
-
+        public Trade TradingWith = null;
         public byte[] SecCodeSeeds = new byte[3];
         public  int SecCodeInc = 0;
         public int SecCodeCount = 0;
