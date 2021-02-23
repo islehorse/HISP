@@ -50,6 +50,9 @@ namespace HISP.Server
         public const byte PACKET_WISH = 0x2C;
         public const byte PACKET_SWFMODULE = 0x50;
         public const byte PACKET_AUCTION = 0x24;
+        public const byte PACKET_PLAYER_INTERACTION = 0x2A;
+
+        public const byte PLAYER_INTERACTION_TRADE = 0x31;
 
         public const byte AUCTION_BID_100 = 0x29;
         public const byte AUCTION_BID_1K = 0x2A;
