@@ -107,7 +107,7 @@ namespace HISP.Game
                 Logger.ErrorPrint("Map file not found.");
                 return;
             }
-
+            Logger.InfoPrint("Loading Map Data (" + ConfigReader.MapFile + ")");
 
             byte[] worldMap = File.ReadAllBytes(ConfigReader.MapFile);
 
@@ -118,7 +118,6 @@ namespace HISP.Game
             oMapData = new byte[Width * Height];
             int ii = 8;
 
-
             for (int i = 0; i < MapData.Length; i++)
             {
                 oMapData[i] = worldMap[ii];
@@ -127,6 +126,7 @@ namespace HISP.Game
             }
 
             worldMap = null;
+            Logger.InfoPrint("Map Data Loaded!");
 
         }
     }

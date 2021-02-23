@@ -130,8 +130,6 @@ namespace HISP.Server
             if (totalMinutesElapsed % 5 == 0)
             {
                 Treasure.AddValue();
-                DroppedItems.DespawnItems();
-                DroppedItems.GenerateItems();
             }
 
 
@@ -170,6 +168,9 @@ namespace HISP.Server
             Database.DecrementHorseLeaseTimeForOfflinePlayers();
             Database.TpOfflinePlayersBackToUniterForOfflinePlayers();
             Database.DeleteExpiredLeasedHorsesForOfflinePlayers();
+
+            DroppedItems.DespawnItems();
+            DroppedItems.GenerateItems();
 
 
             WildHorse.Update();
