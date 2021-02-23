@@ -117,8 +117,10 @@ namespace HISP.Game.Items
                 {
                     if (GameServer.GetUsersAt(droppedItemsList[i].X, droppedItemsList[i].Y, true, true).Length > 0) // Dont despawn items players are standing on
                         continue;
+
                     Logger.DebugPrint("Despawned Item at " + droppedItemsList[i].X + ", " + droppedItemsList[i].Y);
                     droppedItemsList.Remove(droppedItemsList[i]);
+                    Database.RemoveDroppedItem(droppedItemsList[i].Instance.RandomId);
                 }
             }
         }

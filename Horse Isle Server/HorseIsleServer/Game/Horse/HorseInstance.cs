@@ -45,8 +45,8 @@ namespace HISP.Game.Horse
             Color = breed.Colors[GameServer.RandomNumberGenerator.Next(0, breed.Colors.Length)];
 
             BasicStats = new HorseInfo.BasicStats(this, 1000, 0, 1000, 1000, 500, 1000, 1000, 0);
-            int inteligence = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Inteligence, (breed.BaseStats.Inteligence * 2)-1) - breed.BaseStats.Inteligence);
-            int personality = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Personality, (breed.BaseStats.Personality * 2)-1) - breed.BaseStats.Personality);
+            int inteligence = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Inteligence, (breed.BaseStats.Inteligence * 2)) - breed.BaseStats.Inteligence);
+            int personality = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Personality, (breed.BaseStats.Personality * 2)) - breed.BaseStats.Personality);
             int height = GameServer.RandomNumberGenerator.Next(breed.BaseStats.MinHeight, breed.BaseStats.MaxHeight);
             AdvancedStats = new HorseInfo.AdvancedStats(this, 0, 0, 0, 0, inteligence, 0, personality, height);
 

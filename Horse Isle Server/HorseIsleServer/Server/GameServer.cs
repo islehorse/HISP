@@ -181,6 +181,8 @@ namespace HISP.Server
          * This section is where all the event handlers live, 
          * eg: OnMovementPacket is whenever the server receies a movement request from the client.
          */
+
+
         public static void OnCrossdomainPolicyRequest(GameClient sender)
         {
             Logger.DebugPrint("Cross-Domain-Policy request received from: " + sender.RemoteIp);
@@ -190,6 +192,14 @@ namespace HISP.Server
             sender.SendPacket(crossDomainPolicyResponse);
         }
 
+        public static void OnPlayerInteration(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Requested Bird Map when not logged in.");
+                return;
+            }
+        }
         public static void OnBirdMapRequested(GameClient sender, byte[] packet)
         {
             if (!sender.LoggedIn)
