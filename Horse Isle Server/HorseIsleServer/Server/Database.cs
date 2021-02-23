@@ -3936,6 +3936,21 @@ namespace HISP.Server
             }
         }
 
+        public static void RemoveDespawningItems()
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "DELETE FROM droppeditems WHERE despawnTimer <=0";
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+
         public static void RemoveDroppedItem(int randomId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -3984,7 +3999,7 @@ namespace HISP.Server
 
 
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE DroppedItems SET DespawnTimer=DespawnTimer-5";
+                sqlCommand.CommandText = "UPDATE DroppedItems SET DespawnTimer=DespawnTimer-1";
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
 

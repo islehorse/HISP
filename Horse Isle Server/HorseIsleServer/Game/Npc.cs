@@ -191,7 +191,11 @@ namespace HISP.Game
                             return;
 
                         if (UdlrScriptPos >= UDLRScript.Length)
+                        {
+                            X = UDLRStartX;
+                            Y = UDLRStartY;
                             UdlrScriptPos = 0;
+                        }
 
                         switch (UDLRScript.ToLower()[UdlrScriptPos])
                         {
