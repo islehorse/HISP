@@ -13,6 +13,73 @@ namespace HISP.Game
         // Mod isle
         public static string ModIsleMessage;
 
+        // Trading
+        public static string TradeWithPlayerFormat;
+
+        public static string TradeWaitingForOtherDone;
+        public static string TradeOtherPlayerIsDone;
+        public static string TradeFinalReview;
+
+        public static string TradeYourOfferingFormat;
+
+        public static string TradeAddItems;
+        public static string TradeOtherOfferingFormat;
+
+        public static string TradeWhenDoneClick;
+        public static string TradeCancelAnytime;
+        public static string TradeAcceptTrade;
+
+        public static string TradeOfferingNothing;
+        public static string TradeOfferingMoneyFormat;
+        public static string TradeOfferingItemFormat;
+        public static string TradeOfferingHorseFormat;
+
+        // Trading : What to Offer (menu)
+
+        public static string TradeWhatToOfferFormat;
+        public static string TradeOfferMoney;
+
+        public static string TradeOfferHorse;
+        public static string TradeOfferHorseFormat;
+        public static string TradeOfferHorseTacked;
+
+        public static string TradeOfferItem;
+        public static string TradeOfferItemFormat;
+        public static string TradeOfferObjectOtherPlayerInvFull;
+
+        // Trading : Money Offer Submenu
+
+        public static string TradeMoneyOfferSubmenuFormat;
+        public static string TradeItemOfferSubmenuFormat;
+
+        // Trading : Messages
+
+        public static string TradeWaitingForOthersToAcceptMessage;
+        
+        public static string TradeRequiresBothPlayersMessage;
+        public static string TradeCanceledBecuasePlayerMovedMessage;
+
+        public static string TradeItemOfferAtleast1;
+        public static string TradeItemOfferTooMuchFormat;
+        public static string TradeMoneyOfferTooMuch;
+
+        public static string TradeOtherPlayerHasNegativeMoney;
+        public static string TradeYouHaveNegativeMoney;
+
+        public static string TradeAcceptedMessage;
+        public static string TradeCanceledByYouMessage;
+        public static string TradeCanceledByOtherPlayerFormat;
+        public static string TradeCanceledInterupted;
+
+        public static string TradeYouCantHandleMoreHorses;
+        public static string TradeOtherPlayerCantHandleMoreHorsesFormat;
+
+        public static string TradeYouSpentMoneyMessageFormat;
+        public static string TradeYouReceivedMoneyMessageFormat;
+
+        public static string TradeNotAllowedWhileBidding;
+        public static string TradeNotAllowedWhileOtherBidding;
+
         // Player Interaction
         public static string PlayerHereMenuFormat;
         public static string PlayerHereMulitpleMenuFormat;
@@ -913,6 +980,71 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        // Trading
+        public static string FormatTradeYouReceived(int money)
+        {
+            return TradeYouReceivedMoneyMessageFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatTradeYouSpent(int money)
+        {
+            return TradeYouSpentMoneyMessageFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatTradePlayerCantHandleMoreHorses(string playerName)
+        {
+            return TradeOtherPlayerCantHandleMoreHorsesFormat.Replace("%PLAYERNAME%", playerName);
+        }
+        public static string FormatTradeCanceledByPlayer(string playerName)
+        {
+            return TradeCanceledByOtherPlayerFormat.Replace("%PLAYERNAME%", playerName);
+        }
+        public static string FormatTradeItemOfferTooMuch(int quantity, int enteredAmount)
+        {
+            return TradeItemOfferTooMuchFormat.Replace("%QUANTITY%", quantity.ToString()).Replace("%ENTEREDAMOUNT%", enteredAmount.ToString());
+        }
+        public static string FormatTradeOfferMoneySubmenu(int currentOffer)
+        {
+            return TradeMoneyOfferSubmenuFormat.Replace("%CURRENTMONEYOFFER%", currentOffer.ToString());
+        }
+        public static string FormatTradeOfferItemSubmenu(int quantity)
+        {
+            return TradeItemOfferSubmenuFormat.Replace("%QUANTITY%", quantity.ToString());
+        }
+        public static string FormatTradeOfferItem(int itemIconId, string itemName, int itemCount, int itemId)
+        {
+            return TradeOfferItemFormat.Replace("%ICONID%", itemIconId.ToString()).Replace("%ITEMNAME%", itemName).Replace("%ITEMCOUNT%", itemCount.ToString()).Replace("%ITEMID%", itemId.ToString());
+        }
+        public static string FormatTradeOfferHorse(string horseName, bool tacked, int horseRandomId)
+        {
+            return TradeOfferHorseFormat.Replace("%HORSENAME%", horseName).Replace("%ISTACKED%", tacked ? Messages.TradeOfferHorseTacked : "").Replace("%HORSERANDOMID%", horseRandomId.ToString());
+        }
+        public static string FormatTradeWhatToOffer(string playerName)
+        {
+            return TradeWhatToOfferFormat.Replace("%PLAYERNAME%", playerName);
+        }
+        public static string FormatTradeHorseOffer(string horseName, int horseRandomId)
+        {
+            return TradeOfferingHorseFormat.Replace("%HORSENAME%", horseName).Replace("%HORSERANDOMID%", horseRandomId.ToString());
+        }
+        public static string FormatTradeItemOffer(int quantity, string item)
+        {
+            return TradeOfferingItemFormat.Replace("%TOTAL%", quantity.ToString()).Replace("%ITEM%", item);
+        }
+        public static string FormatTradeMoneyOffer(int amount)
+        {
+            return TradeOfferingMoneyFormat.Replace("%MONEY%", amount.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatTradeOtherOffering(string playerName)
+        {
+            return TradeOtherOfferingFormat.Replace("%PLAYERNAME%", playerName);
+        }
+        public static string FormatTradeYourOffering(string playerName)
+        {
+            return TradeYourOfferingFormat.Replace("%PLAYERNAME%", playerName);
+        }
+        public static string FormatTradeWithPlayer(string playerName)
+        {
+            return TradeWithPlayerFormat.Replace("%PLAYERNAME%", playerName);
+        }
 
         // Player Interactions
         public static string FormatPlayerHerePMButton(string playerName)

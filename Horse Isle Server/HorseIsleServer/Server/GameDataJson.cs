@@ -824,6 +824,72 @@ namespace HISP.Server
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
 
+            // Trade
+            Messages.TradeWithPlayerFormat = gameData.messages.meta.player_interaction.trade.trading_with;
+
+            Messages.TradeWaitingForOtherDone = gameData.messages.meta.player_interaction.trade.trade_wait_for_done;
+            Messages.TradeOtherPlayerIsDone = gameData.messages.meta.player_interaction.trade.other_player_is_done;
+            Messages.TradeFinalReview = gameData.messages.meta.player_interaction.trade.final_review;
+
+            Messages.TradeYourOfferingFormat = gameData.messages.meta.player_interaction.trade.you_offering;
+
+            Messages.TradeAddItems = gameData.messages.meta.player_interaction.trade.add_items;
+            Messages.TradeOtherOfferingFormat = gameData.messages.meta.player_interaction.trade.other_offering;
+
+            Messages.TradeWhenDoneClick = gameData.messages.meta.player_interaction.trade.when_done_click;
+            Messages.TradeCancelAnytime = gameData.messages.meta.player_interaction.trade.cancel_anytime;
+            Messages.TradeAcceptedMessage = gameData.messages.meta.player_interaction.trade.accept_trade;
+
+            Messages.TradeOfferingNothing = gameData.messages.meta.player_interaction.trade.offering_nothing;
+            Messages.TradeOfferingMoneyFormat = gameData.messages.meta.player_interaction.trade.offering_money;
+            Messages.TradeOfferingItemFormat = gameData.messages.meta.player_interaction.trade.offering_item;
+            Messages.TradeOfferingHorseFormat = gameData.messages.meta.player_interaction.trade.offering_horse;
+
+            // Trading : What to offer
+
+            Messages.TradeWhatToOfferFormat = gameData.messages.meta.player_interaction.trade.what_to_offer;
+            Messages.TradeOfferMoney = gameData.messages.meta.player_interaction.trade.offer_money;
+
+            Messages.TradeOfferHorse = gameData.messages.meta.player_interaction.trade.offer_horse;
+            Messages.TradeOfferHorseFormat = gameData.messages.meta.player_interaction.trade.offer_horse_format;
+            Messages.TradeOfferHorseTacked = gameData.messages.meta.player_interaction.trade.horse_tacked;
+
+            Messages.TradeOfferItem = gameData.messages.meta.player_interaction.trade.offer_object;
+            Messages.TradeOfferItemFormat = gameData.messages.meta.player_interaction.trade.offer_object_format;
+            Messages.TradeOfferObjectOtherPlayerInvFull = gameData.messages.meta.player_interaction.trade.offer_object_inv_full;
+
+            // Trading : Offer Submenu
+
+            Messages.TradeMoneyOfferSubmenuFormat = gameData.messages.meta.player_interaction.trade.money_offer_submenu;
+            Messages.TradeItemOfferSubmenuFormat = gameData.messages.meta.player_interaction.trade.object_offer_submenu;
+
+            // Trading : Messges
+
+            Messages.TradeWaitingForOthersToAcceptMessage = gameData.messages.meta.player_interaction.trade.waiting_for_other_to_accept;
+            Messages.TradeRequiresBothPlayersMessage = gameData.messages.meta.player_interaction.trade.requires_both_players;
+
+            Messages.TradeItemOfferAtleast1 = gameData.messages.meta.player_interaction.trade.object_offer_atleast_1;
+            Messages.TradeItemOfferTooMuchFormat = gameData.messages.meta.player_interaction.trade.object_offer_too_much;
+            Messages.TradeMoneyOfferTooMuch = gameData.messages.meta.player_interaction.trade.money_offer_too_much;
+
+            Messages.TradeOtherPlayerHasNegativeMoney = gameData.messages.meta.player_interaction.trade.other_player_has_negative_money;
+            Messages.TradeYouHaveNegativeMoney = gameData.messages.meta.player_interaction.trade.you_have_negative_money;
+
+
+            Messages.TradeAcceptedMessage = gameData.messages.meta.player_interaction.trade.trade_accepted;
+            Messages.TradeCanceledByYouMessage = gameData.messages.meta.player_interaction.trade.you_canceled;
+            Messages.TradeCanceledByOtherPlayerFormat = gameData.messages.meta.player_interaction.trade.other_canceled;
+            Messages.TradeCanceledInterupted = gameData.messages.meta.player_interaction.trade.trade_interupted;
+
+            Messages.TradeYouCantHandleMoreHorses = gameData.messages.meta.player_interaction.trade.cant_handle_more_horses;
+            Messages.TradeOtherPlayerCantHandleMoreHorsesFormat = gameData.messages.meta.player_interaction.trade.other_player_cant_handle_more_horses;
+
+            Messages.TradeYouSpentMoneyMessageFormat = gameData.messages.meta.player_interaction.trade.trade_spent;
+            Messages.TradeYouReceivedMoneyMessageFormat = gameData.messages.meta.player_interaction.trade.trade_received;
+
+            Messages.TradeNotAllowedWhileBidding = gameData.messages.meta.player_interaction.trade.trade_not_allowed_while_bidding;
+            Messages.TradeNotAllowedWhileOtherBidding = gameData.messages.meta.player_interaction.trade.trade_not_allowed_while_other_is_bidding;
+
             // Player Interation
 
             Messages.PlayerHereMenuFormat = gameData.messages.meta.player_interaction.menu;

@@ -406,6 +406,15 @@ namespace HISP.Game
             throw new Exception("A mathematically impossible error occured. please check wether the laws of physics still apply.");
         }
 
+        public static string BuildTrade(Trade trade)
+        {
+            bool otherAccepted = (trade.OtherTrade.Stage == "ACCEPTED");
+            bool youAccepted = trade.Stage == "ACCEPTED";
+            string message = "";
+
+            return message;
+        }
+
         public static string buildTackPeiceLibary(Item.ItemInformation item)
         {
             string message = "";
