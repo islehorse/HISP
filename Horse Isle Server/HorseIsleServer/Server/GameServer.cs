@@ -270,6 +270,8 @@ namespace HISP.Server
                             if (!sender.LoggedinUser.Inventory.HasItemId(itemId))
                                 break;
 
+                            sender.LoggedinUser.AttemptingToOfferItem = itemId;
+
                             InventoryItem item = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
                             byte[] addItemPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAddItem(item.ItemInstances.Count));
                             sender.SendPacket(addItemPacket);

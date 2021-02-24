@@ -422,6 +422,9 @@ namespace HISP.Player
         private int tired;
 
         public Trade TradingWith = null;
+
+        public int AttemptingToOfferItem;
+
         public byte[] SecCodeSeeds = new byte[3];
         public  int SecCodeInc = 0;
         public int SecCodeCount = 0;
