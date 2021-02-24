@@ -98,8 +98,8 @@ namespace HISP.Game.Horse
             }
             else
             {
-                X = MapX;
-                Y = MapY;
+                x = MapX;
+                y = MapY;
             }
             wildHorses.Add(this);
             if(addToDatabase)
