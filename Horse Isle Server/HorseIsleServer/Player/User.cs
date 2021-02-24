@@ -424,6 +424,7 @@ namespace HISP.Player
         public Trade TradingWith = null;
 
         public int AttemptingToOfferItem;
+        public bool TradeMenuPriority = false;
 
         public byte[] SecCodeSeeds = new byte[3];
         public  int SecCodeInc = 0;

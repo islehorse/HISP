@@ -469,10 +469,10 @@ namespace HISP.Game
 
 
             message += Messages.FormatTradeYourOffering(trade.OtherTrade.Trader.Username);
-            if (trade.MoenyOffered == 0 && trade.ItemsOffered.Count == 0 && trade.HorsesOffered.Count == 0)
+            if (trade.MoneyOffered == 0 && trade.ItemsOffered.Count == 0 && trade.HorsesOffered.Count == 0)
                 message += Messages.TradeOfferingNothing;
-            if (trade.MoenyOffered > 0)
-                message += Messages.FormatTradeMoneyOffer(trade.MoenyOffered);
+            if (trade.MoneyOffered > 0)
+                message += Messages.FormatTradeMoneyOffer(trade.MoneyOffered);
             if(trade.HorsesOffered.Count > 0)
                 foreach(HorseInstance horse in trade.HorsesOffered)
                     message += Messages.FormatTradeHorseOffer(horse.Name, horse.RandomId);
@@ -484,17 +484,17 @@ namespace HISP.Game
                     if (item.Length > 1)
                         name = itemInfo.PluralName;
 
-                    message += Messages.FormatTradeItemOffer(item.Length, name);
+                    message += Messages.FormatTradeItemOffer(itemInfo.IconId, item.Length, name);
                 }
 
             if(trade.Stage == "OPEN")
                 message += Messages.TradeAddItems;
 
             message += Messages.FormatTradeOtherOffering(trade.OtherTrade.Trader.Username);
-            if (trade.OtherTrade.MoenyOffered == 0 && trade.OtherTrade.ItemsOffered.Count == 0 && trade.OtherTrade.HorsesOffered.Count == 0)
+            if (trade.OtherTrade.MoneyOffered == 0 && trade.OtherTrade.ItemsOffered.Count == 0 && trade.OtherTrade.HorsesOffered.Count == 0)
                 message += Messages.TradeOfferingNothing;
-            if (trade.OtherTrade.MoenyOffered > 0)
-                message += Messages.FormatTradeMoneyOffer(trade.OtherTrade.MoenyOffered);
+            if (trade.OtherTrade.MoneyOffered > 0)
+                message += Messages.FormatTradeMoneyOffer(trade.OtherTrade.MoneyOffered);
             if (trade.OtherTrade.HorsesOffered.Count > 0)
                 foreach (HorseInstance horse in trade.OtherTrade.HorsesOffered)
                     message += Messages.FormatTradeHorseOffer(horse.Name, horse.RandomId);
@@ -506,7 +506,7 @@ namespace HISP.Game
                     if (item.Length > 1)
                         name = itemInfo.PluralName;
 
-                    message += Messages.FormatTradeItemOffer(item.Length, name);
+                    message += Messages.FormatTradeItemOffer(itemInfo.IconId, item.Length, name);
                 }
 
             if (trade.Stage == "OPEN")

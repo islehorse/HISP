@@ -25,7 +25,7 @@ namespace HISP.Player
 
         public string Stage = "OPEN";
 
-        public int MoenyOffered = 0;
+        public int MoneyOffered = 0;
         public List<HorseInstance> HorsesOffered = new List<HorseInstance>();
         public List<ItemInstance[]> ItemsOffered = new List<ItemInstance[]>();
 

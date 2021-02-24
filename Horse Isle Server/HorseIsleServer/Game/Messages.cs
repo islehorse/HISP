@@ -1025,9 +1025,9 @@ namespace HISP.Game
         {
             return TradeOfferingHorseFormat.Replace("%HORSENAME%", horseName).Replace("%HORSERANDOMID%", horseRandomId.ToString());
         }
-        public static string FormatTradeItemOffer(int quantity, string item)
+        public static string FormatTradeItemOffer(int iconId, int quantity, string item)
         {
-            return TradeOfferingItemFormat.Replace("%TOTAL%", quantity.ToString()).Replace("%ITEM%", item);
+            return TradeOfferingItemFormat.Replace("%ICONID%", iconId.ToString()).Replace("%TOTAL%", quantity.ToString()).Replace("%ITEM%", item);
         }
         public static string FormatTradeMoneyOffer(int amount)
         {
