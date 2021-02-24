@@ -98,8 +98,8 @@ namespace HISP.Game.Horse
             }
             else
             {
-                x = MapX;
-                y = MapY;
+                X = MapX;
+                Y = MapY;
             }
             wildHorses.Add(this);
             if(addToDatabase)
@@ -140,8 +140,8 @@ namespace HISP.Game.Horse
 
                 if (CanHorseBeHere(tryX, tryY, check))
                 {
-                    x = tryX;
-                    y = tryY;
+                    X = tryX;
+                    Y = tryY;
                     break;
                 }
 

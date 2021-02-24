@@ -248,7 +248,8 @@ namespace HISP.Server
                                 break;
 
                             HorseInstance horse = sender.LoggedinUser.HorseInventory.GetHorseById(horseRandomId);
-                            sender.LoggedinUser.TradingWith.HorsesOffered.Add(horse);
+                            if(!sender.LoggedinUser.TradingWith.HorsesOffered.Contains(horse))
+                                sender.LoggedinUser.TradingWith.HorsesOffered.Add(horse);
 
                             UpdateArea(sender);
                             UpdateArea(sender.LoggedinUser.TradingWith.Trader.LoggedinClient);
