@@ -227,8 +227,8 @@ namespace HISP.Server
                                 break;
                             }
 
-
-                            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAddMoney(sender.LoggedinUser.Money));
+                            sender.LoggedinUser.TradeMenuPriority = true;
+                            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAddMoney(sender.LoggedinUser.TradingWith.MoneyOffered));
                             sender.SendPacket(metaPacket);
 
                             break;
@@ -252,7 +252,8 @@ namespace HISP.Server
                                 sender.LoggedinUser.TradingWith.HorsesOffered.Add(horse);
 
                             UpdateArea(sender);
-                            UpdateArea(sender.LoggedinUser.TradingWith.Trader.LoggedinClient);
+                            if(!sender.LoggedinUser.TradingWith.Trader.TradeMenuPriority)
+                                UpdateArea(sender.LoggedinUser.TradingWith.Trader.LoggedinClient);
 
                             break;
                         case '1': // Item
@@ -270,8 +271,8 @@ namespace HISP.Server
                             if (!sender.LoggedinUser.Inventory.HasItemId(itemId))
                                 break;
 
+                            sender.LoggedinUser.TradeMenuPriority = true;
                             sender.LoggedinUser.AttemptingToOfferItem = itemId;
-
                             InventoryItem item = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
                             byte[] addItemPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAddItem(item.ItemInstances.Count));
                             sender.SendPacket(addItemPacket);
@@ -1878,6 +1879,68 @@ namespace HISP.Server
  
                             }
                             break;
+                        case 3: // Add Item to Trade
+                            {
+                                if (dynamicInput.Length >= 2)
+                                {
+                                    if (Item.ItemIdExist(sender.LoggedinUser.AttemptingToOfferItem))
+                                    {
+                                        string answer = dynamicInput[1];
+                                        int itemCount = -1;
+                                        try
+                                        {
+                                            itemCount = int.Parse(answer);
+                                        }
+                                        catch(FormatException)
+                                        {
+                                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (Item TRADE, id is NaN)");
+                                        }
+
+                                        InventoryItem item = sender.LoggedinUser.Inventory.GetItemByItemId(sender.LoggedinUser.AttemptingToOfferItem);
+
+                                        if (itemCount <= 0)
+                                        {
+                                            byte[] MustBeAtleast1 = PacketBuilder.CreateChat(Messages.TradeItemOfferAtleast1, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                            sender.SendPacket(MustBeAtleast1);
+                                            break;
+                                        }
+                                        if(itemCount > item.ItemInstances.Count)
+                                        {
+                                            byte[] TooMuchItems = PacketBuilder.CreateChat(Messages.FormatTradeItemOfferTooMuch(item.ItemInstances.Count, itemCount), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                            sender.SendPacket(TooMuchItems);
+                                            break;
+                                        }
+
+                                        foreach(ItemInstance[] existingItems in sender.LoggedinUser.TradingWith.ItemsOffered)
+                                        {
+                                            if(existingItems[0].ItemId == sender.LoggedinUser.AttemptingToOfferItem)
+                                            {
+                                                sender.LoggedinUser.TradingWith.ItemsOffered.Remove(existingItems);
+                                                break;
+                                            }
+                                        }
+
+
+                                        
+                                        ItemInstance[] items = new ItemInstance[itemCount];
+                                        for (int i = 0; i < itemCount; i++)
+                                        {
+                                            items[i] = item.ItemInstances[i];
+                                        }
+                                        sender.LoggedinUser.TradingWith.ItemsOffered.Add(items);
+
+                                        UpdateArea(sender);
+                                        if (!sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority)
+                                            UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
+                                    }
+                                    break;
+                                }
+                                else
+                                {
+                                    Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (Item TRADE, wrong size)");
+                                    break;
+                                }
+                            }
                         case 6: // Riddle Room
                             if (dynamicInput.Length >= 2)
                             {
@@ -2412,7 +2475,7 @@ namespace HISP.Server
                 case "58": // Add new item to trade
                     if(sender.LoggedinUser.TradingWith != null)
                     {
-                        sender.LoggedinUser.MetaPriority = true;
+                        sender.LoggedinUser.TradeMenuPriority = true;
                         metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAdd(sender.LoggedinUser.TradingWith));
                         sender.SendPacket(metaPacket);
                     }
@@ -2422,7 +2485,7 @@ namespace HISP.Server
                     {
                         sender.LoggedinUser.TradingWith.Stage = "DONE";
 
-                        if (sender.LoggedinUser.TradingWith.OtherTrade.Trader.MetaPriority == false)
+                        if (sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority == false)
                             UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
                         UpdateArea(sender);
 
@@ -6339,6 +6402,7 @@ namespace HISP.Server
             if(forClient.LoggedinUser.TradingWith != null)
             {
                 forClient.LoggedinUser.MetaPriority = true;
+                forClient.LoggedinUser.TradeMenuPriority = false;
                 byte[] tradeMeta = PacketBuilder.CreateMetaPacket(Meta.BuildTrade(forClient.LoggedinUser.TradingWith));
                 forClient.SendPacket(tradeMeta);
                 return;
