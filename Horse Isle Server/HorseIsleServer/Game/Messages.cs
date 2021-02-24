@@ -45,9 +45,9 @@ namespace HISP.Game
 
         public static string TradeOfferItem;
         public static string TradeOfferItemFormat;
-        public static string TradeOfferObjectOtherPlayerInvFull;
+        public static string TradeOfferItemOtherPlayerInvFull;
 
-        // Trading : Money Offer Submenu
+        // Trading : Offer Submenu
 
         public static string TradeMoneyOfferSubmenuFormat;
         public static string TradeItemOfferSubmenuFormat;

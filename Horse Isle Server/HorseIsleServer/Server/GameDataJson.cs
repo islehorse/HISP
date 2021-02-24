@@ -838,7 +838,7 @@ namespace HISP.Server
 
             Messages.TradeWhenDoneClick = gameData.messages.meta.player_interaction.trade.when_done_click;
             Messages.TradeCancelAnytime = gameData.messages.meta.player_interaction.trade.cancel_anytime;
-            Messages.TradeAcceptedMessage = gameData.messages.meta.player_interaction.trade.accept_trade;
+            Messages.TradeAcceptTrade = gameData.messages.meta.player_interaction.trade.accept_trade;
 
             Messages.TradeOfferingNothing = gameData.messages.meta.player_interaction.trade.offering_nothing;
             Messages.TradeOfferingMoneyFormat = gameData.messages.meta.player_interaction.trade.offering_money;
@@ -856,7 +856,7 @@ namespace HISP.Server
 
             Messages.TradeOfferItem = gameData.messages.meta.player_interaction.trade.offer_object;
             Messages.TradeOfferItemFormat = gameData.messages.meta.player_interaction.trade.offer_object_format;
-            Messages.TradeOfferObjectOtherPlayerInvFull = gameData.messages.meta.player_interaction.trade.offer_object_inv_full;
+            Messages.TradeOfferItemOtherPlayerInvFull = gameData.messages.meta.player_interaction.trade.offer_object_inv_full;
 
             // Trading : Offer Submenu
 
@@ -879,6 +879,7 @@ namespace HISP.Server
             Messages.TradeAcceptedMessage = gameData.messages.meta.player_interaction.trade.trade_accepted;
             Messages.TradeCanceledByYouMessage = gameData.messages.meta.player_interaction.trade.you_canceled;
             Messages.TradeCanceledByOtherPlayerFormat = gameData.messages.meta.player_interaction.trade.other_canceled;
+            Messages.TradeCanceledBecuasePlayerMovedMessage = gameData.messages.meta.player_interaction.trade.trade_canceled_moved;
             Messages.TradeCanceledInterupted = gameData.messages.meta.player_interaction.trade.trade_interupted;
 
             Messages.TradeYouCantHandleMoreHorses = gameData.messages.meta.player_interaction.trade.cant_handle_more_horses;

@@ -200,6 +200,124 @@ namespace HISP.Server
                 Logger.ErrorPrint(sender.RemoteIp + " Requested Bird Map when not logged in.");
                 return;
             }
+            byte method = packet[1];
+            switch(method)
+            {
+                case PacketBuilder.PLAYER_INTERACTION_TRADE_REJECT:
+                    if (sender.LoggedinUser.TradingWith != null)
+                        sender.LoggedinUser.TradingWith.CancelTrade();
+                    break;
+                case PacketBuilder.PLAYER_INTERACTION_ADD_ITEM:
+                    if (sender.LoggedinUser.TradingWith == null)
+                        break;
+                    if (packet.Length < 5)
+                        break;
+
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string idStr = packetStr.Substring(2, packetStr.Length - 4);
+                    char firstChar = idStr[0];
+                    switch(firstChar)
+                    {
+                        case '3': // Money
+
+                            if (sender.LoggedinUser.Bids.Count > 0)
+                            {
+                                byte[] cantBuyWhileAuctioning = PacketBuilder.CreateChat(Messages.AuctionNoOtherTransactionAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cantBuyWhileAuctioning);
+                                break;
+                            }
+
+
+                            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAddMoney(sender.LoggedinUser.Money));
+                            sender.SendPacket(metaPacket);
+
+                            break;
+                        case '2': // Horse
+                            string horseRandomIdStr = idStr.Substring(1);
+                            int horseRandomId = -1;
+                            try
+                            {
+                                horseRandomId = int.Parse(horseRandomIdStr);
+                            }
+                            catch (FormatException)
+                            {
+                                break;
+                            }
+
+                            if (!sender.LoggedinUser.HorseInventory.HorseIdExist(horseRandomId))
+                                break;
+
+                            HorseInstance horse = sender.LoggedinUser.HorseInventory.GetHorseById(horseRandomId);
+                            sender.LoggedinUser.TradingWith.HorsesOffered.Add(horse);
+
+                            UpdateArea(sender);
+                            UpdateArea(sender.LoggedinUser.TradingWith.Trader.LoggedinClient);
+
+                            break;
+                        case '1': // Item
+                            string itemIdStr = idStr.Substring(1);
+                            int itemId = -1;
+                            try
+                            {
+                                itemId = int.Parse(itemIdStr);
+                            }
+                            catch(FormatException)
+                            {
+                                break;
+                            }
+
+                            if (!sender.LoggedinUser.Inventory.HasItemId(itemId))
+                                break;
+
+                            InventoryItem item = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
+                            byte[] addItemPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAddItem(item.ItemInstances.Count));
+                            sender.SendPacket(addItemPacket);
+                            break;
+
+                    }
+                    break;
+                case PacketBuilder.PLAYER_INTERACTION_TRADE:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    string playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    int playerId = -1;
+                    try
+                    {
+                        playerId = int.Parse(playerIdStr);
+                    }
+                    catch(FormatException)
+                    {
+                        Logger.InfoPrint(sender.LoggedinUser.Username + " tried to trade with User ID NaN.");
+                    }
+                    if(IsUserOnline(playerId))
+                    {
+                        User user = GetUserById(playerId);
+                        byte[] tradeMsg = PacketBuilder.CreateChat(Messages.TradeRequiresBothPlayersMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(tradeMsg);
+
+                        sender.LoggedinUser.PendingTradeTo = user.Id;
+
+                        if (user.PendingTradeTo == sender.LoggedinUser.Id)
+                        {
+                            // Start Trade
+                            Trade tradeWithYou = new Trade(sender.LoggedinUser);
+                            Trade tradeWithOther = new Trade(user);
+                            tradeWithYou.OtherTrade = tradeWithOther;
+                            tradeWithOther.OtherTrade = tradeWithYou;
+
+                            sender.LoggedinUser.TradingWith = tradeWithYou;
+                            user.TradingWith = tradeWithOther;
+
+                            UpdateArea(sender);
+                            UpdateArea(user.LoggedinClient);
+                        }
+
+                    }
+                    break;
+                default:
+                    Logger.DebugPrint("Unknown Player interaction Method: 0x" + method.ToString("X") + " Packet: "+BitConverter.ToString(packet).Replace("-", " "));
+                    break;
+            }
+            return;
         }
         public static void OnBirdMapRequested(GameClient sender, byte[] packet)
         {
@@ -2288,6 +2406,25 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMiscStats(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
+                case "58": // Add new item to trade
+                    if(sender.LoggedinUser.TradingWith != null)
+                    {
+                        sender.LoggedinUser.MetaPriority = true;
+                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAdd(sender.LoggedinUser.TradingWith));
+                        sender.SendPacket(metaPacket);
+                    }
+                    break;
+                case "59": // Done
+                    if (sender.LoggedinUser.TradingWith != null)
+                    {
+                        sender.LoggedinUser.TradingWith.Stage = "DONE";
+
+                        if (sender.LoggedinUser.TradingWith.OtherTrade.Trader.MetaPriority == false)
+                            UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
+                        UpdateArea(sender);
+
+                    }
+                    break;
                 case "60": // Ranch Sell
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRanchSellConfirmation());
@@ -3873,6 +4010,9 @@ namespace HISP.Server
                         return;
                     }
                 }
+
+                if (loggedInUser.TradingWith != null)
+                    loggedInUser.TradingWith.CancelTradeMoved();
 
                 byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, direction, true);
                 sender.SendPacket(moveResponse);
@@ -6193,6 +6333,13 @@ namespace HISP.Server
                 return;
             }
 
+            if(forClient.LoggedinUser.TradingWith != null)
+            {
+                forClient.LoggedinUser.MetaPriority = true;
+                byte[] tradeMeta = PacketBuilder.CreateMetaPacket(Meta.BuildTrade(forClient.LoggedinUser.TradingWith));
+                forClient.SendPacket(tradeMeta);
+                return;
+            }
 
             forClient.LoggedinUser.MetaPriority = false;
 
