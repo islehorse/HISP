@@ -78,6 +78,7 @@ namespace HISP.Player
         public string PawneerOrderColor = "";
         public string PawneerOrderGender = "";
 
+        public int PendingTradeTo;
         public Mailbox MailBox;
         public Friends Friends;
         public string Password; // For chat filter.

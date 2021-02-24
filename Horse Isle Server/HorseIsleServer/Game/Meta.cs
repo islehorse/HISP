@@ -41,6 +41,7 @@ namespace HISP.Game
             User[] playersAt = GameServer.GetUsersAt(x, y, true, true);
             if(playersAt.Length > 1)
             {
+                playersHere += Messages.Seperator;
                 playersHere += Messages.PlayersHere;
                 int count = 0;
                 foreach(User playerAt in playersAt)
@@ -406,11 +407,114 @@ namespace HISP.Game
             throw new Exception("A mathematically impossible error occured. please check wether the laws of physics still apply.");
         }
 
+        public static string BuildTradeAdd(Trade trade)
+        {
+            string message = Messages.FormatTradeWhatToOffer(trade.OtherTrade.Trader.Username);
+            message += Messages.TradeOfferMoney;
+            message += Messages.TradeOfferHorse;
+            foreach(HorseInstance horse in trade.Trader.HorseInventory.HorseList)
+            {
+                bool tacked = (horse.Equipment.Saddle != null || horse.Equipment.SaddlePad != null || horse.Equipment.Bridle != null || horse.Equipment.Companion != null);
+                message += Messages.FormatTradeOfferHorse(horse.Name, tacked, horse.RandomId);
+            }
+
+            if(trade.Trader.Inventory.Count >= trade.Trader.MaxItems)
+            {
+                message += Messages.TradeOfferItemOtherPlayerInvFull;
+            }
+            else
+            {
+                message += Messages.TradeOfferItem;
+                foreach(InventoryItem item in trade.Trader.Inventory.GetItemList())
+                {
+                    Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
+                    message += Messages.FormatTradeOfferItem(itemInfo.IconId, itemInfo.Name, item.ItemInstances.Count, item.ItemId);
+                }
+            }
+
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+
+        }
+
+        public static string BuildTradeAddItem(int totalItems)
+        {
+            string message = "";
+            message += Messages.FormatTradeOfferItemSubmenu(totalItems);
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
+        public static string BuildTradeAddMoney(int curMoney)
+        {
+            string message = "";
+            message += Messages.FormatTradeOfferMoneySubmenu(curMoney);
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildTrade(Trade trade)
         {
-            bool otherAccepted = (trade.OtherTrade.Stage == "ACCEPTED");
-            bool youAccepted = trade.Stage == "ACCEPTED";
+
             string message = "";
+            message += Messages.FormatTradeWithPlayer(trade.OtherTrade.Trader.Username);
+
+            if (trade.Stage == "DONE" && trade.OtherTrade.Stage == "DONE")
+                message += Messages.TradeFinalReview;
+            else if (trade.Stage == "DONE")
+                message += Messages.TradeWaitingForOtherDone;
+            else if (trade.OtherTrade.Stage == "DONE")
+                message += Messages.TradeOtherPlayerIsDone;
+
+
+            message += Messages.FormatTradeYourOffering(trade.OtherTrade.Trader.Username);
+            if (trade.MoenyOffered == 0 && trade.ItemsOffered.Count == 0 && trade.HorsesOffered.Count == 0)
+                message += Messages.TradeOfferingNothing;
+            if (trade.MoenyOffered > 0)
+                message += Messages.FormatTradeMoneyOffer(trade.MoenyOffered);
+            if(trade.HorsesOffered.Count > 0)
+                foreach(HorseInstance horse in trade.HorsesOffered)
+                    message += Messages.FormatTradeHorseOffer(horse.Name, horse.RandomId);
+            if(trade.ItemsOffered.Count > 0)
+                foreach(ItemInstance[] item in trade.ItemsOffered)
+                {
+                    Item.ItemInformation itemInfo = item[0].GetItemInfo();
+                    string name = itemInfo.Name;
+                    if (item.Length > 1)
+                        name = itemInfo.PluralName;
+
+                    message += Messages.FormatTradeItemOffer(item.Length, name);
+                }
+
+            if(trade.Stage == "OPEN")
+                message += Messages.TradeAddItems;
+
+            message += Messages.FormatTradeOtherOffering(trade.OtherTrade.Trader.Username);
+            if (trade.OtherTrade.MoenyOffered == 0 && trade.OtherTrade.ItemsOffered.Count == 0 && trade.OtherTrade.HorsesOffered.Count == 0)
+                message += Messages.TradeOfferingNothing;
+            if (trade.OtherTrade.MoenyOffered > 0)
+                message += Messages.FormatTradeMoneyOffer(trade.OtherTrade.MoenyOffered);
+            if (trade.OtherTrade.HorsesOffered.Count > 0)
+                foreach (HorseInstance horse in trade.OtherTrade.HorsesOffered)
+                    message += Messages.FormatTradeHorseOffer(horse.Name, horse.RandomId);
+            if (trade.OtherTrade.ItemsOffered.Count > 0)
+                foreach (ItemInstance[] item in trade.OtherTrade.ItemsOffered)
+                {
+                    Item.ItemInformation itemInfo = item[0].GetItemInfo();
+                    string name = itemInfo.Name;
+                    if (item.Length > 1)
+                        name = itemInfo.PluralName;
+
+                    message += Messages.FormatTradeItemOffer(item.Length, name);
+                }
+
+            if (trade.Stage == "OPEN")
+                message += Messages.TradeWhenDoneClick;
+            if (((trade.Stage == "DONE" || trade.Stage == "ACCEPTED") && (trade.OtherTrade.Stage == "DONE" || trade.Stage == "ACCEPTED")) )
+                message += Messages.TradeAcceptTrade;
+
+            message += Messages.TradeCancelAnytime;
 
             return message;
         }
