@@ -414,6 +414,9 @@ namespace HISP.Game
             message += Messages.TradeOfferHorse;
             foreach(HorseInstance horse in trade.Trader.HorseInventory.HorseList)
             {
+                if (horse.Leaser > 0)
+                    continue;
+
                 bool tacked = (horse.Equipment.Saddle != null || horse.Equipment.SaddlePad != null || horse.Equipment.Bridle != null || horse.Equipment.Companion != null);
                 message += Messages.FormatTradeOfferHorse(horse.Name, tacked, horse.RandomId);
             }
