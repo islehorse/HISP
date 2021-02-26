@@ -77,6 +77,9 @@ namespace HISP.Game
         public static string TradeYouSpentMoneyMessageFormat;
         public static string TradeYouReceivedMoneyMessageFormat;
 
+        public static string TradeYouCantCarryMoreItems;
+        public static string TradeOtherCantCarryMoreItems;
+
         public static string TradeNotAllowedWhileBidding;
         public static string TradeNotAllowedWhileOtherBidding;
 
