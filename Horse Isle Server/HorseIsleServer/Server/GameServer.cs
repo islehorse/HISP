@@ -207,6 +207,10 @@ namespace HISP.Server
                     if (sender.LoggedinUser.TradingWith != null)
                         sender.LoggedinUser.TradingWith.CancelTrade();
                     break;
+                case PacketBuilder.PLAYER_INTERACTION_ACCEPT:
+                    if (sender.LoggedinUser.TradingWith != null)
+                        sender.LoggedinUser.TradingWith.AcceptTrade();
+                    break;
                 case PacketBuilder.PLAYER_INTERACTION_ADD_ITEM:
                     if (sender.LoggedinUser.TradingWith == null)
                         break;
@@ -228,6 +232,7 @@ namespace HISP.Server
                             }
 
                             sender.LoggedinUser.TradeMenuPriority = true;
+                            sender.LoggedinUser.AttemptingToOfferItem = -1;
                             byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAddMoney(sender.LoggedinUser.TradingWith.MoneyOffered));
                             sender.SendPacket(metaPacket);
 
@@ -252,8 +257,8 @@ namespace HISP.Server
                                 sender.LoggedinUser.TradingWith.HorsesOffered.Add(horse);
 
                             UpdateArea(sender);
-                            if(!sender.LoggedinUser.TradingWith.Trader.TradeMenuPriority)
-                                UpdateArea(sender.LoggedinUser.TradingWith.Trader.LoggedinClient);
+                            if (!sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority)
+                                UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
 
                             break;
                         case '1': // Item
@@ -1879,10 +1884,40 @@ namespace HISP.Server
  
                             }
                             break;
-                        case 3: // Add Item to Trade
+                        case 3: // Add Item or Money to Trade
                             {
                                 if (dynamicInput.Length >= 2)
                                 {
+                                    if(sender.LoggedinUser.AttemptingToOfferItem == -1) // Money
+                                    {
+                                        string answer = dynamicInput[1];
+                                        int amountMoney = -1;
+                                        try
+                                        {
+                                            amountMoney = int.Parse(answer);
+                                        }
+                                        catch (FormatException)
+                                        {
+                                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (Money TRADE, amount is NaN)");
+                                        }
+
+                                        if(sender.LoggedinUser.Money <= amountMoney)
+                                        {
+                                            byte[] tooMuchMoney = PacketBuilder.CreateChat(Messages.TradeMoneyOfferTooMuch, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                            sender.SendPacket(tooMuchMoney);
+                                            break;
+                                        }
+
+                                        sender.LoggedinUser.TradingWith.MoneyOffered = amountMoney;
+
+                                        UpdateArea(sender);
+                                        if (!sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority)
+                                            UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
+                                        break;
+                                    }
+
+
+
                                     if (Item.ItemIdExist(sender.LoggedinUser.AttemptingToOfferItem))
                                     {
                                         string answer = dynamicInput[1];
@@ -2731,6 +2766,12 @@ namespace HISP.Server
                             sender.SendPacket(soldHorseMessage);
 
                             sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorsePawn).Count++;
+                            if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorsePawn).Count >= 100)
+                                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(44)); // Vendor
+                            if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorsePawn).Count >= 1000)
+                                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(45)); // Pro Vendor
+                            if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorsePawn).Count >= 10000)
+                                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(52)); // Top Vendor
 
                             UpdateArea(sender);
 
@@ -3400,6 +3441,16 @@ namespace HISP.Server
                     break;
             }
             sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.WishingWell).Count++;
+
+            if(sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.WishingWell).Count >= 100)
+                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(30)); // Well Wisher
+
+            if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.WishingWell).Count >= 1000)
+                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(31)); // Star Wisher
+
+            if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.WishingWell).Count >= 10000)
+                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(51)); // Extraordanary Wisher
+
             byte[] msg = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_RIGHT);
             sender.SendPacket(msg);
 

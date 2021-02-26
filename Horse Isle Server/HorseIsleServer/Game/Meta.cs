@@ -41,7 +41,6 @@ namespace HISP.Game
             User[] playersAt = GameServer.GetUsersAt(x, y, true, true);
             if(playersAt.Length > 1)
             {
-                playersHere += Messages.Seperator;
                 playersHere += Messages.PlayersHere;
                 int count = 0;
                 foreach(User playerAt in playersAt)
@@ -72,7 +71,7 @@ namespace HISP.Game
             return playersHere;
         }
 
-        private static string buildNearbyString(int x, int y)
+        private static string buildNearbyString(int x, int y, bool showNearbyPlayersHeader=true)
         {
             string playersNearby = "";
 
@@ -80,9 +79,10 @@ namespace HISP.Game
             int count = 0;
             if (nearbyUsers.Length > 1)
             {
-                playersNearby += Messages.Seperator;
-                playersNearby += Messages.NearbyPlayers;
-                playersNearby += Messages.Seperator;
+                if(showNearbyPlayersHeader)
+                {
+                    playersNearby += Messages.NearbyPlayers;
+                }
 
                 string usersWest = "";
                 string usersNorth = "";
@@ -956,7 +956,8 @@ namespace HISP.Game
 
         public static string BuildNearbyList(User user)
         {
-            string message = Messages.NearbyPlayersListHeader;
+            string message = "";
+            message += Messages.NearbyPlayersListHeader;
             User[] nearbyUsers = GameServer.GetNearbyUsers(user.X, user.Y, false, true);
             foreach (User nearbyUser in nearbyUsers)
             {
@@ -2558,6 +2559,7 @@ namespace HISP.Game
 
             if (specialTile.Description != null && specialTile.Description != "")
                 message += specialTile.Description;
+            message += Messages.Seperator; // <BR>
 
             string npc = buildNpc(user, specialTile.X, specialTile.Y);
             message += npc;

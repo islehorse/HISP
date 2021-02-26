@@ -885,6 +885,9 @@ namespace HISP.Server
             Messages.TradeYouCantHandleMoreHorses = gameData.messages.meta.player_interaction.trade.cant_handle_more_horses;
             Messages.TradeOtherPlayerCantHandleMoreHorsesFormat = gameData.messages.meta.player_interaction.trade.other_player_cant_handle_more_horses;
 
+            Messages.TradeOtherCantCarryMoreItems = gameData.messages.meta.player_interaction.trade.other_carry_more;
+            Messages.TradeYouCantCarryMoreItems = gameData.messages.meta.player_interaction.trade.you_cant_carry_more;
+
             Messages.TradeYouSpentMoneyMessageFormat = gameData.messages.meta.player_interaction.trade.trade_spent;
             Messages.TradeYouReceivedMoneyMessageFormat = gameData.messages.meta.player_interaction.trade.trade_received;
 
