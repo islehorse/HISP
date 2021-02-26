@@ -412,7 +412,7 @@ namespace HISP.Game
             string message = Messages.FormatTradeWhatToOffer(trade.OtherTrade.Trader.Username);
             message += Messages.TradeOfferMoney;
             message += Messages.TradeOfferHorse;
-            foreach(HorseInstance horse in trade.Trader.HorseInventory.HorseList)
+            foreach(HorseInstance horse in trade.Trader.HorseInventory.HorseList.OrderBy(o => o.Name))
             {
                 if (horse.Leaser > 0)
                     continue;
