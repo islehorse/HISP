@@ -2561,8 +2561,11 @@ namespace HISP.Game
 
 
             if (specialTile.Description != null && specialTile.Description != "")
+            {
                 message += specialTile.Description;
-            message += Messages.Seperator; // <BR>
+                message += Messages.Seperator; // <BR>
+            }
+
 
             string npc = buildNpc(user, specialTile.X, specialTile.Y);
             message += npc;
