@@ -3943,7 +3943,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "DELETE FROM droppeditems WHERE despawnTimer <=0";
+                sqlCommand.CommandText = "DELETE FROM DroppedItems WHERE despawnTimer <=0";
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
