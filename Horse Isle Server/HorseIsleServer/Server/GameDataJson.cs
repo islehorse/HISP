@@ -804,9 +804,10 @@ namespace HISP.Server
             Item.WishingCoin = gameData.item.special.wishing_coin;
             Item.FishingPole = gameData.item.special.fishing_poll;
             Item.Earthworm = gameData.item.special.earthworm;
+            Item.BirthdayToken = gameData.item.special.birthday_token;
 
             // New Users
-            
+
             Messages.NewUserMessage = gameData.messages.new_user.starting_message;
             Map.NewUserStartX = gameData.messages.new_user.starting_x;
             Map.NewUserStartY = gameData.messages.new_user.starting_y;

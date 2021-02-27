@@ -80,6 +80,30 @@ namespace HISP.Server
                         }
                     }
                 }
+
+                if((World.StartDate != -1)) // Birthday tokens
+                {
+                    int curTime = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                    if (curTime >= World.StartDate + 378691200)
+                    {
+                        Logger.InfoPrint("Your server has been running for 12 years! Adding birthday tokens");
+                        Database.SetStartTime(-1);
+                        World.StartDate = -1;
+
+                        int[] allUsers = Database.GetUsers(); // This is slow af, but we only have to do it once ..
+                        foreach (int userid in allUsers)
+                        {
+                            Logger.DebugPrint("Adding Birthday Token to userid: " + userid.ToString());
+                            for (int i = 0; i < 10; i++)
+                            {
+                                ItemInstance itm = new ItemInstance(Item.BirthdayToken);
+                                Database.AddItemToInventory(userid, itm);
+                            }
+                        }
+                    }
+ 
+                }
+
                 gameTimer.Change(gameTickSpeed, gameTickSpeed);
                 lastServerTime = World.ServerTime.Minutes;
             }

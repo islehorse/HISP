@@ -186,6 +186,7 @@ namespace HISP.Game
             public string TypeFlag;
         }
         public static Time ServerTime = new Time();
+        public static int StartDate;
 
         public static List<Waypoint> Waypoints = new List<Waypoint>();
         public static List<Isle> Isles = new List<Isle>();
@@ -221,7 +222,9 @@ namespace HISP.Game
             ServerTime.PreciseMinutes = Database.GetServerTime();
             ServerTime.Days = Database.GetServerDay();
             ServerTime.Years = Database.GetServerYear();
+            StartDate = Database.GetServerStartTime();
             Logger.InfoPrint("It is " + ServerTime.Minutes / 60 + ":" + ServerTime.Minutes % 60 + " on Day " + ServerTime.Days + " in Year " + ServerTime.Years + "!!!");
+
         }
 
         public static bool InZone(int x, int y)
