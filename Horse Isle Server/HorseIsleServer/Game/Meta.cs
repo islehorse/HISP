@@ -434,6 +434,8 @@ namespace HISP.Game
                 foreach(InventoryItem item in trade.Trader.Inventory.GetItemList())
                 {
                     Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
+                    if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" && !(itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope))
+                        continue;
                     message += Messages.FormatTradeOfferItem(itemInfo.IconId, itemInfo.Name, item.ItemInstances.Count, item.ItemId);
                 }
             }
