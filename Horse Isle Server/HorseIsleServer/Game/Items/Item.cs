@@ -103,6 +103,8 @@ namespace HISP.Game.Items
                             toMuch = true;
                         user.Hunger += effect.EffectAmount;
                         break;
+                    case "MOOD":
+                        break;
                     default:
                         Logger.ErrorPrint("Unknown effect: " + effect.EffectsWhat);
                         break;

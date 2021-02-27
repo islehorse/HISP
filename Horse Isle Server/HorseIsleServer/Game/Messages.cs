@@ -678,6 +678,8 @@ namespace HISP.Game
         public static string HorseUnEquipSaddlePadFormat;
         public static string HorseUnEquipBridleFormat;
         public static string HorseTackInInventory;
+        public static string HorseLlamaTackInInventory;
+        public static string HorseCamelTackInInventory;
         public static string HorseEquipFormat;
         public static string BackToHorse;
 
