@@ -25,7 +25,7 @@ namespace HISP.Server
                 string ExtTable = "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(1028),IpAddress TEXT(1028),PrivateNotes Text(1028), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT)";
                 string MailTable = "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(128), Message Text(1028), TimeSent INT, BeenRead TEXT(3))";
                 string BuddyTable = "CREATE TABLE IF NOT EXISTS BuddyList(Id INT, IdFriend INT, Pending TEXT(3))";
-                string WorldTable = "CREATE TABLE IF NOT EXISTS World(Time INT, Day INT, Year INT)";
+                string WorldTable = "CREATE TABLE World(Time INT, Day INT, Year INT, StartTime INT)";
                 string WeatherTable = "CREATE TABLE IF NOT EXISTS Weather(Area TEXT(1028), Weather TEXT(64))";
                 string InventoryTable = "CREATE TABLE IF NOT EXISTS Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)";
                 string ShopInventory = "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, RandomID INT, ItemID INT)";
@@ -429,10 +429,9 @@ namespace HISP.Server
                     sqlCommand.CommandText = WorldTable;
                     sqlCommand.ExecuteNonQuery();
 
-
-
                     sqlCommand = db.CreateCommand();
-                    sqlCommand.CommandText = "INSERT INTO World VALUES(0,0,0)";
+                    sqlCommand.CommandText = "INSERT INTO World VALUES(0,0,0,@startDate)";
+                    sqlCommand.Parameters.AddWithValue("@startDate", (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
@@ -2188,6 +2187,20 @@ namespace HISP.Server
             }
         }
 
+        public static void SetStartTime(int startTime)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE World SET StartTime=@startTimer";
+                sqlCommand.Parameters.AddWithValue("@startTimer", startTime);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
         public static void SetServerTime(int time, int day, int year)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
@@ -2214,6 +2227,19 @@ namespace HISP.Server
                 int serverTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 sqlCommand.Dispose();
                 return serverTime;
+            }
+        }
+
+        public static int GetServerStartTime()
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT StartTime FROM World";
+                int startTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return startTime;
             }
         }
 
@@ -3698,7 +3724,24 @@ namespace HISP.Server
                 return instances;
             }
         }
+        public static int[] GetUsers()
+        {
+            List<int> userList = new List<int>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
 
+                sqlCommand.CommandText = "SELECT id FROM Users";
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while(reader.Read())
+                {
+                    userList.Add(reader.GetInt32(0));
+                }
+                sqlCommand.Dispose();
+            }
+            return userList.ToArray();
+        }
         public static void AddItemToInventory(int playerId, ItemInstance instance)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

@@ -68,6 +68,7 @@ namespace HISP.Game.Items
         public static int WishingCoin;
         public static int FishingPole;
         public static int Earthworm;
+        public static int BirthdayToken;
         
         public static ItemInformation[] GetAllWishableItems()
         {
