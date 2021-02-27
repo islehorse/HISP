@@ -3919,6 +3919,20 @@ namespace HISP.Server
             }
         }
 
+        public static int GetDroppedItemsCount()
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM DroppedItems";
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return count;
+            }
+        }
         public static int GetNpcStartPoint(int playerId, int npcId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

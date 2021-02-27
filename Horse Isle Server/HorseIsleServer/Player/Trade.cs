@@ -181,11 +181,15 @@ namespace HISP.Player
             return;
 
             cancelTrade:;
+            InteruptTrade();
+            return;
+
+        }
+        public void InteruptTrade()
+        {
             byte[] tradeCanceled = PacketBuilder.CreateChat(Messages.TradeCanceledInterupted, PacketBuilder.CHAT_BOTTOM_RIGHT);
             Trader.LoggedinClient.SendPacket(tradeCanceled);
             endTrade();
-            return;
-
         }
         public void AcceptTrade()
         {

@@ -417,6 +417,9 @@ namespace HISP.Game
                 if (horse.Leaser > 0)
                     continue;
 
+                if (horse.Category != "TRADING")
+                    continue;
+
                 bool tacked = (horse.Equipment.Saddle != null || horse.Equipment.SaddlePad != null || horse.Equipment.Bridle != null || horse.Equipment.Companion != null);
                 message += Messages.FormatTradeOfferHorse(horse.Name, tacked, horse.RandomId);
             }
@@ -462,6 +465,8 @@ namespace HISP.Game
 
             string message = "";
             message += Messages.FormatTradeWithPlayer(trade.OtherTrade.Trader.Username);
+
+
 
             if (trade.Stage == "DONE" && trade.OtherTrade.Stage == "DONE")
                 message += Messages.TradeFinalReview;
@@ -976,7 +981,7 @@ namespace HISP.Game
                 if (icon != -1)
                     iconFormat = Messages.FormatIconFormat(icon);
 
-                message += Messages.FormatPlayerEntry(iconFormat, nearbyUser.Username, nearbyUser.Id, (DateTime.UtcNow - nearbyUser.LoginTime).Minutes, nearbyUser.X, nearbyUser.Y, nearbyUser.Idle);
+                message += Messages.FormatPlayerEntry(iconFormat, nearbyUser.Username, nearbyUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - nearbyUser.LoginTime).TotalMinutes)), nearbyUser.X, nearbyUser.Y, nearbyUser.Idle);
             }
 
             message += Messages.PlayerListIconInformation;
@@ -1012,7 +1017,7 @@ namespace HISP.Game
                 if (icon != -1)
                     iconFormat = Messages.FormatIconFormat(icon);
 
-                message += Messages.FormatPlayerEntry(iconFormat, onlineUser.Username, onlineUser.Id, (DateTime.UtcNow - onlineUser.LoginTime).Minutes, onlineUser.X, onlineUser.Y, onlineUser.Idle);
+                message += Messages.FormatPlayerEntry(iconFormat, onlineUser.Username, onlineUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - onlineUser.LoginTime).TotalMinutes)), onlineUser.X, onlineUser.Y, onlineUser.Idle);
             }
 
             message += Messages.PlayerListIconInformation;
@@ -1038,7 +1043,7 @@ namespace HISP.Game
                     if (icon != -1)
                         iconFormat = Messages.FormatIconFormat(icon);
 
-                    message += Messages.FormatPlayerEntry(iconFormat, client.LoggedinUser.Username, client.LoggedinUser.Id, (DateTime.UtcNow - client.LoggedinUser.LoginTime).Minutes, client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.Idle);
+                    message += Messages.FormatPlayerEntry(iconFormat, client.LoggedinUser.Username, client.LoggedinUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - client.LoggedinUser.LoginTime).TotalMinutes)), client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.Idle);
                 }
             }
 
@@ -1065,7 +1070,7 @@ namespace HISP.Game
                     if (icon != -1)
                         iconFormat = Messages.FormatIconFormat(icon);
 
-                    message += Messages.FormatOnlineBuddyEntry(iconFormat, friend.Username, friend.Id, (DateTime.UtcNow - friend.LoginTime).Minutes, friend.X, friend.Y);
+                    message += Messages.FormatOnlineBuddyEntry(iconFormat, friend.Username, friend.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - friend.LoginTime).TotalMinutes)), friend.X, friend.Y);
 
                 }
                 catch (KeyNotFoundException) { }
