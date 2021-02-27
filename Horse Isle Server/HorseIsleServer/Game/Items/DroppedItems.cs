@@ -334,7 +334,7 @@ namespace HISP.Game.Items
         public static void Init()
         {
             ReadFromDatabase();
-            GenerateItems(true);
+            GenerateItems(Database.GetDroppedItemsCount() <= 0);
         }
 
     }

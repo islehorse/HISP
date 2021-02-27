@@ -257,8 +257,10 @@ namespace HISP.Server
                                 sender.LoggedinUser.TradingWith.HorsesOffered.Add(horse);
 
                             UpdateArea(sender);
-                            if (!sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority)
-                                UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
+
+                            if (sender.LoggedinUser.TradingWith != null)
+                                if (!sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority)
+                                    UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
 
                             break;
                         case '1': // Item
@@ -1905,8 +1907,9 @@ namespace HISP.Server
                                         sender.LoggedinUser.TradingWith.MoneyOffered = amountMoney;
 
                                         UpdateArea(sender);
-                                        if (!sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority)
-                                            UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
+                                        if(sender.LoggedinUser.TradingWith != null)
+                                            if (!sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority)
+                                                UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
                                         break;
                                     }
 
@@ -1959,8 +1962,9 @@ namespace HISP.Server
                                         sender.LoggedinUser.TradingWith.ItemsOffered.Add(items);
 
                                         UpdateArea(sender);
-                                        if (!sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority)
-                                            UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
+                                        if (sender.LoggedinUser.TradingWith != null)
+                                            if (!sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority)
+                                                UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
                                     }
                                     break;
                                 }
@@ -2514,8 +2518,9 @@ namespace HISP.Server
                     {
                         sender.LoggedinUser.TradingWith.Stage = "DONE";
 
-                        if (sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority == false)
-                            UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
+                        if (sender.LoggedinUser.TradingWith != null)
+                            if (sender.LoggedinUser.TradingWith.OtherTrade.Trader.TradeMenuPriority == false)
+                                UpdateArea(sender.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient);
                         UpdateArea(sender);
 
                     }
@@ -6060,6 +6065,10 @@ namespace HISP.Server
 
                 Database.RemoveOnlineUser(sender.LoggedinUser.Id);
 
+                // Remove Trade Reference
+                sender.LoggedinUser.TradingWith = null;
+                sender.LoggedinUser.PendingTradeTo = 0;
+
                 // Delete Arena Entries
                 if(Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
                 {
@@ -6446,6 +6455,18 @@ namespace HISP.Server
 
             if(forClient.LoggedinUser.TradingWith != null)
             {
+                if (!forClient.LoggedinUser.TradingWith.OtherTrade.Trader.LoggedinClient.LoggedIn)
+                {
+                    forClient.LoggedinUser.TradingWith.InteruptTrade();
+                    return;
+                }
+
+                if (forClient.LoggedinUser.TradingWith.OtherTrade.Trader.TradingWith == null)
+                {
+                    forClient.LoggedinUser.TradingWith.InteruptTrade();
+                    return;
+                }
+
                 forClient.LoggedinUser.MetaPriority = true;
                 forClient.LoggedinUser.TradeMenuPriority = false;
                 byte[] tradeMeta = PacketBuilder.CreateMetaPacket(Meta.BuildTrade(forClient.LoggedinUser.TradingWith));
