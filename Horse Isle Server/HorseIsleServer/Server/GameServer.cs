@@ -1088,81 +1088,75 @@ namespace HISP.Server
                         Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
                         HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
                         bool tooMuch = false;
-                        if (itemInfo.Type == "HORSEFOOD")
+                        foreach(Item.Effects effect in itemInfo.Effects)
                         {
-                            foreach(Item.Effects effect in itemInfo.Effects)
+                            switch(effect.EffectsWhat)
                             {
-                                switch(effect.EffectsWhat)
-                                {
-                                    case "HEALTH":
-                                        if (horseInstance.BasicStats.Health + effect.EffectAmount > 1000)
-                                            tooMuch = true;
-                                        horseInstance.BasicStats.Health += effect.EffectAmount;
-                                        break;
-                                    case "HUNGER":
-                                        if (horseInstance.BasicStats.Hunger + effect.EffectAmount > 1000)
-                                            tooMuch = true;
-                                        horseInstance.BasicStats.Hunger += effect.EffectAmount;
-                                        break;
-                                    case "MOOD":
-                                        if (horseInstance.BasicStats.Mood + effect.EffectAmount > 1000)
-                                            tooMuch = true;
-                                        horseInstance.BasicStats.Mood += effect.EffectAmount;
-                                        break;
-                                    case "GROOM":
-                                        if (horseInstance.BasicStats.Groom + effect.EffectAmount > 1000)
-                                            tooMuch = true;
-                                        horseInstance.BasicStats.Groom += effect.EffectAmount;
-                                        break;
-                                    case "SHOES":
-                                        if (horseInstance.BasicStats.Shoes + effect.EffectAmount > 1000)
-                                            tooMuch = true;
-                                        horseInstance.BasicStats.Shoes += effect.EffectAmount;
-                                        break;
-                                    case "THIRST":
-                                        if (horseInstance.BasicStats.Thirst + effect.EffectAmount > 1000)
-                                            tooMuch = true;
-                                        horseInstance.BasicStats.Thirst += effect.EffectAmount;
-                                        break;
-                                    case "TIREDNESS":
-                                        if (horseInstance.BasicStats.Tiredness + effect.EffectAmount > 1000)
-                                            tooMuch = true;
-                                        horseInstance.BasicStats.Tiredness += effect.EffectAmount;
-                                        break;
+                                case "HEALTH":
+                                    if (horseInstance.BasicStats.Health + effect.EffectAmount > 1000)
+                                        tooMuch = true;
+                                    horseInstance.BasicStats.Health += effect.EffectAmount;
+                                    break;
+                                case "HUNGER":
+                                    if (horseInstance.BasicStats.Hunger + effect.EffectAmount > 1000)
+                                        tooMuch = true;
+                                    horseInstance.BasicStats.Hunger += effect.EffectAmount;
+                                    break;
+                                case "MOOD":
+                                    if (horseInstance.BasicStats.Mood + effect.EffectAmount > 1000)
+                                        tooMuch = true;
+                                    horseInstance.BasicStats.Mood += effect.EffectAmount;
+                                    break;
+                                case "GROOM":
+                                    if (horseInstance.BasicStats.Groom + effect.EffectAmount > 1000)
+                                        tooMuch = true;
+                                    horseInstance.BasicStats.Groom += effect.EffectAmount;
+                                    break;
+                                case "SHOES":
+                                    if (horseInstance.BasicStats.Shoes + effect.EffectAmount > 1000)
+                                        tooMuch = true;
+                                    horseInstance.BasicStats.Shoes += effect.EffectAmount;
+                                    break;
+                                case "THIRST":
+                                    if (horseInstance.BasicStats.Thirst + effect.EffectAmount > 1000)
+                                        tooMuch = true;
+                                    horseInstance.BasicStats.Thirst += effect.EffectAmount;
+                                    break;
+                                case "TIREDNESS":
+                                    if (horseInstance.BasicStats.Tiredness + effect.EffectAmount > 1000)
+                                        tooMuch = true;
+                                    horseInstance.BasicStats.Tiredness += effect.EffectAmount;
+                                    break;
 
-                                    case "INTELLIGENCEOFFSET":
-                                        horseInstance.AdvancedStats.Inteligence += effect.EffectAmount;
-                                        horseInstance.MagicUsed++;
-                                        break;
-                                    case "PERSONALITYOFFSET":
-                                        horseInstance.AdvancedStats.Personality += effect.EffectAmount;
-                                        horseInstance.MagicUsed++;
-                                        break;
-                                    case "SPOILED":
-                                        horseInstance.Spoiled += effect.EffectAmount;
-                                        break;
-                                }
+                                case "INTELLIGENCEOFFSET":
+                                    horseInstance.AdvancedStats.Inteligence += effect.EffectAmount;
+                                    horseInstance.MagicUsed++;
+                                    break;
+                                case "PERSONALITYOFFSET":
+                                    horseInstance.AdvancedStats.Personality += effect.EffectAmount;
+                                    horseInstance.MagicUsed++;
+                                    break;
+                                case "SPOILED":
+                                    horseInstance.Spoiled += effect.EffectAmount;
+                                    break;
                             }
-                            sender.LoggedinUser.Inventory.Remove(item.ItemInstances[0]);
-
-                            byte[] horseNeighThanksPacket = PacketBuilder.CreateChat(Messages.HorseNeighsThanks, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(horseNeighThanksPacket);
-
-                            if (tooMuch)
-                            {
-                                byte[] horseCouldntFinishItAll = PacketBuilder.CreateChat(Messages.HorseCouldNotFinish, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                sender.SendPacket(horseCouldntFinishItAll);
-                            }
-
-                            sender.LoggedinUser.MetaPriority = true;
-                            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseFeedMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
-                            sender.SendPacket(metaPacket);
-                            break;
                         }
-                        else
+                        sender.LoggedinUser.Inventory.Remove(item.ItemInstances[0]);
+
+                        byte[] horseNeighThanksPacket = PacketBuilder.CreateChat(Messages.HorseNeighsThanks, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(horseNeighThanksPacket);
+
+                        if (tooMuch)
                         {
-                            Logger.HackerPrint(sender.LoggedinUser.Username + "Tried to feed a horse a non-HORSEFOOD item.");
+                            byte[] horseCouldntFinishItAll = PacketBuilder.CreateChat(Messages.HorseCouldNotFinish, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(horseCouldntFinishItAll);
                         }
+
+                        sender.LoggedinUser.MetaPriority = true;
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseFeedMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
+                        sender.SendPacket(metaPacket);
+                            
+                        
                         break;
                     }
                     else
@@ -6569,10 +6563,11 @@ namespace HISP.Server
             }
             if (horseMountInst.Breed.Type == "camel")
             {
-                if (horseMountInst.Color == "brown")
-                    incBy = 13;
-                if (horseMountInst.Color == "white")
-                    incBy = 14;
+                incBy = 13;
+            }
+            if(horseMountInst.Breed.Type == "llama")
+            {
+                incBy = 14;
             }
             if (horseMountInst.Breed.Type == "unicorn")
             {

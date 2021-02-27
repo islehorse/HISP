@@ -1966,7 +1966,10 @@ namespace HISP.Game
             foreach(InventoryItem item in user.Inventory.GetItemList())
             {
                 Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
-                if(itemInfo.Type == "HORSEFOOD")
+                bool isHorseFood = false;
+                if (itemInfo.Effects.Length >= 2)
+                    isHorseFood = (itemInfo.Effects[1].EffectsWhat == "MOOD" && itemInfo.Effects[0].EffectsWhat == "HUNGER");
+                if (itemInfo.Type == "HORSEFOOD" || isHorseFood)
                 {
                     message += Messages.FormatHorseFeedEntry(itemInfo.IconId, item.ItemInstances.Count, itemInfo.Name, item.ItemInstances[0].RandomId);
                 }
@@ -2243,12 +2246,24 @@ namespace HISP.Game
                 message += Messages.FormatUnEquipSaddlePad(horse.Equipment.SaddlePad.IconId, horse.Equipment.SaddlePad.Name);
             if (horse.Equipment.Bridle != null)
                 message += Messages.FormatUnEquipBridle(horse.Equipment.Bridle.IconId, horse.Equipment.Bridle.Name);
-            message += Messages.HorseTackInInventory;
+            if (horse.Breed.Type == "llama")
+                message += Messages.HorseLlamaTackInInventory;
+            else if (horse.Breed.Type == "camel")
+                message += Messages.HorseCamelTackInInventory;
+            else
+                message += Messages.HorseTackInInventory;
+
             foreach(InventoryItem item in user.Inventory.GetItemList())
             {
                 Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
                 if (itemInfo.Type == "TACK")
                 {
+                    if (horse.Breed.Type == "camel" && itemInfo.GetMiscFlag(2) != 1)
+                        continue;
+                    else if (horse.Breed.Type == "llama" && itemInfo.GetMiscFlag(2) != 2)
+                        continue;
+                    else if (itemInfo.GetMiscFlag(2) != 0)
+                        continue;
                     message += Messages.FormatHorseEquip(itemInfo.IconId, item.ItemInstances.Count, itemInfo.Name, itemInfo.Id);
                 }
             }

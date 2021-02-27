@@ -1484,6 +1484,8 @@ namespace HISP.Server
             Messages.HorseUnEquipSaddlePadFormat = gameData.messages.meta.horse.tack_menu.dequip_saddle_pad;
             Messages.HorseUnEquipBridleFormat = gameData.messages.meta.horse.tack_menu.dequip_bridle;
             Messages.HorseTackInInventory = gameData.messages.meta.horse.tack_menu.you_have_following_tack;
+            Messages.HorseLlamaTackInInventory = gameData.messages.meta.horse.tack_menu.you_have_following_llama_tack;
+            Messages.HorseCamelTackInInventory = gameData.messages.meta.horse.tack_menu.you_have_following_camel_tack;
             Messages.HorseEquipFormat = gameData.messages.meta.horse.tack_menu.equip_tack;
             Messages.BackToHorse = gameData.messages.meta.horse.back_to_horse;
 
