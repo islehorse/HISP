@@ -3587,6 +3587,9 @@ namespace HISP.Server
         }
         public static bool IsUserSubscribed(int playerId)
         {
+            if (ConfigReader.AllUsersSubbed)
+                return true;
+
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
