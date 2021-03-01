@@ -321,7 +321,8 @@ namespace HISP.Server
                     }
                     catch(FormatException)
                     {
-                        Logger.InfoPrint(sender.LoggedinUser.Username + " tried to trade with User ID NaN.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to trade with User ID NaN.");
+                        break;
                     }
                     if(IsUserOnline(playerId))
                     {
@@ -353,6 +354,105 @@ namespace HISP.Server
                     break;
             }
             return;
+        }
+        public static void OnSocialPacket(GameClient sender, byte[] packet)
+        {
+            if (!sender.LoggedIn)
+            {
+                Logger.ErrorPrint(sender.RemoteIp + " Tried to be socialable, but has no account and therefor no friends.");
+                return;
+            }
+            byte method = packet[1];
+
+            switch (method)
+            {
+                case PacketBuilder.SOCIALS_MENU:
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    int playerId = -1;
+                    try
+                    {
+                        playerId = int.Parse(playerIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to socialize with User ID NaN.");
+                        break;
+                    }
+
+                    if(IsUserOnline(playerId))
+                    {
+                        sender.LoggedinUser.SocializingWith = GetUserById(playerId);
+                        sender.LoggedinUser.MetaPriority = true;
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildSocialMenu(sender.LoggedinUser.CurrentlyRidingHorse != null));
+                        sender.SendPacket(metaPacket);
+                    }
+                    else
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to socialize with User #"+playerId.ToString()+" but there not online.");
+                    }
+                    break;
+                case PacketBuilder.SOCIALS_USE:
+                    int socialId = Convert.ToInt32(packet[2] - (byte)0x21);
+                    SocialType.Social social = SocialType.GetSocial(socialId); 
+
+                    foreach(User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true))
+                    {
+                        if (social.BaseSocialType.Type != "GROUP")
+                            if (user.Id == sender.LoggedinUser.SocializingWith.Id)
+                                continue;
+
+                        if (user.Id == sender.LoggedinUser.Id)
+                            continue;
+
+                        if (user.MuteAll || user.MuteSocials)
+                            continue;
+
+                        byte[] msgEveryone = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForEveryone, sender.LoggedinUser.SocializingWith.Username, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        user.LoggedinClient.SendPacket(msgEveryone);
+                    }
+                    if(social.ForTarget != null)
+                    {
+                        if(sender.LoggedinUser.SocializingWith != null)
+                        {
+                            if (social.BaseSocialType.Type != "GROUP")
+                            {
+                                if (!sender.LoggedinUser.SocializingWith.MuteAll || !sender.LoggedinUser.SocializingWith.MuteSocials)
+                                {
+                                    byte[] msgTarget = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForTarget, sender.LoggedinUser.SocializingWith.Username, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.LoggedinUser.SocializingWith.LoggedinClient.SendPacket(msgTarget);
+                                }
+                            }
+                        }
+                    }
+                    if(social.ForSender != null)
+                    {
+                        if (sender.LoggedinUser.SocializingWith != null)
+                        {
+                            byte[] msgSender = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForSender, sender.LoggedinUser.SocializingWith.Username, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(msgSender);
+
+                        }
+                    }
+
+                    foreach(User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true))
+                    {
+                        if (social.SoundEffect != null)
+                        {
+                            if (user.MuteAll || user.MuteSocials)
+                                continue;
+
+                            byte[] soundEffect = PacketBuilder.CreatePlaysoundPacket(social.SoundEffect);
+                            user.LoggedinClient.SendPacket(soundEffect);
+                        }
+                    }
+
+                    break;
+                default:
+                    Logger.ErrorPrint(sender.LoggedinUser.Username + " unknown social: " + method.ToString("X") + " packet dump: " + BitConverter.ToString(packet).Replace("-", " "));
+                    break;
+            }
+
         }
         public static void OnBirdMapRequested(GameClient sender, byte[] packet)
         {
@@ -3960,9 +4060,16 @@ namespace HISP.Server
                     if(GameServer.RandomNumberGenerator.Next(0, 100) >= 97 || sender.LoggedinUser.Username.ToLower() == "dream")
                     {
                         loggedInUser.CurrentlyRidingHorse.BasicStats.Experience++;
+                        byte[] horseBuckedMessage;
+                        if(loggedInUser.CurrentlyRidingHorse.Breed.Type == "llama")
+                            horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseLlamaBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        else if (loggedInUser.CurrentlyRidingHorse.Breed.Type == "camel")
+                            horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseCamelBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        else
+                            horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
+
                         sender.LoggedinUser.CurrentlyRidingHorse = null;
                         sender.LoggedinUser.Facing %= 5;
-                        byte[] horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(horseBuckedMessage);
                     }
                 }

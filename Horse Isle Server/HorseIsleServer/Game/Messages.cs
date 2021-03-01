@@ -13,6 +13,11 @@ namespace HISP.Game
         // Mod isle
         public static string ModIsleMessage;
 
+        // Socials
+        public static string SocialButton;
+        public static string SocialMessageFormat;
+        public static string SocialTypeFormat;
+
         // Trading
         public static string TradeWithPlayerFormat;
 
@@ -85,7 +90,6 @@ namespace HISP.Game
 
         // Player Interaction
         public static string PlayerHereMenuFormat;
-        public static string PlayerHereMulitpleMenuFormat;
 
         public static string PlayerHereProfileButton;
         public static string PlayerHereSocialButton;
@@ -577,6 +581,8 @@ namespace HISP.Game
         public static string ViewBaiscStats;
         public static string ViewAdvancedStats;
         public static string HorseBuckedYou;
+        public static string HorseLlamaBuckedYou;
+        public static string HorseCamelBuckedYou;
 
         public static string HorseRidingMessageFormat;
         public static string HorseNameYoursFormat;
@@ -905,6 +911,7 @@ namespace HISP.Game
         public static string BackToMapHorse;
         public static string LongFullLine;
         public static string MetaTerminator;
+        public static string R1;
 
         // Pawneer
         public static string PawneerUntackedHorsesICanBuy;
@@ -985,7 +992,23 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        // Socials
+        public static string FormatSocialButton(int socialId, string buttonName)
+        {
+            string id = "" + Convert.ToChar(0x21 + socialId);
+            return SocialButton.Replace("%ID%", id).Replace("%SOCIALNAME%", buttonName);
+        }
+        public static string FormatSocialMessage(string socialMsg, string targetName, string senderName)
+        {
+            return SocialMessageFormat.Replace("%SOCIALMSG%", socialMsg.Replace("%TARGETNAME%", targetName).Replace("%SENDERNAME%", senderName));
+        }
+        public static string FormatSocialMenuType(string type)
+        {
+            return SocialTypeFormat.Replace("%TYPE%", Converters.CapitalizeFirstLetter(type.ToLower()));
+        }
+
         // Trading
+
         public static string FormatTradeYouReceived(int money)
         {
             return TradeYouReceivedMoneyMessageFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));

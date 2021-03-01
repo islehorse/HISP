@@ -6,7 +6,6 @@ using HISP.Game.SwfModules;
 using HISP.Security;
 using HISP.Server;
 using HISP.Game.Services;
-
 namespace HISP
 {
     public class Program

@@ -1154,7 +1154,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO RiddlesComplete VALUES(@riddleId, @playerId, \"YES\")";
+                sqlCommand.CommandText = "INSERT INTO RiddlesComplete VALUES(@playerId, @riddleId, \"YES\")";
                 sqlCommand.Parameters.AddWithValue("@riddleId", riddleId);
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
