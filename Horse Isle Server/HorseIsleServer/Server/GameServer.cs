@@ -417,7 +417,7 @@ namespace HISP.Server
                         {
                             if (social.BaseSocialType.Type != "GROUP")
                             {
-                                if (!sender.LoggedinUser.SocializingWith.MuteAll || !sender.LoggedinUser.SocializingWith.MuteSocials)
+                                if (!sender.LoggedinUser.SocializingWith.MuteAll && !sender.LoggedinUser.SocializingWith.MuteSocials)
                                 {
                                     byte[] msgTarget = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForTarget, sender.LoggedinUser.SocializingWith.Username, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.LoggedinUser.SocializingWith.LoggedinClient.SendPacket(msgTarget);
