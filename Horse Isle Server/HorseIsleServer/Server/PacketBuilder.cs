@@ -51,6 +51,10 @@ namespace HISP.Server
         public const byte PACKET_SWFMODULE = 0x50;
         public const byte PACKET_AUCTION = 0x24;
         public const byte PACKET_PLAYER_INTERACTION = 0x2A;
+        public const byte PACKET_SOCIALS = 0x5A;
+
+        public const byte SOCIALS_MENU = 0x14;
+        public const byte SOCIALS_USE = 0x15;
 
         public const byte PLAYER_INTERACTION_TRADE = 0x28;
         public const byte PLAYER_INTERACTION_ADD_ITEM = 0x29;

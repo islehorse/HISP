@@ -793,6 +793,28 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Leaser: " + leaser.LeaseId.ToString() + " For a " + leaser.HorseName);
             }
 
+            // Register Socials
+            int totalSocials = gameData.social_types.Count;
+            for (int i = 0; i < totalSocials; i++)
+            {
+                string socialType = gameData.social_types[i].type;
+                int totalSocialsOfType = gameData.social_types[i].socials.Count;
+                for (int ii = 0; ii < totalSocialsOfType; ii++)
+                {
+                    SocialType.Social social = new SocialType.Social();
+
+                    social.Id = gameData.social_types[i].socials[ii].social_id;
+                    social.ButtonName = gameData.social_types[i].socials[ii].button_name;
+                    social.ForSender = gameData.social_types[i].socials[ii].for_sender;
+                    social.ForTarget = gameData.social_types[i].socials[ii].for_target;
+                    social.ForEveryone = gameData.social_types[i].socials[ii].for_everyone;
+                    social.SoundEffect = gameData.social_types[i].socials[ii].sound_effect;
+
+                    SocialType.AddNewSocial(socialType, social);
+                    Logger.DebugPrint("Registered Social: " + social.ButtonName);
+                }
+            }
+
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
             Item.Present = gameData.item.special.present;
@@ -824,6 +846,11 @@ namespace HISP.Server
             Messages.ModIsleMessage = gameData.messages.commands.mod_isle.message;
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
+
+            // Socials
+            Messages.SocialButton = gameData.messages.meta.player_interaction.socials.socials_button;
+            Messages.SocialMessageFormat = gameData.messages.meta.player_interaction.socials.socials_message;
+            Messages.SocialTypeFormat = gameData.messages.meta.player_interaction.socials.socials_menu_type;
 
             // Trade
             Messages.TradeWithPlayerFormat = gameData.messages.meta.player_interaction.trade.trading_with;
@@ -898,7 +925,6 @@ namespace HISP.Server
             // Player Interation
 
             Messages.PlayerHereMenuFormat = gameData.messages.meta.player_interaction.menu;
-            Messages.PlayerHereMulitpleMenuFormat = gameData.messages.meta.player_interaction.multiple_players_menu;
 
             Messages.PlayerHereProfileButton = gameData.messages.meta.player_interaction.profiile_button;
             Messages.PlayerHereSocialButton = gameData.messages.meta.player_interaction.social_button;
@@ -1382,6 +1408,8 @@ namespace HISP.Server
             Messages.ViewBaiscStats = gameData.messages.meta.horse.view_basic_stats;
             Messages.ViewAdvancedStats = gameData.messages.meta.horse.view_advanced_stats;
             Messages.HorseBuckedYou = gameData.messages.meta.horse.horse_bucked;
+            Messages.HorseLlamaBuckedYou = gameData.messages.meta.horse.llama_bucked;
+            Messages.HorseCamelBuckedYou = gameData.messages.meta.horse.camel_bucked;
 
             Messages.HorseRidingMessageFormat = gameData.messages.meta.horse.riding_message;
             Messages.HorseNameYoursFormat = gameData.messages.meta.horse.horse_inventory.your_horse_format;
@@ -1663,8 +1691,11 @@ namespace HISP.Server
 
             Messages.NoPitchforkMeta = gameData.messages.meta.hay_pile.no_pitchfork;
             Messages.HasPitchforkMeta = gameData.messages.meta.hay_pile.pitchfork;
-
+            Messages.R1 = gameData.messages.meta.r1;
             Messages.PasswordEntry = gameData.messages.meta.password_input;
+
+            // Venus Fly Trap
+
             Messages.VenusFlyTrapFormat = gameData.messages.meta.venus_flytrap_format;
 
             // Shortcut

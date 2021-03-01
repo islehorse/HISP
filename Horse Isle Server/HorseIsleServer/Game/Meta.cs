@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
+using HISP.Game.Chat;
 
 namespace HISP.Game
 {
@@ -62,7 +63,14 @@ namespace HISP.Game
                 }
 
                 if(count >= 2)
-                    playersHere += Messages.PlayerHereMulitpleMenuFormat;
+                {
+                    SocialType stype = SocialType.GetSocialType("GROUP");
+                    foreach(SocialType.Social social in stype.Socials)
+                    {
+                        playersHere += Messages.FormatSocialButton(social.Id, social.ButtonName);
+                    }
+                    playersHere += Messages.R1;
+                }
 
                 if (count <= 0)
                     return "";
@@ -141,7 +149,7 @@ namespace HISP.Game
             message += Messages.ThingsIAmSelling;
             foreach (InventoryItem item in itemList)
             {
-                message += "^R1";
+                message += Messages.R1;
                 Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
 
                 int count = item.ItemInstances.Count;
@@ -163,7 +171,7 @@ namespace HISP.Game
             }
 
             // Check whats avalilble to be sold
-            message += "^R1" + Messages.ThingsYouSellMe;
+            message += Messages.R1 + Messages.ThingsYouSellMe;
             InventoryItem[] shopperItemList = shopperInventory.GetItemList();
 
             foreach (InventoryItem shopperitem in shopperItemList)
@@ -179,14 +187,14 @@ namespace HISP.Game
                 string countStr = count.ToString();
 
 
-                message += "^R1";
+                message += Messages.R1;
                 message += Messages.FormatShopEntry(itemInfo.IconId, countStr, itemInfo.Name, shop.CalculateSellCost(itemInfo));
                 message += Messages.FormatSellButton(shopperitem.ItemInstances[0].RandomId);
                 message += Messages.FormatSellAllButton(itemInfo.Id);
                 message += Messages.FormatItemInformationButton(shopperitem.ItemInstances[0].RandomId);
             }
 
-            message += "^R1" + Messages.ExitThisPlace;
+            message += Messages.R1 + Messages.ExitThisPlace;
             return message;
         }
 
@@ -363,7 +371,7 @@ namespace HISP.Game
                 {
                     message += Messages.NpcNoChatpoints;
                 }
-                message += "^R1";
+                message += Messages.R1;
             }
             return message;
         }
@@ -444,6 +452,28 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
 
+        }
+        public static string BuildSocialMenu(bool onHorse)
+        {
+            string message = "";
+            foreach(SocialType sType in SocialType.SocialTypes)
+            {
+                if (sType.Type == "GROUP")
+                    continue;
+                if (sType.Type == "HORSE")
+                    if (!onHorse)
+                        continue;
+
+                message += Messages.FormatSocialMenuType(sType.Type);
+                foreach(SocialType.Social social in sType.Socials)
+                {
+                    message += Messages.FormatSocialButton(social.Id, social.ButtonName);
+                }
+                message += Messages.R1;
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
         }
 
         public static string BuildTradeAddItem(int totalItems)
@@ -1957,7 +1987,7 @@ namespace HISP.Game
                     message += Messages.FormatItemThrowButton(randomId);
 
                 message += Messages.FormatItemInformationButton(randomId);
-                message += "^R1";
+                message += Messages.R1;
             }
 
             message += Messages.BackToMap;
@@ -2101,7 +2131,7 @@ namespace HISP.Game
                 }
                 else
                 {
-                    message += "^R1";
+                    message += Messages.R1;
                 }
             }
 

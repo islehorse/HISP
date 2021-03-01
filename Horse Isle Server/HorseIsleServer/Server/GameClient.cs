@@ -408,6 +408,9 @@ namespace HISP.Server
                     case PacketBuilder.PACKET_PLAYER_INTERACTION:
                         GameServer.OnPlayerInteration(this, Packet);
                         break;
+                    case PacketBuilder.PACKET_SOCIALS:
+                        GameServer.OnSocialPacket(this, Packet);
+                        break;
                     default:
                         Logger.ErrorPrint("Unimplemented Packet: " + BitConverter.ToString(Packet).Replace('-', ' '));
                         break;
