@@ -56,6 +56,7 @@ namespace HISP.Server
         public const byte SOCIALS_MENU = 0x14;
         public const byte SOCIALS_USE = 0x15;
 
+        public const byte PLAYER_INTERACTION_PROFILE = 0x14;
         public const byte PLAYER_INTERACTION_TRADE = 0x28;
         public const byte PLAYER_INTERACTION_ADD_ITEM = 0x29;
         public const byte PLAYER_INTERACTION_ACCEPT = 0x2A;

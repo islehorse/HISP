@@ -339,6 +339,15 @@ namespace HISP.Game
         public static string RakeNothing;
         public static string ShovelNothing;
 
+        // Pronouns
+        public static string PronounMaleHe;
+        public static string PronounMaleHis;
+
+        public static string PronounFemaleShe;
+        public static string PronounFemaleHer;
+
+        public static string PronounYouYour;
+
         // Stats Page
         public static string StatsBarFormat;
         public static string StatsAreaFormat;
@@ -359,10 +368,20 @@ namespace HISP.Game
         public static string JewelrySlot3Format;
         public static string JewelrySlot4Format;
 
+        public static string JewelryRemoveSlot1Button;
+        public static string JewelryRemoveSlot2Button;
+        public static string JewelryRemoveSlot3Button;
+        public static string JewelryRemoveSlot4Button;
+
         public static string CompetitionGearHeadFormat;
         public static string CompetitionGearBodyFormat;
         public static string CompetitionGearLegsFormat;
         public static string CompetitionGearFeetFormat;
+
+        public static string CompetitionGearRemoveHeadButton;
+        public static string CompetitionGearRemoveBodyButton;
+        public static string CompetitionGearRemoveLegsButton;
+        public static string CompetitionGearRemoveFeetButton;
 
         public static string StatsPrivateNotesButton;
         public static string StatsQuestsButton;
@@ -371,13 +390,22 @@ namespace HISP.Game
         public static string StatsMiscButton;
 
         public static string NoJewerlyEquipped;
+        public static string NoJewerlyEquippedOther;
+
         public static string NoCompetitionGear;
+        public static string NoCompetitionGearOther;
+
         public static string JewelrySelected;
+        public static string JewelrySelectedOther;
+
         public static string CompetitionGearSelected;
+        public static string CompetitionGearSelectedOther;
 
         public static string StatHunger;
         public static string StatThirst;
         public static string StatTired;
+
+        public static string StatsOtherHorses;
 
         public static string[] StatPlayerFormats;
 
@@ -991,6 +1019,28 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+
+        public static string FormatOtherNoCompetitionGear(string pronoun)
+        {
+            return NoCompetitionGearOther.Replace("%PRONOUN%", pronoun);
+        }
+        public static string FormatOtherCompetitionGear(string pronoun)
+        {
+            return CompetitionGearSelectedOther.Replace("%PRONOUN%", pronoun);
+        }
+        public static string FormatOtherJewelerySelected(string pronoun)
+        {
+            return JewelrySelectedOther.Replace("%PRONOUN%", pronoun);
+        }
+        public static string FormatOtherNoJewelery(string pronoun)
+        {
+            return NoJewerlyEquippedOther.Replace("%PRONOUN%", pronoun);
+        }
+        public static string FormatOtherHorsesMeta(string pronoun)
+        {
+            return StatsOtherHorses.Replace("%PRONOUN%", pronoun);
+        }
 
         // Socials
         public static string FormatSocialButton(int socialId, string buttonName)
@@ -2095,38 +2145,38 @@ namespace HISP.Game
         {
             return statFormat.Replace("%STAT%", statName);
         }
-        public static string FormatJewelrySlot1(string itemName, int icon)
+        public static string FormatJewelrySlot1(string itemName, int icon, bool other)
         {
-            return JewelrySlot1Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+            return JewelrySlot1Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString()).Replace("%BUTTON%", other ? "" : Messages.JewelryRemoveSlot1Button);
         }
-        public static string FormatJewelrySlot2(string itemName, int icon)
+        public static string FormatJewelrySlot2(string itemName, int icon, bool other)
         {
-            return JewelrySlot2Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+            return JewelrySlot2Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString()).Replace("%BUTTON%", other ? "" : Messages.JewelryRemoveSlot2Button);
         }
-        public static string FormatJewelrySlot3(string itemName, int icon)
+        public static string FormatJewelrySlot3(string itemName, int icon, bool other)
         {
-            return JewelrySlot3Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+            return JewelrySlot3Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString()).Replace("%BUTTON%", other ? "" : Messages.JewelryRemoveSlot3Button);
         }
-        public static string FormatJewelrySlot4(string itemName, int icon)
+        public static string FormatJewelrySlot4(string itemName, int icon, bool other)
         {
-            return JewelrySlot4Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+            return JewelrySlot4Format.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString()).Replace("%BUTTON%", other ? "" : Messages.JewelryRemoveSlot4Button);
         }
 
-        public static string FormatCompetitionGearHead(string itemName, int icon)
+        public static string FormatCompetitionGearHead(string itemName, string pronoun, int icon, bool other)
         {
-            return CompetitionGearHeadFormat.Replace("%ITEM%", itemName).Replace("%ICON%",icon.ToString());
+            return CompetitionGearHeadFormat.Replace("%ITEM%", itemName).Replace("%ICON%",icon.ToString()).Replace("%PRONOUN%", pronoun) + (other ? "" : Messages.CompetitionGearRemoveHeadButton);
         }
-        public static string FormatCompetitionGearBody(string itemName, int icon)
+        public static string FormatCompetitionGearBody(string itemName, string pronoun, int icon, bool other)
         {
-            return CompetitionGearBodyFormat.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+            return CompetitionGearBodyFormat.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString()).Replace("%PRONOUN%", pronoun) + (other ? "" : Messages.CompetitionGearRemoveBodyButton); ;
         }
-        public static string FormatCompetitionGearLegs(string itemName, int icon)
+        public static string FormatCompetitionGearLegs(string itemName, string pronoun, int icon, bool other)
         {
-            return CompetitionGearLegsFormat.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+            return CompetitionGearLegsFormat.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString()).Replace("%PRONOUN%", pronoun) + (other ? "" : Messages.CompetitionGearRemoveLegsButton);
         }
-        public static string FormatCompetitionGearFeet(string itemName, int icon)
+        public static string FormatCompetitionGearFeet(string itemName, string pronoun, int icon, bool other)
         {
-            return CompetitionGearFeetFormat.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString());
+            return CompetitionGearFeetFormat.Replace("%ITEM%", itemName).Replace("%ICON%", icon.ToString()).Replace("%PRONOUN%", pronoun) + (other ? "" : Messages.CompetitionGearRemoveFeetButton );
         }
         public static string FormatStatsBar(string username)
         {
