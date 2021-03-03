@@ -97,9 +97,14 @@ namespace HISP.Server
                             for (int i = 0; i < 10; i++)
                             {
                                 ItemInstance itm = new ItemInstance(Item.BirthdayToken);
+
+                                if(IsUserOnline(userid))
+                                    GetUserById(userid).Inventory.AddWithoutDatabase(itm);
+
                                 Database.AddItemToInventory(userid, itm);
                             }
                         }
+
                     }
  
                 }

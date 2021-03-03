@@ -146,6 +146,10 @@ namespace HISP.Game.Inventory
             }
             throw new KeyNotFoundException("random id: " + randomId + " not found in inventory");
         }
+        public void AddWithoutDatabase(ItemInstance item)
+        {
+            addItem(item, false);
+        }
 
         public void AddIgnoringFull(ItemInstance item)
         {
