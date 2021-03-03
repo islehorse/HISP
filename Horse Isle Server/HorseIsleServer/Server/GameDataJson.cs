@@ -1181,10 +1181,10 @@ namespace HISP.Server
             Messages.JewelrySlot3Format = gameData.messages.meta.stats_page.jewelry.slot_3;
             Messages.JewelrySlot4Format = gameData.messages.meta.stats_page.jewelry.slot_4;
 
-            Messages.JewelryRemoveSlot1Button = gameData.messages.meta.stats_page.competition_gear.remove_slot_1;
-            Messages.JewelryRemoveSlot2Button = gameData.messages.meta.stats_page.competition_gear.remove_slot_2;
-            Messages.JewelryRemoveSlot3Button = gameData.messages.meta.stats_page.competition_gear.remove_slot_3;
-            Messages.JewelryRemoveSlot4Button = gameData.messages.meta.stats_page.competition_gear.remove_slot_4;
+            Messages.JewelryRemoveSlot1Button = gameData.messages.meta.stats_page.jewelry.remove_slot_1;
+            Messages.JewelryRemoveSlot2Button = gameData.messages.meta.stats_page.jewelry.remove_slot_2;
+            Messages.JewelryRemoveSlot3Button = gameData.messages.meta.stats_page.jewelry.remove_slot_3;
+            Messages.JewelryRemoveSlot4Button = gameData.messages.meta.stats_page.jewelry.remove_slot_4;
 
             Messages.CompetitionGearHeadFormat = gameData.messages.meta.stats_page.competition_gear.head_format;
             Messages.CompetitionGearBodyFormat = gameData.messages.meta.stats_page.competition_gear.body_format;
