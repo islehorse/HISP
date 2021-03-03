@@ -330,11 +330,10 @@ namespace HISP.Game
                     return quest;
                 }
             }
-            throw new KeyNotFoundException("QuestId: " + id + " Dont exist.");
+            throw new KeyNotFoundException("Quest Id: " + id + " Dont exist.");
         }
         public static bool UseTool(User user, string tool, int x, int y)
         {
-
             if (tool == Quest.Shovel)
             {
                 // check Treasures

@@ -1152,6 +1152,15 @@ namespace HISP.Server
             Messages.LoginMessageFormat = gameData.messages.login_format;
             Messages.LogoutMessageFormat = gameData.messages.logout_format;
 
+            // Pronoun
+            Messages.PronounFemaleShe = gameData.messages.meta.stats_page.pronouns.female_she;
+            Messages.PronounFemaleHer = gameData.messages.meta.stats_page.pronouns.female_her;
+
+            Messages.PronounMaleHe = gameData.messages.meta.stats_page.pronouns.male_he;
+            Messages.PronounMaleHis = gameData.messages.meta.stats_page.pronouns.male_his;
+
+            Messages.PronounYouYour = gameData.messages.meta.stats_page.pronouns.you_your;
+
             // Stats
             Messages.StatsBarFormat = gameData.messages.meta.stats_page.stats_bar_format;
             Messages.StatsAreaFormat = gameData.messages.meta.stats_page.stats_area_format;
@@ -1172,10 +1181,20 @@ namespace HISP.Server
             Messages.JewelrySlot3Format = gameData.messages.meta.stats_page.jewelry.slot_3;
             Messages.JewelrySlot4Format = gameData.messages.meta.stats_page.jewelry.slot_4;
 
+            Messages.JewelryRemoveSlot1Button = gameData.messages.meta.stats_page.competition_gear.remove_slot_1;
+            Messages.JewelryRemoveSlot2Button = gameData.messages.meta.stats_page.competition_gear.remove_slot_2;
+            Messages.JewelryRemoveSlot3Button = gameData.messages.meta.stats_page.competition_gear.remove_slot_3;
+            Messages.JewelryRemoveSlot4Button = gameData.messages.meta.stats_page.competition_gear.remove_slot_4;
+
             Messages.CompetitionGearHeadFormat = gameData.messages.meta.stats_page.competition_gear.head_format;
             Messages.CompetitionGearBodyFormat = gameData.messages.meta.stats_page.competition_gear.body_format;
             Messages.CompetitionGearLegsFormat = gameData.messages.meta.stats_page.competition_gear.legs_format;
             Messages.CompetitionGearFeetFormat = gameData.messages.meta.stats_page.competition_gear.feet_format;
+
+            Messages.CompetitionGearRemoveHeadButton = gameData.messages.meta.stats_page.competition_gear.remove_head;
+            Messages.CompetitionGearRemoveBodyButton = gameData.messages.meta.stats_page.competition_gear.remove_body;
+            Messages.CompetitionGearRemoveLegsButton = gameData.messages.meta.stats_page.competition_gear.remove_legs;
+            Messages.CompetitionGearRemoveFeetButton = gameData.messages.meta.stats_page.competition_gear.remove_feet;
 
             Messages.StatsPrivateNotesButton = gameData.messages.meta.stats_page.stats_private_notes;
             Messages.StatsQuestsButton = gameData.messages.meta.stats_page.stats_quests;
@@ -1184,13 +1203,22 @@ namespace HISP.Server
             Messages.StatsMiscButton = gameData.messages.meta.stats_page.stats_misc;
 
             Messages.JewelrySelected = gameData.messages.meta.stats_page.msg.jewelry_selected;
+            Messages.JewelrySelectedOther = gameData.messages.meta.stats_page.msg.jewelry_other;
+
             Messages.NoJewerlyEquipped = gameData.messages.meta.stats_page.msg.no_jewelry_equipped;
+            Messages.NoJewerlyEquippedOther = gameData.messages.meta.stats_page.msg.no_jewelry_other;
+
             Messages.NoCompetitionGear = gameData.messages.meta.stats_page.msg.no_competition_gear;
+            Messages.NoCompetitionGearOther = gameData.messages.meta.stats_page.msg.no_competition_gear_other;
+
             Messages.CompetitionGearSelected = gameData.messages.meta.stats_page.msg.competition_gear_selected;
+            Messages.CompetitionGearSelectedOther = gameData.messages.meta.stats_page.msg.competition_gear_other_selected;
 
             Messages.StatHunger = gameData.messages.meta.stats_page.hunger_stat_name;
             Messages.StatThirst = gameData.messages.meta.stats_page.thirst_stat_name;
             Messages.StatTired = gameData.messages.meta.stats_page.tired_stat_name;
+
+            Messages.StatsOtherHorses = gameData.messages.meta.stats_page.msg.other_horses;
 
             Messages.StatPlayerFormats = gameData.messages.meta.stats_page.player_stats.ToObject<string[]>();
 

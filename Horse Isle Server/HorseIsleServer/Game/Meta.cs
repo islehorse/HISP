@@ -246,20 +246,59 @@ namespace HISP.Game
             return message;
         }
 
-        private static string buildWornJewelery(User user)
+        private static string buildWornJewelery(User user, bool other)
         {
-            string message = Messages.JewelrySelected;
-            if (user.EquipedJewelry.Slot1 != null)
-                message += Messages.FormatJewelrySlot1(user.EquipedJewelry.Slot1.Name, user.EquipedJewelry.Slot1.IconId);
-            if (user.EquipedJewelry.Slot2 != null)
-                message += Messages.FormatJewelrySlot2(user.EquipedJewelry.Slot2.Name, user.EquipedJewelry.Slot2.IconId);
-            if (user.EquipedJewelry.Slot3 != null)
-                message += Messages.FormatJewelrySlot3(user.EquipedJewelry.Slot3.Name, user.EquipedJewelry.Slot3.IconId);
-            if (user.EquipedJewelry.Slot4 != null)
-                message += Messages.FormatJewelrySlot4(user.EquipedJewelry.Slot4.Name, user.EquipedJewelry.Slot4.IconId);
+            string message = "";
 
-            if (message == Messages.JewelrySelected)
-                message = Messages.NoJewerlyEquipped;
+            // Insert LGBT Patch here
+
+            string pronoun = "";
+            if (other)
+            {
+                if (user.Gender == "FEMALE")
+                    pronoun = Messages.PronounFemaleShe;
+
+                if (user.Gender == "MALE")
+                    pronoun = Messages.PronounMaleHe;
+            }
+
+            if (!other)
+                message += Messages.JewelrySelected;
+            else
+                message += Messages.FormatOtherJewelerySelected(pronoun);
+
+            bool hasMsg = false;
+
+            if (user.EquipedJewelry.Slot1 != null)
+            {
+                message += Messages.FormatJewelrySlot1(user.EquipedJewelry.Slot1.Name, user.EquipedJewelry.Slot1.IconId, other);
+                hasMsg = true;
+            }
+            if (user.EquipedJewelry.Slot2 != null)
+            {
+                message += Messages.FormatJewelrySlot2(user.EquipedJewelry.Slot2.Name, user.EquipedJewelry.Slot2.IconId, other);
+                hasMsg = true;
+            }
+            if (user.EquipedJewelry.Slot3 != null)
+            {
+                message += Messages.FormatJewelrySlot3(user.EquipedJewelry.Slot3.Name, user.EquipedJewelry.Slot3.IconId, other);
+                hasMsg = true;
+            }
+            if (user.EquipedJewelry.Slot4 != null)
+            {
+                message += Messages.FormatJewelrySlot4(user.EquipedJewelry.Slot4.Name, user.EquipedJewelry.Slot4.IconId, other);
+                hasMsg = true;
+            }
+
+            if (!hasMsg)
+            {
+                if (!other)
+                    message = Messages.NoJewerlyEquipped;
+                else
+                    message = Messages.FormatOtherNoJewelery(pronoun);
+            }
+
+
 
             return message;
         }
@@ -297,20 +336,57 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
-        private static string buildEquippedCompetitionGear(User user)
+        private static string buildEquippedCompetitionGear(User user, bool other = false)
         {
-            string message = Messages.CompetitionGearSelected;
-            if (user.EquipedCompetitionGear.Head != null)
-                message += Messages.FormatCompetitionGearHead(user.EquipedCompetitionGear.Head.Name, user.EquipedCompetitionGear.Head.IconId);
-            if (user.EquipedCompetitionGear.Body != null)
-                message += Messages.FormatCompetitionGearBody(user.EquipedCompetitionGear.Body.Name, user.EquipedCompetitionGear.Body.IconId);
-            if (user.EquipedCompetitionGear.Legs != null)
-                message += Messages.FormatCompetitionGearLegs(user.EquipedCompetitionGear.Legs.Name, user.EquipedCompetitionGear.Legs.IconId);
-            if (user.EquipedCompetitionGear.Feet != null)
-                message += Messages.FormatCompetitionGearFeet(user.EquipedCompetitionGear.Feet.Name, user.EquipedCompetitionGear.Feet.IconId);
+            string message = "";
 
-            if (message == Messages.CompetitionGearSelected)
-                message = Messages.NoCompetitionGear;
+            if (!other)
+                message = Messages.CompetitionGearSelected;
+
+            // Insert LGBT Patch Here
+
+            string pronoun = Messages.PronounYouYour;
+            if(other)
+            {
+                if (user.Gender == "FEMALE")
+                    pronoun = Messages.PronounFemaleShe;
+
+                if (user.Gender == "MALE")
+                    pronoun = Messages.PronounMaleHe;
+
+                message = Messages.FormatOtherCompetitionGear(pronoun);
+            }
+
+            bool hasMsg = false;
+
+            if (user.EquipedCompetitionGear.Head != null)
+            {
+                message += Messages.FormatCompetitionGearHead(user.EquipedCompetitionGear.Head.Name, pronoun, user.EquipedCompetitionGear.Head.IconId, other);
+                hasMsg = true;
+            }
+            if (user.EquipedCompetitionGear.Body != null)
+            {
+                message += Messages.FormatCompetitionGearBody(user.EquipedCompetitionGear.Body.Name, pronoun, user.EquipedCompetitionGear.Body.IconId, other);
+                hasMsg = true;
+            }
+            if (user.EquipedCompetitionGear.Legs != null)
+            {
+                message += Messages.FormatCompetitionGearLegs(user.EquipedCompetitionGear.Legs.Name, pronoun, user.EquipedCompetitionGear.Legs.IconId, other);
+                hasMsg = true;
+            }
+            if (user.EquipedCompetitionGear.Feet != null)
+            {
+                message += Messages.FormatCompetitionGearFeet(user.EquipedCompetitionGear.Feet.Name, pronoun, user.EquipedCompetitionGear.Feet.IconId, other);
+                hasMsg = true;
+            }
+
+            if (!hasMsg)
+            {
+                if (!other)
+                    message = Messages.NoCompetitionGear;
+                else
+                    message = Messages.FormatOtherNoCompetitionGear(pronoun);
+            }
 
             return message;
 
@@ -897,14 +973,15 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
-        public static string BuildStatsMenu(User user)
+        public static string BuildStatsMenu(User user, bool other=false)
         {
             string message = Messages.FormatStatsBar(user.Username);
 
             string areaString = buildAreaString(user.X, user.Y);
             if (areaString != "")
                 message += Messages.FormatStatsArea(areaString);
-            message += Messages.FormatMoneyStat(user.Money);
+            if(!other)
+                message += Messages.FormatMoneyStat(user.Money);
             if (!user.Subscribed)
                 message += Messages.FormatFreeTime(user.FreeMinutes);
             message += Messages.FormatPlayerDescriptionForStatsMenu(user.ProfilePage);
@@ -913,13 +990,36 @@ namespace HISP.Game
             message += Messages.FormatThirstStat(Messages.FormatPlayerStat(SelectPlayerStatFormat(user.Thirst), Messages.StatThirst));
             message += Messages.FormatTiredStat(Messages.FormatPlayerStat(SelectPlayerStatFormat(user.Tiredness), Messages.StatTired));
             message += Messages.FormatGenderStat(user.Gender);
-            message += Messages.FormatJewelryStat(buildWornJewelery(user));
-            message += Messages.FormatCompetitionGearStat(buildEquippedCompetitionGear(user));
-            message += Messages.StatsPrivateNotesButton;
-            message += Messages.StatsQuestsButton;
-            message += Messages.StatsMinigameRankingButton;
-            message += Messages.StatsAwardsButton;
-            message += Messages.StatsMiscButton;
+            message += Messages.FormatJewelryStat(buildWornJewelery(user, other));
+            message += Messages.FormatCompetitionGearStat(buildEquippedCompetitionGear(user, other));
+
+            if(!other)
+            {
+                message += Messages.StatsPrivateNotesButton;
+                message += Messages.StatsQuestsButton;
+                message += Messages.StatsMinigameRankingButton;
+                message += Messages.StatsAwardsButton;
+                message += Messages.StatsMiscButton;
+            }
+            else
+            {
+                // Insert LGBT Patch here
+
+                string pronoun = "";
+                if (other)
+                {
+                    if (user.Gender == "FEMALE")
+                        pronoun = Messages.PronounFemaleHer;
+
+                    if (user.Gender == "MALE")
+                        pronoun = Messages.PronounMaleHis;
+                }
+
+                message += Messages.FormatOtherHorsesMeta(pronoun);
+
+                message += buildHorseList(user, false);
+            }
+
 
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;

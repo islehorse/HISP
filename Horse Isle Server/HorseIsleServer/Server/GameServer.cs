@@ -235,13 +235,36 @@ namespace HISP.Server
                     if (sender.LoggedinUser.TradingWith != null)
                         sender.LoggedinUser.TradingWith.AcceptTrade();
                     break;
+                case PacketBuilder.PLAYER_INTERACTION_PROFILE:
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    int playerId = -1;
+                    try
+                    {
+                        playerId = int.Parse(playerIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to trade with User ID NaN.");
+                        break;
+                    }
+
+                    if(IsUserOnline(playerId))
+                    {
+                        User user = GetUserById(playerId);
+                        sender.LoggedinUser.MetaPriority = true;
+
+                        byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildStatsMenu(user, true));
+                        sender.SendPacket(metaTag);
+                    }
+                    break;
                 case PacketBuilder.PLAYER_INTERACTION_ADD_ITEM:
                     if (sender.LoggedinUser.TradingWith == null)
                         break;
                     if (packet.Length < 5)
                         break;
 
-                    string packetStr = Encoding.UTF8.GetString(packet);
+                    packetStr = Encoding.UTF8.GetString(packet);
                     string idStr = packetStr.Substring(2, packetStr.Length - 4);
                     char firstChar = idStr[0];
                     switch(firstChar)
@@ -313,8 +336,8 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.PLAYER_INTERACTION_TRADE:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    string playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
-                    int playerId = -1;
+                    playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    playerId = -1;
                     try
                     {
                         playerId = int.Parse(playerIdStr);
