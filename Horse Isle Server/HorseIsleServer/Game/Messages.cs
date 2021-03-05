@@ -13,6 +13,11 @@ namespace HISP.Game
         // Mod isle
         public static string ModIsleMessage;
 
+        // Add Buddy
+        public static string AddBuddyPending;
+        public static string AddBuddyOtherPendingFormat;
+        public static string AddBuddyYourNowBuddiesFormat;
+
         // Socials
         public static string SocialButton;
         public static string SocialMessageFormat;
@@ -1020,7 +1025,14 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
-
+        public static string FormatAddBuddyConfirmed(string playername)
+        {
+            return AddBuddyYourNowBuddiesFormat.Replace("%PLAYERNAME%", playername);
+        }
+        public static string FormatAddBuddyPendingOther(string playername)
+        {
+            return AddBuddyOtherPendingFormat.Replace("%PLAYERNAME%", playername);
+        }
         public static string FormatOtherNoCompetitionGear(string pronoun)
         {
             return NoCompetitionGearOther.Replace("%PRONOUN%", pronoun);

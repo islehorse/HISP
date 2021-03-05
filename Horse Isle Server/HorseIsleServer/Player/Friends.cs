@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using HISP.Game;
 using HISP.Server;
 
 namespace HISP.Player
@@ -49,24 +50,37 @@ namespace HISP.Player
                 removeFrom.Friends.List.Remove(baseUser.Id);
 
             }
-            catch (KeyNotFoundException) { /* User is ofline, remove from database is sufficent */ };
+            catch (KeyNotFoundException) { /* User is offline, remove from database is sufficent */ };
  
 
             baseUser.Friends.List.Remove(userid);
         }
         public void AddFriend(User userToFriend)
         {
-            bool pendingRequest = Database.IsPendingBuddyRequestExist(baseUser.Id, userToFriend.Id);
-            if (pendingRequest)
+            if (userToFriend.PendingBuddyRequestTo == baseUser)
             {
-                Database.AcceptBuddyRequest(baseUser.Id, userToFriend.Id);
-
+                Database.AddBuddy(baseUser.Id, userToFriend.Id);
                 List.Add(userToFriend.Id);
                 userToFriend.Friends.List.Add(baseUser.Id);
+
+                byte[] nowFriendsMsg = PacketBuilder.CreateChat(Messages.FormatAddBuddyConfirmed(userToFriend.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                byte[] nowFriendsOther = PacketBuilder.CreateChat(Messages.FormatAddBuddyConfirmed(baseUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+
+                userToFriend.LoggedinClient.SendPacket(nowFriendsOther);
+                baseUser.LoggedinClient.SendPacket(nowFriendsMsg);
+
+                GameServer.UpdateArea(baseUser.LoggedinClient);
+                GameServer.UpdateArea(userToFriend.LoggedinClient);
             }
             else
             {
-                Database.AddPendingBuddyRequest(baseUser.Id, userToFriend.Id);
+                baseUser.PendingBuddyRequestTo = userToFriend;
+                byte[] pendingMsg = PacketBuilder.CreateChat(Messages.AddBuddyPending, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                byte[] pendingMsgOther = PacketBuilder.CreateChat(Messages.FormatAddBuddyPendingOther(baseUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                baseUser.LoggedinClient.SendPacket(pendingMsg);
+                if(!userToFriend.MuteBuddyRequests && !userToFriend.MuteAll)
+                    userToFriend.LoggedinClient.SendPacket(pendingMsgOther);
+                
             }
         }
 
