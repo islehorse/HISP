@@ -97,6 +97,7 @@ namespace HISP.Player
         public Riddler LastRiddle;
         public Award Awards;
         public User SocializingWith;
+        public User PendingBuddyRequestTo;
         public int CapturingHorseId;
         public DateTime LoginTime;
         public string LastSeenWeather;

@@ -24,7 +24,7 @@ namespace HISP.Server
                 string UserTable = "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
                 string ExtTable = "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(1028),IpAddress TEXT(1028),PrivateNotes Text(1028), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT)";
                 string MailTable = "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(128), Message Text(1028), TimeSent INT, BeenRead TEXT(3))";
-                string BuddyTable = "CREATE TABLE IF NOT EXISTS BuddyList(Id INT, IdFriend INT, Pending TEXT(3))";
+                string BuddyTable = "CREATE TABLE IF NOT EXISTS BuddyList(Id INT, IdFriend INT)";
                 string WorldTable = "CREATE TABLE World(Time INT, Day INT, Year INT, StartTime INT)";
                 string WeatherTable = "CREATE TABLE IF NOT EXISTS Weather(Area TEXT(1028), Weather TEXT(64))";
                 string InventoryTable = "CREATE TABLE IF NOT EXISTS Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)";
@@ -4292,7 +4292,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE Id=@id OR IdFriend=@id AND Pending='NO'";
+                sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE Id=@id OR IdFriend=@id";
                 sqlCommand.Parameters.AddWithValue("@id", id);
                 sqlCommand.Prepare();
 
@@ -4314,7 +4314,7 @@ namespace HISP.Server
                 List<int> BuddyList = new List<int>();
 
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Id,IdFriend FROM BuddyList WHERE Id=@id OR IdFriend=@id AND Pending='NO'";
+                sqlCommand.CommandText = "SELECT Id,IdFriend FROM BuddyList WHERE Id=@id OR IdFriend=@id";
                 sqlCommand.Parameters.AddWithValue("@id", id);
                 sqlCommand.Prepare();
                 MySqlDataReader dataReader = sqlCommand.ExecuteReader();
@@ -4326,28 +4326,11 @@ namespace HISP.Server
                     if (adder != id)
                         BuddyList.Add(adder);
                     else if (friend != id)
-                        BuddyList.Add(adder);
+                        BuddyList.Add(friend);
                 }
 
                 sqlCommand.Dispose();
                 return BuddyList.ToArray();
-            }
-        }
-
-        public static bool IsPendingBuddyRequestExist(int id, int friendId)
-        {
-            using (MySqlConnection db = new MySqlConnection(ConnectionString))
-            {
-                db.Open();
-                MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id) AND Pending='YES'";
-                sqlCommand.Parameters.AddWithValue("@id", id);
-                sqlCommand.Parameters.AddWithValue("@friendId", friendId);
-                sqlCommand.Prepare();
-
-                Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
-                return count >= 1;
             }
         }
 
@@ -4365,27 +4348,14 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
-        public static void AcceptBuddyRequest(int id, int friendId)
+
+        public static void AddBuddy(int id, int friendId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE BuddyList SET Pending=false WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id)";
-                sqlCommand.Parameters.AddWithValue("@id", id);
-                sqlCommand.Parameters.AddWithValue("@friendId", friendId);
-                sqlCommand.Prepare();
-                sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
-            }   
-        }
-        public static void AddPendingBuddyRequest(int id, int friendId)
-        {
-            using (MySqlConnection db = new MySqlConnection(ConnectionString))
-            {
-                db.Open();
-                MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO BuddyList VALUES(@id,@friendId,'YES')";
+                sqlCommand.CommandText = "INSERT INTO BuddyList VALUES(@id,@friendId)";
                 sqlCommand.Parameters.AddWithValue("@id", id);
                 sqlCommand.Parameters.AddWithValue("@friendId", friendId);
                 sqlCommand.Prepare();

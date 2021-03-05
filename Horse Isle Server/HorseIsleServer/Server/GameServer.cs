@@ -263,6 +263,25 @@ namespace HISP.Server
                         sender.SendPacket(metaTag);
                     }
                     break;
+                case PacketBuilder.PLAYER_INTERACTION_ADD_BUDDY:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    playerId = -1;
+                    try
+                    {
+                        playerId = int.Parse(playerIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to trade with User ID NaN.");
+                        break;
+                    }
+                    if (IsUserOnline(playerId))
+                    {
+                        User userToAdd = GetUserById(playerId);
+                        sender.LoggedinUser.Friends.AddFriend(userToAdd);
+                    }
+                    break;
                 case PacketBuilder.PLAYER_INTERACTION_ADD_ITEM:
                     if (sender.LoggedinUser.TradingWith == null)
                         break;
@@ -4288,6 +4307,7 @@ namespace HISP.Server
 
                 if (loggedInUser.TradingWith != null)
                     loggedInUser.TradingWith.CancelTradeMoved();
+                loggedInUser.PendingBuddyRequestTo = null; 
 
                 byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, direction, true);
                 sender.SendPacket(moveResponse);
@@ -6242,6 +6262,7 @@ namespace HISP.Server
                         if (!client.LoggedinUser.MuteLogins && !client.LoggedinUser.MuteAll)
                             if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
                                 client.SendPacket(logoutMessageBytes);
+
                 // Tell clients of diconnect (remove from chat)
                 byte[] playerRemovePacket = PacketBuilder.CreatePlayerLeavePacket(sender.LoggedinUser.Username);
                 foreach (GameClient client in ConnectedClients)

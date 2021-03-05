@@ -835,7 +835,7 @@ namespace HISP.Server
             Map.NewUserStartY = gameData.messages.new_user.starting_y;
 
             // Warp Command
-            
+
             Messages.SuccessfullyWarpedToPlayer = gameData.messages.commands.warp.player;
             Messages.SuccessfullyWarpedToLocation = gameData.messages.commands.warp.location;
             Messages.OnlyUnicornCanWarp = gameData.messages.commands.warp.only_unicorn;
@@ -847,12 +847,20 @@ namespace HISP.Server
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
 
+
+            // Add Buddy
+            Messages.AddBuddyPending = gameData.messages.meta.player_interaction.add_buddy.add_pending;
+            Messages.AddBuddyOtherPendingFormat = gameData.messages.meta.player_interaction.add_buddy.other_pending;
+            Messages.AddBuddyYourNowBuddiesFormat = gameData.messages.meta.player_interaction.add_buddy.add_confirmed; 
+
+
             // Socials
             Messages.SocialButton = gameData.messages.meta.player_interaction.socials.socials_button;
             Messages.SocialMessageFormat = gameData.messages.meta.player_interaction.socials.socials_message;
             Messages.SocialTypeFormat = gameData.messages.meta.player_interaction.socials.socials_menu_type;
 
             // Trade
+
             Messages.TradeWithPlayerFormat = gameData.messages.meta.player_interaction.trade.trading_with;
 
             Messages.TradeWaitingForOtherDone = gameData.messages.meta.player_interaction.trade.trade_wait_for_done;
