@@ -862,6 +862,7 @@ namespace HISP.Server
             Messages.SocialButton = gameData.messages.meta.player_interaction.socials.socials_button;
             Messages.SocialMessageFormat = gameData.messages.meta.player_interaction.socials.socials_message;
             Messages.SocialTypeFormat = gameData.messages.meta.player_interaction.socials.socials_menu_type;
+            Messages.SocialPlayerNoLongerNearby = gameData.messages.meta.player_interaction.socials.no_longer_nearby;
 
             // Trade
 
