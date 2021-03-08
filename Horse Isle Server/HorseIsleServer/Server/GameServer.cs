@@ -484,10 +484,11 @@ namespace HISP.Server
 
                     if(sender.LoggedinUser.SocializingWith != null)
                     {
-                        if(sender.LoggedinUser.SocializingWith.X == sender.LoggedinUser.X && sender.LoggedinUser.SocializingWith.Y == sender.LoggedinUser.Y)
+                        if(sender.LoggedinUser.SocializingWith.X != sender.LoggedinUser.X && sender.LoggedinUser.SocializingWith.Y != sender.LoggedinUser.Y)
                         {
                             byte[] playerNotNearby = PacketBuilder.CreateChat(Messages.SocialPlayerNoLongerNearby, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(playerNotNearby);
+                            break;
                         }
                     }
                     
