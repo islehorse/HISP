@@ -26,6 +26,7 @@ namespace HISP.Game
         public static string SocialButton;
         public static string SocialMessageFormat;
         public static string SocialTypeFormat;
+        public static string SocialPlayerNoLongerNearby;
 
         // Trading
         public static string TradeWithPlayerFormat;

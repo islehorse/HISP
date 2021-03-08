@@ -480,9 +480,19 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.SOCIALS_USE:
                     int socialId = Convert.ToInt32(packet[2] - (byte)0x21);
-                    SocialType.Social social = SocialType.GetSocial(socialId); 
+                    SocialType.Social social = SocialType.GetSocial(socialId);
 
-                    foreach(User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true))
+                    if(sender.LoggedinUser.SocializingWith != null)
+                    {
+                        if(sender.LoggedinUser.SocializingWith.X == sender.LoggedinUser.X && sender.LoggedinUser.SocializingWith.Y == sender.LoggedinUser.Y)
+                        {
+                            byte[] playerNotNearby = PacketBuilder.CreateChat(Messages.SocialPlayerNoLongerNearby, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(playerNotNearby);
+                        }
+                    }
+                    
+
+                    foreach (User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true))
                     {
                         if (social.BaseSocialType.Type != "GROUP")
                             if (user.Id == sender.LoggedinUser.SocializingWith.Id)
