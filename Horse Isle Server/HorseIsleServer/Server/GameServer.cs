@@ -263,6 +263,45 @@ namespace HISP.Server
                         sender.SendPacket(metaTag);
                     }
                     break;
+                case PacketBuilder.PLAYER_INTERACTION_TAG:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    playerId = -1;
+                    try
+                    {
+                        playerId = int.Parse(playerIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to trade with User ID NaN.");
+                        break;
+                    }
+
+                    if (IsUserOnline(playerId))
+                    {
+                        User user = GetUserById(playerId);;
+                        string TAGYourIT = Messages.FormatTagYourIt(user.Username, sender.LoggedinUser.Username);
+                        int totalBuds = 0;
+                        foreach(int friendId in sender.LoggedinUser.Friends.List)
+                        {
+                            if (friendId == sender.LoggedinUser.Id)
+                                continue;
+
+                            if(IsUserOnline(friendId))
+                            {
+                                User buddy = GetUserById(friendId);
+                                byte[] tagYourItPacket = PacketBuilder.CreateChat(TAGYourIT, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                buddy.LoggedinClient.SendPacket(tagYourItPacket);
+                                totalBuds++;
+                            }
+                        }
+                        string budStr = Messages.FormatTagTotalBuddies(totalBuds);
+
+                        byte[] tagYouItPacket = PacketBuilder.CreateChat(TAGYourIT + budStr, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(tagYouItPacket);
+
+                    }
+                    break;
                 case PacketBuilder.PLAYER_INTERACTION_ADD_BUDDY:
                     packetStr = Encoding.UTF8.GetString(packet);
                     playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
@@ -454,8 +493,11 @@ namespace HISP.Server
 
                         if (user.MuteAll || user.MuteSocials)
                             continue;
+                        string socialTarget = "";
+                        if(sender.LoggedinUser.SocializingWith != null)
+                            socialTarget = sender.LoggedinUser.SocializingWith.Username;
 
-                        byte[] msgEveryone = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForEveryone, sender.LoggedinUser.SocializingWith.Username, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        byte[] msgEveryone = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForEveryone, socialTarget, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         user.LoggedinClient.SendPacket(msgEveryone);
                     }
                     if(social.ForTarget != null)
@@ -474,12 +516,14 @@ namespace HISP.Server
                     }
                     if(social.ForSender != null)
                     {
+                        string socialTarget = "";
                         if (sender.LoggedinUser.SocializingWith != null)
-                        {
-                            byte[] msgSender = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForSender, sender.LoggedinUser.SocializingWith.Username, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(msgSender);
+                            socialTarget = sender.LoggedinUser.SocializingWith.Username;
 
-                        }
+                        byte[] msgSender = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForSender, socialTarget, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(msgSender);
+
+                        
                     }
 
                     foreach(User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true))
