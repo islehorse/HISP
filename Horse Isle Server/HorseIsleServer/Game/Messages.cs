@@ -18,6 +18,10 @@ namespace HISP.Game
         public static string AddBuddyOtherPendingFormat;
         public static string AddBuddyYourNowBuddiesFormat;
 
+        // Tag
+        public static string TagYourItFormat;
+        public static string TagOtherBuddiesOnlineFormat;
+
         // Socials
         public static string SocialButton;
         public static string SocialMessageFormat;
@@ -1025,6 +1029,14 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string FormatTagTotalBuddies(int count)
+        {
+            return TagOtherBuddiesOnlineFormat.Replace("%TOTALBUDDIESON%", count.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatTagYourIt(string taggedPlayer, string tagger)
+        {
+            return TagYourItFormat.Replace("%PLAYERNAME%", taggedPlayer).Replace("%USERNAME%", tagger);
+        }
         public static string FormatAddBuddyConfirmed(string playername)
         {
             return AddBuddyYourNowBuddiesFormat.Replace("%PLAYERNAME%", playername);

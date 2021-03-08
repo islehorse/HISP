@@ -834,6 +834,7 @@ namespace HISP.Server
             Map.NewUserStartX = gameData.messages.new_user.starting_x;
             Map.NewUserStartY = gameData.messages.new_user.starting_y;
 
+            
             // Warp Command
 
             Messages.SuccessfullyWarpedToPlayer = gameData.messages.commands.warp.player;
@@ -847,6 +848,9 @@ namespace HISP.Server
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
 
+            // Tag
+            Messages.TagYourItFormat = gameData.messages.meta.player_interaction.tag.tag_player;
+            Messages.TagOtherBuddiesOnlineFormat = gameData.messages.meta.player_interaction.tag.total_buddies;
 
             // Add Buddy
             Messages.AddBuddyPending = gameData.messages.meta.player_interaction.add_buddy.add_pending;
