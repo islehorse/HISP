@@ -503,6 +503,8 @@ namespace HISP.Server
                     if(IsUserOnline(playerId))
                     {
                         sender.LoggedinUser.SocializingWith = GetUserById(playerId);
+                        
+                        sender.LoggedinUser.SocializingWith.BeingSocializedBy.Add(sender.LoggedinUser);
                         sender.LoggedinUser.MetaPriority = true;
                         byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildSocialMenu(sender.LoggedinUser.CurrentlyRidingHorse != null));
                         sender.SendPacket(metaPacket);
@@ -4487,9 +4489,15 @@ namespace HISP.Server
                     }
                 }
 
+                // Cancel Trades
                 if (loggedInUser.TradingWith != null)
                     loggedInUser.TradingWith.CancelTradeMoved();
-                loggedInUser.PendingBuddyRequestTo = null; 
+                loggedInUser.PendingBuddyRequestTo = null;
+
+                // Close Social Windows
+                foreach (User sUser in loggedInUser.BeingSocializedBy.ToArray())
+                    UpdateArea(sUser.LoggedinClient);
+                loggedInUser.BeingSocializedBy.Clear();
 
                 byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, direction, true);
                 sender.SendPacket(moveResponse);
