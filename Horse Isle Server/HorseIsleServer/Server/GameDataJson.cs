@@ -849,20 +849,30 @@ namespace HISP.Server
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
 
             // Tag
+
             Messages.TagYourItFormat = gameData.messages.meta.player_interaction.tag.tag_player;
             Messages.TagOtherBuddiesOnlineFormat = gameData.messages.meta.player_interaction.tag.total_buddies;
 
             // Add Buddy
+
             Messages.AddBuddyPending = gameData.messages.meta.player_interaction.add_buddy.add_pending;
             Messages.AddBuddyOtherPendingFormat = gameData.messages.meta.player_interaction.add_buddy.other_pending;
             Messages.AddBuddyYourNowBuddiesFormat = gameData.messages.meta.player_interaction.add_buddy.add_confirmed; 
             Messages.AddBuddyDeleteBuddyFormat = gameData.messages.meta.player_interaction.add_buddy.deleted;
 
             // Socials
+
             Messages.SocialButton = gameData.messages.meta.player_interaction.socials.socials_button;
             Messages.SocialMessageFormat = gameData.messages.meta.player_interaction.socials.socials_message;
             Messages.SocialTypeFormat = gameData.messages.meta.player_interaction.socials.socials_menu_type;
             Messages.SocialPlayerNoLongerNearby = gameData.messages.meta.player_interaction.socials.no_longer_nearby;
+
+
+            // Events : Real Time Riddle
+
+            Messages.EventStartRealTimeRiddleFormat = gameData.messages.events.real_time_riddle.event_start;
+            Messages.EventEndRealTimeRiddle = gameData.messages.events.real_time_riddle.event_end;
+            Messages.EventWonRealTimeRiddleFormat = gameData.messages.events.real_time_riddle.event_won;
 
             // Trade
 

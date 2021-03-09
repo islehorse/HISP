@@ -29,6 +29,11 @@ namespace HISP.Game
         public static string SocialTypeFormat;
         public static string SocialPlayerNoLongerNearby;
 
+        // Events : Real Time Riddles
+        public static string EventStartRealTimeRiddleFormat;
+        public static string EventEndRealTimeRiddle;
+        public static string EventWonRealTimeRiddleFormat;
+
         // Trading
         public static string TradeWithPlayerFormat;
 
