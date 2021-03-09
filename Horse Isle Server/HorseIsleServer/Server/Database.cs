@@ -8,6 +8,7 @@ using HISP.Game.Inventory;
 using HISP.Game.Items;
 using HISP.Security;
 using HISP.Game.Services;
+using HISP.Game.SwfModules;
 
 namespace HISP.Server
 {
@@ -42,6 +43,7 @@ namespace HISP.Server
                 string PoetryRooms = "CREATE TABLE IF NOT EXISTS PoetryRooms(poetId INT, X INT, Y INT, roomId INT)";
                 string SavedDrawings = "CREATE TABLE IF NOT EXISTS SavedDrawings(playerId INT, Drawing1 TEXT(65535), Drawing2 TEXT(65535), Drawing3 TEXT(65535))";
                 string DrawingRooms = "CREATE TABLE IF NOT EXISTS DrawingRooms(roomId INT, Drawing TEXT(65535))";
+                string DressupRooms = "CREATE TABLE IF NOT EXISTS DressupRooms(roomId INT, peiceId INT, active TEXT(3), x INT, y INT)";
                 string Horses = "CREATE TABLE IF NOT EXISTS Horses(randomId INT, ownerId INT, leaseTime INT, leaser INT, breed INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT, hidden TEXT(3))";
                 string WildHorse = "CREATE TABLE IF NOT EXISTS WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string LastPlayer = "CREATE TABLE IF NOT EXISTS LastPlayer(roomId TEXT(1028), playerId INT)";
@@ -67,6 +69,19 @@ namespace HISP.Server
                     Logger.WarnPrint(e.Message);
                 };
 
+                try
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = DressupRooms;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+                
                 try
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
@@ -509,6 +524,98 @@ namespace HISP.Server
                 return count >= 1;
             }
         }
+
+        public static void CreateDressupRoomPeice(int roomId, int peiceId, bool active, int x, int y)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO DressupRooms VALUES(@roomId, @peiceId, @active, @x, @y)";
+                sqlCommand.Parameters.AddWithValue("@roomId", roomId);
+                sqlCommand.Parameters.AddWithValue("@peiceId", peiceId);
+                sqlCommand.Parameters.AddWithValue("@active", active ? "YES" : "NO");
+                sqlCommand.Parameters.AddWithValue("@x", x);
+                sqlCommand.Parameters.AddWithValue("@y", y);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetDressupRoomPeiceX(int roomId, int peiceId, int newX)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE DressupRooms SET x=@x WHERE roomId=@roomId AND peiceId=@peiceId";
+                sqlCommand.Parameters.AddWithValue("@roomId", roomId);
+                sqlCommand.Parameters.AddWithValue("@peiceId", peiceId);
+                sqlCommand.Parameters.AddWithValue("@x", newX);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetDressupRoomPeiceY(int roomId, int peiceId, int newY)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE DressupRooms SET y=@y WHERE roomId=@roomId AND peiceId=@peiceId";
+                sqlCommand.Parameters.AddWithValue("@roomId", roomId);
+                sqlCommand.Parameters.AddWithValue("@peiceId", peiceId);
+                sqlCommand.Parameters.AddWithValue("@y", newY);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void SetDressupRoomPeiceActive(int roomId, int peiceId, bool active)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE DressupRooms SET active=@active WHERE roomId=@roomId AND peiceId=@peiceId";
+                sqlCommand.Parameters.AddWithValue("@roomId", roomId);
+                sqlCommand.Parameters.AddWithValue("@peiceId", peiceId);
+                sqlCommand.Parameters.AddWithValue("@active", active ? "YES" : "NO");
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static Dressup.DressupPeice[] LoadDressupRoom(Dressup.DressupRoom room)
+        {
+            List<Dressup.DressupPeice> peices = new List<Dressup.DressupPeice>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM DressupRooms WHERE roomId=@roomId";
+                sqlCommand.Parameters.AddWithValue("@roomId", room.RoomId);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while(reader.Read())
+                {
+                    int peiceId = reader.GetInt32(1);
+                    bool active = reader.GetString(2) == "YES";
+                    int x = reader.GetInt32(3);
+                    int y = reader.GetInt32(4);
+                    Dressup.DressupPeice peice = new Dressup.DressupPeice(room, peiceId, x, y, active, false);
+                    peices.Add(peice);
+                }
+                sqlCommand.Dispose();
+            }
+            return peices.ToArray();
+        }
+
         public static int[] GetSolvedRealTimeRiddles(int playerId)
         {
             List<int> solvedRiddleId = new List<int>();

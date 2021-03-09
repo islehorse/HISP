@@ -3325,7 +3325,10 @@ namespace HISP.Server
                         {
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to load an invalid drawing room: " + roomId);
                             break;
+                        
                         }
+                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, sender.LoggedinUser);
+
                         if(room.Drawing != "")
                         {
                             byte[] drawingPacket = PacketBuilder.CreateDrawingUpdatePacket(room.Drawing);
@@ -3526,7 +3529,7 @@ namespace HISP.Server
 
                         int roomId = packet[3] - 40;
                         Brickpoet.PoetryPeice[] room;
-                        try
+                        try // Make sure the room exists-
                         {
                             room = Brickpoet.GetPoetryRoom(roomId);
                         }
@@ -3535,9 +3538,11 @@ namespace HISP.Server
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to load an invalid brickpoet room: " + roomId);
                             break;
                         }
-
+                        // Send list of peices
                         byte[] poetPacket = PacketBuilder.CreateBrickPoetListPacket(room);
                         sender.SendPacket(poetPacket);
+
+                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, sender.LoggedinUser);
                     }
                     else if(packet[3] == PacketBuilder.BRICKPOET_MOVE)
                     {
@@ -3566,7 +3571,7 @@ namespace HISP.Server
                         Brickpoet.PoetryPeice[] room;
                         Brickpoet.PoetryPeice peice;
 
-                        try
+                        try // Make sure these are acturally numbers!
                         {
                             peiceId = int.Parse(args[1]);
                             x = int.Parse(args[2]);
@@ -3582,11 +3587,11 @@ namespace HISP.Server
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to move a peice in an invalid brickpoet room: " + roomId);
                             break;
                         }
-
+                        // Change location in Database
                         peice.X = x;
                         peice.Y = y;
 
-                        foreach(User user in GetUsersOnSpecialTileCode("MULTIROOM-" + "P" + roomId.ToString()))
+                        foreach(User user in GetUsersOnSpecialTileCode("MULTIROOM-" + "P" + roomId.ToString())) // Send to each user!
                         {
                             if (user.Id == sender.LoggedinUser.Id)
                                 continue;
@@ -3611,6 +3616,93 @@ namespace HISP.Server
                     }
 
                     break;
+                case PacketBuilder.SWFMODULE_DRESSUPROOM:
+                    if (packet.Length < 6)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid DRESSUPROOM packet (swf communication, WRONG SIZE)");
+                        break;
+                    }
+                    if (packet[2] == PacketBuilder.DRESSUPROOM_LIST_ALL)
+                    {
+                        int roomId = packet[3] - 40;
+                        Dressup.DressupRoom room = Dressup.GetDressupRoom(roomId);
+
+                        if (room.DressupPeices.Count > 0)
+                        {
+                            byte[] allDressupsResponse = PacketBuilder.CreateDressupRoomPeiceResponse(room.DressupPeices.ToArray());
+                            sender.SendPacket(allDressupsResponse);
+                        }
+
+                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, sender.LoggedinUser);
+                    }
+                    else // Move
+                    {
+                        if (packet.Length < 9)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid DRESSUPROOM MOVE packet (swf communication, WRONG SIZE)");
+                            break;
+                        }
+
+                        int roomId = packet[2] - 40;
+                        if (roomId <= 0)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid DRESSUPROOM MOVE packet (swf communication, INVALID ROOM)");
+                            break;
+                        }
+                        Dressup.DressupRoom room = Dressup.GetDressupRoom(roomId);
+
+                        string packetStr = Encoding.UTF8.GetString(packet);
+                        string moveStr = packetStr.Substring(3, packetStr.Length - 5);
+
+                        string[] moves = moveStr.Split('|');
+
+                        if(moves.Length < 3)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid DRESSUPROOM MOVE packet (swf communication, MOVES WRONG SIZE)");
+                            break;
+                        }
+
+                        int peiceId;
+                        double moveToX;
+                        double moveToY;
+                        bool active = true;
+                        try // Make sure these are acturally numbers!
+                        {
+                            peiceId = int.Parse(moves[0]);
+                            if (moves[1] == "D" || moves[2] == "D")
+                            {
+                                active = false;
+                                moveToX = 0;
+                                moveToY = 0;
+                            }
+                            else
+                            { 
+                                moveToX = double.Parse(moves[1]);
+                                moveToY = double.Parse(moves[2]);
+                            }
+                        }
+                        catch(FormatException)
+                        {
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid DRESSUPROOM MOVE packet (swf communication, INVALID LOCATION)");
+                            break;
+                        }
+
+                        Dressup.DressupPeice peice = room.GetDressupPeice(peiceId);
+                        // Update database entries
+                        peice.X = Convert.ToInt32(Math.Round(moveToX));
+                        peice.Y = Convert.ToInt32(Math.Round(moveToY));
+                        peice.Active = active;
+
+                        // Forward to other users
+                        byte[] movePeicePacket = PacketBuilder.CreateDressupRoomPeiceMove(peice.PeiceId, moveToX, moveToY, peice.Active);
+                        User[] users = GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true);
+                        foreach(User user in users)
+                        {
+                            if (user.Id != sender.LoggedinUser.Id)
+                                user.LoggedinClient.SendPacket(movePeicePacket);
+                        }
+                    }
+                    break;
                 case PacketBuilder.SWFMODULE_ARENA:
                     if (Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
                     { 
@@ -3622,6 +3714,7 @@ namespace HISP.Server
                                 continue;
                             if(entry.EnteredUser.LoggedinClient.LoggedIn)
                             entry.EnteredUser.LoggedinClient.SendPacket(response);
+
                         }
                         
                     }
@@ -6703,14 +6796,15 @@ namespace HISP.Server
 
 
         }
-        public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPrio=false)
+        public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPrio=false, User exceptMe=null)
         {
             foreach(GameClient client in ConnectedClients)
             {
                 if (client.LoggedIn)
                     if (client.LoggedinUser.X == x && client.LoggedinUser.Y == y)
                         if(!client.LoggedinUser.MetaPriority || ignoreMetaPrio)
-                            UpdateArea(client);
+                            if(client.LoggedinUser != exceptMe)
+                                UpdateArea(client);
             }
         }
         

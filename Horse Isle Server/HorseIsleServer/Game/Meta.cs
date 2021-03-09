@@ -307,13 +307,32 @@ namespace HISP.Game
         {
 
             string message = Messages.MultiroomPlayersParticipating;
-            foreach (User userOnTile in GameServer.GetUsersOnSpecialTileCode("MULTIROOM-" + id))
+            if(id != null) // Special type
             {
-                if (userOnTile.Id == user.Id)
-                    continue;
-                message += Messages.FormatMultiroomParticipent(userOnTile.Username);
+                foreach (User userOnTile in GameServer.GetUsersOnSpecialTileCode("MULTIROOM-" + id))
+                {
+                    if (userOnTile.Id == user.Id)
+                        continue;
+                    message += Messages.FormatMultiroomParticipent(userOnTile.Username);
+                }
+                message += Messages.R1;
             }
-            if (id[0] == 'P') // Poet
+            else if(id == null) // Generic
+            {
+                foreach (User userOnTile in GameServer.GetUsersAt(user.X, user.Y, true, true))
+                {
+                    if (userOnTile.Id == user.Id)
+                        continue;
+                    message += Messages.FormatMultiroomParticipent(userOnTile.Username);
+                }
+                message += Messages.R1;
+            }
+
+            if(id == null) // Generic 
+            {
+                // Do nothing
+            }
+            else if (id[0] == 'P') // Poet
             {
                 int lastPoet = Database.GetLastPlayer(id);
                 string username = "";
@@ -322,7 +341,7 @@ namespace HISP.Game
 
                 message += Messages.FormatLastPoet(username);
             }
-            if (id[0] == 'D') // Drawning room
+            else if (id[0] == 'D') // Drawning room
             {
                 int lastDraw = Database.GetLastPlayer(id);
                 string username = "";
@@ -2857,9 +2876,7 @@ namespace HISP.Game
                 }
                 if (TileCode == "MULTIROOM")
                 {
-                    user.MetaPriority = false;
-                    if (TileArg != "")
-                        message += buildMultiroom(TileArg, user);
+                    message += buildMultiroom(TileArg != "" ? TileArg : null, user);   
                 }
                 if (TileCode == "PASSWORD")
                 {
