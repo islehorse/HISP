@@ -250,7 +250,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to trade with User ID NaN.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to view profile of User ID NaN.");
                         break;
                     }
 
@@ -262,6 +262,34 @@ namespace HISP.Server
                         byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildStatsMenu(user, true));
                         sender.SendPacket(metaTag);
                     }
+                    break;
+                case PacketBuilder.PLAYER_INTERACTION_REMOVE_BUDDY:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    playerId = -1;
+                    try
+                    {
+                        playerId = int.Parse(playerIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to remove User ID NaN as a buddy.");
+                        break;
+                    }
+
+
+                    if(sender.LoggedinUser.Friends.IsFriend(playerId))
+                    {
+                        sender.LoggedinUser.Friends.RemoveFriend(playerId);
+
+                        byte[] friendRemoved = PacketBuilder.CreateChat(Messages.FormatAddBuddyRemoveBuddy(Database.GetUsername(playerId)), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(friendRemoved);
+
+                        sender.LoggedinUser.MetaPriority = true;
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerList(sender.LoggedinUser));
+                        sender.SendPacket(metaPacket);
+                    }
+
                     break;
                 case PacketBuilder.PLAYER_INTERACTION_TAG:
                     packetStr = Encoding.UTF8.GetString(packet);

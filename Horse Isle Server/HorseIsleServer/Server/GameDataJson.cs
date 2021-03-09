@@ -856,7 +856,7 @@ namespace HISP.Server
             Messages.AddBuddyPending = gameData.messages.meta.player_interaction.add_buddy.add_pending;
             Messages.AddBuddyOtherPendingFormat = gameData.messages.meta.player_interaction.add_buddy.other_pending;
             Messages.AddBuddyYourNowBuddiesFormat = gameData.messages.meta.player_interaction.add_buddy.add_confirmed; 
-
+            Messages.AddBuddyDeleteBuddyFormat = gameData.messages.meta.player_interaction.add_buddy.deleted;
 
             // Socials
             Messages.SocialButton = gameData.messages.meta.player_interaction.socials.socials_button;
