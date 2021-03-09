@@ -190,6 +190,12 @@ namespace HISP.Server
                 }
             }
 
+            if (RandomNumberGenerator.Next(0, 100) == 59) // Real Time Riddle
+            {
+
+            }
+
+
             Database.IncPlayerTirednessForOfflineUsers();
 
             // Offline player handling w sql magic...
