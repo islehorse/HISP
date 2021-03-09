@@ -115,6 +115,7 @@ namespace HISP.Server
         public const byte SWFMODULE_ARENA = 0x52;
         public const byte SWFMODULE_BRICKPOET = 0x5A;
         public const byte SWFMODULE_DRAWINGROOM = 0x5B;
+        public const byte SWFMODULE_DRESSUPROOM = 0x5C;
 
         public const byte DRAWINGROOM_GET_DRAWING = 0x14;
         public const byte DRAWINGROOM_SAVE = 0x15;
@@ -122,6 +123,8 @@ namespace HISP.Server
 
         public const byte BRICKPOET_LIST_ALL = 0x14;
         public const byte BRICKPOET_MOVE = 0x55;
+
+        public const byte DRESSUPROOM_LIST_ALL = 0x14;
 
         public const byte WISH_MONEY = 0x31;
         public const byte WISH_ITEMS = 0x32;
@@ -208,17 +211,68 @@ namespace HISP.Server
         public const byte DIRECTION_TELEPORT = 4;
         public const byte DIRECTION_NONE = 10;
 
-        public static byte[] CreateForwardedSwfRequest(byte[] request)
+        public static byte[] CreateDressupRoomPeiceMove(int peiceId, double x, double y, bool active)
         {
             MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PacketBuilder.PACKET_SWFMODULE);
-            ms.Write(request, 0x2, request.Length - 0x4);
-            ms.WriteByte(PacketBuilder.PACKET_TERMINATOR);
+            ms.WriteByte(PACKET_SWFMODULE);
+            string packetStr = "";
+            packetStr += peiceId.ToString() + "|";
+            if (active)
+            {
+                packetStr += x.ToString() + "|";
+                packetStr += y.ToString() + "|";
+            }
+            else
+            {
+                packetStr += "D|D|";
+            }
+            packetStr += "^";
+
+            byte[] packetBytes = Encoding.UTF8.GetBytes(packetStr);
+            ms.Write(packetBytes, 0x00, packetBytes.Length);
+            ms.WriteByte(PACKET_TERMINATOR);
             ms.Seek(0x00, SeekOrigin.Begin);
             byte[] response = ms.ToArray();
             ms.Dispose();
             return response;
         }
+        public static byte[] CreateDressupRoomPeiceResponse(Dressup.DressupPeice[] dressupPeices)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_SWFMODULE);
+            string packetStr = "";
+            foreach(Dressup.DressupPeice peice in dressupPeices)
+            {
+                if (!peice.Active)
+                    continue;
+
+                packetStr += peice.PeiceId.ToString() + "|";
+                packetStr += peice.X.ToString() + "|";
+                packetStr += peice.Y.ToString() + "|";
+                packetStr += "^";
+            }
+
+            byte[] packetBytes = Encoding.UTF8.GetBytes(packetStr);
+            ms.Write(packetBytes, 0x00, packetBytes.Length);
+            ms.WriteByte(PACKET_TERMINATOR);
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] response = ms.ToArray();
+            ms.Dispose();
+            return response;
+        }
+
+        public static byte[] CreateForwardedSwfRequest(byte[] request)
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_SWFMODULE);
+            ms.Write(request, 0x2, request.Length - 0x4);
+            ms.WriteByte(PACKET_TERMINATOR);
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] response = ms.ToArray();
+            ms.Dispose();
+            return response;
+        }
+
         public static byte[] CreateBirdMap(int playerX, int playerY)
         {
             MemoryStream ms = new MemoryStream();
@@ -226,7 +280,7 @@ namespace HISP.Server
             int xstart = playerX - 24;
             int ystart = playerY - 15;
 
-            ms.WriteByte(PacketBuilder.PACKET_BIRDMAP);
+            ms.WriteByte(PACKET_BIRDMAP);
 
             for (int rely = 0; rely <= 30; rely++)
             {
@@ -261,7 +315,7 @@ namespace HISP.Server
         public static byte[] CreateDrawingUpdatePacket(string Drawing)
         {
             MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PacketBuilder.PACKET_SWFMODULE);
+            ms.WriteByte(PACKET_SWFMODULE);
             byte[] drawingBytes = Encoding.UTF8.GetBytes(Drawing);
             ms.Write(drawingBytes, 0x00, drawingBytes.Length);
             ms.WriteByte(PACKET_TERMINATOR);
@@ -272,8 +326,8 @@ namespace HISP.Server
         {
 
             MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PacketBuilder.PACKET_SWFMODULE);
-            ms.WriteByte(PacketBuilder.BRICKPOET_MOVE);
+            ms.WriteByte(PACKET_SWFMODULE);
+            ms.WriteByte(BRICKPOET_MOVE);
             string packetStr = "|";
             packetStr += peice.Id + "|";
             packetStr += peice.X + "|";
@@ -289,7 +343,7 @@ namespace HISP.Server
         public static byte[] CreateBrickPoetListPacket(Brickpoet.PoetryPeice[] room)
         {
             MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PacketBuilder.PACKET_SWFMODULE);
+            ms.WriteByte(PACKET_SWFMODULE);
             string packetStr = "";
             foreach(Brickpoet.PoetryPeice peice in room)
             {
@@ -307,7 +361,7 @@ namespace HISP.Server
             }
             byte[] packetBytes = Encoding.UTF8.GetBytes(packetStr);
             ms.Write(packetBytes, 0x00, packetBytes.Length);
-            ms.WriteByte(PacketBuilder.PACKET_TERMINATOR);
+            ms.WriteByte(PACKET_TERMINATOR);
 
             ms.Seek(0x00, SeekOrigin.Begin);
             return ms.ToArray();
