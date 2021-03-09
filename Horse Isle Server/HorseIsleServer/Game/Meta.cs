@@ -1210,14 +1210,14 @@ namespace HISP.Game
             }
             message += Messages.BuddyListOfflineBuddys;
 
+
             foreach (int id in user.Friends.List.ToArray())
             {
                 if (GameServer.IsUserOnline(id))
                     continue;
 
-                message += Messages.BuddyListOfflineBuddys;
                 string username = Database.GetUsername(id);
-                int minutes = Convert.ToInt32(Math.Round((Converters.UnixTimeStampToDateTime(Database.GetPlayerLastLogin(id)) - DateTime.UtcNow).TotalMinutes));
+                int minutes = Convert.ToInt32(Math.Round(DateTime.UtcNow.Subtract(Converters.UnixTimeStampToDateTime(Database.GetPlayerLastLogin(id))).TotalMinutes));
 
                 message += Messages.FormatOfflineBuddyEntry(username, id, minutes);
             }
