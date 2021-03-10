@@ -307,26 +307,19 @@ namespace HISP.Game
         {
 
             string message = Messages.MultiroomPlayersParticipating;
-            if(id != null) // Special type
+
+            Multiroom room = Multiroom.GetMultiroom(user.X, user.Y);
+            room.Join(user);
+
+            foreach (User userOnTile in room.JoinedUsers)
             {
-                foreach (User userOnTile in GameServer.GetUsersOnSpecialTileCode("MULTIROOM-" + id))
-                {
-                    if (userOnTile.Id == user.Id)
-                        continue;
-                    message += Messages.FormatMultiroomParticipent(userOnTile.Username);
-                }
-                message += Messages.R1;
+                if (userOnTile.Id == user.Id)
+                    continue;
+
+                message += Messages.FormatMultiroomParticipent(userOnTile.Username);
             }
-            else if(id == null) // Generic
-            {
-                foreach (User userOnTile in GameServer.GetUsersAt(user.X, user.Y, true, true))
-                {
-                    if (userOnTile.Id == user.Id)
-                        continue;
-                    message += Messages.FormatMultiroomParticipent(userOnTile.Username);
-                }
-                message += Messages.R1;
-            }
+
+            message += Messages.R1;
 
             if(id == null) // Generic 
             {
