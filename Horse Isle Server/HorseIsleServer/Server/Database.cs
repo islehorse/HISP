@@ -4878,7 +4878,7 @@ namespace HISP.Server
 
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT DISTINCT playerId, SUM(timesplayed) OVER (PARTITION BY playerId) AS totalPlays FROM leaderboards ORDER BY totalPlays DESC LIMIT 25";
+                sqlCommand.CommandText = "SELECT DISTINCT playerId, SUM(timesplayed) OVER (PARTITION BY playerId) AS totalPlays FROM Leaderboards ORDER BY totalPlays DESC LIMIT 25";
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
