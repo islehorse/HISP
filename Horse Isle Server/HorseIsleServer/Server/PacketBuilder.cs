@@ -116,6 +116,7 @@ namespace HISP.Server
         public const byte SWFMODULE_BRICKPOET = 0x5A;
         public const byte SWFMODULE_DRAWINGROOM = 0x5B;
         public const byte SWFMODULE_DRESSUPROOM = 0x5C;
+        public const byte SWFMODULE_BANDHALL = 0x51;
 
         public const byte DRAWINGROOM_GET_DRAWING = 0x14;
         public const byte DRAWINGROOM_SAVE = 0x15;

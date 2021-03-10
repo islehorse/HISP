@@ -24,10 +24,15 @@ namespace HISP
 
             DroppedItems.Init();
             WildHorse.Init();
-            Brickpoet.LoadPoetryRooms();
-            Auction.LoadAllAuctionRooms();
+
             Drawingroom.LoadAllDrawingRooms();
+            Brickpoet.LoadPoetryRooms();
+            Multiroom.CreateMultirooms();
+
+            Auction.LoadAllAuctionRooms();
+
             Item.DoSpecialCases();
+
 
             GameServer.StartServer();
 

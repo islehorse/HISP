@@ -3329,7 +3329,6 @@ namespace HISP.Server
                             break;
                         
                         }
-                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, sender.LoggedinUser);
 
                         if(room.Drawing != "")
                         {
@@ -3455,7 +3454,7 @@ namespace HISP.Server
                         }
 
                         room.Drawing += drawingToAdd;
-                        UpdateDrawingForAll(sender, drawingToAdd, true);
+                        UpdateDrawingForAll("D" + room.Id, sender, drawingToAdd, true);
 
                         byte[] loadedDrawingMessage = PacketBuilder.CreateChat(Messages.FormatDrawingRoomLoaded(slotNo), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(loadedDrawingMessage);
@@ -3510,7 +3509,7 @@ namespace HISP.Server
                             break;
                         }
 
-                        UpdateDrawingForAll(sender, drawing, false);
+                        UpdateDrawingForAll("D" + room.Id, sender, drawing, false);
 
                     }
 
@@ -3544,7 +3543,6 @@ namespace HISP.Server
                         byte[] poetPacket = PacketBuilder.CreateBrickPoetListPacket(room);
                         sender.SendPacket(poetPacket);
 
-                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, sender.LoggedinUser);
                     }
                     else if(packet[3] == PacketBuilder.BRICKPOET_MOVE)
                     {
@@ -3635,7 +3633,6 @@ namespace HISP.Server
                             sender.SendPacket(allDressupsResponse);
                         }
 
-                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, sender.LoggedinUser);
                     }
                     else // Move
                     {
@@ -3705,18 +3702,26 @@ namespace HISP.Server
                         }
                     }
                     break;
+                case PacketBuilder.SWFMODULE_BANDHALL: // Basic
+                    byte[] response = PacketBuilder.CreateForwardedSwfRequest(packet);
+                    foreach (User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                    {
+                        if (user.Id == sender.LoggedinUser.Id)
+                            continue;
+                        user.LoggedinClient.SendPacket(response);
+                    }
+                    break;
                 case PacketBuilder.SWFMODULE_ARENA:
                     if (Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
                     { 
                         Arena arena = Arena.GetArenaUserEnteredIn(sender.LoggedinUser);
-                        byte[] response = PacketBuilder.CreateForwardedSwfRequest(packet);
+                        response = PacketBuilder.CreateForwardedSwfRequest(packet);
                         foreach (Arena.ArenaEntry entry in arena.Entries.ToArray())
                         {
                             if (entry.EnteredUser.Id == sender.LoggedinUser.Id)
                                 continue;
                             if(entry.EnteredUser.LoggedinClient.LoggedIn)
                             entry.EnteredUser.LoggedinClient.SendPacket(response);
-
                         }
                         
                     }
@@ -4274,6 +4279,24 @@ namespace HISP.Server
 
             User loggedInUser = sender.LoggedinUser;
 
+            /*
+             *  Player stuff
+             */
+
+            // Leave Multirooms 
+            Multiroom.LeaveAllMultirooms(loggedInUser);
+
+            // Cancel Trades
+            if (loggedInUser.TradingWith != null)
+                loggedInUser.TradingWith.CancelTradeMoved();
+            loggedInUser.PendingBuddyRequestTo = null;
+
+            // Close Social Windows
+            foreach (User sUser in loggedInUser.BeingSocializedBy.ToArray())
+                UpdateArea(sUser.LoggedinClient);
+            loggedInUser.BeingSocializedBy.Clear();
+
+
             // Pac-man the world.
             if (loggedInUser.X > Map.Width)
                 loggedInUser.Teleport(2, loggedInUser.Y);
@@ -4305,6 +4328,8 @@ namespace HISP.Server
                     }
                 }
             }
+
+            // Randomly move if thirst, hunger, tiredness too low-
 
             byte movementDirection = packet[1];
 
@@ -4355,7 +4380,7 @@ namespace HISP.Server
             int newY = loggedInUser.Y;
             bool moveTwo = false;
 
-            if (movementDirection == PacketBuilder.MOVE_ESCAPE)
+            if (movementDirection == PacketBuilder.MOVE_ESCAPE) // Exit this place / X Button
             {
 
                 byte Direction;
@@ -4396,7 +4421,6 @@ namespace HISP.Server
 
                     Direction = PacketBuilder.DIRECTION_DOWN;
                 }
-
 
                 loggedInUser.Facing = Direction + (onHorse * 5);
                 Logger.DebugPrint("Exiting player: " + loggedInUser.Username + " to: " + loggedInUser.X + "," + loggedInUser.Y);
@@ -4473,11 +4497,11 @@ namespace HISP.Server
             {
                 if (moveTwo)
                     direction += 20;
+
                 loggedInUser.Y = newY;
                 loggedInUser.X = newX;
 
-
-                // check Treasures
+                // Check Treasures
                 if (Treasure.IsTileTreasure(loggedInUser.X, loggedInUser.Y))
                 {
                     Treasure treasure = Treasure.GetTreasureAt(loggedInUser.X, loggedInUser.Y);
@@ -4488,16 +4512,6 @@ namespace HISP.Server
                         return;
                     }
                 }
-
-                // Cancel Trades
-                if (loggedInUser.TradingWith != null)
-                    loggedInUser.TradingWith.CancelTradeMoved();
-                loggedInUser.PendingBuddyRequestTo = null;
-
-                // Close Social Windows
-                foreach (User sUser in loggedInUser.BeingSocializedBy.ToArray())
-                    UpdateArea(sUser.LoggedinClient);
-                loggedInUser.BeingSocializedBy.Clear();
 
                 byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, direction, true);
                 sender.SendPacket(moveResponse);
@@ -6434,6 +6448,9 @@ namespace HISP.Server
 
                 Database.RemoveOnlineUser(sender.LoggedinUser.Id);
 
+                // Leave multirooms
+                Multiroom.LeaveAllMultirooms(sender.LoggedinUser);
+
                 // Remove Trade Reference
                 sender.LoggedinUser.TradingWith = null;
                 sender.LoggedinUser.PendingTradeTo = 0;
@@ -6444,6 +6461,7 @@ namespace HISP.Server
                     Arena arena = Arena.GetArenaUserEnteredIn(sender.LoggedinUser);
                     arena.DeleteEntry(sender.LoggedinUser);
                 }
+
 
                 // Send disconnect message
                 byte[] logoutMessageBytes = PacketBuilder.CreateChat(Messages.FormatLogoutMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
@@ -6709,11 +6727,11 @@ namespace HISP.Server
             UpdateUserInfo(client.LoggedinUser);
         }
 
-        public static void UpdateDrawingForAll(GameClient sender, string drawing, bool includingSender=false)
+        public static void UpdateDrawingForAll(string id, GameClient sender, string drawing, bool includingSender=false)
         {
 
             UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
-            User[] usersHere = GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true);
+            User[] usersHere = GetUsersOnSpecialTileCode("MULTIROOM-D" + id);
             foreach (User user in usersHere)
             {
                 if(!includingSender)
