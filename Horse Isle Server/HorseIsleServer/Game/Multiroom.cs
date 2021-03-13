@@ -38,7 +38,7 @@ namespace HISP.Game
             {
                 if (tile.Code != null)
                 {
-                    if (tile.Code.StartsWith("MULTIROOM"))
+                    if (tile.Code.StartsWith("MULTIROOM") || tile.Code.StartsWith("2PLAYER") || tile.Code.StartsWith("AUCTION"))
                     {
                         Logger.DebugPrint("Created Multiroom @ " + tile.X.ToString() + "," + tile.Y.ToString());
                         new Multiroom(tile.X, tile.Y);
@@ -69,7 +69,9 @@ namespace HISP.Game
 
                 foreach (User joinedUser in JoinedUsers)
                     if (joinedUser.Id != user.Id)
-                        GameServer.UpdateArea(joinedUser.LoggedinClient);
+                        if(!TwoPlayer.IsPlayerInGame(joinedUser))
+                            if(!joinedUser.ListingAuction)
+                                GameServer.UpdateArea(joinedUser.LoggedinClient);
             }
             
         }
@@ -84,7 +86,9 @@ namespace HISP.Game
             }
 
             foreach (User joinedUser in JoinedUsers)
-                GameServer.UpdateArea(joinedUser.LoggedinClient);
+                if (!TwoPlayer.IsPlayerInGame(joinedUser))
+                    if (!joinedUser.ListingAuction)
+                        GameServer.UpdateArea(joinedUser.LoggedinClient);
 
         }
     }
