@@ -52,10 +52,9 @@ namespace HISP.Game.Chat
             string[] args = message.Split(' ').Skip(1).ToArray();
 
             if (user.Administrator || user.Moderator)
+            {
                 if (message[0] == '%')
                 {
-                    if(message.StartsWith("%STICKBUG"))
-                        return Command.Stickbug(message, args, user);
                     if (message.StartsWith("%GIVE"))
                         return Command.Give(message, args, user);
                     if (message.StartsWith("%GOTO"))
@@ -72,6 +71,8 @@ namespace HISP.Game.Chat
                         return Command.Escape(message, args, user);
                     return false;
                 }
+
+            }
             if (message[0] == '!')
             {
                 // Alias for !MUTE
@@ -108,7 +109,7 @@ namespace HISP.Game.Chat
             }
             return false;
         }
-        public static Object FilterMessage(string message) // Handles chat filtering and violation stuffs returns
+        public static Object FilterMessage(string message) // Handles chat filtering and violation stuffs
         {
             if (!ConfigReader.BadWords) // Freedom of Speech Mode
                 return null;

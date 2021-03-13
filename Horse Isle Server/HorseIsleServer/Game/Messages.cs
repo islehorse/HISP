@@ -34,6 +34,23 @@ namespace HISP.Game
         public static string EventEndRealTimeRiddle;
         public static string EventWonRealTimeRiddleFormat;
 
+        // 2Player
+        public static string TwoPlayerOtherPlayer;
+        public static string TwoPlayerPlayerFormat;
+        public static string TwoPlayerInviteButton;
+        public static string TwoPlayerAcceptButton;
+        public static string TwoPlayerSentInvite;
+        public static string TwoPlayerPlayingWithFormat;
+
+        public static string TwoPlayerGameInProgressFormat;
+
+        public static string TwoPlayerYourInvitedFormat;
+        public static string TwoPlayerInvitedFormat;
+        public static string TwoPlayerStartingUpGameFormat;
+
+        public static string TwoPlayerGameClosed;
+        public static string TwoPlayerGameClosedOther;
+
         // Trading
         public static string TradeWithPlayerFormat;
 
@@ -1036,10 +1053,44 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        public static string Format2PlayerStartingGame(string playerName)
+        {
+            return TwoPlayerStartingUpGameFormat.Replace("%PLAYERNAME%", playerName);
+        }
+        public static string Format2PlayerYouInvited(string playerName)
+        {
+            return TwoPlayerYourInvitedFormat.Replace("%PLAYERNAME%", playerName);
+        }
+        public static string Format2PlayerYourInvited(string playerName)
+        {
+            return TwoPlayerYourInvitedFormat.Replace("%PLAYERNAME%", playerName);
+        }
+        public static string Format2PlayerGameInProgress(string playerName)
+        {
+            return TwoPlayerGameInProgressFormat.Replace("%PLAYERNAME%", playerName);
+        }
+        public static string Format2PlayerPlayingWith(string playerName)
+        {
+            return TwoPlayerPlayingWithFormat.Replace("%PLAYERNAME%", playerName);
+        }
+        public static string Format2PlayerAcceptButton(int playerId)
+        {
+            return TwoPlayerAcceptButton.Replace("%PLAYERID%", playerId.ToString());
+        }
+        public static string Format2PlayerInviteButton(int playerId)
+        {
+            return TwoPlayerInviteButton.Replace("%PLAYERID%", playerId.ToString());
+        }
+        public static string Format2PlayerPlayerName(string playerName)
+        {
+            return TwoPlayerPlayerFormat.Replace("%PLAYERNAME%", playerName);
+        }
         public static string FormatAddBuddyRemoveBuddy(string buddyName)
         {
             return AddBuddyDeleteBuddyFormat.Replace("%PLAYERNAME%", buddyName);
         }
+
+
         public static string FormatTagTotalBuddies(int count)
         {
             return TagOtherBuddiesOnlineFormat.Replace("%TOTALBUDDIESON%", count.ToString("N0", CultureInfo.InvariantCulture));
