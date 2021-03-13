@@ -874,6 +874,23 @@ namespace HISP.Server
             Messages.EventEndRealTimeRiddle = gameData.messages.events.real_time_riddle.event_end;
             Messages.EventWonRealTimeRiddleFormat = gameData.messages.events.real_time_riddle.event_won;
 
+            // 2Player
+            Messages.TwoPlayerOtherPlayer = gameData.messages.meta.two_player.other_player;
+            Messages.TwoPlayerPlayerFormat = gameData.messages.meta.two_player.player_name;
+            Messages.TwoPlayerInviteButton = gameData.messages.meta.two_player.invite_button;
+            Messages.TwoPlayerAcceptButton = gameData.messages.meta.two_player.accept_button;
+            Messages.TwoPlayerSentInvite = gameData.messages.meta.two_player.sent_invite;
+            Messages.TwoPlayerPlayingWithFormat = gameData.messages.meta.two_player.playing_with;
+
+            Messages.TwoPlayerGameInProgressFormat = gameData.messages.meta.two_player.game_in_progress;
+
+            Messages.TwoPlayerYourInvitedFormat = gameData.messages.meta.two_player.your_invited;
+            Messages.TwoPlayerInvitedFormat = gameData.messages.meta.two_player.you_invited;
+            Messages.TwoPlayerStartingUpGameFormat = gameData.messages.meta.two_player.starting_game;
+
+            Messages.TwoPlayerGameClosed = gameData.messages.meta.two_player.game_closed;
+            Messages.TwoPlayerGameClosedOther = gameData.messages.meta.two_player.game_closed_other;
+
             // Trade
 
             Messages.TradeWithPlayerFormat = gameData.messages.meta.player_interaction.trade.trading_with;

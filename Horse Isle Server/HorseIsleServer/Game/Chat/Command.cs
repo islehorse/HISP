@@ -144,44 +144,6 @@ namespace HISP.Game.Chat
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
-        public static bool Stickbug(string message, string[] args, User user)
-        {
-            if (args.Length <= 0)
-                return false;
-            if (!user.Administrator)
-                return false;
-
-            if(args[0] == "ALL")
-            {
-                foreach(GameClient client in GameServer.ConnectedClients)
-                {
-                    if(client.LoggedIn)
-                    {
-                        byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket("fun/stickbug.swf", PacketBuilder.PACKET_SWF_MODULE_GENTLE);
-                        client.SendPacket(swfModulePacket);
-                    }    
-                }
-            }
-            else
-            {
-                try
-                {
-                    User victimUser = GameServer.GetUserByName(args[0]);
-                    byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket("fun/stickbug.swf", PacketBuilder.PACKET_SWF_MODULE_GENTLE);
-                    victimUser.LoggedinClient.SendPacket(swfModulePacket);
-                }
-                catch(KeyNotFoundException)
-                {
-                    return false;
-                }
-            }
-
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
-
-            
-            return true;
-        }
 
         public static bool NoClip(string message, string[] args, User user)
         {
