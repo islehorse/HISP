@@ -103,6 +103,7 @@ namespace HISP.Player
         public DateTime LoginTime;
         public string LastSeenWeather;
         public int LastClickedRanchBuilding = 0;
+        public bool ListingAuction = false;
 
         public string GetWeatherSeen()
         {

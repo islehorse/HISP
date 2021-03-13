@@ -1774,6 +1774,9 @@ namespace HISP.Game
         }
         private static string buildAuction(User user, Auction auction)
         {
+            Multiroom room = Multiroom.GetMultiroom(user.X, user.Y);
+            room.Join(user);
+
             string message = "";
             message += Messages.AuctionsRunning;
             foreach(Auction.AuctionEntry entry in auction.AuctionEntries.ToArray())
@@ -1789,7 +1792,7 @@ namespace HISP.Game
                         message += Messages.FormatAuctionSoldTo(Database.GetUsername(entry.HighestBidder), entry.HighestBid);
                 }
             }
-            User[] users = GameServer.GetUsersAt(user.X, user.Y, true, true);
+            User[] users = room.JoinedUsers.ToArray();
             List<string> usernames = new List<string>();
             foreach(User userInst in users)
             {
@@ -2635,6 +2638,58 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        public static string build2PlayerGame(User user, string swf)
+        {
+            Multiroom room = Multiroom.GetMultiroom(user.X, user.Y);
+            room.Join(user);
+
+            if (TwoPlayer.IsPlayerInGame(user))
+            {
+                string username = "";
+                TwoPlayer twoPlayerGame = TwoPlayer.GetTwoPlayerGameInProgress(user);
+                if (twoPlayerGame.Invitee.Id == user.Id)
+                    username = twoPlayerGame.Invitee.Username;
+                else
+                    username = twoPlayerGame.Inviting.Username;
+
+                return Messages.Format2PlayerGameInProgress(username);
+            }
+
+            string message = Messages.TwoPlayerOtherPlayer;
+            foreach(User userAt in room.JoinedUsers.ToArray())
+            {
+                if (userAt.Id == user.Id)
+                    continue;
+
+                message += Messages.Format2PlayerPlayerName(userAt.Username);
+
+                if(!TwoPlayer.IsPlayerInGame(userAt))
+                {
+                    if (TwoPlayer.IsPlayerInvitingPlayer(user, userAt))
+                        message += Messages.TwoPlayerSentInvite;
+                    else
+                        message += Messages.Format2PlayerInviteButton(userAt.Id);
+                    if (TwoPlayer.IsPlayerInvitingPlayer(userAt, user))
+                        message += Messages.Format2PlayerAcceptButton(userAt.Id);
+
+                }
+                else
+                {
+                    string username = "";
+                    TwoPlayer twoPlayerGame = TwoPlayer.GetTwoPlayerGameInProgress(userAt);
+                    if (twoPlayerGame.Invitee.Id == userAt.Id)
+                        username = twoPlayerGame.Invitee.Username;
+                    else
+                        username = twoPlayerGame.Inviting.Username;
+
+                    message += Messages.Format2PlayerPlayingWith(username);
+                }
+
+                message += Messages.R1;
+            }
+            message += Messages.ExitThisPlace;
+            return message;
+        }
         public static string BuildComposeMailMenu()
         {
             string message = Messages.CityHallMailSendMeta;
@@ -2828,7 +2883,6 @@ namespace HISP.Game
                 }
                 if(TileCode == "AUCTION")
                 {
-                    user.MetaPriority = false;
                     message += buildAuction(user, Auction.GetAuctionRoomById(int.Parse(TileArg)));
                 }
                 if(TileCode == "TRAINER")
@@ -2846,6 +2900,10 @@ namespace HISP.Game
                 if (TileCode == "POND")
                 {
                     message += buildPond(user);
+                }
+                if(TileCode == "2PLAYER")
+                {
+                    message += build2PlayerGame(user, TileArg);
                 }
                 if(TileCode == "HORSES")
                 {

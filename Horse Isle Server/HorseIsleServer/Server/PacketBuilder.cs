@@ -112,6 +112,8 @@ namespace HISP.Server
         public const byte HORSE_ESCAPE = 0x1E;
         public const byte HORSE_CAUGHT = 0x1D;
 
+        public const byte SWFMODULE_INVITE = 0x14;
+
         public const byte SWFMODULE_ARENA = 0x52;
         public const byte SWFMODULE_BRICKPOET = 0x5A;
         public const byte SWFMODULE_DRAWINGROOM = 0x5B;

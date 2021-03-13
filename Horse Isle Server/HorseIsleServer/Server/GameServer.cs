@@ -2754,6 +2754,7 @@ namespace HISP.Server
                     break;
                 case "41": // Put horse into auction
                     sender.LoggedinUser.MetaPriority = true;
+                    sender.LoggedinUser.ListingAuction = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAuctionHorseList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
@@ -3304,6 +3305,27 @@ namespace HISP.Server
             byte module = packet[1];
             switch(module)
             {
+                case PacketBuilder.SWFMODULE_INVITE:
+                    if(packet.Length < 4)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid 2PLAYER INVITE Packet (WRONG SIZE)");
+                        break;
+                    }
+                    string packetStr = Encoding.UTF8.GetString(packet);
+                    string playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    int playerId = -1;
+                    try
+                    {
+                        playerId = int.Parse(playerIdStr);
+                    }
+                    catch (Exception) { };
+
+                    if(IsUserOnline(playerId))
+                    {
+                        User toInvite = GetUserById(playerId);
+                        TwoPlayer twoPlayerGame = new TwoPlayer(toInvite, sender.LoggedinUser, false);
+                    }
+                    break;
                 case PacketBuilder.SWFMODULE_DRAWINGROOM:
                     if(packet.Length < 3)
                     {
@@ -3489,7 +3511,7 @@ namespace HISP.Server
                             break;
                         }
 
-                        string packetStr = Encoding.UTF8.GetString(packet);
+                        packetStr = Encoding.UTF8.GetString(packet);
                         
                         string drawing = packetStr.Substring(3, packetStr.Length - 5);
                         if (drawing.Contains("X")) // Clear byte
@@ -3551,7 +3573,7 @@ namespace HISP.Server
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid BRICKPOET MOVE packet (swf communication, WRONG SIZE)");
                             break;
                         }
-                        string packetStr = Encoding.UTF8.GetString(packet);
+                        packetStr = Encoding.UTF8.GetString(packet);
                         if(!packetStr.Contains('|'))
                         {
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent invalid BRICKPOET MOVE packet (swf communication, NO | SEPERATOR)");
@@ -3650,7 +3672,7 @@ namespace HISP.Server
                         }
                         Dressup.DressupRoom room = Dressup.GetDressupRoom(roomId);
 
-                        string packetStr = Encoding.UTF8.GetString(packet);
+                        packetStr = Encoding.UTF8.GetString(packet);
                         string moveStr = packetStr.Substring(3, packetStr.Length - 5);
 
                         string[] moves = moveStr.Split('|');
@@ -6864,6 +6886,7 @@ namespace HISP.Server
             }
 
             forClient.LoggedinUser.MetaPriority = false;
+            forClient.LoggedinUser.ListingAuction = false;
 
             string LocationStr = "";
             if (!World.InSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y))
