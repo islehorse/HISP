@@ -9,7 +9,16 @@ namespace HISP.Game
     public class TwoPlayer
     {
         public static List<TwoPlayer> TwoPlayerGames = new List<TwoPlayer>();
-        
+        public static void TwoPlayerRemove(User user)
+        {
+            foreach(TwoPlayer twoPlayerGame in TwoPlayerGames.ToArray())
+            {
+                if((twoPlayerGame.Invitee.Id == user.Id))
+                {
+                    twoPlayerGame.CloseGame(user, true);
+                }
+            }
+        }
         public static bool IsPlayerInvitingPlayer(User sender, User checkInvites)
         {
             foreach (TwoPlayer twoPlayerGame in TwoPlayerGames.ToArray())
@@ -20,6 +29,17 @@ namespace HISP.Game
                 }
             }
             return false;
+        }
+        public static TwoPlayer GetGameInvitingPlayer(User sender, User checkInvites)
+        {
+            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames.ToArray())
+            {
+                if ((twoPlayerGame.Invitee.Id == sender.Id && twoPlayerGame.Inviting.Id == checkInvites.Id) && !twoPlayerGame.Accepted)
+                {
+                    return twoPlayerGame;
+                }
+            }
+            throw new KeyNotFoundException("not found.");
         }
 
         public static bool IsPlayerInGame(User user)
@@ -83,7 +103,7 @@ namespace HISP.Game
                 Invitee.MetaPriority = false;
                 Inviting.MetaPriority = false;
 
-                GameServer.UpdateAreaForAll(Invitee.X, Invitee.Y);
+                update();
 
                 TwoPlayerGames.Remove(this);
             }
@@ -147,9 +167,16 @@ namespace HISP.Game
             if(user.Id == Inviting.Id)
             {
                 Accepted = true;
-                updateOthers();
-
                 deleteTimer.Dispose();
+
+                UpdateAll();
+
+
+                byte[] startingUpGameInvitee = PacketBuilder.CreateChat(Messages.Format2PlayerStartingGame(Inviting.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                byte[] startingUpGameInvited = PacketBuilder.CreateChat(Messages.Format2PlayerStartingGame(Invitee.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+
+                Invitee.LoggedinClient.SendPacket(startingUpGameInvitee);
+                Inviting.LoggedinClient.SendPacket(startingUpGameInvited);
 
                 byte[] loadSwfInvitee = PacketBuilder.CreateSwfModulePacket(buildSwf(2), PacketBuilder.PACKET_SWF_MODULE_FORCE);
                 byte[] loadSwfInvited = PacketBuilder.CreateSwfModulePacket(buildSwf(1), PacketBuilder.PACKET_SWF_MODULE_FORCE);
@@ -160,30 +187,38 @@ namespace HISP.Game
             }
         }
 
-        public void CloseGame(User userWhoClosed)
+        public void CloseGame(User userWhoClosed, bool closeSilently=false)
         {
             if(userWhoClosed.Id == Inviting.Id || userWhoClosed.Id == Invitee.Id && Accepted)
             {
-                byte[] gameClosedByOther = PacketBuilder.CreateChat(Messages.TwoPlayerGameClosedOther, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                byte[] gameClosed = PacketBuilder.CreateChat(Messages.TwoPlayerGameClosed, PacketBuilder.CHAT_BOTTOM_RIGHT);
-
-                if (userWhoClosed.Id == Inviting.Id)
-                {
-                    Invitee.LoggedinClient.SendPacket(gameClosedByOther);
-                    Inviting.LoggedinClient.SendPacket(gameClosed);
-                }
-                else if (userWhoClosed.Id == Invitee.Id)
-                {
-                    Invitee.LoggedinClient.SendPacket(gameClosed);
-                    Inviting.LoggedinClient.SendPacket(gameClosedByOther);
-                }
                 Accepted = false;
+
+                if(!closeSilently)
+                {
+                    byte[] gameClosedByOther = PacketBuilder.CreateChat(Messages.TwoPlayerGameClosedOther, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    byte[] gameClosed = PacketBuilder.CreateChat(Messages.TwoPlayerGameClosed, PacketBuilder.CHAT_BOTTOM_RIGHT);
+
+                    if (userWhoClosed.Id == Inviting.Id)
+                    {
+                        Invitee.LoggedinClient.SendPacket(gameClosedByOther);
+                        Inviting.LoggedinClient.SendPacket(gameClosed);
+                    }
+                    else if (userWhoClosed.Id == Invitee.Id)
+                    {
+                        Invitee.LoggedinClient.SendPacket(gameClosed);
+                        Inviting.LoggedinClient.SendPacket(gameClosedByOther);
+                    }
+                }
 
                 Invitee.MetaPriority = false;
                 Inviting.MetaPriority = false;
 
-                UpdateAll();
-
+                
+                if (!closeSilently)
+                    UpdateAll();
+                else
+                    updateOthers();
+                
                 TwoPlayerGames.Remove(this);
             }
         }

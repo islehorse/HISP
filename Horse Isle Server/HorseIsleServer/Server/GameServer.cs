@@ -3326,6 +3326,31 @@ namespace HISP.Server
                         TwoPlayer twoPlayerGame = new TwoPlayer(toInvite, sender.LoggedinUser, false);
                     }
                     break;
+                case PacketBuilder.SWFMODULE_ACCEPT:
+                    if (packet.Length < 4)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid 2PLAYER ACCEPT Packet (WRONG SIZE)");
+                        break;
+                    }
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    playerId = -1;
+                    try
+                    {
+                        playerId = int.Parse(playerIdStr);
+                    }
+                    catch (Exception) { };
+
+                    if (IsUserOnline(playerId))
+                    {
+                        User toAccept = GetUserById(playerId);
+                        if(TwoPlayer.IsPlayerInvitingPlayer(toAccept, sender.LoggedinUser))
+                        {
+                            TwoPlayer twoPlayerGame = TwoPlayer.GetGameInvitingPlayer(toAccept, sender.LoggedinUser);
+                            twoPlayerGame.Accept(sender.LoggedinUser);
+                        }
+                    }
+                    break;
                 case PacketBuilder.SWFMODULE_DRAWINGROOM:
                     if(packet.Length < 3)
                     {
@@ -3724,13 +3749,47 @@ namespace HISP.Server
                         }
                     }
                     break;
-                case PacketBuilder.SWFMODULE_BANDHALL: // Basic
+                case PacketBuilder.SWFMODULE_BANDHALL:
                     byte[] response = PacketBuilder.CreateForwardedSwfRequest(packet);
                     foreach (User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y))
                     {
                         if (user.Id == sender.LoggedinUser.Id)
                             continue;
                         user.LoggedinClient.SendPacket(response);
+                    }
+                    break;
+                case PacketBuilder.SWFMODULE_2PLAYER: 
+                    if(TwoPlayer.IsPlayerInGame(sender.LoggedinUser))
+                    {
+                        TwoPlayer twoPlayerGame = TwoPlayer.GetTwoPlayerGameInProgress(sender.LoggedinUser);
+
+                        User otherUser = null;
+                        if (twoPlayerGame.Invitee.Id == sender.LoggedinUser.Id)
+                            otherUser = twoPlayerGame.Inviting;
+                        else if (twoPlayerGame.Inviting.Id == sender.LoggedinUser.Id)
+                            otherUser = twoPlayerGame.Invitee;
+
+                        response = PacketBuilder.CreateForwardedSwfRequest(packet);
+                        otherUser.LoggedinClient.SendPacket(response);
+                    }
+                    break;
+                case PacketBuilder.SWFMODULE_CLOSE:
+                    if (TwoPlayer.IsPlayerInGame(sender.LoggedinUser))
+                    {
+                        TwoPlayer twoPlayerGame = TwoPlayer.GetTwoPlayerGameInProgress(sender.LoggedinUser);
+
+                        User otherUser = null;
+                        if (twoPlayerGame.Invitee.Id == sender.LoggedinUser.Id)
+                            otherUser = twoPlayerGame.Inviting;
+                        else if (twoPlayerGame.Inviting.Id == sender.LoggedinUser.Id)
+                            otherUser = twoPlayerGame.Invitee;
+
+                        response = PacketBuilder.Create2PlayerClose();
+                        otherUser.LoggedinClient.SendPacket(response);
+
+                        twoPlayerGame.CloseGame(sender.LoggedinUser);
+
+                        
                     }
                     break;
                 case PacketBuilder.SWFMODULE_ARENA:
@@ -6472,6 +6531,7 @@ namespace HISP.Server
 
                 // Leave multirooms
                 Multiroom.LeaveAllMultirooms(sender.LoggedinUser);
+                TwoPlayer.TwoPlayerRemove(sender.LoggedinUser);
 
                 // Remove Trade Reference
                 sender.LoggedinUser.TradingWith = null;

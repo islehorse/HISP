@@ -1893,6 +1893,7 @@ namespace HISP.Server
             Messages.BallonCutscene = gameData.transport.ballon_cutscene;
 
             gameData = null;
+            return;
         }
 
     }
