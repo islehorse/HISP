@@ -113,7 +113,11 @@ namespace HISP.Server
         public const byte HORSE_CAUGHT = 0x1D;
 
         public const byte SWFMODULE_INVITE = 0x14;
+        public const byte SWFMODULE_ACCEPT = 0x15;
+        public const byte SWFMODULE_CLOSE = 0x16;
 
+        public const byte SWFMODULE_2PLAYER_CLOSED = 0x58;
+        public const byte SWFMODULE_2PLAYER = 0x50;
         public const byte SWFMODULE_ARENA = 0x52;
         public const byte SWFMODULE_BRICKPOET = 0x5A;
         public const byte SWFMODULE_DRAWINGROOM = 0x5B;
@@ -214,6 +218,18 @@ namespace HISP.Server
         public const byte DIRECTION_TELEPORT = 4;
         public const byte DIRECTION_NONE = 10;
 
+        public static byte[] Create2PlayerClose()
+        {
+            MemoryStream ms = new MemoryStream();
+            ms.WriteByte(PACKET_SWFMODULE);
+            ms.WriteByte(SWFMODULE_2PLAYER_CLOSED);
+            ms.WriteByte(PACKET_TERMINATOR);
+
+            ms.Seek(0x00, SeekOrigin.Begin);
+            byte[] response = ms.ToArray();
+            ms.Dispose();
+            return response;
+        }
         public static byte[] CreateDressupRoomPeiceMove(int peiceId, double x, double y, bool active)
         {
             MemoryStream ms = new MemoryStream();

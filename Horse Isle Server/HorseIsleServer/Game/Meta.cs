@@ -16,6 +16,8 @@ namespace HISP.Game
     {
         // Meta
 
+        private static bool overwrite = false;
+
         private static string buildLocationString(int x, int y)
         {
             string areaString = buildAreaString(x, y);
@@ -2651,6 +2653,7 @@ namespace HISP.Game
                     username = twoPlayerGame.Invitee.Username;
                 else
                     username = twoPlayerGame.Inviting.Username;
+                overwrite = true;
 
                 return Messages.Format2PlayerGameInProgress(username);
             }
@@ -2903,7 +2906,13 @@ namespace HISP.Game
                 }
                 if(TileCode == "2PLAYER")
                 {
-                    message += build2PlayerGame(user, TileArg);
+                    string msg = build2PlayerGame(user, TileArg);
+                    if (!overwrite)
+                        message += msg;
+                    else
+                        message = msg;
+
+                    overwrite = false;
                 }
                 if(TileCode == "HORSES")
                 {
