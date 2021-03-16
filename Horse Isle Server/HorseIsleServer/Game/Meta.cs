@@ -870,6 +870,23 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        public static string BuildTopWinners(string gameName)
+        {
+            Highscore.HighscoreTableEntry[] scores = Database.GetTopWinners(gameName, 20);
+            if (scores.Length <= 0)
+                return "No wins recorded.";
+            string message = "";
+
+            message += Messages.FormatWinlooseHeader(gameName);
+
+            for (int i = 0; i < scores.Length; i++)
+            {
+                message += Messages.FormatWinlooseListEntry(i + 1, scores[i].Wins, scores[i].Looses, Database.GetUsername(scores[i].UserId), scores[i].TimesPlayed);
+            }
+            message += Messages.BackToMap;
+            message += Messages.MetaTerminator;
+            return message;
+        }
         public static string BuildTopTimes(string gameName)
         {
             Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameName, 20);

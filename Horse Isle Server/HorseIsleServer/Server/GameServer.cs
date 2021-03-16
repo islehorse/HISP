@@ -4020,9 +4020,10 @@ namespace HISP.Server
                     return;
                 }
             }
-            else if (method == PacketBuilder.SECCODE_SCORE || method == PacketBuilder.SECCODE_TIME)
+            else if (method == PacketBuilder.SECCODE_SCORE || method == PacketBuilder.SECCODE_TIME || method == PacketBuilder.SECCODE_WINLOOSE)
             {
                 bool time = (method == PacketBuilder.SECCODE_TIME);
+                bool winloose = (method == PacketBuilder.SECCODE_WINLOOSE);
 
                 byte[] ExpectedSecCode = sender.LoggedinUser.GenerateSecCode();
                 byte[] GotSecCode = new byte[4];
@@ -4032,12 +4033,39 @@ namespace HISP.Server
                 {
                     if (packet.Length < 6)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a seccode score request with invalid size");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent a seccode score/time/winloose request with invalid size");
                         return;
                     }
 
+                    
                     string packetStr = Encoding.UTF8.GetString(packet);
                     string gameInfoStr = packetStr.Substring(6, packetStr.Length - 6 - 2);
+                    if (winloose)
+                    {
+                        string gameTitle = gameInfoStr.Substring(1);
+                        byte pmethod = packet[6];
+                        if(pmethod == PacketBuilder.WINLOOSE_WIN)
+                        {
+                            sender.LoggedinUser.Highscores.Win(gameTitle);
+                        }
+                        else if(pmethod == PacketBuilder.WINLOOSE_LOOSE)
+                        {
+                            sender.LoggedinUser.Highscores.Loose(gameTitle);
+                        }
+
+                        if (sender.LoggedinUser.Highscores.HighscoreList.Length >= 30)
+                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(12)); // Minigame Player
+
+                        if (sender.LoggedinUser.Highscores.HighscoreList.Length >= 60)
+                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(13)); // Minigame Master
+
+                        if (Database.GetPlayerTotalMinigamesPlayed(sender.LoggedinUser.Id) >= 1000)
+                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(14)); // Minigame Nut
+
+                        if (Database.GetPlayerTotalMinigamesPlayed(sender.LoggedinUser.Id) >= 10000)
+                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(15)); // Minigame Crazy
+                        return;
+                    }
                     if (gameInfoStr.Contains("|"))
                     {
                         string[] gameInfo = gameInfoStr.Split('|');
@@ -4348,7 +4376,18 @@ namespace HISP.Server
                 byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildTopTimes(gameName));
                 sender.SendPacket(metaTag);
             }
-
+            else if (method == PacketBuilder.PROFILE_WINLOOSE_LIST)
+            {
+                sender.LoggedinUser.MetaPriority = true;
+                string packetStr = Encoding.UTF8.GetString(packet);
+                string gameName = packetStr.Substring(2, packetStr.Length - 4);
+                byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildTopWinners(gameName));
+                sender.SendPacket(metaTag);
+            }
+            else
+            {
+                Logger.DebugPrint("Unknown Profile Packet! " + BitConverter.ToString(packet).Replace("-", " "));
+            }
         }
         public static void OnMovementPacket(GameClient sender, byte[] packet)
         {

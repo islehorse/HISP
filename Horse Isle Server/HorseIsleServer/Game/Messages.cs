@@ -846,6 +846,8 @@ namespace HISP.Game
         public static string GameBestTimeHeaderFormat;
         public static string GameHighScoreHeaderFormat;
         public static string GameHighScoreFormat;
+        public static string GameWinLooseHeaderFormat;
+        public static string GameWinLooseFormat;
 
         // Awards
 
@@ -2169,6 +2171,14 @@ namespace HISP.Game
         public static string FormatBestTimeListEntry(int ranking, int score, string username, int totalplays)
         {
             return GameBestTimeFormat.Replace("%RANKING%", ranking.ToString("N0", CultureInfo.InvariantCulture)).Replace("%SCORE%", score.ToString().Insert(score.ToString().Length - 2, ".")).Replace("%USERNAME%", username).Replace("%TOTALPLAYS%", totalplays.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatWinlooseHeader(string gameName)
+        {
+            return GameWinLooseHeaderFormat.Replace("%GAMETITLE%", gameName);
+        }
+        public static string FormatWinlooseListEntry(int ranking, int wins, int loose, string username, int totalplays)
+        {
+            return GameWinLooseHeaderFormat.Replace("%RANKING%", ranking.ToString("N0", CultureInfo.InvariantCulture)).Replace("%WINS%", wins.ToString("N0", CultureInfo.InvariantCulture)).Replace("%LOSES%", loose.ToString("N0", CultureInfo.InvariantCulture)).Replace("%USERNAME%", username).Replace("%TOTALPLAYS%", totalplays.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatHighscoreHeader(string gameName)
         {
