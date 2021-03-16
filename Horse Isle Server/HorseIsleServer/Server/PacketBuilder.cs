@@ -141,9 +141,13 @@ namespace HISP.Server
         public const byte SECCODE_GIVE_ITEM = 0x28;
         public const byte SECCODE_DELETE_ITEM = 0x29;
         public const byte SECCODE_SCORE = 0x3D;
+        public const byte SECCODE_WINLOOSE = 0x3C;
         public const byte SECCODE_TIME = 0x3E;
         public const byte SECCODE_MONEY = 0x1E;
         public const byte SECCODE_AWARD = 0x33;
+
+        public const byte WINLOOSE_WIN = 0x14;
+        public const byte WINLOOSE_LOOSE = 0x15;
 
         public const byte NPC_START_CHAT = 0x14;
         public const byte NPC_CONTINUE_CHAT = 0x15;
@@ -152,6 +156,7 @@ namespace HISP.Server
         public const byte PLAYERINFO_UPDATE_OR_CREATE = 0x15;
         public const byte PLAYERINFO_PLAYER_LIST = 0x14;
 
+        public const byte PROFILE_WINLOOSE_LIST = 0x50;
         public const byte PROFILE_HIGHSCORES_LIST = 0x51;
         public const byte PROFILE_BESTTIMES_LIST = 0x52;
 

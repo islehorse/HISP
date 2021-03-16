@@ -56,7 +56,87 @@ namespace HISP.Player
             return false;
         }
 
-        public bool UpdateHighscore(string gameTitle, int score, bool time)
+    public bool Loose(string gameTitle)
+    {
+        bool isNewScore = true;
+
+        if (!HasHighscore(gameTitle))
+        {
+            Database.AddNewWinner(baseUser.Id, gameTitle, 0, 1);
+
+            HighscoreTableEntry newHighscore = new HighscoreTableEntry();
+            newHighscore.UserId = baseUser.Id;
+            newHighscore.GameName = gameTitle;
+            newHighscore.Wins = 0;
+            newHighscore.Looses = 0;
+            newHighscore.TimesPlayed = 1;
+            newHighscore.Wins = 0;
+            newHighscore.Looses = 1;
+            newHighscore.Type = "WINLOSS";
+            highScoreList.Add(newHighscore);
+
+            return isNewScore;
+        }
+        else
+        {
+            Database.UpdateHighscoreLooseGame(baseUser.Id, gameTitle);
+
+            for (int i = 0; i < highScoreList.Count; i++)
+            {
+
+                if (highScoreList[i].GameName == gameTitle)
+                {
+                    highScoreList[i].TimesPlayed += 1;
+                    highScoreList[i].Looses++;
+                }
+            }
+
+            return isNewScore;
+        }
+
+    }
+    
+public bool Win(string gameTitle)
+    {
+        bool isNewScore = true;
+
+        if (!HasHighscore(gameTitle))
+        {
+            Database.AddNewWinner(baseUser.Id, gameTitle, 1, 0);
+
+            HighscoreTableEntry newHighscore = new HighscoreTableEntry();
+            newHighscore.UserId = baseUser.Id;
+            newHighscore.GameName = gameTitle;
+            newHighscore.Wins = 0;
+            newHighscore.Looses = 0;
+            newHighscore.TimesPlayed = 1;
+            newHighscore.Wins = 1;
+            newHighscore.Looses = 0;
+            newHighscore.Type = "WINLOSS";
+            highScoreList.Add(newHighscore);
+
+            return isNewScore;
+        }
+        else
+        {
+            Database.UpdateHighscoreWinGame(baseUser.Id, gameTitle);
+
+            for (int i = 0; i < highScoreList.Count; i++)
+            {
+
+                if (highScoreList[i].GameName == gameTitle)
+                {
+                    highScoreList[i].TimesPlayed += 1;
+                    highScoreList[i].Wins++;
+                }
+            }
+
+            return isNewScore;
+        }
+
+    }
+    
+    public bool UpdateHighscore(string gameTitle, int score, bool time)
         {
             bool isNewScore = true;
 
