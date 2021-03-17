@@ -4047,10 +4047,14 @@ namespace HISP.Server
                         if(pmethod == PacketBuilder.WINLOOSE_WIN)
                         {
                             sender.LoggedinUser.Highscores.Win(gameTitle);
+                            byte[] winMsg = PacketBuilder.CreateChat(Messages.Format2PlayerRecordWin(gameTitle), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(winMsg);
                         }
                         else if(pmethod == PacketBuilder.WINLOOSE_LOOSE)
                         {
                             sender.LoggedinUser.Highscores.Loose(gameTitle);
+                            byte[] looseMsg = PacketBuilder.CreateChat(Messages.Format2PlayerRecordLose(gameTitle), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(looseMsg);
                         }
 
                         if (sender.LoggedinUser.Highscores.HighscoreList.Length >= 30)

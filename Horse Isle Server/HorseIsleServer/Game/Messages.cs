@@ -51,6 +51,9 @@ namespace HISP.Game
         public static string TwoPlayerGameClosed;
         public static string TwoPlayerGameClosedOther;
 
+        public static string TwoPlayerRecordedWinFormat;
+        public static string TwoPlayerRecordedLossFormat;
+
         // Trading
         public static string TradeWithPlayerFormat;
 
@@ -1054,7 +1057,14 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
-
+        public static string Format2PlayerRecordLose(string gameTitle)
+        {
+            return TwoPlayerRecordedLossFormat.Replace("%GAMETITLE%", gameTitle);
+        }
+        public static string Format2PlayerRecordWin(string gameTitle)
+        {
+            return TwoPlayerRecordedWinFormat.Replace("%GAMETITLE%", gameTitle);
+        }
         public static string Format2PlayerStartingGame(string playerName)
         {
             return TwoPlayerStartingUpGameFormat.Replace("%PLAYERNAME%", playerName);
@@ -2178,7 +2188,7 @@ namespace HISP.Game
         }
         public static string FormatWinlooseListEntry(int ranking, int wins, int loose, string username, int totalplays)
         {
-            return GameWinLooseHeaderFormat.Replace("%RANKING%", ranking.ToString("N0", CultureInfo.InvariantCulture)).Replace("%WINS%", wins.ToString("N0", CultureInfo.InvariantCulture)).Replace("%LOSES%", loose.ToString("N0", CultureInfo.InvariantCulture)).Replace("%USERNAME%", username).Replace("%TOTALPLAYS%", totalplays.ToString("N0", CultureInfo.InvariantCulture));
+            return GameWinLooseFormat.Replace("%RANKING%", ranking.ToString("N0", CultureInfo.InvariantCulture)).Replace("%WINS%", wins.ToString("N0", CultureInfo.InvariantCulture)).Replace("%LOSES%", loose.ToString("N0", CultureInfo.InvariantCulture)).Replace("%USERNAME%", username).Replace("%TOTALPLAYS%", totalplays.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatHighscoreHeader(string gameName)
         {
