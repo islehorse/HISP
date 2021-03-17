@@ -891,6 +891,9 @@ namespace HISP.Server
             Messages.TwoPlayerGameClosed = gameData.messages.meta.two_player.game_closed;
             Messages.TwoPlayerGameClosedOther = gameData.messages.meta.two_player.game_closed_other;
 
+            Messages.TwoPlayerRecordedWinFormat = gameData.messages.meta.two_player.recorded_win;
+            Messages.TwoPlayerRecordedLossFormat = gameData.messages.meta.two_player.recorded_loss;
+
             // Trade
 
             Messages.TradeWithPlayerFormat = gameData.messages.meta.player_interaction.trade.trading_with;
@@ -1793,6 +1796,9 @@ namespace HISP.Server
 
             Messages.GameHighScoreHeaderFormat = gameData.messages.meta.highscores.game_highscore_header;
             Messages.GameHighScoreFormat = gameData.messages.meta.highscores.game_highscore_format;
+
+            Messages.GameWinLooseHeaderFormat = gameData.messages.meta.highscores.game_winloose_header;
+            Messages.GameWinLooseFormat = gameData.messages.meta.highscores.game_winloose_format;
 
             Messages.GameBestTimeHeaderFormat = gameData.messages.meta.highscores.game_besttime_header;
             Messages.GameBestTimeFormat = gameData.messages.meta.highscores.game_besttime_format;
