@@ -34,6 +34,11 @@ namespace HISP.Game
         public static string EventEndRealTimeRiddle;
         public static string EventWonRealTimeRiddleFormat;
 
+        // MultiHorses
+        public static string OtherPlayersHere;
+        public static string MultiHorseSelectOneToJoinWith;
+        public static string MultiHorseFormat;
+
         // 2Player
         public static string TwoPlayerOtherPlayer;
         public static string TwoPlayerPlayerFormat;
@@ -117,6 +122,8 @@ namespace HISP.Game
 
         public static string TradeYouSpentMoneyMessageFormat;
         public static string TradeYouReceivedMoneyMessageFormat;
+
+        public static string TradeRiddenHorse;
 
         public static string TradeYouCantCarryMoreItems;
         public static string TradeOtherCantCarryMoreItems;
@@ -1057,6 +1064,14 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        // MULTIHORSES
+        public static string FormatMultiHorses(int placing, string horseName, string horseBreed, string swf)
+        {
+            return MultiHorseFormat.Replace("%NUMBER%", placing.ToString()).Replace("%HORSENAME%", horseName).Replace("%BREED%", horseBreed).Replace("%SWF%", swf);
+        }
+
+        // 2PLAYER
         public static string Format2PlayerRecordLose(string gameTitle)
         {
             return TwoPlayerRecordedLossFormat.Replace("%GAMETITLE%", gameTitle);

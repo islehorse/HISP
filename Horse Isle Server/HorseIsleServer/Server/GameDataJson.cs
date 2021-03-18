@@ -874,6 +874,11 @@ namespace HISP.Server
             Messages.EventEndRealTimeRiddle = gameData.messages.events.real_time_riddle.event_end;
             Messages.EventWonRealTimeRiddleFormat = gameData.messages.events.real_time_riddle.event_won;
 
+            // MultiHorses
+            Messages.OtherPlayersHere = gameData.messages.meta.multihorses.other_players_here;
+            Messages.MultiHorseSelectOneToJoinWith = gameData.messages.meta.multihorses.select_a_horse;
+            Messages.MultiHorseFormat = gameData.messages.meta.multihorses.horse_format;
+
             // 2Player
             Messages.TwoPlayerOtherPlayer = gameData.messages.meta.two_player.other_player;
             Messages.TwoPlayerPlayerFormat = gameData.messages.meta.two_player.player_name;
@@ -952,6 +957,8 @@ namespace HISP.Server
             Messages.TradeCanceledByOtherPlayerFormat = gameData.messages.meta.player_interaction.trade.other_canceled;
             Messages.TradeCanceledBecuasePlayerMovedMessage = gameData.messages.meta.player_interaction.trade.trade_canceled_moved;
             Messages.TradeCanceledInterupted = gameData.messages.meta.player_interaction.trade.trade_interupted;
+
+            Messages.TradeRiddenHorse = gameData.messages.meta.player_interaction.trade.trade_ridden_horse;
 
             Messages.TradeYouCantHandleMoreHorses = gameData.messages.meta.player_interaction.trade.cant_handle_more_horses;
             Messages.TradeOtherPlayerCantHandleMoreHorsesFormat = gameData.messages.meta.player_interaction.trade.other_player_cant_handle_more_horses;

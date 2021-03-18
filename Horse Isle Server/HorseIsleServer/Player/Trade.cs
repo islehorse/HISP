@@ -155,6 +155,19 @@ namespace HISP.Player
             foreach (HorseInstance inst in HorsesOffered) // Transfer Horses
             {
                 inst.Owner = OtherTrade.Trader.Id;
+
+                // Dismount horse if its traded
+                if (Trader.CurrentlyRidingHorse != null)
+                {
+                    if (Trader.CurrentlyRidingHorse.RandomId == inst.RandomId)
+                    {
+                        byte[] disMounted = PacketBuilder.CreateChat(Messages.TradeRiddenHorse, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        Trader.Facing %= 5;
+                        Trader.CurrentlyRidingHorse = null;
+                        Trader.LoggedinClient.SendPacket(disMounted);
+                    }
+                }
+
                 Trader.HorseInventory.DeleteHorse(inst, false);
                 OtherTrade.Trader.HorseInventory.AddHorse(inst, false);
             }

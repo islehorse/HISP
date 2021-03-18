@@ -15,7 +15,6 @@ namespace HISP.Game
 
             throw new KeyNotFoundException();
         }
-
         public static bool IsMultiRoomAt(int x, int y)
         {
             foreach (Multiroom multiroom in Multirooms)
@@ -38,7 +37,7 @@ namespace HISP.Game
             {
                 if (tile.Code != null)
                 {
-                    if (tile.Code.StartsWith("MULTIROOM") || tile.Code.StartsWith("2PLAYER") || tile.Code.StartsWith("AUCTION"))
+                    if (tile.Code.StartsWith("MULTIROOM") || tile.Code.StartsWith("MULTIHORSES") || tile.Code.StartsWith("2PLAYER") || tile.Code.StartsWith("AUCTION"))
                     {
                         Logger.DebugPrint("Created Multiroom @ " + tile.X.ToString() + "," + tile.Y.ToString());
                         new Multiroom(tile.X, tile.Y);
