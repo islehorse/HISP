@@ -1551,6 +1551,45 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
+        private static string buildMultiHorses(User user, string swf)
+        {
+            string message = Messages.OtherPlayersHere;
+            Multiroom room = Multiroom.GetMultiroom(user.X, user.Y);
+            room.Join(user);
+
+            foreach (User userOnTile in room.JoinedUsers)
+            {
+                if (userOnTile.Id == user.Id)
+                    continue;
+
+                message += Messages.FormatMultiroomParticipent(userOnTile.Username);
+            }
+
+            message += Messages.R1;
+
+            message += Messages.MultiHorseSelectOneToJoinWith;
+            int placing = 1;
+            foreach (HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).ToArray())
+            {
+                if (horse.Leaser > 0)
+                    continue;
+
+                HorseInfo.StatCalculator speedStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.SPEED, user);
+                HorseInfo.StatCalculator strengthStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.STRENGTH, user);
+                HorseInfo.StatCalculator conformationStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.CONFORMATION, user);
+                HorseInfo.StatCalculator agilityStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.AGILITY, user);
+                HorseInfo.StatCalculator enduranceStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.ENDURANCE, user);
+                HorseInfo.StatCalculator inteligenceStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.INTELIGENCE, user);
+                HorseInfo.StatCalculator personalityStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.PERSONALITY, user);
+
+                message += Messages.FormatMultiHorses(placing, horse.Name, horse.Breed.Name, swf + ".swf?ID=" + horse.RandomId + "&PL=" + user.Username + "&SP=" + speedStat.Total + "&ST=" + strengthStat.Total + "&CO=" + conformationStat.Total + "&AG=" + agilityStat.Total + "&EN=" + enduranceStat.Total + "&IN=" + inteligenceStat.Total + "&PE=" + personalityStat.Total + "&");
+            }
+
+            message += Messages.ExitThisPlace;
+            message += Messages.MetaTerminator;
+            return message;
+
+        }
         private static string buildHorseGame(User user, string swf)
         {
             string message = Messages.HorseGamesSelectHorse;
@@ -1560,7 +1599,17 @@ namespace HISP.Game
                 if (horse.Leaser > 0)
                     continue;
 
-                message += Messages.FormatHorseGamesEntry(placing, horse.Name, swf + ".swf?ID=" + horse.RandomId + "&SP=" + horse.AdvancedStats.Speed + "&ST=" + horse.AdvancedStats.Strength + "&CO=" + horse.AdvancedStats.Conformation + "&AG=" + horse.AdvancedStats.Agility + "&EN=" + horse.AdvancedStats.Endurance + "&IN=" + horse.AdvancedStats.Inteligence + "&PE=" + horse.AdvancedStats.Personality + "&");
+
+                HorseInfo.StatCalculator speedStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.SPEED, user);
+                HorseInfo.StatCalculator strengthStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.STRENGTH, user);
+                HorseInfo.StatCalculator conformationStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.CONFORMATION, user);
+                HorseInfo.StatCalculator agilityStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.AGILITY, user);
+                HorseInfo.StatCalculator enduranceStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.ENDURANCE, user);
+                HorseInfo.StatCalculator inteligenceStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.INTELIGENCE, user);
+                HorseInfo.StatCalculator personalityStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.PERSONALITY, user);
+
+
+                message += Messages.FormatHorseGamesEntry(placing, horse.Name, swf + ".swf?ID=" + horse.RandomId + "&SP=" + speedStat.Total + "&ST=" + strengthStat.Total + "&CO=" + conformationStat.Total + "&AG=" + agilityStat.Total + "&EN=" + enduranceStat.Total + "&IN=" + inteligenceStat.Total + "&PE=" + personalityStat.Total + "&");
             }
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
@@ -2916,6 +2965,10 @@ namespace HISP.Game
                 if (TileCode == "LIBRARY")
                 {
                     message += buildLibary();
+                }
+                if(TileCode == "MULTIHORSES")
+                {
+                    message += buildMultiHorses(user, TileArg);
                 }
                 if (TileCode == "POND")
                 {
