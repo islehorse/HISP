@@ -2325,10 +2325,16 @@ namespace HISP.Game
                     message += Messages.R1;
                 }
             }
+            else
+            {
+                if (horse.AutoSell > 0)
+                    message += Messages.FormatAutoSellOthers(horse.AutoSell);
+            }
 
 
             if (horse.Leaser == 0)
             {
+                
                 if (isMyHorse)
                     message += Messages.FormatHorseCategory(horse.Category, Messages.HorseMarkAsCategory);
                 else

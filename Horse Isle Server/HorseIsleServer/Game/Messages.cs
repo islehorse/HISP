@@ -10,6 +10,9 @@ namespace HISP.Game
     {
         public static int RequiredChatViolations;
 
+        // Message Queue
+        public static string MessageQueueHeader;
+
         // Mod isle
         public static string ModIsleMessage;
 
@@ -677,6 +680,7 @@ namespace HISP.Game
         public static string HorseProfileButtonFormat;
 
         public static string HorseNoAutoSell;
+        public static string HorseAutoSellOthersFormat;
         public static string HorseAutoSellFormat;
         public static string HorseAutoSellPriceFormat;
         public static string HorseCantAutoSellTacked;
@@ -1993,6 +1997,10 @@ namespace HISP.Game
         public static string FormatAutoSellPrice(int money)
         {
             return HorseAutoSellPriceFormat.Replace("%MONEY%", money.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatAutoSellOthers(int price)
+        {
+            return HorseAutoSellOthersFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
         public static string FormatAutoSell(string autoSellStr)
         {
