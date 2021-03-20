@@ -867,6 +867,8 @@ namespace HISP.Server
             Messages.SocialTypeFormat = gameData.messages.meta.player_interaction.socials.socials_menu_type;
             Messages.SocialPlayerNoLongerNearby = gameData.messages.meta.player_interaction.socials.no_longer_nearby;
 
+            // Message Queue 
+            Messages.MessageQueueHeader = gameData.messages.message_queue;
 
             // Events : Real Time Riddle
 
@@ -1512,6 +1514,7 @@ namespace HISP.Server
 
             Messages.HorseNoAutoSell = gameData.messages.meta.horse.horse_inventory.no_auto_sell;
             Messages.HorseAutoSellPriceFormat = gameData.messages.meta.horse.horse_inventory.auto_sell_format;
+            Messages.HorseAutoSellOthersFormat = gameData.messages.meta.horse.horse_inventory.auto_sell_others;
             Messages.HorseAutoSellFormat = gameData.messages.meta.horse.horse_inventory.auto_sell;
             Messages.HorseCantAutoSellTacked = gameData.messages.meta.horse.horse_inventory.cannot_auto_sell_tacked;
 

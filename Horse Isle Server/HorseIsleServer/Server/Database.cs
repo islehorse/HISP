@@ -26,6 +26,7 @@ namespace HISP.Server
                 string ExtTable = "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(1028),IpAddress TEXT(1028),PrivateNotes Text(1028), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT)";
                 string MailTable = "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(128), Message Text(1028), TimeSent INT, BeenRead TEXT(3))";
                 string BuddyTable = "CREATE TABLE IF NOT EXISTS BuddyList(Id INT, IdFriend INT)";
+                string MessageQueue = "CREATE TABLE IF NOT EXISTS MessageQueue(Id INT, Message TEXT(1028))";
                 string WorldTable = "CREATE TABLE World(Time INT, Day INT, Year INT, StartTime INT)";
                 string WeatherTable = "CREATE TABLE IF NOT EXISTS Weather(Area TEXT(1028), Weather TEXT(64))";
                 string InventoryTable = "CREATE TABLE IF NOT EXISTS Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)";
@@ -56,6 +57,17 @@ namespace HISP.Server
                 string SolvedRealTimeRiddle = "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
 
+                try
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = MessageQueue;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
 
                 try
                 {
@@ -541,6 +553,53 @@ namespace HISP.Server
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
             }
+        }
+
+        public static void AddMessageToQueue(int userId, string message)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO MessageQueue VALUES(@id,@message)";
+                sqlCommand.Parameters.AddWithValue("@id", userId);
+                sqlCommand.Parameters.AddWithValue("@message", message);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static void ClearMessageQueue(int userId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM MessageQueue WHERE Id=@id";
+                sqlCommand.Parameters.AddWithValue("@id", userId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+        public static string[] GetMessageQueue(int userId)
+        {
+            List<string> msgQueue = new List<string>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT message FROM MessageQueue WHERE Id=@id";
+                sqlCommand.Parameters.AddWithValue("@id", userId);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while(reader.Read())
+                {
+                    msgQueue.Add(reader.GetString(0));
+                }
+                sqlCommand.Dispose();
+            }
+            return msgQueue.ToArray();
         }
 
         public static void SetDressupRoomPeiceX(int roomId, int peiceId, int newX)

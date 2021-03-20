@@ -3286,6 +3286,15 @@ namespace HISP.Server
             byte[] MotdData = PacketBuilder.CreateMotd();
             sender.SendPacket(MotdData);
 
+            // Send Queued Messages
+            string[] queuedMessages = Database.GetMessageQueue(sender.LoggedinUser.Id);
+            foreach(string queuedMessage in queuedMessages)
+            {
+                byte[] msg = PacketBuilder.CreateChat(Messages.MessageQueueHeader+queuedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(msg);
+            }
+            Database.ClearMessageQueue(sender.LoggedinUser.Id);
+
         }
 
         public static void OnSwfModuleCommunication(GameClient sender, byte[] packet)
