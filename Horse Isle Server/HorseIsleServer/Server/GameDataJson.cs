@@ -834,7 +834,14 @@ namespace HISP.Server
             Map.NewUserStartX = gameData.messages.new_user.starting_x;
             Map.NewUserStartY = gameData.messages.new_user.starting_y;
 
-            
+            // Auto Sell
+            Messages.AutoSellNotStandingInSamePlace = gameData.messages.meta.auto_sell.not_standing_sameplace;
+            Messages.AutoSellSuccessFormat = gameData.messages.meta.auto_sell.success;
+            Messages.AutoSellInsufficentFunds = gameData.messages.meta.auto_sell.insufficent_money;
+            Messages.AutoSellTooManyHorses = gameData.messages.meta.auto_sell.toomany_horses;
+            Messages.AutoSellYouSoldHorseFormat = gameData.messages.meta.auto_sell.you_sold;
+            Messages.AutoSellYouSoldHorseOfflineFormat = gameData.messages.meta.auto_sell.sold_offline;
+
             // Warp Command
 
             Messages.SuccessfullyWarpedToPlayer = gameData.messages.commands.warp.player;
