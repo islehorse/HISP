@@ -1,4 +1,4 @@
-# HISP - Horse Isle Server Protocal
+# HISP - Horse Isle Server Program
 
 [![Linux](https://github.com/KuromeSan/HISP/workflows/linux/badge.svg)](https://github.com/KuromeSan/HISP/actions?query=workflow%3Alinux)
 [![Windows](https://github.com/KuromeSan/HISP/workflows/windows/badge.svg)](https://github.com/KuromeSan/HISP/actions?query=workflow%3Awindows)
