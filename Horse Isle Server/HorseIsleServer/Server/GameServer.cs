@@ -2680,6 +2680,85 @@ namespace HISP.Server
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAwardsLibary());
                     sender.SendPacket(metaPacket);
                     break;
+                case "26": // Buy Horse (Auto Sell)
+                    if(sender.LoggedinUser.LastViewedHorseOther != null)
+                    {
+                        bool isOnRanch = false;
+                        bool isOnPlayer = false;
+                        HorseInstance horseToSell = sender.LoggedinUser.LastViewedHorseOther;
+                        if (Ranch.IsRanchOwned(horseToSell.Owner))
+                        {
+                            Ranch ranch = Ranch.GetRanchOwnedBy(horseToSell.Owner);
+                            if(sender.LoggedinUser.X == ranch.X && sender.LoggedinUser.Y == ranch.Y)
+                            {
+                                isOnRanch = true;
+                            }
+
+                        }
+                        if(GameServer.IsUserOnline(horseToSell.Owner))
+                        {
+                            User user = GameServer.GetUserById(horseToSell.Owner);
+                            if (user.X == sender.LoggedinUser.X && user.Y == sender.LoggedinUser.Y)
+                            {
+                                isOnPlayer = true;
+                            }
+                        }
+
+                        if (isOnRanch || isOnPlayer)
+                        {
+                            
+                            if (horseToSell.AutoSell == 0)
+                                break;
+                            if(sender.LoggedinUser.Money >= horseToSell.AutoSell)
+                            {
+                                if (sender.LoggedinUser.HorseInventory.HorseList.Length + 1 > sender.LoggedinUser.MaxHorses)
+                                {
+                                    byte[] tooManyHorses = PacketBuilder.CreateChat(Messages.AutoSellTooManyHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(tooManyHorses);
+                                    break;
+                                }
+
+                                if(IsUserOnline(horseToSell.Owner))
+                                {
+                                    User seller = GetUserById(horseToSell.Owner);
+                                    seller.HorseInventory.DeleteHorse(horseToSell, false);
+
+                                    byte[] horseBrought = PacketBuilder.CreateChat(Messages.FormatAutoSellSold(horseToSell.Name, horseToSell.AutoSell, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    seller.LoggedinClient.SendPacket(horseBrought);
+                                }
+                                else
+                                {
+                                    Database.AddMessageToQueue(horseToSell.Owner, Messages.FormatAutoSellSoldOffline(horseToSell.Name, horseToSell.AutoSell, sender.LoggedinUser.Username));
+                                }
+
+                                horseToSell.Owner = sender.LoggedinUser.Id;
+                                horseToSell.AutoSell = 0;
+                                sender.LoggedinUser.HorseInventory.AddHorse(horseToSell, false);
+
+                                byte[] success = PacketBuilder.CreateChat(Messages.FormatAutoSellSuccess(horseToSell.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(success);
+
+                                UpdateArea(sender);
+                                break;
+                            }
+                            else
+                            {
+                                byte[] noMoney = PacketBuilder.CreateChat(Messages.AutoSellInsufficentFunds, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(noMoney);
+                                break;
+                            }
+
+                        }
+                        else
+                        {
+                            byte[] notInRightPlace = PacketBuilder.CreateChat(Messages.AutoSellNotStandingInSamePlace, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(notInRightPlace);
+                            break;
+                        }
+
+                        
+                    }
+                    break;
                 case "24": // Award List
                     sender.LoggedinUser.MetaPriority = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAwardList(sender.LoggedinUser));
@@ -6882,9 +6961,11 @@ namespace HISP.Server
         {
             int TileID = Map.GetTileId(forClient.LoggedinUser.X, forClient.LoggedinUser.Y, false);
             string type = Map.TerrainTiles[TileID - 1].Type;
-    
-            if(horseInst.Owner == forClient.LoggedinUser.Id)
+
+            if (horseInst.Owner == forClient.LoggedinUser.Id)
                 forClient.LoggedinUser.LastViewedHorse = horseInst;
+            else
+                forClient.LoggedinUser.LastViewedHorseOther = horseInst;
 
             forClient.LoggedinUser.MetaPriority = true;
             byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInformation(horseInst, forClient.LoggedinUser));

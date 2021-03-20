@@ -22,6 +22,14 @@ namespace HISP.Game
         public static string AddBuddyYourNowBuddiesFormat;
         public static string AddBuddyDeleteBuddyFormat;
 
+        // Auto Sell
+        public static string AutoSellNotStandingInSamePlace;
+        public static string AutoSellSuccessFormat;
+        public static string AutoSellInsufficentFunds;
+        public static string AutoSellTooManyHorses;
+        public static string AutoSellYouSoldHorseFormat;
+        public static string AutoSellYouSoldHorseOfflineFormat;
+
         // Tag
         public static string TagYourItFormat;
         public static string TagOtherBuddiesOnlineFormat;
@@ -1068,6 +1076,23 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        // AUTO SELL
+
+        public static string FormatAutoSellSoldOffline(string horseName, int price, string toUsername)
+        {
+            return AutoSellYouSoldHorseOfflineFormat.Replace("%HORSE%", horseName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%USERNAME%", toUsername);
+        }
+        
+        public static string FormatAutoSellSold(string horseName, int price, string toUsername)
+        {
+            return AutoSellYouSoldHorseFormat.Replace("%HORSE%", horseName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%USERNAME%", toUsername);
+        }
+
+        public static string FormatAutoSellSuccess(string horseName)
+        {
+            return AutoSellSuccessFormat.Replace("%HORSENAME%", horseName);
+        }
 
         // MULTIHORSES
         public static string FormatMultiHorses(int placing, string horseName, string horseBreed, string swf)
