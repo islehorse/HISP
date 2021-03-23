@@ -842,6 +842,21 @@ namespace HISP.Server
             Messages.AutoSellYouSoldHorseFormat = gameData.messages.meta.auto_sell.you_sold;
             Messages.AutoSellYouSoldHorseOfflineFormat = gameData.messages.meta.auto_sell.sold_offline;
 
+            // Mute Command
+            Messages.PlayerIgnoringYourPrivateMessagesFormat = gameData.messages.meta.mute_command.player_ignoring_your_pm;
+            Messages.PlayerIgnoringYourBuddyRequests = gameData.messages.meta.mute_command.player_ignoring_your_br;
+            Messages.PlayerIgnoringYourSocials = gameData.messages.meta.mute_command.player_ignoring_your_socials;
+
+            Messages.PlayerIgnoringAllPrivateMessagesFormat = gameData.messages.meta.mute_command.player_ignoring_all_pm;
+            Messages.PlayerIgnoringAllBuddyRequests = gameData.messages.meta.mute_command.player_ignoring_all_br;
+            Messages.PlayerIgnoringAllSocials = gameData.messages.meta.mute_command.player_ignoring_all_socials;
+
+            Messages.CantSendInMutedChannel = gameData.messages.meta.mute_command.cant_send_in_muted_channel;
+            Messages.CantSendBuddyRequestWhileMuted = gameData.messages.meta.mute_command.cant_send_br_muted;
+            Messages.CantSendPrivateMessageWhileMuted = gameData.messages.meta.mute_command.cant_send_pm_muted;
+
+            Messages.CantSendPrivateMessagePlayerMutedFormat = gameData.messages.meta.mute_command.cant_send_pm_player_muted;
+
             // Warp Command
 
             Messages.SuccessfullyWarpedToPlayer = gameData.messages.commands.warp.player;

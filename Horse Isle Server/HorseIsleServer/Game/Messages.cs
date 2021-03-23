@@ -22,6 +22,21 @@ namespace HISP.Game
         public static string AddBuddyYourNowBuddiesFormat;
         public static string AddBuddyDeleteBuddyFormat;
 
+        // Mute Command
+        public static string PlayerIgnoringYourPrivateMessagesFormat;
+        public static string PlayerIgnoringYourBuddyRequests;
+        public static string PlayerIgnoringYourSocials;
+
+        public static string PlayerIgnoringAllPrivateMessagesFormat;
+        public static string PlayerIgnoringAllBuddyRequests;
+        public static string PlayerIgnoringAllSocials;
+
+        public static string CantSendInMutedChannel;
+        public static string CantSendPrivateMessageWhileMuted;
+        public static string CantSendBuddyRequestWhileMuted;
+
+        public static string CantSendPrivateMessagePlayerMutedFormat;
+
         // Auto Sell
         public static string AutoSellNotStandingInSamePlace;
         public static string AutoSellSuccessFormat;
@@ -1076,6 +1091,21 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        // Mute Command
+
+        public static string FormatCantSendYourIgnoringPlayer(string username)
+        {
+            return CantSendPrivateMessagePlayerMutedFormat.Replace("%USERNAME%", username);
+        }
+        public static string FormatPlayerIgnoringAllPms(string username)
+        {
+            return PlayerIgnoringAllPrivateMessagesFormat.Replace("%USERNAME%", username);
+        }
+        public static string FormatPlayerIgnoringYourPms(string username)
+        {
+            return PlayerIgnoringYourPrivateMessagesFormat.Replace("%USERNAME%", username);
+        }
 
         // AUTO SELL
 

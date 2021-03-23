@@ -55,7 +55,20 @@ namespace HISP.Server
                 string RiddlesComplete = "CREATE TABLE IF NOT EXISTS RiddlesComplete(playerId INT, riddleId INT, solved TEXT(1028))";
                 string AuctionTable = "CREATE TABLE IF NOT EXISTS Auctions(roomId INT, randomId INT, horseRandomId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT, Done TEXT(3))";
                 string SolvedRealTimeRiddle = "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)";
+                string MutedPlayers = "CREATE TABLE IF NOT EXISTS MutedPlayers(playerId INT, mutePlayerId INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+
+                try
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = MutedPlayers;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
 
                 try
                 {
@@ -522,6 +535,53 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
+        public static int[] GetMutedPlayers(int playerId)
+        {
+            List<int> MutedPlayerIds = new List<int>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT mutePlayerId FROM MutedPlayers WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                    MutedPlayerIds.Add(reader.GetInt32(0));
+                sqlCommand.Dispose();
+            }
+            return MutedPlayerIds.ToArray();
+        }
+        public static void AddMutedPlayer(int playerId, int playerToMute)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO MutedPlayers VALUES(@playerId, @mutedPlayerId)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@mutedPlayerId", playerToMute);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void DeleteMutedPlayer(int playerId, int playerToMute)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM MutedPlayers WHERE playerId=@playerId AND mutePlayerId=@mutedPlayerId)";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Parameters.AddWithValue("@mutedPlayerId", playerToMute);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
         public static bool IsRanchOwned(int ranchId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

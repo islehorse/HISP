@@ -396,7 +396,17 @@ namespace HISP.Game.Chat
             else if (muteType == "ALL")
             {
                 user.MuteAll = true;
-            } else
+                user.MuteGlobal = true;
+                user.MuteIsland = true;
+                user.MuteNear = true;
+                user.MuteHere = true;
+                user.MuteBuddy = true;
+                user.MuteSocials = true;
+                user.MutePrivateMessage = true;
+                user.MuteBuddyRequests = true;
+                user.MuteLogins = true;
+            } 
+            else
             {
                 formattedmessage += Messages.MuteHelp;
                 goto leave;
