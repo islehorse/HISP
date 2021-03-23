@@ -518,8 +518,22 @@ namespace HISP.Server
                     int socialId = Convert.ToInt32(packet[2] - (byte)0x21);
                     SocialType.Social social = SocialType.GetSocial(socialId);
 
-                    if(sender.LoggedinUser.SocializingWith != null)
+                    if (sender.LoggedinUser.SocializingWith != null)
                     {
+
+                        if (!sender.LoggedinUser.SocializingWith.MuteAll && !sender.LoggedinUser.SocializingWith.MuteSocials)
+                        {
+                            byte[] cantSocialize = PacketBuilder.CreateChat(Messages.PlayerIgnoringAllSocials, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantSocialize);
+                            break;
+                        }
+                        else if (sender.LoggedinUser.SocializingWith.MutePlayer.IsUserMuted(sender.LoggedinUser))
+                        {
+                            byte[] cantSocialize = PacketBuilder.CreateChat(Messages.PlayerIgnoringYourSocials, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(cantSocialize);
+                            break;
+                        }
+                    
                         if(sender.LoggedinUser.SocializingWith.X != sender.LoggedinUser.X && sender.LoggedinUser.SocializingWith.Y != sender.LoggedinUser.Y)
                         {
                             byte[] playerNotNearby = PacketBuilder.CreateChat(Messages.SocialPlayerNoLongerNearby, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -553,11 +567,8 @@ namespace HISP.Server
                         {
                             if (social.BaseSocialType.Type != "GROUP")
                             {
-                                if (!sender.LoggedinUser.SocializingWith.MuteAll && !sender.LoggedinUser.SocializingWith.MuteSocials)
-                                {
-                                    byte[] msgTarget = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForTarget, sender.LoggedinUser.SocializingWith.Username, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.LoggedinUser.SocializingWith.LoggedinClient.SendPacket(msgTarget);
-                                }
+                                byte[] msgTarget = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForTarget, sender.LoggedinUser.SocializingWith.Username, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.LoggedinUser.SocializingWith.LoggedinClient.SendPacket(msgTarget);
                             }
                         }
                     }
@@ -2721,7 +2732,7 @@ namespace HISP.Server
                                 if(IsUserOnline(horseToSell.Owner))
                                 {
                                     User seller = GetUserById(horseToSell.Owner);
-                                    seller.HorseInventory.DeleteHorse(horseToSell, false);
+                                    sender.LoggedinUser.HorseInventory.DeleteHorse(horseToSell, false);
 
                                     byte[] horseBrought = PacketBuilder.CreateChat(Messages.FormatAutoSellSold(horseToSell.Name, horseToSell.AutoSell, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     seller.LoggedinClient.SendPacket(horseBrought);
@@ -5320,6 +5331,22 @@ namespace HISP.Server
             if (message == "")
                 return;
 
+            // Check if player is muting channel
+
+            if( (sender.LoggedinUser.MuteGlobal && channel == Chat.ChatChannel.All) || (sender.LoggedinUser.MuteAds && channel == Chat.ChatChannel.Ads) || (sender.LoggedinUser.MuteHere && channel == Chat.ChatChannel.Here) && (sender.LoggedinUser.MuteBuddy && channel == Chat.ChatChannel.Buddies) && (sender.LoggedinUser.MuteNear && channel == Chat.ChatChannel.Near) && (sender.LoggedinUser.MuteIsland && channel == Chat.ChatChannel.Isle))
+            {
+                byte[] cantSendMessage = PacketBuilder.CreateChat(Messages.CantSendInMutedChannel, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(cantSendMessage);
+                return;
+            }
+
+            if(sender.LoggedinUser.MutePrivateMessage && channel == Chat.ChatChannel.Dm)
+            {
+                byte[] cantSendDmMessage = PacketBuilder.CreateChat(Messages.CantSendPrivateMessageWhileMuted, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(cantSendDmMessage);
+                return;
+            }
+
             Object violationReason = Chat.FilterMessage(message);
             if (violationReason != null)
             {
@@ -5345,6 +5372,36 @@ namespace HISP.Server
 
             GameClient[] recipiants = Chat.GetRecipiants(sender.LoggedinUser, channel, nameTo);
 
+            // Muted user checks
+            if(channel == Chat.ChatChannel.Dm) 
+            {
+                try
+                {
+                    User userTo = GetUserByName(nameTo);
+                    if (sender.LoggedinUser.MutePlayer.IsUserMuted(userTo))
+                    {
+                        byte[] dmWasBlocked = PacketBuilder.CreateChat(Messages.FormatCantSendYourIgnoringPlayer(userTo.Username), PacketBuilder.CHAT_DM_RIGHT);
+                        sender.SendPacket(dmWasBlocked);
+                        return;
+                    }
+                    else if (userTo.MutePrivateMessage)
+                    {
+                        byte[] dmWasBlocked = PacketBuilder.CreateChat(Messages.FormatPlayerIgnoringAllPms(userTo.Username), PacketBuilder.CHAT_DM_RIGHT);
+                        sender.SendPacket(dmWasBlocked);
+                        return;
+                    }
+                    else if (userTo.MutePlayer.IsUserMuted(sender.LoggedinUser))
+                    {
+                        byte[] dmWasBlocked = PacketBuilder.CreateChat(Messages.FormatPlayerIgnoringYourPms(userTo.Username), PacketBuilder.CHAT_DM_RIGHT);
+                        sender.SendPacket(dmWasBlocked);
+                        return;
+                    }
+                }
+                catch (KeyNotFoundException)
+                {
+                    return;
+                }
+            }    
             // Finally send chat message.
             string formattedMessage = Chat.FormatChatForOthers(sender.LoggedinUser, channel, message);
             string formattedMessageSender = Chat.FormatChatForSender(sender.LoggedinUser, channel, message, nameTo);

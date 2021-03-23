@@ -57,6 +57,25 @@ namespace HISP.Player
         }
         public void AddFriend(User userToFriend)
         {
+            if(baseUser.MuteBuddy)
+            {
+                byte[] cantFriend = PacketBuilder.CreateChat(Messages.CantSendBuddyRequestWhileMuted, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                baseUser.LoggedinClient.SendPacket(cantFriend);
+                return;
+            }
+            else if(userToFriend.MuteBuddyRequests)
+            {
+                byte[] cantFriend = PacketBuilder.CreateChat(Messages.PlayerIgnoringAllBuddyRequests, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                baseUser.LoggedinClient.SendPacket(cantFriend);
+                return;
+            }
+            else if(userToFriend.MutePlayer.IsUserMuted(userToFriend))
+            {
+                byte[] cantFriend = PacketBuilder.CreateChat(Messages.PlayerIgnoringYourBuddyRequests, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                baseUser.LoggedinClient.SendPacket(cantFriend);
+                return;
+            }
+
             if (userToFriend.PendingBuddyRequestTo == baseUser)
             {
                 Database.AddBuddy(baseUser.Id, userToFriend.Id);

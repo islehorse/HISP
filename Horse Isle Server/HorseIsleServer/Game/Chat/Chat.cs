@@ -92,8 +92,6 @@ namespace HISP.Game.Chat
                     return Command.Mute(message, new string[] { "BUDDY" }, user);
                 else if (message.StartsWith("!MUTEPM"))
                     return Command.Mute(message, new string[] { "PM" }, user);
-                else if (message.StartsWith("!MUTEPM"))
-                    return Command.Mute(message, new string[] { "PM" }, user);
                 else if (message.StartsWith("!MUTEBR"))
                     return Command.Mute(message, new string[] { "BR" }, user);
                 else if (message.StartsWith("!MUTESOCIALS"))
@@ -200,7 +198,8 @@ namespace HISP.Game.Chat
                     if (client.LoggedIn)
                         if (!client.LoggedinUser.MuteGlobal && !client.LoggedinUser.MuteAll)
                             if (client.LoggedinUser.Id != user.Id)
-                                recipiants.Add(client);
+                                if(!client.LoggedinUser.MutePlayer.IsUserMuted(user))
+                                    recipiants.Add(client);
                 }
                 return recipiants.ToArray();
             }
@@ -213,7 +212,8 @@ namespace HISP.Game.Chat
                     if (client.LoggedIn)
                         if (!client.LoggedinUser.MuteAds && !client.LoggedinUser.MuteAll)
                             if (client.LoggedinUser.Id != user.Id)
-                                recipiants.Add(client);
+                                if (!client.LoggedinUser.MutePlayer.IsUserMuted(user))
+                                    recipiants.Add(client);
                 }
                 return recipiants.ToArray();
             }
@@ -226,8 +226,9 @@ namespace HISP.Game.Chat
                     if (client.LoggedIn)
                         if (!client.LoggedinUser.MuteBuddy && !client.LoggedinUser.MuteAll)
                             if (client.LoggedinUser.Id != user.Id)
-                                if (client.LoggedinUser.Friends.List.Contains(user.Id)) 
-                                    recipiants.Add(client);
+                                if (client.LoggedinUser.Friends.List.Contains(user.Id))
+                                    if (!client.LoggedinUser.MutePlayer.IsUserMuted(user))
+                                        recipiants.Add(client);
                 }
                 return recipiants.ToArray();
             }
@@ -241,8 +242,9 @@ namespace HISP.Game.Chat
                     foreach (User userInIsle in usersInSile)
                     {
                         if (user.Id != userInIsle.Id)
-                            if(!user.MuteAll)
-                                recipiants.Add(userInIsle.LoggedinClient);
+                            if(!userInIsle.MuteAll && !userInIsle.MuteIsland)
+                                if(!userInIsle.MutePlayer.IsUserMuted(user))
+                                    recipiants.Add(userInIsle.LoggedinClient);
                     }
                     return recipiants.ToArray();
                 }
@@ -260,8 +262,9 @@ namespace HISP.Game.Chat
                 foreach (User userHere in usersHere)
                 {
                     if (user.Id != userHere.Id)
-                        if (!user.MuteAll)
-                            recipiants.Add(userHere.LoggedinClient);
+                        if (!userHere.MuteAll && !userHere.MuteHere)
+                            if (!userHere.MutePlayer.IsUserMuted(user))
+                                recipiants.Add(userHere.LoggedinClient);
                 }
                 return recipiants.ToArray();
             }
@@ -273,8 +276,9 @@ namespace HISP.Game.Chat
                 foreach (User nearbyUser in nearbyUsers)
                 {
                     if (user.Id != nearbyUser.Id)
-                        if (!user.MuteAll)
-                            recipiants.Add(nearbyUser.LoggedinClient);
+                        if (!nearbyUser.MuteAll && !nearbyUser.MuteNear)
+                            if (!nearbyUser.MutePlayer.IsUserMuted(user))
+                                recipiants.Add(nearbyUser.LoggedinClient);
                 }
                 return recipiants.ToArray();
             }

@@ -95,6 +95,7 @@ namespace HISP.Player
         public Ranch OwnedRanch = null;
         public PlayerQuests Quests;
         public Highscore Highscores;
+        public MutedPlayers MutePlayer;
         public Riddler LastRiddle;
         public Award Awards;
         public User SocializingWith;
@@ -548,6 +549,7 @@ namespace HISP.Player
             MailBox = new Mailbox(this);
             Highscores = new Highscore(this);
             Awards = new Award(this);
+            MutePlayer = new MutedPlayers(this);
             TrackedItems = new Tracking(this);
             HorseInventory = new HorseInventory(this);
 
