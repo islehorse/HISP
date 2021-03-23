@@ -55,19 +55,19 @@ namespace HISP.Game.Chat
             {
                 if (message[0] == '%')
                 {
-                    if (message.StartsWith("%GIVE"))
+                    if (message.ToUpper().StartsWith("%GIVE"))
                         return Command.Give(message, args, user);
-                    if (message.StartsWith("%GOTO"))
+                    if (message.ToUpper().StartsWith("%GOTO"))
                         return Command.Goto(message, args, user);
-                    if (message.StartsWith("%KICK"))
+                    if (message.ToUpper().StartsWith("%KICK"))
                         return Command.Kick(message, args, user);
-                    if (message.StartsWith("%NOCLIP"))
+                    if (message.ToUpper().StartsWith("%NOCLIP"))
                         return Command.NoClip(message, args, user);
-                    if (message.StartsWith("%BAN"))
+                    if (message.ToUpper().StartsWith("%BAN"))
                         return Command.Ban(message, args, user);
-                    if (message.StartsWith("%UNBAN"))
+                    if (message.ToUpper().StartsWith("%UNBAN"))
                         return Command.UnBan(message, args, user);
-                    if (message.StartsWith("%ESCAPE"))
+                    if (message.ToUpper().StartsWith("%ESCAPE"))
                         return Command.Escape(message, args, user);
                     return false;
                 }
@@ -75,33 +75,90 @@ namespace HISP.Game.Chat
             }
             if (message[0] == '!')
             {
+                
                 // Alias for !MUTE
-                if (message.StartsWith("!MUTEALL"))
+                if (message.ToUpper().StartsWith("!MUTEALL"))
                     return Command.Mute(message, new string[] { "ALL" }, user);
-                else if (message.StartsWith("!MUTEADS"))
+                else if (message.ToUpper().StartsWith("!MUTEADS"))
                     return Command.Mute(message, new string[] { "ADS" }, user);
-                else if (message.StartsWith("!MUTEGLOBAL"))
+                else if (message.ToUpper().StartsWith("!MUTEGLOBAL"))
                     return Command.Mute(message, new string[] { "GLOBAL" }, user);
-                else if (message.StartsWith("!MUTEISLAND"))
+                else if (message.ToUpper().StartsWith("!MUTEISLAND"))
                     return Command.Mute(message, new string[] { "ISLAND" }, user);
-                else if (message.StartsWith("!MUTENEAR"))
+                else if (message.ToUpper().StartsWith("!MUTENEAR"))
                     return Command.Mute(message, new string[] { "NEAR" }, user);
-                else if (message.StartsWith("!MUTEHERE"))
+                else if (message.ToUpper().StartsWith("!MUTEHERE"))
                     return Command.Mute(message, new string[] { "HERE" }, user);
-                else if (message.StartsWith("!MUTEBUDDY"))
+                else if (message.ToUpper().StartsWith("!MUTEBUDDY"))
                     return Command.Mute(message, new string[] { "BUDDY" }, user);
-                else if (message.StartsWith("!MUTEPM"))
+                else if (message.ToUpper().StartsWith("!MUTEPM"))
                     return Command.Mute(message, new string[] { "PM" }, user);
-                else if (message.StartsWith("!MUTEBR"))
+                else if (message.ToUpper().StartsWith("!MUTEBR"))
                     return Command.Mute(message, new string[] { "BR" }, user);
-                else if (message.StartsWith("!MUTESOCIALS"))
+                else if (message.ToUpper().StartsWith("!MUTESOCIALS"))
                     return Command.Mute(message, new string[] { "SOCIALS" }, user);
-                else if (message.StartsWith("!MUTELOGINS"))
+                else if (message.ToUpper().StartsWith("!MUTELOGINS"))
                     return Command.Mute(message, new string[] { "LOGINS" }, user);
 
-                else if (message.StartsWith("!MUTE"))
+
+                else if (message.ToUpper().StartsWith("!MUTE"))
                     return Command.Mute(message, args, user);
-                else if (message.StartsWith("!WARP"))
+
+                // Alias for !UNMUTE
+                else if (message.ToUpper().StartsWith("!UNMUTEALL"))
+                    return Command.UnMute(message, new string[] { "ALL" }, user);
+                else if (message.ToUpper().StartsWith("!UNMUTEADS"))
+                    return Command.UnMute(message, new string[] { "ADS" }, user);
+                else if (message.ToUpper().StartsWith("!UNMUTEGLOBAL"))
+                    return Command.UnMute(message, new string[] { "GLOBAL" }, user);
+                else if (message.ToUpper().StartsWith("!UNMUTEISLAND"))
+                    return Command.UnMute(message, new string[] { "ISLAND" }, user);
+                else if (message.ToUpper().StartsWith("!UNMUTENEAR"))
+                    return Command.UnMute(message, new string[] { "NEAR" }, user);
+                else if (message.ToUpper().StartsWith("!UNMUTEHERE"))
+                    return Command.UnMute(message, new string[] { "HERE" }, user);
+                else if (message.ToUpper().StartsWith("!UNMUTEBUDDY"))
+                    return Command.UnMute(message, new string[] { "BUDDY" }, user);
+                else if (message.ToUpper().StartsWith("!UNMUTEPM"))
+                    return Command.UnMute(message, new string[] { "PM" }, user);
+                else if (message.ToUpper().StartsWith("!UNMUTEBR"))
+                    return Command.UnMute(message, new string[] { "BR" }, user);
+                else if (message.ToUpper().StartsWith("!UNMUTESOCIALS"))
+                    return Command.UnMute(message, new string[] { "SOCIALS" }, user);
+                else if (message.ToUpper().StartsWith("!UNMUTELOGINS"))
+                    return Command.UnMute(message, new string[] { "LOGINS" }, user);
+
+                else if (message.ToUpper().StartsWith("!UNMUTE"))
+                    return Command.UnMute(message, args, user);
+
+                // Alias for !HEAR
+                else if (message.ToUpper().StartsWith("!HEARALL"))
+                    return Command.UnMute(message, new string[] { "ALL" }, user);
+                else if (message.ToUpper().StartsWith("!HEARADS"))
+                    return Command.UnMute(message, new string[] { "ADS" }, user);
+                else if (message.ToUpper().StartsWith("!HEARGLOBAL"))
+                    return Command.UnMute(message, new string[] { "GLOBAL" }, user);
+                else if (message.ToUpper().StartsWith("!HEARISLAND"))
+                    return Command.UnMute(message, new string[] { "ISLAND" }, user);
+                else if (message.ToUpper().StartsWith("!HEARNEAR"))
+                    return Command.UnMute(message, new string[] { "NEAR" }, user);
+                else if (message.ToUpper().StartsWith("!HEARHERE"))
+                    return Command.UnMute(message, new string[] { "HERE" }, user);
+                else if (message.ToUpper().StartsWith("!HEARBUDDY"))
+                    return Command.UnMute(message, new string[] { "BUDDY" }, user);
+                else if (message.ToUpper().StartsWith("!HEARPM"))
+                    return Command.UnMute(message, new string[] { "PM" }, user);
+                else if (message.ToUpper().StartsWith("!HEARBR"))
+                    return Command.UnMute(message, new string[] { "BR" }, user);
+                else if (message.ToUpper().StartsWith("!HEARSOCIALS"))
+                    return Command.UnMute(message, new string[] { "SOCIALS" }, user);
+                else if (message.ToUpper().StartsWith("!HEARLOGINS"))
+                    return Command.UnMute(message, new string[] { "LOGINS" }, user);
+
+                else if (message.ToUpper().StartsWith("!HEAR"))
+                    return Command.UnMute(message, args, user);
+
+                else if (message.ToUpper().StartsWith("!WARP"))
                     return Command.Warp(message, args, user);
                 
             }

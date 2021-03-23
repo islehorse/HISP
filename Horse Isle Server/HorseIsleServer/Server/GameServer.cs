@@ -269,6 +269,62 @@ namespace HISP.Server
                         sender.SendPacket(metaTag);
                     }
                     break;
+                case PacketBuilder.PLAYER_INTERACTION_MUTE:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    playerId = -1;
+                    try
+                    {
+                        playerId = int.Parse(playerIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to MUTE User ID NaN.");
+                        break;
+                    }
+
+                    if (IsUserOnline(playerId))
+                    {
+                        User user = GetUserById(playerId);
+                        if(!sender.LoggedinUser.MutePlayer.IsUserMuted(user))
+                            sender.LoggedinUser.MutePlayer.MuteUser(user);
+
+                        byte[] nowMuting = PacketBuilder.CreateChat(Messages.FormatNowMutingPlayer(user.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(nowMuting);
+
+                        sender.LoggedinUser.MetaPriority = true;
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListMenu(sender.LoggedinUser));
+                        sender.SendPacket(metaPacket);
+                    }
+                    break;
+                case PacketBuilder.PLAYER_INTERACTION_UNMUTE:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
+                    playerId = -1;
+                    try
+                    {
+                        playerId = int.Parse(playerIdStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to UNMUTE User ID NaN.");
+                        break;
+                    }
+
+                    if (IsUserOnline(playerId))
+                    {
+                        User user = GetUserById(playerId);
+                        if (sender.LoggedinUser.MutePlayer.IsUserMuted(user))
+                            sender.LoggedinUser.MutePlayer.UnmuteUser(user);
+
+                        byte[] nowMuting = PacketBuilder.CreateChat(Messages.FormatStoppedMutingPlayer(user.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(nowMuting);
+
+                        sender.LoggedinUser.MetaPriority = true;
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListMenu(sender.LoggedinUser));
+                        sender.SendPacket(metaPacket);
+                    }
+                    break;
                 case PacketBuilder.PLAYER_INTERACTION_REMOVE_BUDDY:
                     packetStr = Encoding.UTF8.GetString(packet);
                     playerIdStr = packetStr.Substring(2, packetStr.Length - 4);
@@ -292,7 +348,7 @@ namespace HISP.Server
                         sender.SendPacket(friendRemoved);
 
                         sender.LoggedinUser.MetaPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerList(sender.LoggedinUser));
+                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListMenu(sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                     }
 
@@ -2500,7 +2556,7 @@ namespace HISP.Server
             {
                 case PacketBuilder.PLAYERINFO_PLAYER_LIST:
                     sender.LoggedinUser.MetaPriority = true;
-                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerList(sender.LoggedinUser));
+                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListMenu(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
             }
@@ -2805,12 +2861,12 @@ namespace HISP.Server
                     break;
                 case "37": // All Players List
                     sender.LoggedinUser.MetaPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerList());
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "40": // All Players Alphabetical
                     sender.LoggedinUser.MetaPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListAlphabetical());
+                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListAlphabetical(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "30": // Find NPC

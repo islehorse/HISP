@@ -843,6 +843,10 @@ namespace HISP.Server
             Messages.AutoSellYouSoldHorseOfflineFormat = gameData.messages.meta.auto_sell.sold_offline;
 
             // Mute Command
+            Messages.NowMutingPlayerFormat = gameData.messages.meta.mute_command.now_ignoring_player;
+            Messages.StoppedMutingPlayerFormat = gameData.messages.meta.mute_command.stop_ignoring_player;
+
+
             Messages.PlayerIgnoringYourPrivateMessagesFormat = gameData.messages.meta.mute_command.player_ignoring_your_pm;
             Messages.PlayerIgnoringYourBuddyRequests = gameData.messages.meta.mute_command.player_ignoring_your_br;
             Messages.PlayerIgnoringYourSocials = gameData.messages.meta.mute_command.player_ignoring_your_socials;
@@ -1672,6 +1676,7 @@ namespace HISP.Server
             Messages.AdminCommandFormat = gameData.messages.commands.admin_command_completed;
             Messages.PlayerCommandFormat = gameData.messages.commands.player_command_completed;
             Messages.MuteHelp = gameData.messages.commands.mute_help;
+            Messages.UnMuteHelp = gameData.messages.commands.unmute_help;
 
 
             Messages.PasswordNotice = gameData.messages.chat.password_included;
@@ -1744,6 +1749,10 @@ namespace HISP.Server
             Messages.PlayerListMapAllBuddiesForamt = gameData.messages.meta.player_list.map_all_buddies_format;
             Messages.PlayerListMapAllPlayersFormat = gameData.messages.meta.player_list.map_all_players_format;
             Messages.PlayerListAbuseReport = gameData.messages.meta.player_list.abuse_report;
+
+            Messages.MuteButton = gameData.messages.meta.player_list.mute_button;
+            Messages.HearButton = gameData.messages.meta.player_list.hear_button;
+            Messages.PmButton = gameData.messages.meta.player_list.pm_button;
 
             Messages.ThreeMonthSubscripitionIcon = gameData.messages.meta.player_list.icon_subbed_3month;
             Messages.YearSubscriptionIcon = gameData.messages.meta.player_list.icon_subbed_year;

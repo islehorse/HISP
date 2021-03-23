@@ -64,6 +64,8 @@ namespace HISP.Server
         public const byte PLAYER_INTERACTION_TRADE_REJECT = 0x2B;
         public const byte PLAYER_INTERACTION_ADD_BUDDY = 0x1E;
         public const byte PLAYER_INTERACTION_REMOVE_BUDDY = 0x1F;
+        public const byte PLAYER_INTERACTION_MUTE = 0x32;
+        public const byte PLAYER_INTERACTION_UNMUTE = 0x33;
 
         public const byte AUCTION_BID_100 = 0x29;
         public const byte AUCTION_BID_1K = 0x2A;

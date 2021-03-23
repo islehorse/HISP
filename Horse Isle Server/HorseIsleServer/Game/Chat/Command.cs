@@ -15,7 +15,7 @@ namespace HISP.Game.Chat
                 return false;
             if (!user.Administrator)
                 return false;
-            if(args[0] == "OBJECT")
+            if(args[0].ToUpper() == "OBJECT")
             {
                 int itemId = 0;
                 try
@@ -31,7 +31,7 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
-            else if (args[0] == "MONEY")
+            else if (args[0].ToUpper() == "MONEY")
             {
                 int money = 0;
                 try
@@ -44,7 +44,7 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
-            else if (args[0] == "QUEST")
+            else if (args[0].ToUpper() == "QUEST")
             {
                 int questId = 0;
                 try
@@ -52,7 +52,7 @@ namespace HISP.Game.Chat
                     questId = int.Parse(args[1]);
                     if(args.Length >= 3)
                     {
-                        if (args[2] == "FORCE")
+                        if (args[0].ToUpper() == "FORCE")
                         {
                             Quest.CompleteQuest(user, Quest.GetQuestById(questId));
                             goto msg;
@@ -190,7 +190,7 @@ namespace HISP.Game.Chat
                 return false;
             if (!user.Administrator)
                 return false;
-            if(args[0] == "PLAYER")
+            if(args[0].ToUpper() == "PLAYER")
             {
                 if(args.Length < 2)
                     return false;
@@ -204,7 +204,7 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
-            else if(args[0] == "AREA")
+            else if(args[0].ToUpper() == "AREA")
             {
                 if (args.Length < 2)
                     return false;
@@ -230,7 +230,7 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
-            else if(args[0] == "NPC")
+            else if(args[0].ToUpper() == "NPC")
             {
                 if (args.Length < 2)
                     return false;
@@ -362,38 +362,38 @@ namespace HISP.Game.Chat
             
             string muteType = args[0];
 
-            if (muteType == "GLOBAL")
+            if (muteType.ToUpper() == "GLOBAL")
             {
                 user.MuteGlobal = true;
-            } else if (muteType == "ISLAND")
+            } else if (muteType.ToUpper() == "ISLAND")
             {
                 user.MuteIsland = true;
-            } else if (muteType == "NEAR")
+            } else if (muteType.ToUpper() == "NEAR")
             {
                 user.MuteNear = true;
-            } else if (muteType == "HERE")
+            } else if (muteType.ToUpper() == "HERE")
             {
                 user.MuteHere = true;
-            } else if (muteType == "BUDDY")
+            } else if (muteType.ToUpper() == "BUDDY")
             {
                 user.MuteBuddy = true;
-            } else if (muteType == "SOCIALS")
+            } else if (muteType.ToUpper() == "SOCIALS")
             {
                 user.MuteSocials = true;
             }
-            else if (muteType == "PM")
+            else if (muteType.ToUpper() == "PM")
             {
                 user.MutePrivateMessage = true;
             }
-            else if (muteType == "BR")
+            else if (muteType.ToUpper() == "BR")
             {
                 user.MuteBuddyRequests = true;
             }
-            else if (muteType == "LOGINS")
+            else if (muteType.ToUpper() == "LOGINS")
             {
                 user.MuteLogins = true;
             }
-            else if (muteType == "ALL")
+            else if (muteType.ToUpper() == "ALL")
             {
                 user.MuteAll = true;
                 user.MuteGlobal = true;
@@ -414,6 +414,81 @@ namespace HISP.Game.Chat
 
         leave:;
             
+            byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+
+            return true;
+        }
+
+        public static bool UnMute(string message, string[] args, User user)
+        {
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+
+            if (args.Length <= 0)
+            {
+                formattedmessage += Messages.UnMuteHelp;
+                goto leave;
+            }
+
+            string muteType = args[0];
+
+            if (muteType.ToUpper() == "GLOBAL")
+            {
+                user.MuteGlobal = false;
+            }
+            else if (muteType.ToUpper() == "ISLAND")
+            {
+                user.MuteIsland = false;
+            }
+            else if (muteType.ToUpper() == "NEAR")
+            {
+                user.MuteNear = false;
+            }
+            else if (muteType.ToUpper() == "HERE")
+            {
+                user.MuteHere = false;
+            }
+            else if (muteType.ToUpper() == "BUDDY")
+            {
+                user.MuteBuddy = false;
+            }
+            else if (muteType.ToUpper() == "SOCIALS")
+            {
+                user.MuteSocials = false;
+            }
+            else if (muteType.ToUpper() == "PM")
+            {
+                user.MutePrivateMessage = false;
+            }
+            else if (muteType.ToUpper() == "BR")
+            {
+                user.MuteBuddyRequests = false;
+            }
+            else if (muteType.ToUpper() == "LOGINS")
+            {
+                user.MuteLogins = false;
+            }
+            else if (muteType.ToUpper() == "ALL")
+            {
+                user.MuteAll = false;
+                user.MuteGlobal = false;
+                user.MuteIsland = false;
+                user.MuteNear = false;
+                user.MuteHere = false;
+                user.MuteBuddy = false;
+                user.MuteSocials = false;
+                user.MutePrivateMessage = false;
+                user.MuteBuddyRequests = false;
+                user.MuteLogins = false;
+            }
+            else
+            {
+                formattedmessage += Messages.UnMuteHelp;
+                goto leave;
+            }
+
+        leave:;
+
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
 
