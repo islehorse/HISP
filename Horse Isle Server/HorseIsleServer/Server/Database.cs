@@ -573,7 +573,7 @@ namespace HISP.Server
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM MutedPlayers WHERE playerId=@playerId AND mutePlayerId=@mutedPlayerId)";
+                sqlCommand.CommandText = "DELETE FROM MutedPlayers WHERE playerId=@playerId AND mutePlayerId=@mutedPlayerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@mutedPlayerId", playerToMute);
                 sqlCommand.Prepare();

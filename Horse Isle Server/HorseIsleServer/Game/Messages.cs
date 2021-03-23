@@ -23,6 +23,9 @@ namespace HISP.Game
         public static string AddBuddyDeleteBuddyFormat;
 
         // Mute Command
+        public static string NowMutingPlayerFormat;
+        public static string StoppedMutingPlayerFormat;
+
         public static string PlayerIgnoringYourPrivateMessagesFormat;
         public static string PlayerIgnoringYourBuddyRequests;
         public static string PlayerIgnoringYourSocials;
@@ -550,6 +553,7 @@ namespace HISP.Game
         public static string PlayerCommandFormat;
 
         public static string MuteHelp;
+        public static string UnMuteHelp;
 
         public static string GlobalChatFormatForModerators;
         public static string DirectChatFormatForModerators;
@@ -967,6 +971,10 @@ namespace HISP.Game
         public static string PlayerListMapAllBuddiesForamt;
         public static string PlayerListMapAllPlayersFormat;
 
+        public static string MuteButton;
+        public static string HearButton;
+        public static string PmButton;
+
         public static int ThreeMonthSubscripitionIcon;
         public static int YearSubscriptionIcon;
         public static int NewUserIcon;
@@ -1093,7 +1101,14 @@ namespace HISP.Game
         public static string NothingInterestingHere;
 
         // Mute Command
-
+        public static string FormatStoppedMutingPlayer(string username)
+        {
+            return StoppedMutingPlayerFormat.Replace("%USERNAME%", username);
+        }
+        public static string FormatNowMutingPlayer(string username)
+        {
+            return NowMutingPlayerFormat.Replace("%USERNAME%", username);
+        }
         public static string FormatCantSendYourIgnoringPlayer(string username)
         {
             return CantSendPrivateMessagePlayerMutedFormat.Replace("%USERNAME%", username);
@@ -2229,10 +2244,30 @@ namespace HISP.Game
             return PlayerListIconFormat.Replace("%ICON%", iconId.ToString());
         }
 
-        public static string FormatPlayerEntry(string iconFormat, string username, int userId, int time, int x, int y, bool idle)
+        public static string FormatMuteButton(int playerId)
+        {
+            return MuteButton.Replace("%PLAYERID%", playerId.ToString());
+        }
+        public static string FormatHearButton(int playerId)
+        {
+            return HearButton.Replace("%PLAYERID%", playerId.ToString());
+        }
+        public static string FormatPmButton(string playerName)
+        {
+            return PmButton.Replace("%USERNAME%", playerName);
+        }
+        public static string FormatPlayerEntry(string iconFormat, string username, int userId, int time, int x, int y, bool idle, bool muteOrHear, bool isYou)
         {
             string xy = FormatMapLocation(x, y);
-            return PlayerListEntryFormat.Replace("%ICONFORMAT%", iconFormat).Replace("%USERNAME%", username).Replace("%PLAYERID%", userId.ToString()).Replace("%TIME%", time.ToString("N0", CultureInfo.InvariantCulture)).Replace("%MAPXY%", xy).Replace("%IDLE%", idle ? PlayerListIdle : "");
+            string muteButton = FormatMuteButton(userId);
+            string hearButton = FormatHearButton(userId);
+            string pmButton = FormatPmButton(username);
+            string msg = PlayerListEntryFormat.Replace("%ICONFORMAT%", iconFormat).Replace("%USERNAME%", username).Replace("%PLAYERID%", userId.ToString()).Replace("%TIME%", time.ToString("N0", CultureInfo.InvariantCulture)).Replace("%MAPXY%", xy).Replace("%IDLE%", idle ? PlayerListIdle : "");
+            if (isYou)
+                msg = msg.Replace("%MUTEORHEAR%", "").Replace("%PMBUTTON%", "");
+            else
+                msg = msg.Replace("%MUTEORHEAR%", muteOrHear ? hearButton : muteButton).Replace("%PMBUTTON", pmButton);
+            return msg;
         }
         public static string FormatOnlineBuddyEntry(string iconFormat, string username, int userId, int time, int x, int y)
         {

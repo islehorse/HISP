@@ -1125,26 +1125,28 @@ namespace HISP.Game
 
 
 
-        public static string BuildNearbyList(User user)
+        public static string BuildNearbyList(User currentUser)
         {
             string message = "";
             message += Messages.NearbyPlayersListHeader;
-            User[] nearbyUsers = GameServer.GetNearbyUsers(user.X, user.Y, false, true);
+            User[] nearbyUsers = GameServer.GetNearbyUsers(currentUser.X, currentUser.Y, false, true);
             foreach (User nearbyUser in nearbyUsers)
             {
                 if (nearbyUser.Stealth)
                     continue;
 
-                if (nearbyUser.Id == user.Id)
+                if (nearbyUser.Id == currentUser.Id)
                     continue;
 
+
+                bool isYou = (nearbyUser.Id == currentUser.Id);
 
                 int icon = nearbyUser.GetPlayerListIcon();
                 string iconFormat = "";
                 if (icon != -1)
                     iconFormat = Messages.FormatIconFormat(icon);
 
-                message += Messages.FormatPlayerEntry(iconFormat, nearbyUser.Username, nearbyUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - nearbyUser.LoginTime).TotalMinutes)), nearbyUser.X, nearbyUser.Y, nearbyUser.Idle);
+                message += Messages.FormatPlayerEntry(iconFormat, nearbyUser.Username, nearbyUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - nearbyUser.LoginTime).TotalMinutes)), nearbyUser.X, nearbyUser.Y, nearbyUser.Idle, currentUser.MutePlayer.IsUserMuted(nearbyUser), isYou);
             }
 
             message += Messages.PlayerListIconInformation;
@@ -1154,7 +1156,7 @@ namespace HISP.Game
             return message;
         }
 
-        public static string BuildPlayerListAlphabetical()
+        public static string BuildPlayerListAlphabetical(User currentUser)
         {
             string message = Messages.PlayerListAllAlphabeticalHeader;
             GameClient[] clients = GameServer.ConnectedClients;
@@ -1175,12 +1177,13 @@ namespace HISP.Game
             foreach (User onlineUser in onlineUsers)
             {
 
+                bool isYou = (onlineUser.Id == currentUser.Id);
                 int icon = onlineUser.GetPlayerListIcon();
                 string iconFormat = "";
                 if (icon != -1)
                     iconFormat = Messages.FormatIconFormat(icon);
 
-                message += Messages.FormatPlayerEntry(iconFormat, onlineUser.Username, onlineUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - onlineUser.LoginTime).TotalMinutes)), onlineUser.X, onlineUser.Y, onlineUser.Idle);
+                message += Messages.FormatPlayerEntry(iconFormat, onlineUser.Username, onlineUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - onlineUser.LoginTime).TotalMinutes)), onlineUser.X, onlineUser.Y, onlineUser.Idle, currentUser.MutePlayer.IsUserMuted(onlineUser), isYou);
             }
 
             message += Messages.PlayerListIconInformation;
@@ -1190,7 +1193,7 @@ namespace HISP.Game
             return message;
         }
 
-        public static string BuildPlayerList()
+        public static string BuildPlayerList(User currentUser)
         {
             string message = Messages.PlayerListAllHeader;
             GameClient[] clients = GameServer.ConnectedClients;
@@ -1201,12 +1204,14 @@ namespace HISP.Game
                     if (client.LoggedinUser.Stealth)
                         continue;
 
+                    bool isYou = (client.LoggedinUser.Id == currentUser.Id);
+
                     int icon = client.LoggedinUser.GetPlayerListIcon();
                     string iconFormat = "";
                     if (icon != -1)
                         iconFormat = Messages.FormatIconFormat(icon);
 
-                    message += Messages.FormatPlayerEntry(iconFormat, client.LoggedinUser.Username, client.LoggedinUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - client.LoggedinUser.LoginTime).TotalMinutes)), client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.Idle);
+                    message += Messages.FormatPlayerEntry(iconFormat, client.LoggedinUser.Username, client.LoggedinUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - client.LoggedinUser.LoginTime).TotalMinutes)), client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.Idle, currentUser.MutePlayer.IsUserMuted(client.LoggedinUser), isYou);
                 }
             }
 
@@ -2074,7 +2079,7 @@ namespace HISP.Game
             message += Messages.MetaTerminator;
             return message;
         }
-        public static string BuildPlayerList(User user)
+        public static string BuildPlayerListMenu(User user)
         {
             string message = "";
 
