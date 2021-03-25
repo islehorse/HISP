@@ -10,6 +10,8 @@ using HISP.Game.Horse;
 using HISP.Game.Items;
 using System.Globalization;
 using HISP.Security;
+using System;
+using HISP.Game.Events;
 
 namespace HISP.Server
 {
@@ -815,6 +817,20 @@ namespace HISP.Server
                 }
             }
 
+            // Register Events : Real Time Riddle
+            int totalRealTimeRiddles = gameData.events.real_time_riddle.Count;
+            for (int i = 0; i < totalRealTimeRiddles; i++)
+            {
+                int id = gameData.events.real_time_riddle[i].id;
+                string riddleText = gameData.events.real_time_riddle[i].text;
+                string[] riddleAnswers = gameData.events.real_time_riddle[i].answers.ToObject<string[]>();
+                int reward = gameData.events.real_time_riddle[i].money_reward;
+
+                RealTimeRiddle riddle = new RealTimeRiddle(id, riddleText, riddleAnswers, reward);
+                
+                Logger.DebugPrint("Registered Riddle #" + riddle.RiddleId.ToString());
+            }
+
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
             Item.Present = gameData.item.special.present;
@@ -827,6 +843,11 @@ namespace HISP.Server
             Item.FishingPole = gameData.item.special.fishing_poll;
             Item.Earthworm = gameData.item.special.earthworm;
             Item.BirthdayToken = gameData.item.special.birthday_token;
+
+            GameServer.IdleWarning = Convert.ToInt32(gameData.messages.disconnect.client_timeout.warn_after);
+            GameServer.IdleTimeout = Convert.ToInt32(gameData.messages.disconnect.client_timeout.kick_after);
+
+            Chat.PrivateMessageSound = gameData.messages.chat.pm_sound;
 
             // New Users
 
@@ -900,7 +921,8 @@ namespace HISP.Server
 
             Messages.EventStartRealTimeRiddleFormat = gameData.messages.events.real_time_riddle.event_start;
             Messages.EventEndRealTimeRiddle = gameData.messages.events.real_time_riddle.event_end;
-            Messages.EventWonRealTimeRiddleFormat = gameData.messages.events.real_time_riddle.event_won;
+            Messages.EventWonRealTimeRiddleForOthersFormat = gameData.messages.events.real_time_riddle.event_won_others;
+            Messages.EventWonRealTimeRiddleForYouFormat = gameData.messages.events.real_time_riddle.event_won_you;
 
             // MultiHorses
             Messages.OtherPlayersHere = gameData.messages.meta.multihorses.other_players_here;
@@ -1915,11 +1937,6 @@ namespace HISP.Server
             Messages.KickReasonNoTime = gameData.messages.disconnect.no_playtime;
             Messages.IdleWarningFormat = gameData.messages.disconnect.client_timeout.warn_message;
             Messages.KickReasonDuplicateLogin = gameData.messages.disconnect.dupe_login;
-
-            Chat.PrivateMessageSound = gameData.messages.chat.pm_sound;
-
-            GameServer.IdleWarning = gameData.messages.disconnect.client_timeout.warn_after;
-            GameServer.IdleTimeout = gameData.messages.disconnect.client_timeout.kick_after;
 
             // Competition Gear
 

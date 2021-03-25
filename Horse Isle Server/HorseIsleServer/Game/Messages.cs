@@ -61,7 +61,8 @@ namespace HISP.Game
         // Events : Real Time Riddles
         public static string EventStartRealTimeRiddleFormat;
         public static string EventEndRealTimeRiddle;
-        public static string EventWonRealTimeRiddleFormat;
+        public static string EventWonRealTimeRiddleForOthersFormat;
+        public static string EventWonRealTimeRiddleForYouFormat;
 
         // MultiHorses
         public static string OtherPlayersHere;
@@ -1099,6 +1100,20 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        // Event : Real Time Riddle
+        public static string FormatEventRealTimeRiddleStart(string riddleText)
+        {
+            return EventStartRealTimeRiddleFormat.Replace("%RIDDLETEXT%", riddleText);
+        }
+        public static string FormatEventRealTimeRiddleWonForOthers(string winnerUserName)
+        {
+            return EventWonRealTimeRiddleForOthersFormat.Replace("%PLAYERNAME%", winnerUserName);
+        }
+        public static string FormatEventRealTimeRiddleWonForYou(int prize)
+        {
+            return EventWonRealTimeRiddleForYouFormat.Replace("%PRIZE%", prize.ToString("N0", CultureInfo.InvariantCulture));
+        }
 
         // Mute Command
         public static string FormatStoppedMutingPlayer(string username)

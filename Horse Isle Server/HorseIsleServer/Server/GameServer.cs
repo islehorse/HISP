@@ -39,7 +39,7 @@ namespace HISP.Server
         public static Random RandomNumberGenerator = new Random();
 
         // Events
-        public static RealTimeRiddle ActiveRiddleEvent;
+        public static RealTimeRiddle RiddleEvent = RealTimeRiddle.GetRandomRiddle();
 
         /*
          *  Private stuff 
@@ -144,6 +144,11 @@ namespace HISP.Server
                 }
             }
 
+            if(totalMinutesElapsed % 30 == 0)
+            {
+                RiddleEvent = RealTimeRiddle.GetRandomRiddle();
+                RiddleEvent.StartEvent();
+            }
 
             if (totalMinutesElapsed % 60 == 0)
             {
@@ -317,8 +322,8 @@ namespace HISP.Server
                         if (sender.LoggedinUser.MutePlayer.IsUserMuted(user))
                             sender.LoggedinUser.MutePlayer.UnmuteUser(user);
 
-                        byte[] nowMuting = PacketBuilder.CreateChat(Messages.FormatStoppedMutingPlayer(user.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        sender.SendPacket(nowMuting);
+                        byte[] stoppedMuting = PacketBuilder.CreateChat(Messages.FormatStoppedMutingPlayer(user.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(stoppedMuting);
 
                         sender.LoggedinUser.MetaPriority = true;
                         byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListMenu(sender.LoggedinUser));
@@ -3432,6 +3437,9 @@ namespace HISP.Server
             byte[] MotdData = PacketBuilder.CreateMotd();
             sender.SendPacket(MotdData);
 
+            // Display Event Message
+            RiddleEvent.ShowStartMessage(sender);
+
             // Send Queued Messages
             string[] queuedMessages = Database.GetMessageQueue(sender.LoggedinUser.Id);
             foreach(string queuedMessage in queuedMessages)
@@ -5368,11 +5376,7 @@ namespace HISP.Server
             Chat.ChatChannel channel = (Chat.ChatChannel)packet[1];
             string message = packetStr.Substring(2, packetStr.Length - 4);
 
-            if (Chat.ProcessCommand(sender.LoggedinUser, message))
-            {
-                Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to run command '" + message + "' in channel: " + channel.ToString());
-                return;
-            }
+            
            
 
             Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to say '" + message + "' in channel: " + channel.ToString());
@@ -5387,6 +5391,18 @@ namespace HISP.Server
             if (message == "")
                 return;
 
+            if (Chat.ProcessCommand(sender.LoggedinUser, message))
+            {
+                Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to run command '" + message + "' in channel: " + channel.ToString());
+                return;
+            }
+
+            // Check events
+            if (RiddleEvent.Active) 
+                if(RiddleEvent.CheckRiddle(message))
+                    RiddleEvent.Win(sender.LoggedinUser);
+                
+           
             // Check if player is muting channel
 
             if( (sender.LoggedinUser.MuteGlobal && channel == Chat.ChatChannel.All) || (sender.LoggedinUser.MuteAds && channel == Chat.ChatChannel.Ads) || (sender.LoggedinUser.MuteHere && channel == Chat.ChatChannel.Here) && (sender.LoggedinUser.MuteBuddy && channel == Chat.ChatChannel.Buddies) && (sender.LoggedinUser.MuteNear && channel == Chat.ChatChannel.Near) && (sender.LoggedinUser.MuteIsland && channel == Chat.ChatChannel.Isle))

@@ -48,6 +48,7 @@ namespace HISP.Server
                 string Horses = "CREATE TABLE IF NOT EXISTS Horses(randomId INT, ownerId INT, leaseTime INT, leaser INT, breed INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT, hidden TEXT(3))";
                 string WildHorse = "CREATE TABLE IF NOT EXISTS WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(1028), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
                 string LastPlayer = "CREATE TABLE IF NOT EXISTS LastPlayer(roomId TEXT(1028), playerId INT)";
+                string SolvedRealTimeRiddles = "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)";
                 string TrackingStats = "CREATE TABLE IF NOT EXISTS Tracking(playerId INT, what TEXT(128), count INT)";
                 string Treasure = "CREATE TABLE IF NOT EXISTS Treasure(randomId INT, x INT, y INT, value INT, type TEXT(128))";
                 string Ranches = "CREATE TABLE IF NOT EXISTS Ranches(ranchId INT, playerId INT, title TEXT(1028), description TEXT(1028), upgradeLevel INT, building1 INT, building2 INT, building3 INT, building4 INT, building5 INT, building6 INT, building7 INT, building8 INT, building9 INT, building10 INT, building11 INT, building12 INT, building13 INT, building14 INT, building15 INT, building16 INT, investedMoney INT)";
@@ -57,6 +58,19 @@ namespace HISP.Server
                 string SolvedRealTimeRiddle = "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)";
                 string MutedPlayers = "CREATE TABLE IF NOT EXISTS MutedPlayers(playerId INT, mutePlayerId INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+
+                try
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = SolvedRealTimeRiddles;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
 
                 try
                 {
@@ -1357,6 +1371,37 @@ namespace HISP.Server
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 sqlCommand.Dispose();
                 return count;
+            }
+        }
+        public static bool HasPlayerCompletedRealTimeRiddle(int riddleId, int playerId)
+        {
+            
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT COUNT(*) FROM SolvedRealTimeRiddles WHERE riddleId=@riddleId AND playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@riddleId", riddleId);
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+                sqlCommand.Dispose();
+                return count >= 1;
+            }
+
+        }
+        public static void CompleteRealTimeRiddle(int riddleId, int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "INSERT INTO SolvedRealTimeRiddles VALUES(@playerId, @riddleId)";
+                sqlCommand.Parameters.AddWithValue("@riddleId", riddleId);
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
             }
         }
         public static bool HasPlayerCompletedRiddle(int riddleId, int playerId)
