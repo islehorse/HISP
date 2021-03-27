@@ -1,11 +1,7 @@
 ﻿using HISP.Player;
 using HISP.Server;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace HISP.Game.Events
 {
@@ -62,6 +58,7 @@ namespace HISP.Game.Events
 
             if (Database.HasPlayerCompletedRealTimeRiddle(RiddleId, winner.Id))
                 return;
+
             Database.CompleteRealTimeRiddle(RiddleId, winner.Id);
 
             winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.RiddleWin).Count++;
