@@ -582,7 +582,7 @@ namespace HISP.Server
                     if (sender.LoggedinUser.SocializingWith != null)
                     {
 
-                        if (!sender.LoggedinUser.SocializingWith.MuteAll && !sender.LoggedinUser.SocializingWith.MuteSocials)
+                        if (sender.LoggedinUser.SocializingWith.MuteAll || sender.LoggedinUser.SocializingWith.MuteSocials)
                         {
                             byte[] cantSocialize = PacketBuilder.CreateChat(Messages.PlayerIgnoringAllSocials, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(cantSocialize);
