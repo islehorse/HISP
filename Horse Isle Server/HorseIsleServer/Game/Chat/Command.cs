@@ -305,19 +305,21 @@ namespace HISP.Game.Chat
             formattedmessage += Messages.FailedToUnderstandLocation;
             goto sendText;
 
-
+            
             doCommand:;
+
             if (args.Length <= 0)
             {
                 goto cantUnderstandCommand;
             }
             else
             {
+                string areaName = string.Join(" ", args).ToLower(); 
                 foreach (GameClient client in GameServer.ConnectedClients)
                 {
                     if (client.LoggedIn)
                     {
-                        if(client.LoggedinUser.Username.ToLower().Contains(args[0].ToLower()))
+                        if(client.LoggedinUser.Username.ToLower().Contains(areaName))
                         {
                             user.Teleport(client.LoggedinUser.X, client.LoggedinUser.Y);
                             formattedmessage += Messages.SuccessfullyWarpedToPlayer;
@@ -328,7 +330,7 @@ namespace HISP.Game.Chat
 
                 foreach(World.Waypoint waypoint in World.Waypoints)
                 {
-                    if(waypoint.Name.ToLower().Contains(args[0].ToLower()))
+                    if(waypoint.Name.ToLower().Contains(areaName))
                     {
                         user.Teleport(waypoint.PosX, waypoint.PosY);
                         formattedmessage += Messages.SuccessfullyWarpedToLocation;
@@ -349,6 +351,18 @@ namespace HISP.Game.Chat
             user.LoggedinClient.SendPacket(chatPacket);
 
             return true;
+        }
+        public static bool Dance(string message, string[] args, User user)
+        {
+            string moves = string.Join(" ", args).ToLower();
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+
+            new Dance(user, moves);
+
+            byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+
         }
         public static bool Mute(string message, string[] args, User user)
         {

@@ -160,7 +160,9 @@ namespace HISP.Game.Chat
 
                 else if (message.ToUpper().StartsWith("!WARP"))
                     return Command.Warp(message, args, user);
-                
+
+                else if (message.ToUpper().StartsWith("!DANCE"))
+                    return Command.Dance(message, args, user);
             }
             return false;
         }
