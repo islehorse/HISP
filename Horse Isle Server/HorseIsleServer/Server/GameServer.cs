@@ -4142,7 +4142,7 @@ namespace HISP.Server
                 sender.SendPacket(chatPacket);
 
                 UpdateArea(sender);
-                UpdateUserInfo(sender.LoggedinUser);
+                UpdateUserFacingAndLocation(sender.LoggedinUser);
             }
             else if (method == PacketBuilder.SECCODE_AWARD)
             {
@@ -4659,7 +4659,7 @@ namespace HISP.Server
             int facing = sender.LoggedinUser.Facing;
             while (facing >= 5)
             {
-                facing = facing - 5;
+                facing -= 5;
                 onHorse++;
             }
             byte direction = 0;
@@ -5390,6 +5390,7 @@ namespace HISP.Server
 
             if (message == "")
                 return;
+    
 
             if (Chat.ProcessCommand(sender.LoggedinUser, message))
             {
@@ -6768,7 +6769,7 @@ namespace HISP.Server
                                 if (client.LoggedinUser.Id != userId)
                                         client.SendPacket(loginMessageBytes);
 
-                    UpdateUserInfo(sender.LoggedinUser);
+                    UpdateUserFacingAndLocation(sender.LoggedinUser);
 
                 }
                 else
@@ -7066,7 +7067,7 @@ namespace HISP.Server
                     if(!nearbyUser.MetaPriority)
                         UpdateArea(nearbyUser.LoggedinClient);
 
-            UpdateUserInfo(client.LoggedinUser);
+            UpdateUserFacingAndLocation(client.LoggedinUser);
         }
 
         public static void UpdateDrawingForAll(string id, GameClient sender, string drawing, bool includingSender=false)
@@ -7150,21 +7151,16 @@ namespace HISP.Server
             byte[] PlayerData = PacketBuilder.CreatePlayerData(forClient.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), forClient.LoggedinUser.MailBox.MailCount);
             forClient.SendPacket(PlayerData);
         }
-        public static void UpdateUserInfo(User user)
+        public static void UpdateUserFacingAndLocation(User user)
         {
             byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
 
-
-
-            List<User> users = new List<User>();
             foreach (GameClient client in ConnectedClients)
                 if (client.LoggedIn)
                 {
                     if (client.LoggedinUser.Id != user.Id)
                         client.SendPacket(playerInfoBytes);
                 }
-
-
         }
         public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPrio=false, User exceptMe=null)
         {
@@ -7348,7 +7344,7 @@ namespace HISP.Server
             byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
             sender.SendPacket(rideHorsePacket);
 
-            UpdateUserInfo(sender.LoggedinUser);
+            UpdateUserFacingAndLocation(sender.LoggedinUser);
         }
         public static void StopRidingHorse(GameClient sender)
         {
@@ -7363,7 +7359,7 @@ namespace HISP.Server
             sender.SendPacket(rideHorsePacket);
             sender.LoggedinUser.NoClip = false;
 
-            UpdateUserInfo(sender.LoggedinUser);
+            UpdateUserFacingAndLocation(sender.LoggedinUser);
         }
         public static bool ProcessMapCodeWithArg(GameClient forClient, World.SpecialTile tile)
         {
