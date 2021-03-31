@@ -40,6 +40,7 @@ namespace HISP.Server
 
         // Events
         public static RealTimeRiddle RiddleEvent = RealTimeRiddle.GetRandomRiddle();
+        public static TackShopGiveaway TackShopGiveawayEvent;
 
         /*
          *  Private stuff 
@@ -143,7 +144,11 @@ namespace HISP.Server
                     }
                 }
             }
-
+            if(totalMinutesElapsed % (60 * 3) == 0)
+            {
+                TackShopGiveawayEvent = new TackShopGiveaway();
+                TackShopGiveawayEvent.StartEvent();
+            }
             if(totalMinutesElapsed % 30 == 0)
             {
                 RiddleEvent = RealTimeRiddle.GetRandomRiddle();
@@ -195,10 +200,6 @@ namespace HISP.Server
                 }
             }
 
-            if (RandomNumberGenerator.Next(0, 100) == 59) // Real Time Riddle
-            {
-
-            }
 
 
             Database.IncPlayerTirednessForOfflineUsers();

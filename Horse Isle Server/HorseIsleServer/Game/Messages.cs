@@ -64,6 +64,12 @@ namespace HISP.Game
         public static string EventWonRealTimeRiddleForOthersFormat;
         public static string EventWonRealTimeRiddleForYouFormat;
 
+        // Events : Tack Shop Giveaway
+        public static string EventStartTackShopGiveawayFormat;
+        public static string Event1MinTackShopGiveawayFormat;
+        public static string EventWonTackShopGiveawayFormat;
+        public static string EventEndTackShopGiveawayFormat;
+
         // MultiHorses
         public static string OtherPlayersHere;
         public static string MultiHorseSelectOneToJoinWith;
@@ -1100,6 +1106,25 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
+        // Event : Tack Shop Giveaway
+        
+        public static string FormatEventTackShopGiveawayEnd(string shopName, string townName)
+        {
+            return EventEndTackShopGiveawayFormat.Replace("%SHOPNAME%", shopName).Replace("%TOWN%", townName);
+        }
+        public static string FormatEventTackShopGiveawayWon(string playerName, string breed, string shopName, string townName, int totalPlayersAt)
+        {
+            return EventWonTackShopGiveawayFormat.Replace("%PLAYERNAME%", playerName).Replace("%BREED%", breed).Replace("%SHOPNAME%", shopName).Replace("%TOWN%", townName).Replace("%PLAYERCOUNT%", totalPlayersAt.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatEventTackShopGiveaway1Min(string color, string breed, string gender, string shopName, string townName)
+        {
+            return Event1MinTackShopGiveawayFormat.Replace("%COLOR%", color).Replace("%BREED%", breed).Replace("%GENDER%", gender).Replace("%SHOPNAME%", shopName).Replace("%TOWN%", townName);
+        }
+        public static string FormatEventTackShopGiveawayStart(string color, string breed, string gender, string shopName, string townName)
+        {
+            return EventStartTackShopGiveawayFormat.Replace("%COLOR%", color).Replace("%BREED%", breed).Replace("%GENDER%", gender).Replace("%SHOPNAME%", shopName).Replace("%TOWN%", townName);
+        }
 
         // Event : Real Time Riddle
         public static string FormatEventRealTimeRiddleStart(string riddleText)
