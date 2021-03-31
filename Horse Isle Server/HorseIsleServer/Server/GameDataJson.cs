@@ -924,6 +924,14 @@ namespace HISP.Server
             Messages.EventWonRealTimeRiddleForOthersFormat = gameData.messages.events.real_time_riddle.event_won_others;
             Messages.EventWonRealTimeRiddleForYouFormat = gameData.messages.events.real_time_riddle.event_won_you;
 
+            // Events : Tack Shop Giveaway
+
+            Messages.EventStartTackShopGiveawayFormat = gameData.messages.events.tack_shop_giveaway.event_start;
+            Messages.Event1MinTackShopGiveawayFormat = gameData.messages.events.tack_shop_giveaway.event_1min;
+            Messages.EventWonTackShopGiveawayFormat = gameData.messages.events.tack_shop_giveaway.event_won;
+            Messages.EventEndTackShopGiveawayFormat = gameData.messages.events.tack_shop_giveaway.event_end;
+
+
             // MultiHorses
             Messages.OtherPlayersHere = gameData.messages.meta.multihorses.other_players_here;
             Messages.MultiHorseSelectOneToJoinWith = gameData.messages.meta.multihorses.select_a_horse;
