@@ -204,7 +204,7 @@ namespace HISP.Server
 
             Database.IncPlayerTirednessForOfflineUsers();
 
-            // Offline player handling w sql magic...
+            // Offline player handling w sql black magic...
 
             Database.DecrementHorseLeaseTimeForOfflinePlayers();
             Database.TpOfflinePlayersBackToUniterForOfflinePlayers();
@@ -5391,7 +5391,51 @@ namespace HISP.Server
 
             if (message == "")
                 return;
-    
+            
+            if(message.StartsWith("/"))
+            {
+                string channelString = message.Split(' ')[0].ToLower();
+                string newMessage = string.Join(' ', message.Split(' ').Skip(1));
+                message = newMessage;
+                switch(channelString)
+                {
+                    case "/$":
+                    case "/ads":
+                        channel = Chat.ChatChannel.Ads;
+                        break;
+                    case "/all":
+                        channel = Chat.ChatChannel.All;
+                        break;
+                    case "/here":
+                        channel = Chat.ChatChannel.Here;
+                        break;
+                    case "/near":
+                        channel = Chat.ChatChannel.Near;
+                        break;
+                    case "/buddy":
+                        channel = Chat.ChatChannel.Buddies;
+                        break;
+                    case "/island":
+                        channel = Chat.ChatChannel.Isle;
+                        break;
+                    case "/admin":
+                        if (sender.LoggedinUser.Administrator)
+                            channel = Chat.ChatChannel.Admin;
+                        else
+                            return;
+                        break;
+                    case "/mod":
+                        if (sender.LoggedinUser.Moderator)
+                            channel = Chat.ChatChannel.Mod;
+                        else
+                            return;
+                        break;
+                    default:
+                        channel = Chat.ChatChannel.Dm;
+                        nameTo = channelString.Substring(1);
+                        break;
+                }
+            }
 
             if (Chat.ProcessCommand(sender.LoggedinUser, message))
             {
@@ -5445,6 +5489,41 @@ namespace HISP.Server
             }
 
             GameClient[] recipiants = Chat.GetRecipiants(sender.LoggedinUser, channel, nameTo);
+
+            // Spam Protection
+
+            if(channel == Chat.ChatChannel.Dm)
+            {
+                if(recipiants.Length <= 0)
+                {
+                    byte[] cantFindPlayer = PacketBuilder.CreateChat(Messages.CantFindPlayerToPrivateMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(cantFindPlayer);
+
+                    return;
+                }
+            }
+            else if(channel == Chat.ChatChannel.Ads)
+            {
+                if(!sender.LoggedinUser.CanUseAdsChat)
+                {
+                    byte[] cantSendInAds = PacketBuilder.CreateChat(Messages.AdsOnlyOncePerMinute, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(cantSendInAds);
+
+                    return;
+                }
+                sender.LoggedinUser.CanUseAdsChat = false;
+            }
+            else if(channel == Chat.ChatChannel.All)
+            {
+                if(sender.LoggedinUser.TotalGlobalChatMessages <= 0)
+                {
+                    byte[] globalLimited = PacketBuilder.CreateChat(Messages.GlobalChatLimited, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(globalLimited);
+
+                    return;
+                }
+                sender.LoggedinUser.TotalGlobalChatMessages--;
+            }
 
             // Muted user checks
             if(channel == Chat.ChatChannel.Dm) 

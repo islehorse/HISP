@@ -882,6 +882,11 @@ namespace HISP.Server
 
             Messages.CantSendPrivateMessagePlayerMutedFormat = gameData.messages.meta.mute_command.cant_send_pm_player_muted;
 
+            // Chat Errors
+            Messages.CantFindPlayerToPrivateMessage = gameData.messages.chat_errors.cant_find_player;
+            Messages.AdsOnlyOncePerMinute = gameData.messages.chat_errors.ads_once_per_minute;
+            Messages.GlobalChatLimited = gameData.messages.chat_errors.global_chats_limited;
+
             // Warp Command
 
             Messages.SuccessfullyWarpedToPlayer = gameData.messages.commands.warp.player;

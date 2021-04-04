@@ -47,6 +47,7 @@ namespace HISP.Server
         private int warnInterval = GameServer.IdleWarning * 60 * 1000;
         private int kickInterval = GameServer.IdleTimeout * 60 * 1000;
 
+        
         private bool dcLock = false;
 
         private void minuteTimerTick(object state)
@@ -55,7 +56,14 @@ namespace HISP.Server
             totalMinutesElapsed++;
             if (LoggedIn)
             {
+                LoggedinUser.CanUseAdsChat = true;
                 LoggedinUser.FreeMinutes -= 1;
+
+                if(totalMinutesElapsed % 2 == 0)
+                {
+                    LoggedinUser.TotalGlobalChatMessages++;
+                }
+
                 if (LoggedinUser.FreeMinutes <= 0)
                 {
                     LoggedinUser.FreeMinutes = 0;

@@ -40,6 +40,11 @@ namespace HISP.Game
 
         public static string CantSendPrivateMessagePlayerMutedFormat;
 
+        // Chat Errors
+        public static string CantFindPlayerToPrivateMessage;
+        public static string AdsOnlyOncePerMinute;
+        public static string GlobalChatLimited;
+
         // Auto Sell
         public static string AutoSellNotStandingInSamePlace;
         public static string AutoSellSuccessFormat;
