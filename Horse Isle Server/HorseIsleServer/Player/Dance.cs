@@ -15,6 +15,7 @@ namespace HISP.Player
         public Dance(User BaseUser, string DanceMoves)
         {
             baseUser = BaseUser;
+            baseUser.ActiveDance = this;
             Moves = DanceMoves.ToLower();
             MoveIndex = -1;
             danceTimer = new Timer(new TimerCallback(onDanceTick), null, DanceSpeed, DanceSpeed);
@@ -79,6 +80,7 @@ namespace HISP.Player
 
         public void Dispose()
         {
+            baseUser.ActiveDance = null;
             baseUser = null;
             Moves = null;
             danceTimer.Dispose();

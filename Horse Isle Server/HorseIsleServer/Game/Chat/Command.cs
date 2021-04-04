@@ -124,6 +124,7 @@ namespace HISP.Game.Chat
             try{
                 User bannedUser = GameServer.GetUserByName(args[0]);
                 bannedUser.LoggedinClient.Kick(Messages.KickReasonBanned);
+                
             }
             catch(KeyNotFoundException){};
 
@@ -357,7 +358,10 @@ namespace HISP.Game.Chat
             string moves = string.Join(" ", args).ToLower();
             string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
 
-            new Dance(user, moves);
+            if (user.ActiveDance != null)
+                user.ActiveDance.Dispose();
+
+            user.ActiveDance = new Dance(user, moves);
 
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);

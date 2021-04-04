@@ -101,11 +101,14 @@ namespace HISP.Player
         public User SocializingWith;
         public List<User> BeingSocializedBy = new List<User>();
         public User PendingBuddyRequestTo;
+        public Dance ActiveDance;
+        public bool CanUseAdsChat = true;
         public int CapturingHorseId;
         public DateTime LoginTime;
         public string LastSeenWeather;
         public int LastClickedRanchBuilding = 0;
         public bool ListingAuction = false;
+        public int TotalGlobalChatMessages = 1;
 
         public string GetWeatherSeen()
         {
