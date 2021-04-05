@@ -144,15 +144,22 @@ namespace HISP.Server
                     }
                 }
             }
+            // Tack Shop Giveaway
             if(totalMinutesElapsed % (60 * 3) == 0)
             {
                 TackShopGiveawayEvent = new TackShopGiveaway();
                 TackShopGiveawayEvent.StartEvent();
             }
+            // Real Time Riddle
             if(totalMinutesElapsed % 30 == 0)
             {
                 RiddleEvent = RealTimeRiddle.GetRandomRiddle();
                 RiddleEvent.StartEvent();
+            }
+            // Real Time Quiz
+            if(totalMinutesElapsed % 75 == 0)
+            {
+
             }
 
             if (totalMinutesElapsed % 60 == 0)
