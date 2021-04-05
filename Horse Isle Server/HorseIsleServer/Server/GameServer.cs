@@ -5501,7 +5501,11 @@ namespace HISP.Server
 
             if(channel == Chat.ChatChannel.Dm)
             {
-                if(recipiants.Length <= 0)
+                try
+                {
+                    nameTo = GetUserByName(nameTo).Username;
+                }
+                catch(KeyNotFoundException)
                 {
                     byte[] cantFindPlayer = PacketBuilder.CreateChat(Messages.CantFindPlayerToPrivateMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(cantFindPlayer);
@@ -7010,7 +7014,7 @@ namespace HISP.Server
             {
                 if(client.LoggedIn)
                 {
-                    if (client.LoggedinUser.Username == username)
+                    if (client.LoggedinUser.Username.ToLower() == username.ToLower())
                         return client.LoggedinUser;
                 }
             }

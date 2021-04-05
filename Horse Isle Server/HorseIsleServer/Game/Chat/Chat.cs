@@ -390,7 +390,7 @@ namespace HISP.Game.Chat
                     {
                         if (client.LoggedIn)
                             if (!client.LoggedinUser.MutePrivateMessage && !client.LoggedinUser.MuteAll)
-                                if (client.LoggedinUser.Username == to)
+                                if (client.LoggedinUser.Username.ToLower() == to.ToLower())
                                     recipiants.Add(client);
                     }
                     return recipiants.ToArray();
