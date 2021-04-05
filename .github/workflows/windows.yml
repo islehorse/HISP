@@ -32,8 +32,8 @@ jobs:
         dotnet publish -p:PublishProfile=Win64.pubxml
         copy ../DataCollection/gamedata.json "HorseIsleServer/bin/x64/Windows/net5.0/win-x64/publish/gamedata.json"
         copy ../DataCollection/HI1.MAP "HorseIsleServer/bin/x64/Windows/net5.0/win-x64/publish/HI1.MAP"
-        mkdir "HorseIsleServer/bin/x86/Windows/net5.0/win-x86/publish/www"
-        xcopy /E ../WebInterface "HorseIsleServer/bin/x86/Windows/net5.0/win-x86/publish/www"
+        mkdir "HorseIsleServer/bin/x64/Windows/net5.0/win-x64/publish/www"
+        xcopy /E ../WebInterface "HorseIsleServer/bin/x64/Windows/net5.0/win-x64/publish/www"
 
     - name: Build win-x86
       continue-on-error: false
