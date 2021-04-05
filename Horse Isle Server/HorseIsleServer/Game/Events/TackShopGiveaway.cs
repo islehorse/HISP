@@ -41,26 +41,23 @@ namespace HISP.Game.Events
         public TackShopGiveaway()
         {
             List<World.SpecialTile> specialTiles = new List<World.SpecialTile>();
-            
-            foreach(World.SpecialTile sTile in World.SpecialTiles)
+
+            foreach (World.SpecialTile sTile in World.SpecialTiles)
             {
-                if(sTile.Code != null)
+                if (sTile.Code != null)
                 {
-                    if(sTile.Code.StartsWith("STORE-"))
+                    if (sTile.Code.StartsWith("STORE-"))
                     {
 
                         int storeId = int.Parse(sTile.Code.Split("-")[1]);
                         Shop shopData = Shop.GetShopById(storeId);
-                        
-                        if(shopData.BuysItemTypes.Contains("TACK"))
+
+                        if (shopData.BuysItemTypes.Contains("TACK"))
                         {
                             Npc.NpcEntry[] npcShop = Npc.GetNpcByXAndY(sTile.X, sTile.Y);
-                            if(npcShop.Length > 0)
+                            if (npcShop.Length > 0)
                             {
-                                if(npcShop[0].ShortDescription.ToLower().Contains("tack"))
-                                {
-                                    specialTiles.Add(sTile);
-                                }   
+                                specialTiles.Add(sTile);
                             }
                         }
                     }
@@ -75,10 +72,17 @@ namespace HISP.Game.Events
             Npc.NpcEntry[] npcShops = Npc.GetNpcByXAndY(Location.X, Location.Y);
 
             npcName = npcShops[0].Name.Split(" ")[0];
-            npcDesc = npcShops[0].ShortDescription.Substring(npcShops[0].ShortDescription.ToLower().IndexOf("tack"));
+            if (npcShops[0].ShortDescription.ToLower().Contains("tack"))
+            {
+                npcDesc = npcShops[0].ShortDescription.Substring(npcShops[0].ShortDescription.ToLower().IndexOf("tack"));
+                ShopName = npcName + "'s " + npcDesc;
+            }
+            else
+            {
+                ShopName = npcName + "'s Gear";
+            }
 
-            ShopName = npcName + "'s " + npcDesc;
-
+ 
             while(true)
             {
                 int hrsIdx = GameServer.RandomNumberGenerator.Next(0, HorseInfo.Breeds.Count);
