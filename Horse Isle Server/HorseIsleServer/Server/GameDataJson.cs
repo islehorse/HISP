@@ -232,13 +232,15 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Item ID: " + item.Id + " Name: " + item.Name + " spawns on: " + item.SpawnParamaters.SpawnOnTileType);
                 Item.Items.Add(item);
             }
-
+            // Register Throwables
             int totalThrowable = gameData.item.throwable.Count;
             for (int i = 0; i < totalThrowable; i++)
             {
                 Item.ThrowableItem throwableItem = new Item.ThrowableItem();
                 throwableItem.Id = gameData.item.throwable[i].id;
-                throwableItem.Message = gameData.item.throwable[i].message;
+                throwableItem.HitMessage = gameData.item.throwable[i].message_hit;
+                throwableItem.ThrowMessage = gameData.item.throwable[i].message_throw;
+                throwableItem.HitYourselfMessage = gameData.item.throwable[i].message_hit_yourself;
                 Item.ThrowableItems.Add(throwableItem);
             }
 
@@ -843,6 +845,7 @@ namespace HISP.Server
             Item.FishingPole = gameData.item.special.fishing_poll;
             Item.Earthworm = gameData.item.special.earthworm;
             Item.BirthdayToken = gameData.item.special.birthday_token;
+            Item.ModSplatterball = gameData.item.special.mod_splatterball;
 
             GameServer.IdleWarning = Convert.ToInt32(gameData.messages.disconnect.client_timeout.warn_after);
             GameServer.IdleTimeout = Convert.ToInt32(gameData.messages.disconnect.client_timeout.kick_after);
@@ -894,8 +897,9 @@ namespace HISP.Server
             Messages.OnlyUnicornCanWarp = gameData.messages.commands.warp.only_unicorn;
             Messages.FailedToUnderstandLocation = gameData.messages.commands.warp.location_unknown;
 
-            // Mod Isle
-            
+            // Mod
+            Messages.ModSplatterballEarnedYouFormat = gameData.messages.mods_revenge.awarded_you;
+            Messages.ModSplatterballEarnedOtherFormat = gameData.messages.mods_revenge.awareded_others;
             Messages.ModIsleMessage = gameData.messages.commands.mod_isle.message;
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;

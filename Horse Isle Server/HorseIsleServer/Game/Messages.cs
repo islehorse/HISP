@@ -13,8 +13,10 @@ namespace HISP.Game
         // Message Queue
         public static string MessageQueueHeader;
 
-        // Mod isle
+        // Mod
         public static string ModIsleMessage;
+        public static string ModSplatterballEarnedYouFormat;
+        public static string ModSplatterballEarnedOtherFormat;
 
         // Add Buddy
         public static string AddBuddyPending;
@@ -1114,6 +1116,22 @@ namespace HISP.Game
 
         // Event : Tack Shop Giveaway
         
+
+        // Throwables
+        public static string FormatModSplatterBallAwardedOther(string username)
+        {
+            return ModSplatterballEarnedOtherFormat.Replace("%USERNAME%", username);
+        }
+        public static string FormatModSplatterBallAwardedYou(string username)
+        {
+            return ModSplatterballEarnedYouFormat.Replace("%USERNAME%", username);
+        }
+        public static string FormatThrownItemMessage(string itemFormat, string username)
+        {
+            return itemFormat.Replace("%USERNAME%", username);
+        }
+        
+        // Tack Shop Giveaway
         public static string FormatEventTackShopGiveawayEnd(string shopName, string townName)
         {
             return EventEndTackShopGiveawayFormat.Replace("%SHOPNAME%", shopName).Replace("%TOWN%", townName);
@@ -2617,9 +2635,9 @@ namespace HISP.Game
             return InventoryItemFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count.ToString()).Replace("%TITLE%", name);
         }
 
-        public static string FormatItemThrowButton(int randomid)
+        public static string FormatItemThrowButton(int itemId)
         {
-            return ItemThrowButton.Replace("%RANDOMID%", randomid.ToString());
+            return ItemThrowButton.Replace("%ITEMID%", itemId.ToString());
         }
         public static string FormatItemConsumeButton(int randomid)
         {
