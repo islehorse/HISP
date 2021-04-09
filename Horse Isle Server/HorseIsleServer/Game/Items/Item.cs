@@ -53,7 +53,9 @@ namespace HISP.Game.Items
         public struct ThrowableItem
         {
             public int Id;
-            public string Message;
+            public string HitMessage;
+            public string ThrowMessage;
+            public string HitYourselfMessage;
         }
 
         public static List<ItemInformation> Items = new List<ItemInformation>();
@@ -66,6 +68,7 @@ namespace HISP.Game.Items
         public static int Telescope;
         public static int Pitchfork;
         public static int WishingCoin;
+        public static int ModSplatterball;
         public static int FishingPole;
         public static int Earthworm;
         public static int BirthdayToken;

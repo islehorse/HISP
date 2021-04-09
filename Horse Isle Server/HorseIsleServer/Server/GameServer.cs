@@ -144,6 +144,11 @@ namespace HISP.Server
                     }
                 }
             }
+            // Water Balloon Game
+            if(totalMinutesElapsed % (60 * 2) == 0)
+            {
+
+            }
             // Tack Shop Giveaway
             if(totalMinutesElapsed % (60 * 3) == 0)
             {
@@ -154,7 +159,7 @@ namespace HISP.Server
             if(totalMinutesElapsed % 30 == 0)
             {
                 RiddleEvent = RealTimeRiddle.GetRandomRiddle();
-                RiddleEvent.StartEvent();
+                RiddleEvent.StartEvent();   
             }
             // Real Time Quiz
             if(totalMinutesElapsed % 75 == 0)
@@ -5852,6 +5857,74 @@ namespace HISP.Server
                     }
                     
                     break;
+                case PacketBuilder.ITEM_THROW:
+                    packetStr = Encoding.UTF8.GetString(packet);
+                    string itemidStr = packetStr.Substring(2, packet.Length - 2);
+                    int itemId = 0;
+
+                    try
+                    {
+                        itemId = Int32.Parse(itemidStr);
+                    }
+                    catch (FormatException)
+                    {
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. (THROW)");
+                        return;
+                    }
+                    if (sender.LoggedinUser.Inventory.HasItemId(itemId))
+                    {
+                        if (!Item.IsThrowable(itemId))
+                        {
+                            Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to throw an item that isnt throwable.");
+                            return;
+                        }
+
+                        ItemInstance curItem = sender.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances[0];
+                        User[] userAt = GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, false, true);
+
+                        while (true)
+                        {
+                            int userIndx = RandomNumberGenerator.Next(0, userAt.Length);
+
+                            if (userAt.Length > 1)
+                                if (userAt[userIndx].Id == sender.LoggedinUser.Id)
+                                    continue;
+
+                            Item.ThrowableItem throwableItem = Item.GetThrowableItem(curItem.ItemId);
+
+                            if (userAt[userIndx].Id == sender.LoggedinUser.Id)
+                            {
+                                byte[] thrownHitYourself = PacketBuilder.CreateChat(throwableItem.HitYourselfMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(thrownHitYourself);
+                                break;
+                            }
+
+                            if(itemId == Item.ModSplatterball)
+                            {
+                                byte[] otherEarned = PacketBuilder.CreateChat(Messages.FormatModSplatterBallAwardedOther(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                byte[] youEarned = PacketBuilder.CreateChat(Messages.FormatModSplatterBallAwardedYou(userAt[userIndx].Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+
+                                sender.LoggedinUser.Money += 50;
+                                userAt[userIndx].Money += 500;
+
+                                sender.SendPacket(youEarned);
+                                userAt[userIndx].LoggedinClient.SendPacket(otherEarned);
+                            }
+
+                            byte[] thrownForYou = PacketBuilder.CreateChat(Messages.FormatThrownItemMessage(throwableItem.ThrowMessage, userAt[userIndx].Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            byte[] thrownForOthers = PacketBuilder.CreateChat(Messages.FormatThrownItemMessage(throwableItem.HitMessage, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+
+                            sender.SendPacket(thrownForYou);
+                            userAt[userIndx].LoggedinClient.SendPacket(thrownForOthers);
+                            
+                            break;
+                        }
+
+                        sender.LoggedinUser.Inventory.Remove(curItem);
+                        UpdateInventory(sender);
+                        
+                    }
+                    break;
                 case PacketBuilder.ITEM_WRAP:
                     packetStr = Encoding.UTF8.GetString(packet);
                     randomIdStr = packetStr.Substring(2, packet.Length - 2);
@@ -6326,7 +6399,7 @@ namespace HISP.Server
                     }
 
                     InventoryItem invItem = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
-                    int itemId = invItem.ItemId;
+                    itemId = invItem.ItemId;
                     goto doSell;
                 case PacketBuilder.ITEM_SELL_ALL:
                     packetStr = Encoding.UTF8.GetString(packet);

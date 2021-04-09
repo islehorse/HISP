@@ -2180,7 +2180,7 @@ namespace HISP.Game
                     message += Messages.FormatItemConsumeButton(randomId);
 
                 if (Item.IsThrowable(itemInfo.Id))
-                    message += Messages.FormatItemThrowButton(randomId);
+                    message += Messages.FormatItemThrowButton(itemInfo.Id);
 
                 message += Messages.FormatItemInformationButton(randomId);
                 message += Messages.R1;
