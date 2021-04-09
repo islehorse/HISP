@@ -13,13 +13,12 @@ i basically have to rewrite the entire game so ..
 
 **tl;dr, think "Club Penguin Rewritten" but with Horse Isle.**
 
-# Setup
-- Download/Clone this repository.          
+# Setup     
 - Download the latest Windows or Linux binary.        
 - Setup a SQL Server, (eg, MariaDB).         
 - Setup a webserver with PHP8.0, intl and mysqli modules (eg, Apache).         
-- Copy files from this repository's WebInterface/master-site into your webserver.        
-  have a separate virtual host for WebInterface/game-site.     
+- Copy files from the binary ZIP's www/master-site into your webserver.        
+  have a separate virtual host for www/game-site.     
 - Edit game-site/config.php to have your SQL login information.         
   Change the server host to your public IP or a Domain that points.       
   to it and also change the admin password        
