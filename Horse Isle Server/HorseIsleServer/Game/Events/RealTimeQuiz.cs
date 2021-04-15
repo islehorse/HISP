@@ -32,11 +32,12 @@ namespace HISP.Game.Events
                 Quit = false;
                 CorrectAnswers = 0;
                 MistakenAnswers = 0;
-
+                NextQuestion();
             }
 
             public void NextQuestion()
             {
+                CorrectAnswers++;
                 QuizCategory chosenCategory = Categories[GameServer.RandomNumberGenerator.Next(0, Categories.Length)];
                 OnQuestion = chosenCategory.Questions[GameServer.RandomNumberGenerator.Next(0, chosenCategory.Questions.Length)];
             }
@@ -48,6 +49,32 @@ namespace HISP.Game.Events
 
                 byte[] realTimeQuizQuestion = PacketBuilder.CreateMetaPacket(Meta.BuildRealTimeQuiz(this));
                 this.UserInstance.LoggedinClient.SendPacket(realTimeQuizQuestion);
+            }
+
+            public void CheckAnswer(string answer)
+            {
+                foreach (string correctAnswer in OnQuestion.Answers)
+                {
+                    if(answer.ToLower().Trim() == correctAnswer.ToLower().Trim())
+                    {
+                        if(CorrectAnswers == 8)
+                        {
+                            GameServer.QuizEvent.WinEvent(UserInstance);
+                            return;
+                        }
+
+                        NextQuestion();
+                        UpdateParticipent();
+                        return;
+                    }
+                    if (answer.ToLower().Trim() == "quit")
+                    {
+                        GameServer.QuizEvent.LeaveEvent(UserInstance);
+                        return;
+                    }
+                }
+                MistakenAnswers++;
+                UpdateParticipent();
             }
 
             public User UserInstance;
@@ -136,6 +163,24 @@ namespace HISP.Game.Events
             GameServer.QuizEvent = this;
         }
 
+        public void WinEvent(User winner)
+        {
+            byte[] eventWinMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeQuizWin(winner.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+            foreach (GameClient client in GameServer.ConnectedClients)
+                if (client.LoggedIn)
+                    client.SendPacket(eventWinMessage);
+
+            getParticipent(winner.Id).Won = true;
+
+            winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.QuizWin).Count++;
+            if (winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.QuizWin).Count >= 15)
+                winner.Awards.AddAward(Award.GetAwardById(54)); // Quiz Genius
+            if (winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.QuizWin).Count >= 25)
+                winner.Awards.AddAward(Award.GetAwardById(33)); // Quick Wit
+
+            stopEvent();
+        }
+
         public void EndEvent()
         {
             byte[] eventEndMessage = PacketBuilder.CreateChat(Messages.EventEndRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -156,8 +201,7 @@ namespace HISP.Game.Events
                         if (participent.Quit)
                             continue;
 
-                        if (participent.UserInstance.InRealTimeQuiz)
-                            GameServer.UpdateArea(participent.UserInstance.LoggedinClient);
+                        GameServer.UpdateArea(participent.UserInstance.LoggedinClient);
 
                         participent.UserInstance.InRealTimeQuiz = false;
 

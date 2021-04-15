@@ -273,11 +273,46 @@ namespace HISP.Game
                             int prize = EntryCost * Entries.Count;
                             entry.EnteredUser.Money += prize;
 
+
                             byte[] youWinMessage = PacketBuilder.CreateChat(Messages.FormatArenaYouWinMessage(prize, expReward), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             entry.EnteredUser.LoggedinClient.SendPacket(youWinMessage);
+
+                            // Awards:
+
+                            if (Entries.Count >= 2 && Type == "JUMPING")
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(5)); // Good Jumper
+
+                            if (Entries.Count >= 4 && Type == "JUMPING")
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(6)); // Great Jumper
+
+
+                            if (Entries.Count >= 2 && Type == "RACING")
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(7)); // Good Racer
+
+                            if (Entries.Count >= 4 && Type == "RACING")
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(8)); // Great Racer
+
+
+                            if (Entries.Count >= 2 && Type == "DRESSAGE")
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(9)); // Good Dressage
+
+                            if (Entries.Count >= 4 && Type == "DRESSAGE")
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(10)); // Great Dressage
+
+
+                            if (Entries.Count >= 2 && Type == "DRAFT")
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(38)); // Strong Horse Award
+
+                            if (Entries.Count >= 4 && Type == "DRAFT")
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(39)); // Strongest Horse Award
                         }
                         else
                         {
+                            entry.EnteredUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.ArenaLoss).Count++;
+
+                            if(entry.EnteredUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.ArenaLoss).Count >= 100)
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(32)); // Perseverance
+
                             byte[] youDONTWinMessage = PacketBuilder.CreateChat(Messages.FormatArenaOnlyWinnerWinsMessage(expReward), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             entry.EnteredUser.LoggedinClient.SendPacket(youDONTWinMessage);
                         }

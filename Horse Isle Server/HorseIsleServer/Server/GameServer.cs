@@ -169,7 +169,7 @@ namespace HISP.Server
                 QuizEvent.StartEvent();
             }
 
-            if (totalMinutesElapsed % 60 == 0)
+            if (totalMinutesElapsed % 60 == 0) // Do spoils
             {
                 foreach (HorseInstance horse in Database.GetMostSpoiledHorses())
                 {
@@ -2542,6 +2542,25 @@ namespace HISP.Server
                             }
 
                             break;
+                        case 15: // Real Time Quiz
+                            if (dynamicInput.Length >= 2)
+                            {
+                                if(QuizEvent != null)
+                                {
+                                    if (sender.LoggedinUser.InRealTimeQuiz)
+                                    {
+                                        RealTimeQuiz.Participent participent = QuizEvent.JoinEvent(sender.LoggedinUser);
+                                        string answer = dynamicInput[1];
+                                        participent.CheckAnswer(answer);
+                                    }
+                                }
+                                break;
+                            }
+                            else
+                            {
+                                Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (RealTimeQuiz, wrong size)");
+                                break;
+                            }
                         default:
                             Logger.ErrorPrint("Unknown dynamic input: " + inputId.ToString() + " packet dump: " + BitConverter.ToString(packet).Replace("-", " "));
                             break;
@@ -3315,8 +3334,29 @@ namespace HISP.Server
                             {
                                 sender.LoggedinUser.MetaPriority = true;
                                 sender.LoggedinUser.Money -= horseLeaser.Price;
+                                
+                                HorseInstance leaseHorse = horseLeaser.GenerateLeaseHorse();
+                                
+                                if(leaseHorse.Breed.Id == 170) // UniPeg
+                                {
+                                    sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.UnipegTeamup).Count++;
+                                    if(sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.UnipegTeamup).Count >= 5)
+                                        sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(55)); // UniPeg Friend
+                                }
+                                else if(leaseHorse.Breed.Type == "unicorn")
+                                {
+                                    sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.UnicornTeamup).Count++;
+                                    if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.UnicornTeamup).Count >= 5)
+                                        sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(42)); // Unicorn Friend
+                                }
+                                else if(leaseHorse.Breed.Type == "pegasus")
+                                {
+                                    sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PegasusTeamup).Count++;
+                                    if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PegasusTeamup).Count >= 5)
+                                        sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(43)); // Pegasus Friend
+                                }
 
-                                sender.LoggedinUser.HorseInventory.AddHorse(horseLeaser.GenerateLeaseHorse());
+                                sender.LoggedinUser.HorseInventory.AddHorse(leaseHorse);
 
                                 byte[] addedHorseMeta = PacketBuilder.CreateMetaPacket(Meta.BuildLeaserOnLeaseInfo(horseLeaser));
                                 sender.SendPacket(addedHorseMeta);
@@ -7376,8 +7416,10 @@ namespace HISP.Server
             forClient.LoggedinUser.ListingAuction = false;
 
             string LocationStr = "";
-            if (!World.InSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y) && !forClient.LoggedinUser.InRealTimeQuiz)
+            if (!World.InSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y))
             {
+                if (forClient.LoggedinUser.InRealTimeQuiz)
+                    return;
                 LocationStr = Meta.BuildMetaInfo(forClient.LoggedinUser, forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
             }
             else
@@ -7488,10 +7530,14 @@ namespace HISP.Server
             }
             if (horseMountInst.Breed.Type == "camel")
             {
+                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(40)); // Camel Rider
+
                 incBy = 13;
             }
             if(horseMountInst.Breed.Type == "llama")
             {
+                sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(41)); // Llama Rider
+
                 incBy = 14;
             }
             if (horseMountInst.Breed.Type == "unicorn")
