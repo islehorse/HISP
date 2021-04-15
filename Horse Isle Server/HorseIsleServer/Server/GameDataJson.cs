@@ -884,6 +884,10 @@ namespace HISP.Server
             Map.NewUserStartX = gameData.messages.new_user.starting_x;
             Map.NewUserStartY = gameData.messages.new_user.starting_y;
 
+            // Timed Messages
+            Messages.PlaytimeMessageFormat = gameData.messages.timed_messages.playtime_message;
+            Messages.RngMessages = gameData.messages.timed_messages.rng_message.ToObject<string[]>();
+
             // Auto Sell
             Messages.AutoSellNotStandingInSamePlace = gameData.messages.meta.auto_sell.not_standing_sameplace;
             Messages.AutoSellSuccessFormat = gameData.messages.meta.auto_sell.success;

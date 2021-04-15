@@ -13,6 +13,10 @@ namespace HISP.Game
         // Message Queue
         public static string MessageQueueHeader;
 
+        // Timed Messages
+        public static string PlaytimeMessageFormat;
+        public static string[] RngMessages;
+
         // Mod
         public static string ModIsleMessage;
         public static string ModSplatterballEarnedYouFormat;
@@ -1220,7 +1224,7 @@ namespace HISP.Game
         {
             return AutoSellYouSoldHorseOfflineFormat.Replace("%HORSE%", horseName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%USERNAME%", toUsername);
         }
-        
+
         public static string FormatAutoSellSold(string horseName, int price, string toUsername)
         {
             return AutoSellYouSoldHorseFormat.Replace("%HORSE%", horseName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%USERNAME%", toUsername);
@@ -1525,7 +1529,7 @@ namespace HISP.Game
         }
         public static string FormatCityHallCantFindPlayerMessage(string playerName)
         {
-            return CityHallCantFindPlayerMessageFormat.Replace("%PLAYERNAME%", playerName); 
+            return CityHallCantFindPlayerMessageFormat.Replace("%PLAYERNAME%", playerName);
         }
         public static string FormatCityHallTopExperiencedHorses(int placing, int experiencePoints, string playerName, string horseName)
         {
@@ -1545,7 +1549,7 @@ namespace HISP.Game
         }
         public static string FormatCityHallTopSpoiledHorseEntry(int spoiled, string playerName, string horseName)
         {
-            return CityHallSpoiledHorseEntryFormat.Replace("%SPOILED%", spoiled.ToString()).Replace("%PLAYERNAME%", playerName).Replace("%HORSENAME%", horseName); 
+            return CityHallSpoiledHorseEntryFormat.Replace("%SPOILED%", spoiled.ToString()).Replace("%PLAYERNAME%", playerName).Replace("%HORSENAME%", horseName);
         }
         public static string FormatCityHallTopPlayerEntry(int placing, double money, string playerName)
         {
@@ -1704,7 +1708,7 @@ namespace HISP.Game
 
         public static string FormatRanchTrainFail(string horseName, int timeout)
         {
-            return RanchTrainCantTrainFormat.Replace("%HORSENAME%", horseName).Replace("%TIME%", timeout.ToString());            
+            return RanchTrainCantTrainFormat.Replace("%HORSENAME%", horseName).Replace("%TIME%", timeout.ToString());
         }
         public static string FormatRanchTrainBadMood(string horseName)
         {
@@ -1874,7 +1878,7 @@ namespace HISP.Game
         }
         public static string FormatAwardEntry(int iconId, string awardName, int bonusMoney, string description)
         {
-            return AwardEntryFormat.Replace("%ICONID%", iconId.ToString()).Replace("%AWARDNAME%", awardName).Replace("%BONUSMONEY%",bonusMoney.ToString("N0", CultureInfo.InvariantCulture)).Replace("%DESCRIPTION%",description);
+            return AwardEntryFormat.Replace("%ICONID%", iconId.ToString()).Replace("%AWARDNAME%", awardName).Replace("%BONUSMONEY%", bonusMoney.ToString("N0", CultureInfo.InvariantCulture)).Replace("%DESCRIPTION%", description);
         }
 
         public static string FormatLocationDescription(string description)
@@ -1883,15 +1887,15 @@ namespace HISP.Game
         }
         public static string FormatIslandLocation(string isleName, string mapXy)
         {
-            return LocationIslandFormat.Replace("%ISLENAME%", isleName).Replace("%MAPXY%",mapXy);
+            return LocationIslandFormat.Replace("%ISLENAME%", isleName).Replace("%MAPXY%", mapXy);
         }
         public static string FormatTownLocation(string townName, string mapXy)
         {
-            return LocationTownFormat.Replace("%TOWNNAME%", townName).Replace("%MAPXY%",mapXy);
+            return LocationTownFormat.Replace("%TOWNNAME%", townName).Replace("%MAPXY%", mapXy);
         }
         public static string FormatMinigameEntry(string gameName, string mapXy)
         {
-            return MinigameEntryFormat.Replace("%GAMENAME%",gameName).Replace("%MAPXY%",mapXy);
+            return MinigameEntryFormat.Replace("%GAMENAME%", gameName).Replace("%MAPXY%", mapXy);
         }
         public static string FormatCompanionEntry(string itemDescription)
         {
@@ -1899,31 +1903,31 @@ namespace HISP.Game
         }
         public static string FormatCompanionViewButton(int iconid, string itemName, string swf)
         {
-            return CompanionViewFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COMPANIONNAME%",itemName).Replace("%SWF%", swf);
+            return CompanionViewFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COMPANIONNAME%", itemName).Replace("%SWF%", swf);
         }
         public static string FormatTackSetPeice(string itemName, string itemDescription)
         {
-            return TackSetPeiceFormat.Replace("%ITEMNAME%",itemName).Replace("%ITEMDESC%", itemDescription);
+            return TackSetPeiceFormat.Replace("%ITEMNAME%", itemName).Replace("%ITEMDESC%", itemDescription);
         }
 
         public static string FormatTackSetView(int iconId, string tackSetName, string swf)
         {
-            return TackViewSetFormat.Replace("%ICONID%",iconId.ToString()).Replace("%SETNAME%", tackSetName).Replace("%SWF%",swf);
+            return TackViewSetFormat.Replace("%ICONID%", iconId.ToString()).Replace("%SETNAME%", tackSetName).Replace("%SWF%", swf);
         }
 
         public static string FormatWhispererHorseFoundMeta(string mapXys)
         {
-            return WhispererHorsesFoundFormat.Replace("%MAPXYS%",mapXys);
+            return WhispererHorsesFoundFormat.Replace("%MAPXYS%", mapXys);
         }
 
         public static string FormatWhispererPrice(int price)
         {
-            return WhispererServiceCostYouFormat.Replace("%MONEY%",price.ToString("N0", CultureInfo.InvariantCulture));
+            return WhispererServiceCostYouFormat.Replace("%MONEY%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
 
         public static string FormatWhispererHorseBreedButton(string breedName, int breedId)
         {
-            return WhispererHorseLocateButtonFormat.Replace("%BREEDNAME%",breedName).Replace("%BREEDID%",breedId.ToString());
+            return WhispererHorseLocateButtonFormat.Replace("%BREEDNAME%", breedName).Replace("%BREEDID%", breedId.ToString());
         }
 
         public static string FormatVetServiceHorseMeta(string horseName, int currentHealth, int maxHealth)
@@ -1978,7 +1982,7 @@ namespace HISP.Game
         }
         public static string FormatCompactedAdvancedStats(int speed, int strength, int conformation, int agility, int endurance, int inteligence, int personality)
         {
-            return HorseAdvancedStatsCompactedFormat.Replace("%SPEED%", speed.ToString()).Replace("%STRENGTH%", strength.ToString()).Replace("%CONFORMATION%",conformation.ToString()).Replace("%AGILITY%", agility.ToString()).Replace("%ENDURANCE%", endurance.ToString()).Replace("%INTELIGENCE%", inteligence.ToString()).Replace("%PERSONALITY%", personality.ToString());
+            return HorseAdvancedStatsCompactedFormat.Replace("%SPEED%", speed.ToString()).Replace("%STRENGTH%", strength.ToString()).Replace("%CONFORMATION%", conformation.ToString()).Replace("%AGILITY%", agility.ToString()).Replace("%ENDURANCE%", endurance.ToString()).Replace("%INTELIGENCE%", inteligence.ToString()).Replace("%PERSONALITY%", personality.ToString());
         }
         public static string FormatCompactedBasicStats(int health, int hunger, int thirst, int mood, int tiredness, int groom, int shoes)
         {
@@ -2015,6 +2019,11 @@ namespace HISP.Game
         public static string FormatHorseCompanionEquipMessage(string horseName, string itemName)
         {
             return HorseCompanionEquipMessageFormat.Replace("%HORSENAME%", horseName).Replace("%ITEM%", itemName);
+        }
+
+        public static string FormatPlaytimeMessage(int hours)
+        {
+            return PlaytimeMessageFormat.Replace("%TOTALHOURS%", hours.ToString());
         }
         public static string FormatHorseCompanionSelected(int icon, string name)
         {
