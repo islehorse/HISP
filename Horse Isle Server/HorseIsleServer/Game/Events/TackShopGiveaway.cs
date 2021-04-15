@@ -128,6 +128,7 @@ namespace HISP.Game.Events
                 User winner = usersHere[winIndx];
 
                 winner.HorseInventory.AddHorse(HorseGiveaway);
+                winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.TackShopGiveaway).Count++;
 
                 byte[] horseWonMessage = PacketBuilder.CreateChat(Messages.FormatEventTackShopGiveawayWon(winner.Username, HorseGiveaway.Breed.Name, ShopName, Town.Name, usersHere.Length), PacketBuilder.CHAT_BOTTOM_RIGHT);
                 foreach (GameClient client in GameServer.ConnectedClients)

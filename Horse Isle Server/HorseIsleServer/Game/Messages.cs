@@ -1144,7 +1144,7 @@ namespace HISP.Game
         // Event : Real Time Quiz
         public static string FormatEventRealTimeQuizMeta(int questionNo, int totalMistakes, string category, string question)
         {
-            return EventMetaRealTimeQuizFormat.Replace("%QUESTIONNUMBER%", questionNo.ToString()).Replace("%MISTAKES%", questionNo.ToString()).Replace("%CATEGORY%", category).Replace("%QUESTIONTEXT%", question);
+            return EventMetaRealTimeQuizFormat.Replace("%QUESTIONNUMBER%", questionNo.ToString()).Replace("%MISTAKES%", totalMistakes.ToString()).Replace("%CATEGORY%", category).Replace("%QUESTIONTEXT%", question);
         }
         public static string FormatEventRealTimeQuizBonus(int bonusMoney)
         {
