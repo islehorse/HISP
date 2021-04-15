@@ -833,6 +833,32 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Riddle #" + riddle.RiddleId.ToString());
             }
 
+            // Register Events : Real Time Quiz
+            int totalRealTimeQuizCategories = gameData.events.real_time_quiz.Count;
+            RealTimeQuiz.Categories = new RealTimeQuiz.QuizCategory[totalRealTimeQuizCategories]; // initalize array
+            for (int i = 0; i < totalRealTimeQuizCategories; i++)
+            {
+                string name = gameData.events.real_time_quiz[i].name;
+                int totalQuestions = gameData.events.real_time_quiz[i].questons.Count;
+
+                RealTimeQuiz.QuizCategory quizCategory = new RealTimeQuiz.QuizCategory();
+                quizCategory.Name = name;
+                quizCategory.Questions = new RealTimeQuiz.QuizQuestion[totalQuestions];
+
+                for(int ii = 0; ii < totalQuestions; ii++)
+                {
+                    quizCategory.Questions[ii] = new RealTimeQuiz.QuizQuestion(quizCategory);
+                    quizCategory.Questions[ii].Question = gameData.events.real_time_quiz[i].questons[ii].question;
+                    quizCategory.Questions[ii].Answers = gameData.events.real_time_quiz[i].questons[ii].answers.ToObject<string[]>();
+                    Logger.DebugPrint("Registered Real Time Quiz Question: " + quizCategory.Questions[ii].Question);
+                }
+
+                RealTimeQuiz.Categories[i] = quizCategory;
+
+                Logger.DebugPrint("Registered Real Time Quiz Category: " + name);
+            }
+
+
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
             Item.Present = gameData.item.special.present;

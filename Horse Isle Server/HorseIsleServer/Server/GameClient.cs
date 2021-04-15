@@ -183,11 +183,11 @@ namespace HISP.Server
                     LoggedinUser.Teleport(45, 35);
                 }
 
-                if (totalMinutesElapsed % 2 == 0)
-                {
-                    LoggedinUser.Thirst--;
+                
+                LoggedinUser.Thirst--;
+                
+                if (totalMinutesElapsed % 5 == 0)
                     LoggedinUser.Hunger--;
-                }
 
 
                 if (totalMinutesElapsed % 10 == 0)
