@@ -962,6 +962,7 @@ namespace HISP.Server
             Messages.EventWinRealTimeQuizFormat = gameData.messages.events.real_time_quiz.event_win;
             Messages.EventUnavailableRealTimeQuiz = gameData.messages.events.real_time_quiz.event_unavailable;
             Messages.EventEnteredRealTimeQuiz = gameData.messages.events.real_time_quiz.event_entered;
+            Messages.EventQuitRealTimeQuiz = gameData.messages.events.real_time_quiz.event_quit;
 
             // Events : Real Time Riddle
 

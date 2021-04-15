@@ -3,6 +3,7 @@ using HISP.Server;
 using HISP.Game.Items;
 using System;
 using System.Collections.Generic;
+using HISP.Game.Events;
 
 namespace HISP.Game.Chat
 {
@@ -371,12 +372,22 @@ namespace HISP.Game.Chat
 
         public static bool Quiz(string message, string[] args, User user)
         {
-            bool quizActive = false;
-            // TODO: Check quiz event is running.
+            bool quizActive = (GameServer.QuizEvent != null);
             if (quizActive)
             {
                 string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
 
+                RealTimeQuiz.Participent participent = GameServer.QuizEvent.JoinEvent(user);
+
+                if(participent.Quit)
+                {
+                    byte[] quizQuit = PacketBuilder.CreateChat(Messages.EventQuitRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    user.LoggedinClient.SendPacket(quizQuit);
+
+                    return false;
+                }
+                
+                participent.UpdateParticipent();
                 byte[] enteredRealTimeQuiz = PacketBuilder.CreateChat(Messages.EventEnteredRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 user.LoggedinClient.SendPacket(enteredRealTimeQuiz);
 

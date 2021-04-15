@@ -74,6 +74,7 @@ namespace HISP.Game
         public static string EventWinRealTimeQuizFormat;
         public static string EventUnavailableRealTimeQuiz;
         public static string EventEnteredRealTimeQuiz;
+        public static string EventQuitRealTimeQuiz;
 
         // Events : Real Time Riddles
         public static string EventStartRealTimeRiddleFormat;

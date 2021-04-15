@@ -77,7 +77,7 @@ namespace HISP.Player
         public HorseInfo.Breed PawneerOrderBreed = null;
         public string PawneerOrderColor = "";
         public string PawneerOrderGender = "";
-
+        public bool InRealTimeQuiz = false;
         public int PendingTradeTo;
         public Mailbox MailBox;
         public Friends Friends;
@@ -438,7 +438,6 @@ namespace HISP.Player
         public byte[] SecCodeSeeds = new byte[3];
         public  int SecCodeInc = 0;
         public int SecCodeCount = 0;
-
 
         public int GetPlayerListIcon()
         {
