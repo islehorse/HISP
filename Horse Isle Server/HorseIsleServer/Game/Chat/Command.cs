@@ -373,6 +373,12 @@ namespace HISP.Game.Chat
         public static bool Quiz(string message, string[] args, User user)
         {
             bool quizActive = (GameServer.QuizEvent != null);
+            if(user.InRealTimeQuiz)
+            {
+                byte[] cantEnterRealTimeQuiz = PacketBuilder.CreateChat(Messages.EventAlreadyEnteredRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                user.LoggedinClient.SendPacket(cantEnterRealTimeQuiz);
+                return false;
+            }
             if (quizActive)
             {
                 string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));

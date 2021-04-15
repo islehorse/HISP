@@ -78,6 +78,7 @@ namespace HISP.Game
         public static string EventWinRealTimeQuizFormat;
         public static string EventUnavailableRealTimeQuiz;
         public static string EventEnteredRealTimeQuiz;
+        public static string EventAlreadyEnteredRealTimeQuiz;
         public static string EventQuitRealTimeQuiz;
 
         // Events : Real Time Riddles
@@ -2020,7 +2021,6 @@ namespace HISP.Game
         {
             return HorseCompanionEquipMessageFormat.Replace("%HORSENAME%", horseName).Replace("%ITEM%", itemName);
         }
-
         public static string FormatPlaytimeMessage(int hours)
         {
             return PlaytimeMessageFormat.Replace("%TOTALHOURS%", hours.ToString());
