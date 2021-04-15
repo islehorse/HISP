@@ -158,6 +158,9 @@ namespace HISP.Game.Chat
                 else if (message.ToUpper().StartsWith("!HEAR"))
                     return Command.UnMute(message, args, user);
 
+                else if (message.ToUpper().StartsWith("!QUIZ"))
+                    return Command.Quiz(message, args, user);
+
                 else if (message.ToUpper().StartsWith("!WARP"))
                     return Command.Warp(message, args, user);
 

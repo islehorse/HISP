@@ -368,6 +368,32 @@ namespace HISP.Game.Chat
             return true;
 
         }
+
+        public static bool Quiz(string message, string[] args, User user)
+        {
+            bool quizActive = false;
+            // TODO: Check quiz event is running.
+            if (quizActive)
+            {
+                string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+
+                byte[] enteredRealTimeQuiz = PacketBuilder.CreateChat(Messages.EventEnteredRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                user.LoggedinClient.SendPacket(enteredRealTimeQuiz);
+
+                byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
+                user.LoggedinClient.SendPacket(chatPacket);
+                return true;
+
+            } 
+            else
+            {
+                byte[] quizUnavailable = PacketBuilder.CreateChat(Messages.EventUnavailableRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                user.LoggedinClient.SendPacket(quizUnavailable);
+                return false;
+            }
+
+        }
+
         public static bool Mute(string message, string[] args, User user)
         {
             string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
