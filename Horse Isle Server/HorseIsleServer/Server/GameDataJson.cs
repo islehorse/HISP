@@ -952,6 +952,17 @@ namespace HISP.Server
             // Message Queue 
             Messages.MessageQueueHeader = gameData.messages.message_queue;
 
+            // Events : Real Time Quiz
+
+            Messages.EventMetaRealTimeQuizFormat = gameData.messages.events.real_time_quiz.event_meta;
+            Messages.EventStartRealTimeQuiz = gameData.messages.events.real_time_quiz.event_start;
+            Messages.EventEndRealTimeQuiz = gameData.messages.events.real_time_quiz.event_end;
+            Messages.EventBonusRealTimeQuizFormat = gameData.messages.events.real_time_quiz.event_bonus;
+            Messages.EventWinBonusRealTimeQuizFormat = gameData.messages.events.real_time_quiz.event_win_bonus;
+            Messages.EventWinRealTimeQuizFormat = gameData.messages.events.real_time_quiz.event_win;
+            Messages.EventUnavailableRealTimeQuiz = gameData.messages.events.real_time_quiz.event_unavailable;
+            Messages.EventEnteredRealTimeQuiz = gameData.messages.events.real_time_quiz.event_entered;
+
             // Events : Real Time Riddle
 
             Messages.EventStartRealTimeRiddleFormat = gameData.messages.events.real_time_riddle.event_start;

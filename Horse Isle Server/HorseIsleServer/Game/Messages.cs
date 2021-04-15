@@ -65,6 +65,16 @@ namespace HISP.Game
         public static string SocialTypeFormat;
         public static string SocialPlayerNoLongerNearby;
 
+        // Events : Real Time Quiz
+        public static string EventMetaRealTimeQuizFormat;
+        public static string EventStartRealTimeQuiz;
+        public static string EventEndRealTimeQuiz;
+        public static string EventBonusRealTimeQuizFormat;
+        public static string EventWinBonusRealTimeQuizFormat;
+        public static string EventWinRealTimeQuizFormat;
+        public static string EventUnavailableRealTimeQuiz;
+        public static string EventEnteredRealTimeQuiz;
+
         // Events : Real Time Riddles
         public static string EventStartRealTimeRiddleFormat;
         public static string EventEndRealTimeRiddle;
@@ -144,7 +154,7 @@ namespace HISP.Game
         // Trading : Messages
 
         public static string TradeWaitingForOthersToAcceptMessage;
-        
+
         public static string TradeRequiresBothPlayersMessage;
         public static string TradeCanceledBecuasePlayerMovedMessage;
 
@@ -1114,8 +1124,7 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
-        // Event : Tack Shop Giveaway
-        
+
 
         // Throwables
         public static string FormatModSplatterBallAwardedOther(string username)
@@ -1130,8 +1139,27 @@ namespace HISP.Game
         {
             return itemFormat.Replace("%USERNAME%", username);
         }
-        
-        // Tack Shop Giveaway
+
+        // Event : Real Time Quiz
+        public static string FormatEventRealTimeQuizMeta(int questionNo, int totalMistakes, string category, string question)
+        {
+            return EventMetaRealTimeQuizFormat.Replace("%QUESTIONNUMBER%", questionNo.ToString()).Replace("%MISTAKES%", questionNo.ToString()).Replace("%CATEGORY%", category).Replace("%QUESTIONTEXT%", question);
+        }
+        public static string FormatEventRealTimeQuizBonus(int bonusMoney)
+        {
+            return EventBonusRealTimeQuizFormat.Replace("%MONEY%", bonusMoney.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatEventRealTimeQuizWinBonus(int bonusMoney)
+        {
+            return EventWinBonusRealTimeQuizFormat.Replace("%MONEY%", bonusMoney.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatEventRealTimeQuizWin(string winner)
+        {
+            return EventWinRealTimeQuizFormat.Replace("%USERNAME%", winner);
+        }
+
+
+        // Event : Tack Shop Giveaway
         public static string FormatEventTackShopGiveawayEnd(string shopName, string townName)
         {
             return EventEndTackShopGiveawayFormat.Replace("%SHOPNAME%", shopName).Replace("%TOWN%", townName);
