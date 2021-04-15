@@ -76,7 +76,7 @@ namespace HISP.Server
 
                 }
 
-
+                // Those fun messages when u have been playing for awhile.
                 if (totalMinutesElapsed % (2 * 60) == 0)
                 {
                     string ptMessage = Messages.RngMessages[GameServer.RandomNumberGenerator.Next(0, Messages.RngMessages.Length)];
