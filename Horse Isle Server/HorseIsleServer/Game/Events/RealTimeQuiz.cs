@@ -209,45 +209,41 @@ namespace HISP.Game.Events
         {
             foreach(Participent participent in Participents)
             {
-                if (participent.UserInstance.LoggedinClient != null)
+                
+                if (participent.Quit)
+                    continue;
+
+
+                participent.UserInstance.InRealTimeQuiz = false;
+                GameServer.UpdateArea(participent.UserInstance.LoggedinClient);
+
+                int money = 0;
+
+                if (participent.Won)
+                    money += 2500;
+                else
+                    money += 250;
+
+                money += (participent.CorrectAnswers * 500);
+                money -= (participent.MistakenAnswers * 100);
+
+                if (money < 250)
+                    money = 250;
+
+
+                if (participent.Won)
                 {
-                    if (GameServer.IsUserOnline(participent.UserInstance.Id))
-                    {
-                        if (participent.Quit)
-                            continue;
-
-                        GameServer.UpdateArea(participent.UserInstance.LoggedinClient);
-
-                        participent.UserInstance.InRealTimeQuiz = false;
-
-                        int money = 0;
-
-                        if (participent.Won)
-                            money += 2500;
-                        else
-                            money += 250;
-
-                        money += (participent.CorrectAnswers * 500);
-                        money -= (participent.MistakenAnswers * 100);
-
-                        if (money < 250)
-                            money = 250;
-
-
-                        if (participent.Won)
-                        {
-                            byte[] wonBonusMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeQuizWinBonus(money), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            participent.UserInstance.LoggedinClient.SendPacket(wonBonusMessage);
-                        }
-                        else 
-                        {
-                            byte[] bonusMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeQuizBonus(money), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            participent.UserInstance.LoggedinClient.SendPacket(bonusMessage);
-                        }
-
-                        participent.UserInstance.Money += money;
-                    }
+                    byte[] wonBonusMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeQuizWinBonus(money), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    participent.UserInstance.LoggedinClient.SendPacket(wonBonusMessage);
                 }
+                else 
+                {
+                    byte[] bonusMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeQuizBonus(money), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    participent.UserInstance.LoggedinClient.SendPacket(bonusMessage);
+                }
+
+                participent.UserInstance.Money += money;
+              
             }
 
             participents.Clear();
@@ -255,7 +251,7 @@ namespace HISP.Game.Events
             quizTimer.Dispose();
 
             Active = false;
-            GameServer.TackShopGiveawayEvent = null;
+            GameServer.QuizEvent = null;
         }
 
         private void quizTimesUp(object state)
