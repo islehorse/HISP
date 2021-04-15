@@ -7003,9 +7003,9 @@ namespace HISP.Server
                 sender.LoggedinUser.TradingWith = null;
                 sender.LoggedinUser.PendingTradeTo = 0;
                 
-                // Quit open quiz.
+                // Leave open quiz.
                 if (QuizEvent != null)
-                    QuizEvent.LeaveEvent(sender.LoggedinUser, false);
+                    QuizEvent.LeaveEvent(sender.LoggedinUser);
 
                 // Delete Arena Entries
                 if (Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))

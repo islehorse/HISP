@@ -25,21 +25,20 @@ namespace HISP.Game.Events
 
         public class Participent
         {
-            public Participent(User user)
+            public Participent(User user, RealTimeQuiz Quiz)
             {
                 UserInstance = user;
                 Won = false;
                 Quit = false;
                 CorrectAnswers = 0;
                 MistakenAnswers = 0;
+                baseQuiz = Quiz;
                 NextQuestion();
             }
 
             public void NextQuestion()
             {
-                CorrectAnswers++;
-                QuizCategory chosenCategory = Categories[GameServer.RandomNumberGenerator.Next(0, Categories.Length)];
-                OnQuestion = chosenCategory.Questions[GameServer.RandomNumberGenerator.Next(0, chosenCategory.Questions.Length)];
+                OnQuestion = baseQuiz.Questions[CorrectAnswers++];
             }
 
             public void UpdateParticipent()
@@ -57,9 +56,9 @@ namespace HISP.Game.Events
                 {
                     if(answer.ToLower().Trim() == correctAnswer.ToLower().Trim())
                     {
-                        if(CorrectAnswers == 8)
+                        if(CorrectAnswers >= baseQuiz.Questions.Length)
                         {
-                            GameServer.QuizEvent.WinEvent(UserInstance);
+                            baseQuiz.WinEvent(UserInstance);
                             return;
                         }
 
@@ -69,7 +68,7 @@ namespace HISP.Game.Events
                     }
                     if (answer.ToLower().Trim() == "quit")
                     {
-                        GameServer.QuizEvent.LeaveEvent(UserInstance);
+                        baseQuiz.QuitEvent(UserInstance);
                         return;
                     }
                 }
@@ -77,16 +76,17 @@ namespace HISP.Game.Events
                 UpdateParticipent();
             }
 
+            private RealTimeQuiz baseQuiz;
             public User UserInstance;
             public int CorrectAnswers;
             public int MistakenAnswers;
             public bool Quit;
             public bool Won;
-
             public QuizQuestion OnQuestion;
         }
 
         public static QuizCategory[] Categories;
+        public QuizQuestion[] Questions;
         public bool Active;
         public const int QUIZ_TIMEOUT = 5;
         private Timer quizTimer;
@@ -102,7 +102,14 @@ namespace HISP.Game.Events
         public RealTimeQuiz()
         {
             participents = new List<Participent>();
+            Questions = new QuizQuestion[8];
+            for(int i = 0; i < 8; i++)
+            {
+                QuizCategory chosenCategory = Categories[GameServer.RandomNumberGenerator.Next(0, Categories.Length)];
+                Questions[i] = chosenCategory.Questions[GameServer.RandomNumberGenerator.Next(0, chosenCategory.Questions.Length)];
+            }
             Active = false;
+
         }
 
         
@@ -125,7 +132,7 @@ namespace HISP.Game.Events
             }
             catch (KeyNotFoundException) { };
 
-            Participent newParticipent = new Participent(user);
+            Participent newParticipent = new Participent(user, this);
             user.InRealTimeQuiz = true;
             participents.Add(newParticipent);
 
@@ -133,18 +140,26 @@ namespace HISP.Game.Events
             return newParticipent;
         }
 
-        public void LeaveEvent(User user, bool sendData=true)
+        public void LeaveEvent(User user)
+        {
+            try
+            {
+                Participent partcipent = getParticipent(user.Id);
+                user.InRealTimeQuiz = false;
+                participents.Remove(partcipent);
+                partcipent = null;
+            }
+            catch (KeyNotFoundException) { };
+        }
+
+        public void QuitEvent(User user)
         {
             try
             {
                 Participent partcipent = getParticipent(user.Id);
                 partcipent.Quit = true;
                 user.InRealTimeQuiz = false;
-
-                if(sendData)
-                    if (user.LoggedinClient != null)
-                        if(GameServer.IsUserOnline(user.Id))
-                            GameServer.UpdateArea(user.LoggedinClient);
+                GameServer.UpdateArea(user.LoggedinClient);
             }
             catch (KeyNotFoundException) { };
         }
