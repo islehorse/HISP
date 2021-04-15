@@ -75,6 +75,15 @@ namespace HISP.Server
                     }
 
                 }
+
+
+                if (totalMinutesElapsed % (2 * 60) == 0)
+                {
+                    string ptMessage = Messages.RngMessages[GameServer.RandomNumberGenerator.Next(0, Messages.RngMessages.Length)];
+                    byte[] playTimeMessage = PacketBuilder.CreateChat(Messages.FormatPlaytimeMessage(totalMinutesElapsed / 60) + ptMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    SendPacket(playTimeMessage);
+                }
+
                 bool gotoPrision = false;
                 foreach(HorseInstance horse in LoggedinUser.HorseInventory.HorseList)
                 {
@@ -183,14 +192,15 @@ namespace HISP.Server
                     LoggedinUser.Teleport(45, 35);
                 }
 
-                
-                LoggedinUser.Thirst--;
-                
+
                 if (totalMinutesElapsed % 5 == 0)
+                    LoggedinUser.Thirst--;
+                
+                if (totalMinutesElapsed % 10 == 0)
                     LoggedinUser.Hunger--;
 
 
-                if (totalMinutesElapsed % 10 == 0)
+                if (totalMinutesElapsed % 15 == 0)
                     LoggedinUser.Tiredness--;
             }
 
