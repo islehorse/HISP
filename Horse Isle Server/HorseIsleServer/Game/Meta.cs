@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
 using HISP.Game.Chat;
+using HISP.Game.Events;
 
 namespace HISP.Game
 {
@@ -732,6 +733,10 @@ namespace HISP.Game
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;
+        }
+        public static string BuildRealTimeQuiz(RealTimeQuiz.Participent participent) 
+        {
+            return Messages.FormatEventRealTimeQuizMeta(participent.CorrectAnswers, participent.MistakenAnswers, participent.OnQuestion.BaseCategory.Name, participent.OnQuestion.Question);
         }
         public static string BuildCompanionLibary()
         {

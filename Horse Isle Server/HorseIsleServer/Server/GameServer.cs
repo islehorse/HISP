@@ -40,7 +40,8 @@ namespace HISP.Server
 
         // Events
         public static RealTimeRiddle RiddleEvent = RealTimeRiddle.GetRandomRiddle();
-        public static TackShopGiveaway TackShopGiveawayEvent;
+        public static TackShopGiveaway TackShopGiveawayEvent = null;
+        public static RealTimeQuiz QuizEvent = null;
 
         /*
          *  Private stuff 
@@ -164,7 +165,8 @@ namespace HISP.Server
             // Real Time Quiz
             if(totalMinutesElapsed % 75 == 0)
             {
-
+                QuizEvent = new RealTimeQuiz();
+                QuizEvent.StartEvent();
             }
 
             if (totalMinutesElapsed % 60 == 0)
@@ -6951,7 +6953,6 @@ namespace HISP.Server
             if (sender.LoggedIn)
             {
                 Database.SetPlayerLastLogin(Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()), sender.LoggedinUser.Id); // Set last login date
-
                 Database.RemoveOnlineUser(sender.LoggedinUser.Id);
 
                 // Leave multirooms
@@ -6961,9 +6962,13 @@ namespace HISP.Server
                 // Remove Trade Reference
                 sender.LoggedinUser.TradingWith = null;
                 sender.LoggedinUser.PendingTradeTo = 0;
+                
+                // Quit open quiz.
+                if (QuizEvent != null)
+                    QuizEvent.LeaveEvent(sender.LoggedinUser, false);
 
                 // Delete Arena Entries
-                if(Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
+                if (Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
                 {
                     Arena arena = Arena.GetArenaUserEnteredIn(sender.LoggedinUser);
                     arena.DeleteEntry(sender.LoggedinUser);
@@ -7371,7 +7376,7 @@ namespace HISP.Server
             forClient.LoggedinUser.ListingAuction = false;
 
             string LocationStr = "";
-            if (!World.InSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y))
+            if (!World.InSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y) && !forClient.LoggedinUser.InRealTimeQuiz)
             {
                 LocationStr = Meta.BuildMetaInfo(forClient.LoggedinUser, forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
             }
@@ -7383,11 +7388,16 @@ namespace HISP.Server
                     byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(specialTile.AutoplaySwf,PacketBuilder.PACKET_SWF_MODULE_GENTLE);
                     forClient.SendPacket(swfModulePacket);
                 }
+
+                if (forClient.LoggedinUser.InRealTimeQuiz)
+                    return;
+
                 if (specialTile.Code != null)
                     if (!ProcessMapCodeWithArg(forClient, specialTile))
                         return;
                 LocationStr = Meta.BuildSpecialTileInfo(forClient.LoggedinUser, specialTile);
             }
+
 
             byte[] AreaMessage = PacketBuilder.CreateMetaPacket(LocationStr);
             forClient.SendPacket(AreaMessage);
