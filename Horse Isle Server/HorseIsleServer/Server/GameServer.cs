@@ -145,6 +145,11 @@ namespace HISP.Server
                     }
                 }
             }
+            // Isle Card Trading Game
+            if(totalMinutesElapsed % (60 + 55) == 0)
+            {
+
+            }
             // Water Balloon Game
             if(totalMinutesElapsed % (60 * 2) == 0)
             {
@@ -163,7 +168,7 @@ namespace HISP.Server
                 RiddleEvent.StartEvent();   
             }
             // Real Time Quiz
-            if(totalMinutesElapsed % 75 == 0)
+            if(totalMinutesElapsed % (60 + 15) == 0)
             {
                 QuizEvent = new RealTimeQuiz();
                 QuizEvent.StartEvent();
