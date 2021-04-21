@@ -872,6 +872,8 @@ namespace HISP.Server
             Item.Earthworm = gameData.item.special.earthworm;
             Item.BirthdayToken = gameData.item.special.birthday_token;
             Item.ModSplatterball = gameData.item.special.mod_splatterball;
+            Item.MagicBean = gameData.item.special.magic_bean;
+            Item.MagicDroplet = gameData.item.special.magic_droplet;
 
             GameServer.IdleWarning = Convert.ToInt32(gameData.messages.disconnect.client_timeout.warn_after);
             GameServer.IdleTimeout = Convert.ToInt32(gameData.messages.disconnect.client_timeout.kick_after);
@@ -1695,6 +1697,11 @@ namespace HISP.Server
             Messages.HorsefeedFormat = gameData.messages.meta.horse.feed_horse.horsefeed_format;
             Messages.HorseNeighsThanks = gameData.messages.meta.horse.feed_horse.horse_neigh;
             Messages.HorseCouldNotFinish = gameData.messages.meta.horse.feed_horse.horse_could_not_finish;
+
+            Messages.HorseFeedPersonalityIncreased = gameData.messages.meta.horse.feed_horse.feed_special_personality;
+            Messages.HorseFeedInteligenceIncreased = gameData.messages.meta.horse.feed_horse.feed_special_inteligence;
+            Messages.HorseFeedMagicBeanFormat = gameData.messages.meta.horse.feed_horse.feed_special_magic_bean;
+            Messages.HorseFeedMagicDropletFormat = gameData.messages.meta.horse.feed_horse.feed_special_magic_droplet;
 
             // Tack menu (horses)
             Messages.HorseTackedAsFollowsFormat = gameData.messages.meta.horse.tack_menu.tacked_as_follows;

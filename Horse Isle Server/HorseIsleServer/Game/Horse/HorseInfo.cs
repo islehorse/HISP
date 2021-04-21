@@ -238,7 +238,7 @@ namespace HISP.Game.Horse
                 endurance = newEndurance;
                 inteligence = newInteligence;
                 personality = newPersonality;
-                Height = newHeight;
+                height = newHeight;
             }
 
 
@@ -342,7 +342,18 @@ namespace HISP.Game.Horse
                     personality = value;
                 }
             }
-            public int Height;
+            public int Height
+            {
+                get
+                {
+                    return height;
+                }
+                set
+                {
+                    height = value;
+                    Database.SetHorseHeight(baseHorse.RandomId, value);
+                }
+            }
             public int MinHeight;
             public int MaxHeight;
 
@@ -354,6 +365,7 @@ namespace HISP.Game.Horse
             private int endurance;
             private int inteligence;
             private int personality;
+            private int height;
         }
         public class BasicStats
         {

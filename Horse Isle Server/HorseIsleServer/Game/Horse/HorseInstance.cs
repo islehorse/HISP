@@ -6,7 +6,7 @@ namespace HISP.Game.Horse
 {
     public class HorseInstance
     {
-        public HorseInstance(HorseInfo.Breed breed, int randomId = -1, string loadName=null, string loadDescription = "", int loadSpoiled=0, string loadCategory="KEEPER", int loadMagicUsed=0, int loadAutoSell=0, int leaseTimer=0, bool loadHidden=false, int loadOwner=0)
+        public HorseInstance(HorseInfo.Breed breed, int randomId = -1, string loadColor = null ,string loadName=null, string loadDescription = "", int loadSpoiled=0, string loadCategory="KEEPER", int loadMagicUsed=0, int loadAutoSell=0, int leaseTimer=0, bool loadHidden=false, int loadOwner=0)
         {
             RandomId = RandomID.NextRandomId(randomId);
             owner = loadOwner;
@@ -42,7 +42,7 @@ namespace HISP.Game.Horse
 
             description = loadDescription;
             Breed = breed;
-            Color = breed.Colors[GameServer.RandomNumberGenerator.Next(0, breed.Colors.Length)];
+            
 
             BasicStats = new HorseInfo.BasicStats(this, 1000, 0, 1000, 1000, 500, 200, 1000, 0);
             int inteligence = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Inteligence, (breed.BaseStats.Inteligence * 2)) - breed.BaseStats.Inteligence);
@@ -57,11 +57,14 @@ namespace HISP.Game.Horse
             magicUsed = loadMagicUsed;
             leaseTime = leaseTimer;
             hidden = loadHidden;
+            if(color != null)
+               color = loadColor;
+            else
+                color = breed.Colors[GameServer.RandomNumberGenerator.Next(0, breed.Colors.Length)];
             Leaser = 0;
         }
         public int Leaser;
         public int RandomId;
-        public int owner;
         public int Owner 
         {
             get
@@ -124,7 +127,18 @@ namespace HISP.Game.Horse
             }
         }
         public string Gender;
-        public string Color;
+        public string Color
+        {
+            get
+            {
+                return color;
+            }
+            set
+            {
+                color = value;
+                Database.SetHorseColor(this.RandomId, color);
+            }
+        }
         public int TrainTimer
         {
             get
@@ -193,6 +207,8 @@ namespace HISP.Game.Horse
             }
         }
 
+        private string color;
+        private int owner;
         private string name;
         private string description;
         private int spoiled;

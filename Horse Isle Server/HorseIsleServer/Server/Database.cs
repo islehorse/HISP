@@ -1786,12 +1786,13 @@ namespace HISP.Server
             int leaseTime = reader.GetInt32(2);
             bool hidden = reader.GetString(34) == "YES";
             int owner = reader.GetInt32(1);
+            string color = reader.GetString(8);
 
-            HorseInstance inst = new HorseInstance(horseBreed, randomId, name, description, spoiled, category, magicUsed, autosell, leaseTime, hidden, owner);
+            HorseInstance inst = new HorseInstance(horseBreed, randomId, color, name, description, spoiled, category, magicUsed, autosell, leaseTime, hidden, owner);
             
             inst.Leaser = reader.GetInt32(3);
             inst.Gender = reader.GetString(7);
-            inst.Color = reader.GetString(8);
+            
 
 
             int health = reader.GetInt32(9);
@@ -2778,7 +2779,20 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
-
+        public static void SetHorseColor(int horseRandomId, string Color)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE Horses SET color=@color WHERE randomId=@randomId";
+                sqlCommand.Parameters.AddWithValue("@color", Color);
+                sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
         public static void SetHorseCategory(int horseRandomId, string Category)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))

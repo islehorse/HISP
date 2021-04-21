@@ -1439,6 +1439,9 @@ namespace HISP.Server
                         Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
                         HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
                         bool tooMuch = false;
+                        bool changePersonality = false;
+                        bool changeInteligence = false;
+                        
                         foreach(Item.Effects effect in itemInfo.Effects)
                         {
                             switch(effect.EffectsWhat)
@@ -1478,14 +1481,13 @@ namespace HISP.Server
                                         tooMuch = true;
                                     horseInstance.BasicStats.Tiredness += effect.EffectAmount;
                                     break;
-
                                 case "INTELLIGENCEOFFSET":
                                     horseInstance.AdvancedStats.Inteligence += effect.EffectAmount;
-                                    horseInstance.MagicUsed++;
+                                    changeInteligence = true;
                                     break;
                                 case "PERSONALITYOFFSET":
                                     horseInstance.AdvancedStats.Personality += effect.EffectAmount;
-                                    horseInstance.MagicUsed++;
+                                    changePersonality = true;
                                     break;
                                 case "SPOILED":
                                     horseInstance.Spoiled += effect.EffectAmount;
@@ -1493,6 +1495,42 @@ namespace HISP.Server
                             }
                         }
                         sender.LoggedinUser.Inventory.Remove(item.ItemInstances[0]);
+
+                        if(changePersonality)
+                        {
+                            byte[] personalityIncreased = PacketBuilder.CreateChat(Messages.HorseFeedPersonalityIncreased, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(personalityIncreased);
+                        }
+                        if (changeInteligence)
+                        {
+                            byte[] inteligenceIncreased = PacketBuilder.CreateChat(Messages.HorseFeedInteligenceIncreased, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(inteligenceIncreased);
+                        }
+
+                        if(item.ItemId == Item.MagicDroplet)
+                        {
+                            string oldColor = horseInstance.Color;
+                            string newColor = horseInstance.Breed.Colors[RandomNumberGenerator.Next(0, horseInstance.Breed.Colors.Length)];
+
+                            horseInstance.Color = newColor;
+                            horseInstance.MagicUsed++;
+
+                            byte[] magicDropletUsed = PacketBuilder.CreateChat(Messages.FormatHorseFeedMagicDropletUsed(oldColor, newColor), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(magicDropletUsed);
+                        }
+
+                        if(item.ItemId == Item.MagicBean)
+                        {
+                            double oldH = HorseInfo.CalculateHands(horseInstance.AdvancedStats.Height, false);
+                            int newHeight = RandomNumberGenerator.Next(horseInstance.Breed.BaseStats.MinHeight, horseInstance.Breed.BaseStats.MaxHeight);
+                            double newH = HorseInfo.CalculateHands(newHeight, false);
+
+                            horseInstance.AdvancedStats.Height = newHeight;
+                            horseInstance.MagicUsed++;
+
+                            byte[] magicBeansUsed = PacketBuilder.CreateChat(Messages.FormatHorseFeedMagicBeanUsed(oldH, newH), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(magicBeansUsed);
+                        }
 
                         byte[] horseNeighThanksPacket = PacketBuilder.CreateChat(Messages.HorseNeighsThanks, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(horseNeighThanksPacket);
@@ -7431,8 +7469,11 @@ namespace HISP.Server
                     forClient.SendPacket(swfModulePacket);
                 }
 
-                if (forClient.LoggedinUser.InRealTimeQuiz)
+                if (forClient.LoggedinUser.InRealTimeQuiz && QuizEvent != null)
+                {
+                    QuizEvent.JoinEvent(forClient.LoggedinUser).UpdateParticipent();
                     return;
+                }
 
                 if (specialTile.Code != null)
                     if (!ProcessMapCodeWithArg(forClient, specialTile))
