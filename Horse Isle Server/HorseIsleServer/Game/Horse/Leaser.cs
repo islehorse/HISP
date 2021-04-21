@@ -60,9 +60,8 @@ namespace HISP.Game.Horse
 
         public HorseInstance GenerateLeaseHorse()
         {
-            HorseInstance instance = new HorseInstance(this.Breed, -1, null, "", 0, "LEASED", 0, 0, this.Minutes);
+            HorseInstance instance = new HorseInstance(this.Breed, loadColor: this.Color, loadCategory: "LEASED", leaseTimer: this.Minutes);
             instance.Name = this.HorseName;
-            instance.Color = this.Color;
             instance.Gender = this.Gender;
             instance.Leaser = this.LeaseId;
 

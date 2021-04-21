@@ -72,7 +72,8 @@ namespace HISP.Game.Items
         public static int FishingPole;
         public static int Earthworm;
         public static int BirthdayToken;
-        
+        public static int MagicBean;
+        public static int MagicDroplet;
         public static ItemInformation[] GetAllWishableItems()
         {
             List<ItemInformation> itemInfo = new List<ItemInformation>();

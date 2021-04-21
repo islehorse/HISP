@@ -810,6 +810,11 @@ namespace HISP.Game
         public static string HorseNeighsThanks;
         public static string HorseCouldNotFinish;
 
+        public static string HorseFeedPersonalityIncreased;
+        public static string HorseFeedInteligenceIncreased;
+        public static string HorseFeedMagicBeanFormat;
+        public static string HorseFeedMagicDropletFormat;
+
         // Tack horse menu
         public static string HorseTackedAsFollowsFormat;
         public static string HorseUnEquipSaddleFormat;
@@ -1129,6 +1134,7 @@ namespace HISP.Game
 
         // Click
         public static string NothingInterestingHere;
+
 
 
 
@@ -1604,7 +1610,14 @@ namespace HISP.Game
         {
             return TrainedInStatFormat.Replace("%HORSENAME%", horseName).Replace("%STAT%", stat);
         }
-
+        public static string FormatHorseFeedMagicDropletUsed(string oldColor, string newColor)
+        {
+            return HorseFeedMagicDropletFormat.Replace("%PREVCOLOR%", oldColor).Replace("%NEWCOLOR%", newColor);
+        }
+        public static string FormatHorseFeedMagicBeanUsed(double oldH, double newH)
+        {
+            return HorseFeedMagicBeanFormat.Replace("%PREVHANDS%", oldH.ToString(CultureInfo.InvariantCulture)).Replace("%NEWHANDS%", newH.ToString(CultureInfo.InvariantCulture));
+        }
         public static string FormatSantaOpenPresent(string itemName)
         {
             return SantaItemOpenedFormat.Replace("%ITEM%", itemName);
