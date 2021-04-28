@@ -42,6 +42,7 @@ namespace HISP.Server
         public static RealTimeRiddle RiddleEvent = RealTimeRiddle.GetRandomRiddle();
         public static TackShopGiveaway TackShopGiveawayEvent = null;
         public static RealTimeQuiz QuizEvent = null;
+        public static WaterBalloonGame WaterBalloonEvent = new WaterBalloonGame();
 
         /*
          *  Private stuff 
@@ -146,14 +147,14 @@ namespace HISP.Server
                 }
             }
             // Isle Card Trading Game
-            if(totalMinutesElapsed % (60 + 55) == 0)
+            if(totalMinutesElapsed % (60 + 50) == 0)
             {
 
             }
             // Water Balloon Game
             if(totalMinutesElapsed % (60 * 2) == 0)
             {
-
+                WaterBalloonEvent.StartEvent();
             }
             // Tack Shop Giveaway
             if(totalMinutesElapsed % (60 * 3) == 0)

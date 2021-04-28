@@ -958,6 +958,12 @@ namespace HISP.Server
             // Message Queue 
             Messages.MessageQueueHeader = gameData.messages.message_queue;
 
+            // Events : Water Ballon Game
+            Messages.EventStartWaterBallonGame = gameData.messages.events.water_balloon_game.event_start;
+            Messages.EventWonWaterBallonGame = gameData.messages.events.water_balloon_game.event_won;
+            Messages.EventEndWaterBalloonGame = gameData.messages.events.water_balloon_game.event_end;
+            Messages.EventWinnerWaterBalloonGameFormat = gameData.messages.events.water_balloon_game.event_winner;
+
             // Events : Real Time Quiz
 
             Messages.EventMetaRealTimeQuizFormat = gameData.messages.events.real_time_quiz.event_meta;
