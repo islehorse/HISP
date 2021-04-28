@@ -69,6 +69,12 @@ namespace HISP.Game
         public static string SocialTypeFormat;
         public static string SocialPlayerNoLongerNearby;
 
+        // Events : Water Balloon Game
+        public static string EventStartWaterBallonGame;
+        public static string EventWonWaterBallonGame;
+        public static string EventEndWaterBalloonGame;
+        public static string EventWinnerWaterBalloonGameFormat;
+
         // Events : Real Time Quiz
         public static string EventMetaRealTimeQuizFormat;
         public static string EventStartRealTimeQuiz;
@@ -1150,6 +1156,12 @@ namespace HISP.Game
         public static string FormatThrownItemMessage(string itemFormat, string username)
         {
             return itemFormat.Replace("%USERNAME%", username);
+        }
+
+        // Event : Water Ballon Game
+        public static string FormatWaterBalloonGameWinner(string username, int timesHit)
+        {
+            return EventWinnerWaterBalloonGameFormat.Replace("%USERNAME%", username).Replace("%AMOUNT%", timesHit.ToString("N0", CultureInfo.InvariantCulture));
         }
 
         // Event : Real Time Quiz
