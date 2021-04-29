@@ -1592,20 +1592,30 @@ namespace HISP.Server
                 return count;
             }
         }
-
-        public static void EradicateItemFromExistance(int itemId)
+        public static void DeleteAllDroppedItemsWithId(int itemId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
+
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM Inventory WHERE itemId=@itemId";
+                sqlCommand.CommandText = "DELETE FROM DroppedItems WHERE itemId=@itemId";
                 sqlCommand.Parameters.AddWithValue("@itemId", itemId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM DroppedItems WHERE itemId=@itemId";
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static void DeleteAllItemsFromUsers(int itemId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM Inventory WHERE itemId=@itemId";
                 sqlCommand.Parameters.AddWithValue("@itemId", itemId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
