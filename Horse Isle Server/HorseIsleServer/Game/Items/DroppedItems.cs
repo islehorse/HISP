@@ -331,6 +331,15 @@ namespace HISP.Game.Items
 
         }
 
+        public static void DeleteAllItemOfType(int itemId)
+        {
+            for (int i = 0; i < droppedItemsList.Count; i++)
+            {
+                if (droppedItemsList[i].Instance.ItemId == itemId)
+                    droppedItemsList.Remove(droppedItemsList[i]);
+            }
+        }
+
         public static void Init()
         {
             ReadFromDatabase();

@@ -871,6 +871,7 @@ namespace HISP.Server
             Item.FishingPole = gameData.item.special.fishing_poll;
             Item.Earthworm = gameData.item.special.earthworm;
             Item.BirthdayToken = gameData.item.special.birthday_token;
+            Item.WaterBalloon = gameData.item.special.water_balloon;
             Item.ModSplatterball = gameData.item.special.mod_splatterball;
             Item.MagicBean = gameData.item.special.magic_bean;
             Item.MagicDroplet = gameData.item.special.magic_droplet;

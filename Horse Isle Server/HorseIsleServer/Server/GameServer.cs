@@ -5984,7 +5984,12 @@ namespace HISP.Server
                                 sender.SendPacket(thrownHitYourself);
                                 break;
                             }
-
+                            if(itemId == Item.WaterBalloon)
+                            {
+                                if (WaterBalloonEvent != null)
+                                    if (WaterBalloonEvent.Active)
+                                        WaterBalloonEvent.AddWaterBallon(userAt[userIndx]);
+                            }
                             if(itemId == Item.ModSplatterball)
                             {
                                 byte[] otherEarned = PacketBuilder.CreateChat(Messages.FormatModSplatterBallAwardedOther(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -7046,7 +7051,12 @@ namespace HISP.Server
                 // Remove Trade Reference
                 sender.LoggedinUser.TradingWith = null;
                 sender.LoggedinUser.PendingTradeTo = 0;
-                
+
+                // Leave open water balloon game
+                if (WaterBalloonEvent != null)
+                    if(WaterBalloonEvent.Active)
+                        WaterBalloonEvent.LeaveEvent(sender.LoggedinUser);
+
                 // Leave open quiz.
                 if (QuizEvent != null)
                     QuizEvent.LeaveEvent(sender.LoggedinUser);
