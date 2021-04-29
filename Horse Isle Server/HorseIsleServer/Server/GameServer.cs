@@ -3523,9 +3523,7 @@ namespace HISP.Server
             byte[] MotdData = PacketBuilder.CreateMotd();
             sender.SendPacket(MotdData);
 
-            // Display Event Message
-            RiddleEvent.ShowStartMessage(sender);
-
+            
             // Send Queued Messages
             string[] queuedMessages = Database.GetMessageQueue(sender.LoggedinUser.Id);
             foreach(string queuedMessage in queuedMessages)

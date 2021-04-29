@@ -36,11 +36,10 @@ namespace HISP.Game.Events
             riddleTimeout = new Timer(new TimerCallback(riddleTimedOut), null, RIDDLE_TIMEOUT * 60 * 1000, RIDDLE_TIMEOUT * 60 * 1000);
 
             // Send riddle message to all players
-            byte[] riddleStartMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeRiddleStart(RiddleText), PacketBuilder.CHAT_BOTTOM_RIGHT);
             foreach(GameClient client in GameServer.ConnectedClients)
             {
                 if (client.LoggedIn)
-                    client.SendPacket(riddleStartMessage);
+                    ShowStartMessage(client);
             }
         }
 
