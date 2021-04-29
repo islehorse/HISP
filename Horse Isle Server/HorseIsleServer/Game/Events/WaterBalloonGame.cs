@@ -21,7 +21,6 @@ namespace HISP.Game.Events
         public bool Active;
         private Timer gameTimeout;
         private const int WATER_BALLOON_GAME_TIMEOUT = 5;
-
         public class ThrownCounter
         {
             public ThrownCounter(WaterBalloonGame game, User userHit, int numThrown)
@@ -47,41 +46,26 @@ namespace HISP.Game.Events
                 if (client.LoggedIn)
                     client.SendPacket(gameStartMessage);
 
-            // Give ALL players water ballons
-
-            int[] allUsers = Database.GetUsers();
-            foreach (int userid in allUsers)
-            {
-                Logger.DebugPrint("Adding Water Balloon to userid: " + userid.ToString());
-                for (int i = 0; i < 6; i++)
-                {
-                    ItemInstance itm = new ItemInstance(Item.WaterBalloon);
-
-                    if (GameServer.IsUserOnline(userid))
-                        GameServer.GetUserById(userid).Inventory.AddWithoutDatabase(itm);
-
-                    Database.AddItemToInventory(userid, itm);
-                }
-            }
+            GameServer.AddItemToAllUsersEvenOffline(Item.WaterBalloon, 8);
         }
 
         public void EndEvent()
         {
             ThrownCounter[] winnerCounter = getWinners();
             resetEvent();
-
+            // Remove from all online players
             foreach(GameClient connectedClient in GameServer.ConnectedClients)
             {
                 if(connectedClient.LoggedIn)
                     if(connectedClient.LoggedinUser.Inventory.HasItemId(Item.WaterBalloon))
                     {
                         InventoryItem invItm = connectedClient.LoggedinUser.Inventory.GetItemByItemId(Item.WaterBalloon);
-                        foreach (ItemInstance itm in invItm.ItemInstances)
+                        foreach (ItemInstance itm in invItm.ItemInstances.ToArray())
                             connectedClient.LoggedinUser.Inventory.Remove(itm);
                     }
             }
-            DroppedItems.DeleteAllItemOfType(Item.WaterBalloon); // Delete all dropped items
-            Database.EradicateItemFromExistance(Item.WaterBalloon); // Delete from offline players
+            DroppedItems.DeleteAllItemsWithId(Item.WaterBalloon); // Delete all dropped items
+            Database.DeleteAllItemsFromUsers(Item.WaterBalloon); // Delete from offline players
 
 
             // Build event over message
@@ -100,9 +84,10 @@ namespace HISP.Game.Events
             // payout / tell ppl they won.
             foreach (ThrownCounter winner in winnerCounter)
             {
-                byte[] youWinMsg = PacketBuilder.CreateChat(winMsg, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                byte[] youWinMsg = PacketBuilder.CreateChat(Messages.EventWonWaterBallonGame, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 winner.UserHit.Money += 20000;
                 winner.UserHit.LoggedinClient.SendPacket(youWinMsg);
+                winner.UserHit.TrackedItems.GetTrackedItem(Tracking.TrackableItem.WaterbaloonGameWin).Count++;
             }
 
 

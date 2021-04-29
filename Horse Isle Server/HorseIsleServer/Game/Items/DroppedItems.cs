@@ -106,7 +106,8 @@ namespace HISP.Game.Items
         {
             Database.DecrementDroppedItemDespawnTimer();
             Database.RemoveDespawningItems(); // GO-GO-GO-GOGOGOGO GOTTA GO FAST!!!
-            for (int i = 0; i < droppedItemsList.Count; i++)
+            int itmCount = droppedItemsList.Count;
+            for (int i = 0; i < itmCount; i++)
             {
                 if (droppedItemsList[i] == null) // Item removed in another thread.
                     continue;
@@ -120,7 +121,9 @@ namespace HISP.Game.Items
 
                     Logger.DebugPrint("Despawned Item at " + droppedItemsList[i].X + ", " + droppedItemsList[i].Y);
                     droppedItemsList.Remove(droppedItemsList[i]);
- 
+                    itmCount = droppedItemsList.Count;
+
+
                 }
             }
         }
@@ -331,13 +334,12 @@ namespace HISP.Game.Items
 
         }
 
-        public static void DeleteAllItemOfType(int itemId)
+        public static void DeleteAllItemsWithId(int itemId)
         {
-            for (int i = 0; i < droppedItemsList.Count; i++)
-            {
-                if (droppedItemsList[i].Instance.ItemId == itemId)
-                    droppedItemsList.Remove(droppedItemsList[i]);
-            }
+            Database.DeleteAllDroppedItemsWithId(itemId);
+            foreach (DroppedItem itm in droppedItemsList.ToArray())
+                if (itm.Instance.ItemId == itemId)
+                    droppedItemsList.Remove(itm);
         }
 
         public static void Init()
