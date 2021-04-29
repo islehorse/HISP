@@ -69,6 +69,7 @@ namespace HISP.Game.Items
         public static int Pitchfork;
         public static int WishingCoin;
         public static int ModSplatterball;
+        public static int WaterBalloon;
         public static int FishingPole;
         public static int Earthworm;
         public static int BirthdayToken;

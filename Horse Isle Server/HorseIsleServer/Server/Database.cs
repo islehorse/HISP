@@ -1593,6 +1593,26 @@ namespace HISP.Server
             }
         }
 
+        public static void EradicateItemFromExistance(int itemId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM Inventory WHERE itemId=@itemId";
+                sqlCommand.Parameters.AddWithValue("@itemId", itemId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM DroppedItems WHERE itemId=@itemId";
+                sqlCommand.Parameters.AddWithValue("@itemId", itemId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+                sqlCommand.Dispose();
+            }
+        }
 
 
         public static void SetTrackedItemCount(int playerId, Tracking.TrackableItem what, int count)
