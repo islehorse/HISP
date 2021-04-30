@@ -23,7 +23,7 @@ namespace HISP.Game.Events
         public bool Active;
         public int Reward;
         private Timer riddleTimeout;
-        private const int RIDDLE_TIMEOUT = 30;
+        private const int RIDDLE_TIMEOUT = 5;
 
         public static RealTimeRiddle GetRandomRiddle()
         {
