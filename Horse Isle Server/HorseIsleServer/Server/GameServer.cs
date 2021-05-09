@@ -43,6 +43,7 @@ namespace HISP.Server
         public static TackShopGiveaway TackShopGiveawayEvent = null;
         public static RealTimeQuiz QuizEvent = null;
         public static WaterBalloonGame WaterBalloonEvent = new WaterBalloonGame();
+        public static IsleCardTradingGame IsleCardTrading;
 
         /*
          *  Private stuff 
@@ -134,29 +135,30 @@ namespace HISP.Server
                 }
             }
             // Isle Card Trading Game
-            if(totalMinutesElapsed % (60 + 50) == 0)
+            if(totalMinutesElapsed % ((60 + 50)+5) == 0)
             {
-
+                IsleCardTrading = new IsleCardTradingGame();
+                IsleCardTrading.StartEvent();
             }
             // Water Balloon Game
-            if(totalMinutesElapsed % (60 * 2) == 0)
+            if(totalMinutesElapsed % ((60 * 2)+5) == 0)
             {
                 WaterBalloonEvent.StartEvent();
             }
             // Tack Shop Giveaway
-            if(totalMinutesElapsed % (60 * 3) == 0)
+            if(totalMinutesElapsed % ((60 * 3)+2) == 0)
             {
                 TackShopGiveawayEvent = new TackShopGiveaway();
                 TackShopGiveawayEvent.StartEvent();
             }
             // Real Time Riddle
-            if(totalMinutesElapsed % 30 == 0)
+            if(totalMinutesElapsed % (30+5) == 0)
             {
                 RiddleEvent = RealTimeRiddle.GetRandomRiddle();
                 RiddleEvent.StartEvent();   
             }
             // Real Time Quiz
-            if(totalMinutesElapsed % (60 + 15) == 0)
+            if(totalMinutesElapsed % ((60 + 15)+5) == 0)
             {
                 QuizEvent = new RealTimeQuiz();
                 QuizEvent.StartEvent();
@@ -7523,6 +7525,24 @@ namespace HISP.Server
                 }
             }
         }
+
+        public static void RemoveAllItemsOfIdInTheGame(int id)
+        {
+            // Remove from all online players
+            foreach (GameClient connectedClient in GameServer.ConnectedClients)
+            {
+                if (connectedClient.LoggedIn)
+                    if (connectedClient.LoggedinUser.Inventory.HasItemId(id))
+                    {
+                        InventoryItem invItm = connectedClient.LoggedinUser.Inventory.GetItemByItemId(id);
+                        foreach (ItemInstance itm in invItm.ItemInstances.ToArray())
+                            connectedClient.LoggedinUser.Inventory.Remove(itm);
+                    }
+            }
+            DroppedItems.DeleteAllItemsWithId(Item.WaterBalloon); // Delete all dropped items
+            Database.DeleteAllItemsFromUsers(Item.WaterBalloon); // Delete from offline players
+        }
+
         public static void StartRidingHorse(GameClient sender, int horseRandomId)
         {
             HorseInstance horseMountInst = sender.LoggedinUser.HorseInventory.GetHorseById(horseRandomId);

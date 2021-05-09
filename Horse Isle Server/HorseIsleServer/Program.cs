@@ -12,29 +12,49 @@ namespace HISP
     {
         static void Main(string[] args)
         {
-            Console.Title = "HISP - Horse Isle Server Emulator";
-            ConfigReader.OpenConfig();
-            CrossDomainPolicy.GetPolicy();
-            Database.OpenDatabase();
-            GameDataJson.ReadGamedata();
+        #if (!DEBUG)
+            try
+            {
+        #endif
+                Console.Title = "HISP - Horse Isle Server Emulator";
+                ConfigReader.OpenConfig();
+                CrossDomainPolicy.GetPolicy();
+                Database.OpenDatabase();
+                GameDataJson.ReadGamedata();
 
-            Map.OpenMap();
-            World.ReadWorldData();
-            Treasure.Init();
+                Map.OpenMap();
+                World.ReadWorldData();
+                Treasure.Init();
 
-            DroppedItems.Init();
-            WildHorse.Init();
+                DroppedItems.Init();
+                WildHorse.Init();
 
-            Drawingroom.LoadAllDrawingRooms();
-            Brickpoet.LoadPoetryRooms();
-            Multiroom.CreateMultirooms();
+                Drawingroom.LoadAllDrawingRooms();
+                Brickpoet.LoadPoetryRooms();
+                Multiroom.CreateMultirooms();
 
-            Auction.LoadAllAuctionRooms();
+                Auction.LoadAllAuctionRooms();
 
-            Item.DoSpecialCases();
+                Item.DoSpecialCases();
 
 
-            GameServer.StartServer();
+                GameServer.StartServer();
+        #if (!DEBUG)
+            }
+            catch(Exception e)
+            {
+                Logger.ErrorPrint("Server has crashed! :(");
+                Logger.ErrorPrint("");
+                Logger.ErrorPrint("");
+                Logger.ErrorPrint("UNCAUGHT EXCEPTION!");
+                Logger.ErrorPrint("");
+                Logger.ErrorPrint("");
+                Logger.ErrorPrint(e.Message);
+                Logger.ErrorPrint("");
+                Logger.ErrorPrint(e.StackTrace);
+                while(true){};
+            }
+        #endif
 
         }
     }

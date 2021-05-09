@@ -75,6 +75,20 @@ namespace HISP.Game.Items
         public static int BirthdayToken;
         public static int MagicBean;
         public static int MagicDroplet;
+
+        public static int StallionTradingCard;
+        public static int MareTradingCard;
+        public static int ColtTradingCard;
+        public static int FillyTradingCard;
+
+        public static int[] TradingCards
+        {
+            get
+            {
+                 return new int[4] { StallionTradingCard, MareTradingCard, ColtTradingCard, FillyTradingCard };
+            }
+        }
+        
         public static ItemInformation[] GetAllWishableItems()
         {
             List<ItemInformation> itemInfo = new List<ItemInformation>();
