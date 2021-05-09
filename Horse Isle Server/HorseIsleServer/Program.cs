@@ -37,7 +37,6 @@ namespace HISP
 
                 Item.DoSpecialCases();
 
-
                 GameServer.StartServer();
         #if (!DEBUG)
             }
