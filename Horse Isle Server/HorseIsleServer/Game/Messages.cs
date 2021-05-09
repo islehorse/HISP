@@ -69,6 +69,13 @@ namespace HISP.Game
         public static string SocialTypeFormat;
         public static string SocialPlayerNoLongerNearby;
 
+        // Events : Isle Cards Trading Game
+        public static string EventStartIsleTradingGame;
+        public static string EventDisqualifiedIsleTradingGame;
+        public static string EventOnlyOneTypeIsleTradingGame;
+        public static string EventNoneIsleTradingGame;
+        public static string EventWonIsleTradingGame;
+
         // Events : Water Balloon Game
         public static string EventStartWaterBallonGame;
         public static string EventWonWaterBallonGame;

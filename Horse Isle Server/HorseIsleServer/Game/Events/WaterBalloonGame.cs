@@ -53,20 +53,8 @@ namespace HISP.Game.Events
         {
             ThrownCounter[] winnerCounter = getWinners();
             resetEvent();
-            // Remove from all online players
-            foreach(GameClient connectedClient in GameServer.ConnectedClients)
-            {
-                if(connectedClient.LoggedIn)
-                    if(connectedClient.LoggedinUser.Inventory.HasItemId(Item.WaterBalloon))
-                    {
-                        InventoryItem invItm = connectedClient.LoggedinUser.Inventory.GetItemByItemId(Item.WaterBalloon);
-                        foreach (ItemInstance itm in invItm.ItemInstances.ToArray())
-                            connectedClient.LoggedinUser.Inventory.Remove(itm);
-                    }
-            }
-            DroppedItems.DeleteAllItemsWithId(Item.WaterBalloon); // Delete all dropped items
-            Database.DeleteAllItemsFromUsers(Item.WaterBalloon); // Delete from offline players
 
+            GameServer.RemoveAllItemsOfIdInTheGame(Item.WaterBalloon);
 
             // Build event over message
             string winMsg = Messages.EventEndWaterBalloonGame;

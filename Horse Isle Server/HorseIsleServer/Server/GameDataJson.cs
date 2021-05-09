@@ -876,6 +876,11 @@ namespace HISP.Server
             Item.MagicBean = gameData.item.special.magic_bean;
             Item.MagicDroplet = gameData.item.special.magic_droplet;
 
+            Item.StallionTradingCard = gameData.item.special.stallion_trading_card;
+            Item.MareTradingCard = gameData.item.special.mare_trading_card;
+            Item.ColtTradingCard = gameData.item.special.colt_trading_card;
+            Item.FillyTradingCard = gameData.item.special.filly_trading_card;
+
             GameServer.IdleWarning = Convert.ToInt32(gameData.messages.disconnect.client_timeout.warn_after);
             GameServer.IdleTimeout = Convert.ToInt32(gameData.messages.disconnect.client_timeout.kick_after);
 
@@ -888,6 +893,7 @@ namespace HISP.Server
             Map.NewUserStartY = gameData.messages.new_user.starting_y;
 
             // Timed Messages
+
             Messages.PlaytimeMessageFormat = gameData.messages.timed_messages.playtime_message;
             Messages.RngMessages = gameData.messages.timed_messages.rng_message.ToObject<string[]>();
 
@@ -902,7 +908,6 @@ namespace HISP.Server
             // Mute Command
             Messages.NowMutingPlayerFormat = gameData.messages.meta.mute_command.now_ignoring_player;
             Messages.StoppedMutingPlayerFormat = gameData.messages.meta.mute_command.stop_ignoring_player;
-
 
             Messages.PlayerIgnoringYourPrivateMessagesFormat = gameData.messages.meta.mute_command.player_ignoring_your_pm;
             Messages.PlayerIgnoringYourBuddyRequests = gameData.messages.meta.mute_command.player_ignoring_your_br;
@@ -958,6 +963,13 @@ namespace HISP.Server
 
             // Message Queue 
             Messages.MessageQueueHeader = gameData.messages.message_queue;
+
+            // Events : Isle Trading Game
+            Messages.EventStartIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_start;
+            Messages.EventDisqualifiedIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_disqualified;
+            Messages.EventOnlyOneTypeIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_one_type;
+            Messages.EventNoneIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_no_cards;
+            Messages.EventWonIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_win;
 
             // Events : Water Ballon Game
             Messages.EventStartWaterBallonGame = gameData.messages.events.water_balloon_game.event_start;
