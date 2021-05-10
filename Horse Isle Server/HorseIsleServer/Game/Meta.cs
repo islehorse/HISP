@@ -2463,7 +2463,7 @@ namespace HISP.Game
             string message = Messages.StatMiscHeader;
             if (user.TrackedItems.TrackingItems.Length <= 0)
                 message += Messages.StatMiscNoneRecorded;
-            foreach(Tracking.TrackedItem trackedItem in user.TrackedItems.TrackingItems)
+            foreach(Tracking.TrackedItem trackedItem in user.TrackedItems.TrackingItems.OrderBy(o => Tracking.GetTrackedItemsStatsMenuName(o.What)))
             {
                 try
                 {
