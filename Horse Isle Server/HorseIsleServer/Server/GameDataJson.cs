@@ -964,10 +964,16 @@ namespace HISP.Server
             // Message Queue 
             Messages.MessageQueueHeader = gameData.messages.message_queue;
 
+            // Events : Mods Revenge
+            Messages.EventStartModsRevenge = gameData.messages.events.mods_revenge.event_start;
+            Messages.EventEndModsRevenge = gameData.messages.events.mods_revenge.event_end;
+
             // Events : Isle Trading Game
             Messages.EventStartIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_start;
             Messages.EventDisqualifiedIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_disqualified;
             Messages.EventOnlyOneTypeIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_one_type;
+            Messages.EventOnlyTwoTypeIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_two_type;
+            Messages.EventOnlyThreeTypeIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_three_type;
             Messages.EventNoneIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_no_cards;
             Messages.EventWonIsleTradingGame = gameData.messages.events.isle_card_trading_game.event_win;
 

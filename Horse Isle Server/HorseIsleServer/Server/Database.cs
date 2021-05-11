@@ -4042,6 +4042,25 @@ namespace HISP.Server
                 return instances;
             }
         }
+        public static int[] GetModsAndAdmins()
+        {
+            List<int> userList = new List<int>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT id FROM Users WHERE Moderator=\"YES\" AND Admin=\"YES\"";
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    userList.Add(reader.GetInt32(0));
+                }
+                sqlCommand.Dispose();
+            }
+            return userList.ToArray();
+        }
+
         public static int[] GetUsers()
         {
             List<int> userList = new List<int>();

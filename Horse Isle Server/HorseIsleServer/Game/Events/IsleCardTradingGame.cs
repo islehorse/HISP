@@ -51,32 +51,47 @@ namespace HISP.Game.Events
                 if(client.LoggedIn)
                 {
                     int totalCards = 0;
+                    int totalTypes = 0;
 
                     foreach (int itemId in Item.TradingCards)
                         if (client.LoggedinUser.Inventory.HasItemId(itemId))
                             totalCards += client.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances.Count;
 
-                    bool win = (client.LoggedinUser.Inventory.HasItemId(Item.ColtTradingCard) &&
-                                client.LoggedinUser.Inventory.HasItemId(Item.FillyTradingCard) &&
-                                client.LoggedinUser.Inventory.HasItemId(Item.MareTradingCard) &&
-                                client.LoggedinUser.Inventory.HasItemId(Item.StallionTradingCard));
+                    if (client.LoggedinUser.Inventory.HasItemId(Item.ColtTradingCard))
+                        totalTypes++;
+                    if (client.LoggedinUser.Inventory.HasItemId(Item.FillyTradingCard))
+                        totalTypes++;
+                    if (client.LoggedinUser.Inventory.HasItemId(Item.MareTradingCard))
+                        totalTypes++;
+                    if (client.LoggedinUser.Inventory.HasItemId(Item.StallionTradingCard))
+                        totalTypes++;
 
                     if(totalCards > 4)
                     {
                         byte[] disqualifiedTooManyCards = PacketBuilder.CreateChat(Messages.EventDisqualifiedIsleTradingGame, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         client.SendPacket(disqualifiedTooManyCards);
                     }
-                    else if(!win && totalCards <= 0)
+                    else if(totalTypes == 0)
                     {
                         byte[] noCardsMessage = PacketBuilder.CreateChat(Messages.EventNoneIsleTradingGame, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         client.SendPacket(noCardsMessage);
                     }
-                    else if(!win && totalCards >= 1) 
+                    else if(totalTypes == 1) 
                     {
                         byte[] onlyOneTypeOfCardMesage = PacketBuilder.CreateChat(Messages.EventOnlyOneTypeIsleTradingGame, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         client.SendPacket(onlyOneTypeOfCardMesage);
                     }
-                    else if (win && totalCards >= 4) // it should be impossible to have this if you dont have one of each,
+                    else if (totalTypes == 2)
+                    {
+                        byte[] onlyTwoTypeOfCardMesage = PacketBuilder.CreateChat(Messages.EventOnlyTwoTypeIsleTradingGame, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        client.SendPacket(onlyTwoTypeOfCardMesage);
+                    }
+                    else if (totalTypes == 3)
+                    {
+                        byte[] onlyThreeTypeOfCardMesage = PacketBuilder.CreateChat(Messages.EventOnlyThreeTypeIsleTradingGame, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        client.SendPacket(onlyThreeTypeOfCardMesage);
+                    }
+                    else if (totalTypes == 4) 
                     {
                         client.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.IsleCardsGameWin).Count++;
 
