@@ -69,6 +69,9 @@ namespace HISP.Game
         public static string SocialTypeFormat;
         public static string SocialPlayerNoLongerNearby;
 
+        // Random Event
+        public static string RandomEventPrefix;
+
         // Events : Mods Revenge
         public static string EventStartModsRevenge;
         public static string EventEndModsRevenge;
@@ -1169,6 +1172,12 @@ namespace HISP.Game
         public static string FormatThrownItemMessage(string itemFormat, string username)
         {
             return itemFormat.Replace("%USERNAME%", username);
+        }
+
+        // Random Events
+        public static string FormatRandomEvent(string txt, int moneyEarned, string horseName)
+        {
+            return txt.Replace("%HORSENAME%", horseName).Replace("%MONEYEARNED%", "$" + moneyEarned.ToString("N0", CultureInfo.InvariantCulture).Replace("-", ""));
         }
 
         // Event : Water Ballon Game

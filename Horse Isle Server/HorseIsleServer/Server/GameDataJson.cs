@@ -858,6 +858,32 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Real Time Quiz Category: " + name);
             }
 
+            // Register Random Event
+            
+            int totalRandomEvent = gameData.events.random_events.Count;
+            for (int i = 0; i < totalRandomEvent; i++)
+            {
+                int minmoney = 0;
+                int maxmoney = 0;
+                int lowerHorseHealth = 0;
+                int giveObj = 0;
+
+                int id = gameData.events.random_events[i].id;
+                string txt = gameData.events.random_events[i].text;
+
+                if(gameData.events.random_events[i].min_money != null)
+                    minmoney = gameData.events.random_events[i].min_money;
+                if(gameData.events.random_events[i].max_money != null)
+                    maxmoney = gameData.events.random_events[i].max_money;
+                if(gameData.events.random_events[i].lower_horse_health != null)
+                    lowerHorseHealth = gameData.events.random_events[i].lower_horse_health;
+                if(gameData.events.random_events[i].give_object != null)
+                    giveObj = gameData.events.random_events[i].give_object;
+
+                new RandomEvent(id, txt, minmoney, maxmoney, lowerHorseHealth, giveObj);
+
+                Logger.DebugPrint("Registered Random Event: " + txt);
+            }
 
             HorseInfo.HorseNames = gameData.horses.names.ToObject<string[]>();
 
@@ -963,6 +989,9 @@ namespace HISP.Server
 
             // Message Queue 
             Messages.MessageQueueHeader = gameData.messages.message_queue;
+
+            // Random Event
+            Messages.RandomEventPrefix = gameData.messages.random_event_prefix;
 
             // Events : Mods Revenge
             Messages.EventStartModsRevenge = gameData.messages.events.mods_revenge.event_start;

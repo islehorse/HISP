@@ -6,6 +6,7 @@ using System.Threading;
 using HISP.Player;
 using HISP.Game;
 using HISP.Game.Horse;
+using HISP.Game.Events;
 
 namespace HISP.Server
 {
@@ -82,6 +83,12 @@ namespace HISP.Server
                     string ptMessage = Messages.RngMessages[GameServer.RandomNumberGenerator.Next(0, Messages.RngMessages.Length)];
                     byte[] playTimeMessage = PacketBuilder.CreateChat(Messages.FormatPlaytimeMessage(totalMinutesElapsed / 60) + ptMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     SendPacket(playTimeMessage);
+                }
+
+
+                if (GameServer.RandomNumberGenerator.Next(0, 100) == 59) // RANDOM EVENT HAS OCCURED!
+                {
+                    RandomEvent.ExecuteRandomEvent(LoggedinUser);
                 }
 
                 bool gotoPrision = false;
@@ -196,13 +203,13 @@ namespace HISP.Server
                 if (totalMinutesElapsed % 5 == 0)
                     LoggedinUser.Thirst--;
                 
-                if (totalMinutesElapsed % 10 == 0)
+                if (totalMinutesElapsed % 15 == 0)
                     LoggedinUser.Hunger--;
-
 
                 if (totalMinutesElapsed % 15 == 0)
                     LoggedinUser.Tiredness--;
             }
+
 
 
 
