@@ -7,9 +7,7 @@ HISP is a "Server Emulator" for Horse Isle 1
 You may know of "private servers" for big MMO games such as **Runescape** or **Club Penguin**          
 well they essentailly run off "Server Emulators".          
 
-btw, alot of features dont work atm, but alot also do, 
-i basically have to rewrite the entire game so .. 
-
+!!! ALL FEATURES NOW IMPLEMENTED (um, unless theres some obscure thing i dont know about :D)
 
 **tl;dr, think "Club Penguin Rewritten" but with Horse Isle.**
 
