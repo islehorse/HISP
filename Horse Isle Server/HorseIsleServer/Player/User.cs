@@ -258,9 +258,22 @@ namespace HISP.Player
             }
             set
             {
-                money = value;
-                Database.SetPlayerMoney(value, Id);
-                GameServer.UpdatePlayer(LoggedinClient);
+                try
+                {
+                    checked
+                    {
+                        money = value;
+                        Database.SetPlayerMoney(value, Id);
+                        GameServer.UpdatePlayer(LoggedinClient);
+                    }
+                }
+                catch(OverflowException)
+                {
+                    money = 2147483647;
+                    Database.SetPlayerMoney(2147483647, Id);
+                    GameServer.UpdatePlayer(LoggedinClient);
+                }
+
             }
         }
 
