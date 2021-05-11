@@ -135,40 +135,46 @@ namespace HISP.Server
                     }
                 }
             }
+
+            /*
+             *  EVENTS 
+             */
+
             // Mods Revenge
-            if(totalMinutesElapsed % (((60*8)+5)+10) == 0)
+            if(totalMinutesElapsed % ((60*8)+15) == 0)
             {
                 ModsRevengeEvent.StartEvent();
             }
             // Isle Card Trading Game
-            if(totalMinutesElapsed % ((60 + 50)+5) == 0)
+            if(totalMinutesElapsed % (60 *2) == 0)
             {
                 IsleCardTrading = new IsleCardTradingGame();
                 IsleCardTrading.StartEvent();
             }
             // Water Balloon Game
-            if(totalMinutesElapsed % ((60 * 2)+5) == 0)
+            if(totalMinutesElapsed % (60 * 2) == 0)
             {
                 WaterBalloonEvent.StartEvent();
             }
             // Tack Shop Giveaway
-            if(totalMinutesElapsed % ((60 * 3)+2) == 0)
+            if(totalMinutesElapsed % ((60 * 3)+5) == 0)
             {
                 TackShopGiveawayEvent = new TackShopGiveaway();
                 TackShopGiveawayEvent.StartEvent();
             }
             // Real Time Riddle
-            if(totalMinutesElapsed % (30) == 0)
+            if(totalMinutesElapsed % (RealTimeRiddle.LastWon ? 20 : 15) == 0)
             {
                 RiddleEvent = RealTimeRiddle.GetRandomRiddle();
                 RiddleEvent.StartEvent();   
             }
             // Real Time Quiz
-            if(totalMinutesElapsed % ((60 + 15)+5) == 0)
+            if(totalMinutesElapsed % (60 + 30) == 0)
             {
                 QuizEvent = new RealTimeQuiz();
                 QuizEvent.StartEvent();
             }
+
 
             if (totalMinutesElapsed % 60 == 0) // Do spoils
             {
