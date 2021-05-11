@@ -4671,7 +4671,8 @@ namespace HISP.Server
 
             // Cancel Trades
             if (loggedInUser.TradingWith != null)
-                loggedInUser.TradingWith.CancelTradeMoved();
+                if((loggedInUser.TradingWith.Trader.X != loggedInUser.X) && (loggedInUser.TradingWith.Trader.Y != loggedInUser.Y))
+                    loggedInUser.TradingWith.CancelTradeMoved();
             loggedInUser.PendingBuddyRequestTo = null;
 
             // Close Social Windows

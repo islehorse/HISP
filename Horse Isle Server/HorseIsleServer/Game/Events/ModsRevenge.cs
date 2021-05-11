@@ -14,6 +14,7 @@ namespace HISP.Game.Events
             {
                 Thrower = thrower;
                 ThrownAt = new List<User>();
+                
             }
             public User Thrower;
             public List<User> ThrownAt;
@@ -78,6 +79,7 @@ namespace HISP.Game.Events
         private void revengeTimedOut(object state)
         {
             resetEvent();
+            EndEvent();
         }
 
         private void resetEvent()
@@ -94,7 +96,9 @@ namespace HISP.Game.Events
                     return throwTracker;
             }
 
-            return new ThrowTracker(thrower);
+            ThrowTracker tracker = new ThrowTracker(thrower);
+            trackedThrows.Add(tracker);
+            return tracker;
         }
 
         private bool checkUserThrownAtAlready(ThrowTracker tracker, User thrownAt)
@@ -123,7 +127,7 @@ namespace HISP.Game.Events
         public void Payout(User thrower, User throwAt)
         {
             ThrowTracker throwCounter = getUserThrowTracker(thrower);
-            if(checkUserThrownAtAlready(throwCounter, throwAt))
+            if(!checkUserThrownAtAlready(throwCounter, throwAt))
             {
 
                 byte[] otherEarned = PacketBuilder.CreateChat(Messages.FormatModSplatterBallAwardedOther(thrower.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
