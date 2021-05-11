@@ -44,6 +44,7 @@ namespace HISP.Server
         public static RealTimeQuiz QuizEvent = null;
         public static WaterBalloonGame WaterBalloonEvent = new WaterBalloonGame();
         public static IsleCardTradingGame IsleCardTrading;
+        public static ModsRevenge ModsRevengeEvent = new ModsRevenge();
 
         /*
          *  Private stuff 
@@ -134,6 +135,11 @@ namespace HISP.Server
                     }
                 }
             }
+            // Mods Revenge
+            if(totalMinutesElapsed % (((60*8)+5)+10) == 0)
+            {
+                ModsRevengeEvent.StartEvent();
+            }
             // Isle Card Trading Game
             if(totalMinutesElapsed % ((60 + 50)+5) == 0)
             {
@@ -152,7 +158,7 @@ namespace HISP.Server
                 TackShopGiveawayEvent.StartEvent();
             }
             // Real Time Riddle
-            if(totalMinutesElapsed % (30+5) == 0)
+            if(totalMinutesElapsed % (30) == 0)
             {
                 RiddleEvent = RealTimeRiddle.GetRandomRiddle();
                 RiddleEvent.StartEvent();   
@@ -5957,7 +5963,7 @@ namespace HISP.Server
                         }
 
                         ItemInstance curItem = sender.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances[0];
-                        User[] userAt = GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, false, true);
+                        User[] userAt = GetReallyNearbyUsers(sender.LoggedinUser.X, sender.LoggedinUser.Y);
 
                         while (true)
                         {
@@ -5983,14 +5989,7 @@ namespace HISP.Server
                             }
                             if(itemId == Item.ModSplatterball)
                             {
-                                byte[] otherEarned = PacketBuilder.CreateChat(Messages.FormatModSplatterBallAwardedOther(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                byte[] youEarned = PacketBuilder.CreateChat(Messages.FormatModSplatterBallAwardedYou(userAt[userIndx].Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-
-                                sender.LoggedinUser.Money += 50;
-                                userAt[userIndx].Money += 500;
-
-                                sender.SendPacket(youEarned);
-                                userAt[userIndx].LoggedinClient.SendPacket(otherEarned);
+                                ModsRevengeEvent.Payout(sender.LoggedinUser, userAt[userIndx]);
                             }
 
                             byte[] thrownForYou = PacketBuilder.CreateChat(Messages.FormatThrownItemMessage(throwableItem.ThrowMessage, userAt[userIndx].Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -7052,6 +7051,8 @@ namespace HISP.Server
                 if (QuizEvent != null)
                     QuizEvent.LeaveEvent(sender.LoggedinUser);
 
+                ModsRevengeEvent.LeaveEvent(sender.LoggedinUser);
+
                 // Delete Arena Entries
                 if (Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
                 {
@@ -7195,6 +7196,25 @@ namespace HISP.Server
 
             throw new KeyNotFoundException("User not found (not online?)");
         }
+
+        public static User[] GetReallyNearbyUsers(int x, int y)
+        {
+            int startX = x - 3;
+            int endX = x + 3;
+            int startY = y - 3;
+            int endY = y + 3;
+            List<User> usersNearby = new List<User>();
+
+            foreach (GameClient client in ConnectedClients)
+                if (client.LoggedIn)
+                {
+                    if (startX <= client.LoggedinUser.X && endX >= client.LoggedinUser.X && startY <= client.LoggedinUser.Y && endY >= client.LoggedinUser.Y)
+                        usersNearby.Add(client.LoggedinUser);
+                }
+
+            return usersNearby.ToArray();
+        }
+
         public static User[] GetNearbyUsers(int x, int y, bool includeStealth=false, bool includeMuted=false)
         {
             int startX = x - 15;

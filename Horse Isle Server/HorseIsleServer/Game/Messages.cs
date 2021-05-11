@@ -69,10 +69,16 @@ namespace HISP.Game
         public static string SocialTypeFormat;
         public static string SocialPlayerNoLongerNearby;
 
+        // Events : Mods Revenge
+        public static string EventStartModsRevenge;
+        public static string EventEndModsRevenge;
+
         // Events : Isle Cards Trading Game
         public static string EventStartIsleTradingGame;
         public static string EventDisqualifiedIsleTradingGame;
         public static string EventOnlyOneTypeIsleTradingGame;
+        public static string EventOnlyTwoTypeIsleTradingGame;
+        public static string EventOnlyThreeTypeIsleTradingGame;
         public static string EventNoneIsleTradingGame;
         public static string EventWonIsleTradingGame;
 
