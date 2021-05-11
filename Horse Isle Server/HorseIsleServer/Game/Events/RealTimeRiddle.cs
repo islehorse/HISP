@@ -22,6 +22,7 @@ namespace HISP.Game.Events
         public string[] Answers;
         public bool Active;
         public int Reward;
+        public static bool LastWon = false;
         private Timer riddleTimeout;
         private const int RIDDLE_TIMEOUT = 5;
 
@@ -57,6 +58,8 @@ namespace HISP.Game.Events
 
             if (Database.HasPlayerCompletedRealTimeRiddle(RiddleId, winner.Id))
                 return;
+
+            LastWon = true;
 
             Database.CompleteRealTimeRiddle(RiddleId, winner.Id);
 
@@ -97,6 +100,7 @@ namespace HISP.Game.Events
                 if (client.LoggedIn)
                     client.SendPacket(riddleTimedOutMessage);
             }
+            LastWon = false;
             EndEvent();
         }
 
