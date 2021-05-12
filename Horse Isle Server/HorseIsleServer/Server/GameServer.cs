@@ -7566,8 +7566,8 @@ namespace HISP.Server
                             connectedClient.LoggedinUser.Inventory.Remove(itm);
                     }
             }
-            DroppedItems.DeleteAllItemsWithId(Item.WaterBalloon); // Delete all dropped items
-            Database.DeleteAllItemsFromUsers(Item.WaterBalloon); // Delete from offline players
+            DroppedItems.DeleteAllItemsWithId(id); // Delete all dropped items
+            Database.DeleteAllItemsFromUsers(id); // Delete from offline players
         }
 
         public static void StartRidingHorse(GameClient sender, int horseRandomId)
