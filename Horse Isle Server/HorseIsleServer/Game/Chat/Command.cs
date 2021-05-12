@@ -4,6 +4,7 @@ using HISP.Game.Items;
 using System;
 using System.Collections.Generic;
 using HISP.Game.Events;
+using HISP.Game.Horse;
 
 namespace HISP.Game.Chat
 {
@@ -354,6 +355,23 @@ namespace HISP.Game.Chat
 
             return true;
         }
+
+        public static bool CallHorse(string message, string[] args, User user)
+        {
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+
+            WildHorse horse = WildHorse.WildHorses[GameServer.RandomNumberGenerator.Next(0, WildHorse.WildHorses.Length)];
+            horse.X = user.X;
+            horse.Y = user.Y;
+
+            GameServer.UpdateAreaForAll(user.X, user.Y);
+
+            byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+
+        }
+
         public static bool Dance(string message, string[] args, User user)
         {
             string moves = string.Join(" ", args).ToLower();

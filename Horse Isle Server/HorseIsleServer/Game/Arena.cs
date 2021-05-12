@@ -132,12 +132,12 @@ namespace HISP.Game
         }
         public void Start()
         {
-            if(Entries.Count <= 0)
+            Mode = "COMPETING";
+            if (Entries.Count <= 0)
             {
                 reset();
                 return;
             }
-            Mode = "COMPETING";
             foreach(ArenaEntry entry in Entries.ToArray())
             {
                 string swf = getSwf(entry);
@@ -299,7 +299,6 @@ namespace HISP.Game
                             if (Entries.Count >= 4 && Type == "DRESSAGE")
                                 entry.EnteredUser.Awards.AddAward(Award.GetAwardById(10)); // Great Dressage
 
-
                             if (Entries.Count >= 2 && Type == "DRAFT")
                                 entry.EnteredUser.Awards.AddAward(Award.GetAwardById(38)); // Strong Horse Award
 
@@ -341,12 +340,15 @@ namespace HISP.Game
                     break;
                 }
         }
-        public void AddEntry(User user, Horse.HorseInstance horse)
+        public void AddEntry(User user, HorseInstance horse)
         {
-            ArenaEntry arenaEntry = new ArenaEntry();
-            arenaEntry.EnteredUser = user;
-            arenaEntry.EnteredHorse = horse;
-            Entries.Add(arenaEntry);
+            if(!UserHasHorseEntered(user))
+            {
+                ArenaEntry arenaEntry = new ArenaEntry();
+                arenaEntry.EnteredUser = user;
+                arenaEntry.EnteredHorse = horse;
+                Entries.Add(arenaEntry);
+            }
         }
 
         public static Arena GetArenaUserEnteredIn(User user)
@@ -369,7 +371,8 @@ namespace HISP.Game
             foreach(Arena arena in Arenas)
             {
                 if (minutes % arena.RaceEvery == 0)
-                    arena.Start();
+                    if(arena.Mode == "TAKINGENTRIES")
+                       arena.Start();
             }
 
         }
