@@ -157,7 +157,7 @@ namespace HISP.Game.Horse
 
         public void Escape()
         {
-            while(true)
+            for(int i = 0; i < 100; i++)
             {
                 int tryX = X + GameServer.RandomNumberGenerator.Next(-5, 5);
                 int tryY = Y + GameServer.RandomNumberGenerator.Next(-5, 5);
@@ -168,10 +168,11 @@ namespace HISP.Game.Horse
                 {
                     X = tryX;
                     Y = tryY;
-                    break;
+                    return;
                 }
             }
 
+            Logger.ErrorPrint("Horse is stuck (cannot move after 1000 tries) " + Instance.Breed.Name + " at X" + X + "  Y" + Y);
         }
 
         public void Capture(User forUser)

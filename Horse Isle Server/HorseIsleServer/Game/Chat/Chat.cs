@@ -69,6 +69,8 @@ namespace HISP.Game.Chat
                         return Command.UnBan(message, args, user);
                     if (message.ToUpper().StartsWith("%ESCAPE"))
                         return Command.Escape(message, args, user);
+                    if (message.ToUpper().StartsWith("%CALL HORSE"))
+                        return Command.CallHorse(message, args, user);
                     return false;
                 }
 
