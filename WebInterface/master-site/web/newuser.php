@@ -83,10 +83,10 @@ if(isset($_POST['cbt'], $_POST['user'],$_POST['pass1'],$_POST['pass2'],$_POST['s
 	if($username == $password)
 		array_push($problems, "Username and Password can not be the same!");
 	
-	if(str_contains($username, $password))
+	if(strpos($username, $password) !== false)
 		array_push($problems, "The password cannot be within the username!.");
 	
-	if(str_contains($password, $username))
+	if(strpos($password, $username) !== false)
 		array_push($problems, "The password cannot have the username within it!.");
 	
 	
