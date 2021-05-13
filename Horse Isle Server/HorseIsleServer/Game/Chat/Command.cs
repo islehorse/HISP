@@ -39,7 +39,7 @@ namespace HISP.Game.Chat
                 try
                 {
                     money = int.Parse(args[1]);
-                    user.Money += money;
+                    user.AddMoney(money);
                 }
                 catch (Exception)
                 {

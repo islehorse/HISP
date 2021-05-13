@@ -146,7 +146,7 @@ namespace HISP.Game.Services
                             User userWon = GameServer.GetUserById(highestBidder);
                             byte[] wonAuction = PacketBuilder.CreateChat(Messages.FormatAuctionBroughtHorse(highestBid), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             userWon.LoggedinClient.SendPacket(wonAuction);
-                            userWon.Money -= highestBid;
+                            userWon.TakeMoney(highestBid);
                             userWon.HorseInventory.AddHorse(Horse, false);
                         }
                         else
@@ -159,7 +159,7 @@ namespace HISP.Game.Services
                             User userSold = GameServer.GetUserById(OwnerId);
                             byte[] horseSold = PacketBuilder.CreateChat(Messages.FormatAuctionHorseSold(highestBid), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             userSold.LoggedinClient.SendPacket(horseSold);
-                            userSold.Money += highestBid;
+                            userSold.AddMoney(highestBid);
                             userSold.HorseInventory.DeleteHorse(Horse, false);
                         }
                         else

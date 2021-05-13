@@ -79,7 +79,7 @@ namespace HISP.Server
                         {
                             int moneyToAdd = 5000 * ranch.GetBuildingCount(8); // Windmill
                             if (GameServer.IsUserOnline(ranchOwner))
-                                GameServer.GetUserById(ranchOwner).Money += moneyToAdd;
+                                GameServer.GetUserById(ranchOwner).AddMoney(moneyToAdd);
                             else
                                 Database.SetPlayerMoney(Database.GetPlayerMoney(ranchOwner) + moneyToAdd, ranchOwner);
                         }
@@ -920,7 +920,7 @@ namespace HISP.Server
                                 byte[] healedMessagePacket = PacketBuilder.CreateChat(Messages.VetAllFullHealthRecoveredMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(healedMessagePacket);
 
-                                sender.LoggedinUser.Money -= price;
+                                sender.LoggedinUser.TakeMoney(price);
 
                             }
                             else
@@ -968,7 +968,7 @@ namespace HISP.Server
                                 if(sender.LoggedinUser.Money >= price)
                                 {
                                     horseVetServiceInst.BasicStats.Health = 1000;
-                                    sender.LoggedinUser.Money -= price;
+                                    sender.LoggedinUser.TakeMoney(price);
 
                                     byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatVetHorseAtFullHealthMessage(horseVetServiceInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(messagePacket);
@@ -1041,7 +1041,7 @@ namespace HISP.Server
                                 if (sender.LoggedinUser.Money >= price)
                                 {
                                     horseFarrierServiceInst.BasicStats.Shoes = incAmount;
-                                    sender.LoggedinUser.Money -= price;
+                                    sender.LoggedinUser.TakeMoney(price);
 
                                     byte[] messagePacket = PacketBuilder.CreateChat(msg, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(messagePacket);
@@ -1091,7 +1091,7 @@ namespace HISP.Server
                                         horse.BasicStats.Shoes = farrier.SteelShoesAmount;
                                     }
                                 }
-                                sender.LoggedinUser.Money -= totalPrice;
+                                sender.LoggedinUser.TakeMoney(totalPrice);
 
                                 byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatFarrierPutOnSteelShoesAllMesssage(farrier.SteelShoesAmount, 1000), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(messagePacket);
@@ -1143,7 +1143,7 @@ namespace HISP.Server
                                 if (sender.LoggedinUser.Money >= price)
                                 {
                                     groomHorseInst.BasicStats.Groom = groomer.Max;
-                                    sender.LoggedinUser.Money -= price;
+                                    sender.LoggedinUser.TakeMoney(price);
 
                                     byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatHorseGroomedToBestAbilities(groomHorseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(messagePacket);
@@ -1199,7 +1199,7 @@ namespace HISP.Server
                                 byte[] groomedAllHorsesPacket = PacketBuilder.CreateChat(Messages.GroomerBestToHisAbilitiesALL, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(groomedAllHorsesPacket);
 
-                                sender.LoggedinUser.Money -= price;
+                                sender.LoggedinUser.TakeMoney(price);
 
                             }
                             else
@@ -1251,7 +1251,7 @@ namespace HISP.Server
                                     barnHorseInst.BasicStats.Tiredness = 1000;
                                     barnHorseInst.BasicStats.Hunger = 1000;
                                     barnHorseInst.BasicStats.Thirst = 1000;
-                                    sender.LoggedinUser.Money -= price;
+                                    sender.LoggedinUser.TakeMoney(price);
 
                                     byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatBarnHorseFullyFed(barnHorseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(messagePacket);
@@ -1307,7 +1307,7 @@ namespace HISP.Server
                                 byte[] barnedAllHorsesPacket = PacketBuilder.CreateChat(Messages.BarnAllHorsesFullyFed, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(barnedAllHorsesPacket);
 
-                                sender.LoggedinUser.Money -= totalPrice;
+                                sender.LoggedinUser.TakeMoney(totalPrice);
 
                             }
                             else
@@ -1360,7 +1360,7 @@ namespace HISP.Server
 
                                 if(sender.LoggedinUser.Money >= trainer.MoneyCost)
                                 {
-                                    sender.LoggedinUser.Money -= trainer.MoneyCost;
+                                    sender.LoggedinUser.TakeMoney(trainer.MoneyCost);
                                     trainHorseInst.BasicStats.Mood -= trainer.MoodCost;
                                     trainHorseInst.BasicStats.Thirst -= trainer.ThirstCost;
                                     trainHorseInst.BasicStats.Hunger -= trainer.HungerCost;
@@ -1623,7 +1623,7 @@ namespace HISP.Server
                                     if (sender.LoggedinUser.Money >= arena.EntryCost)
                                     {
                                         arena.AddEntry(sender.LoggedinUser, horseInstance);
-                                        sender.LoggedinUser.Money -= arena.EntryCost;
+                                        sender.LoggedinUser.TakeMoney(arena.EntryCost);
 
                                         byte[] enteredIntoCompetition = PacketBuilder.CreateChat(Messages.ArenaEnteredInto, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                         sender.SendPacket(enteredIntoCompetition);
@@ -2184,11 +2184,11 @@ namespace HISP.Server
                         case 1: // Bank
                             if (dynamicInput.Length >= 2)
                             {
-                                int moneyDeposited = 0;
+                                Int64 moneyDeposited = 0;
                                 Int64 moneyWithdrawn = 0;
                                 try
                                 {
-                                    moneyDeposited = int.Parse(dynamicInput[1]);
+                                    moneyDeposited = Int64.Parse(dynamicInput[1]);
                                     moneyWithdrawn = Int64.Parse(dynamicInput[2]);
                                 }
                                 catch (Exception)
@@ -2197,20 +2197,42 @@ namespace HISP.Server
                                     UpdateArea(sender);
                                     break;
                                 }
+                                
+                                // Check if trying to deposit more than can be held in the bank.
+
+                                if (Convert.ToInt64(sender.LoggedinUser.BankMoney) + moneyDeposited > 9999999999)
+                                {
+                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.BankCantHoldThisMuch, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(chatPacket);
+                                    UpdateArea(sender);
+                                    break;
+                                }
+
+                                // Check if trying to deposit more than 2.1B
+
+                                if (moneyWithdrawn > 2100000000)
+                                {
+                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.BankYouCantHoldThisMuch, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(chatPacket);
+                                    UpdateArea(sender);
+                                    break;
+                                }
+
+                                
 
                                 if((moneyDeposited <= sender.LoggedinUser.Money) && moneyDeposited != 0)
                                 {
-                                    sender.LoggedinUser.Money -= moneyDeposited;
-                                    sender.LoggedinUser.BankMoney += Convert.ToUInt64(moneyDeposited);
+                                    sender.LoggedinUser.TakeMoney(Convert.ToInt32(moneyDeposited));
+                                    sender.LoggedinUser.BankMoney += moneyDeposited;
 
-                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatDepositedMoneyMessage(moneyDeposited), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatDepositedMoneyMessage(Convert.ToInt32(moneyDeposited)), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(chatPacket);
                                 }
 
                                 if ((moneyWithdrawn <= sender.LoggedinUser.BankMoney) && moneyWithdrawn != 0)
                                 {
                                     sender.LoggedinUser.BankMoney -= moneyWithdrawn;
-                                    sender.LoggedinUser.Money += Convert.ToInt32(moneyWithdrawn);
+                                    sender.LoggedinUser.AddMoney(Convert.ToInt32(moneyWithdrawn));
 
                                     byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatWithdrawMoneyMessage(Convert.ToInt32(moneyWithdrawn)), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(chatPacket);
@@ -2237,7 +2259,7 @@ namespace HISP.Server
                                     {
                                         int playerId = Database.GetUserid(to);
 
-                                        sender.LoggedinUser.Money -= 3;
+                                        sender.LoggedinUser.TakeMoney(3);
                                         Mailbox.Mail mailMessage = new Mailbox.Mail();
                                         mailMessage.RandomId = RandomID.NextRandomId();
                                         mailMessage.FromUser = sender.LoggedinUser.Id;
@@ -3131,7 +3153,7 @@ namespace HISP.Server
                         byte[] serachResultMeta = PacketBuilder.CreateMetaPacket(Meta.BuildWhisperSearchResults(horsesFound.ToArray()));
                         sender.SendPacket(serachResultMeta);
 
-                        sender.LoggedinUser.Money -= cost;
+                        sender.LoggedinUser.TakeMoney(cost);
                         break;
                     }
                     else if (buttonIdStr.StartsWith("4c")) // Libary Breed Search
@@ -3253,7 +3275,7 @@ namespace HISP.Server
                             sender.LoggedinUser.HorseInventory.DeleteHorse(inst); // 1000% a "distant land.."
                             sender.LoggedinUser.LastViewedHorse = null;
 
-                            sender.LoggedinUser.Money += price;
+                            sender.LoggedinUser.AddMoney(price);
                             byte[] soldHorseMessage = PacketBuilder.CreateChat(Messages.FormatPawneerSold(name, price), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(soldHorseMessage);
 
@@ -3340,7 +3362,7 @@ namespace HISP.Server
                                 }
                                 if (sender.LoggedinUser.Money >= 1000)
                                 {
-                                    sender.LoggedinUser.Money -= 1000;
+                                    sender.LoggedinUser.TakeMoney(1000);
                                     Auction.AuctionEntry entry = new Auction.AuctionEntry(8, 0, sender.LoggedinUser.Id);
                                     entry.Horse = inst;
                                     entry.OwnerId = sender.LoggedinUser.Id;
@@ -3378,7 +3400,7 @@ namespace HISP.Server
                             else
                             {
                                 sender.LoggedinUser.MetaPriority = true;
-                                sender.LoggedinUser.Money -= horseLeaser.Price;
+                                sender.LoggedinUser.TakeMoney(horseLeaser.Price);
                                 
                                 HorseInstance leaseHorse = horseLeaser.GenerateLeaseHorse();
                                 
@@ -4111,7 +4133,7 @@ namespace HISP.Server
             {
                 case PacketBuilder.WISH_MONEY:
                     int gainMoney = RandomNumberGenerator.Next(500, 1000);
-                    sender.LoggedinUser.Money += gainMoney;
+                    sender.LoggedinUser.AddMoney(gainMoney);
                     message = Messages.FormatWishMoneyMessage(gainMoney);
                     break;
                 case PacketBuilder.WISH_ITEMS:
@@ -4136,7 +4158,7 @@ namespace HISP.Server
                     itm = wishableItmes[item];
 
 
-                    sender.LoggedinUser.Money += earnMoney;
+                    sender.LoggedinUser.AddMoney(earnMoney);
                     sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(itm.Id));
 
                     message = Messages.FormatWishWorldPeaceMessage(earnMoney, itm.Name);
@@ -4367,7 +4389,7 @@ namespace HISP.Server
                         {
                             byte[] bestScoreBeaten = PacketBuilder.CreateChat(Messages.BeatBestHighscore, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(bestScoreBeaten);
-                            sender.LoggedinUser.Money += 2500;
+                            sender.LoggedinUser.AddMoney(2500);
                         }
                         else if (newHighscore)
                         {
@@ -4455,7 +4477,7 @@ namespace HISP.Server
                         int moneyEarned = value * 10;
                         Logger.InfoPrint(sender.LoggedinUser.Username + " Earned $" + moneyEarned + " In: " + id);
 
-                        sender.LoggedinUser.Money += moneyEarned;
+                        sender.LoggedinUser.AddMoney(moneyEarned);
                         byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatMoneyEarnedMessage(moneyEarned), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(chatPacket);
 
@@ -5101,7 +5123,7 @@ namespace HISP.Server
                     sender.SendPacket(welcomeToIslePacket);
 
                     if(cost > 0)
-                        sender.LoggedinUser.Money -= cost;
+                        sender.LoggedinUser.TakeMoney(cost);
                 }
                 else
                 {
@@ -5170,7 +5192,7 @@ namespace HISP.Server
                         return;
                     }
                     int sellPrice = sender.LoggedinUser.OwnedRanch.GetSellPrice();
-                    sender.LoggedinUser.Money += sellPrice;
+                    sender.LoggedinUser.AddMoney(sellPrice);
                     byte[] sellPacket = PacketBuilder.CreateChat(Messages.FormatRanchSoldMessage(sellPrice), PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.LoggedinUser.OwnedRanch.OwnerId = -1;
                     sender.SendPacket(sellPacket);
@@ -5208,7 +5230,7 @@ namespace HISP.Server
                         Ranch.RanchUpgrade nextUpgrade = Ranch.RanchUpgrade.GetRanchUpgradeById(currentUpgrade.Id + 1);
                         if (sender.LoggedinUser.Money >= nextUpgrade.Cost)
                         {
-                            sender.LoggedinUser.Money -= nextUpgrade.Cost;
+                            sender.LoggedinUser.TakeMoney(nextUpgrade.Cost);
                             sender.LoggedinUser.OwnedRanch.InvestedMoney += nextUpgrade.Cost;
                             sender.LoggedinUser.OwnedRanch.UpgradedLevel++;
 
@@ -5271,7 +5293,7 @@ namespace HISP.Server
                         if (ranchBuilding.Id == buildingId)
                         {
                             sender.LoggedinUser.OwnedRanch.SetBuilding(ranchBuild - 1, null);
-                            sender.LoggedinUser.Money += ranchBuilding.GetTeardownPrice();
+                            sender.LoggedinUser.AddMoney(ranchBuilding.GetTeardownPrice());
                             sender.LoggedinUser.OwnedRanch.InvestedMoney -= building.Cost;
                             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatBuildingTornDown(ranchBuilding.GetTeardownPrice()), PacketBuilder.CHAT_BOTTOM_RIGHT);
 
@@ -5325,7 +5347,7 @@ namespace HISP.Server
                         {
                             sender.LoggedinUser.OwnedRanch.SetBuilding(ranchBuild - 1, building);
                             sender.LoggedinUser.OwnedRanch.InvestedMoney += building.Cost;
-                            sender.LoggedinUser.Money -= building.Cost;
+                            sender.LoggedinUser.TakeMoney(building.Cost);
                             byte[] chatPacket = PacketBuilder.CreateChat(Messages.RanchBuildingComplete, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(chatPacket);
                             UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
@@ -5360,7 +5382,7 @@ namespace HISP.Server
                         {
                             byte[] broughtRanch = PacketBuilder.CreateChat(Messages.FormatRanchBroughtMessage(ranch.Value), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(broughtRanch);
-                            sender.LoggedinUser.Money -= ranch.Value;
+                            sender.LoggedinUser.TakeMoney(ranch.Value);
                             ranch.OwnerId = sender.LoggedinUser.Id;
                             ranch.InvestedMoney += ranch.Value;
                             sender.LoggedinUser.OwnedRanch = ranch;
@@ -6265,7 +6287,7 @@ namespace HISP.Server
                             int looseAmount = RandomNumberGenerator.Next(0, 100);
                             if (looseAmount > sender.LoggedinUser.Money)
                                 looseAmount = sender.LoggedinUser.Money;
-                            sender.LoggedinUser.Money -= looseAmount;
+                            sender.LoggedinUser.TakeMoney(looseAmount);
                             msg = Messages.FormatDroppedMoneyMessage(looseAmount);
                         }
 
@@ -6429,7 +6451,7 @@ namespace HISP.Server
                                 sender.SendPacket(inventoryFullMessage);
                                 break;
                             }
-                            sender.LoggedinUser.Money -= itm.MoneyCost;
+                            sender.LoggedinUser.TakeMoney(itm.MoneyCost);
 
                             // Remove the required items..
                             foreach(Workshop.RequiredItem reqItem in itm.RequiredItems) 
@@ -6525,14 +6547,23 @@ namespace HISP.Server
                         int sellPrice = shop.CalculateSellCost(itemInfo) * totalSold;
                         if (shop.CanSell(itemInfo))
                         {
-                            for(int i = 0; i < totalSold; i++)
+                            // Check if goes over 2.1b
+                            if (sender.LoggedinUser.Money + sellPrice > 2100000000)
+                            {
+                                byte[] cantSellMoneyCapCheck = PacketBuilder.CreateChat(Messages.CannotSellYoudGetTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cantSellMoneyCapCheck);
+                                break; 
+                            }
+
+                            // Remove items
+                            for (int i = 0; i < totalSold; i++)
                             {
                                 ItemInstance itemInstance = invItem.ItemInstances[0];
                                 sender.LoggedinUser.Inventory.Remove(itemInstance);
                                 shop.Inventory.Add(itemInstance);
                             }
 
-                            sender.LoggedinUser.Money += sellPrice;
+                            sender.LoggedinUser.AddMoney(sellPrice);
 
                             UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                             if(message == 1)
@@ -6587,7 +6618,7 @@ namespace HISP.Server
                             int price = lastInn.CalculateBuyCost(itemInfo);
                             if(sender.LoggedinUser.Money >= price)
                             {
-                                sender.LoggedinUser.Money -= price;
+                                sender.LoggedinUser.TakeMoney(price);
                                 bool toMuch = Item.ConsumeItem(sender.LoggedinUser, itemInfo);
 
                                 string tooMuchMessage = Messages.ConsumedButMaxReached;
@@ -6715,7 +6746,7 @@ namespace HISP.Server
                                 shop.Inventory.Remove(itemInstance);
                             }
 
-                            sender.LoggedinUser.Money -= buyCost;
+                            sender.LoggedinUser.TakeMoney(buyCost);
 
 
                             // Send chat message to client.

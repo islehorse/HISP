@@ -35,7 +35,7 @@ namespace HISP.Game.Events
                     user.Inventory.AddIgnoringFull(new ItemInstance(rngEvent.GiveObject));
 
                 if(moneyEarned != 0)
-                    user.Money += moneyEarned;
+                    user.AddMoney(moneyEarned);
 
                 HorseInstance effectedHorse = null;
 

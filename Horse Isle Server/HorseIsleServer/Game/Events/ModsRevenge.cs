@@ -133,8 +133,8 @@ namespace HISP.Game.Events
                 byte[] otherEarned = PacketBuilder.CreateChat(Messages.FormatModSplatterBallAwardedOther(thrower.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
                 byte[] youEarned = PacketBuilder.CreateChat(Messages.FormatModSplatterBallAwardedYou(throwAt.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
 
-                thrower.Money += 50;
-                throwAt.Money += 500;
+                thrower.AddMoney(50);
+                throwAt.AddMoney(500);
 
                 thrower.LoggedinClient.SendPacket(youEarned);
                 throwAt.LoggedinClient.SendPacket(otherEarned);

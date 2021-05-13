@@ -1138,6 +1138,9 @@ namespace HISP.Server
             Messages.TradeNotAllowedWhileBidding = gameData.messages.meta.player_interaction.trade.trade_not_allowed_while_bidding;
             Messages.TradeNotAllowedWhileOtherBidding = gameData.messages.meta.player_interaction.trade.trade_not_allowed_while_other_is_bidding;
 
+            Messages.TradeWillGiveYouTooMuchMoney = gameData.messages.meta.player_interaction.trade.trade_other_cannot_carry_that_much;
+            Messages.TradeWillGiveOtherTooMuchMoney = gameData.messages.meta.player_interaction.trade.trade_you_cannot_carry_that_much;
+
             // Player Interation
 
             Messages.PlayerHereMenuFormat = gameData.messages.meta.player_interaction.menu;
@@ -1617,6 +1620,9 @@ namespace HISP.Server
             Messages.BankDepositedMoneyFormat = gameData.messages.bank.deposit_format;
             Messages.BankWithdrewMoneyFormat = gameData.messages.bank.withdraw_format;
 
+            Messages.BankCantHoldThisMuch = gameData.messages.bank.cant_hold_that_much;
+            Messages.BankYouCantHoldThisMuch = gameData.messages.bank.cant_withdraw_that_much;
+
             // Riddler
             Messages.RiddlerAnsweredAll = gameData.messages.meta.riddler.riddle_all_complete;
             Messages.RiddlerIncorrectAnswer = gameData.messages.meta.riddler.riddle_incorrect;
@@ -1876,6 +1882,7 @@ namespace HISP.Server
             Messages.Brought25Format = gameData.messages.shop.brought_25;
             Messages.Sold1Format = gameData.messages.shop.sold_1;
             Messages.SoldAllFormat = gameData.messages.shop.sold_all;
+            Messages.CannotSellYoudGetTooMuchMoney = gameData.messages.shop.cant_hold_extra_money;
 
             Messages.Brought1ButInventoryFull = gameData.messages.shop.brought_1_but_inv_full;
             Messages.Brought5ButInventoryFull = gameData.messages.shop.brought_5_but_inv_full;

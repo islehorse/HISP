@@ -33,7 +33,7 @@ namespace HISP.Game
 
             byte[] riddleAnswerCorrectPacket = PacketBuilder.CreateChat(Messages.FormatRiddlerAnswerCorrect(this.Reason), PacketBuilder.CHAT_BOTTOM_RIGHT);
             user.LoggedinClient.SendPacket(riddleAnswerCorrectPacket);
-            user.Money += 10000;
+            user.AddMoney(10000);
 
             if(Database.TotalRiddlesCompletedByPlayer(user.Id) >= riddlerRiddles.Count)
                 user.Awards.AddAward(Award.GetAwardById(11)); // Riddlers Riddles

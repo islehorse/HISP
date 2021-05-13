@@ -142,7 +142,7 @@ namespace HISP.Game.Items
             if (isFirstLoad)
                 Logger.InfoPrint("Generating items, (this may take awhile on a fresh database!)");
             else
-                Logger.InfoPrint("Generating items.");
+                Logger.DebugPrint("Generating items.");
 
             int newItems = 0;
             foreach (Item.ItemInformation item in Item.Items)

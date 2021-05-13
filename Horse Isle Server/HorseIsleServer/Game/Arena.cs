@@ -271,7 +271,7 @@ namespace HISP.Game
                         if (place == 0) // WINNER!
                         {
                             int prize = EntryCost * Entries.Count;
-                            entry.EnteredUser.Money += prize;
+                            entry.EnteredUser.AddMoney(prize);
 
 
                             byte[] youWinMessage = PacketBuilder.CreateChat(Messages.FormatArenaYouWinMessage(prize, expReward), PacketBuilder.CHAT_BOTTOM_RIGHT);
