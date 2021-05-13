@@ -104,7 +104,7 @@ if(isset( $_POST['user'],$_POST['pass1'],$_POST['pass2'],$_POST['sex'],$_POST['e
 		array_push($problems, "The password cannot have the username within it!.");
 	
 	
-	if(!preg_match('/^[A-Za-z0-9]*\@[A-Za-z0-9]*\.[A-Za-z0-9]{1,4}$/',$email))
+	if(!preg_match('/^[A-Za-z0-9_.+-]*\@[A-Za-z0-9_.+-]*\.[A-Za-z0-9_.+-]{1,4}$/',$email))
 		array_push($problems, "Email does not appear valid, you will not be able sign in without getting the login mail.");
 	
 	
