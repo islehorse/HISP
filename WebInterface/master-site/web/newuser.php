@@ -10,13 +10,27 @@ if($atype > 2 || $atype < 1)
 
 $problems = [];
 
-if(isset($_POST['cbt'], $_POST['user'],$_POST['pass1'],$_POST['pass2'],$_POST['sex'],$_POST['email'],$_POST['age'],$_POST['passreqq'],$_POST['passreqa'],$_POST['cbr'] ,$_POST['A']))
+if(isset( $_POST['user'],$_POST['pass1'],$_POST['pass2'],$_POST['sex'],$_POST['email'],$_POST['age'],$_POST['passreqq'],$_POST['passreqa'] ,$_POST['A']))
 {
-	if($_POST['cbr'] !== "OK")
+	if(isset($_POST["cbr"]))
+	{
+		if($_POST['cbr'] !== "OK")
+			array_push($problems, "You need to read the RULES and agree to follow them!");
+	}
+	else
+	{
 		array_push($problems, "You need to read the RULES and agree to follow them!");
-	if($_POST['cbt'] !== "OK")
+	}
+	if(isset($_POST["cbt"]))
+	{
+		if($_POST['cbt'] !== "OK")
+			array_push($problems, "You need to read the Terms and Conditions agree to be bound by them!");
+	}
+	else
+	{
 		array_push($problems, "You need to read the Terms and Conditions agree to be bound by them!");
-	if($_POST['A'] == 1)
+	}
+	if($_POST['A'] == 1){
 		if(isset($_POST["cbp"]))
 		{
 			if($_POST['cbp'] !== "OK")
@@ -26,7 +40,7 @@ if(isset($_POST['cbt'], $_POST['user'],$_POST['pass1'],$_POST['pass2'],$_POST['s
 		{
 			array_push($problems, "You need to have Parental Permission!");
 		}
-		
+	}
 	if($_POST['pass1'] !== $_POST['pass2'])
 		array_push($problems, "Passwords must match!");
 	
