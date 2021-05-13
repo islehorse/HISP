@@ -109,7 +109,7 @@ namespace HISP.Game.Events
             string msgCheck = message.ToLower();
             foreach(string answer in Answers)
             {
-                if (msgCheck.ToLower().Contains(answer))
+                if (msgCheck.Contains(answer.ToLower()))
                     return true;
             }
             return false;
