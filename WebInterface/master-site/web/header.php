@@ -108,28 +108,3 @@ color: #440000;
 <TD WIDTH=29><IMG SRC=/web/hoilgui7.gif></TD></TR>
 </TABLE>
 <CENTER>
-<BR><TABLE BORDER=0 CELLPADDING=20><TR><TD><B>RIGHT!   Good Job.  Someone can pretend to be anyone.  Someone whom you believe to have gotten to 'know' very well could actually be someone completely different.<br>  Now for the next question:  Someone has just insulted you in the chat.  What should you do?</B><BR><BR><LI>REPLY WITH: <A HREF=?CHATPOINT=5>Reply back to them and insult them back.</A></LI><BR><LI>REPLY WITH: <A HREF=?CHATPOINT=5>Reply back to them and explain how they were wrong.</A></LI><BR><LI>REPLY WITH: <A HREF=?CHATPOINT=6>Ignore the player and, if it was very mean, report it to Horse Isle Staff.</A></LI><BR></TD></TR></TABLE><BR><TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100%>
-<TR>
-<TD><IMG SRC=/web/hoilgui10.gif></TD>
-<TD WIDTH=100% BACKGROUND=/web/hoilgui11.gif></TD>
-<TD><IMG SRC=/web/hoilgui12.gif></TD>
-</TR></TABLE>
-<CENTER><B>
-[ <A HREF=//master.horseisle.com/beginnerguide/>New Player Guide</A> ]<BR>
-[ <A HREF=/web/rules.php>Rules</A> ]
-[ <A HREF=/web/termsandconditions.php>Terms and Conditions</A> ]
-[ <A HREF=/web/privacypolicy.php>Privacy Policy</A> ]</B><BR>
-[ <A HREF=/web/expectedbehavior.php>Expected Behavior</A> ]
-[ <A HREF=/web/contactus.php>Contact Us</A> ] 
-[ <A HREF=/web/credits.php>Credits</A> ]<BR>
-<FONT FACE=Verdana,Arial SIZE=-2>Copyright &copy; 2020 Horse Isle</FONT>
-
-<!-- Google Analytics -->
-<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-</script>
-<script type="text/javascript">
-_uacct = "UA-1805076-1";
-urchinTracker();
-</script>
-
-
