@@ -5539,6 +5539,8 @@ namespace HISP.Server
                 }
             }
 
+            message = message.Trim();
+
             if (Chat.ProcessCommand(sender.LoggedinUser, message))
             {
                 Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to run command '" + message + "' in channel: " + channel.ToString());
