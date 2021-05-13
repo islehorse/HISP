@@ -71,7 +71,7 @@ namespace HISP.Game.Events
                 winner.Awards.AddAward(Award.GetAwardById(34)); // Riddle Genius
 
 
-            winner.Money += Reward;
+            winner.AddMoney(Reward);
             byte[] riddleWonMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeRiddleWonForOthers(winner.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
             byte[] riddleYouWonMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeRiddleWonForYou(Reward), PacketBuilder.CHAT_BOTTOM_RIGHT);
             foreach (GameClient client in GameServer.ConnectedClients)

@@ -212,6 +212,9 @@ namespace HISP.Game
         public static string TradeNotAllowedWhileBidding;
         public static string TradeNotAllowedWhileOtherBidding;
 
+        public static string TradeWillGiveYouTooMuchMoney;
+        public static string TradeWillGiveOtherTooMuchMoney;
+
         // Player Interaction
         public static string PlayerHereMenuFormat;
 
@@ -981,6 +984,7 @@ namespace HISP.Game
         public static string Brought25Format;
         public static string Sold1Format;
         public static string SoldAllFormat;
+        public static string CannotSellYoudGetTooMuchMoney;
 
         // Bank
         public static string BankMadeInIntrestFormat;
@@ -990,6 +994,9 @@ namespace HISP.Game
 
         public static string BankWithdrewMoneyFormat;
         public static string BankDepositedMoneyFormat;
+
+        public static string BankCantHoldThisMuch;
+        public static string BankYouCantHoldThisMuch;
 
         // Npc
         public static string NpcStartChatFormat;

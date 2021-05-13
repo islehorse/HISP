@@ -242,7 +242,7 @@ namespace HISP.Game.Events
                     participent.UserInstance.LoggedinClient.SendPacket(bonusMessage);
                 }
 
-                participent.UserInstance.Money += money;
+                participent.UserInstance.AddMoney(money);
               
             }
 

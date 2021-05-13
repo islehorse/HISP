@@ -70,19 +70,30 @@ namespace HISP.Player
                 Trader.LoggedinClient.SendPacket(tradeNotAllowedWhileBidding);
                 fail = true;
             }
-            if (OtherTrade.Trader.HorseInventory.HorseList.Length > OtherTrade.Trader.MaxHorses)
+            if (OtherTrade.Trader.HorseInventory.HorseList.Length + HorsesOffered.Count > OtherTrade.Trader.MaxHorses)
             {
                 byte[] tradeYouHaveTooManyHorses = PacketBuilder.CreateChat(Messages.TradeYouCantHandleMoreHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeYouHaveTooManyHorses);
                 fail = true;
             }
-            if (Trader.HorseInventory.HorseList.Length > Trader.MaxHorses)
+            if (Trader.HorseInventory.HorseList.Length + OtherTrade.HorsesOffered.Count > Trader.MaxHorses)
             {
                 byte[] tradeYouHaveTooManyHorses = PacketBuilder.CreateChat(Messages.TradeYouCantHandleMoreHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeYouHaveTooManyHorses);
                 fail = true;
             }
-
+            if(OtherTrade.Trader.Money + MoneyOffered > 2100000000)
+            {
+                byte[] tradeOtherHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveOtherTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                Trader.LoggedinClient.SendPacket(tradeOtherHasTooMuchMoney);
+                fail = true;
+            }
+            if(Trader.Money + OtherTrade.MoneyOffered > 2100000000)
+            {
+                byte[] tradeYouHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveYouTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                Trader.LoggedinClient.SendPacket(tradeYouHasTooMuchMoney);
+                fail = true;
+            }
 
             /*
             *      Item Checks
@@ -140,14 +151,14 @@ namespace HISP.Player
 
             if (MoneyOffered > 0) // Transfer Money
             {
-                Trader.Money -= MoneyOffered;
+                Trader.TakeMoney(MoneyOffered);
                 byte[] tradeSpentMoney = PacketBuilder.CreateChat(Messages.FormatTradeYouSpent(MoneyOffered), PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeSpentMoney);
             }
 
             if(OtherTrade.MoneyOffered > 0)
             {
-                Trader.Money += OtherTrade.MoneyOffered;
+                Trader.AddMoney(OtherTrade.MoneyOffered);
                 byte[] tradeReceivedMoney = PacketBuilder.CreateChat(Messages.FormatTradeYouReceived(OtherTrade.MoneyOffered), PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeReceivedMoney);
             }

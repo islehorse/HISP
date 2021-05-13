@@ -98,7 +98,7 @@ namespace HISP.Game.Events
                         byte[] wonIsleCardGame = PacketBuilder.CreateChat(Messages.EventWonIsleTradingGame, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         client.SendPacket(wonIsleCardGame);
 
-                        client.LoggedinUser.Money += 25000;
+                        client.LoggedinUser.AddMoney(25000);
 
                     }
 

@@ -110,6 +110,30 @@ namespace HISP.Player
         public bool ListingAuction = false;
         public int TotalGlobalChatMessages = 1;
 
+        public void TakeMoney(int amount)
+        {
+            money -= amount;
+            Database.SetPlayerMoney(money, Id);
+            GameServer.UpdatePlayer(LoggedinClient);
+        }
+
+        public void AddMoney(int amount)
+        {
+            try
+            {
+                checked
+                {
+                    money += amount;
+                }
+            }
+            catch(OverflowException)
+            {
+                money = 2147483647;
+            }
+
+            Database.SetPlayerMoney(money, Id);
+            GameServer.UpdatePlayer(LoggedinClient);
+        }
         public string GetWeatherSeen()
         {
             string weather = "SUNNY";
@@ -255,25 +279,6 @@ namespace HISP.Player
             get
             {
                 return money;
-            }
-            set
-            {
-                try
-                {
-                    checked
-                    {
-                        money = value;
-                        Database.SetPlayerMoney(value, Id);
-                        GameServer.UpdatePlayer(LoggedinClient);
-                    }
-                }
-                catch(OverflowException)
-                {
-                    money = 2147483647;
-                    Database.SetPlayerMoney(2147483647, Id);
-                    GameServer.UpdatePlayer(LoggedinClient);
-                }
-
             }
         }
 

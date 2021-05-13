@@ -68,7 +68,7 @@ namespace HISP.Player
             {
                 Database.AddAward(baseUser.Id, award.Id);
 
-                baseUser.Money += award.MoneyBonus;
+                baseUser.AddMoney(award.MoneyBonus);
 
                 byte[] chatPacket = PacketBuilder.CreateChat(award.CompletionText, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 baseUser.LoggedinClient.SendPacket(chatPacket);

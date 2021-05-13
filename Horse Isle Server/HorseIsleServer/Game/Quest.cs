@@ -182,9 +182,10 @@ namespace HISP.Game
                     user.Inventory.Remove(itm.ItemInstances[0]);
 
             }
-            user.Money -= quest.MoneyCost;
+            // Take Money
+            user.TakeMoney(quest.MoneyCost);
             // Give money
-            user.Money += quest.MoneyEarned;
+            user.AddMoney(quest.MoneyEarned);
             // Give items
             foreach (QuestItemInfo itemInfo in quest.ItemsEarned)
             {

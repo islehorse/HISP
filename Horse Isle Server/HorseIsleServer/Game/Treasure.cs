@@ -142,7 +142,7 @@ namespace HISP.Game
             byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
             user.LoggedinClient.SendPacket(MovementPacket);
 
-            user.Money += Value;
+            user.AddMoney(Value);
 
             if(this.Type == "BURIED")
             {

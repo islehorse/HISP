@@ -471,7 +471,7 @@ namespace HISP.Game
             int moneyLost = GameServer.RandomNumberGenerator.Next(0, 100);
             if (moneyLost > user.Money)
                 moneyLost = user.Money;
-            user.Money -= moneyLost;
+            user.TakeMoney(moneyLost);
             return Messages.FormatVenusFlyTrapMeta(moneyLost);
         }
         public static string buildInn(Inn inn)

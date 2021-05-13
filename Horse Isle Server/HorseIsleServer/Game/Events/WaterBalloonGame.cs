@@ -73,7 +73,7 @@ namespace HISP.Game.Events
             foreach (ThrownCounter winner in winnerCounter)
             {
                 byte[] youWinMsg = PacketBuilder.CreateChat(Messages.EventWonWaterBallonGame, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                winner.UserHit.Money += 20000;
+                winner.UserHit.AddMoney(20000);
                 winner.UserHit.LoggedinClient.SendPacket(youWinMsg);
                 winner.UserHit.TrackedItems.GetTrackedItem(Tracking.TrackableItem.WaterbaloonGameWin).Count++;
             }
