@@ -39,16 +39,20 @@ if(isset($_POST['cbt'], $_POST['user'],$_POST['pass1'],$_POST['pass2'],$_POST['s
 	$country = $_POST['country'];
 	$gender = $_POST['sex'];
 	
-	// Check for non-letters in name
 	if(preg_match('/[^A-Za-z]/', $username))
 		array_push($problems, "Username must contain ONLY Letters.");
-	// Check for too short
+	
 	$username_len = strlen($username);
 	if($username_len < 3)
 		array_push($problems, "Username must be at least 3 characters long.");
 	if($username_len > 16)
 		array_push($problems, "Username must be less than 16 characters long.");
 	
+	if(preg_match('/[A-Z]{2,}/',$username))
+		array_push($problems, "Username should be formatted with the first letter of each word capitalized. ( For example: BlueBunny )");
+	
+	if(strtoupper($username)[0] !== $username[0])
+		array_push($problems, "Username should be formatted with the first letter of each word capitalized. ( For example: BlueBunny )");
 	
 	if(preg_match('/[^A-Za-z0-9]/',$password))
 		array_push($problems, "Password must contain ONLY Letters and numbers.");
