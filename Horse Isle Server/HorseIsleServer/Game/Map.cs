@@ -28,6 +28,10 @@ namespace HISP.Game
 
         public static int ModIsleX;
         public static int ModIsleY;
+
+        public static int RulesIsleX;
+        public static int RulesIsleY;
+
         public static int GetTileId(int x, int y, bool overlay)
         {
             int pos = ((x * Height) + y);
@@ -93,9 +97,6 @@ namespace HISP.Game
 
             if (!passable && overlayPassable)
                 passable = true;
-
-
-
 
             return passable;
         }

@@ -61,6 +61,8 @@ namespace HISP.Game.Chat
                         return Command.Goto(message, args, user);
                     if (message.ToUpper().StartsWith("%KICK"))
                         return Command.Kick(message, args, user);
+                    if (message.ToUpper().StartsWith("%RULES"))
+                        return Command.Rules(message, args, user);
                     if (message.ToUpper().StartsWith("%NOCLIP"))
                         return Command.NoClip(message, args, user);
                     if (message.ToUpper().StartsWith("%BAN"))

@@ -159,6 +159,31 @@ namespace HISP.Game.Chat
             return true;
         }
 
+        public static bool Rules(string message, string[] args, User user)
+        {
+            if (!user.Administrator || !user.Moderator)
+                return false;
+            if (args.Length <= 0)
+                return false;
+
+            try
+            {
+                User toSend = GameServer.GetUserByName(args[0]);
+
+                toSend.Teleport(Map.RulesIsleX, Map.RulesIsleY);
+                byte[] studyTheRulesMsg = PacketBuilder.CreateChat(Messages.RulesIsleSentMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                toSend.LoggedinClient.SendPacket(studyTheRulesMsg);
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1))+Messages.FormatRulesCommandMessage(args[0]), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+        }
+
         public static bool Kick(string message, string[] args, User user)
         {
             if (!user.Administrator || !user.Moderator)
@@ -358,6 +383,9 @@ namespace HISP.Game.Chat
 
         public static bool CallHorse(string message, string[] args, User user)
         {
+            if (!user.Administrator)
+                return false;
+
             string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
 
             WildHorse horse = WildHorse.WildHorses[GameServer.RandomNumberGenerator.Next(0, WildHorse.WildHorses.Length)];
