@@ -968,6 +968,12 @@ namespace HISP.Server
             Map.ModIsleX = gameData.messages.commands.mod_isle.x;
             Map.ModIsleY = gameData.messages.commands.mod_isle.y;
 
+            // Rules Isle
+            Map.RulesIsleX = gameData.messages.commands.rules_isle.x;
+            Map.RulesIsleY = gameData.messages.commands.rules_isle.y;
+            Messages.RulesIsleSentMessage = gameData.messages.commands.rules_isle.message;
+            Messages.RulesIsleCommandMessageFormat = gameData.messages.commands.rules_isle.command_msg;
+
             // Tag
 
             Messages.TagYourItFormat = gameData.messages.meta.player_interaction.tag.tag_player;

@@ -26,13 +26,18 @@ namespace HISP.Game.Events
                 if (rngEvent.Text.Contains("%HORSENAME%") && user.HorseInventory.HorseList.Length <= 0)
                     continue;
 
-                    int moneyEarned = 0;
+                int moneyEarned = 0;
                 if (rngEvent.MinMoney != 0 || rngEvent.MaxMoney != 0)
                     moneyEarned = GameServer.RandomNumberGenerator.Next(rngEvent.MinMoney, rngEvent.MaxMoney);
 
 
+                if (moneyEarned < 0)
+                    if (user.Money + moneyEarned < 0)
+                        continue;
+
                 if (rngEvent.GiveObject != 0)
                     user.Inventory.AddIgnoringFull(new ItemInstance(rngEvent.GiveObject));
+
 
                 if(moneyEarned != 0)
                     user.AddMoney(moneyEarned);
