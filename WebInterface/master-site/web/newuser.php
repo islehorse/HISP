@@ -108,6 +108,7 @@ if(isset( $_POST['user'],$_POST['pass1'],$_POST['pass2'],$_POST['sex'],$_POST['e
 		array_push($problems, "Email does not appear valid, you will not be able sign in without getting the login mail.");
 	
 	
+	populate_db();
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
 	$result = mysqli_query($connect, "SELECT MAX(Id) FROM Users");
 
@@ -120,12 +121,8 @@ if(isset( $_POST['user'],$_POST['pass1'],$_POST['pass2'],$_POST['sex'],$_POST['e
 	$password_hash = hash_salt($password,$salt);
 	$hex_salt = bin2hex($salt);
 
-	$stmt = $connect->prepare("SELECT COUNT(1) FROM Users WHERE Username=?"); 
-	$stmt->bind_param("s", $username);
-	$stmt->execute();
-	$result = $stmt->get_result();
-	$count = intval($result->fetch_row()[0]);
-	if($count !== 0)
+
+	if(user_exists($username))
 		array_push($problems, "Username taken. Please try a different account name.");
 
 
