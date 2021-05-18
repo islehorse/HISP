@@ -1,15 +1,11 @@
-<?php
-if(session_status() !== PHP_SESSION_ACTIVE)
-	session_start();
-?>
 <HEAD>
 <TITLE>HORSE ISLE - Online Multiplayer Horse Game</TITLE>
 <META NAME="keywords" CONTENT="Horse Game Online MMORPG Multiplayer Horses RPG Girls Girly Isle World Island Virtual Horseisle Sim Virtual">
 <META NAME="description" CONTENT="A multiplayer online horse world where players can capture, train, care for and compete their horses against other players. A very unique virtual sim horse game.">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
-<link rel="meta" href="http://horseisle.com/labels.rdf" type="application/rdf+xml" title="ICRA labels" />
-<meta http-equiv="pics-Label" content='(pics-1.1 "http://www.icra.org/pics/vocabularyv03/" l gen true for "http://horseisle.com" r (n 0 s 0 v 0 l 0 oa 0 ob 0 oc 0 od 0 oe 0 of 0 og 0 oh 0 c 1)  gen true for "http://hi1.horseisle.com" r (n 0 s 0 v 0 l 0 oa 0 ob 0 oc 0 od 0 oe 0 of 0 og 0 oh 0 c 1))' />
+<link rel="meta" href="//horseisle.com/labels.rdf" type="application/rdf+xml" title="ICRA labels" />
+<meta http-equiv="pics-Label" content='(pics-1.1 "//www.icra.org/pics/vocabularyv03/" l gen true for "//horseisle.com" r (n 0 s 0 v 0 l 0 oa 0 ob 0 oc 0 od 0 oe 0 of 0 og 0 oh 0 c 1)  gen true for "//hi1.horseisle.com" r (n 0 s 0 v 0 l 0 oa 0 ob 0 oc 0 od 0 oe 0 of 0 og 0 oh 0 c 1))' />
 <style type="text/css">
 hr {
 height: 1;
@@ -56,12 +52,6 @@ border: 2px dotted #6E3278;
 background-color: #EDE5B4;
 text-align: left;
 }
-TD.adminforumpost {
-padding: 5px 20px;
-border: 2px dotted #6E3278;
-background-color: #BFE9C9;
-text-align: left;
-}
 TD.newslist {
 padding: 4px 4px;
 border: 2px dotted #6E3278;
@@ -100,32 +90,9 @@ color: #440000;
 <TD WIDTH=100% BACKGROUND=/web/hoilgui4.gif align=right>
 <B>
 
-<?php
-	if(isset($_SESSION["LOGGED_IN"]))
-	{
-		if($_SESSION['LOGGED_IN'] === "YES")
-		{
-			$username = "invalid";
-			if(isset($_SESSION['USERNAME']))
-				$username = $_SESSION['USERNAME'];
-			
-			echo('<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=10><TR><TD><B>Logged in as: '.$username.'</B><BR><BR><A HREF=/?LOGOUT=1><img src=/web/but-logout.gif border=0></A><BR><A HREF=/><img src=/web/but-mainpage.gif border=0></A></TD><TD><BR><A HREF=/account.php><img src=/web/but-serverlist.gif border=0></A><BR><A HREF=/web/news.php><img src=/web/but-news.gif border=0></A><BR><A HREF=/web/forums.php><img src=/web/but-forums.gif border=0></A><BR><A HREF=/web/helpcenter.php><img src=/web/but-helpcenter.gif border=0></A></TD></TR></TABLE>');
-		}
-		else
-		{
-			goto not_loggedin;
-		}
-	}
-	else
-	{
-not_loggedin:
-		echo('<TABLE CELLPADDING=0 CELLSPACING=2 BORDER=0><FORM METHOD=POST ACTION=/account.php>
-<TR><TD><B>USER:</B></TD><TD><INPUT TYPE=TEXT SIZE=14 NAME=USER></TD></TR>
-<TR><TD><B>PASS:</B></TD><TD><INPUT TYPE=PASSWORD SIZE=14 NAME=PASS></TD></TR>
-<TR><TD></TD><TD><INPUT TYPE=SUBMIT VALUE=LOGIN> (<A HREF=/web/forgotpass.php>Forgot?</A>)</TD></TR></FORM></TABLE>');
-	}
-	
-?>
+
+
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=10><TR><TD><B><A HREF=/account.php>PINTO.HORSEISLE.COM</A><BR>Logged in as: SilicaAndPina<BR><A HREF=/?LOGOUT=1><img src=/web/but-logout.gif border=0></A><BR><A HREF=//hi1.horseisle.com/><img src=/web/but-mainpage.gif border=0></A></TD><TD><BR><A HREF=//hi1.horseisle.com/account.php><img src=/web/but-serverlist.gif border=0></A><BR><A HREF=//hi1.horseisle.com/web/news.php><img src=/web/but-news.gif border=0></A><BR><A HREF=//hi1.horseisle.com/web/forums.php><img src=/web/but-forums.gif border=0></A><BR><A HREF=//hi1.horseisle.com/web/helpcenter.php><img src=/web/but-helpcenter.gif border=0></A></TD></TR></TABLE>
 
 </TD>
 <TD WIDTH=29><IMG SRC=/web/hoilgui5.gif></TD></TR>
