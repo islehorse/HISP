@@ -18,7 +18,7 @@ if(isset($_GET['SERVER']))
 			{				
 				createAccountOnServer($server['database']);
 				
-				$hmac = hash_hmac('sha256', (string)$playerId, $hmac_secret."CrossSiteLogin");
+				$hmac = hash_hmac('sha256', (string)$playerId, $hmac_secret."CrossSiteLogin".$_SERVER['REMOTE_ADDR'].date('m/d/Y'));
 				$redirectUrl = $server['site'];
 				
 				if(!endsWith($redirectUrl, '/'))
