@@ -1,8 +1,7 @@
 <?php
 
 $server_list = [
-	['icon' => 'beta.gif', 'database' => 'beta', 'site' => 'beta.islehorse.com', 'desc' => ' '],
-	['icon' => 'black.gif', 'database' => 'example', 'site' => 'example.islehorse.com', 'desc' => 'Example HISP Server!'],
+	['id' => 'game', 'icon' => 'beta.gif', 'database' => 'beta', 'site' => 'http://game.islehorse.com', 'desc' => ' '],
 ];
 
 // black: 1/3 interest rate,  final new server as of July 2012 for those who want to start classic horseisle anew!
