@@ -20,19 +20,19 @@ include("../header.php");
 				exit;
 			}
 
-			$_SESSION["logged_in"] = true;
-			header("Location: administrate.php");
+			$_SESSION["A_LOGGED_IN"] = "YES";
+			header("Location: /web/admin/administrate.php");
 		}
 		else
 		{
 			echo("<BR> The password you entered was NOT correct. </BR>");
-			echo("<A HREF=\"/admin\">Try Again...</A>");
+			echo("<A HREF=\"/web/admin\">Try Again...</A>");
 		}
 	}
 	else
 	{
 		echo("<BR> You didnt enter a password. </BR>");
-		echo("<A HREF=\"/admin\">Try Again...</A>");
+		echo("<A HREF=\"/web/admin\">Try Again...</A>");
 	}
 ?>
 

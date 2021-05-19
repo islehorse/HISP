@@ -1,12 +1,14 @@
 <?php
-include('dbconfig.php');
 include('common.php');
+include('crosserver.php');
+include('dbconfig.php');
 populate_db();
 
+
+$onlineUsers = getNoPlayersOnlineGlobal();
+$onlineSubscribers = getNoSubbedPlayersOnlineGlobal();
+$onlineModerators = getNoModPlayersOnlineGlobal();
 $connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
-$onlineUsers = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers");
-$onlineSubscribers = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers WHERE Subscribed = 'YES'");
-$onlineModerators = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers WHERE Moderator = 'YES'");
 $activeAccounts = mysqli_query($connect, "SELECT COUNT(1) FROM Users");
 $hasIntl = function_exists('numfmt_create');
 
@@ -50,26 +52,23 @@ HREF=/web/parents.php>Parent's Guide</A> <BR>
 <B>CURRENTLY:</B><BR>
 <FONT COLOR=550000><B>
 <?php 
-$onlineUsersCount = $onlineUsers->fetch_row()[0];
 if($hasIntl)
-echo numfmt_format($fmt, $onlineUsersCount);
+echo numfmt_format($fmt, $onlineUsers);
 else
-echo $onlineUserCount;
+echo $onlineUser;
 ?></B></FONT> Players Online Now<BR>
 <FONT COLOR=550000><B><?php 
-$onlineSubscribersCount = $onlineSubscribers->fetch_row()[0];
 if($hasIntl)					
-echo numfmt_format($fmt, $onlineSubscribersCount);
+echo numfmt_format($fmt, $onlineSubscribers);
 else
-echo $onlineSubscribersCount;
+echo $onlineSubscribers;
 ?></B></FONT> Subscribers Online Now<BR>
 <FONT COLOR=550000><B>
 <?php 
-$onlineModeratorsCount = $onlineModerators->fetch_row()[0];
 if($hasIntl)					
-echo numfmt_format($fmt, $onlineModeratorsCount );
+echo numfmt_format($fmt, $onlineModerators);
 else
-echo $onlineModeratorsCount;
+echo $onlineModerators;
 ?></B></FONT> Moderators Online Now<BR>
 <FONT COLOR=550000><B>
 <?php 

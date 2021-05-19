@@ -11,7 +11,7 @@ $dbhost = '127.0.0.1';
 # Should be set to the same value on all game sites and the master site.
 # NOTE: if someone knows this secret they can create accounts with ADMIN privledges!
 $hmac_secret = "!!NOTSET!!"; 
-
+$master_site = "http://server.islehorse.com";
 # Password for /web/admin
 $admin_portal_password = "!!NOTSET!!";
 ?>

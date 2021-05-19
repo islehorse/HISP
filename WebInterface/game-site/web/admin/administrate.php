@@ -9,9 +9,9 @@ include("../header.php");
 <CENTER>
 <FONT FACE=Verdana,arial SIZE=-1>
 <?php
-	if($_SESSION["logged_in"] == false) 
+	if($_SESSION["A_LOGGED_IN"] !== "YES") 
 	{
-		header("Location: /admin"); # Fuck off.
+		header("Location: /web/admin"); # Fuck off.
 		exit();
 	}
 	
@@ -69,7 +69,7 @@ include("../header.php");
 				$stmt->execute();
 			}
 			echo("<BR><B>Permissions updated successfully.</B></BR>");
-			echo("<A HREF=administrate.php>Go back</A>");
+			echo("<A HREF=/web/admin/administrate.php>Go back</A>");
 			include("../footer.php");
 			exit();
 		}
@@ -77,7 +77,7 @@ include("../header.php");
 ?>
 <BR><B>HISP - Admin Portal</B><BR>
 <BR>Player Operations</BR>
-<BR> <FORM METHOD=POST ACTION=/admin/administrate.php>
+<BR> <FORM METHOD=POST ACTION=/web/admin/administrate.php>
 	Username:
 	<INPUT TYPE=HIDDEN NAME=TYPE VALUE=CHANGEPERMS>
 	<INPUT TYPE=TEXT SIZE=30 NAME=USERNAME></INPUT><BR>
@@ -93,7 +93,7 @@ include("../header.php");
 	</FORM>
 </BR>
 <BR>
-		<A HREF=/ADMIN>Logout from admin portal</A><BR>
+		<A HREF=/web/admin>Logout from admin portal</A><BR>
 </BR>
 
 
