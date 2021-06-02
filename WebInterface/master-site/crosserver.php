@@ -4,7 +4,6 @@ function  getNoPlayersOnlineInServer($database)
 {
 	include('dbconfig.php');
 	$dbname = $database;
-	
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
 	$onlineUsers = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers");
 	return $onlineUsers->fetch_row()[0];
@@ -14,7 +13,6 @@ function  getNoSubbedPlayersOnlineInServer($database)
 {
 	include('dbconfig.php');
 	$dbname = $database;
-	
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
 	$onlineSubscribers = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers WHERE Subscribed = 'YES'");
 	return $onlineSubscribers->fetch_row()[0];
@@ -24,7 +22,6 @@ function  getNoModPlayersOnlineInServer($database)
 {
 	include('dbconfig.php');
 	$dbname = $database;
-	
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
 	$onlineModerators = mysqli_query($connect, "SELECT COUNT(1) FROM OnlineUsers WHERE Moderator = 'YES' OR Admin='YES'");
 	return $onlineModerators->fetch_row()[0];
@@ -47,7 +44,7 @@ function userid_exists(string $database, string $userid)
 	include('dbconfig.php');
 	$dbname = $database;
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
-	$stmt = $connect->prepare("SELECT COUNT(1) FROM Users WHERE Id=?"); 
+	$stmt = $connect->prepare("SELECT COUNT(1) FROM Users WHERE Id=?");
 	$stmt->bind_param("i", $userid);
 	$stmt->execute();
 	$result = $stmt->get_result();

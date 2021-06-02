@@ -3,7 +3,7 @@ if(session_status() !== PHP_SESSION_ACTIVE)
 	session_start();
 
 if(!function_exists('is_logged_in'))
-	include('common.php');
+	include('../common.php');
 ?>
 <HEAD>
 <TITLE>HORSE ISLE - Online Multiplayer Horse Game</TITLE>
