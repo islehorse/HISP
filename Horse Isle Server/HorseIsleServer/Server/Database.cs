@@ -5060,7 +5060,7 @@ namespace HISP.Server
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
-                if (CheckUserExist(id))
+                if (CheckUserExtExists(id))
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = "UPDATE UserExt SET Money=@money WHERE Id=@id";
