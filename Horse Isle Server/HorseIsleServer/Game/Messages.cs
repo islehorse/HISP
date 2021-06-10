@@ -585,10 +585,17 @@ namespace HISP.Game
 
         // Records
 
-        public static string ProfileSavedMessage;
         public static string PrivateNotesSavedMessage;
         public static string PrivateNotesMetaFormat;
 
+        // Profile
+
+        public static string ProfileSavedMessage;
+        public static string ProfileTooLongMessage;
+
+        public static string ProfileViolationFormat;
+        public static string ProfileViolationPersonalInfo;
+        public static string ProfileViolationProfanity;
         // Hay Pile
 
         public static string HasPitchforkMeta;
