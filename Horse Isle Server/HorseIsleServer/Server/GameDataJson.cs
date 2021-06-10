@@ -1365,10 +1365,16 @@ namespace HISP.Server
             Messages.PotOfGoldFormat = gameData.messages.treasure.pot_of_gold;
 
             // Records
-            Messages.ProfileSavedMessage = gameData.messages.profile_save;
             Messages.PrivateNotesSavedMessage = gameData.messages.private_notes_save;
             Messages.PrivateNotesMetaFormat = gameData.messages.meta.private_notes_format;
 
+            // Profile
+            Messages.ProfileSavedMessage = gameData.messages.profile.save;
+            Messages.ProfileTooLongMessage = gameData.messages.profile.too_long;
+            Messages.ProfileViolationFormat = gameData.messages.profile.blocked;
+
+            Messages.ProfileViolationProfanity = gameData.messages.profile.profanity;
+            Messages.ProfileViolationPersonalInfo = gameData.messages.profile.personal_info;
 
             // Announcements
 

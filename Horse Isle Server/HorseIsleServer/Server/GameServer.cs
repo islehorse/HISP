@@ -4258,6 +4258,16 @@ namespace HISP.Server
                 string profilePage = packetStr.Split('|')[1];
                 profilePage = profilePage.Substring(0, profilePage.Length - 2);
                 sender.LoggedinUser.CharacterId = characterId;
+
+
+                
+                if (profilePage.Length > 4000)
+                {
+                    byte[] notSaved = PacketBuilder.CreateChat(Messages.ProfileTooLongMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(notSaved);
+                    return;
+                }
+
                 sender.LoggedinUser.ProfilePage = profilePage;
 
                 Logger.DebugPrint(sender.LoggedinUser.Username + " Changed to character id: " + characterId + " and set there Profile Description to '" + profilePage + "'");
