@@ -2141,6 +2141,14 @@ namespace HISP.Server
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to catch a horse that doesnt exist.");
                         return;
                     }
+
+                    if(sender.LoggedinUser.HorseInventory.HorseList.Length >= sender.LoggedinUser.MaxHorses)
+                    {
+                        byte[] payUsPlz = PacketBuilder.CreateChat(Messages.HorseCatchTooManyHorsesMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(payUsPlz);
+                        return;
+                    }
+
                     sender.LoggedinUser.CapturingHorseId = randomId;
                     byte[] chatPacket = PacketBuilder.CreateChat(Messages.HorseCaptureTimer, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(chatPacket);
@@ -2412,6 +2420,25 @@ namespace HISP.Server
                             {
                                 if(sender.LoggedinUser.LastViewedHorse != null)
                                 {
+                                    string desc = dynamicInput[2]; 
+                                    string name = dynamicInput[1];
+                                    name.Trim();
+                                    desc.Trim();
+                                    
+                                    if(name.Length > 50)
+                                    {
+                                        byte[] horseNameTooLongPacket = PacketBuilder.CreateChat(Messages.HorseNameTooLongError, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(horseNameTooLongPacket);
+                                        break;
+                                    }
+
+                                    if (desc.Length > 250)
+                                    {
+                                        byte[] horseNameTooLongPacket = PacketBuilder.CreateChat(Messages.HorseNameTooLongError, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(horseNameTooLongPacket);
+                                        break;
+                                    }
+
                                     sender.LoggedinUser.MetaPriority = true;
                                     sender.LoggedinUser.LastViewedHorse.Name = dynamicInput[1];
                                     sender.LoggedinUser.LastViewedHorse.Description = dynamicInput[2];
@@ -2496,6 +2523,20 @@ namespace HISP.Server
                                 string desc = dynamicInput[2];
                                 if(sender.LoggedinUser.OwnedRanch != null)
                                 {
+                                    title.Trim();
+                                    desc.Trim();
+                                    if(title.Length > 100)
+                                    {
+                                        byte[] tooLongPacket = PacketBuilder.CreateChat(Messages.RanchSavedTitleTooLongError, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(tooLongPacket);
+                                        break;
+                                    }
+                                    if (desc.Length > 4000)
+                                    {
+                                        byte[] tooLongPacket = PacketBuilder.CreateChat(Messages.RanchSavedTitleTooLongError, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(tooLongPacket);
+                                        break;
+                                    }
                                     sender.LoggedinUser.OwnedRanch.Title = title;
                                     sender.LoggedinUser.OwnedRanch.Description = desc;
                                 }
@@ -5537,18 +5578,23 @@ namespace HISP.Server
                     case "/ads":
                         channel = Chat.ChatChannel.Ads;
                         break;
+                    case "/a":
                     case "/all":
                         channel = Chat.ChatChannel.All;
                         break;
+                    case "/h":
                     case "/here":
                         channel = Chat.ChatChannel.Here;
                         break;
+                    case "/n":
                     case "/near":
                         channel = Chat.ChatChannel.Near;
                         break;
+                    case "/b":
                     case "/buddy":
                         channel = Chat.ChatChannel.Buddies;
                         break;
+                    case "/i":
                     case "/island":
                         channel = Chat.ChatChannel.Isle;
                         break;
@@ -5573,6 +5619,19 @@ namespace HISP.Server
 
             message = message.Trim();
 
+            if(channel == Chat.ChatChannel.All && message.Length > 150)
+            {
+                byte[] tooLong = PacketBuilder.CreateChat(Messages.GlobalChatTooLong, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(tooLong);
+                return;
+            }
+
+            if (channel == Chat.ChatChannel.Ads && message.Length > 150)
+            {
+                byte[] tooLong = PacketBuilder.CreateChat(Messages.AdsChatTooLong, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(tooLong);
+                return;
+            }
             if (Chat.ProcessCommand(sender.LoggedinUser, message))
             {
                 Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to run command '" + message + "' in channel: " + channel.ToString());
@@ -5858,6 +5917,9 @@ namespace HISP.Server
                     }
                     catch(KeyNotFoundException)
                     {
+                        byte[] pickedUp = PacketBuilder.CreateChat(Messages.DroppedItemCouldntPickup, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(pickedUp);
+
                         Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to grab a non existing object.");
                         return;
                     }
@@ -6119,7 +6181,23 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_USE:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, packet.Length - 2);
+                    randomIdStr = packetStr.Substring(2, packet.Length - 4);
+
+                    if(randomIdStr == "") // f12 ranch shortcut
+                    {
+                        if (sender.LoggedinUser.Inventory.HasItemId(Item.DorothyShoes))
+                        {
+                            InventoryItem itm = sender.LoggedinUser.Inventory.GetItemByItemId(Item.DorothyShoes);
+                            Item.UseItem(sender.LoggedinUser, itm.ItemInstances[0]);
+                        }
+                        else
+                        {
+                            byte[] noShoesMessage = PacketBuilder.CreateChat(Messages.RanchNoDorothyShoesMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(noShoesMessage);
+                            return;
+                        }
+                    }
+
                     randomId = 0;
 
                     try
@@ -6134,39 +6212,7 @@ namespace HISP.Server
                     if (sender.LoggedinUser.Inventory.HasItem(randomId))
                     {
                         InventoryItem itm = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
-                        if(itm.ItemId == Item.DorothyShoes)
-                        {
-                            if(World.InIsle(sender.LoggedinUser.X, sender.LoggedinUser.Y))
-                            {
-                                World.Isle isle = World.GetIsle(sender.LoggedinUser.X, sender.LoggedinUser.Y);
-                                if(isle.Name == "Prison Isle")
-                                {
-                                    byte[] dontWorkHere = PacketBuilder.CreateChat(Messages.RanchDorothyShoesPrisonIsleMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(dontWorkHere);
-                                    break;
-                                }
-                            }
-
-                            if(sender.LoggedinUser.OwnedRanch == null) // How????
-                            {
-                                Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to use Dorothy Shoes when they did *NOT* own a ranch.");
-                                sender.LoggedinUser.Inventory.Remove(itm.ItemInstances[0]);
-                                break;
-                            }
-                            byte[] noPlaceLIke127001 = PacketBuilder.CreateChat(Messages.RanchDorothyShoesMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(noPlaceLIke127001);
-
-                            sender.LoggedinUser.Teleport(sender.LoggedinUser.OwnedRanch.X, sender.LoggedinUser.OwnedRanch.Y);
-                        }
-                        else if(itm.ItemId == Item.Telescope)
-                        {
-                            byte[] birdMap = PacketBuilder.CreateBirdMap(sender.LoggedinUser.X, sender.LoggedinUser.Y);
-                            sender.SendPacket(birdMap);
-                        }
-                        else
-                        {
-                            Logger.ErrorPrint(sender.LoggedinUser.Username + "Tried to use item with undefined action- ID: " + itm.ItemId);
-                        }
+                        Item.UseItem(sender.LoggedinUser, itm.ItemInstances[0]);
                     }
                     break;
                 case PacketBuilder.ITEM_WEAR:

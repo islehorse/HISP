@@ -2,6 +2,7 @@
 using HISP.Server;
 using HISP.Game;
 using System.Collections.Generic;
+using HISP.Game.Inventory;
 
 namespace HISP.Game.Items
 {
@@ -42,7 +43,7 @@ namespace HISP.Game.Items
 
             public int GetMiscFlag(int no)
             {
-                if(MiscFlags.Length <= no)
+                if (MiscFlags.Length <= no)
                     return 0;
                 else
                     return MiscFlags[no];
@@ -85,10 +86,50 @@ namespace HISP.Game.Items
         {
             get
             {
-                 return new int[4] { StallionTradingCard, MareTradingCard, ColtTradingCard, FillyTradingCard };
+                return new int[4] { StallionTradingCard, MareTradingCard, ColtTradingCard, FillyTradingCard };
             }
         }
-        
+
+        public static void UseItem(User user, ItemInstance item)
+        {
+            if (user.Inventory.HasItem(item.RandomId))
+            {
+                InventoryItem itm = user.Inventory.GetItemByRandomid(item.RandomId);
+                if (itm.ItemId == Item.DorothyShoes)
+                {
+                    if (World.InIsle(user.X, user.Y))
+                    {
+                        World.Isle isle = World.GetIsle(user.X, user.Y);
+                        if (isle.Name == "Prison Isle")
+                        {
+                            byte[] dontWorkHere = PacketBuilder.CreateChat(Messages.RanchDorothyShoesPrisonIsleMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            user.LoggedinClient.SendPacket(dontWorkHere);
+                            return;
+                        }
+                    }
+
+                    if (user.OwnedRanch == null) // How????
+                    {
+                        Logger.HackerPrint(user.Username + " Tried to use Dorothy Shoes when they did *NOT* own a ranch.");
+                        user.Inventory.Remove(itm.ItemInstances[0]);
+                        return;
+                    }
+                    byte[] noPlaceLIke127001 = PacketBuilder.CreateChat(Messages.RanchDorothyShoesMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    user.LoggedinClient.SendPacket(noPlaceLIke127001);
+
+                    user.Teleport(user.OwnedRanch.X, user.OwnedRanch.Y);
+                }
+                else if (itm.ItemId == Item.Telescope)
+                {
+                    byte[] birdMap = PacketBuilder.CreateBirdMap(user.X, user.Y);
+                    user.LoggedinClient.SendPacket(birdMap);
+                }
+                else
+                {
+                    Logger.ErrorPrint(user.Username + "Tried to use item with undefined action- ID: " + itm.ItemId);
+                }
+            }
+        }
         public static ItemInformation[] GetAllWishableItems()
         {
             List<ItemInformation> itemInfo = new List<ItemInformation>();

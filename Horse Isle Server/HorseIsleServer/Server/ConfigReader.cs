@@ -98,13 +98,13 @@ namespace HISP.Server
                         AllUsersSubbed = data == "true";
                         break;
                     case "enable_corrections":
-                        BadWords = data == "true";
+                        DoCorrections = data == "true";
                         break;
                     case "non_violation":
                         DoNonViolations = data == "true";
                         break;
                     case "enable_word_filter":
-                        DoCorrections = data == "true";
+                        BadWords = data == "true";
                         break;
                     case "intrest_rate":
                         IntrestRate = int.Parse(data);
