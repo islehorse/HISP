@@ -54,6 +54,9 @@ namespace HISP.Game
         public static string CantFindPlayerToPrivateMessage;
         public static string AdsOnlyOncePerMinute;
         public static string GlobalChatLimited;
+        public static string GlobalChatTooLong;
+        public static string AdsChatTooLong;
+
 
         // Auto Sell
         public static string AutoSellNotStandingInSamePlace;
@@ -396,12 +399,20 @@ namespace HISP.Game
         public static string RanchUnownedRanchClicked;
         public static string RanchClickMessageFormat;
 
+        public static string RanchNoDorothyShoesMessage;
         public static string RanchDorothyShoesMessage;
         public static string RanchDorothyShoesPrisonIsleMessage;
 
         public static string RanchCantAffordRanch;
         public static string RanchRanchBroughtMessageFormat;
+
         public static string RanchSavedRanchDescripton;
+        public static string RanchSavedTitleTooLongError;
+        public static string RanchSavedDescrptionTooLongError;
+        public static string RanchSavedTitleViolationsError;
+        public static string RanchSavedDescrptionViolationsErrorFormat;
+
+
         public static string RanchDefaultRanchTitle;
 
         public static string RanchEditDescriptionMetaFormat;
@@ -659,6 +670,7 @@ namespace HISP.Game
         public static string GrabbedAllItemsMessage;
         public static string DroppedAnItemMessage;
         public static string DroppedItemTileIsFull;
+        public static string DroppedItemCouldntPickup;
         public static string ItemInformationFormat;
 
         // Pond
@@ -794,7 +806,15 @@ namespace HISP.Game
         public static string HorseOthers;
 
         public static string HorseDescriptionEditFormat;
+
         public static string HorseSavedProfileMessageFormat;
+        public static string HorseProfileMessageTooLongError;
+        public static string HorseNameTooLongError;
+        public static string HorseNameViolationsError;
+        public static string HorseProfileMessageProfileError;
+
+
+        public static string HorseCatchTooManyHorsesMessage;
         public static string HorseEquipTackMessageFormat;
         public static string HorseUnEquipTackMessageFormat;
         public static string HorseStopRidingMessage;

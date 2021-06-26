@@ -953,6 +953,8 @@ namespace HISP.Server
             Messages.CantFindPlayerToPrivateMessage = gameData.messages.chat_errors.cant_find_player;
             Messages.AdsOnlyOncePerMinute = gameData.messages.chat_errors.ads_once_per_minute;
             Messages.GlobalChatLimited = gameData.messages.chat_errors.global_chats_limited;
+            Messages.GlobalChatTooLong = gameData.messages.chat_errors.global_too_long;
+            Messages.AdsChatTooLong = gameData.messages.chat_errors.ads_too_long;
 
             // Warp Command
 
@@ -1307,12 +1309,21 @@ namespace HISP.Server
             Messages.RanchUnownedRanchClicked = gameData.messages.meta.ranch.unowned_ranch_click;
             Messages.RanchClickMessageFormat = gameData.messages.meta.ranch.click_message;
 
+            Messages.RanchNoDorothyShoesMessage = gameData.messages.meta.ranch.no_dorothy_shoes;
             Messages.RanchDorothyShoesMessage = gameData.messages.meta.ranch.dorothy_message;
             Messages.RanchDorothyShoesPrisonIsleMessage = gameData.messages.meta.ranch.dorothy_prison_isle;
 
             Messages.RanchCantAffordRanch = gameData.messages.meta.ranch.ranch_buy_cannot_afford;
             Messages.RanchRanchBroughtMessageFormat = gameData.messages.meta.ranch.ranch_brought;
-            Messages.RanchSavedRanchDescripton = gameData.messages.meta.ranch.saved_ranch;
+            
+            Messages.RanchSavedRanchDescripton = gameData.messages.meta.ranch.ranch_info.saved;
+            Messages.RanchSavedTitleTooLongError = gameData.messages.meta.ranch.ranch_info.title_too_long;
+            Messages.RanchSavedDescrptionTooLongError = gameData.messages.meta.ranch.ranch_info.description_too_long;
+            Messages.RanchSavedTitleViolationsError = gameData.messages.meta.ranch.ranch_info.title_contains_violations;
+            Messages.RanchSavedDescrptionViolationsErrorFormat = gameData.messages.meta.ranch.ranch_info.desc_contains_violations;
+
+
+
             Messages.RanchDefaultRanchTitle = gameData.messages.meta.ranch.default_title;
             Messages.RanchEditDescriptionMetaFormat = gameData.messages.meta.ranch.edit_description;
             Messages.RanchTitleFormat = gameData.messages.meta.ranch.your_ranch_meta;
@@ -1692,8 +1703,14 @@ namespace HISP.Server
             Messages.HorseTackButtonFormat = gameData.messages.meta.horse.horse_inventory.tack_button;
             Messages.HorsePetButtonFormat = gameData.messages.meta.horse.horse_inventory.pet_button;
             Messages.HorseProfileButtonFormat = gameData.messages.meta.horse.horse_inventory.profile_button;
-            Messages.HorseSavedProfileMessageFormat = gameData.messages.meta.horse.saved_profile;
 
+            Messages.HorseSavedProfileMessageFormat = gameData.messages.meta.horse.profile.saved;
+            Messages.HorseProfileMessageTooLongError = gameData.messages.meta.horse.profile.desc_too_long;
+            Messages.HorseNameTooLongError = gameData.messages.meta.horse.profile.name_too_long;
+            Messages.HorseNameViolationsError = gameData.messages.meta.horse.profile.name_profanity_detected;
+            Messages.HorseProfileMessageProfileError = gameData.messages.meta.horse.profile.profile_profanity_detected;
+
+            Messages.HorseCatchTooManyHorsesMessage = gameData.messages.meta.horse.horse_inventory.horse_cannot_catch_max;
             Messages.HorseNoAutoSell = gameData.messages.meta.horse.horse_inventory.no_auto_sell;
             Messages.HorseAutoSellPriceFormat = gameData.messages.meta.horse.horse_inventory.auto_sell_format;
             Messages.HorseAutoSellOthersFormat = gameData.messages.meta.horse.horse_inventory.auto_sell_others;
@@ -1868,6 +1885,7 @@ namespace HISP.Server
             Messages.GrabAllItemsButton = gameData.messages.meta.dropped_items.grab_all;
             Messages.DroppedAnItemMessage = gameData.messages.dropped_items.dropped_item_message;
             Messages.DroppedItemTileIsFull = gameData.messages.dropped_items.drop_tile_full;
+            Messages.DroppedItemCouldntPickup = gameData.messages.dropped_items.other_picked_up;
             Messages.GrabbedAllItemsMessage = gameData.messages.dropped_items.grab_all_message;
             Messages.GrabbedItemMessage = gameData.messages.dropped_items.grab_message;
             Messages.GrabAllItemsMessage = gameData.messages.dropped_items.grab_all_message;

@@ -212,7 +212,7 @@ namespace HISP.Server
         public const byte ITEM_USE = 0x5F;
         public const byte ITEM_RAKE = 0x5B;
         public const byte ITEM_SHOVEL = 0x5A;
-
+        
         public const byte LOGIN_INVALID_USER_PASS = 0x15;
         public const byte LOGIN_CUSTOM_MESSAGE = 0x16;
         public const byte LOGIN_SUCCESS = 0x14;
