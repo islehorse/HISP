@@ -653,8 +653,8 @@ namespace HISP.Server
                 while (reader.Read())
                 {
                     Item.ItemPurchaseQueueItem itm = new Item.ItemPurchaseQueueItem();
-                    itm.ItemId = reader.GetInt32(0);
-                    itm.ItemCount = reader.GetInt32(1);
+                    itm.ItemId = reader.GetInt32(1);
+                    itm.ItemCount = reader.GetInt32(2);
                     queueItems.Add(itm);
                 }
                 sqlCommand.Dispose();

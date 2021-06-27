@@ -3609,7 +3609,7 @@ namespace HISP.Server
             Item.ItemPurchaseQueueItem[] queueItems = Database.GetItemPurchaseQueue(sender.LoggedinUser.Id);
             foreach (Item.ItemPurchaseQueueItem queueItem in queueItems)
             {
-                for(int i = 0; i < queueItems.Length; i++)
+                for(int i = 0; i < queueItem.ItemCount; i++)
                 {
                     sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(queueItem.ItemId));
                 }

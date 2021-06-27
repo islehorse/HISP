@@ -112,6 +112,7 @@ namespace HISP.Player
 
         public void TakeMoney(int amount)
         {
+            int money = Money;
             money -= amount;
             Database.SetPlayerMoney(money, Id);
             GameServer.UpdatePlayer(LoggedinClient);
@@ -119,6 +120,7 @@ namespace HISP.Player
 
         public void AddMoney(int amount)
         {
+            int money = Money;
             try
             {
                 checked
@@ -278,7 +280,7 @@ namespace HISP.Player
         {
             get
             {
-                return money;
+                return Database.GetPlayerMoney(Id);
             }
         }
 
@@ -440,7 +442,6 @@ namespace HISP.Player
         private int x;
         private bool stealth = false;
         private int y;
-        private int money;
         private int questPoints;
         private double bankMoney;
         private int experience;
@@ -541,7 +542,7 @@ namespace HISP.Player
 
             Facing = PacketBuilder.DIRECTION_DOWN;
             experience = Database.GetExperience(UserId);
-            money = Database.GetPlayerMoney(UserId);
+            //money = Database.GetPlayerMoney(UserId);
             bankMoney = Database.GetPlayerBankMoney(UserId);
             questPoints = Database.GetPlayerQuestPoints(UserId);
             subscribed = Database.IsUserSubscribed(UserId);
