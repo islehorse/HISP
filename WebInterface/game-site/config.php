@@ -7,6 +7,8 @@ $dbuser = 'root';
 $dbpass = 'test123';
 $dbhost = '127.0.0.1';
 
+$server_id = "beta";
+
 # == hmac_secret ==
 # Used for master-site to communicate with game-sites,
 # Should be set to the same value on all game sites and the master site.
