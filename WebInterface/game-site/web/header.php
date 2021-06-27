@@ -110,7 +110,7 @@ color: #440000;
 	if(is_logged_in())
 	{
 		$username = $_SESSION['USERNAME'];		
-		echo('<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=10><TR><TD><A HREF=/account.php>'.$_SERVER['HTTP_HOST'].'</A><BR>Logged in as: '.$username.'<BR><A HREF=/?LOGOUT=1><img src=/web/but-logout.gif border=0></A><BR><A HREF='.$master_site.'/><img src=/web/but-mainpage.gif border=0></A></TD><TD><BR><A HREF='.$master_site.'/account.php><img src=/web/but-serverlist.gif border=0></A><BR><A HREF='.$master_site.'/web/news.php><img src=/web/but-news.gif border=0></A><BR><A HREF='.$master_site.'/web/forums.php><img src=/web/but-forums.gif border=0></A><BR><A HREF='.$master_site.'/web/helpcenter.php><img src=/web/but-helpcenter.gif border=0></A></TD></TR></TABLE>');
+		echo('<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=10><TR><TD><B><A HREF=/account.php>'.strtoupper($_SERVER['HTTP_HOST']).'</A><BR>Logged in as: '.$username.'<BR><A HREF=/?LOGOUT=1><img src=/web/but-logout.gif border=0></A><BR><A HREF='.$master_site.'/><img src=/web/but-mainpage.gif border=0></A></TD><TD><BR><A HREF='.$master_site.'/account.php><img src=/web/but-serverlist.gif border=0></A><BR><A HREF='.$master_site.'/web/news.php><img src=/web/but-news.gif border=0></A><BR><A HREF='.$master_site.'/web/forums.php><img src=/web/but-forums.gif border=0></A><BR><A HREF='.$master_site.'/web/helpcenter.php><img src=/web/but-helpcenter.gif border=0></A></TD></TR></TABLE>');
 	}
 	else
 	{
