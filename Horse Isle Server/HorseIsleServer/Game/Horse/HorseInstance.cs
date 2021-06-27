@@ -45,8 +45,9 @@ namespace HISP.Game.Horse
             
 
             BasicStats = new HorseInfo.BasicStats(this, 1000, 0, 1000, 1000, 500, 200, 1000, 0);
-            int inteligence = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Inteligence, ((breed.BaseStats.Inteligence * 2)) - breed.BaseStats.Inteligence) + 1);
-            int personality = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Personality, ((breed.BaseStats.Personality * 2)) - breed.BaseStats.Personality) + 1);
+
+            int inteligence = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Inteligence, (breed.BaseStats.Inteligence * 2)) - breed.BaseStats.Inteligence);
+            int personality = (GameServer.RandomNumberGenerator.Next(breed.BaseStats.Personality, (breed.BaseStats.Personality * 2)) - breed.BaseStats.Personality);
             int height = GameServer.RandomNumberGenerator.Next(breed.BaseStats.MinHeight, breed.BaseStats.MaxHeight + 1);
             AdvancedStats = new HorseInfo.AdvancedStats(this, 0, 0, 0, 0, inteligence, 0, personality, height);
 

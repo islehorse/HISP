@@ -35,7 +35,7 @@ namespace HISP.Game
             user.LoggedinClient.SendPacket(riddleAnswerCorrectPacket);
             user.AddMoney(10000);
 
-            if(Database.TotalRiddlesCompletedByPlayer(user.Id) >= riddlerRiddles.Count)
+            if(HasCompletedAllRiddles(user))
                 user.Awards.AddAward(Award.GetAwardById(11)); // Riddlers Riddles
         }
 
