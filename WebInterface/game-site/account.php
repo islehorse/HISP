@@ -77,6 +77,13 @@ $loginDate = getUserLoginDate($dbname, $_SESSION['PLAYER_ID']);
 $questPoints = getUserQuestPoints($dbname, $_SESSION['PLAYER_ID']);
 $totalLogins = getUserTotalLogins($dbname, $_SESSION['PLAYER_ID']);
 
+$subbed = getUserSubbed($dbname, $_SESSION['PLAYER_ID']);
+$subTime = getUserSubTimeRemaining($dbname, $_SESSION['PLAYER_ID']);
+$playtime = getUserPlaytime($dbname, $_SESSION['PLAYER_ID']);
+
+if($all_users_subbed)
+	$subbed = true;
+
 $hasIntl = function_exists('numfmt_create');
 
 if($hasIntl)
@@ -176,8 +183,14 @@ h+=60;//h += 96;
 	$difference = $current_time - $loginDate;
 	$lastOn = $difference/60;
     
-	echo('It has been: '.$lastOn.' hours since you were last online. You have logged in '.$totalLoginsStr.' times.<BR>You have <B><FONT COLOR=005500>$'.$moneyStr.'</FONT></B> in Horse Isle money on hand and <B><FONT COLOR=005500>$'.$bankmoneyStr.'</FONT></B> in the bank.<BR>You have earned <B>'.(string)$questPoints.'</B> of <B>63005</B> total quest points  (<B>'.(string)floor(($questPoints / 63005) * 100.0).'%</B> Complete)<BR></TD></TR></TABLE><BR><HR>');
-?>
+	
+	echo('It has been: '.$lastOn.' hours since you were last online. You have logged in '.$totalLoginsStr.' times.<BR>You have <B><FONT COLOR=005500>$'.$moneyStr.'</FONT></B> in Horse Isle money on hand and <B><FONT COLOR=005500>$'.$bankmoneyStr.'</FONT></B> in the bank.<BR>You have earned <B>'.(string)$questPoints.'</B> of <B>63005</B> total quest points  (<B>'.(string)floor(($questPoints / 63005) * 100.0).'%</B> Complete)<BR>');
+	if(!$subbed)
+	{
+		echo('You have <B>'.(string)$playtime.'</B> minutes of playtime available. As a non-subscriber you get 1 additional minute every 8 minutes. <I>(subject to change based on load)</I> (<A HREF=/web/whylimited.php>why limited?</A>) <BR>');
+	}
+	
+?></TD></TR></TABLE><BR><HR>
 
 
 

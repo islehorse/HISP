@@ -100,6 +100,49 @@ function getUserTotalLogins($database, $id)
 	
 }
 
+function getUserPlaytime($database, $id)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT FreeMinutes FROM UserExt WHERE Id=?");
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	return intval($result->fetch_row()[0]);
+	
+}
+
+
+function getUserSubTimeRemaining($database, $id)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT SubscribedUntil FROM UserExt WHERE Id=?");
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	return intval($result->fetch_row()[0]);
+	
+}
+
+function getUserSubbed($database, $id)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT Subscriber FROM UserExt WHERE Id=?");
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	return $result->fetch_row()[0] == "YES";
+	
+}
+
 
 function  getNoModPlayersOnlineInServer($database)
 {
