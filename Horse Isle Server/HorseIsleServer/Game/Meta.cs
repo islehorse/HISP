@@ -2009,9 +2009,16 @@ namespace HISP.Game
         }
         private static string buildRiddlerRiddle(User user)
         {
+            string message = "";
+            if (Riddler.HasCompletedAllRiddles(user)) {
+                message = Messages.RiddlerAnsweredAll;
+                message += Messages.ExitThisPlace;
+                message += Messages.MetaTerminator;
+                return message;
+            }
             Riddler riddle = Riddler.GetRandomRiddle(user);
             user.LastRiddle = riddle;
-            string message = "";
+            
             message += Messages.FormatRiddlerRiddle(riddle.Riddle);
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
