@@ -454,12 +454,13 @@ namespace HISP.Game.Horse
                 set
                 {
                     // Lol turns out pinto forgot to do this and u can have negative mood :D
-                    /*
+
                     if (value > 1000)
                         value = 1000;
-                    if (value < 0)
+                    /*if (value < 0)
                         value = 0;
                     */
+
                     mood = value;
                     Database.SetHorseMood(baseHorse.RandomId, value);
                 }
