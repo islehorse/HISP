@@ -878,21 +878,14 @@ namespace HISP.Server
                         {
                             msgs += Messages.HorsePetTooHappy;
                         }
-                        else
-                        {
-                            horsePetInst.BasicStats.Mood += randMoodAddition;
-                        }
 
                         if (horsePetInst.BasicStats.Tiredness - randTiredMinus <= 0)
                         {
                             msgs += Messages.HorsePetTooTired;
                         }
-                        else
-                        {
-                            horsePetInst.BasicStats.Tiredness -= randTiredMinus;
-                        }
-                        
-                        
+
+                        horsePetInst.BasicStats.Tiredness -= randTiredMinus;
+                        horsePetInst.BasicStats.Mood += randMoodAddition;
 
                         byte[] petMessagePacket = PacketBuilder.CreateChat(Messages.FormatHorsePetMessage(msgs,randMoodAddition, randTiredMinus), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(petMessagePacket);
@@ -1468,58 +1461,46 @@ namespace HISP.Server
                                 case "HEALTH":
                                     if (horseInstance.BasicStats.Health + effect.EffectAmount > 1000)
                                         tooMuch = true;
-                                    else
-                                        horseInstance.BasicStats.Health += effect.EffectAmount;
+                                    horseInstance.BasicStats.Health += effect.EffectAmount;
                                     break;
                                 case "HUNGER":
                                     if (horseInstance.BasicStats.Hunger + effect.EffectAmount > 1000)
                                         tooMuch = true;
-                                    else
-                                        horseInstance.BasicStats.Hunger += effect.EffectAmount;
+                                    horseInstance.BasicStats.Hunger += effect.EffectAmount;
                                     break;
                                 case "MOOD":
                                     if (horseInstance.BasicStats.Mood + effect.EffectAmount > 1000)
                                         tooMuch = true;
-                                    else
-                                        horseInstance.BasicStats.Mood += effect.EffectAmount;
+                                    horseInstance.BasicStats.Mood += effect.EffectAmount;
                                     break;
                                 case "GROOM":
                                     if (horseInstance.BasicStats.Groom + effect.EffectAmount > 1000)
                                         tooMuch = true;
-                                    else
-                                        horseInstance.BasicStats.Groom += effect.EffectAmount;
+                                    horseInstance.BasicStats.Groom += effect.EffectAmount;
                                     break;
                                 case "SHOES":
                                     if (horseInstance.BasicStats.Shoes + effect.EffectAmount > 1000)
                                         tooMuch = true;
-                                    else
-                                        horseInstance.BasicStats.Shoes += effect.EffectAmount;
+                                    horseInstance.BasicStats.Shoes += effect.EffectAmount;
                                     break;
                                 case "THIRST":
                                     if (horseInstance.BasicStats.Thirst + effect.EffectAmount > 1000)
                                         tooMuch = true;
-                                    else
-                                        horseInstance.BasicStats.Thirst += effect.EffectAmount;
+                                    horseInstance.BasicStats.Thirst += effect.EffectAmount;
                                     break;
                                 case "TIREDNESS":
                                     if (horseInstance.BasicStats.Tiredness + effect.EffectAmount > 1000)
                                         tooMuch = true;
-                                    else
-                                        horseInstance.BasicStats.Tiredness += effect.EffectAmount;
+                                    horseInstance.BasicStats.Tiredness += effect.EffectAmount;
                                     break;
                                 case "INTELLIGENCEOFFSET":
-                                    if (horseInstance.AdvancedStats.Inteligence + effect.EffectAmount < horseInstance.Breed.BaseStats.Inteligence * 2)
-                                    {
-                                        horseInstance.AdvancedStats.Inteligence += effect.EffectAmount;
-                                        changeInteligence = true;
-                                    }
+                                    horseInstance.AdvancedStats.Inteligence += effect.EffectAmount;
+                                    changeInteligence = true;
                                     break;
                                 case "PERSONALITYOFFSET":
-                                    if (horseInstance.AdvancedStats.Personality + effect.EffectAmount < horseInstance.Breed.BaseStats.Personality * 2)
-                                    {
-                                        horseInstance.AdvancedStats.Personality += effect.EffectAmount;
-                                        changePersonality = true;
-                                    }
+                                    horseInstance.AdvancedStats.Personality += effect.EffectAmount;
+                                    changePersonality = true;
+                                    
                                     break;
                                 case "SPOILED":
                                     horseInstance.Spoiled += effect.EffectAmount;
