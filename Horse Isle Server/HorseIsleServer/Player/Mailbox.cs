@@ -23,8 +23,12 @@ namespace HISP.Player
             {
                 int i = 0;
                 foreach (Mail mail in MailMessages)
+                {
                     if (!mail.Read)
+                    {
                         i++;
+                    }
+                }
                 return i;
             }
         }
@@ -82,8 +86,7 @@ namespace HISP.Player
                 mails[i].Read = true;
             }
 
-            byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(baseUser.Money, GameServer.GetNumberOfPlayers(), this.UnreadMailCount);
-            baseUser.LoggedinClient.SendPacket(BaseStatsPacketData);
+            GameServer.UpdatePlayer(baseUser.LoggedinClient);
         }
         public void AddMail(Mail mailMessage)
         {

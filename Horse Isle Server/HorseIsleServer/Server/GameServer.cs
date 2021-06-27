@@ -7535,7 +7535,7 @@ namespace HISP.Server
                 Logger.ErrorPrint(forClient.RemoteIp + "tried to update player information when not logged in.");
                 return;
             }
-            byte[] PlayerData = PacketBuilder.CreatePlayerData(forClient.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), forClient.LoggedinUser.MailBox.MailCount);
+            byte[] PlayerData = PacketBuilder.CreatePlayerData(forClient.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), forClient.LoggedinUser.MailBox.UnreadMailCount);
             forClient.SendPacket(PlayerData);
         }
         public static void UpdateUserFacingAndLocation(User user)
