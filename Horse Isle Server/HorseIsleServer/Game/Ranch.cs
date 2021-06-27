@@ -130,8 +130,31 @@ namespace HISP.Game
             {
                 if(ownerId != -1)
                 {
-                    if (!Database.IsUserSubscribed(ownerId) && !Database.IsUserAdmin(ownerId))
+                    if (ConfigReader.AllUsersSubbed || Database.IsUserAdmin(ownerId))
+                        return ownerId;
+
+                    int subExp = Database.GetUserSubscriptionExpireDate(ownerId);
+                    DateTime expTime = Converters.UnixTimeStampToDateTime(subExp);
+                    if ((DateTime.UtcNow.Date - expTime.Date).Days >= 30)
+                    {
+                        int price = GetSellPrice();
+                        try
+                        {
+                            checked
+                            {
+                                Database.SetPlayerMoney(Database.GetPlayerMoney(ownerId) + price, ownerId);    
+                            }
+                        }
+                        catch (OverflowException)
+                        {
+                            Database.SetPlayerMoney(2147483647, ownerId);;
+                        }
+
+                        Database.AddMessageToQueue(ownerId, Messages.FormatRanchForcefullySoldMessage(price));
                         deleteRanch();
+                        return -1;
+                    }
+
                 }
                 return ownerId;
                 

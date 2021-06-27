@@ -1312,6 +1312,7 @@ namespace HISP.Server
             Messages.RanchNoDorothyShoesMessage = gameData.messages.meta.ranch.no_dorothy_shoes;
             Messages.RanchDorothyShoesMessage = gameData.messages.meta.ranch.dorothy_message;
             Messages.RanchDorothyShoesPrisonIsleMessage = gameData.messages.meta.ranch.dorothy_prison_isle;
+            Messages.RanchForcefullySoldFormat = gameData.messages.meta.ranch.forcefully_sold;
 
             Messages.RanchCantAffordRanch = gameData.messages.meta.ranch.ranch_buy_cannot_afford;
             Messages.RanchRanchBroughtMessageFormat = gameData.messages.meta.ranch.ranch_brought;
@@ -1321,8 +1322,7 @@ namespace HISP.Server
             Messages.RanchSavedDescrptionTooLongError = gameData.messages.meta.ranch.ranch_info.description_too_long;
             Messages.RanchSavedTitleViolationsError = gameData.messages.meta.ranch.ranch_info.title_contains_violations;
             Messages.RanchSavedDescrptionViolationsErrorFormat = gameData.messages.meta.ranch.ranch_info.desc_contains_violations;
-
-
+            
 
             Messages.RanchDefaultRanchTitle = gameData.messages.meta.ranch.default_title;
             Messages.RanchEditDescriptionMetaFormat = gameData.messages.meta.ranch.edit_description;
