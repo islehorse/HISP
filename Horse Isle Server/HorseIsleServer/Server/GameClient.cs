@@ -22,7 +22,11 @@ namespace HISP.Server
             {
                 bool login = loggedIn;
                 if (LoggedinUser == null)
-                    login = false;
+                    return false;
+                if (LoggedinUser.LoggedinClient == null)
+                    return false;
+                if (isDisconnecting)
+                    return false;
                 return login;
             }
             set

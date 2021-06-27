@@ -72,8 +72,10 @@ namespace HISP.Game
             {
 
                 int rng = GameServer.RandomNumberGenerator.Next(0, Riddles.Length);
-                if (Database.HasPlayerCompletedRiddle(rng, user.Id))
+                if (Database.HasPlayerCompletedRiddle(Riddles[rng].Id, user.Id))
+                {
                     continue;
+                }
                 return Riddles[rng];
             }
         }

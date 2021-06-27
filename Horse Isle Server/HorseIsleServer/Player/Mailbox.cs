@@ -78,11 +78,11 @@ namespace HISP.Player
                 {
                     ItemInstance mailMessageFromPlayer = new ItemInstance(Item.MailMessage, -1, mails[i].RandomId);
                     baseUser.Inventory.AddIgnoringFull(mailMessageFromPlayer);
-                    mails[i].Read = true;
                 }
+                mails[i].Read = true;
             }
 
-            byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(baseUser.Money, GameServer.GetNumberOfPlayers(), baseUser.MailBox.UnreadMailCount);
+            byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(baseUser.Money, GameServer.GetNumberOfPlayers(), this.UnreadMailCount);
             baseUser.LoggedinClient.SendPacket(BaseStatsPacketData);
         }
         public void AddMail(Mail mailMessage)
