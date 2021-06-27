@@ -69,6 +69,19 @@ if(!is_logged_in())
 	exit();
 }
 
+
+// Get account data
+$money = getUserMoney($dbname, $_SESSION['PLAYER_ID']);
+$bankMoney = getUserBankMoney($dbname, $_SESSION['PLAYER_ID']);
+$loginDate = getUserLoginDate($dbname, $_SESSION['PLAYER_ID']);
+$questPoints = getUserQuestPoints($dbname, $_SESSION['PLAYER_ID']);
+$totalLogins = getUserTotalLogins($dbname, $_SESSION['PLAYER_ID']);
+
+$hasIntl = function_exists('numfmt_create');
+
+if($hasIntl)
+	$fmt = numfmt_create( 'en_US', NumberFormatter::DECIMAL );
+
 include("web/header.php");
 ?>
 
@@ -138,13 +151,39 @@ h+=60;//h += 96;
 // -->
 </script>
 
-<TABLE WIDTH=100% CELLPADDING=5><TR><TD VALIGN=TOP><TABLE BORDER=0 CELLPADDING=5><TR><TD VALIGN=top><CENTER>When Ready, <a href='/horseisle.php?USER=SilicaAndPina' target=popup onClick="wopen('/horseisle.php?USER=SilicaAndPina', 'popup', 790, 522); return false;">Enter the World<BR><BR><IMG BORDER=0 SRC=/web/screenshots/enterhorseisle.png></A><BR><BR>(<a href='/horseisle.php?USER=SilicaAndPina' target=popup onClick="wopen('/horseisle.php?USER=SilicaAndPina', 'popup', 846, 542); return false;">bigger borders version</A>)<BR>(<A HREF=horseisle.php?USER=SilicaAndPina>same window version</A>)</TD><TD VALIGN=top>Welcome back <B>SilicaAndPina</B>, Here is your account info and Horse Isle server status: (<A HREF=?>refresh</A>)<BR><BR>It has been: 0.2 hours since you were last online. You have logged in 2 times.<BR>You have <B><FONT COLOR=005500>$5,910</FONT></B> in Horse Isle money on hand and <B><FONT COLOR=005500>$0</FONT></B> in the bank.<BR>You have earned <B>25</B> of <B>63005</B> total quest points  (<B>0%</B> Complete)<BR></TD></TR></TABLE><BR><HR>
+<TABLE WIDTH=100% CELLPADDING=5><TR><TD VALIGN=TOP><TABLE BORDER=0 CELLPADDING=5><TR><TD VALIGN=top><CENTER>When Ready, <a href='/horseisle.php?USER=<?php echo(htmlspecialchars($_SESSION['USERNAME'],ENT_QUOTES)); ?>' target=popup onClick="wopen('/horseisle.php?USER=<?php echo(htmlspecialchars($_SESSION['USERNAME'],ENT_QUOTES)); ?>', 'popup', 790, 522); return false;">Enter the World<BR><BR><IMG BORDER=0 SRC=/web/screenshots/enterhorseisle.png></A><BR><BR>(<a href='/horseisle.php?USER=<?php echo(htmlspecialchars($_SESSION['USERNAME'],ENT_QUOTES)); ?>' target=popup onClick="wopen('/horseisle.php?USER=<?php echo(htmlspecialchars($_SESSION['USERNAME'],ENT_QUOTES)); ?>', 'popup', 846, 542); return false;">bigger borders version</A>)<BR>(<A HREF=horseisle.php?USER=<?php echo(htmlspecialchars($_SESSION['USERNAME'],ENT_QUOTES)); ?>>same window version</A>)</TD><TD VALIGN=top>Welcome back <B><?php echo(htmlspecialchars($_SESSION['USERNAME'])); ?></B>, Here is your account info and Horse Isle server status: (<A HREF=?>refresh</A>)<BR><BR><?php 
+	$moneyStr = "";
+	if($hasIntl)					
+		$moneyStr .= numfmt_format($fmt, $money);
+	else
+		$moneyStr .= $money;
+
+	$bankmoneyStr = "";
+	if($hasIntl)					
+		$bankmoneyStr .= numfmt_format($fmt, $bankMoney);
+	else
+		$bankmoneyStr .= $bankMoney;
+
+	$totalLoginsStr = "";
+	if($hasIntl)					
+		$totalLoginsStr .= numfmt_format($fmt, $totalLogins);
+	else
+		$totalLoginsStr .= $bankMoney;
+
+
+	$lastOn = 0.00;
+	$current_time = time();
+	$difference = $current_time - $loginDate;
+	$lastOn = $difference/60;
+    
+	echo('It has been: '.$lastOn.' hours since you were last online. You have logged in '.$totalLoginsStr.' times.<BR>You have <B><FONT COLOR=005500>$'.$moneyStr.'</FONT></B> in Horse Isle money on hand and <B><FONT COLOR=005500>$'.$bankmoneyStr.'</FONT></B> in the bank.<BR>You have earned <B>'.(string)$questPoints.'</B> of <B>63005</B> total quest points  (<B>'.(string)floor(($questPoints / 63005) * 100.0).'%</B> Complete)<BR></TD></TR></TABLE><BR><HR>');
+?>
 
 
 
 <CENTER><TABLE WIDTH=500><TR><TD class=forumlist>
 
-<FONT SIZE=+1>SILICAANDPINA'S PINTO SUBSCRIPTION STATUS:<BR></FONT><FONT SIZE=+2><FONT COLOR=GREEN>ACTIVE</FONT></FONT><BR>(31 days remain in your subscription)</FONT> (<A HREF=web/reasonstosubscribe.php>Subscription Benefits</A>)
+<FONT SIZE=+1><?php echo(strtoupper(htmlspecialchars($_SESSION['USERNAME']))); ?>'S <?php echo(strtoupper($server_id)); ?> SUBSCRIPTION STATUS:<BR></FONT><FONT SIZE=+2><FONT COLOR=GREEN>ACTIVE</FONT></FONT><BR>(∞ days remain in your subscription)</FONT> (<A HREF=web/reasonstosubscribe.php>Subscription Benefits</A>)
 </TD></TR><TR><TD class=forumlist>
 <TABLE WIDTH=100%>
 <TR><TD><B>BUY 1 Month Membership <FONT COLOR=GREEN>$5.00</FONT>usd</B> <I><FONT SIZE=-1>(adds 31 days membership time to the account that you are currently logged in with.) Non-refundable.</FONT></I></TD><TD>
@@ -152,13 +191,13 @@ h+=60;//h += 96;
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
-<input type="hidden" name="item_name" value="One Month Horse Isle Membership-on pinto.horseisle.com">
+<input type="hidden" name="item_name" value="One Month Horse Isle Membership-on <?php echo($_SERVER["HTTP_HOST"]); ?>">
 <input type="hidden" name="item_number" value="588112">
 <input type="hidden" name="custom" value="588112">
 <input type="hidden" name="amount" value="5.00">
 <input type="hidden" name="no_shipping" value="1">
-<input type="hidden" name="return" value="http://pinto.horseisle.com/web/paypalpayment.php">
-<input type="hidden" name="notify_url" value="http://pinto.horseisle.com/web/paypalgateway.php">
+<input type="hidden" name="return" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalpayment.php">
+<input type="hidden" name="notify_url" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalgateway.php">
 <input type="hidden" name="no_note" value="1">
 <input type="hidden" name="currency_code" value="USD">
 <input type="hidden" name="lc" value="US">
@@ -178,13 +217,13 @@ h+=60;//h += 96;
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
-<input type="hidden" name="item_name" value="Full Year Horse Isle Membership-on pinto.horseisle.com">
+<input type="hidden" name="item_name" value="Full Year Horse Isle Membership-on <?php echo($_SERVER["HTTP_HOST"]); ?>">
 <input type="hidden" name="item_number" value="588112">
 <input type="hidden" name="custom" value="588112">
 <input type="hidden" name="amount" value="40.00">
 <input type="hidden" name="no_shipping" value="1">
-<input type="hidden" name="return" value="http://pinto.horseisle.com/web/paypalpayment.php">
-<input type="hidden" name="notify_url" value="http://pinto.horseisle.com/web/paypalgateway.php">
+<input type="hidden" name="return" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalpayment.php">
+<input type="hidden" name="notify_url" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalgateway.php">
 <input type="hidden" name="no_note" value="1">
 <input type="hidden" name="currency_code" value="USD">
 <input type="hidden" name="lc" value="US">
@@ -246,13 +285,13 @@ Select: <SELECT NAME=quantity>
  <I><FONT SIZE=-1>(Gives your account Horse Isle currency for use in the game.  You can earn Horse Isle money by playing the game.  This is not required.) Non-refundable.</FONT></I></TD><TD>
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="paypal@horseisle.com">
-<input type="hidden" name="item_name" value="100k Horse Isle Money-on pinto.horseisle.com">
+<input type="hidden" name="item_name" value="100k Horse Isle Money-on <?php echo($_SERVER["HTTP_HOST"]); ?>">
 <input type="hidden" name="item_number" value="588112">
 <input type="hidden" name="custom" value="588112">
 <input type="hidden" name="amount" value="1.00">
 <input type="hidden" name="no_shipping" value="1">
-<input type="hidden" name="return" value="http://pinto.horseisle.com/web/paypalpayment.php">
-<input type="hidden" name="notify_url" value="http://pinto.horseisle.com/web/paypalgateway.php">
+<input type="hidden" name="return" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalpayment.php">
+<input type="hidden" name="notify_url" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalgateway.php">
 <input type="hidden" name="no_note" value="1">
 <input type="hidden" name="currency_code" value="USD">
 <input type="hidden" name="lc" value="US">
@@ -271,13 +310,13 @@ Select: <SELECT NAME=quantity>
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
-<input type="hidden" name="item_name" value="Pawneer Order-on pinto.horseisle.com">
+<input type="hidden" name="item_name" value="Pawneer Order-on <?php echo($_SERVER["HTTP_HOST"]); ?>">
 <input type="hidden" name="item_number" value="588112">
 <input type="hidden" name="custom" value="588112">
 <input type="hidden" name="amount" value="8.00">
 <input type="hidden" name="no_shipping" value="1">
-<input type="hidden" name="return" value="http://pinto.horseisle.com/web/paypalpayment.php">
-<input type="hidden" name="notify_url" value="http://pinto.horseisle.com/web/paypalgateway.php">
+<input type="hidden" name="return" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalpayment.php">
+<input type="hidden" name="notify_url" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalgateway.php">
 <input type="hidden" name="no_note" value="1">
 <input type="hidden" name="currency_code" value="USD">
 <input type="hidden" name="lc" value="US">
@@ -296,13 +335,13 @@ Select: <SELECT NAME=quantity>
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
-<input type="hidden" name="item_name" value="Five Pawneer Order-on pinto.horseisle.com">
+<input type="hidden" name="item_name" value="Five Pawneer Order-on <?php echo($_SERVER["HTTP_HOST"]); ?>">
 <input type="hidden" name="item_number" value="588112">
 <input type="hidden" name="custom" value="588112">
 <input type="hidden" name="amount" value="30.00">
 <input type="hidden" name="no_shipping" value="1">
-<input type="hidden" name="return" value="http://pinto.horseisle.com/web/paypalpayment.php">
-<input type="hidden" name="notify_url" value="http://pinto.horseisle.com/web/paypalgateway.php">
+<input type="hidden" name="return" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalpayment.php">
+<input type="hidden" name="notify_url" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalgateway.php">
 <input type="hidden" name="no_note" value="1">
 <input type="hidden" name="currency_code" value="USD">
 <input type="hidden" name="lc" value="US">
@@ -322,7 +361,7 @@ Select: <SELECT NAME=quantity>
 
 <TR><TD class=forumlist>
 <BR>Alternative Payment Methods: <A HREF=/web/checks.php>Check/Cash via postal mail</A>
-<BR><BR>Gift Payments: <A HREF=//hi1.horseisle.com/web/giftmembership.php>Pay for a different player</A>
+<BR><BR>Gift Payments: <A HREF=<?php echo($master_site); ?>/web/giftmembership.php>Pay for a different player</A>
 <BR><BR></TD></TR>
 
 

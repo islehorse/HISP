@@ -256,6 +256,7 @@ namespace HISP.Server
             LoggedIn = true;
 
             Database.SetIpAddress(id, RemoteIp);
+            Database.SetLoginCount(id, Database.GetLoginCount(id) + 1);
 
             inactivityTimer = new Timer(new TimerCallback(keepAliveTimerTick), null, keepAliveInterval, keepAliveInterval);
         }
