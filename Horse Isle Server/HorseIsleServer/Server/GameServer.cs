@@ -1535,7 +1535,7 @@ namespace HISP.Server
                         if(item.ItemId == Item.MagicBean)
                         {
                             double oldH = HorseInfo.CalculateHands(horseInstance.AdvancedStats.Height, false);
-                            int newHeight = RandomNumberGenerator.Next(horseInstance.Breed.BaseStats.MinHeight, horseInstance.Breed.BaseStats.MaxHeight);
+                            int newHeight = RandomNumberGenerator.Next(horseInstance.Breed.BaseStats.MinHeight, horseInstance.Breed.BaseStats.MaxHeight+1);
                             double newH = HorseInfo.CalculateHands(newHeight, false);
 
                             horseInstance.AdvancedStats.Height = newHeight;
@@ -7563,6 +7563,11 @@ namespace HISP.Server
         
         public static void UpdateArea(GameClient forClient)
         {
+            if(forClient == null)
+            {
+                Logger.ErrorPrint(forClient.RemoteIp + "tried to update tile information when not connected.");
+                return;
+            }
             if (!forClient.LoggedIn)
             {
                 Logger.ErrorPrint(forClient.RemoteIp + "tried to update tile information when not logged in.");
