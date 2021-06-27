@@ -57,10 +57,10 @@ namespace HISP.Game.Horse
             magicUsed = loadMagicUsed;
             leaseTime = leaseTimer;
             hidden = loadHidden;
-            if(color != null)
+            if(loadColor != null)
                color = loadColor;
             else
-                color = breed.Colors[GameServer.RandomNumberGenerator.Next(0, breed.Colors.Length)];
+               color = breed.Colors[GameServer.RandomNumberGenerator.Next(0, breed.Colors.Length)];
             Leaser = 0;
         }
         public int Leaser;
