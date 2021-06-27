@@ -1,5 +1,5 @@
 <?php
-include('../dbconfig.php');
+include('../config.php');
 include('../common.php');
 include("header.php");
 $atype = 2;

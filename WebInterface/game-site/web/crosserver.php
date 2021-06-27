@@ -2,8 +2,10 @@
 
 function GenHmacMessage(string $data, string $channel)
 {
+	include('config.php');
 	if($hmac_secret === "!!NOTSET!!"){
-		die("Please set HMAC_SECRET !");
+		echo("<script>alert('Please set HMAC_SECRET !')</script>");
+		echo("<h1>Set \$hmac_secret in config.php!</h1>");
 		exit();
 	}
 	return $hmac = hash_hmac('sha256', $data, $hmac_secret.$channel.$_SERVER['REMOTE_ADDR'].date('mhdY'));

@@ -51,7 +51,7 @@ if(isset($_GET['CONNECT']))
 	{
 		$playerId = $_SESSION['PLAYER_ID'];
 		
-		$hmac = hash_hmac('sha256', (string)$playerId, $hmac_secret."CrossSiteLogin".$_SERVER['REMOTE_ADDR'].date('m/d/Y'));
+		$hmac = GenHmacMessage((string)$playerId, "CrossSiteLogin");
 		$redirectUrl = $server['site'];
 		
 		if(!endsWith($redirectUrl, '/'))

@@ -1,9 +1,17 @@
 <?php
 include('common.php');
 include('crosserver.php');
-include('dbconfig.php');
+include('config.php');
 populate_db();
 
+// Handle logout
+if(isset($_GET["LOGOUT"]))
+{
+	if($_GET["LOGOUT"] == 1)
+	{
+		session_destroy();
+	}
+}
 
 $onlineUsers = getNoPlayersOnlineGlobal();
 $onlineSubscribers = getNoSubbedPlayersOnlineGlobal();
@@ -55,7 +63,7 @@ HREF=/web/parents.php>Parent's Guide</A> <BR>
 if($hasIntl)
 echo numfmt_format($fmt, $onlineUsers);
 else
-echo $onlineUser;
+echo $onlineUsers;
 ?></B></FONT> Players Online Now<BR>
 <FONT COLOR=550000><B><?php 
 if($hasIntl)					
