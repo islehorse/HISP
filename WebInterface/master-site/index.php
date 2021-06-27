@@ -61,30 +61,30 @@ HREF=/web/parents.php>Parent's Guide</A> <BR>
 <FONT COLOR=550000><B>
 <?php 
 if($hasIntl)
-echo numfmt_format($fmt, $onlineUsers);
+	echo numfmt_format($fmt, $onlineUsers);
 else
-echo $onlineUsers;
+	echo $onlineUsers;
 ?></B></FONT> Players Online Now<BR>
 <FONT COLOR=550000><B><?php 
 if($hasIntl)					
-echo numfmt_format($fmt, $onlineSubscribers);
+	echo numfmt_format($fmt, $onlineSubscribers);
 else
-echo $onlineSubscribers;
+	echo $onlineSubscribers;
 ?></B></FONT> Subscribers Online Now<BR>
 <FONT COLOR=550000><B>
 <?php 
 if($hasIntl)					
-echo numfmt_format($fmt, $onlineModerators);
+	echo numfmt_format($fmt, $onlineModerators);
 else
-echo $onlineModerators;
+	echo $onlineModerators;
 ?></B></FONT> Moderators Online Now<BR>
 <FONT COLOR=550000><B>
 <?php 
 $activeUserCount = $activeAccounts->fetch_row()[0];
 if($hasIntl)						
-echo numfmt_format($fmt,  $activeUserCount);
+	echo numfmt_format($fmt,  $activeUserCount);
 else
-echo $activeUserCount;
+	echo $activeUserCount;
 ?></B></FONT> Active Accounts<BR><BR>
 <B>ABOUT:</B><BR>
 Horse Isle is a vast multi-player horse based world. It allows for many players to

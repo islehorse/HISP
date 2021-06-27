@@ -111,7 +111,7 @@ color: #440000;
 	if(is_logged_in())
 	{
 		$username = $_SESSION['USERNAME'];		
-		echo('<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=10><TR><TD><B>Logged in as: '.$username.'</B><BR><BR><A HREF=/?LOGOUT=1><img src=/web/but-logout.gif border=0></A><BR><A HREF=/><img src=/web/but-mainpage.gif border=0></A></TD><TD><BR><A HREF=/account.php><img src=/web/but-serverlist.gif border=0></A><BR><A HREF=/web/news.php><img src=/web/but-news.gif border=0></A><BR><A HREF=/web/forums.php><img src=/web/but-forums.gif border=0></A><BR><A HREF=/web/helpcenter.php><img src=/web/but-helpcenter.gif border=0></A></TD></TR></TABLE>');
+		echo('<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=10><TR><TD><B>Logged in as: '.htmlspecialchars($username).'</B><BR><BR><A HREF=/?LOGOUT=1><img src=/web/but-logout.gif border=0></A><BR><A HREF=/><img src=/web/but-mainpage.gif border=0></A></TD><TD><BR><A HREF=/account.php><img src=/web/but-serverlist.gif border=0></A><BR><A HREF=/web/news.php><img src=/web/but-news.gif border=0></A><BR><A HREF=/web/forums.php><img src=/web/but-forums.gif border=0></A><BR><A HREF=/web/helpcenter.php><img src=/web/but-helpcenter.gif border=0></A></TD></TR></TABLE>');
 	}
 	else
 	{

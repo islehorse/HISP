@@ -30,6 +30,77 @@ function  getNoSubbedPlayersOnlineInServer($database)
 	return $onlineSubscribers->fetch_row()[0];
 }
 
+function getUserMoney($database, $id)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT Money FROM UserExt WHERE Id=?");
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	return intval($result->fetch_row()[0]);
+	
+}
+
+function getUserBankMoney($database, $id)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT BankBalance FROM UserExt WHERE Id=?");
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	return intval($result->fetch_row()[0]);
+	
+}
+
+function getUserLoginDate($database, $id)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT LastLogin FROM UserExt WHERE Id=?");
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	return intval($result->fetch_row()[0]);
+	
+}
+
+function getUserQuestPoints($database, $id)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT QuestPoints FROM UserExt WHERE Id=?");
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	return intval($result->fetch_row()[0]);
+	
+}
+
+function getUserTotalLogins($database, $id)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT TotalLogins FROM UserExt WHERE Id=?");
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	return intval($result->fetch_row()[0]);
+	
+}
+
+
 function  getNoModPlayersOnlineInServer($database)
 {
 	include('config.php');
