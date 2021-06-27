@@ -1506,7 +1506,7 @@ namespace HISP.Game
         {
             string message = Messages.CityHallTop25ExperiencedPlayers;
             int placing = 1;
-            foreach (int userId in Database.GetAdventurousPlayers())
+            foreach (int userId in Database.GetExperiencedPlayers())
             {
                 string username = Database.GetUsername(userId);
                 int exp = Database.GetExperience(userId);
