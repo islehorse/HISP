@@ -7115,7 +7115,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    Logger.WarnPrint(sender.RemoteIp + " Attempted to login to: " + username + " with incorrect password " + password);
+                    Logger.WarnPrint(sender.RemoteIp + " Attempted to login to: " + username + " with incorrect password ");
                     byte[] ResponsePacket = PacketBuilder.CreateLoginPacket(false);
                     sender.SendPacket(ResponsePacket);
                 }

@@ -4,6 +4,10 @@ if(session_status() !== PHP_SESSION_ACTIVE)
 
 if(!function_exists('is_logged_in'))
 	include('../common.php');
+
+$info = parse_url($_SERVER['HTTP_HOST']);
+$host = $info['host'];
+
 ?>
 <HEAD>
 <TITLE>HORSE ISLE - Online Multiplayer Horse Game</TITLE>
@@ -11,8 +15,8 @@ if(!function_exists('is_logged_in'))
 <META NAME="description" CONTENT="A multiplayer online horse world where players can capture, train, care for and compete their horses against other players. A very unique virtual sim horse game.">
 <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
 <link rel="icon" href="/favicon.ico" type="image/x-icon">
-<link rel="meta" href="http://horseisle.com/labels.rdf" type="application/rdf+xml" title="ICRA labels" />
-<meta http-equiv="pics-Label" content='(pics-1.1 "http://www.icra.org/pics/vocabularyv03/" l gen true for "http://horseisle.com" r (n 0 s 0 v 0 l 0 oa 0 ob 0 oc 0 od 0 oe 0 of 0 og 0 oh 0 c 1)  gen true for "http://hi1.horseisle.com" r (n 0 s 0 v 0 l 0 oa 0 ob 0 oc 0 od 0 oe 0 of 0 og 0 oh 0 c 1))' />
+<link rel="meta" href="http://<?php echo($host); ?>/labels.rdf" type="application/rdf+xml" title="ICRA labels" />
+<meta http-equiv="pics-Label" content='(pics-1.1 "http://www.icra.org/pics/vocabularyv03/" l gen true for "http://<?php echo($host); ?>" r (n 0 s 0 v 0 l 0 oa 0 ob 0 oc 0 od 0 oe 0 of 0 og 0 oh 0 c 1)  gen true for "http://<?php echo($_SERVER['HTTP_HOST']); ?>" r (n 0 s 0 v 0 l 0 oa 0 ob 0 oc 0 od 0 oe 0 of 0 og 0 oh 0 c 1))' />
 <style type="text/css">
 hr {
 height: 1;

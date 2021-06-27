@@ -1,6 +1,6 @@
 <?php
 session_start();
-include('dbconfig.php');
+include('config.php');
 include('crosserver.php');
 include('common.php');
 
