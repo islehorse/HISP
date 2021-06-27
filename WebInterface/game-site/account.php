@@ -181,10 +181,10 @@ h+=60;//h += 96;
 	$lastOn = 0.00;
 	$current_time = time();
 	$difference = $current_time - $loginDate;
-	$lastOn = $difference/60;
+	$lastOn = $difference/3600;
     
 	
-	echo('It has been: '.$lastOn.' hours since you were last online. You have logged in '.$totalLoginsStr.' times.<BR>You have <B><FONT COLOR=005500>$'.$moneyStr.'</FONT></B> in Horse Isle money on hand and <B><FONT COLOR=005500>$'.$bankmoneyStr.'</FONT></B> in the bank.<BR>You have earned <B>'.(string)$questPoints.'</B> of <B>63005</B> total quest points  (<B>'.(string)floor(($questPoints / 63005) * 100.0).'%</B> Complete)<BR>');
+	echo('It has been: '.number_format((float)$lastOn, 2, '.', '').' hours since you were last online. You have logged in '.$totalLoginsStr.' times.<BR>You have <B><FONT COLOR=005500>$'.$moneyStr.'</FONT></B> in Horse Isle money on hand and <B><FONT COLOR=005500>$'.$bankmoneyStr.'</FONT></B> in the bank.<BR>You have earned <B>'.(string)$questPoints.'</B> of <B>63005</B> total quest points  (<B>'.(string)floor(($questPoints / 63005) * 100.0).'%</B> Complete)<BR>');
 	if(!$subbed)
 	{
 		echo('You have <B>'.(string)$playtime.'</B> minutes of playtime available. As a non-subscriber you get 1 additional minute every 8 minutes. <I>(subject to change based on load)</I> (<A HREF=/web/whylimited.php>why limited?</A>) <BR>');
@@ -196,11 +196,29 @@ h+=60;//h += 96;
 
 <CENTER><TABLE WIDTH=500><TR><TD class=forumlist>
 
-<FONT SIZE=+1><?php echo(strtoupper(htmlspecialchars($_SESSION['USERNAME']))); ?>'S <?php echo(strtoupper($server_id)); ?> SUBSCRIPTION STATUS:<BR></FONT><FONT SIZE=+2><FONT COLOR=GREEN>ACTIVE</FONT></FONT><BR>(∞ days remain in your subscription)</FONT> (<A HREF=web/reasonstosubscribe.php>Subscription Benefits</A>)
+<FONT SIZE=+1><?php echo(strtoupper(htmlspecialchars($_SESSION['USERNAME']))); ?>'S <?php echo(strtoupper($server_id)); ?> SUBSCRIPTION STATUS:<BR></FONT><FONT SIZE=+2><?php 
+	if($subbed)
+	{ 
+		echo('<FONT COLOR=GREEN>ACTIVE</FONT>');
+		$current_time = time();
+		$difference = $subTime - $current_time;
+		$daysRemain = floor($difference/86400);
+		$daysStr = (string)$daysRemain;
+		
+		if($all_users_subbed)
+			$daysStr = "∞";
+		
+		echo('</FONT><BR>('.$daysStr.' days remain in your subscription)</FONT> ');
+	}
+	else 
+	{
+		echo("NOT SUBSCRIBED</FONT><BR>(You have not yet subscribed)</FONT> "); 
+	} 
+?>(<A HREF=web/reasonstosubscribe.php>Subscription Benefits</A>)
 </TD></TR><TR><TD class=forumlist>
 <TABLE WIDTH=100%>
 <TR><TD><B>BUY 1 Month Membership <FONT COLOR=GREEN>$5.00</FONT>usd</B> <I><FONT SIZE=-1>(adds 31 days membership time to the account that you are currently logged in with.) Non-refundable.</FONT></I></TD><TD>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<form action="<?php echo($pp_uri); ?>" method="post">
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
@@ -226,7 +244,7 @@ h+=60;//h += 96;
 <TR><TD class=forumlist>
 <TABLE WIDTH=100%><TR>
 <TD><B>BUY Full Year Membership <FONT COLOR=GREEN>$40.00</FONT>usd</B> <I><FONT SIZE=-1>(adds 366 days membership time to the account you are logged in with. saves $20.00 off monthly subscription) Non-refundable.</FONT></I></TD><TD>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<form action="<?php echo($pp_uri); ?>" method="post">
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
@@ -281,7 +299,7 @@ h+=60;//h += 96;
 
 
 <TABLE WIDTH=100%><TR>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<form action="<?php echo($pp_uri); ?>" method="post">
 <TD><B>BUY $100,000 Horse Isle Currency per <FONT COLOR=GREEN>$1.00</FONT>usd</B><BR>
 Select: <SELECT NAME=quantity>
 <!-<OPTION VALUE=1>$10,000 Horse Isle for $1.00 USD->
@@ -319,7 +337,7 @@ Select: <SELECT NAME=quantity>
 <TABLE WIDTH=100%>
 <TR><TD>
 <B>BUY Pawneer Order <FONT COLOR=GREEN>$8.00</FONT>usd</B> <I><FONT SIZE=-1>(allows you to order a custom breed/color/gender horse on server from Pawneer. This is not required, you can trade other players to get the breed you desire also.) Non-refundable.</FONT></I></TD><TD>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<form action="<?php echo($pp_uri); ?>" method="post">
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
@@ -344,7 +362,7 @@ Select: <SELECT NAME=quantity>
 <TABLE WIDTH=100%>
 <TR><TD>
 <B>BUY 5 Pawneer Orders <FONT COLOR=GREEN>$30.00</FONT>usd</B> <I><FONT SIZE=-1>(save $10.00 - allows you to order 5 custom horses from Pawneer) Non-refundable.</FONT></I></TD><TD>
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+<form action="<?php echo($pp_uri); ?>" method="post">
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">

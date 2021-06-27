@@ -3542,7 +3542,7 @@ namespace HISP.Server
                 Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
                 return;
             }
-            Database.AddOnlineUser(sender.LoggedinUser.Id, sender.LoggedinUser.Administrator, sender.LoggedinUser.Moderator, sender.LoggedinUser.Subscribed);
+            Database.AddOnlineUser(sender.LoggedinUser.Id, sender.LoggedinUser.Administrator, sender.LoggedinUser.Moderator, sender.LoggedinUser.Subscribed, sender.LoggedinUser.NewPlayer);
             
             Logger.DebugPrint(sender.LoggedinUser.Username + " Requested user information.");
 
@@ -3605,6 +3605,17 @@ namespace HISP.Server
                 if (RiddleEvent.Active)
                     RiddleEvent.ShowStartMessage(sender);
             
+            // Give Queued Itmes
+            Item.ItemPurchaseQueueItem[] queueItems = Database.GetItemPurchaseQueue(sender.LoggedinUser.Id);
+            foreach (Item.ItemPurchaseQueueItem queueItem in queueItems)
+            {
+                for(int i = 0; i < queueItems.Length; i++)
+                {
+                    sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(queueItem.ItemId));
+                }
+            }
+            Database.ClearItemPurchaseQueue(sender.LoggedinUser.Id);
+
             // Send Queued Messages
             string[] queuedMessages = Database.GetMessageQueue(sender.LoggedinUser.Id);
             foreach(string queuedMessage in queuedMessages)

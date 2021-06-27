@@ -90,6 +90,11 @@ namespace HISP.Game.Items
             }
         }
 
+        public struct ItemPurchaseQueueItem
+        {
+            public int ItemId;
+            public int ItemCount;
+        }
         public static void UseItem(User user, ItemInstance item)
         {
             if (user.Inventory.HasItem(item.RandomId))

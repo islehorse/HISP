@@ -230,7 +230,7 @@ namespace HISP.Player
                 if (value)
                     Database.RemoveOnlineUser(this.Id);
                 else
-                    Database.AddOnlineUser(this.Id, this.Administrator, this.Moderator, this.Subscribed);
+                    Database.AddOnlineUser(this.Id, this.Administrator, this.Moderator, this.Subscribed, this.NewPlayer);
 
                 stealth = value;
             }
