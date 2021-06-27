@@ -7,6 +7,7 @@ $dbuser = 'root';
 $dbpass = 'test123';
 $dbhost = '127.0.0.1';
 
+$all_users_subbed = false;
 $server_id = "beta";
 
 # == hmac_secret ==
@@ -15,7 +16,7 @@ $server_id = "beta";
 # NOTE: if someone knows this secret they can login to ANYONES account
 # Ideally, this would be a random string of numbers, letters and symbols like 20 characters long T-T
 $hmac_secret = "!!NOTSET!!";
-$master_site = "//server.islehorse.com";
+$master_site = "//localhost";
 # Password for /web/admin
 $admin_portal_password = "!!NOTSET!!";
 ?>
