@@ -405,7 +405,7 @@ namespace HISP.Game
 
         public static string RanchCantAffordRanch;
         public static string RanchRanchBroughtMessageFormat;
-
+        public static string RanchForcefullySoldFormat;
         public static string RanchSavedRanchDescripton;
         public static string RanchSavedTitleTooLongError;
         public static string RanchSavedDescrptionTooLongError;
@@ -1598,6 +1598,10 @@ namespace HISP.Game
         public static string FormatArenaYouWinMessage(int prizeMoney, int experience)
         {
             return ArenaYouWinFormat.Replace("%PRIZE%", prizeMoney.ToString("N0", CultureInfo.InvariantCulture)).Replace("%EXP%", experience.ToString("N0", CultureInfo.InvariantCulture));
+        }
+        public static string FormatRanchForcefullySoldMessage(int amount)
+        {
+            return RanchForcefullySoldFormat.Replace("%AMOUNT%", amount.ToString());
         }
         public static string FormatArenaYourScore(int score)
         {

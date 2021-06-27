@@ -555,15 +555,7 @@ namespace HISP.Player
 
             if(Ranch.IsRanchOwned(this.Id))
             {
-                if (this.Subscribed)
-                {
-                    OwnedRanch = Ranch.GetRanchOwnedBy(this.Id);
-                }
-                else // idk what it does here ...
-                {
-                    OwnedRanch = null;
-                    Ranch.GetRanchOwnedBy(this.Id).OwnerId = -1;
-                }
+                OwnedRanch = Ranch.GetRanchOwnedBy(this.Id);
             }    
 
             Gender = Database.GetGender(UserId);
