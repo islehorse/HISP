@@ -1,4 +1,5 @@
 <?php
+session_start();
 include("web/common.php");
 include("web/crosserver.php");
 include("config.php");
@@ -32,13 +33,14 @@ auth_failed:
 }
 
 
-if(isset($_GET["SLID"], $_GET["C"]))
+if(!is_logged_in() && isset($_GET["SLID"], $_GET["C"]))
 {
-	$id = $_GET['SLID'];
+	$id = (int)$_GET['SLID'];
 	$code = $_GET['C'];
 	
-	$hmac = GenHmacMessage((string)$playerId, "CrossSiteLogin");
-	$hmacSent = base64_decode(bin2hex($hmac));
+	$hmac = GenHmacMessage((string)$id, "CrossSiteLogin");
+	$hmacSent = bin2hex(base64_url_decode($code));
+	
 	if(hash_equals($hmacSent,$hmac))
 	{
 		$_SESSION['LOGGED_IN'] = "YES";
@@ -52,6 +54,7 @@ if(isset($_GET["SLID"], $_GET["C"]))
 	}
 	else
 	{
+		$_SESSION['LOGGED_IN'] = "NO";
 		$login_error = "Error in Automatic Login Authentication!";
 	}
 }

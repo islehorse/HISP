@@ -57,7 +57,7 @@ if(isset($_GET['CONNECT']))
 		if(!endsWith($redirectUrl, '/'))
 			$redirectUrl .= '/';
 		
-		$redirectUrl .= 'account.php?SLID='.(string)$playerId.'&C='.base64_encode(hex2bin($hmac));
+		$redirectUrl .= 'account.php?SLID='.(string)$playerId.'&C='.base64_url_encode(hex2bin($hmac));
 		
 		header("Location: ".$redirectUrl);
 		exit();

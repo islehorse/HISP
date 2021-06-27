@@ -13,6 +13,14 @@ function hash_salt(string $input, string $salt)
 	return hash('sha512',$xor_hash,false);
 }
 
+function base64_url_encode($input) {
+ return strtr(base64_encode($input), '+/=', '._-');
+}
+
+function base64_url_decode($input) {
+ return base64_decode(strtr($input, '._-', '+/='));
+}
+
 function is_logged_in()
 {
 	if(session_status() !== PHP_SESSION_ACTIVE)
@@ -45,7 +53,7 @@ function get_username(string $id)
 	$stmt->bind_param("i", $id);
 	$stmt->execute();
 	$result = $stmt->get_result();
-	$usetname = intval($result->fetch_row()[0]);
+	$usetname = $result->fetch_row()[0];
 	return $usetname;
 }
 
