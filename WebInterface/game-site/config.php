@@ -8,7 +8,7 @@ $dbpass = 'test123';
 $dbhost = '127.0.0.1';
 
 $all_users_subbed = false;
-$server_id = "beta";
+$server_id = "GAME";
 $pp_uri = '/web/ppemu.php'; # paypal emulator, original is https://www.paypal.com/cgi-bin/webscr
 $EXHANGE_RATE = 100000; # How much 1 USD is worth as HI Money
 
