@@ -44,6 +44,42 @@ function getUserMoney($database, $id)
 	
 }
 
+function setUserMoney($database, $id, $money)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("UPDATE UserExt SET Money=? WHERE Id=?");
+	$stmt->bind_param("ii", $money, $id);
+	$stmt->execute();
+}
+
+function setUserSubbed($database, $id, $subbed)
+{
+	$subedV = "";
+	if($subbed)
+		$subedV = "YES";
+	else
+		$subbedV = "NO";
+	
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("UPDATE UserExt SET Subscriber=? WHERE Id=?");
+	$stmt->bind_param("si", $subedV, $id);
+	$stmt->execute();
+}
+
+function setUserSubbedUntil($database, $id, $subbedUntil)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("UPDATE UserExt SET SubscribedUntil=? WHERE Id=?");
+	$stmt->bind_param("ii", $subbedUntil, $id);
+	$stmt->execute();
+}
+
 function getUserBankMoney($database, $id)
 {
 	include('config.php');
@@ -129,6 +165,19 @@ function getUserSubTimeRemaining($database, $id)
 	
 }
 
+
+function addItemToPuchaseQueue($database, $playerId, $itemId, $itemCount)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("INSERT INTO ItemPurchaseQueue VALUES(?,?,?)");
+	$stmt->bind_param("iii", $playerId, $itemId, $itemCount);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+}
+
 function getUserSubbed($database, $id)
 {
 	include('config.php');
@@ -143,6 +192,19 @@ function getUserSubbed($database, $id)
 	
 }
 
+function isUserOnline($database, $id)
+{
+	include('config.php');
+	
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT COUNT(1) FROM OnlineUsers WHERE playerId=?");
+	$stmt->bind_param("i", $userid);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$count = intval($result->fetch_row()[0]);
+	return $count>0;	
+}
 
 function  getNoModPlayersOnlineInServer($database)
 {

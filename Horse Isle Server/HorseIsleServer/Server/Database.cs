@@ -33,7 +33,7 @@ namespace HISP.Server
                 string ShopInventory = "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, RandomID INT, ItemID INT)";
                 string DroppedItems = "CREATE TABLE IF NOT EXISTS DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT, Data INT)";
                 string TrackedQuest = "CREATE TABLE IF NOT EXISTS TrackedQuest(playerId INT, questId INT, timesCompleted INT)";
-                string OnlineUsers = "CREATE TABLE IF NOT EXISTS OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3))";
+                string OnlineUsers = "CREATE TABLE IF NOT EXISTS OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3), New TEXT(3))";
                 string CompetitionGear = "CREATE TABLE IF NOT EXISTS CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)";
                 string Awards = "CREATE TABLE IF NOT EXISTS Awards(playerId INT, awardId INT)";
                 string Jewelry = "CREATE TABLE IF NOT EXISTS Jewelry(playerId INT, slot1 INT, slot2 INT, slot3 INT, slot4 INT)";
@@ -57,7 +57,20 @@ namespace HISP.Server
                 string AuctionTable = "CREATE TABLE IF NOT EXISTS Auctions(roomId INT, randomId INT, horseRandomId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT, Done TEXT(3))";
                 string SolvedRealTimeRiddle = "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)";
                 string MutedPlayers = "CREATE TABLE IF NOT EXISTS MutedPlayers(playerId INT, mutePlayerId INT)";
+                string ItemQueue = "CREATE TABLE IF NOT EXISTS ItemPurchaseQueue(playerId INT, itemId INT, count INT)";
                 string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+
+                try
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = ItemQueue;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
 
                 try
                 {
@@ -609,6 +622,44 @@ namespace HISP.Server
                 sqlCommand.Dispose();
                 return count >= 1;
             }
+        }
+
+        public static void ClearItemPurchaseQueue(int playerId)
+        {
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "DELETE FROM ItemPurchaseQueue WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+                sqlCommand.Dispose();
+            }
+        }
+
+        public static Item.ItemPurchaseQueueItem[] GetItemPurchaseQueue(int playerId)
+        {
+            List<Item.ItemPurchaseQueueItem> queueItems = new List<Item.ItemPurchaseQueueItem>();
+
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT * FROM ItemPurchaseQueue WHERE playerId=@playerId";
+                sqlCommand.Parameters.AddWithValue("@playerId", playerId);
+                sqlCommand.Prepare();
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    Item.ItemPurchaseQueueItem itm = new Item.ItemPurchaseQueueItem();
+                    itm.ItemId = reader.GetInt32(0);
+                    itm.ItemCount = reader.GetInt32(1);
+                    queueItems.Add(itm);
+                }
+                sqlCommand.Dispose();
+            }
+            return queueItems.ToArray();
         }
 
         public static void CreateDressupRoomPeice(int roomId, int peiceId, bool active, int x, int y)
@@ -3966,18 +4017,19 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
-        public static void AddOnlineUser(int playerId, bool Admin, bool Moderator, bool Subscribed)
+        public static void AddOnlineUser(int playerId, bool Admin, bool Moderator, bool Subscribed, bool New)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "INSERT INTO OnlineUsers VALUES(@playerId, @admin, @moderator, @subscribed)";
+                sqlCommand.CommandText = "INSERT INTO OnlineUsers VALUES(@playerId, @admin, @moderator, @new)";
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Parameters.AddWithValue("@admin", Admin ? "YES" : "NO");
                 sqlCommand.Parameters.AddWithValue("@moderator", Moderator ? "YES" : "NO");
                 sqlCommand.Parameters.AddWithValue("@subscribed", Subscribed ? "YES" : "NO");
+                sqlCommand.Parameters.AddWithValue("@new", New ? "YES" : "NO");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 sqlCommand.Dispose();
