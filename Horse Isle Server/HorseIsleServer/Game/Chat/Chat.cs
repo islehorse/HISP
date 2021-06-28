@@ -59,6 +59,8 @@ namespace HISP.Game.Chat
                         return Command.Give(message, args, user);
                     if (message.ToUpper().StartsWith("%GOTO"))
                         return Command.Goto(message, args, user);
+                    if (message.ToUpper().StartsWith("%JUMP"))
+                        return Command.Jump(message, args, user);
                     if (message.ToUpper().StartsWith("%KICK"))
                         return Command.Kick(message, args, user);
                     if (message.ToUpper().StartsWith("%RULES"))

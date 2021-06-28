@@ -11,6 +11,23 @@ namespace HISP.Game.Chat
     public class Command
     {
 
+        private static User findNamePartial(string name)
+        {
+            foreach (GameClient client in GameServer.ConnectedClients)
+            {
+                if (client == null)
+                    continue;
+                if (client.LoggedIn)
+                {
+                    if (client.LoggedinUser.Username.ToLower().Contains(name))
+                    {
+                        return client.LoggedinUser;
+                    }
+                }
+            }
+            throw new KeyNotFoundException("name not found");
+        }
+
         public static bool Give(string message, string[] args, User user)
         {
             if (args.Length <= 0)
@@ -25,8 +42,17 @@ namespace HISP.Game.Chat
                     itemId = int.Parse(args[1]);
                     Item.GetItemById(itemId);
                     ItemInstance newItemInstance = new ItemInstance(itemId);
-                    user.Inventory.AddIgnoringFull(newItemInstance);
-                    
+
+                    if(args.Length >= 3)
+                    {
+                        findNamePartial(args[2]).Inventory.AddIgnoringFull(newItemInstance);
+                    }
+                    else
+                    {
+                        user.Inventory.AddIgnoringFull(newItemInstance);
+                    }
+
+
                 }
                 catch(Exception)
                 {
@@ -39,7 +65,16 @@ namespace HISP.Game.Chat
                 try
                 {
                     money = int.Parse(args[1]);
-                    user.AddMoney(money);
+                    if (args.Length >= 3)
+                    {
+                        findNamePartial(args[2]).AddMoney(money);
+                    }
+                    else
+                    {
+                        user.AddMoney(money);
+                    }
+
+                    
                 }
                 catch (Exception)
                 {
@@ -54,7 +89,7 @@ namespace HISP.Game.Chat
                     questId = int.Parse(args[1]);
                     if(args.Length >= 3)
                     {
-                        if (args[0].ToUpper() == "FORCE")
+                        if (args[2].ToUpper() == "FORCE")
                         {
                             Quest.CompleteQuest(user, Quest.GetQuestById(questId));
                             goto msg;
@@ -222,6 +257,36 @@ namespace HISP.Game.Chat
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
+
+        public static bool Jump(string message, string[] args, User user)
+        {
+            if (args.Length <= 0)
+                return false;
+            if (!user.Administrator)
+                return false;
+
+            if(args.Length < 2)
+            {
+                return false;
+            }
+
+            try
+            {
+                User tp = findNamePartial(args[0]);
+                if (args[1].ToUpper() == "HERE")
+                    tp.Teleport(user.X, user.Y);
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+        }
+
+
         public static bool Goto(string message, string[] args, User user)
         {
             if (args.Length <= 0)
@@ -234,20 +299,8 @@ namespace HISP.Game.Chat
                     return false;
                 try
                 {
-                    foreach (GameClient client in GameServer.ConnectedClients)
-                    {
-                        if (client == null)
-                            return false;
-                        if (client.LoggedIn)
-                        {
-                            if (client.LoggedinUser.Username.ToLower().Contains(args[1]))
-                            {
-                                user.Teleport(client.LoggedinUser.X, client.LoggedinUser.Y);
-                                return true;
-                            }
-                        }
-                    }
-
+                    User tpTo = findNamePartial(args[1]);
+                    user.Teleport(tpTo.X, tpTo.Y);
                 }
                 catch (KeyNotFoundException)
                 {
@@ -365,31 +418,30 @@ namespace HISP.Game.Chat
             else
             {
                 string areaName = string.Join(" ", args).ToLower(); 
-
-                foreach (GameClient client in GameServer.ConnectedClients)
+                try
                 {
-                    if (client.LoggedIn)
+                    User tp = findNamePartial(areaName);
+
+                    user.Teleport(tp.X, tp.Y);
+                    formattedmessage += Messages.SuccessfullyWarpedToPlayer;
+                    goto playSwf;
+
+                }
+                catch (KeyNotFoundException)
+                {
+                    foreach (World.Waypoint waypoint in World.Waypoints)
                     {
-                        if(client.LoggedinUser.Username.ToLower().Contains(areaName))
+                        if (waypoint.Name.ToLower().Contains(areaName))
                         {
-                            user.Teleport(client.LoggedinUser.X, client.LoggedinUser.Y);
-                            formattedmessage += Messages.SuccessfullyWarpedToPlayer;
+                            user.Teleport(waypoint.PosX, waypoint.PosY);
+                            formattedmessage += Messages.SuccessfullyWarpedToLocation;
                             goto playSwf;
                         }
                     }
-                }
 
-                foreach(World.Waypoint waypoint in World.Waypoints)
-                {
-                    if(waypoint.Name.ToLower().Contains(areaName))
-                    {
-                        user.Teleport(waypoint.PosX, waypoint.PosY);
-                        formattedmessage += Messages.SuccessfullyWarpedToLocation;
-                        goto playSwf;
-                    }
+                    goto cantUnderstandCommand;
                 }
-
-                goto cantUnderstandCommand;
+                
             }
 
             playSwf:;
