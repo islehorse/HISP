@@ -61,7 +61,7 @@ namespace HISP.Game
 
         public static bool HasCompletedAllRiddles(User user)
         {
-            if (Database.TotalRiddlesCompletedByPlayer(user.Id) > Riddles.Length)
+            if (Database.TotalRiddlesCompletedByPlayer(user.Id) >= Riddles.Length)
                 return true;
             return false;
         }

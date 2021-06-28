@@ -2016,13 +2016,16 @@ namespace HISP.Game
                 message += Messages.MetaTerminator;
                 return message;
             }
-            Riddler riddle = Riddler.GetRandomRiddle(user);
-            user.LastRiddle = riddle;
-            
-            message += Messages.FormatRiddlerRiddle(riddle.Riddle);
-            message += Messages.ExitThisPlace;
-            message += Messages.MetaTerminator;
-            return message;
+            else
+            {
+                Riddler riddle = Riddler.GetRandomRiddle(user);
+                user.LastRiddle = riddle;
+
+                message += Messages.FormatRiddlerRiddle(riddle.Riddle);
+                message += Messages.ExitThisPlace;
+                message += Messages.MetaTerminator;
+                return message;
+            }
         }
 
        
