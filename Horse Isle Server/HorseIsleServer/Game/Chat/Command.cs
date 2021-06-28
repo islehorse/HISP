@@ -19,7 +19,7 @@ namespace HISP.Game.Chat
                     continue;
                 if (client.LoggedIn)
                 {
-                    if (client.LoggedinUser.Username.ToLower().Contains(name))
+                    if (client.LoggedinUser.Username.ToLower().Contains(name.ToLower()))
                     {
                         return client.LoggedinUser;
                     }
@@ -59,7 +59,7 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
-            if (args[0].ToUpper() == "HORSE")
+            else if (args[0].ToUpper() == "HORSE")
             {
                 int horseId = 0;
                 try
