@@ -59,6 +59,30 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
+            if (args[0].ToUpper() == "HORSE")
+            {
+                int horseId = 0;
+                try
+                {
+                    horseId = int.Parse(args[1]);
+                    HorseInstance horse = new HorseInstance(HorseInfo.GetBreedById(horseId));
+
+                    if (args.Length >= 3)
+                    {
+                        findNamePartial(args[2]).HorseInventory.AddHorse(horse);
+                    }
+                    else
+                    {
+                        user.HorseInventory.AddHorse(horse);
+                    }
+
+
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
             else if (args[0].ToUpper() == "MONEY")
             {
                 int money = 0;
