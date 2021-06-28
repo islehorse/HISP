@@ -1519,7 +1519,10 @@ namespace HISP.Game
         }
         public static string FormatPlayerHereMenu(int playerIcon, string playerName, string button)
         {
-            return PlayerHereMenuFormat.Replace("%PLAYERICON%", playerIcon.ToString()).Replace("%PLAYERNAME%", playerName).Replace("%BUTTONS%", button);
+            string vstr = "^I" + playerIcon.ToString();
+            if (playerIcon == -1)
+                vstr = "";
+            return PlayerHereMenuFormat.Replace("%PLAYERICON%", vstr).Replace("%PLAYERNAME%", playerName).Replace("%BUTTONS%", button);
         }
 
         // Auctions

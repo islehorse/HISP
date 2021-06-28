@@ -6,6 +6,7 @@ using HISP.Player.Equips;
 using HISP.Game.Services;
 using HISP.Game.Inventory;
 using HISP.Game.Horse;
+using System.Linq;
 
 namespace HISP.Player
 {
@@ -484,12 +485,78 @@ namespace HISP.Player
         {
             Logger.DebugPrint("Teleporting: " + Username + " to: " + newX.ToString() + "," + newY.ToString());
 
+            User[] onScreenBefore = GameServer.GetOnScreenUsers(X, Y, true, true);
+
             X = newX;
             Y = newY;
 
             byte[] MovementPacket = PacketBuilder.CreateMovementPacket(X, Y, CharacterId, Facing, PacketBuilder.DIRECTION_TELEPORT, true);
             LoggedinClient.SendPacket(MovementPacket);
             GameServer.UpdateWeather(LoggedinClient);
+
+            User[] onScreenNow = GameServer.GetOnScreenUsers(X, Y, true, true);
+
+            User[] goneOffScreen = onScreenBefore.Except(onScreenNow).ToArray();
+            User[] goneOnScreen = onScreenNow.Except(onScreenBefore).ToArray();
+
+            foreach(User offScreenUsers in goneOffScreen)
+            {
+                if (offScreenUsers.Id == this.Id)
+                    continue;
+
+                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, Facing, CharacterId, Username);
+                offScreenUsers.LoggedinClient.SendPacket(playerInfoBytes);
+            }
+
+            foreach (User onScreenUsers in goneOnScreen)
+            {
+                if (onScreenUsers.Id == this.Id)
+                    continue;
+
+                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenUsers.X, onScreenUsers.Y, onScreenUsers.Facing, onScreenUsers.CharacterId, onScreenUsers.Username);
+                LoggedinClient.SendPacket(playerInfoBytes);
+            }
+
+            // Players now offscreen tell the client is at 1000,1000.
+            /* foreach (User onScreenBeforeUser in onScreenBefore)
+             {
+                 bool found = false;
+                 foreach (User onScreenNowUser in onScreenNow)
+                 {
+                     if (onScreenNowUser.Id == onScreenBeforeUser.Id)
+                     {
+                         found = true;
+                         break;
+                     }
+                 }
+
+                 if (!found)
+                 {
+                     byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, Facing, CharacterId, Username);
+                     onScreenBeforeUser.LoggedinClient.SendPacket(playerInfoBytes);
+                 }
+             }
+
+             // Players now onscreen tell the client there real pos
+             foreach (User onScreenNowUser in onScreenNow)
+             {
+                 bool found = false;
+                 foreach (User onScreenBeforeUser in onScreenBefore)
+                 {
+                     if (onScreenNowUser.Id == onScreenBeforeUser.Id)
+                     {
+                         found = true;
+                         break;
+                     }
+                 }
+
+                 if (!found)
+                 {
+                     byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenNowUser.X, onScreenNowUser.Y, onScreenNowUser.Facing, onScreenNowUser.CharacterId, onScreenNowUser.Username);
+                     LoggedinClient.SendPacket(playerInfoBytes);
+                 }
+             }
+            */
             GameServer.Update(LoggedinClient);
         }
 
