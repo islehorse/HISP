@@ -198,7 +198,7 @@ namespace HISP.Server
                 if (client.LoggedIn)
                 {
                     if (!client.LoggedinUser.MetaPriority)
-                        Update(client);
+                        UpdateArea(client);
                     byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(client.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), client.LoggedinUser.MailBox.UnreadMailCount);
                     client.SendPacket(BaseStatsPacketData);
 
@@ -4756,19 +4756,19 @@ namespace HISP.Server
                 return;
             }
 
+
             User loggedInUser = sender.LoggedinUser;
 
             /*
              *  Player stuff
              */
 
+            // Store this for later... do it now to avoid TOCTOU.
+            User[] onScreenBefore = GetOnScreenUsers(loggedInUser.X, loggedInUser.Y, true, true);
+
             // Leave Multirooms 
             Multiroom.LeaveAllMultirooms(loggedInUser);
 
-            // Cancel Trades
-            if (loggedInUser.TradingWith != null)
-                if((loggedInUser.TradingWith.Trader.X != loggedInUser.X) && (loggedInUser.TradingWith.Trader.Y != loggedInUser.Y))
-                    loggedInUser.TradingWith.CancelTradeMoved();
             loggedInUser.PendingBuddyRequestTo = null;
 
             // Close Social Windows
@@ -4776,16 +4776,6 @@ namespace HISP.Server
                 UpdateArea(sUser.LoggedinClient);
             loggedInUser.BeingSocializedBy.Clear();
 
-
-            // Pac-man the world.
-            if (loggedInUser.X > Map.Width)
-                loggedInUser.Teleport(2, loggedInUser.Y);
-            else if (loggedInUser.X < 2)
-                loggedInUser.Teleport(Map.Width-2, loggedInUser.Y);
-            else if (loggedInUser.Y > Map.Height-2)
-                loggedInUser.Teleport(loggedInUser.X, 2);
-            else if (loggedInUser.Y < 2)
-                loggedInUser.Teleport(loggedInUser.X, Map.Height-2);
 
             if (loggedInUser.CurrentlyRidingHorse != null)
             {
@@ -4858,6 +4848,8 @@ namespace HISP.Server
             byte direction = 0;
             int newX = loggedInUser.X;
             int newY = loggedInUser.Y;
+
+
             bool moveTwo = false;
 
             if (movementDirection == PacketBuilder.MOVE_ESCAPE) // Exit this place / X Button
@@ -4906,8 +4898,7 @@ namespace HISP.Server
                 Logger.DebugPrint("Exiting player: " + loggedInUser.Username + " to: " + loggedInUser.X + "," + loggedInUser.Y);
                 byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, Direction, true);
                 sender.SendPacket(moveResponse);
-                Update(sender);
-                return;
+                goto Complete;               
             }
 
             if (movementDirection == PacketBuilder.MOVE_UP)
@@ -4972,6 +4963,8 @@ namespace HISP.Server
                 return;
             }
 
+
+
             loggedInUser.Facing = direction + (onHorse * 5);
             if (loggedInUser.Y != newY || loggedInUser.X != newX)
             {
@@ -4988,8 +4981,7 @@ namespace HISP.Server
                     if (treasure.Type == "RAINBOW")
                     {
                         treasure.CollectTreasure(loggedInUser);
-                        Update(sender);
-                        return;
+                        goto Complete;
                     }
                 }
 
@@ -5001,7 +4993,88 @@ namespace HISP.Server
                 byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
                 sender.SendPacket(moveResponse);
             }
+            Complete:;
 
+            // Cancel Trades
+            if (loggedInUser.TradingWith != null)
+                if ((loggedInUser.TradingWith.Trader.X != loggedInUser.X) && (loggedInUser.TradingWith.Trader.Y != loggedInUser.Y))
+                    loggedInUser.TradingWith.CancelTradeMoved();
+            
+            // Pac-man the world.
+            if (loggedInUser.X > Map.Width)
+                loggedInUser.Teleport(2, loggedInUser.Y);
+            else if (loggedInUser.X < 2)
+                loggedInUser.Teleport(Map.Width - 2, loggedInUser.Y);
+            else if (loggedInUser.Y > Map.Height - 2)
+                loggedInUser.Teleport(loggedInUser.X, 2);
+            else if (loggedInUser.Y < 2)
+                loggedInUser.Teleport(loggedInUser.X, Map.Height - 2);
+
+
+            User[] onScreenNow = GetOnScreenUsers(loggedInUser.X, loggedInUser.Y, true, true);
+
+            User[] goneOffScreen = onScreenBefore.Except(onScreenNow).ToArray();
+            User[] goneOnScreen = onScreenNow.Except(onScreenBefore).ToArray();
+
+            foreach (User offScreenUsers in goneOffScreen)
+            {
+                if (offScreenUsers.Id == loggedInUser.Id)
+                    continue;
+
+                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, loggedInUser.Facing, loggedInUser.CharacterId, loggedInUser.Username);
+                offScreenUsers.LoggedinClient.SendPacket(playerInfoBytes);
+            }
+
+            foreach (User onScreenUsers in goneOnScreen)
+            {
+                if (onScreenUsers.Id == loggedInUser.Id)
+                    continue;
+
+                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenUsers.X, onScreenUsers.Y, onScreenUsers.Facing, onScreenUsers.CharacterId, onScreenUsers.Username);
+                loggedInUser.LoggedinClient.SendPacket(playerInfoBytes);
+            }
+
+            /*
+            // Players now offscreen tell the client is at 1000,1000.
+            foreach (User onScreenBeforeUser in onScreenBefore)
+            {
+                bool found = false;
+                foreach(User onScreenNowUser in onScreenNow)
+                {
+                    if(onScreenNowUser.Id == onScreenBeforeUser.Id)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000+4, 1000+1, loggedInUser.Facing, loggedInUser.CharacterId, loggedInUser.Username);
+                    onScreenBeforeUser.LoggedinClient.SendPacket(playerInfoBytes);
+                }
+            }
+
+            // Players now onscreen tell the client there real pos
+            foreach (User onScreenNowUser in onScreenNow)
+            {
+                bool found = false;
+                foreach (User onScreenBeforeUser in onScreenBefore)
+                {
+                    if (onScreenNowUser.Id == onScreenBeforeUser.Id)
+                    {
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenNowUser.X, onScreenNowUser.Y, onScreenNowUser.Facing, onScreenNowUser.CharacterId, onScreenNowUser.Username);
+                    loggedInUser.LoggedinClient.SendPacket(playerInfoBytes);
+                }
+            }
+            */
             Update(sender);
 
         }
@@ -7328,6 +7401,30 @@ namespace HISP.Server
             return usersNearby.ToArray();
         }
 
+
+        public static User[] GetOnScreenUsers(int x, int y, bool includeStealth = false, bool includeMuted = false)
+        {
+            int startX = x - 9;
+            int endX = x + 9;
+            int startY = y - 8;
+            int endY = y + 9;
+
+            List<User> usersOnScreen = new List<User>();
+
+            foreach (GameClient client in ConnectedClients)
+                if (client.LoggedIn)
+                {
+                    if (!includeStealth && client.LoggedinUser.Stealth)
+                        continue;
+                    if (!includeMuted && client.LoggedinUser.MuteNear)
+                        continue;
+                    if (startX <= client.LoggedinUser.X && endX >= client.LoggedinUser.X && startY <= client.LoggedinUser.Y && endY >= client.LoggedinUser.Y)
+                        usersOnScreen.Add(client.LoggedinUser);
+                }
+
+            return usersOnScreen.ToArray();
+        }
+
         public static User[] GetNearbyUsers(int x, int y, bool includeStealth=false, bool includeMuted=false)
         {
             int startX = x - 15;
@@ -7552,16 +7649,14 @@ namespace HISP.Server
             byte[] PlayerData = PacketBuilder.CreatePlayerData(forClient.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), forClient.LoggedinUser.MailBox.UnreadMailCount);
             forClient.SendPacket(PlayerData);
         }
+
         public static void UpdateUserFacingAndLocation(User user)
         {
             byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
 
-            foreach (GameClient client in ConnectedClients)
-                if (client.LoggedIn)
-                {
-                    if (client.LoggedinUser.Id != user.Id)
-                        client.SendPacket(playerInfoBytes);
-                }
+            foreach (User onScreenUser in GetOnScreenUsers(user.X, user.Y, true, true))
+                if (onScreenUser.Id != user.Id)
+                    onScreenUser.LoggedinClient.SendPacket(playerInfoBytes);
         }
         public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPrio=false, User exceptMe=null)
         {
