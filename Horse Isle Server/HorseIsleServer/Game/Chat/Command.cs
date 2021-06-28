@@ -148,6 +148,16 @@ namespace HISP.Game.Chat
             return true;
         }
 
+        public static bool Stealth(string message, string[] args, User user)
+        {
+            if (!user.Administrator || !user.Moderator)
+                return false;
+
+            user.Stealth = !user.Stealth;
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+        }
         public static bool NoClip(string message, string[] args, User user)
         {
             if (!user.Administrator)
@@ -224,8 +234,20 @@ namespace HISP.Game.Chat
                     return false;
                 try
                 {
-                    User teleportTo = GameServer.GetUserByName(args[1]);
-                    user.Teleport(teleportTo.X, teleportTo.Y);
+                    foreach (GameClient client in GameServer.ConnectedClients)
+                    {
+                        if (client == null)
+                            return false;
+                        if (client.LoggedIn)
+                        {
+                            if (client.LoggedinUser.Username.ToLower().Contains(args[1]))
+                            {
+                                user.Teleport(client.LoggedinUser.X, client.LoggedinUser.Y);
+                                return true;
+                            }
+                        }
+                    }
+
                 }
                 catch (KeyNotFoundException)
                 {
@@ -343,6 +365,7 @@ namespace HISP.Game.Chat
             else
             {
                 string areaName = string.Join(" ", args).ToLower(); 
+
                 foreach (GameClient client in GameServer.ConnectedClients)
                 {
                     if (client.LoggedIn)

@@ -7430,6 +7430,20 @@ namespace HISP.Server
             }
             return count;
         }
+
+        public static int GetNumberOfBuddiesOnline(User user)
+        {
+            int total = 0;
+            foreach(int bud in user.Friends.List.ToArray())
+            {
+                if (IsUserOnline(bud))
+                {
+                    total++;
+                }
+            }
+            return total;
+        }
+
         public static int GetNumberOfAdminsOnline()
         {
             int count = 0;
