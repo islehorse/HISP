@@ -65,6 +65,8 @@ namespace HISP.Game.Chat
                         return Command.Rules(message, args, user);
                     if (message.ToUpper().StartsWith("%NOCLIP"))
                         return Command.NoClip(message, args, user);
+                    if (message.ToUpper().StartsWith("%STEALTH"))
+                        return Command.Stealth(message, args, user);
                     if (message.ToUpper().StartsWith("%BAN"))
                         return Command.Ban(message, args, user);
                     if (message.ToUpper().StartsWith("%UNBAN"))
@@ -488,7 +490,7 @@ namespace HISP.Game.Chat
                     int numbListening = GameServer.GetNumberOfPlayersListeningToAdsChat(); // vry specific function ik
                     return Messages.FormatAdsChatForSender(numbListening-1, user.Username, message);
                 case ChatChannel.Buddies:
-                    return Messages.FormatBuddyChatMessageForSender(user.Friends.Count, user.Username, message);
+                    return Messages.FormatBuddyChatMessageForSender(GameServer.GetNumberOfBuddiesOnline(user), user.Username, message);
                 case ChatChannel.Isle:
                     int inIsle = 0;
                     if (World.InIsle(user.X, user.Y))
