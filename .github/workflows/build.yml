@@ -1,0 +1,56 @@
+name: build-server
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+defaults:
+  run:
+    working-directory: "./Horse Isle Server"
+
+jobs:
+  build-server:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        arch: ["x64", "arm64"]
+        os: ["ubuntu-latest", "macos-latest", "windows-latest"]
+        exclude:
+          - os: macos-latest
+            arch: arm64 # no arm64 mac runner on github
+        include:
+          - os: ubuntu-latest
+            arch: arm
+          - os: windows-latest
+            arch: x86
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+          DOTNET_NOLOGO: "true"
+        with:
+          dotnet-version: 5.0.x
+
+      - name: Build ${{ runner.os }}-${{ matrix.arch }}
+        continue-on-error: false
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: "true"
+          DOTNET_NOLOGO: "true"
+        run: |
+          dotnet publish -p:PublishProfile=${{ runner.os }}-${{ matrix.arch }}.pubxml
+          cp ../DataCollection/*.json "HorseIsleServer/bin/${{ matrix.arch }}/${{ runner.os }}/publish/"
+          cp ../DataCollection/*.MAP  "HorseIsleServer/bin/${{ matrix.arch }}/${{ runner.os }}/publish/"
+          mkdir                       "HorseIsleServer/bin/${{ matrix.arch }}/${{ runner.os }}/publish/www"
+          cp -R ../WebInterface/*     "HorseIsleServer/bin/${{ matrix.arch }}/${{ runner.os }}/publish/www"
+
+      - name: upload ${{ runner.os }}-${{ matrix.arch }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ runner.os }}-${{ matrix.arch }}
+          path: Horse Isle Server/HorseIsleServer/bin/${{ matrix.arch }}/${{ runner.os }}/publish/
