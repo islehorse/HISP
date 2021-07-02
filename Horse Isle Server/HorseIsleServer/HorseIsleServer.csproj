@@ -4,7 +4,7 @@
     <RootNamespace>HISP</RootNamespace>
     <LangVersion>8.0</LangVersion>
     <Platforms>x64;x86;ARM;ARM64;AnyCPU</Platforms>
-    <Configurations>Windows;Debug;Linux</Configurations>
+    <Configurations>Windows;Debug;Linux;MacOS</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -60,6 +60,12 @@
     <Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>    
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacOS|x64'">
+    <TargetFramework>net5.0</TargetFramework>
+    <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x64</PlatformTarget>    
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM'">
     <TargetFramework>net5.0</TargetFramework>
     <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
@@ -74,7 +80,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All|Any CPU'">
     <TargetFramework>net5.0</TargetFramework>
-    <RuntimeIdentifiers>win-x86;win-x64;win-arm;win-arm64;linux-x64;linux-arm;linux-arm64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x86;win-x64;win-arm;win-arm64;linux-x64;linux-arm;linux-arm64;osx-x64</RuntimeIdentifiers>
     <Optimize>true</Optimize>
   </PropertyGroup>
 </Project>
