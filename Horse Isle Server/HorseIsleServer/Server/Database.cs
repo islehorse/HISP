@@ -33,7 +33,6 @@ namespace HISP.Server
                 string ShopInventory = "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, RandomID INT, ItemID INT)";
                 string DroppedItems = "CREATE TABLE IF NOT EXISTS DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT, Data INT)";
                 string TrackedQuest = "CREATE TABLE IF NOT EXISTS TrackedQuest(playerId INT, questId INT, timesCompleted INT)";
-                string OnlineUsers = "CREATE TABLE IF NOT EXISTS OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3), New TEXT(3))";
                 string CompetitionGear = "CREATE TABLE IF NOT EXISTS CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)";
                 string Awards = "CREATE TABLE IF NOT EXISTS Awards(playerId INT, awardId INT)";
                 string Jewelry = "CREATE TABLE IF NOT EXISTS Jewelry(playerId INT, slot1 INT, slot2 INT, slot3 INT, slot4 INT)";
@@ -58,7 +57,8 @@ namespace HISP.Server
                 string SolvedRealTimeRiddle = "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)";
                 string MutedPlayers = "CREATE TABLE IF NOT EXISTS MutedPlayers(playerId INT, mutePlayerId INT)";
                 string ItemQueue = "CREATE TABLE IF NOT EXISTS ItemPurchaseQueue(playerId INT, itemId INT, count INT)";
-                string DeleteOnlineUsers = "DELETE FROM OnlineUsers";
+                string DeleteOnlineUsers = "DROP TABLE OnlineUsers";
+                string OnlineUsers = "CREATE TABLE IF NOT EXISTS OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3), New TEXT(3))";
 
                 try
                 {
@@ -508,17 +508,6 @@ namespace HISP.Server
                 {
                     Logger.WarnPrint(e.Message);
                 };
-                try
-                {
-                    MySqlCommand sqlCommand = db.CreateCommand();
-                    sqlCommand.CommandText = OnlineUsers;
-                    sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
-                }
-                catch (Exception e)
-                {
-                    Logger.WarnPrint(e.Message);
-                };
 
                 try
                 {
@@ -538,6 +527,18 @@ namespace HISP.Server
 
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = DeleteOnlineUsers;
+                    sqlCommand.ExecuteNonQuery();
+                    sqlCommand.Dispose();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+                try
+                {
+                    MySqlCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = OnlineUsers;
                     sqlCommand.ExecuteNonQuery();
                     sqlCommand.Dispose();
                 }
