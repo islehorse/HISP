@@ -3634,6 +3634,30 @@ namespace HISP.Server
             }
             Database.ClearMessageQueue(sender.LoggedinUser.Id);
 
+            // Send login message
+            byte[] loginMessageBytes = PacketBuilder.CreateChat(Messages.FormatLoginMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
+            foreach (GameClient client in ConnectedClients)
+                if (client.LoggedIn)
+                    if (!client.LoggedinUser.MuteLogins && !client.LoggedinUser.MuteAll)
+                        if (client.LoggedinUser.Id != userId)
+                            client.SendPacket(loginMessageBytes);
+
+
+            // Tell other clients you exist
+            byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.Facing, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Username);
+            foreach (GameClient client in ConnectedClients)
+            {
+                if (client.LoggedIn)
+                {
+                    if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
+                    {
+                        client.SendPacket(PlayerInfo);
+                    }
+                }
+            }
+
+
+
         }
 
         public static void OnSwfModuleCommunication(GameClient sender, byte[] packet)
@@ -7232,16 +7256,6 @@ namespace HISP.Server
                     sender.SendPacket(ResponsePacket);
 
                     Logger.DebugPrint(sender.RemoteIp + " Logged into : " + sender.LoggedinUser.Username + " (ADMIN: " + sender.LoggedinUser.Administrator + " MOD: " + sender.LoggedinUser.Moderator + ")");
-
-                    // Send login message
-                    byte[] loginMessageBytes = PacketBuilder.CreateChat(Messages.FormatLoginMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
-                    foreach (GameClient client in ConnectedClients)
-                        if (client.LoggedIn)
-                            if (!client.LoggedinUser.MuteLogins && !client.LoggedinUser.MuteAll)
-                                if (client.LoggedinUser.Id != userId)
-                                        client.SendPacket(loginMessageBytes);
-
-                    UpdateUserFacingAndLocation(sender.LoggedinUser);
 
                 }
                 else
