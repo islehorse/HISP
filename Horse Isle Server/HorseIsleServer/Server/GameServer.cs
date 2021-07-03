@@ -5854,14 +5854,6 @@ namespace HISP.Server
             string formattedMessage = Chat.FormatChatForOthers(sender.LoggedinUser, channel, message);
             string formattedMessageSender = Chat.FormatChatForSender(sender.LoggedinUser, channel, message, nameTo);
             
-            string formattedMessageAutoReply = "";
-            string formattedMessageSenderAutoReply = "";
-
-            if (sender.LoggedinUser.AutoReplyText != "")
-            {
-                formattedMessageAutoReply = Chat.FormatChatForOthers(sender.LoggedinUser, channel, sender.LoggedinUser.AutoReplyText, true);
-                formattedMessageSenderAutoReply = Chat.FormatChatForSender(sender.LoggedinUser, channel, sender.LoggedinUser.AutoReplyText, nameTo, true);
-            }
 
             byte[] chatPacketOthers = PacketBuilder.CreateChat(formattedMessage, chatSide);
             byte[] chatPacketSender = PacketBuilder.CreateChat(formattedMessageSender, chatSide);
@@ -5871,10 +5863,7 @@ namespace HISP.Server
             foreach (GameClient recipiant in recipiants)
             {
                 recipiant.SendPacket(chatPacketOthers);
-
-                if(formattedMessageAutoReply != "")
-                    recipiant.SendPacket(PacketBuilder.CreateChat(formattedMessageAutoReply, chatSide));
-
+                
                 if (channel == Chat.ChatChannel.Dm)
                     recipiant.SendPacket(playDmSound);
             }
@@ -5882,8 +5871,25 @@ namespace HISP.Server
             // Send to sender
             sender.SendPacket(chatPacketSender);
 
-            if (formattedMessageSenderAutoReply != "")
-                sender.SendPacket(PacketBuilder.CreateChat(formattedMessageSenderAutoReply, chatSide));
+            // AutoReply
+            if (channel == Chat.ChatChannel.Dm)
+            {
+                foreach (GameClient recipiant in recipiants)
+                {
+                    if (recipiant.LoggedinUser.AutoReplyText != "")
+                    {
+                        string formattedMessageAuto = Chat.FormatChatForOthers(recipiant.LoggedinUser, channel, recipiant.LoggedinUser.AutoReplyText, true);
+                        string formattedMessageSenderAuto = Chat.FormatChatForSender(recipiant.LoggedinUser, channel, recipiant.LoggedinUser.AutoReplyText, nameTo, true);
+
+                        byte[] chatPacketAutoOthers = PacketBuilder.CreateChat(formattedMessageAuto, chatSide);
+                        sender.SendPacket(chatPacketAutoOthers);
+
+                        byte[] chatPacketAutoSender = PacketBuilder.CreateChat(formattedMessageSenderAuto, chatSide);
+                        recipiant.SendPacket(chatPacketAutoSender);
+                    }
+                }
+
+            }
 
         }
         public static void OnClickPacket(GameClient sender, byte[] packet)
