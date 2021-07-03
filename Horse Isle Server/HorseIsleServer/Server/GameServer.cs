@@ -3644,14 +3644,14 @@ namespace HISP.Server
 
 
             // Tell other clients you exist
-            byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.Facing, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Username);
+            byte[] YourPlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.Facing, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Username);
             foreach (GameClient client in ConnectedClients)
             {
                 if (client.LoggedIn)
                 {
                     if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
                     {
-                        client.SendPacket(PlayerInfo);
+                        client.SendPacket(YourPlayerInfo);
                     }
                 }
             }
