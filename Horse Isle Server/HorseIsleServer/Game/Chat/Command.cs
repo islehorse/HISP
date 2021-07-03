@@ -499,6 +499,35 @@ namespace HISP.Game.Chat
 
         }
 
+        public static bool AutoReply(string message, string[] args, User user)
+        {
+            string replyMessage = string.Join(" ", args);
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+            replyMessage = replyMessage.Trim();
+
+            if (replyMessage.Length > 1024)
+            {
+                byte[] tooLong = PacketBuilder.CreateChat(Messages.AutoReplyTooLong, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                user.LoggedinClient.SendPacket(tooLong);
+
+                return false;
+            }
+
+            Object violationReason = Chat.FilterMessage(replyMessage);
+            if (violationReason != null)
+            {
+                byte[] hasVios = PacketBuilder.CreateChat(Messages.AutoReplyHasViolations, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                user.LoggedinClient.SendPacket(hasVios);
+
+                return false;
+            }
+
+            user.AutoReplyText = replyMessage;
+
+            byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+        }
         public static bool Dance(string message, string[] args, User user)
         {
             string moves = string.Join(" ", args).ToLower();

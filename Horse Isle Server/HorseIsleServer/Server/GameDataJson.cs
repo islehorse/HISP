@@ -1461,8 +1461,10 @@ namespace HISP.Server
             Messages.StatTired = gameData.messages.meta.stats_page.tired_stat_name;
 
             Messages.StatsOtherHorses = gameData.messages.meta.stats_page.msg.other_horses;
-
             Messages.StatPlayerFormats = gameData.messages.meta.stats_page.player_stats.ToObject<string[]>();
+
+            Messages.StatThirstDizzy = gameData.messages.movement_key.thirsty;
+            Messages.StatHungerStumble = gameData.messages.movement_key.hungery;
 
             // Misc Stats
             Messages.StatMiscHeader = gameData.messages.meta.misc_stats.header;
@@ -1828,7 +1830,7 @@ namespace HISP.Server
             Messages.RequiredChatViolations = gameData.messages.chat.violation_points_required;
 
             Messages.GlobalChatFormatForModerators = gameData.messages.chat.for_others.global_format_moderator;
-            Messages.DirectChatFormatForModerators = gameData.messages.chat.for_others.dm_format_moderator;
+           // Messages.DirectChatFormatForModerators = gameData.messages.chat.for_others.dm_format_moderator;
 
             Messages.YouWereSentToPrisionIsle = gameData.messages.starved_horse;
 
@@ -1851,14 +1853,20 @@ namespace HISP.Server
             Messages.AdsChatFormatForSender = gameData.messages.chat.for_sender.ads_format;
             Messages.AdminChatFormatForSender = gameData.messages.chat.for_sender.admin_format;
 
+            Messages.DmModBadge = gameData.messages.chat.dm_moderator;
+            Messages.DmAutoResponse = gameData.messages.chat.dm_autoreply;
+
             Messages.AdminCommandFormat = gameData.messages.commands.admin_command_completed;
             Messages.PlayerCommandFormat = gameData.messages.commands.player_command_completed;
             Messages.MuteHelp = gameData.messages.commands.mute_help;
             Messages.UnMuteHelp = gameData.messages.commands.unmute_help;
 
-
             Messages.PasswordNotice = gameData.messages.chat.password_included;
             Messages.CapsNotice = gameData.messages.chat.caps_notice;
+
+            // AutoReply
+            Messages.AutoReplyTooLong = gameData.messages.auto_reply.too_long; 
+            Messages.AutoReplyHasViolations = gameData.messages.auto_reply.contains_violations;
 
             // Drawing Rooms
             Messages.DrawingLastToDrawFormat = gameData.messages.meta.drawing_rooms.last_draw;

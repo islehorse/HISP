@@ -107,6 +107,7 @@ namespace HISP.Player
         public int CapturingHorseId;
         public DateTime LoginTime;
         public string LastSeenWeather;
+        public string AutoReplyText = "";
         public int LastClickedRanchBuilding = 0;
         public bool ListingAuction = false;
         public int TotalGlobalChatMessages = 1;
