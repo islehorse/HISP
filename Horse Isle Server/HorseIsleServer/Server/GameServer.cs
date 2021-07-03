@@ -3639,7 +3639,7 @@ namespace HISP.Server
             foreach (GameClient client in ConnectedClients)
                 if (client.LoggedIn)
                     if (!client.LoggedinUser.MuteLogins && !client.LoggedinUser.MuteAll)
-                        if (client.LoggedinUser.Id != userId)
+                        if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
                             client.SendPacket(loginMessageBytes);
 
 
