@@ -7270,7 +7270,9 @@ namespace HISP.Server
 
         public static void OnDisconnect(GameClient sender)
         {
+
             connectedClients.Remove(sender);
+
 
             if (sender.LoggedIn)
             {
@@ -7319,6 +7321,7 @@ namespace HISP.Server
                         if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
                             client.SendPacket(playerRemovePacket);
             }
+
 
         }
 
