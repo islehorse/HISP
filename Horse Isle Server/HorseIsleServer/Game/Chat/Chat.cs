@@ -166,6 +166,9 @@ namespace HISP.Game.Chat
                 else if (message.ToUpper().StartsWith("!HEAR"))
                     return Command.UnMute(message, args, user);
 
+                else if (message.ToUpper().StartsWith("!AUTOREPLY"))
+                    return Command.AutoReply(message, args, user);
+
                 else if (message.ToUpper().StartsWith("!QUIZ"))
                     return Command.Quiz(message, args, user);
 
@@ -433,7 +436,7 @@ namespace HISP.Game.Chat
             return message.Replace("<", "&lt;");
         }
 
-        public static string FormatChatForOthers(User user, ChatChannel channel, string message)
+        public static string FormatChatForOthers(User user, ChatChannel channel, string message, bool autoReply=false)
         {
 
             switch (channel)
@@ -448,10 +451,12 @@ namespace HISP.Game.Chat
                 case ChatChannel.Buddies:
                     return Messages.FormatBuddyChatMessage(user.Username, message);
                 case ChatChannel.Dm:
+                    string badge = "";
                     if (user.Moderator || user.Administrator)
-                        return Messages.FormatDirectMessageForMod(user.Username, message);
-                    else
-                        return Messages.FormatDirectMessage(user.Username, message);
+                        badge += Messages.DmModBadge;
+                    if (autoReply)
+                        badge += Messages.DmAutoResponse;
+                    return Messages.FormatDirectMessage(user.Username, message, badge);
                 case ChatChannel.Near:
                     return Messages.FormatNearbyChatMessage(user.Username, message);
                 case ChatChannel.Isle:
@@ -464,7 +469,7 @@ namespace HISP.Game.Chat
                     else
                     {
                         Logger.HackerPrint(user.Username + " Tried to send in mod chat without being a moderator. (Hack/Code Attempt)");
-                        return user.Username + " is a hacker! (Sent in mod channel without being a mod) Maybe ban?";
+                        return "";
                     }
                 case ChatChannel.Admin:
                     if (user.Administrator)
@@ -472,14 +477,14 @@ namespace HISP.Game.Chat
                     else
                     {
                         Logger.HackerPrint(user.Username + " Tried to send in mod chat without being a moderator. (Hack/Code Attempt)");
-                        return user.Username + " is a hacker! (Sent in admin channel without being a admin) Maybe ban?";
+                        return "";
                     }
                 default:
                     Logger.ErrorPrint(user.Username + " is trying to end a message in unknown channel " + channel.ToString("X"));
                     return "not implemented yet :(";
             }
         }
-        public static string FormatChatForSender(User user, ChatChannel channel, string message, string dmRecipiant=null)
+        public static string FormatChatForSender(User user, ChatChannel channel, string message, string dmRecipiant=null, bool autoReply=false)
         {
             switch (channel)
             {
@@ -511,7 +516,12 @@ namespace HISP.Game.Chat
                     int adminsOnline = GameServer.GetNumberOfAdminsOnline() - 1;
                     return Messages.FormatAdminChatForSender(adminsOnline, user.Username, message);
                 case ChatChannel.Dm:
-                    return Messages.FormatDirectChatMessageForSender(user.Username, dmRecipiant, message);
+                    string badge = "";
+                    if (user.Moderator || user.Administrator)
+                        badge += Messages.DmModBadge;
+                    if (autoReply)
+                        badge += Messages.DmAutoResponse;
+                    return Messages.FormatDirectChatMessageForSender(user.Username, dmRecipiant, message, badge);
                 default:
                     Logger.ErrorPrint(user.Username + " is trying to end a message in unknown channel " + channel.ToString("X"));
                     return "not implemented yet :(";

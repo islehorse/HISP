@@ -551,6 +551,10 @@ namespace HISP.Game
 
         public static string[] StatPlayerFormats;
 
+        public static string StatThirstDizzy;
+        public static string StatHungerStumble;
+
+
         // Misc Stats
 
         public static string StatMiscHeader;
@@ -644,10 +648,17 @@ namespace HISP.Game
         public static string AdminChatFormatForSender;
         public static string ModChatFormatForSender;
 
+        public static string DmModBadge;
+        public static string DmAutoResponse;
+
         public static string ChatViolationMessageFormat;
         public static string PasswordNotice;
         public static string CapsNotice;
         public static string RandomMovement;
+
+        // AutoReply
+        public static string AutoReplyTooLong;
+        public static string AutoReplyHasViolations;
 
         // Transport
 
@@ -2545,9 +2556,9 @@ namespace HISP.Game
         {
             return PrivateNotesMetaFormat.Replace("%PRIVATENOTES%", privateNotes);
         }
-        public static string FormatRandomMovementMessage(string statName)
+        public static string FormatRandomMovementMessage(string statName, string message)
         {
-            return RandomMovement.Replace("%STAT%", statName);
+            return RandomMovement.Replace("%STAT%", statName).Replace("%MSG%", message);
         }
 
         public static string FormatJewerlyEquipMessage(string itemName)
@@ -2889,15 +2900,11 @@ namespace HISP.Game
             return HereChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
         }
 
-        public static string FormatDirectMessage(string username, string message)
+        public static string FormatDirectMessage(string username, string message, string formatPart)
         {
-            return DirectChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
+            return DirectChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%FORMATPART%", formatPart);
         }
-        public static string FormatDirectMessageForMod(string username, string message)
-        {
-            return DirectChatFormatForModerators.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
-        }
-        
+
         public static string FormatGlobalChatMessageForMod(string username, string message)
         {
             return GlobalChatFormatForModerators.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
@@ -2951,9 +2958,9 @@ namespace HISP.Game
         {
             return ModChatFormatForSender.Replace("%USERNAME%", username).Replace("%MESSAGE%", message).Replace("%AMOUNT%", numbMods.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatDirectChatMessageForSender(string username,string toUsername, string message)
+        public static string FormatDirectChatMessageForSender(string username,string toUsername, string message, string formatPart)
         {
-            return DirectChatFormatForSender.Replace("%FROMUSER%", username).Replace("%TOUSER%", toUsername).Replace("%MESSAGE%", message);
+            return DirectChatFormatForSender.Replace("%FROMUSER%", username).Replace("%TOUSER%", toUsername).Replace("%MESSAGE%", message).Replace("%FORMATPART%", formatPart);
         }
         public static string FormatIdleWarningMessage()
         {

@@ -4820,12 +4820,12 @@ namespace HISP.Server
                             movementDirection = newDirection;
                             if (loggedInUser.Thirst <= 0)
                             {
-                                byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatThirst.ToUpper()), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatThirst.ToUpper(), Messages.StatThirstDizzy), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(chatMessage);
                             }
                             else if (loggedInUser.Hunger <= 0)
                             {
-                                byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatHunger.ToUpper()), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatHunger.ToUpper(), Messages.StatHungerStumble), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(chatMessage);
                             }
                             /*
@@ -5853,19 +5853,38 @@ namespace HISP.Server
             // Finally send chat message.
             string formattedMessage = Chat.FormatChatForOthers(sender.LoggedinUser, channel, message);
             string formattedMessageSender = Chat.FormatChatForSender(sender.LoggedinUser, channel, message, nameTo);
+            
+            string formattedMessageAutoReply = "";
+            string formattedMessageSenderAutoReply = "";
+
+            if (sender.LoggedinUser.AutoReplyText != "")
+            {
+                formattedMessageAutoReply = Chat.FormatChatForOthers(sender.LoggedinUser, channel, sender.LoggedinUser.AutoReplyText, true);
+                formattedMessageSenderAutoReply = Chat.FormatChatForSender(sender.LoggedinUser, channel, sender.LoggedinUser.AutoReplyText, nameTo, true);
+            }
+
             byte[] chatPacketOthers = PacketBuilder.CreateChat(formattedMessage, chatSide);
             byte[] chatPacketSender = PacketBuilder.CreateChat(formattedMessageSender, chatSide);
             byte[] playDmSound = PacketBuilder.CreatePlaysoundPacket(Chat.PrivateMessageSound);
+
             // Send to clients ...
             foreach (GameClient recipiant in recipiants)
             {
                 recipiant.SendPacket(chatPacketOthers);
+
+                if(formattedMessageAutoReply != "")
+                    recipiant.SendPacket(PacketBuilder.CreateChat(formattedMessageAutoReply, chatSide));
+
                 if (channel == Chat.ChatChannel.Dm)
                     recipiant.SendPacket(playDmSound);
             }
 
             // Send to sender
             sender.SendPacket(chatPacketSender);
+
+            if (formattedMessageSenderAutoReply != "")
+                sender.SendPacket(PacketBuilder.CreateChat(formattedMessageSenderAutoReply, chatSide));
+
         }
         public static void OnClickPacket(GameClient sender, byte[] packet)
         {
@@ -5926,9 +5945,19 @@ namespace HISP.Server
                         returnedMsg = Messages.FormatRanchClickMessage(Database.GetUsername(ranch.OwnerId), title);
                     }
                 }
-                if(GetUsersAt(x,y, false, true).Length > 0) // Player here?
+                User[] users = GetUsersAt(x, y, false, true);
+                if (users.Length > 0) // Player here?
                 {
-                    returnedMsg = Messages.FormatPlayerHereMessage(GetUsersAt(x, y, false, true)[0].Username);
+                    string usernameStr = "";
+
+                    for(int i = 0; i < users.Length; i++)
+                    {
+                        usernameStr += users[i].Username;
+                        if (i + 1 < users.Length)
+                            usernameStr += ", ";
+                    }
+
+                    returnedMsg = Messages.FormatPlayerHereMessage(usernameStr);
                 }
 
                 byte[] tileInfoPacket = PacketBuilder.CreateClickTileInfoPacket(returnedMsg);
