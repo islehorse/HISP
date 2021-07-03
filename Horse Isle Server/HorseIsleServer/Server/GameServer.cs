@@ -195,6 +195,9 @@ namespace HISP.Server
 
             foreach (GameClient client in ConnectedClients)
             {
+                if (client == null)
+                    continue;
+
                 if (client.LoggedIn)
                 {
                     if (!client.LoggedinUser.MetaPriority)
@@ -4805,7 +4808,7 @@ namespace HISP.Server
 
             if (loggedInUser.Thirst <= 0 || loggedInUser.Hunger <= 0 || loggedInUser.Tiredness <= 0)
             {
-                if (RandomNumberGenerator.Next(0, 10) == 7 || sender.LoggedinUser.Username.ToLower() == "dream")
+                if (RandomNumberGenerator.Next(0, 10) == 7)
                 {
                     byte[] possibleDirections = new byte[] { PacketBuilder.MOVE_UP, PacketBuilder.MOVE_DOWN, PacketBuilder.MOVE_RIGHT, PacketBuilder.MOVE_LEFT };
 
@@ -4825,12 +4828,15 @@ namespace HISP.Server
                                 byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatHunger.ToUpper()), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(chatMessage);
                             }
+                            /*
+                             * Doesnt appear to acturally exist.
+                             * 
                             else if (loggedInUser.Tiredness <= 0)
                             {
                                 byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatTired.ToUpper()), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(chatMessage);
                             }
-
+                            */
                         }
                     }
                 }
@@ -7215,6 +7221,8 @@ namespace HISP.Server
 
         public static void OnDisconnect(GameClient sender)
         {
+            connectedClients.Remove(sender);
+
             if (sender.LoggedIn)
             {
                 Database.SetPlayerLastLogin(Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()), sender.LoggedinUser.Id); // Set last login date
@@ -7262,7 +7270,6 @@ namespace HISP.Server
                         if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
                             client.SendPacket(playerRemovePacket);
             }
-            connectedClients.Remove(sender);
 
         }
 
