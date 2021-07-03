@@ -323,7 +323,7 @@ namespace HISP.Server
             // Call OnDisconnect
             GameServer.OnDisconnect(this);
             LoggedIn = false;
-            LoggedinUser = null;
+            // LoggedinUser = null;
             // Close Sockets
             ClientSocket.Close();
             ClientSocket.Dispose();
