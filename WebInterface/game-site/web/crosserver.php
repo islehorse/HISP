@@ -12,7 +12,38 @@ function GenHmacMessage(string $data, string $channel)
 	return $hmac;
 }
 
-function  getNoPlayersOnlineInServer($database)
+function getPlayerList($database)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$onlineUsers = mysqli_query($connect, "SELECT * FROM OnlineUsers");
+	
+	$users_on = [];
+		
+
+	while ($row = $onlineUsers->fetch_row()) {
+		$arr = [ ['id' => $row[0], 'admin' => ($row[1] == 'YES'), 'mod' => ($row[2] == 'YES'), 'subbed' => ($row[3] == 'YES'), 'new' => ($row[4] == 'YES')] ];
+		$users_on = array_merge($users_on, $arr);
+	}
+	
+	return $users_on;
+}
+
+function checkUserBuddy($database, $yourId, $friendsId)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT COUNT(1) FROM BuddyList WHERE (Id=? AND IdFriend=?) OR (Id=? AND IdFriend=?)");
+	$stmt->bind_param("iiii", $yourId, $friendsId, $friendsId, $yourId);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	return $result->fetch_row()[0];
+}
+
+
+function getNoPlayersOnlineInServer($database)
 {
 	include('config.php');
 	$dbname = $database;
@@ -21,7 +52,7 @@ function  getNoPlayersOnlineInServer($database)
 	return $onlineUsers->fetch_row()[0];
 }
 
-function  getNoSubbedPlayersOnlineInServer($database)
+function getNoSubbedPlayersOnlineInServer($database)
 {
 	include('config.php');
 	$dbname = $database;

@@ -145,7 +145,7 @@ function ajaxDone(target) {
 }
 
 function loadplayers() {
-  ajax('web/playersonline.php?id=588112','PLAYERS');
+  <?php echo("ajax('web/playersonline.php?id=".htmlspecialchars($_SESSION['PLAYER_ID'], ENT_QUOTES)."','PLAYERS');"); ?>
   window.setTimeout("loadplayers()", 30000);  //reload player list every millisecs
 }
 window.setTimeout("loadplayers()", 10); ///load player list first time quick
