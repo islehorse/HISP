@@ -1,6 +1,5 @@
 <?php
 session_start();
-include("common.php");
 include("config.php");
 include("header.php");
 if(!is_logged_in()){
