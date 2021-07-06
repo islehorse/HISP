@@ -8,8 +8,7 @@ if(session_status() !== PHP_SESSION_ACTIVE)
 if(!function_exists('is_logged_in'))
 	include('common.php');
 
-$host_names = explode(".", $host);
-$host = $host_names[count($host_names)-2] . "." . $host_names[count($host_names)-1];
+$host = $_SERVER['HTTP_HOST'];
 
 ?>
 <HEAD>

@@ -122,6 +122,20 @@ function getUserQuestPoints($database, $id)
 	
 }
 
+function getUserExistInExt($database, $id)
+{
+	include('config.php');
+	$dbname = $database;
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT COUNT(*) FROM UserExt WHERE Id=?");
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	
+	return intval($result->fetch_row()[0]) <= 0;
+	
+}
+
 function getUserTotalLogins($database, $id)
 {
 	include('config.php');
