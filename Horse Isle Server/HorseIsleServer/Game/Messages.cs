@@ -607,10 +607,9 @@ namespace HISP.Game
 
         public static string ProfileSavedMessage;
         public static string ProfileTooLongMessage;
+        public static string ProfileSaveBlockedFormat;
 
         public static string ProfileViolationFormat;
-        public static string ProfileViolationPersonalInfo;
-        public static string ProfileViolationProfanity;
         // Hay Pile
 
         public static string HasPitchforkMeta;
@@ -1103,6 +1102,8 @@ namespace HISP.Game
         public static string PlayerListIconFormat;
         public static string PlayerListIconInformation;
 
+
+
         // Meta
         public static string IsleFormat;
         public static string TownFormat;
@@ -1206,8 +1207,19 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
-
-
+        // Violations
+        public static string FormatProfileSavedBlocked(string reasons)
+        {
+            return ProfileViolationFormat.Replace("%REASON%", reasons);
+        }
+        public static string FormatRanchDesriptionBlocked(string reasons)
+        {
+            return RanchSavedDescrptionViolationsErrorFormat.Replace("%REASON%", reasons);
+        }
+        public static string FormatHorseProfileBlocked(string reasons)
+        {
+            return HorseProfileMessageProfileError.Replace("%REASON%", reasons);
+        }
 
         // Throwables
         public static string FormatModSplatterBallAwardedOther(string username)

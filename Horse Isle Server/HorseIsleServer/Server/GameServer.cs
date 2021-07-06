@@ -2448,11 +2448,28 @@ namespace HISP.Server
                                         break;
                                     }
 
+                                    object filterReason = Chat.FilterMessage(name);
+                                    if (filterReason != null)
+                                    {
+                                        byte[] msg = PacketBuilder.CreateChat(Messages.HorseNameViolationsError, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(msg);
+                                        return;
+                                    }
+
+                                    filterReason = Chat.FilterMessage(desc);
+                                    if (filterReason != null)
+                                    {
+                                        Chat.Reason reason = (Chat.Reason)filterReason;
+                                        byte[] msg = PacketBuilder.CreateChat(Messages.FormatHorseProfileBlocked(reason.Message), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(msg);
+                                        return;
+                                    }
+
                                     sender.LoggedinUser.MetaPriority = true;
                                     sender.LoggedinUser.LastViewedHorse.Name = dynamicInput[1];
                                     sender.LoggedinUser.LastViewedHorse.Description = dynamicInput[2];
-                                    byte[] horseNameSavedPacket = PacketBuilder.CreateChat(Messages.FormatHorseSavedProfileMessage(sender.LoggedinUser.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(horseNameSavedPacket);
+                                    byte[] horseProfileSavedPacket = PacketBuilder.CreateChat(Messages.FormatHorseSavedProfileMessage(sender.LoggedinUser.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(horseProfileSavedPacket);
                                     UpdateHorseMenu(sender, sender.LoggedinUser.LastViewedHorse);
                                 }
                                 break;
@@ -2546,6 +2563,25 @@ namespace HISP.Server
                                         sender.SendPacket(tooLongPacket);
                                         break;
                                     }
+
+                                    object filterReason = Chat.FilterMessage(title);
+                                    if (filterReason != null)
+                                    {
+                                        byte[] msg = PacketBuilder.CreateChat(Messages.RanchSavedTitleViolationsError, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(msg);
+                                        return;
+                                    }
+
+                                    filterReason = Chat.FilterMessage(desc);
+                                    if (filterReason != null)
+                                    {
+                                        Chat.Reason reason = (Chat.Reason)filterReason;
+                                        byte[] msg = PacketBuilder.CreateChat(Messages.FormatRanchDesriptionBlocked(reason.Message), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(msg);
+                                        return;
+                                    }
+
+
                                     sender.LoggedinUser.OwnedRanch.Title = title;
                                     sender.LoggedinUser.OwnedRanch.Description = desc;
                                 }
@@ -4350,6 +4386,15 @@ namespace HISP.Server
                 {
                     byte[] notSaved = PacketBuilder.CreateChat(Messages.ProfileTooLongMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(notSaved);
+                    return;
+                }
+
+                object filterReason = Chat.FilterMessage(profilePage);
+                if(filterReason != null)
+                {
+                    Chat.Reason reason = (Chat.Reason)filterReason;
+                    byte[] msg = PacketBuilder.CreateChat(Messages.FormatProfileSavedBlocked(reason.Message), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    sender.SendPacket(msg);
                     return;
                 }
 
