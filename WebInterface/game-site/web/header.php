@@ -8,8 +8,8 @@ if(session_status() !== PHP_SESSION_ACTIVE)
 if(!function_exists('is_logged_in'))
 	include('common.php');
 
-$info = parse_url($_SERVER['HTTP_HOST']);
-$host = $info['host'];
+$host_names = explode(".", $host);
+$host = $host_names[count($host_names)-2] . "." . $host_names[count($host_names)-1];
 
 ?>
 <HEAD>
