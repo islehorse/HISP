@@ -71,16 +71,31 @@ if(!is_logged_in())
 
 
 // Get account data
-$money = getUserMoney($dbname, $_SESSION['PLAYER_ID']);
-$bankMoney = getUserBankMoney($dbname, $_SESSION['PLAYER_ID']);
-$loginDate = getUserLoginDate($dbname, $_SESSION['PLAYER_ID']);
-$questPoints = getUserQuestPoints($dbname, $_SESSION['PLAYER_ID']);
-$totalLogins = getUserTotalLogins($dbname, $_SESSION['PLAYER_ID']);
+$newUser = getUserExistInExt($dbname, $_SESSION['PLAYER_ID']);
 
-$subbed = getUserSubbed($dbname, $_SESSION['PLAYER_ID']);
-$subTime = getUserSubTimeRemaining($dbname, $_SESSION['PLAYER_ID']);
-$playtime = getUserPlaytime($dbname, $_SESSION['PLAYER_ID']);
+if(!$newUser){
 
+	$money = getUserMoney($dbname, $_SESSION['PLAYER_ID']);
+	$bankMoney = getUserBankMoney($dbname, $_SESSION['PLAYER_ID']);
+	$loginDate = getUserLoginDate($dbname, $_SESSION['PLAYER_ID']);
+	$questPoints = getUserQuestPoints($dbname, $_SESSION['PLAYER_ID']);
+	$totalLogins = getUserTotalLogins($dbname, $_SESSION['PLAYER_ID']);
+
+	$subbed = getUserSubbed($dbname, $_SESSION['PLAYER_ID']);
+	$subTime = getUserSubTimeRemaining($dbname, $_SESSION['PLAYER_ID']);
+	$playtime = getUserPlaytime($dbname, $_SESSION['PLAYER_ID']);
+}
+else
+{
+	$money = 0;
+	$bankMoney = 0;
+	$loginDate = time();
+	$questPoints = 0;
+	$totalLogins = 0;
+	$subbed = false;
+	$subTime = 0;
+	$playtime = 0;
+}
 if($all_users_subbed)
 	$subbed = true;
 
@@ -183,8 +198,13 @@ h+=60;//h += 96;
 	$difference = $current_time - $loginDate;
 	$lastOn = $difference/3600;
     
-	
-	echo('It has been: '.number_format((float)$lastOn, 2, '.', '').' hours since you were last online. You have logged in '.$totalLoginsStr.' times.<BR>You have <B><FONT COLOR=005500>$'.$moneyStr.'</FONT></B> in Horse Isle money on hand and <B><FONT COLOR=005500>$'.$bankmoneyStr.'</FONT></B> in the bank.<BR>You have earned <B>'.(string)$questPoints.'</B> of <B>63005</B> total quest points  (<B>'.(string)floor(($questPoints / 63005) * 100.0).'%</B> Complete)<BR>');
+	if($newUser){
+		echo('<BR>You have a new account and have not yet logged in!<BR>');
+	}
+	else{
+		echo('It has been: '.number_format((float)$lastOn, 2, '.', '').' hours since you were last online. You have logged in '.$totalLoginsStr.' times.<BR>');
+	}
+	echo('You have <B><FONT COLOR=005500>$'.$moneyStr.'</FONT></B> in Horse Isle money on hand and <B><FONT COLOR=005500>$'.$bankmoneyStr.'</FONT></B> in the bank.<BR>You have earned <B>'.(string)$questPoints.'</B> of <B>63005</B> total quest points  (<B>'.(string)floor(($questPoints / 63005) * 100.0).'%</B> Complete)<BR>');
 	if(!$subbed)
 	{
 		echo('You have <B>'.(string)$playtime.'</B> minutes of playtime available. As a non-subscriber you get 1 additional minute every 8 minutes. <I>(subject to change based on load)</I> (<A HREF=/web/whylimited.php>why limited?</A>) <BR>');

@@ -5,8 +5,8 @@ if(session_status() !== PHP_SESSION_ACTIVE)
 if(!function_exists('is_logged_in'))
 	include('../common.php');
 
-$info = parse_url($_SERVER['HTTP_HOST']);
-$host = $info['host'];
+
+$host = $_SERVER['HTTP_HOST'];
 
 ?>
 <HEAD>
