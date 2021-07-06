@@ -1384,9 +1384,6 @@ namespace HISP.Server
             Messages.ProfileTooLongMessage = gameData.messages.profile.too_long;
             Messages.ProfileViolationFormat = gameData.messages.profile.blocked;
 
-            Messages.ProfileViolationProfanity = gameData.messages.profile.profanity;
-            Messages.ProfileViolationPersonalInfo = gameData.messages.profile.personal_info;
-
             // Announcements
 
             Messages.WelcomeFormat = gameData.messages.welcome_format;
@@ -1963,6 +1960,7 @@ namespace HISP.Server
             Messages.PlayerListAllHeader = gameData.messages.meta.player_list.all_players_header;
             Messages.PlayerListIconFormat = gameData.messages.meta.player_list.icon_format;
             Messages.PlayerListIconInformation = gameData.messages.meta.player_list.icon_info;
+
             // Consume
 
             Messages.ConsumeItemFormat = gameData.messages.consume.consumed_item_format;
