@@ -5,6 +5,7 @@ include("header.php");
 ?>
 
 <?php
+	$nope = 0;
 	if(!is_logged_in())
 		goto ex;
 	if(isset($_POST['SUBJECT'], $_POST['TEXT'], $_POST['TEXT'], $_POST['FORUM']))
@@ -12,9 +13,19 @@ include("header.php");
 		$subject = $_POST['SUBJECT'];
 		$text = $_POST['TEXT'];
 		$forum = strtoupper($_POST['FORUM']);
+
+		if($text == "" && !isset($_POST['VIEWID'])){
+			$nope = 1; 
+			goto ex;
+		}
+		if($text == "")
+			goto ex;
+		if($subject == "")
+			$subject = "No Subject";
 		
 		if(!($forum === "SUPPORT" || $forum === "BUGS" || $forum === "GENERAL" || $forum === "HORSES" || $forum === "GAME" || $forum === "MOD"))
 			goto ex;
+
 		$subject = substr($subject, 0, 100);
 		$text = substr($text, 0, 65565);
 		
@@ -27,8 +38,8 @@ include("header.php");
 			$threadId = $_POST['VIEWID'];
 			if(count_replies($threadId) <= 0)
 			{
-				echo('<HR>Forum thread not found!?');
-				exit();
+				$nope = 1; 
+				goto ex;
 			}
 			
 			create_fourm_reply($threadId, $_SESSION['USERNAME'], $text, $forum, $_SESSION['ADMIN']);
@@ -49,6 +60,13 @@ if(!is_logged_in()){
 }
 ?>
 <TABLE WIDTH=100%><TR><TD class=forumlist><A HREF="?FORUM=SUPPORT">SUPPORT</A><BR>(<?php echo(count_topics("SUPPORT")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=BUGS">BUGS</A><BR>(<?php echo(count_topics("BUGS")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=GENERAL">GENERAL</A><BR>(<?php echo(count_topics("GENERAL")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=HORSES">HORSES</A><BR>(<?php echo(count_topics("HORSES")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=GAME">GAME</A><BR>(<?php echo(count_topics("GAME")); ?> topics)</TD></TABLE><?php 
+if($nope)
+{
+	nope:
+	echo('<HR>Forum thread not found!?');
+	exit();
+}
+
 if(isset($_GET['FORUM']) && isset($_GET['VIEWID'])){
 	$forum = strtoupper($_GET['FORUM']);
 	$threadId = $_GET['VIEWID'];
@@ -57,11 +75,8 @@ if(isset($_GET['FORUM']) && isset($_GET['VIEWID'])){
 		echo('Unknown Forum');
 		exit();
 	}	
-	if(count_replies($threadId) <= 0)
-	{
-		echo('<HR>Forum thread not found!?');
-		exit();
-	}
+	if(count_replies($threadId) <= 0 || $nope)
+		goto nope;
 	
 	$thread = get_fourm_thread($threadId);
 	echo('<HR><B>VIEWING '.htmlspecialchars($forum).' FORUM THREAD: <FONT SIZE=+1>'.htmlspecialchars($thread['title']).'</FONT></B><BR><TABLE WIDTH=100%>');
@@ -103,10 +118,13 @@ if(isset($_GET['FORUM']) && !isset($_GET['VIEWID'])){
 		$minsAgo = 0;
 		$current_time = time();
 		$difference = $current_time - $createTime;
+		$secsAgo = $difference;
 		$minsAgo = $difference/60;
 		$daysAgo = $difference/86400;
 		
-		if($minsAgo <= 1440)
+		if($secsAgo <= 60)
+			echo('<FONT COLOR=880000><B>'.number_format((float)$minsAgo, 0, '.', '').' sec ago</B></FONT>');
+		else if($minsAgo <= 1440)
 			echo('<FONT COLOR=880000><B>'.number_format((float)$minsAgo, 0, '.', '').' min ago</B></FONT>');
 		else
 			echo(number_format((float)$daysAgo, 0, '.', '').' days ago');

@@ -210,7 +210,7 @@ function get_fourm_threads($fourm)
 {
 	include('config.php');
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
-	$stmt = $connect->prepare("SELECT * FROM FourmThread WHERE Fourm=?"); 
+	$stmt = $connect->prepare("SELECT * FROM FourmThread WHERE Fourm=? ORDER BY CreationTime DESC"); 
 	$stmt->bind_param("s", $fourm);
 	$stmt->execute();
 	$result = $stmt->get_result();
