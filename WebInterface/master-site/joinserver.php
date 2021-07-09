@@ -25,6 +25,7 @@ if(isset($_GET['SERVER']))
 					$redirectUrl .= '/';
 				
 				$redirectUrl .= 'account.php?SLID='.(string)$playerId.'&C='.base64_encode(hex2bin($hmac));
+				set_LastOn($playerId, $server_id);
 				
 				header("Location: ".$redirectUrl);
 				exit();

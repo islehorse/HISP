@@ -317,6 +317,19 @@ function getNoPlayersOnlineGlobal()
 	return $playersOn;
 }
 
+function userExistAny($playerId)
+{
+	include('servers.php');
+	for($i = 0; $i < count($server_list); $i++)
+	{
+		if(userid_exists($server_list[$i]['database'], $playerId)){
+			return true;
+		}
+	}
+	return false;
+}
+
+
 function getNoSubbedPlayersOnlineGlobal()
 {
 	include('servers.php');

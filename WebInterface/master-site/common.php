@@ -145,11 +145,66 @@ function check_password(int $userId, string $password)
 		return false;
 }
 
+function count_LastOn(int $userId)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT COUNT(*) FROM LastOn WHERE Id=?");
+	$stmt->bind_param("i", $userId);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$v = $result->fetch_row();	
+	return intval($v[0]);
+}
+
+
+function get_LastOn(int $userId)
+{
+	if(count_LastOn($userId) <= 0){
+		return "NONE";
+	}
+
+
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT ServerId FROM LastOn WHERE Id=?");
+	$stmt->bind_param("i", $userId);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$v = $result->fetch_row();
+	
+    
+	return $v[0];
+}
+
+function set_LastOn(int $userId, string $lastOn)
+{
+	include('config.php');
+	
+	if(get_LastOn($userId) === "NONE")
+	{
+		$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+		$stmt = $connect->prepare("INSERT INTO LastOn VALUES(?, ?)");
+		$stmt->bind_param("is", $userId, $lastOn);
+		$stmt->execute();
+	}
+	else
+	{
+		$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+		$stmt = $connect->prepare("UPDATE LastOn SET ServerId=? WHERE Id=?");
+		$stmt->bind_param("si", $lastOn, $userId);
+		$stmt->execute();
+	}
+}
+
+
+
 function populate_db()
 {
 	include('config.php');
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))");
+	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS LastOn(Id INT, ServerId TEXT(1028))");
 
 }
 

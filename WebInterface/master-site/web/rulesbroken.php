@@ -1,3 +1,4 @@
+
 <HEAD>
 <TITLE>HORSE ISLE - Online Multiplayer Horse Game</TITLE>
 <META NAME="keywords" CONTENT="Horse Game Online MMORPG Multiplayer Horses RPG Girls Girly Isle World Island Virtual Horseisle Sim Virtual">
@@ -96,10 +97,7 @@ color: #440000;
 <TD WIDTH=100% BACKGROUND=/web/hoilgui4.gif align=right>
 <B>
 
-<TABLE CELLPADDING=0 CELLSPACING=2 BORDER=0><FORM METHOD=POST ACTION=/account.php>
-<TR><TD><B>USER:</B></TD><TD><INPUT TYPE=TEXT SIZE=14 NAME=USER></TD></TR>
-<TR><TD><B>PASS:</B></TD><TD><INPUT TYPE=PASSWORD SIZE=14 NAME=PASS></TD></TR>
-<TR><TD></TD><TD><INPUT TYPE=SUBMIT VALUE=LOGIN> (<A HREF=/web/forgotpass.php>Forgot?</A>)</TD></TR></FORM></TABLE>
+<TABLE BORDER=0 CELLPADDING=0 CELLSPACING=10><TR><TD><B>Logged in as: Thornbush</B><BR><BR><A HREF=/?LOGOUT=1><img src=/web/but-logout.gif border=0></A><BR><A HREF=/><img src=/web/but-mainpage.gif border=0></A></TD><TD><BR><A HREF=/account.php><img src=/web/but-serverlist.gif border=0></A><BR><A HREF=/web/news.php><img src=/web/but-news.gif border=0></A><BR><A HREF=/web/forums.php><img src=/web/but-forums.gif border=0></A><BR><A HREF=/web/helpcenter.php><img src=/web/but-helpcenter.gif border=0></A></TD></TR></TABLE>
 
 </TD>
 <TD WIDTH=29><IMG SRC=/web/hoilgui5.gif></TD></TR>
@@ -115,7 +113,7 @@ We will not dispute, nor provide any more details about these Violations.<BR>
 An account needs at least 10 points prior to being "Examined"  to see if it requires removal or other steps.<BR>
 So do not be concerned if you have 1 or 2 points against you.  It has NO negative effect on your account.<BR>
 Violations "Time Out" After 2 months and are removed from your record.  The date shown is when we reviewed the violations, so may be a day or 2 later than the actual violation.<BR>
-<BR><CENTER>Total Chat Violations: <BR><TABLE BORDER=1 CELLPADDING=4 CELLSPACING=0><TR><TD class=forumlist>Severity</TD><TD class=forumlist>Description of Rule Broken</TD><TD class=forumlist>Date</TD></TR></TAble></TD></TR></TABLE><TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100%>
+<BR><CENTER>Total Chat Violations: <BR><TABLE BORDER=1 CELLPADDING=4 CELLSPACING=0><TR><TD class=forumlist>Severity</TD><TD class=forumlist>Description of Rule Broken</TD><TD class=forumlist>Date</TD></TR><TR><TD><CENTER>4points</CENTER></TD><TD>Chat: No Swearing</TD><TD>Jul 02</TD></TR><TR><TD><CENTER>4points</CENTER></TD><TD>No spamming includes with autoreply</TD><TD>Jul 03</TD></TR></TAble></TD></TR></TABLE><TABLE BORDER=0 CELLPADDING=0 CELLSPACING=0 WIDTH=100%>
 <TR>
 <TD><IMG SRC=/web/hoilgui10.gif></TD>
 <TD WIDTH=100% BACKGROUND=/web/hoilgui11.gif></TD>
@@ -129,7 +127,7 @@ Violations "Time Out" After 2 months and are removed from your record.  The date
 [ <A HREF=/web/expectedbehavior.php>Expected Behavior</A> ]
 [ <A HREF=/web/contactus.php>Contact Us</A> ] 
 [ <A HREF=/web/credits.php>Credits</A> ]<BR>
-<FONT FACE=Verdana,Arial SIZE=-2>Copyright &copy; 2020 Horse Isle</FONT>
+<FONT FACE=Verdana,Arial SIZE=-2>Copyright &copy; 2021 Horse Isle</FONT>
 
 <!-- Google Analytics -->
 <script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
