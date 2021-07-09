@@ -28,6 +28,13 @@ include("header.php");
 Forums for discussing in game topics with other players.  Please use the Contact Us form at the bottom to directly communicate with Horse Isle staff.
 <BR>The SUPPORT and BUGS forums have threads removed often to keep them clean and recent. Don't be offended when removed.
 <!--<BR><B>Please respect the fact that these forums were not designed for RPG'ing and we do not have the time or ability to properly manage the excessive posting that it entails. We are sorry to those that were not abusing the rules,  but too many others were.  As a result.  NO RPG posting in these forums.  Period.   Thanks for understanding.</B>-->
+<?php
+if(!is_logged_in()){
+	echo('<BR><BR><B>Please Login to use these forums</B><BR>');
+	include("footer.php");
+	exit();
+}
+?>
 <TABLE WIDTH=100%><TR><TD class=forumlist><A HREF="?FORUM=SUPPORT">SUPPORT</A><BR>(<?php echo(count_topics("SUPPORT")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=BUGS">BUGS</A><BR>(<?php echo(count_topics("BUGS")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=GENERAL">GENERAL</A><BR>(<?php echo(count_topics("GENERAL")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=HORSES">HORSES</A><BR>(<?php echo(count_topics("HORSES")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=GAME">GAME</A><BR>(<?php echo(count_topics("GAME")); ?> topics)</TD></TABLE><?php 
 if(isset($_GET['FORUM'])){
 	$forum = strtoupper($_GET['FORUM']);
