@@ -45,7 +45,8 @@ if(!is_logged_in())
 
 if(isset($_GET['CONNECT']))
 {
-	$server = getServerById($_GET['CONNECT']);
+	$server_id = $_GET['CONNECT'];
+	$server = getServerById($server_id);
 	
 	if($server !== null)
 	{
@@ -58,18 +59,36 @@ if(isset($_GET['CONNECT']))
 			$redirectUrl .= '/';
 		
 		$redirectUrl .= 'account.php?SLID='.(string)$playerId.'&C='.base64_url_encode(hex2bin($hmac));
-		
+		set_LastOn($playerId, $server_id);
 		header("Location: ".$redirectUrl);
 		exit();
 	}
 }
 include("web/header.php");
+
+$player_id = $_SESSION['PLAYER_ID'];
+$lastOnServer = get_LastOn($player_id);
+$moveToFront = getServerById($lastOnServer);
+
+if($moveToFront !== null){
+	for($i = 0; $i < count($server_list); $i++){
+		if($server_list[$i]['id'] == $lastOnServer)
+			unset($server_list[$i]);
+	}
+	array_unshift($server_list, $moveToFront);
+}
+
 ?>
-<?php #<TR><TD><IMG SRC=/web/servericons/pinto.gif></TD><TD><B><FONT COLOR=GREEN>You were on this server last time:</FONT><BR>SERVER: PINTO.HORSEISLE.COM</B><BR><BR></TD><TD><B>Not Subscribed</B><BR>Quest Points: 75pts<BR>Times Online: 3<BR>Last On: 0.84 days ago<BR></TD><TD><B>17<BR>players<BR>online<BR>now</B></TD><TD><B><A HREF=?CONNECT=pinto>[LOG IN]</A></B></TD></TR><TR><TD COLSPAN=5><HR>?>
-<?php #<TABLE WIDTH=80% BGCOLOR=FFAABB BORDER=0 CELLPADDING=4 CELLSPACING=0><TR><TD class=newslist><B>[June 23, 2020 Latest Horse Isle News] Horse Isle 1 Compromise:</B><BR>Unfortunately, some troublemakers made a mess of HI1.<BR>We have reverted to a backup from 4am PST and taken some precautions. So, anything you "did" this morning was reverted.<br>We have also given all subs +12hrs to cover the down time.<br><br>Because passwords for accounts were likely compromised, we setup a system to verify and unlock for players' protection. When you try to login you will be prompted to reset your password.  We can automatically unlock most players' accounts, but some will require manual support via email.  Just follow the directions and please be patient with us.<br><br>Sorry about the trouble.  HI1 was never designed to survive so long into this new mean digital world. ;)<br><br>P.S.  The XSS alert was a simple javascript alert, just meaningless and harmless.<br><br>Thanks!<BR></TD></TR></TABLE> ?><BR><B>We have a <A HREF=//master.horseisle.com/beginnerguide/>Beginner Guide</A> online to help new players learn how to play.</B><BR><BR><B><FONT SIZE=+1>Horse Isle Server List</FONT></B><BR>Each server is completely independent and has identical game content. Money/horses/subscriptions are all tied to a particular server. 
-Normally you will only play on one server.  <B>Playing on any server uses up playtime on all servers</B>, so you do not gain any free time. Reasons for playing on more than one include joining a friend, or in case your normal server is down. 
-Multiple servers are required since there is a max capacity of around 150 players online per server.<BR><B>Please note, a profile on any individual server will be permanently deleted after 183 days (6 months) of not logging into the game on that specific server or your subscription expiring, whichever is later.</b><TABLE CELLPADDING=5 CELLSPACING=0 BORDER=0 BGCOLOR=FFFFFF><TR><TD COLSPAN=5></TD></TR><TR><TD COLSPAN=2><B>GAME SERVERS</B> (all identical please only join 1 or 2)</TD><TD><B>PROFILE</B> (not current)</TD><TD><B>ONLINE</B></TD><TD><B>LOGIN</B></TD></TR></TD></TR><TR><TD COLSPAN=5><HR></TD></TR>
+<?php #<TABLE WIDTH=80% BGCOLOR=FFAABB BORDER=0 CELLPADDING=4 CELLSPACING=0><TR><TD class=newslist><B>[June 23, 2020 Latest Horse Isle News] Horse Isle 1 Compromise:</B><BR>Unfortunately, some troublemakers made a mess of HI1.<BR>We have reverted to a backup from 4am PST and taken some precautions. So, anything you "did" this morning was reverted.<br>We have also given all subs +12hrs to cover the down time.<br><br>Because passwords for accounts were likely compromised, we setup a system to verify and unlock for players' protection. When you try to login you will be prompted to reset your password.  We can automatically unlock most players' accounts, but some will require manual support via email.  Just follow the directions and please be patient with us.<br><br>Sorry about the trouble.  HI1 was never designed to survive so long into this new mean digital world. ;)<br><br>P.S.  The XSS alert was a simple javascript alert, just meaningless and harmless.<br><br>Thanks!<BR></TD></TR></TABLE> ?>
 <?php
+if(!userExistAny($player_id))
+	echo('<BR><B>We have a <A HREF=//'.$_SERVER['HTTP_HOST'].'/beginnerguide/>Beginner Guide</A> online to help new players learn how to play.</B><BR>');
+?><BR><B><FONT SIZE=+1>Horse Isle Server List</FONT></B><BR>Each server is completely independent and has identical game content. Money/horses/subscriptions are all tied to a particular server. 
+Normally you will only play on one server.  <B>Playing on any server uses up playtime on all servers</B>, so you do not gain any free time. Reasons for playing on more than one include joining a friend, or in case your normal server is down. 
+Multiple servers are required since there is a max capacity of around 150 players online per server.<BR><B>Please note, a profile on any individual server will be permanently deleted after 183 days (6 months) of not logging into the game on that specific server or your subscription expiring, whichever is later.</b><TABLE CELLPADDING=5 CELLSPACING=0 BORDER=0 BGCOLOR=FFFFFF><TR><TD COLSPAN=5><?php # <BR><FONT COLOR=550000><B>You have 8 rule violation points against your account. [ <A HREF=/web/rulesbroken.php>REVIEW VIOLATIONS</A> ]</B></FONT><BR> ?></TD></TR><TR><TD COLSPAN=2><B>GAME SERVERS</B> (all identical please only join 1 or 2)</TD><TD><B>PROFILE</B> (not current)</TD><TD><B>ONLINE</B></TD><TD><B>LOGIN</B></TD></TR></TD></TR><TR><TD COLSPAN=5><HR></TD></TR>
+<?php
+
+
 for($i = 0; $i < count($server_list); $i++)
 {
 	$server = $server_list[$i];
@@ -77,15 +96,63 @@ for($i = 0; $i < count($server_list); $i++)
 	$url = $server['site'];
 	$desc = $server['desc'];
 	$id = $server['id'];
+	$database = $server['database'];
 	
 	$domain = parse_url($url, PHP_URL_HOST);
 	$join = '';
-	if(!userid_exists($server['database'], $_SESSION['PLAYER_ID']))
+	$num_on = getNoSubbedPlayersOnlineInServer($database);
+	
+	$pExist = userid_exists($database, $player_id);
+	if(!$pExist)
 		$join = '<A HREF=joinserver.php?SERVER='.$id.'>[JOIN]</A>';
 	else
 		$join = '<A HREF=?CONNECT='.$id.'>[LOG IN]</A>';
 	
-	echo('<TR><TD><IMG SRC=/web/servericons/'.$icon.'></TD><TD><B>SERVER: '.strtoupper($domain).'</B><BR>'.$desc.'</BR></TD><TD>no existing profile</TD><TD><B>0<BR>players<BR>online<BR>now</B></TD><TD><B>'.$join.'</B></TD></TR><TR><TD COLSPAN=5><HR></TD></TR>');
+	
+	echo('<TR><TD><IMG SRC=/web/servericons/'.$icon.'></TD><TD><B>');
+	if($lastOnServer === $id)
+		echo('<FONT COLOR=GREEN>You were on this server last time:</FONT><BR>');
+	echo('SERVER: '.strtoupper($domain).'</B><BR>'.$desc.'</BR></TD>');
+	if(!$pExist)
+	{
+		echo('<TD>no existing profile</TD>');
+	}
+	else
+	{
+		$newUser = getUserExistInExt($database, $player_id);
+		
+		if(!$newUser){
+			$loginDate = getUserLoginDate($database, $player_id);
+			$questPoints = getUserQuestPoints($database, $player_id);
+			$totalLogins = getUserTotalLogins($database, $player_id);
+			$subbed = getUserSubbed($database, $player_id);
+		}
+		else
+		{
+			$loginDate = time();
+			$questPoints = 0;
+			$totalLogins = 0;
+			$subbed = false;
+		}
+		
+		echo('<TD>');
+		if($subbed)
+			echo('<FONT COLOR=GREEN><B>ACTIVE SUBSCRIPTION</B></FONT>');
+		else
+			echo('<B>Not Subscribed</B>');
+		
+		$lastOn = 0.00;
+		$current_time = time();
+		$difference = $current_time - $loginDate;
+		$lastOn = $difference/86400;
+
+
+		echo('<BR>Quest Points: '.$questPoints.'.pts<BR>');
+		echo('Times Online: '.$totalLogins.'<BR>');
+		echo('Last On: '.number_format((float)$lastOn, 2, '.', '').' days ago<BR>');
+		echo('</TD>');
+	}
+	echo('<TD><B>'.$num_on.'<BR>players<BR>online<BR>now</B></TD><TD><B>'.$join.'</B></TD></TR><TR><TD COLSPAN=5><HR></TD></TR>');
 }
 
 ?>
