@@ -58,6 +58,136 @@ function get_username(string $id)
 }
 
 
+function count_topics(string $fourm)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT COUNT(*) FROM FourmThread WHERE UPPER(Fourm)=?"); 
+	$stmt->bind_param("s", strtoupper($fourm));
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$count = intval($result->fetch_row()[0]);
+	return $count;
+}
+
+function count_replies(string $thread)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT COUNT(*) FROM FourmReply WHERE ThreadId=?"); 
+	$stmt->bind_param("i", $thread);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$count = intval($result->fetch_row()[0]);
+	return $count;
+}
+
+function get_last_reply_author(string $thread)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT * FROM FourmReply WHERE ThreadId=? ORDER BY CreationTime DESC LIMIT 1"); 
+	$stmt->bind_param("i", $thread);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$author = $result->fetch_row()[2];
+	return $author;
+}
+
+function get_last_reply_time(string $thread)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT * FROM FourmReply WHERE ThreadId=? ORDER BY CreationTime DESC LIMIT 1"); 
+	$stmt->bind_param("i", $thread);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$author = $result->fetch_row()[5];
+	return $author;
+}
+
+function get_first_reply_author(string $thread)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT * FROM FourmReply WHERE ThreadId=? ORDER BY CreationTime ASC LIMIT 1"); 
+	$stmt->bind_param("i", $thread);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$author = $result->fetch_row()[2];
+	return $author;
+}
+
+function get_first_reply_time(string $thread)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT * FROM FourmReply WHERE ThreadId=? ORDER BY CreationTime ASC LIMIT 1"); 
+	$stmt->bind_param("i", $thread);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$author = $result->fetch_row()[5];
+	return $author;
+}
+
+function create_fourm_thread(string $title, string $fourm)
+{
+	include('config.php');
+	
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$result = mysqli_query($connect, "SELECT MAX(ThreadId) FROM FourmThread");
+	
+	$thread_id = $result->fetch_row()[0] + 1;
+	if($thread_id == NULL)
+		$thread_id = 0;
+	$curTime = time();
+
+	$stmt = $connect->prepare("INSERT INTO FourmThread VALUES(?,?,?,?,'NO')"); 
+	$stmt->bind_param("issi", $thread_id, $title, $fourm, $curTime);
+	$stmt->execute();
+	
+	return $thread_id;
+}
+
+function create_fourm_reply(int $thread_id, string $username, string $contents, string $fourm)
+{
+	include('config.php');
+	
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$result = mysqli_query($connect, "SELECT MAX(ReplyId) FROM FourmReply");
+	
+	$reply_id = $result->fetch_row()[0] + 1;
+	if($reply_id == NULL)
+		$reply_id = 0;
+	$curTime = time();
+
+	$stmt = $connect->prepare("INSERT INTO FourmReply VALUES(?,?,?,?,?,?)"); 
+	$stmt->bind_param("iisssi", $reply_id, $thread_id, $username, $contents, $fourm, $curTime);
+	$stmt->execute();
+	
+	return $reply_id;
+}
+
+
+function get_fourm_threads($fourm)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT * FROM FourmThread WHERE Fourm=?"); 
+	$stmt->bind_param("s", $fourm);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$threads = [];
+		
+
+	while ($row = $result->fetch_row()) {
+		$arr = [ ['id' => $row[0], 'title' => $row[1], 'fourm' => $row[2], 'creation_time' => $row[3], 'locked' => ($row[4] === "YES")] ];
+		$threads = array_merge($threads, $arr);
+	}
+	
+	return $threads;
+}
+
 function get_userid(string $username)
 {
 	include('config.php');
@@ -205,7 +335,8 @@ function populate_db()
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))");
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS LastOn(Id INT, ServerId TEXT(1028))");
-
+	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS FourmThread(ThreadId INT, Title TEXT(100), Fourm TEXT(10), CreationTime INT, Locked TEXT(3))");
+	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS FourmReply(ReplyId INT, ThreadId INT, CreatedBy TEXT(1028), Contents TEXT(65565), Fourm TEXT(10), CreationTime INT)");
 }
 
 function startsWith( $haystack, $needle ) {

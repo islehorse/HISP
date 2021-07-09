@@ -251,7 +251,7 @@ function isUserOnline($database, $id)
 	return $count>0;	
 }
 
-function  getNoModPlayersOnlineInServer($database)
+function getNoModPlayersOnlineInServer($database)
 {
 	include('config.php');
 	$dbname = $database;

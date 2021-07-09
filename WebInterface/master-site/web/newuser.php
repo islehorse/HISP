@@ -111,7 +111,6 @@ if(isset( $_POST['user'],$_POST['pass1'],$_POST['pass2'],$_POST['sex'],$_POST['e
 	populate_db();
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
 	$result = mysqli_query($connect, "SELECT MAX(Id) FROM Users");
-
 	$user_id = $result->fetch_row()[0] + 1;
 	if($user_id == NULL)
 		$user_id = 0;
