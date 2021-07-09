@@ -62,15 +62,15 @@ function count_topics(string $fourm)
 {
 	include('config.php');
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
-	$stmt = $connect->prepare("SELECT COUNT(*) FROM FourmThread WHERE UPPER(Fourm)=?"); 
-	$stmt->bind_param("s", strtoupper($fourm));
+	$stmt = $connect->prepare("SELECT COUNT(*) FROM FourmThread WHERE Fourm=?"); 
+	$stmt->bind_param("s", $fourm);
 	$stmt->execute();
 	$result = $stmt->get_result();
 	$count = intval($result->fetch_row()[0]);
 	return $count;
 }
 
-function count_replies(string $thread)
+function count_replies(int $thread)
 {
 	include('config.php');
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
@@ -149,7 +149,7 @@ function create_fourm_thread(string $title, string $fourm)
 	return $thread_id;
 }
 
-function create_fourm_reply(int $thread_id, string $username, string $contents, string $fourm)
+function create_fourm_reply(int $thread_id, string $username, string $contents, string $fourm, bool $madeByAdmin)
 {
 	include('config.php');
 	
@@ -161,11 +161,48 @@ function create_fourm_reply(int $thread_id, string $username, string $contents, 
 		$reply_id = 0;
 	$curTime = time();
 
-	$stmt = $connect->prepare("INSERT INTO FourmReply VALUES(?,?,?,?,?,?)"); 
-	$stmt->bind_param("iisssi", $reply_id, $thread_id, $username, $contents, $fourm, $curTime);
+	if($madeByAdmin)
+		$admin = "YES";
+	else
+		$admin = "NO";
+
+	$stmt = $connect->prepare("INSERT INTO FourmReply VALUES(?,?,?,?,?,?,?)"); 
+	$stmt->bind_param("iisssis", $reply_id, $thread_id, $username, $contents, $fourm, $curTime, $admin);
 	$stmt->execute();
 	
 	return $reply_id;
+}
+
+
+function get_fourm_thread($threadId)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT * FROM FourmThread WHERE ThreadId=?"); 
+	$stmt->bind_param("i", $threadId);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$row = $result->fetch_row();
+	return ['id' => $row[0], 'title' => $row[1], 'fourm' => $row[2], 'creation_time' => $row[3], 'locked' => ($row[4] === "YES")];;
+}
+
+function get_fourm_replies($threadId)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT * FROM FourmReply WHERE ThreadId=?"); 
+	$stmt->bind_param("i", $threadId);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$replies = [];
+		
+
+	while ($row = $result->fetch_row()) {
+		$arr = [ ['reply_id' => $row[0], 'thread_id' => $row[1], 'author' => $row[2], 'contents' => $row[3], 'fourm' => $row[4], 'creation_time' => $row[5], 'admin' => ($row[6] === "YES")] ];
+		$replies = array_merge($replies, $arr);
+	}
+	
+	return $replies;
 }
 
 
@@ -336,7 +373,7 @@ function populate_db()
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))");
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS LastOn(Id INT, ServerId TEXT(1028))");
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS FourmThread(ThreadId INT, Title TEXT(100), Fourm TEXT(10), CreationTime INT, Locked TEXT(3))");
-	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS FourmReply(ReplyId INT, ThreadId INT, CreatedBy TEXT(1028), Contents TEXT(65565), Fourm TEXT(10), CreationTime INT)");
+	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS FourmReply(ReplyId INT, ThreadId INT, CreatedBy TEXT(1028), Contents TEXT(65565), Fourm TEXT(10), CreationTime INT, MadeByAdmin TEXT(3))");
 }
 
 function startsWith( $haystack, $needle ) {

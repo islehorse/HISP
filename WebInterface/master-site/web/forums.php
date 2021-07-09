@@ -18,8 +18,21 @@ include("header.php");
 		$subject = substr($subject, 0, 100);
 		$text = substr($text, 0, 65565);
 		
-		$thread = create_fourm_thread($subject, $forum);
-		create_fourm_reply($thread, $_SESSION['USERNAME'], $text, $forum);
+		if(!isset($_POST['VIEWID'])){
+			$thread = create_fourm_thread($subject, $forum);
+			create_fourm_reply($thread, $_SESSION['USERNAME'], $text, $forum, $_SESSION['ADMIN']);
+		}
+		else
+		{
+			$threadId = $_POST['VIEWID'];
+			if(count_replies($threadId) <= 0)
+			{
+				echo('<HR>Forum thread not found!?');
+				exit();
+			}
+			
+			create_fourm_reply($threadId, $_SESSION['USERNAME'], $text, $forum, $_SESSION['ADMIN']);
+		}
 	}
 	
 	ex:
@@ -36,7 +49,37 @@ if(!is_logged_in()){
 }
 ?>
 <TABLE WIDTH=100%><TR><TD class=forumlist><A HREF="?FORUM=SUPPORT">SUPPORT</A><BR>(<?php echo(count_topics("SUPPORT")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=BUGS">BUGS</A><BR>(<?php echo(count_topics("BUGS")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=GENERAL">GENERAL</A><BR>(<?php echo(count_topics("GENERAL")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=HORSES">HORSES</A><BR>(<?php echo(count_topics("HORSES")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=GAME">GAME</A><BR>(<?php echo(count_topics("GAME")); ?> topics)</TD></TABLE><?php 
-if(isset($_GET['FORUM'])){
+if(isset($_GET['FORUM']) && isset($_GET['VIEWID'])){
+	$forum = strtoupper($_GET['FORUM']);
+	$threadId = $_GET['VIEWID'];
+	if(!($forum === "SUPPORT" || $forum === "BUGS" || $forum === "GENERAL" || $forum === "HORSES" || $forum === "GAME" || $forum === "MOD"))
+	{
+		echo('Unknown Forum');
+		exit();
+	}	
+	if(count_replies($threadId) <= 0)
+	{
+		echo('<HR>Forum thread not found!?');
+		exit();
+	}
+	
+	$thread = get_fourm_thread($threadId);
+	echo('<HR><B>VIEWING '.htmlspecialchars($forum).' FORUM THREAD: <FONT SIZE=+1>'.htmlspecialchars($thread['title']).'</FONT></B><BR><TABLE WIDTH=100%>');
+	
+	$replies = get_fourm_replies($threadId);
+	for($i = 0; $i < count($replies); $i++)
+	{
+		if($replies[$i]['admin'])
+			echo('<TR><TD class=adminforumpost>');
+		else
+			echo('<TR><TD class=forumpost>');
+		
+		echo('<FORUMSUBJECT>REPLY:</FORUMSUBJECT> <FORUMUSER>(by '.htmlspecialchars($replies[$i]['author']).')</FORUMUSER> <FORUMDATE>'.date("M j g:ia", $replies[$i]['creation_time']).'</FORUMDATE><BR><FORUMTEXT>'.htmlspecialchars($replies[$i]['contents']).'</FORUMTEXT></TD></TR>');		
+	}
+	
+	echo("</TABLE><HR><FORM METHOD=POST>Add a reply to this topic:<BR><TABLE><TR><TD><TEXTAREA NAME=TEXT ROWS=4 COLS=60></TEXTAREA></TD><TD><INPUT TYPE=SUBMIT VALUE='ADD REPLY'></TD></TR></TABLE><BR><INPUT TYPE=HIDDEN NAME=SUBJECT VALUE='NOT NEEDED'><INPUT TYPE=HIDDEN NAME=FORUM VALUE='".htmlspecialchars($forum, ENT_QUOTES)."'><INPUT TYPE=HIDDEN NAME=VIEWID VALUE='".htmlspecialchars($threadId, ENT_QUOTES)."'></FORM>[ <A HREF='?FORUM=".htmlspecialchars($forum, ENT_QUOTES)."'>GO BACK TO ".htmlspecialchars($forum)." FORUM</A> ]<BR>");
+}
+if(isset($_GET['FORUM']) && !isset($_GET['VIEWID'])){
 	$forum = strtoupper($_GET['FORUM']);
 	if(!($forum === "SUPPORT" || $forum === "BUGS" || $forum === "GENERAL" || $forum === "HORSES" || $forum === "GAME" || $forum === "MOD"))
 	{
