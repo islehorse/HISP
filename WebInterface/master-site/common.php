@@ -149,6 +149,16 @@ function create_fourm_thread(string $title, string $fourm)
 	return $thread_id;
 }
 
+
+function set_thread_update(int $thread_id)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("UPDATE FourmThread SET UpdateTime=? WHERE ThreadId=?");
+	$stmt->bind_param("ii", time(), $thread_id);
+	$stmt->execute();
+}
+
 function create_fourm_reply(int $thread_id, string $username, string $contents, string $fourm, bool $madeByAdmin)
 {
 	include('config.php');
@@ -169,6 +179,8 @@ function create_fourm_reply(int $thread_id, string $username, string $contents, 
 	$stmt = $connect->prepare("INSERT INTO FourmReply VALUES(?,?,?,?,?,?,?)"); 
 	$stmt->bind_param("iisssis", $reply_id, $thread_id, $username, $contents, $fourm, $curTime, $admin);
 	$stmt->execute();
+	
+	set_thread_update($thread_id);
 	
 	return $reply_id;
 }
@@ -210,7 +222,7 @@ function get_fourm_threads($fourm)
 {
 	include('config.php');
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
-	$stmt = $connect->prepare("SELECT * FROM FourmThread WHERE Fourm=? ORDER BY CreationTime DESC"); 
+	$stmt = $connect->prepare("SELECT * FROM FourmThread WHERE Fourm=? ORDER BY UpdateTime DESC"); 
 	$stmt->bind_param("s", $fourm);
 	$stmt->execute();
 	$result = $stmt->get_result();
@@ -218,7 +230,7 @@ function get_fourm_threads($fourm)
 		
 
 	while ($row = $result->fetch_row()) {
-		$arr = [ ['id' => $row[0], 'title' => $row[1], 'fourm' => $row[2], 'creation_time' => $row[3], 'locked' => ($row[4] === "YES")] ];
+		$arr = [ ['id' => $row[0], 'title' => $row[1], 'fourm' => $row[2], 'update_time' => $row[3], 'locked' => ($row[4] === "YES")] ];
 		$threads = array_merge($threads, $arr);
 	}
 	
@@ -372,7 +384,7 @@ function populate_db()
 	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))");
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS LastOn(Id INT, ServerId TEXT(1028))");
-	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS FourmThread(ThreadId INT, Title TEXT(100), Fourm TEXT(10), CreationTime INT, Locked TEXT(3))");
+	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS FourmThread(ThreadId INT, Title TEXT(100), Fourm TEXT(10), UpdateTime INT, Locked TEXT(3))");
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS FourmReply(ReplyId INT, ThreadId INT, CreatedBy TEXT(1028), Contents TEXT(65565), Fourm TEXT(10), CreationTime INT, MadeByAdmin TEXT(3))");
 }
 
