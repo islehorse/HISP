@@ -123,7 +123,7 @@ if(isset($_GET['FORUM']) && !isset($_GET['VIEWID'])){
 		$daysAgo = $difference/86400;
 		
 		if($secsAgo <= 60)
-			echo('<FONT COLOR=880000><B>'.number_format((float)$minsAgo, 0, '.', '').' sec ago</B></FONT>');
+			echo('<FONT COLOR=880000><B>'.number_format((float)$secsAgo, 0, '.', '').' sec ago</B></FONT>');
 		else if($minsAgo <= 1440)
 			echo('<FONT COLOR=880000><B>'.number_format((float)$minsAgo, 0, '.', '').' min ago</B></FONT>');
 		else
