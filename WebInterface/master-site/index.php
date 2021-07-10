@@ -1,4 +1,5 @@
 <?php
+session_start();
 include('common.php');
 include('crosserver.php');
 include('config.php');
@@ -9,6 +10,8 @@ if(isset($_GET["LOGOUT"]))
 {
 	if($_GET["LOGOUT"] == 1)
 	{
+
+		$_SESSION['LOGGED_IN'] = "NO";
 		session_destroy();
 	}
 }

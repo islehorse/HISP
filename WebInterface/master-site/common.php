@@ -272,7 +272,7 @@ function get_admin(int $userid)
 	$stmt->bind_param("i", $userid);
 	$stmt->execute();
 	$result = $stmt->get_result();
-	return $result->fetch_row()[0];
+	return $result->fetch_row()[0] === "YES";
 
 }
 
@@ -285,7 +285,7 @@ function get_mod(int $userid)
 	$stmt->bind_param("i", $userid);
 	$stmt->execute();
 	$result = $stmt->get_result();
-	return $result->fetch_row()[0];
+	return $result->fetch_row()[0] === "YES";
 
 }
 
