@@ -10,7 +10,7 @@ def get_between(txt, a1, a2):
 def move_forward(txt, a1, a2):
     aStart = txt.index(a1)+len(a1)
     txt = txt[aStart:]
-    aEnd = txt.index(a2)
+    aEnd = txt.index(a2)+len(a2)
     txt = txt[aEnd:]
     return txt
 
