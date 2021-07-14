@@ -1,5 +1,5 @@
 <?php
-$obj = json_decode(file_get_contents("newuserquizquestions.json"), true);
+$obj = json_decode(file_get_contents("questions.json"), true);
 $chatpoint = 0;
 //echo $obj["questions"][0]["title"]
 if (isset($_GET["CHATPOINT"])) {
