@@ -41,5 +41,23 @@ def dictDl():
                 continue
             print(word)
             dictFile.write(word+b"\r\n")
-               
-#dictDl()
+       
+def bannedDl():
+    words = requests.get("https://raw.githubusercontent.com/dwyl/english-words/master/words.txt").content.replace(b'\r', b'').split(b'\n')
+    banned = set()
+    for word in words:
+        print(b"word: "+word)
+        req = requests.post("https://master.horseisle.com/web/newuser.php", data={"user":word.decode("UTF-8"),"pass1":"", "pass2":"", "sex":"FEMALE", "email":"", "country":"", "passreqq":"Select a question", "passreqa":"", "A":""})
+        
+        if req.content.find(b'THIS IS A FAMILY GAME!!') != -1:
+            print(b"banned word: "+word)
+            banned.add(word)
+            
+            dictFile = open("banned.dic", "wb")
+            for bword in banned:
+                if bword == '':
+                    continue
+                dictFile.write(bword+b"\r\n")
+            dictFile.close()
+
+bannedDl()

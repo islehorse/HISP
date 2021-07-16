@@ -386,6 +386,7 @@ function populate_db()
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS LastOn(Id INT, ServerId TEXT(1028))");
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS FourmThread(ThreadId INT, Title TEXT(100), Fourm TEXT(10), UpdateTime INT, Locked TEXT(3))");
 	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS FourmReply(ReplyId INT, ThreadId INT, CreatedBy TEXT(1028), Contents TEXT(65565), Fourm TEXT(10), CreationTime INT, MadeByAdmin TEXT(3))");
+	mysqli_query($connect, "CREATE TABLE IF NOT EXISTS News(NewsId INT, CreationDate INT, Title TEXT(1028), Contents TEXT(65565))");
 }
 
 function startsWith( $haystack, $needle ) {

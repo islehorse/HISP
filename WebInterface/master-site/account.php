@@ -22,6 +22,9 @@ if(isset($_POST["USER"], $_POST["PASS"]))
 		$_SESSION['MOD'] = get_mod($id);
 		$_SESSION['PASSWORD_HASH'] = get_password_hash($id);
 		$_SESSION['SALT'] = get_salt($id);
+		
+		if($_SESSION['ADMIN'] == 'YES')
+			$_SESSION['MOD'] = 'YES';
 	}
 	else
 	{ 
