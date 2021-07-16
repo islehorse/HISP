@@ -110,7 +110,12 @@ if(isset($_GET['FORUM']) && isset($_GET['VIEWID'])){
 		echo('<FORUMSUBJECT>REPLY:</FORUMSUBJECT> <FORUMUSER>(by '.htmlspecialchars($replies[$i]['author']).')</FORUMUSER> <FORUMDATE>'.date("M j g:ia", $replies[$i]['creation_time']).'</FORUMDATE><BR><FORUMTEXT>'.htmlspecialchars($replies[$i]['contents']).'</FORUMTEXT></TD></TR>');		
 	}
 	
-	echo("</TABLE><HR><FORM METHOD=POST>Add a reply to this topic:<BR><TABLE><TR><TD><TEXTAREA NAME=TEXT ROWS=4 COLS=60></TEXTAREA></TD><TD><INPUT TYPE=SUBMIT VALUE='ADD REPLY'></TD></TR></TABLE><BR><INPUT TYPE=HIDDEN NAME=SUBJECT VALUE='NOT NEEDED'><INPUT TYPE=HIDDEN NAME=FORUM VALUE='".htmlspecialchars($forum, ENT_QUOTES)."'><INPUT TYPE=HIDDEN NAME=VIEWID VALUE='".htmlspecialchars($threadId, ENT_QUOTES)."'></FORM>[ <A HREF='?FORUM=".htmlspecialchars($forum, ENT_QUOTES)."'>GO BACK TO ".htmlspecialchars($forum)." FORUM</A> ]<BR>");
+	echo("</TABLE>");
+	if($thread['locked'])
+		echo("<HR><B>THIS THREAD IS CURRENTLY LOCKED, NO NEW POSTS AT THIS TIME.</B><HR>");
+	else
+		echo("<HR><FORM METHOD=POST>Add a reply to this topic:<BR><TABLE><TR><TD><TEXTAREA NAME=TEXT ROWS=4 COLS=60></TEXTAREA></TD><TD><INPUT TYPE=SUBMIT VALUE='ADD REPLY'></TD></TR></TABLE><BR><INPUT TYPE=HIDDEN NAME=SUBJECT VALUE='NOT NEEDED'><INPUT TYPE=HIDDEN NAME=FORUM VALUE='".htmlspecialchars($forum, ENT_QUOTES)."'><INPUT TYPE=HIDDEN NAME=VIEWID VALUE='".htmlspecialchars($threadId, ENT_QUOTES)."'></FORM>");
+	echo("[ <A HREF='?FORUM=".htmlspecialchars($forum, ENT_QUOTES)."'>GO BACK TO ".htmlspecialchars($forum)." FORUM</A> ]<BR>");
 }
 if(isset($_GET['FORUM']) && !isset($_GET['VIEWID'])){
 	$forum = strtoupper($_GET['FORUM']);
@@ -133,7 +138,10 @@ if(isset($_GET['FORUM']) && !isset($_GET['VIEWID'])){
 	{
 		echo('<TR class='.$alternate[$i % 2].'>');
 		echo('<TD class=forum><A HREF="?FORUM='.htmlspecialchars($forum).'&VIEWID='.htmlspecialchars($threads[$i]['id']).'">');
-		echo(htmlspecialchars($threads[$i]['title']).'</A></TD>');
+		echo(htmlspecialchars($threads[$i]['title']).'</A>');
+		if($threads[$i]['locked'])
+			echo(' [lock]');
+		echo('</TD>');
 		echo('<TD class=forum><B>'.count_replies($threads[$i]['id']).'</B> (last by <B><FONT COLOR=333399>'.get_last_reply_author($threads[$i]['id']).'</FONT></B> ');
 		$createTime = get_last_reply_time($threads[$i]['id']);
 		
@@ -153,7 +161,9 @@ if(isset($_GET['FORUM']) && !isset($_GET['VIEWID'])){
 		
 		echo(')</TD><TD class=forum>'.date("M j g:ia", get_first_reply_time($threads[$i]['id'])).' by <B><FONT COLOR=333399>'.get_first_reply_author($threads[$i]['id']).'</FONT></B></TD></TR>');
 	}
-	echo("</TABLE><HR><FORM METHOD=POST>Add a post to this forum: SUBJECT:<INPUT TYPE=TEXT NAME=SUBJECT SIZE=30><BR><TEXTAREA NAME=TEXT ROWS=4 COLS=60></TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE='ADD TOPIC'><INPUT TYPE=HIDDEN NAME=FORUM VALUE='".htmlspecialchars($forum)."'></FORM>[ <A HREF=?>CLOSE FORUMS</A> ]<BR>");
+	echo("</TABLE>");
+	echo("<HR><FORM METHOD=POST>Add a post to this forum: SUBJECT:<INPUT TYPE=TEXT NAME=SUBJECT SIZE=30><BR><TEXTAREA NAME=TEXT ROWS=4 COLS=60></TEXTAREA><BR><INPUT TYPE=SUBMIT VALUE='ADD TOPIC'><INPUT TYPE=HIDDEN NAME=FORUM VALUE='".htmlspecialchars($forum)."'></FORM>");
+	echo("[ <A HREF=?>CLOSE FORUMS</A> ]<BR>");
 	
 }
 ?><BR><?php
