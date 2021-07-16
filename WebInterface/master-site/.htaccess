@@ -1,0 +1,7 @@
+<FilesMatch "\.(?:dic|json)$">
+Order allow,deny
+Deny from all
+</FilesMatch>
+
+ErrorDocument 403 /404.php
+ErrorDocument 404 /404.php

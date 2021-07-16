@@ -136,6 +136,29 @@ if(isset( $_POST['user'],$_POST['pass1'],$_POST['pass2'],$_POST['sex'],$_POST['e
 		exit();
 	}
 }
+
+function generate_name(){
+	$dict = file_get_contents("dictonary.dic");
+	$words = explode("\r\n", $dict);
+	
+	$name = "";
+	while(true){
+		$word = $words[array_rand($words)];
+		if(strlen($name.$word) > 16)
+			break;
+		
+		$name .= $word;
+		
+		if(strlen($name) > 5)
+			if(rand(0, 100) <= 15)
+				break;
+	}
+	
+	if(user_exists($name))
+		$name = generate_name();
+	
+	return $name;
+}
 ?>
 <CENTER><TABLE WIDTH=90% BORDER=0><TR><TD VALIGN=top>
 
@@ -220,7 +243,7 @@ if($atype == 1){
 <TABLE BGCOLOR=FFEEEE BORDER=1 CELLPADDING=4><TR BGCOLOR=EEDDEE><TD COLSPAN=2><CENTER>
 <B>Some Random Available Names:</B><BR>(pick one or make up your own)<BR>
 </TD></TR><TR><TD><CENTER><FONT SIZE=-1>
-DesertWhisper<BR>GrapeHorsey<BR>CourageousEquine<BR>SunsetDream<BR>QueenDream<BR>RubyEagerCrow<BR>CoolDearBug<BR>CosmicWorker<BR>CoolTinkerer<BR>OverTheArt<BR>NonsenseTree<BR>CrystalPioneer<BR>BashfulMule<BR>MillionWater<BR>MissBee<BR>TalentAlly<BR>FinalFillyExmoor<BR>HandyRaspberry<BR>MeekIdiotNut<BR>FinalFiend<BR>TanVillagePrince<BR>NormalAdventure<BR>DynastyRider<BR>AbsoluteCreation<BR>FlyingPoet<BR>RightArabian<BR>StarryFriend<BR>VictoriousLight<BR>ClownStory<BR>SappyPinkBreeze<BR></FONT></TD><TD><FONT SIZE=-1><CENTER>ZeroWater<BR>PleasantGuard<BR>ZappySorcerous<BR>IllusionSnow<BR>LackingWizard<BR>DearMonkey<BR>FillyRose<BR>RightEquine<BR>LightEquine<BR>SimpleSilence<BR>EmeraldWonder<BR>FastGemstone<BR>YogurtFlower<BR>FabulousHorsey<BR>SappyMadamTalker<BR>WhitePal<BR>DarkSteed<BR>PiggyMonkey<BR>UberBlackHeart<BR>MeekFantasy<BR>SillyAmatuer<BR>HighlightDaisey<BR>DynastyWitch<BR>RicketyGem<BR>BlackLake<BR>JumpyCuteOrange<BR>LoveHorsey<BR>MythicalShimmer<BR>RightTeacher<BR>DrearyCat<BR></FONT></TD></TR></TABLE>
+<?php for($i = 0; $i < 29; $i++) { echo(htmlspecialchars(generate_name()).'<BR>'); }?></FONT></TD><TD><FONT SIZE=-1><CENTER><?php for($i = 0; $i < 29; $i++) { echo(htmlspecialchars(generate_name()).'<BR>'); }?></FONT></TD></TR></TABLE>
 </TD></TR></TABLE>
 <?php
 include("footer.php");
