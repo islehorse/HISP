@@ -19,6 +19,4 @@ $EXHANGE_RATE = 100000; # How much 1 USD is worth as HI Money
 # Ideally, this would be a random string of numbers, letters and symbols like 20 characters long T-T
 $hmac_secret = "!!NOTSET!!";
 $master_site = "//server.islehorse.com";
-# Password for /web/admin
-$admin_portal_password = "!!NOTSET!!";
 ?>
