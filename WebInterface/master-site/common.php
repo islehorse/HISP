@@ -218,6 +218,102 @@ function get_fourm_replies($threadId)
 }
 
 
+function get_all_news()
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT * FROM News ORDER BY CreationDate DESC"); 
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$news = [];
+		
+
+	while ($row = $result->fetch_row()) {
+		$arr = [ ['id' => $row[0], 'date' => $row[1], 'title' => $row[2], 'contents' => $row[3]] ];
+		$news = array_merge($news, $arr);
+	}
+	
+	return $news;
+
+}
+
+function get_news_id(int $id)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT * FROM News WHERE NewsId=?"); 
+	$stmt->bind_param("i", $id);
+	$stmt->execute();
+	$result = $stmt->get_result();
+
+	$news = [];
+		
+
+	while ($row = $result->fetch_row()) {
+		$arr = [ ['id' => $row[0], 'date' => $row[1], 'title' => $row[2], 'contents' => $row[3]] ];
+		$news = array_merge($news, $arr);
+	}
+	
+	return $news;
+}
+
+
+function get_recent_news()
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT * FROM News ORDER BY CreationDate DESC LIMIT 5"); 
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$news = [];
+		
+
+	while ($row = $result->fetch_row()) {
+		$arr = [ ['id' => $row[0], 'date' => $row[1], 'title' => $row[2], 'contents' => $row[3]] ];
+		$news = array_merge($news, $arr);
+	}
+	
+	return $news;
+
+}
+
+function get_latest_news()
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$stmt = $connect->prepare("SELECT * FROM News ORDER BY CreationDate DESC LIMIT 1"); 
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$news = [];
+		
+
+	while ($row = $result->fetch_row()) {
+		$arr = [ ['id' => $row[0], 'date' => $row[1], 'title' => $row[2], 'contents' => $row[3]] ];
+		$news = array_merge($news, $arr);
+	}
+	
+	return $news;
+
+}
+
+
+function post_news(string $title, string $text)
+{
+	include('config.php');
+	$connect = mysqli_connect($dbhost, $dbuser, $dbpass,$dbname) or die("Unable to connect to '$dbhost'");
+	$result = mysqli_query($connect, "SELECT MAX(NewsId) FROM News");
+	
+	$news_id = $result->fetch_row()[0] + 1;
+	if($news_id == NULL)
+		$news_id = 0;
+	$curTime = time();
+
+	$stmt = $connect->prepare("INSERT INTO News VALUES(?,?,?,?)"); 
+	$stmt->bind_param("iiss", $news_id, time(), $title, nl2br($text));
+	$stmt->execute();
+}
+
+
 function get_fourm_threads($fourm)
 {
 	include('config.php');
