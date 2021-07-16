@@ -25,7 +25,11 @@ include("header.php");
 		
 		if(!($forum === "SUPPORT" || $forum === "BUGS" || $forum === "GENERAL" || $forum === "HORSES" || $forum === "GAME" || $forum === "MOD"))
 			goto ex;
-
+		if($forum === "MOD" && $_SESSION['MOD'] !== 'YES')
+		{
+			$nope = 2;
+			goto ex;
+		}
 		$subject = substr($subject, 0, 100);
 		$text = substr($text, 0, 65565);
 		
@@ -59,11 +63,17 @@ if(!is_logged_in()){
 	exit();
 }
 ?>
-<TABLE WIDTH=100%><TR><TD class=forumlist><A HREF="?FORUM=SUPPORT">SUPPORT</A><BR>(<?php echo(count_topics("SUPPORT")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=BUGS">BUGS</A><BR>(<?php echo(count_topics("BUGS")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=GENERAL">GENERAL</A><BR>(<?php echo(count_topics("GENERAL")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=HORSES">HORSES</A><BR>(<?php echo(count_topics("HORSES")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=GAME">GAME</A><BR>(<?php echo(count_topics("GAME")); ?> topics)</TD></TABLE><?php 
-if($nope)
+<TABLE WIDTH=100%><TR><TD class=forumlist><A HREF="?FORUM=SUPPORT">SUPPORT</A><BR>(<?php echo(count_topics("SUPPORT")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=BUGS">BUGS</A><BR>(<?php echo(count_topics("BUGS")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=GENERAL">GENERAL</A><BR>(<?php echo(count_topics("GENERAL")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=HORSES">HORSES</A><BR>(<?php echo(count_topics("HORSES")); ?> topics)</TD><TD class=forumlist><A HREF="?FORUM=GAME">GAME</A><BR>(<?php echo(count_topics("GAME")); ?> topics)</TD><?php if($_SESSION['MOD'] == 'YES'){ echo('<TD class=forumlist><A HREF="?FORUM=MOD">MOD</A><BR>('.count_topics("MOD").' topics)</TD>'); }?></TABLE><?php 
+if($nope == 1)
 {
 	nope:
 	echo('<HR>Forum thread not found!?');
+	exit();
+}
+if($nope == 2)
+{
+	mods:
+	echo('Mods only please.');
 	exit();
 }
 
@@ -74,11 +84,19 @@ if(isset($_GET['FORUM']) && isset($_GET['VIEWID'])){
 	{
 		echo('Unknown Forum');
 		exit();
-	}	
+	}
+	
+	if($forum === "MOD" && $_SESSION['MOD'] !== 'YES')
+		goto mods;
+	$thread = get_fourm_thread($threadId);
+	
+	if($thread['fourm'] === "MOD" && $_SESSION['MOD'] !== 'YES')
+		goto mods;
+	
 	if(count_replies($threadId) <= 0 || $nope)
 		goto nope;
 	
-	$thread = get_fourm_thread($threadId);
+	
 	echo('<HR><B>VIEWING '.htmlspecialchars($forum).' FORUM THREAD: <FONT SIZE=+1>'.htmlspecialchars($thread['title']).'</FONT></B><BR><TABLE WIDTH=100%>');
 	
 	$replies = get_fourm_replies($threadId);
@@ -101,6 +119,10 @@ if(isset($_GET['FORUM']) && !isset($_GET['VIEWID'])){
 		echo('Unknown Forum');
 		exit();
 	}
+	
+	if($forum === "MOD" && $_SESSION['MOD'] !== 'YES')
+		goto mods;
+
 	echo('<HR><B>VIEWING '.htmlspecialchars($forum).' FORUM</B>');
 	echo(' &nbsp; current server time: '.date("M j g:ia").'<BR>');
 	echo('<TABLE WIDTH=100%><TR><TH>TOPIC</TH><TH>POSTS</TH><TH>ORIGINAL POST</TH></TR>');

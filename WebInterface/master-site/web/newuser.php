@@ -243,7 +243,7 @@ if($atype == 1){
 <TABLE BGCOLOR=FFEEEE BORDER=1 CELLPADDING=4><TR BGCOLOR=EEDDEE><TD COLSPAN=2><CENTER>
 <B>Some Random Available Names:</B><BR>(pick one or make up your own)<BR>
 </TD></TR><TR><TD><CENTER><FONT SIZE=-1>
-<?php for($i = 0; $i < 29; $i++) { echo(htmlspecialchars(generate_name()).'<BR>'); }?></FONT></TD><TD><FONT SIZE=-1><CENTER><?php for($i = 0; $i < 29; $i++) { echo(htmlspecialchars(generate_name()).'<BR>'); }?></FONT></TD></TR></TABLE>
+<?php for($i = 0; $i < 30; $i++) { echo(htmlspecialchars(generate_name()).'<BR>'); }?></FONT></TD><TD><FONT SIZE=-1><CENTER><?php for($i = 0; $i < 30; $i++) { echo(htmlspecialchars(generate_name()).'<BR>'); }?></FONT></TD></TR></TABLE>
 </TD></TR></TABLE>
 <?php
 include("footer.php");
