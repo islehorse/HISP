@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("config.php");
+include("crosserver.php");
 include("header.php");
 ?>
 <TABLE WIDTH=100% CELLPADDING=10><TR><TD>
@@ -23,9 +24,9 @@ USA<BR>
 <B>Identify Your Payment:</B><BR>
 Be sure to include a CLEAR note of what account this is for. Include your email address in case there are problems identifying the account.<BR>
 <UL><FONT COLOR=440044 SIZE=+0>
-Your USERNAME = <?echo($_SESSION['USERNAME']);?><B></B><BR>
-Your ACCOUNT ID = <?echo($_SESSION['PLAYER_ID']);?><B></B><BR>
-Your SERVER = <B><?phpecho($server_id);?></B> (make sure this is the one you play on)<BR>
+Your USERNAME = <?php echo(htmlspecialchars($_SESSION['USERNAME'])); ?><B></B><BR>
+Your ACCOUNT ID = <?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?><B></B><BR>
+Your SERVER = <B><?php echo($server_id); ?></B> (make sure this is the one you play on)<BR>
 
 </UL></FONT>
 <B>Finally, let us know what it is for:</B><BR>
