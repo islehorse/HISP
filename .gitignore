@@ -3,5 +3,4 @@ Horse Isle Server/HorseIsleServer/obj/*
 Horse Isle Server/.vs/*
 *.log
 *.suo
-config.php
-servers.php
+WebInterface/game-site/config.php
