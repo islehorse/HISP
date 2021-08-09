@@ -12,6 +12,7 @@ function GenHmacMessage(string $data, string $channel)
 	return $hmac;
 }
 
+
 function getPlayerList($database)
 {
 	include('config.php');
@@ -163,7 +164,7 @@ function getUserExistInExt($database, $id)
 	$stmt->execute();
 	$result = $stmt->get_result();
 	
-	return intval($result->fetch_row()[0]) <= 0;
+	return intval($result->fetch_row()[0]) >= 1;
 	
 }
 
@@ -251,7 +252,7 @@ function isUserOnline($database, $id)
 	return $count>0;	
 }
 
-function  getNoModPlayersOnlineInServer($database)
+function getNoModPlayersOnlineInServer($database)
 {
 	include('config.php');
 	$dbname = $database;
@@ -316,6 +317,19 @@ function getNoPlayersOnlineGlobal()
 	}
 	return $playersOn;
 }
+
+function userExistAny($playerId)
+{
+	include('servers.php');
+	for($i = 0; $i < count($server_list); $i++)
+	{
+		if(userid_exists($server_list[$i]['database'], $playerId)){
+			return true;
+		}
+	}
+	return false;
+}
+
 
 function getNoSubbedPlayersOnlineGlobal()
 {

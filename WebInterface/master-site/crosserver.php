@@ -12,6 +12,7 @@ function GenHmacMessage(string $data, string $channel)
 	return $hmac;
 }
 
+
 function getPlayerList($database)
 {
 	include('config.php');
@@ -163,7 +164,7 @@ function getUserExistInExt($database, $id)
 	$stmt->execute();
 	$result = $stmt->get_result();
 	
-	return intval($result->fetch_row()[0]) <= 0;
+	return intval($result->fetch_row()[0]) >= 1;
 	
 }
 

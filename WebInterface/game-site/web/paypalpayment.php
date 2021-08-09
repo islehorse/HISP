@@ -1,4 +1,6 @@
-<?php include("header.php"); ?>
+<?php 
+include("header.php"); 
+?>
 <BR>
 <CENTER><TABLE CELLPADDING=5><TR><TD></CENTER>
 <FONT FACE=arial>
@@ -14,4 +16,6 @@ Click back to your <A HREF="/account.php">ACCOUNT</A> page to see any credited s
 <B>PARENTS:</B> please email support@horseisle.com from the paypal email or signup email to
 block chat, or limit time online for this account if you want to.<BR>
 </TD></TR></TABLE>
-<?php include("footer.php"); ?>
+<?php 
+include("footer.php"); 
+?>

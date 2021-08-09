@@ -122,7 +122,7 @@ for($i = 0; $i < count($server_list); $i++)
 	}
 	else
 	{
-		$newUser = getUserExistInExt($database, $player_id);
+		$newUser = !getUserExistInExt($database, $player_id);
 		
 		if(!$newUser){
 			$loginDate = getUserLoginDate($database, $player_id);
