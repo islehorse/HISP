@@ -13,26 +13,30 @@ if(!is_logged_in()){
 }
 
 $money = getUserMoney($dbname, $_SESSION['PLAYER_ID']);
-$subbed = getUserSubbed($dbname, $_SESSION['PLAYER_ID']);
-$subbedUntil = getUserSubTimeRemaining($dbname, $_SESSION['PLAYER_ID']);
 
-if(!$subbed)
-	$subbedUntil = time();
-
-if(isset($_GET["go"], $_GET["qnt"], $_GET["itm"], $_GET["ret"]))
+if(isset($_GET["go"], $_GET["qnt"], $_GET["itm"], $_GET['to'], $_GET["ret"]))
 {
+	
+	$targetUser = $_GET['to'];
+	$subbed = getUserSubbed($dbname, $targetUser);
+	$subbedUntil = getUserSubTimeRemaining($dbname, $targetUser);
+	$moneyTarget = getUserMoney($dbname, $targetUser);
+
+	if(!$subbed)
+		$subbedUntil = time();
+
+
 	if($_GET["go"] == 1)
 	{
-		$itm = $_GET["itm"];
-		
+		$itm = $_GET["itm"];		
 		if(strpos($itm, "One Month Horse Isle Membership") === 0){
 			$amount = 5; // NO CHEATING!
 			$cost = $amount*$EXHANGE_RATE;
 			if($money >= $cost)
 			{
 				setUserMoney($dbname, $_SESSION['PLAYER_ID'], $money-$cost);
-				setUserSubbed($dbname, $_SESSION['PLAYER_ID'], true);
-				setUserSubbedUntil($dbname, $_SESSION['PLAYER_ID'], $subbedUntil + 2678400);
+				setUserSubbed($dbname,$targetUser, true);
+				setUserSubbedUntil($dbname, $targetUser, $subbedUntil + 2678400);
 				
 				header("Location: ".$_GET["ret"]);
 			}
@@ -51,8 +55,8 @@ if(isset($_GET["go"], $_GET["qnt"], $_GET["itm"], $_GET["ret"]))
 			if($money >= $cost)
 			{
 				setUserMoney($dbname, $_SESSION['PLAYER_ID'], $money-$cost);
-				setUserSubbed($dbname, $_SESSION['PLAYER_ID'], true);
-				setUserSubbedUntil($dbname, $_SESSION['PLAYER_ID'], $subbedUntil + 31622400);
+				setUserSubbed($dbname, $targetUser, true);
+				setUserSubbedUntil($dbname, $targetUser, $subbedUntil + 31622400);
 				
 				header("Location: ".$_GET["ret"]);
 				
@@ -91,7 +95,7 @@ if(isset($_GET["go"], $_GET["qnt"], $_GET["itm"], $_GET["ret"]))
 
 				setUserMoney($dbname, $_SESSION['PLAYER_ID'], $money-$cost);
 				$money-=$cost;
-				setUserMoney($dbname, $_SESSION['PLAYER_ID'], $money+=$amountGained);					
+				setUserMoney($dbname, $targetUser, $moneyTarget+=$amountGained);					
 				header("Location: ".$_GET["ret"]);
 				
 			}
@@ -111,7 +115,7 @@ if(isset($_GET["go"], $_GET["qnt"], $_GET["itm"], $_GET["ret"]))
 			if($money >= $cost)
 			{
 				setUserMoney($dbname, $_SESSION['PLAYER_ID'], $money-$cost);
-				addItemToPuchaseQueue($dbname, $_SESSION['PLAYER_ID'], 559, 1);
+				addItemToPuchaseQueue($dbname, $targetUser, 559, 1);
 				
 				header("Location: ".$_GET["ret"]);
 				
@@ -132,7 +136,7 @@ if(isset($_GET["go"], $_GET["qnt"], $_GET["itm"], $_GET["ret"]))
 			if($money >= $cost)
 			{
 				setUserMoney($dbname, $_SESSION['PLAYER_ID'], $money-$cost);
-				addItemToPuchaseQueue($dbname, $_SESSION['PLAYER_ID'], 559, 5);
+				addItemToPuchaseQueue($dbname, $targetUser, 559, 5);
 				
 				header("Location: ".$_GET["ret"]);
 				
@@ -153,7 +157,7 @@ if(isset($_GET["go"], $_GET["qnt"], $_GET["itm"], $_GET["ret"]))
 }
 
 $quantity = 1;
-if(!isset($_POST['item_name'], $_POST['amount'],  $_POST['item_number'], $_POST['return']))
+if(!isset($_POST['item_name'], $_POST['amount'],  $_POST['item_number'], $_POST['custom'], $_POST['return']))
 {
 	
 	include("header.php");
@@ -161,6 +165,7 @@ if(!isset($_POST['item_name'], $_POST['amount'],  $_POST['item_number'], $_POST[
 	include("footer.php");
 	exit();
 }
+
 if(isset($_POST['quantity']))
 	$quantity = intval($_POST['quantity']);
 
@@ -170,6 +175,18 @@ $hasIntl = function_exists('numfmt_create');
 if($hasIntl)
 	$fmt = numfmt_create( 'en_US', NumberFormatter::DECIMAL );
 
+$toUser = $_POST['custom'];
+$toUsername = "";
+if(!getUserExistInExt($dbname, $toUser))
+{
+	include("header.php");
+	echo("Cannot buy for a user who does not exist on this server.");
+	include("footer.php");
+	exit();
+}
+else{
+	$toUsername = get_username($toUser);
+}
 
 include("header.php");
 ?>
@@ -207,7 +224,7 @@ include("header.php");
 		?></td>
   </tr>
 </table>
-<h3><b>NOTE: $1USD = $<?php echo($EXHANGE_RATE)?> HorseIsle Money! (you have $<?php echo($money) ?>)</b></h3><br>Do you want to purchase?</br><br><a href="?go=1&itm=<?php echo(urlencode(htmlspecialchars($_POST['item_name']))); ?>&qnt=<?php echo(urlencode(htmlspecialchars($quantity)));?>&ret=<?php echo(urlencode(htmlspecialchars($_POST['return']))); ?>">Yes</a> | <a href="/account.php">No</a> 
+<h3><b>NOTE: $1USD = $<?php echo($EXHANGE_RATE)?> HorseIsle Money! (you have $<?php echo($money) ?>)</b></h3><br><b>This purchase is for User: <?php echo(htmlspecialchars($toUser)." (".$toUsername.")"); ?></b></br>Do you want to purchase?</br><br><a href="?go=1&itm=<?php echo(urlencode(htmlspecialchars($_POST['item_name']))); ?>&qnt=<?php echo(urlencode(htmlspecialchars($quantity)));?>&to=<?php echo(urlencode(htmlspecialchars($_POST['custom']))); ?>&ret=<?php echo(urlencode(htmlspecialchars($_POST['return']))); ?>">Yes</a> | <a href="/account.php">No</a> 
 <?php
 include("footer.php");
 ?>

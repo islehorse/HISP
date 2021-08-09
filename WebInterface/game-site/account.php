@@ -71,7 +71,7 @@ if(!is_logged_in())
 
 
 // Get account data
-$newUser = getUserExistInExt($dbname, $_SESSION['PLAYER_ID']);
+$newUser = !getUserExistInExt($dbname, $_SESSION['PLAYER_ID']);
 
 if(!$newUser){
 
@@ -243,8 +243,8 @@ h+=60;//h += 96;
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
 <input type="hidden" name="item_name" value="One Month Horse Isle Membership-on <?php echo($_SERVER["HTTP_HOST"]); ?>">
-<input type="hidden" name="item_number" value="588112">
-<input type="hidden" name="custom" value="588112">
+<input type="hidden" name="item_number" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
+<input type="hidden" name="custom" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
 <input type="hidden" name="amount" value="5.00">
 <input type="hidden" name="no_shipping" value="1">
 <input type="hidden" name="return" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalpayment.php">
@@ -269,8 +269,8 @@ h+=60;//h += 96;
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
 <input type="hidden" name="item_name" value="Full Year Horse Isle Membership-on <?php echo($_SERVER["HTTP_HOST"]); ?>">
-<input type="hidden" name="item_number" value="588112">
-<input type="hidden" name="custom" value="588112">
+<input type="hidden" name="item_number" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
+<input type="hidden" name="custom" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
 <input type="hidden" name="amount" value="40.00">
 <input type="hidden" name="no_shipping" value="1">
 <input type="hidden" name="return" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalpayment.php">
@@ -296,8 +296,8 @@ h+=60;//h += 96;
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
 <input type="hidden" name="item_name" value="100k Horse Isle Money-on pinto.horseisle.com">
-<input type="hidden" name="item_number" value="588112">
-<input type="hidden" name="custom" value="588112">
+<input type="hidden" name="item_number" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
+<input type="hidden" name="custom" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
 <input type="hidden" name="amount" value="1.00">
 <input type="hidden" name="no_shipping" value="1">
 <input type="hidden" name="return" value="http://pinto.horseisle.com/web/paypalpayment.php">
@@ -337,8 +337,8 @@ Select: <SELECT NAME=quantity>
 <input type="hidden" name="cmd" value="_xclick">
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="item_name" value="100k Horse Isle Money-on <?php echo($_SERVER["HTTP_HOST"]); ?>">
-<input type="hidden" name="item_number" value="588112">
-<input type="hidden" name="custom" value="588112">
+<input type="hidden" name="item_number" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
+<input type="hidden" name="custom" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
 <input type="hidden" name="amount" value="1.00">
 <input type="hidden" name="no_shipping" value="1">
 <input type="hidden" name="return" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalpayment.php">
@@ -362,8 +362,8 @@ Select: <SELECT NAME=quantity>
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
 <input type="hidden" name="item_name" value="Pawneer Order-on <?php echo($_SERVER["HTTP_HOST"]); ?>">
-<input type="hidden" name="item_number" value="588112">
-<input type="hidden" name="custom" value="588112">
+<input type="hidden" name="item_number" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
+<input type="hidden" name="custom" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
 <input type="hidden" name="amount" value="8.00">
 <input type="hidden" name="no_shipping" value="1">
 <input type="hidden" name="return" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalpayment.php">
@@ -387,8 +387,8 @@ Select: <SELECT NAME=quantity>
 <input type="hidden" name="business" value="paypal@horseisle.com">
 <input type="hidden" name="undefined_quantity" value="1">
 <input type="hidden" name="item_name" value="Five Pawneer Order-on <?php echo($_SERVER["HTTP_HOST"]); ?>">
-<input type="hidden" name="item_number" value="588112">
-<input type="hidden" name="custom" value="588112">
+<input type="hidden" name="item_number" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
+<input type="hidden" name="custom" value="<?php echo(htmlspecialchars($_SESSION['PLAYER_ID'])); ?>">
 <input type="hidden" name="amount" value="30.00">
 <input type="hidden" name="no_shipping" value="1">
 <input type="hidden" name="return" value="http://<?php echo($_SERVER["HTTP_HOST"]); ?>/web/paypalpayment.php">
