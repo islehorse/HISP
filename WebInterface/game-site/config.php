@@ -9,7 +9,10 @@ $dbhost = '127.0.0.1';
 
 $all_users_subbed = false;
 $server_id = "game";
-$pp_uri = '/web/ppemu.php'; # paypal emulator, original is https://www.paypal.com/cgi-bin/webscr
+$pp_uri = '/web/ppemu.php'; # location of paypal emulator on game-servers
+# original is https://www.paypal.com/cgi-bin/webscr which obviously wont do
+# Dont set it to that though, as the paypalgateway.php is not implemented.
+
 $EXHANGE_RATE = 100000; # How much 1 USD is worth as HI Money
 
 # == hmac_secret ==
