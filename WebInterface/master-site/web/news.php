@@ -1,7 +1,7 @@
 <?php
 session_start();
-include("config.php");
-include("common.php");
+include("../config.php");
+include("../common.php");
 include("header.php");
 
 if(isset($_POST['TITLE'], $_POST['CONTENT'])){
