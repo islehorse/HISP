@@ -1,7 +1,7 @@
 <?php
 
 session_start();
-include("config.php");
+include("../config.php");
 include("crosserver.php");
 include("common.php");
 
@@ -14,7 +14,7 @@ if(!is_logged_in()){
 
 $money = getUserMoney($dbname, $_SESSION['PLAYER_ID']);
 
-if(isset($_GET["go"], $_GET["qnt"], $_GET["itm"], $_GET['to'], $_GET["ret"]))
+if(isset($_GET["go"], $_GET["qnt"], $_GET["itm"], $_GET['to'], $_GET["ret"], $_GET['sign']))
 {
 	
 	$targetUser = $_GET['to'];
@@ -28,6 +28,17 @@ if(isset($_GET["go"], $_GET["qnt"], $_GET["itm"], $_GET['to'], $_GET["ret"]))
 
 	if($_GET["go"] == 1)
 	{
+		$msg = $_GET['itm'].$_GET["qnt"].$_GET["to"].$_GET["ret"].$_SESSION['USERNAME'].$_SESSION['PLAYER_ID'];
+		$expectedSignature = GenHmacMessage($msg, "PPEMU");
+		$gotHmacSignature = $_GET['sign'];
+		
+		if(!hash_equals($gotHmacSignature,$expectedSignature)){
+			include("header.php");
+			echo("Invalid Signature. Are you trying to scam people?");
+			include("footer.php");
+			exit();
+		}
+		
 		$itm = $_GET["itm"];		
 		if(strpos($itm, "One Month Horse Isle Membership") === 0){
 			$amount = 5; // NO CHEATING!
@@ -224,7 +235,10 @@ include("header.php");
 		?></td>
   </tr>
 </table>
-<h3><b>NOTE: $1USD = $<?php echo($EXHANGE_RATE)?> HorseIsle Money! (you have $<?php echo($money) ?>)</b></h3><br><b>This purchase is for User: <?php echo(htmlspecialchars($toUser)." (".$toUsername.")"); ?></b></br>Do you want to purchase?</br><br><a href="?go=1&itm=<?php echo(urlencode(htmlspecialchars($_POST['item_name']))); ?>&qnt=<?php echo(urlencode(htmlspecialchars($quantity)));?>&to=<?php echo(urlencode(htmlspecialchars($_POST['custom']))); ?>&ret=<?php echo(urlencode(htmlspecialchars($_POST['return']))); ?>">Yes</a> | <a href="/account.php">No</a> 
+<h3><b>NOTE: $1USD = $<?php echo($EXHANGE_RATE)?> HorseIsle Money! (you have $<?php echo($money) ?>)</b></h3><br><b>This purchase is for User: <?php echo(htmlspecialchars($toUser)." (".$toUsername.")"); ?></b></br>Do you want to purchase?</br><br><a href="?go=1&itm=<?php echo(urlencode(htmlspecialchars($_POST['item_name']))); ?>&qnt=<?php echo(urlencode(htmlspecialchars($quantity)));?>&to=<?php echo(urlencode(htmlspecialchars($_POST['custom']))); ?>&ret=<?php echo(urlencode(htmlspecialchars($_POST['return']))); ?>&sign=<?php 
+	$msg = htmlspecialchars($_POST['item_name']).htmlspecialchars($quantity).htmlspecialchars($_POST['custom']).htmlspecialchars($_POST['return']).$_SESSION['USERNAME'].$_SESSION['PLAYER_ID'];
+	echo(urlencode(GenHmacMessage($msg, "PPEMU"))); 
+?>">Yes</a> | <a href="/account.php">No</a> 
 <?php
 include("footer.php");
 ?>
