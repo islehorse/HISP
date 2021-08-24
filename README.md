@@ -14,27 +14,31 @@ well they essentailly run off "Server Emulators".
 # Setup     
 - Download the latest Windows or Linux binary.        
 - Setup a SQL Server, (eg, MariaDB).         
-- Setup a webserver with PHP8.0, intl and mysqli modules (eg, Apache).         
+- Setup a webserver with PHP8.0, intl and mysqli modules (eg, Apache).       
+- Create a database for the master site, and for all game sites you may have  
 - Copy files from the binary ZIP's www/master-site into your webserver.        
-  have a separate virtual host for www/game-site.     
-- Edit game-site/config.php to have your SQL login information.         
+  have a separate virtual host for each www/game-site.     
+- Edit each game-site/config.php to have your SQL login information.         
   Change the server host to your public IP or a Domain that points.       
-  to it and also change the admin password        
-- Edit master-site/dbconfig.php and set your SQL Server info there as well.       
-- Run the HorseIsleServer binary. It will crash due to trying to connect.     
-  But will create a "server.properties" file, as well as a CrossDomainPolicy.xml.     
-  Edit server.properies and change the DB connection to your SQL server information-.     
-  Change whatever other settings you want there as well.       
+  to it and also change the HMAC Secret       
+- Edit master-site/servers.php and put each server your hosting            
+  in the array. this is what will appear in the server list                 
+- Edit master-site/config.php and set your SQL Server credentials, for the master-site             
+  and change the hmac_secret to match that of every game-site        
+- For each server, run the HorseIsleServer binary. on first run, it will         
+  crash due to trying to connect. But will create a "server.properties" file,           
+  as well as a CrossDomainPolicy.xml, Edit server.properies and change the DB connection.      
+  to your SQL server credentials- Change whatever other settings you want there as well.       
 - Run HorseIsleServer again and this time it will connect to the server and start up.      
 - Create an account on the master-site/ webserver.       
-  And login using game-site/Horseisle.php. you can also.    
-  Give your user account admin using game-site/admin with the password.    
-  You set in config.php.     
+  And login using game-site/Horseisle.php,
 - That's it your now running HISP Server.       
   Forward the port you used for the server and 80 for the webserver.        
   And people can login over the internet.         
 
-
+- You can give yourself admin by executing ``UPDATE players SET Admin='YES' Moderator='YES' WHERE Username='<YOUR USERNAME>'``
+  on the master database, (and any game databases)
+  
 # Depends
  HISP Depends on a SQL Server, 
  its been tested and known to work specifically with MariaDB, https://mariadb.org/
