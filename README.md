@@ -36,7 +36,7 @@ well they essentailly run off "Server Emulators".
   Forward the port you used for the server and 80 for the webserver.        
   And people can login over the internet.         
 
-- You can give yourself admin by executing ``UPDATE players SET Admin='YES' Moderator='YES' WHERE Username='<YOUR USERNAME>'``
+- You can give yourself admin by executing ``UPDATE Users SET Admin='YES' Moderator='YES' WHERE Username='<YOUR USERNAME>'``
   on the master database, (and any game databases)
   
 # Depends
