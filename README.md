@@ -12,6 +12,7 @@ well they essentailly run off "Server Emulators".
 **tl;dr, think "Club Penguin Rewritten" but with Horse Isle.**
 
 # Commands         
+```
 == Admin Commands ==            
     %GIVE                 
               OBJECT <itemid> [username]         
@@ -62,7 +63,8 @@ well they essentailly run off "Server Emulators".
     !WARP           
               <playername>           
               <locationame>        
-    !DANCE <udlr> 
+    !DANCE <udlr>       
+```
 # Setup     
 - Download the latest Windows or Linux binary.        
 - Setup a SQL Server, (eg, MariaDB).         
