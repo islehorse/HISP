@@ -12,7 +12,8 @@ well they essentailly run off "Server Emulators".
 
 **tl;dr, think "Club Penguin Rewritten" but with Horse Isle.**
 
-# Commands         
+# Commands     
+(legend: <> Required, [] Optional)
 ```
 == Admin Commands ==            
     %GIVE                 
