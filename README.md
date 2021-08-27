@@ -11,6 +11,58 @@ well they essentailly run off "Server Emulators".
 
 **tl;dr, think "Club Penguin Rewritten" but with Horse Isle.**
 
+# Commands         
+== Admin Commands ==            
+    %GIVE                 
+              OBJECT <itemid> [username]         
+              MONEY <amount> [username]             
+              HORSE <breedid> [username]         
+              QUEST <questid> [FORCE]       
+    %GOTO                             
+              <x>,<y>         
+              PLAYER <playername>        
+              AREA <locationname>           
+              NPC <npcname>             
+    %JUMP <playername> HERE              
+    %NOCLIP (toggle)            
+    %CALL HORSE            
+== Moderator Commands ==         
+    %KICK <username> [reason]         
+    %RULES <username>          
+    %STEALTH (toggle)        
+    %BAN <username>      
+    %UNBAN <username>       
+    %ESCAPE               
+== Player Commands ==         
+    !MUTE                    
+              ALL        
+              GLOBAL       
+              ISLAND        
+              NEAR        
+              HERE        
+              BUDDY        
+              PM        
+              BR          
+              SOCIALS         
+              LOGINS            
+    !UNMUTE              
+              ALL         
+              GLOBAL         
+              ISLAND         
+              NEAR        
+              HERE         
+              BUDDY       
+              PM           
+              BR             
+              SOCIALS           
+              LOGINS               
+    !HEAR (same as !UNMUTE)            
+    !AUTOREPLY [message]              
+    !QUIZ                   
+    !WARP           
+              <playername>           
+              <locationame>        
+    !DANCE <udlr> 
 # Setup     
 - Download the latest Windows or Linux binary.        
 - Setup a SQL Server, (eg, MariaDB).         
