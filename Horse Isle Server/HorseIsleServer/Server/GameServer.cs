@@ -3680,14 +3680,20 @@ namespace HISP.Server
 
 
             // Tell other clients you exist
-            byte[] YourPlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.Facing, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Username);
+            
+            byte[] yourPlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.Facing, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Username);
+            byte[] yourPlayerInfoOffscreen = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, sender.LoggedinUser.Facing, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Username);
+
             foreach (GameClient client in ConnectedClients)
             {
                 if (client.LoggedIn)
                 {
                     if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
                     {
-                        client.SendPacket(YourPlayerInfo);
+                        if (IsOnScreen(sender.LoggedinUser.X, sender.LoggedinUser.Y, client.LoggedinUser.X, client.LoggedinUser.Y))
+                            client.SendPacket(yourPlayerInfo);
+                        else
+                            client.SendPacket(yourPlayerInfoOffscreen);
                     }
                 }
             }
@@ -7506,12 +7512,19 @@ namespace HISP.Server
         }
 
 
+        public static bool IsOnScreen(int screenX, int screenY, int playerX, int playerY)
+        {
+            int startX = screenX - 9;
+            int endX = screenX + 9;
+            int startY = screenY - 8;
+            int endY = screenY + 9;
+            if (startX <= playerX && endX >= playerX && startY <= playerY && endY >= playerY)
+                return true;
+            else
+                return false;
+        }
         public static User[] GetOnScreenUsers(int x, int y, bool includeStealth = false, bool includeMuted = false)
         {
-            int startX = x - 9;
-            int endX = x + 9;
-            int startY = y - 8;
-            int endY = y + 9;
 
             List<User> usersOnScreen = new List<User>();
 
@@ -7522,7 +7535,7 @@ namespace HISP.Server
                         continue;
                     if (!includeMuted && client.LoggedinUser.MuteNear)
                         continue;
-                    if (startX <= client.LoggedinUser.X && endX >= client.LoggedinUser.X && startY <= client.LoggedinUser.Y && endY >= client.LoggedinUser.Y)
+                    if (IsOnScreen(x,y,client.LoggedinUser.X, client.LoggedinUser.Y))
                         usersOnScreen.Add(client.LoggedinUser);
                 }
 

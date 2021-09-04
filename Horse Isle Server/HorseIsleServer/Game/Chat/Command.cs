@@ -140,7 +140,7 @@ namespace HISP.Game.Chat
         {
             if(args.Length <= 0)
                 return false;
-            if(!user.Administrator || !user.Moderator)
+            if(!(user.Administrator || user.Moderator))
                 return false;
 
             try{
@@ -164,7 +164,7 @@ namespace HISP.Game.Chat
         {
             if (args.Length <= 0)
                 return false;
-            if(!user.Administrator || !user.Moderator)
+            if (!(user.Administrator || user.Moderator))
                 return false;
             try{
                 string userName = args[0];
@@ -196,7 +196,7 @@ namespace HISP.Game.Chat
         }
         public static bool Escape(string message, string[] args, User user)
         {
-            if (!user.Administrator || !user.Moderator)
+            if (!(user.Administrator || user.Moderator))
                 return false;
 
 
@@ -209,7 +209,7 @@ namespace HISP.Game.Chat
 
         public static bool Stealth(string message, string[] args, User user)
         {
-            if (!user.Administrator || !user.Moderator)
+            if (!(user.Administrator || user.Moderator))
                 return false;
 
             user.Stealth = !user.Stealth;
@@ -230,7 +230,7 @@ namespace HISP.Game.Chat
 
         public static bool Rules(string message, string[] args, User user)
         {
-            if (!user.Administrator || !user.Moderator)
+            if (!(user.Administrator || user.Moderator))
                 return false;
             if (args.Length <= 0)
                 return false;
@@ -255,7 +255,7 @@ namespace HISP.Game.Chat
 
         public static bool Kick(string message, string[] args, User user)
         {
-            if (!user.Administrator || !user.Moderator)
+            if (!(user.Administrator || user.Moderator))
                 return false;
             if (args.Length <= 0)
                 return false;
