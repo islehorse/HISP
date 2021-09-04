@@ -3690,7 +3690,7 @@ namespace HISP.Server
                 {
                     if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
                     {
-                        if (IsOnScreen(sender.LoggedinUser.X, sender.LoggedinUser.Y, client.LoggedinUser.X, client.LoggedinUser.Y))
+                        if (IsOnScreen(client.LoggedinUser.X, client.LoggedinUser.Y, sender.LoggedinUser.X, sender.LoggedinUser.Y))
                             client.SendPacket(yourPlayerInfo);
                         else
                             client.SendPacket(yourPlayerInfoOffscreen);
