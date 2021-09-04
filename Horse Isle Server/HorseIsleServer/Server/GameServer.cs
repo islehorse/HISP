@@ -3625,8 +3625,16 @@ namespace HISP.Server
                 {
                     if (client.LoggedinUser.Id != user.Id)
                     {
-                        byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.Facing, client.LoggedinUser.CharacterId, client.LoggedinUser.Username);
-                        sender.SendPacket(PlayerInfo);
+                        if(IsOnScreen(client.LoggedinUser.X, client.LoggedinUser.Y, sender.LoggedinUser.X, sender.LoggedinUser.Y))
+                        {
+                            byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.Facing, client.LoggedinUser.CharacterId, client.LoggedinUser.Username);
+                            sender.SendPacket(PlayerInfo);
+                        }
+                        else
+                        {
+                            byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000+4, 1000+1, client.LoggedinUser.Facing, client.LoggedinUser.CharacterId, client.LoggedinUser.Username);
+                            sender.SendPacket(PlayerInfo);
+                        }
                     }
                 }
             }
@@ -5115,47 +5123,6 @@ namespace HISP.Server
                 loggedInUser.LoggedinClient.SendPacket(playerInfoBytes);
             }
 
-            /*
-            // Players now offscreen tell the client is at 1000,1000.
-            foreach (User onScreenBeforeUser in onScreenBefore)
-            {
-                bool found = false;
-                foreach(User onScreenNowUser in onScreenNow)
-                {
-                    if(onScreenNowUser.Id == onScreenBeforeUser.Id)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000+4, 1000+1, loggedInUser.Facing, loggedInUser.CharacterId, loggedInUser.Username);
-                    onScreenBeforeUser.LoggedinClient.SendPacket(playerInfoBytes);
-                }
-            }
-
-            // Players now onscreen tell the client there real pos
-            foreach (User onScreenNowUser in onScreenNow)
-            {
-                bool found = false;
-                foreach (User onScreenBeforeUser in onScreenBefore)
-                {
-                    if (onScreenNowUser.Id == onScreenBeforeUser.Id)
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-
-                if (!found)
-                {
-                    byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenNowUser.X, onScreenNowUser.Y, onScreenNowUser.Facing, onScreenNowUser.CharacterId, onScreenNowUser.Username);
-                    loggedInUser.LoggedinClient.SendPacket(playerInfoBytes);
-                }
-            }
-            */
             Update(sender);
 
         }
