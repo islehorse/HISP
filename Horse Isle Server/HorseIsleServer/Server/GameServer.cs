@@ -5723,8 +5723,6 @@ namespace HISP.Server
             Chat.ChatChannel channel = (Chat.ChatChannel)packet[1];
             string message = packetStr.Substring(2, packetStr.Length - 4);
 
-            
-           
 
             Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to say '" + message + "' in channel: " + channel.ToString());
 
@@ -5874,7 +5872,7 @@ namespace HISP.Server
             }
             else if(channel == Chat.ChatChannel.Ads)
             {
-                if(!sender.LoggedinUser.CanUseAdsChat)
+                if(!sender.LoggedinUser.CanUseAdsChat && !sender.LoggedinUser.Administrator)
                 {
                     byte[] cantSendInAds = PacketBuilder.CreateChat(Messages.AdsOnlyOncePerMinute, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(cantSendInAds);
@@ -5885,7 +5883,7 @@ namespace HISP.Server
             }
             else if(channel == Chat.ChatChannel.All)
             {
-                if(sender.LoggedinUser.TotalGlobalChatMessages <= 0)
+                if(sender.LoggedinUser.TotalGlobalChatMessages <= 0 && !sender.LoggedinUser.Administrator)
                 {
                     byte[] globalLimited = PacketBuilder.CreateChat(Messages.GlobalChatLimited, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(globalLimited);
