@@ -33,7 +33,7 @@ well they essentailly run off "Server Emulators".
     %KICK <username> [reason]         
     %RULES <username>          
     %STEALTH (toggle)        
-    %BAN <username>      
+    %BAN <username> [reason]     
     %UNBAN <username>       
     %ESCAPE               
 == Player Commands ==         
