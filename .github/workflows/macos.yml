@@ -31,8 +31,8 @@ jobs:
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=MacOS.pubxml
-        cp ../DataCollection/*.json "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/"
-        cp ../DataCollection/*.MAP "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/"
+        cp ../HorseIsleData/*.json "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/"
+        cp ../HorseIsleData/*.MAP "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/"
         mkdir "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/www"
         cp -R ../HorseIsleWeb/* "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/www"
     
