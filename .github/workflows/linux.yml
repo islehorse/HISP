@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 defaults:
   run:
-    working-directory: ./Horse Isle Server
+    working-directory: ./HorseIsleServer
 
 jobs:
   build:
@@ -55,16 +55,16 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: linux-x64
-        path: Horse Isle Server/HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/
+        path: HorseIsleServer/HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/
 
     - name: upload linux-arm
       uses: actions/upload-artifact@v2
       with:
         name: linux-arm
-        path: Horse Isle Server/HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/
+        path: HorseIsleServer/HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/
     
     - name: upload linux-arm64
       uses: actions/upload-artifact@v2
       with:
         name: linux-arm64
-        path: Horse Isle Server/HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/
+        path: HorseIsleServer/HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/
