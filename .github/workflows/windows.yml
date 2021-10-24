@@ -30,14 +30,14 @@ jobs:
         dotnet publish -p:PublishProfile=Win64.pubxml
         copy ..\DataCollection\gamedata.json "HorseIsleServer\bin\x64\Windows\net5.0\win-x64\publish\gamedata.json"
         copy ..\DataCollection\HI1.MAP "HorseIsleServer\bin\x64\Windows\net5.0\win-x64\publish\HI1.MAP"
-        copy ..\WebInterface "HorseIsleServer\bin\x64\Windows\net5.0\win-x64\publish\www" -Recurse
+        copy ..\HorseIsleWeb "HorseIsleServer\bin\x64\Windows\net5.0\win-x64\publish\www" -Recurse
     - name: Build win-x86
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=Win32.pubxml
         copy ..\DataCollection\gamedata.json "HorseIsleServer\bin\x86\Windows\net5.0\win-x86\publish\gamedata.json"
         copy ..\DataCollection\HI1.MAP "HorseIsleServer\bin\x86\Windows\net5.0\win-x86\publish\HI1.MAP"
-        copy ..\WebInterface "HorseIsleServer\bin\x86\Windows\net5.0\win-x86\publish\www" -Recurse
+        copy ..\HorseIsleWeb "HorseIsleServer\bin\x86\Windows\net5.0\win-x86\publish\www" -Recurse
     - name: Upload win-x64
       uses: actions/upload-artifact@v2
       with:
