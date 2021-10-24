@@ -1,4 +1,0 @@
-bank total @ 1/01/2021 : 14,961
-bank total @ 1/01/2021 : 15,070
-
-You made $108 in interest since your last visit.

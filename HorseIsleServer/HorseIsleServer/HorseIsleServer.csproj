@@ -22,12 +22,12 @@
   </ItemGroup>
   <PropertyGroup>
     <PostBuildEvent Condition="'$(OS)' == 'Windows_NT'">
-      copy "$(SolutionDir)..\DataCollection\gamedata.json" "$(TargetDir)gamedata.json" /Y
-      copy "$(SolutionDir)..\DataCollection\HI1.MAP" "$(TargetDir)HI1.MAP" /Y
+      copy "$(SolutionDir)..\HorseIsleData\gamedata.json" "$(TargetDir)gamedata.json" /Y
+      copy "$(SolutionDir)..\HorseIsleData\HI1.MAP" "$(TargetDir)HI1.MAP" /Y
     </PostBuildEvent>
     <PostBuildEvent Condition="'$(OS)' != 'Windows_NT'">
-      cp -f "$(MSBuildThisFileDirectory)../../DataCollection/gamedata.json" "$(TargetDir)gamedata.json"
-      cp -f "$(MSBuildThisFileDirectory)../../DataCollection/HI1.MAP" "$(TargetDir)HI1.MAP"
+      cp -f "$(MSBuildThisFileDirectory)../../HorseIsleData/gamedata.json" "$(TargetDir)gamedata.json"
+      cp -f "$(MSBuildThisFileDirectory)../../HorseIsleData/HI1.MAP" "$(TargetDir)HI1.MAP"
     </PostBuildEvent> 
   </PropertyGroup>
   <PropertyGroup>

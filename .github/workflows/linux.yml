@@ -31,8 +31,8 @@ jobs:
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=Linux64.pubxml
-        cp ../DataCollection/*.json "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
-        cp ../DataCollection/*.MAP "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
+        cp ../HorseIsleData/*.json "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
+        cp ../HorseIsleData/*.MAP "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
         mkdir "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/www"
         cp -R ../HorseIsleWeb/* "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/www"
     
@@ -40,8 +40,8 @@ jobs:
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=LinuxARM.pubxml
-        cp ../DataCollection/*.json "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/"
-        cp ../DataCollection/*.MAP "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/"
+        cp ../HorseIsleData/*.json "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/"
+        cp ../HorseIsleData/*.MAP "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/"
         mkdir "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/www"
         cp -R ../HorseIsleWeb/* "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/www"
     
@@ -49,8 +49,8 @@ jobs:
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=LinuxARM64.pubxml
-        cp ../DataCollection/*.json "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/"
-        cp ../DataCollection/*.MAP "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/"
+        cp ../HorseIsleData/*.json "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/"
+        cp ../HorseIsleData/*.MAP "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/"
         mkdir "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/www/"
         cp -R ../HorseIsleWeb/* "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/www/"
         
