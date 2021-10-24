@@ -1,0 +1,3 @@
+[submodule "HorseIsleWeb"]
+	path = HorseIsleWeb
+	url = https://github.com/KuromeSan/HorseIsleWeb.git
