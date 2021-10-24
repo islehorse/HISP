@@ -31,7 +31,7 @@ jobs:
         cp ../DataCollection/*.json "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
         cp ../DataCollection/*.MAP "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
         mkdir "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/www"
-        cp -R ../WebInterface/* "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/www"
+        cp -R ../HorseIsleWeb/* "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/www"
     
     - name: Build linux-arm
       continue-on-error: false
@@ -40,7 +40,7 @@ jobs:
         cp ../DataCollection/*.json "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/"
         cp ../DataCollection/*.MAP "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/"
         mkdir "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/www"
-        cp -R ../WebInterface/* "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/www"
+        cp -R ../HorseIsleWeb/* "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/www"
     
     - name: Build linux-arm64
       continue-on-error: false
@@ -49,7 +49,7 @@ jobs:
         cp ../DataCollection/*.json "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/"
         cp ../DataCollection/*.MAP "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/"
         mkdir "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/www/"
-        cp -R ../WebInterface/* "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/www/"
+        cp -R ../HorseIsleWeb/* "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/www/"
         
     - name: upload linux-64
       uses: actions/upload-artifact@v2
