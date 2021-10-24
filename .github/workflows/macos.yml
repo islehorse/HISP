@@ -27,6 +27,7 @@ jobs:
     - name: Build mac-64
       continue-on-error: false
       run: |
+        git submodule update --init --recursive
         dotnet publish -p:PublishProfile=MacOS.pubxml
         cp ../DataCollection/*.json "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/"
         cp ../DataCollection/*.MAP "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/"
