@@ -1,5 +1,5 @@
-Horse Isle Server/HorseIsleServer/bin/*
-Horse Isle Server/HorseIsleServer/obj/*
-Horse Isle Server/.vs/*
+HorseIsleServer/HorseIsleServer/bin/*
+HorseIsleServer/HorseIsleServer/obj/*
+HorseIsleServer/.vs/*
 *.log
 *.suo

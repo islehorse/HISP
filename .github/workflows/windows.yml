@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 defaults:
   run:
-    working-directory: ./Horse Isle Server
+    working-directory: ./HorseIsleServer
 
 jobs:
   build:
@@ -42,10 +42,10 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: win-x64
-        path: Horse Isle Server\HorseIsleServer\bin/x64\Windows\net5.0\win-x64\publish\
+        path: HorseIsleServer\HorseIsleServer\bin/x64\Windows\net5.0\win-x64\publish\
     
     - name: Upload win-x86
       uses: actions/upload-artifact@v2
       with:
         name: win-x86
-        path: Horse Isle Server\HorseIsleServer\bin\x86\Windows\net5.0\win-x86\publish\
+        path: HorseIsleServer\HorseIsleServer\bin\x86\Windows\net5.0\win-x86\publish\

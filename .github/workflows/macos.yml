@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 defaults:
   run:
-    working-directory: ./Horse Isle Server
+    working-directory: ./HorseIsleServer
 
 jobs:
   build:
@@ -37,4 +37,4 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: mac-x64
-        path: Horse Isle Server/HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/
+        path: HorseIsleServer/HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/
