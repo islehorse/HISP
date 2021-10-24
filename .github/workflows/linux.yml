@@ -14,6 +14,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    
+    - name: Git Submodule update
+      run: git submodule update --init --recursive
       
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
@@ -27,7 +30,6 @@ jobs:
     - name: Build linux-64
       continue-on-error: false
       run: |
-        git submodule update --init --recursive
         dotnet publish -p:PublishProfile=Linux64.pubxml
         cp ../DataCollection/*.json "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
         cp ../DataCollection/*.MAP "HorseIsleServer/bin/x64/Linux/net5.0/linux-x64/publish/"
@@ -37,7 +39,6 @@ jobs:
     - name: Build linux-arm
       continue-on-error: false
       run: |
-        git submodule update --init --recursive
         dotnet publish -p:PublishProfile=LinuxARM.pubxml
         cp ../DataCollection/*.json "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/"
         cp ../DataCollection/*.MAP "HorseIsleServer/bin/ARM/Linux/net5.0/linux-arm/publish/"
@@ -47,7 +48,6 @@ jobs:
     - name: Build linux-arm64
       continue-on-error: false
       run: |
-        git submodule update --init --recursive
         dotnet publish -p:PublishProfile=LinuxARM64.pubxml
         cp ../DataCollection/*.json "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/"
         cp ../DataCollection/*.MAP "HorseIsleServer/bin/ARM64/Linux/net5.0/linux-arm64/publish/"
