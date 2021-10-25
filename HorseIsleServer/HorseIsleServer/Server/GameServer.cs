@@ -2153,8 +2153,8 @@ namespace HISP.Server
 
                     if(sender.LoggedinUser.HorseInventory.HorseList.Length >= sender.LoggedinUser.MaxHorses)
                     {
-                        byte[] payUsPlz = PacketBuilder.CreateChat(Messages.HorseCatchTooManyHorsesMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        sender.SendPacket(payUsPlz);
+                        byte[] caughtTooManyHorses = PacketBuilder.CreateChat(Messages.HorseCatchTooManyHorsesMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(caughtTooManyHorses);
                         return;
                     }
 
