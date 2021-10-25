@@ -2,6 +2,7 @@
 using HISP.Player;
 using HISP.Security;
 using HISP.Server;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,35 @@ namespace HISP.Game
 {
     public class Arena
     {
+
+        private static List<Arena> arenas = new List<Arena>();
+        private List<ArenaEntry> entries;
+        private Timer arenaTimeout;
+
+        public int Id;
+        public string Type;
+        public int EntryCost;
+        public int RandomId;
+        public int RaceEvery;
+        public int Slots;
+        public string Mode;
+        public int Timeout;
+        public static Arena[] Arenas
+        {
+            get
+            {
+                return arenas.ToArray();
+            }
+        }
+
+        public ArenaEntry[] Entries
+        {
+            get
+            {
+                return entries.ToArray();
+            }
+        }
+
         public class ArenaEntry
         {
             public User EnteredUser;
@@ -18,7 +48,6 @@ namespace HISP.Game
             public int SubmitScore = 0;
             public bool Done = false;
         }
-        public static List<Arena> Arenas = new List<Arena>();
         public Arena(int id, string type, int entryCost, int raceEvery, int slots, int timeOut)
         {
             RandomId = RandomID.NextRandomId();
@@ -29,29 +58,19 @@ namespace HISP.Game
             RaceEvery = raceEvery;
             Slots = slots;
             Timeout = timeOut;
-            Arenas.Add(this);
-            Entries = new List<ArenaEntry>();
+            arenas.Add(this);
+            entries = new List<ArenaEntry>();
         }
-        public int Id;
-        public string Type;
-        public int EntryCost;
-        public int RandomId;
-        public int RaceEvery;
-        public int Slots;
-        public string Mode;
-        public int Timeout;
-        public List<ArenaEntry> Entries;
-        private Timer arenaTimeout;
 
         public bool HaveAllPlayersCompleted()
         {
             int playersCompleted = 0;
-            foreach(ArenaEntry entry in Entries.ToArray())
+            foreach(ArenaEntry entry in Entries)
             {
                 if (entry.Done)
                     playersCompleted++;
             }
-            if (playersCompleted >= Entries.Count)
+            if (playersCompleted >= Entries.Length)
                 return true;
             else
                 return false;
@@ -133,7 +152,7 @@ namespace HISP.Game
         public void Start()
         {
             Mode = "COMPETING";
-            if (Entries.Count <= 0)
+            if (Entries.Length <= 0)
             {
                 reset();
                 return;
@@ -215,7 +234,7 @@ namespace HISP.Game
         private void reset()
         {
             // Delete all entries
-            Entries.Clear();
+            entries.Clear();
             RandomId = RandomID.NextRandomId();
             Mode = "TAKINGENTRIES";
             if (arenaTimeout != null)
@@ -231,10 +250,10 @@ namespace HISP.Game
                 
                 string[] avaliblePlacings = new string[6] { Messages.ArenaFirstPlace, Messages.ArenaSecondPlace, Messages.ArenaThirdPlace, Messages.ArenaFourthPlace, Messages.ArenaFifthPlace, Messages.ArenaSixthPlace };
                 
-                int[] expRewards = new int[Entries.Count];
+                int[] expRewards = new int[Entries.Length];
                 expRewards[0] = 1;
                 int expAwardMul = 1;
-                for(int i = 1; i < Entries.Count; i++)
+                for(int i = 1; i < Entries.Length; i++)
                 {
                     expRewards[i] = 2 * expAwardMul;
 
@@ -270,7 +289,7 @@ namespace HISP.Game
 
                         if (place == 0) // WINNER!
                         {
-                            int prize = EntryCost * Entries.Count;
+                            int prize = EntryCost * Entries.Length;
                             entry.EnteredUser.AddMoney(prize);
 
 
@@ -279,30 +298,30 @@ namespace HISP.Game
 
                             // Awards:
 
-                            if (Entries.Count >= 2 && Type == "JUMPING")
+                            if (Entries.Length >= 2 && Type == "JUMPING")
                                 entry.EnteredUser.Awards.AddAward(Award.GetAwardById(5)); // Good Jumper
 
-                            if (Entries.Count >= 4 && Type == "JUMPING")
+                            if (Entries.Length >= 4 && Type == "JUMPING")
                                 entry.EnteredUser.Awards.AddAward(Award.GetAwardById(6)); // Great Jumper
 
 
-                            if (Entries.Count >= 2 && Type == "RACING")
+                            if (Entries.Length >= 2 && Type == "RACING")
                                 entry.EnteredUser.Awards.AddAward(Award.GetAwardById(7)); // Good Racer
 
-                            if (Entries.Count >= 4 && Type == "RACING")
+                            if (Entries.Length >= 4 && Type == "RACING")
                                 entry.EnteredUser.Awards.AddAward(Award.GetAwardById(8)); // Great Racer
 
 
-                            if (Entries.Count >= 2 && Type == "DRESSAGE")
+                            if (Entries.Length >= 2 && Type == "DRESSAGE")
                                 entry.EnteredUser.Awards.AddAward(Award.GetAwardById(9)); // Good Dressage
 
-                            if (Entries.Count >= 4 && Type == "DRESSAGE")
+                            if (Entries.Length >= 4 && Type == "DRESSAGE")
                                 entry.EnteredUser.Awards.AddAward(Award.GetAwardById(10)); // Great Dressage
 
-                            if (Entries.Count >= 2 && Type == "DRAFT")
+                            if (Entries.Length >= 2 && Type == "DRAFT")
                                 entry.EnteredUser.Awards.AddAward(Award.GetAwardById(38)); // Strong Horse Award
 
-                            if (Entries.Count >= 4 && Type == "DRAFT")
+                            if (Entries.Length >= 4 && Type == "DRAFT")
                                 entry.EnteredUser.Awards.AddAward(Award.GetAwardById(39)); // Strongest Horse Award
                         }
                         else
@@ -336,7 +355,7 @@ namespace HISP.Game
             foreach(ArenaEntry entry in Entries)
                 if(entry.EnteredUser.Id == user.Id)
                 {
-                    Entries.Remove(entry);
+                    entries.Remove(entry);
                     break;
                 }
         }
@@ -347,7 +366,7 @@ namespace HISP.Game
                 ArenaEntry arenaEntry = new ArenaEntry();
                 arenaEntry.EnteredUser = user;
                 arenaEntry.EnteredHorse = horse;
-                Entries.Add(arenaEntry);
+                entries.Add(arenaEntry);
             }
         }
 

@@ -6,7 +6,7 @@ using HISP.Security;
 using HISP.Server;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+
 using System.Text;
 using System.Threading.Tasks;
 
@@ -58,13 +58,13 @@ namespace HISP.Player
                 Trader.LoggedinClient.SendPacket(negativeMoneyNotAllowed);
                 fail = true;
             }
-            if (OtherTrade.Trader.Bids.Count > 0)
+            if (OtherTrade.Trader.Bids.Length > 0)
             {
                 byte[] tradeNotAllowedWhileOtherBidding = PacketBuilder.CreateChat(Messages.TradeNotAllowedWhileOtherBidding, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeNotAllowedWhileOtherBidding);
                 fail = true;
             }
-            if (Trader.Bids.Count > 0)
+            if (Trader.Bids.Length > 0)
             {
                 byte[] tradeNotAllowedWhileBidding = PacketBuilder.CreateChat(Messages.TradeNotAllowedWhileBidding, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeNotAllowedWhileBidding);

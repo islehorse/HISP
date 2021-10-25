@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+
 using HISP.Game;
 using HISP.Server;
 using HISP.Player.Equips;
 using HISP.Game.Services;
 using HISP.Game.Inventory;
 using HISP.Game.Horse;
-using System.Linq;
+
 
 namespace HISP.Player
 {
     public class User
     {
+        private List<Auction.AuctionBid> bids = new List<Auction.AuctionBid>();
 
         public int Id;
         public string Username;
@@ -35,10 +38,16 @@ namespace HISP.Player
         public bool NoClip = false;
         public string Gender;
         public bool MetaPriority = false;
-        public List<Auction.AuctionBid> Bids = new List<Auction.AuctionBid>();
         public bool Idle;
         public int Facing;
 
+        public Auction.AuctionBid[] Bids
+        {
+            get
+            {
+                return bids.ToArray();
+            }
+        }
         public int MaxItems
         {
             get
@@ -580,7 +589,15 @@ namespace HISP.Player
             return SecCode;
         }
 
+        public void AddBid(Auction.AuctionBid bid)
+        {
+            bids.Add(bid);
+        }
 
+        public void RemoveBid(Auction.AuctionBid bid)
+        {
+            bids.Remove(bid);
+        }
         public User(GameClient baseClient, int UserId)
         {
             if (!Database.CheckUserExist(UserId))
@@ -663,7 +680,7 @@ namespace HISP.Player
 
                         if(bid.BidAmount > 0)
                         {
-                            Bids.Add(bid);
+                            bids.Add(bid);
                             auctionEntry.Bidders.Add(bid);
                         }
 

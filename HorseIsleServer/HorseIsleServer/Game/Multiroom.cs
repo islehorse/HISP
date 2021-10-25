@@ -1,12 +1,31 @@
 ﻿using HISP.Player;
 using HISP.Server;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game
 {
     public class Multiroom
     {
-        public static List<Multiroom> Multirooms = new List<Multiroom>();
+        private static List<Multiroom> multirooms = new List<Multiroom>();
+        private List<User> joinedUsers = new List<User>();
+
+        public int x;
+        public int y;
+        public User[] JoinedUsers
+        {
+            get
+            {
+                return joinedUsers.ToArray();
+            }
+        }
+        public static Multiroom[] Multirooms
+        { 
+            get
+            {
+                return multirooms.ToArray();
+            }
+        }
         public static Multiroom GetMultiroom(int x, int y)
         {
             foreach (Multiroom multiroom in Multirooms)
@@ -51,20 +70,14 @@ namespace HISP.Game
             this.x = x;
             this.y = y;
 
-            Multirooms.Add(this);
+            multirooms.Add(this);
         }
-
-        public int x;
-        public int y;
-
-        public List<User> JoinedUsers = new List<User>();
-
         public void Join(User user)
         {
             if (!JoinedUsers.Contains(user))
             {
                 Logger.DebugPrint(user.Username + " Joined multiroom @ " + x.ToString() + "," + y.ToString());
-                JoinedUsers.Add(user);
+                joinedUsers.Add(user);
 
                 foreach (User joinedUser in JoinedUsers)
                     if (joinedUser.Id != user.Id)
@@ -81,7 +94,7 @@ namespace HISP.Game
             if(JoinedUsers.Contains(user))
             {
                 Logger.DebugPrint(user.Username + " Left multiroom @ " + x.ToString() + "," + y.ToString());
-                JoinedUsers.Remove(user);
+                joinedUsers.Remove(user);
             }
 
             foreach (User joinedUser in JoinedUsers)

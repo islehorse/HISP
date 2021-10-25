@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using HISP.Server;
 
 namespace HISP.Game.Items
@@ -41,7 +42,6 @@ namespace HISP.Game.Items
 
         public static DroppedItem[] GetItemsAt(int x, int y)
         {
-            
             DroppedItem[] droppedItems = droppedItemsList.ToArray();
             List<DroppedItem> items = new List<DroppedItem>();
             for(int i = 0; i < droppedItems.Length; i++)

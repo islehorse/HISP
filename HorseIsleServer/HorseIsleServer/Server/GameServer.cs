@@ -454,7 +454,7 @@ namespace HISP.Server
                     {
                         case '3': // Money
 
-                            if (sender.LoggedinUser.Bids.Count > 0)
+                            if (sender.LoggedinUser.Bids.Length > 0)
                             {
                                 byte[] cantBuyWhileAuctioning = PacketBuilder.CreateChat(Messages.AuctionNoOtherTransactionAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(cantBuyWhileAuctioning);
@@ -3832,8 +3832,6 @@ namespace HISP.Server
                             break;
                         }
 
-                        
-
                         if (!Database.SavedDrawingsExist(sender.LoggedinUser.Id))
                             Database.CreateSavedDrawings(sender.LoggedinUser.Id);
 
@@ -3877,12 +3875,10 @@ namespace HISP.Server
 
                         int roomId = packet[3] - 40;
                         Drawingroom room;
-                        try
-                        {
+                        try{
                             room = Drawingroom.GetDrawingRoomById(roomId);
                         }
-                        catch (KeyNotFoundException)
-                        {
+                        catch (KeyNotFoundException){
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to load an invalid drawing room: " + roomId);
                             break;
                         }
@@ -3909,20 +3905,17 @@ namespace HISP.Server
                                 break;
                         }
 
-                        if (room.Drawing.Length + drawingToAdd.Length < 65535) // will this max out the db?
-                        {
+                        try {
                             room.Drawing += drawingToAdd;
-                            Database.SetLastPlayer("D" + room.Id.ToString(), sender.LoggedinUser.Id);
-                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                         }
-                        else
-                        {
+                        catch(DrawingroomFullException){
                             byte[] roomFullMessage = PacketBuilder.CreateChat(Messages.DrawingPlzClearLoad, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(roomFullMessage);
                             break;
                         }
-
-                        room.Drawing += drawingToAdd;
+                        
+                        Database.SetLastPlayer("D" + room.Id.ToString(), sender.LoggedinUser.Id);
+                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                         UpdateDrawingForAll("D" + room.Id, sender, drawingToAdd, true);
 
                         byte[] loadedDrawingMessage = PacketBuilder.CreateChat(Messages.FormatDrawingRoomLoaded(slotNo), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -3962,22 +3955,19 @@ namespace HISP.Server
                         
                         string drawing = packetStr.Substring(3, packetStr.Length - 5);
                         if (drawing.Contains("X")) // Clear byte
-                        {
                             room.Drawing = "";
-                        }
-                        else if(room.Drawing.Length + drawing.Length < 65535) // will this max out the db?
-                        {
+
+                        try { 
                             room.Drawing += drawing;
-                            Database.SetLastPlayer("D" + room.Id.ToString(), sender.LoggedinUser.Id);
-                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                         }
-                        else
+                        catch (DrawingroomFullException)
                         {
                             byte[] roomFullMessage = PacketBuilder.CreateChat(Messages.DrawingPlzClearDraw, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(roomFullMessage);
                             break;
                         }
-
+                        Database.SetLastPlayer("D" + room.Id.ToString(), sender.LoggedinUser.Id);
+                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                         UpdateDrawingForAll("D" + room.Id, sender, drawing, false);
 
                     }
@@ -5279,7 +5269,7 @@ namespace HISP.Server
                     }
                 }
 
-                if (sender.LoggedinUser.Bids.Count > 0)
+                if (sender.LoggedinUser.Bids.Length > 0)
                 {
                     byte[] cantBuyWhileAuctioning = PacketBuilder.CreateChat(Messages.AuctionNoOtherTransactionAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(cantBuyWhileAuctioning);
@@ -6921,7 +6911,7 @@ namespace HISP.Server
                     if (shop != null)
                     {
                         int buyCost = shop.CalculateBuyCost(itemInfo) * count;
-                        if (sender.LoggedinUser.Bids.Count > 0)
+                        if (sender.LoggedinUser.Bids.Length > 0)
                         {
                             byte[] cantBuyWhileAuctioning = PacketBuilder.CreateChat(Messages.AuctionNoOtherTransactionAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(cantBuyWhileAuctioning);

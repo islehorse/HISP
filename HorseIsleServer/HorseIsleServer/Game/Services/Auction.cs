@@ -172,7 +172,7 @@ namespace HISP.Game.Services
                     foreach(AuctionBid bid in Bidders) // Cleanup some stuffs
                     {
                         if(bid.BidUser != null)
-                            bid.BidUser.Bids.Remove(bid);
+                            bid.BidUser.RemoveBid(bid);
                     }
                     Bidders.Clear();
                 }
@@ -199,7 +199,7 @@ namespace HISP.Game.Services
                 else
                     newBid.BidAmount = 0;
                 newBid.PlaceBid(bidAmount);
-                bidder.Bids.Add(newBid);
+                bidder.AddBid(newBid);
                 Bidders.Add(newBid);
                 auctionRoomPlacedIn.UpdateAuctionRoom();
             }

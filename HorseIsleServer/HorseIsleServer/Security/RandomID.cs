@@ -1,5 +1,4 @@
-﻿using System;
-namespace HISP.Security
+﻿namespace HISP.Security
 {
     public class RandomID
     {
