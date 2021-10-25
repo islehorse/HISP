@@ -8,11 +8,19 @@ namespace HISP.Game.Services
 {
     public class Auction
     {
-        public static List<Auction> AuctionRooms = new List<Auction>();
+        private static List<Auction> auctionRooms = new List<Auction>();
+        public static Auction[] AuctionRooms
+        {
+            get
+            {
+                return auctionRooms.ToArray();
+            }
+        }
+
         public Auction(int id)
         {
             RoomId = id;
-            AuctionEntries = new List<AuctionEntry>();
+            auctionEntries = new List<AuctionEntry>();
             Database.LoadAuctionRoom(this, RoomId);
         }
 
@@ -99,10 +107,12 @@ namespace HISP.Game.Services
                 BidUser.LoggedinClient.SendPacket(bidPlacedMsg);
 
             }
+
+
         }
         public class AuctionEntry
         {
-            public AuctionEntry(int timeRemaining, int highestBid, int highestBidder, int randomId=-1)
+            public AuctionEntry(int timeRemaining, int highestBid, int highestBidder, int randomId = -1)
             {
                 RandomId = RandomID.NextRandomId(randomId);
                 this.timeRemaining = timeRemaining;
@@ -112,8 +122,14 @@ namespace HISP.Game.Services
 
             public HorseInstance Horse;
             public int OwnerId;
-            public List<AuctionBid> Bidders = new List<AuctionBid>();
-
+            private List<AuctionBid> bidders = new List<AuctionBid>();
+            public AuctionBid[] Bidders
+            {
+                get
+                {
+                    return bidders.ToArray();
+                }
+            }
             public bool Completed 
             {
                 get
@@ -174,10 +190,13 @@ namespace HISP.Game.Services
                         if(bid.BidUser != null)
                             bid.BidUser.RemoveBid(bid);
                     }
-                    Bidders.Clear();
+                    bidders.Clear();
                 }
             }
-
+            public void AddBid(AuctionBid bid)
+            {
+                bidders.Add(bid);
+            }
             public void Bid(User bidder, int bidAmount)
             {
                 
@@ -200,7 +219,7 @@ namespace HISP.Game.Services
                     newBid.BidAmount = 0;
                 newBid.PlaceBid(bidAmount);
                 bidder.AddBid(newBid);
-                Bidders.Add(newBid);
+                bidders.Add(newBid);
                 auctionRoomPlacedIn.UpdateAuctionRoom();
             }
 
@@ -273,21 +292,30 @@ namespace HISP.Game.Services
         public void DeleteEntry(AuctionEntry entry)
         {
             Database.DeleteAuctionRoom(entry.RandomId);
-            AuctionEntries.Remove(entry);
+            auctionEntries.Remove(entry);
         }
 
+        public void AddExistingEntry(AuctionEntry entry)
+        {
+            auctionEntries.Add(entry);
+        }
         public void AddEntry(AuctionEntry entry)
         {
             entry.auctionRoomPlacedIn = this;
             Database.AddAuctionRoom(entry, this.RoomId);
-            AuctionEntries.Add(entry);
-            
+            auctionEntries.Add(entry);
         }
 
-        public List<AuctionEntry> AuctionEntries;
+        private List<AuctionEntry> auctionEntries;
         public int RoomId;
 
-
+        public AuctionEntry[] AuctionEntries
+        {
+            get
+            {
+                return auctionEntries.ToArray();
+            }
+        }
         public bool HasAuctionEntry(int randomId)
         {
             foreach (AuctionEntry entry in AuctionEntries)
@@ -342,7 +370,7 @@ namespace HISP.Game.Services
                     {
                         int code = int.Parse(tile.Code.Split('-')[1]);
                         Auction loadAuctionRoom = new Auction(code);
-                        AuctionRooms.Add(loadAuctionRoom);
+                        auctionRooms.Add(loadAuctionRoom);
                         Logger.InfoPrint("Loading Auction Room: " + code.ToString());
                     }
                 }

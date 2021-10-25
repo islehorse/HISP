@@ -15,6 +15,33 @@ namespace HISP.Player
     public class User
     {
         private List<Auction.AuctionBid> bids = new List<Auction.AuctionBid>();
+        private List<User> beingSocializedBy = new List<User>();
+
+
+        private int chatViolations;
+        private int charId;
+        private int subscribedUntil;
+        private bool subscribed;
+        private string profilePage;
+        private string privateNotes;
+        private int x;
+        private bool stealth = false;
+        private int y;
+        private int questPoints;
+        private double bankMoney;
+        private int experience;
+        private int hunger;
+        private int thirst;
+        private int tired;
+
+        public Trade TradingWith = null;
+
+        public int AttemptingToOfferItem;
+        public bool TradeMenuPriority = false;
+
+        public byte[] SecCodeSeeds = new byte[3];
+        public int SecCodeInc = 0;
+        public int SecCodeCount = 0;
 
         public int Id;
         public string Username;
@@ -40,7 +67,48 @@ namespace HISP.Player
         public bool MetaPriority = false;
         public bool Idle;
         public int Facing;
-
+        public HorseInfo.Breed PawneerOrderBreed = null;
+        public string PawneerOrderColor = "";
+        public string PawneerOrderGender = "";
+        public bool InRealTimeQuiz = false;
+        public int PendingTradeTo;
+        public Mailbox MailBox;
+        public Friends Friends;
+        public string Password; // For chat filter.
+        public PlayerInventory Inventory;
+        public Npc.NpcEntry LastTalkedToNpc;
+        public Shop LastShoppedAt;
+        public Inn LastVisitedInn;
+        public HorseInventory HorseInventory;
+        public HorseInstance LastViewedHorse;
+        public HorseInstance LastViewedHorseOther;
+        public int LastRiddenHorse = 0;
+        public HorseInstance CurrentlyRidingHorse;
+        public Tracking TrackedItems;
+        public Ranch OwnedRanch = null;
+        public PlayerQuests Quests;
+        public Highscore Highscores;
+        public MutedPlayers MutePlayer;
+        public Riddler LastRiddle;
+        public Award Awards;
+        public User SocializingWith;
+        public User PendingBuddyRequestTo;
+        public Dance ActiveDance;
+        public bool CanUseAdsChat = true;
+        public int CapturingHorseId;
+        public DateTime LoginTime;
+        public string LastSeenWeather;
+        public string AutoReplyText = "";
+        public int LastClickedRanchBuilding = 0;
+        public bool ListingAuction = false;
+        public int TotalGlobalChatMessages = 1;
+        public User[] BeingSocializedBy
+        {
+            get
+            {
+                return beingSocializedBy.ToArray();
+            }
+        }
         public Auction.AuctionBid[] Bids
         {
             get
@@ -84,43 +152,7 @@ namespace HISP.Player
                 return 7; // will change when ranches are implemented.
             }
         }
-        public HorseInfo.Breed PawneerOrderBreed = null;
-        public string PawneerOrderColor = "";
-        public string PawneerOrderGender = "";
-        public bool InRealTimeQuiz = false;
-        public int PendingTradeTo;
-        public Mailbox MailBox;
-        public Friends Friends;
-        public string Password; // For chat filter.
-        public PlayerInventory Inventory;
-        public Npc.NpcEntry LastTalkedToNpc;
-        public Shop LastShoppedAt;
-        public Inn LastVisitedInn;
-        public HorseInventory HorseInventory;
-        public HorseInstance LastViewedHorse;
-        public HorseInstance LastViewedHorseOther;
-        public int LastRiddenHorse = 0;
-        public HorseInstance CurrentlyRidingHorse;
-        public Tracking TrackedItems;
-        public Ranch OwnedRanch = null;
-        public PlayerQuests Quests;
-        public Highscore Highscores;
-        public MutedPlayers MutePlayer;
-        public Riddler LastRiddle;
-        public Award Awards;
-        public User SocializingWith;
-        public List<User> BeingSocializedBy = new List<User>();
-        public User PendingBuddyRequestTo;
-        public Dance ActiveDance;
-        public bool CanUseAdsChat = true;
-        public int CapturingHorseId;
-        public DateTime LoginTime;
-        public string LastSeenWeather;
-        public string AutoReplyText = "";
-        public int LastClickedRanchBuilding = 0;
-        public bool ListingAuction = false;
-        public int TotalGlobalChatMessages = 1;
-
+        
         public void TakeMoney(int amount)
         {
             int money = Money;
@@ -442,33 +474,27 @@ namespace HISP.Player
                 tired = value;
             }
         }
+        public void ClearSocailizedWith()
+        {
+            beingSocializedBy.Clear();
+        }
+        public void RemoveSocailizedWith(User user)
+        {
+            beingSocializedBy.Remove(user);
+        }
+        public void AddSocailizedWith(User user)
+        {
+            beingSocializedBy.Add(user);
+        }
+        public void AddBid(Auction.AuctionBid bid)
+        {
+            bids.Add(bid);
+        }
 
-
-        private int chatViolations;
-        private int charId;
-        private int subscribedUntil;
-        private bool subscribed;
-        private string profilePage;
-        private string privateNotes;
-        private int x;
-        private bool stealth = false;
-        private int y;
-        private int questPoints;
-        private double bankMoney;
-        private int experience;
-        private int hunger;
-        private int thirst;
-        private int tired;
-
-        public Trade TradingWith = null;
-
-        public int AttemptingToOfferItem;
-        public bool TradeMenuPriority = false;
-
-        public byte[] SecCodeSeeds = new byte[3];
-        public  int SecCodeInc = 0;
-        public int SecCodeCount = 0;
-
+        public void RemoveBid(Auction.AuctionBid bid)
+        {
+            bids.Remove(bid);
+        }
         public int GetPlayerListIcon()
         {
             int icon = -1;
@@ -589,15 +615,7 @@ namespace HISP.Player
             return SecCode;
         }
 
-        public void AddBid(Auction.AuctionBid bid)
-        {
-            bids.Add(bid);
-        }
-
-        public void RemoveBid(Auction.AuctionBid bid)
-        {
-            bids.Remove(bid);
-        }
+        
         public User(GameClient baseClient, int UserId)
         {
             if (!Database.CheckUserExist(UserId))
@@ -681,7 +699,7 @@ namespace HISP.Player
                         if(bid.BidAmount > 0)
                         {
                             bids.Add(bid);
-                            auctionEntry.Bidders.Add(bid);
+                            auctionEntry.AddBid(bid);
                         }
 
                     }
