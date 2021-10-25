@@ -590,7 +590,7 @@ namespace HISP.Server
                     {
                         sender.LoggedinUser.SocializingWith = GetUserById(playerId);
                         
-                        sender.LoggedinUser.SocializingWith.BeingSocializedBy.Add(sender.LoggedinUser);
+                        sender.LoggedinUser.SocializingWith.AddSocailizedWith(sender.LoggedinUser);
                         sender.LoggedinUser.MetaPriority = true;
                         byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildSocialMenu(sender.LoggedinUser.CurrentlyRidingHorse != null));
                         sender.SendPacket(metaPacket);
@@ -4848,9 +4848,9 @@ namespace HISP.Server
             loggedInUser.PendingBuddyRequestTo = null;
 
             // Close Social Windows
-            foreach (User sUser in loggedInUser.BeingSocializedBy.ToArray())
+            foreach (User sUser in loggedInUser.BeingSocializedBy)
                 UpdateArea(sUser.LoggedinClient);
-            loggedInUser.BeingSocializedBy.Clear();
+            loggedInUser.ClearSocailizedWith();
 
 
             if (loggedInUser.CurrentlyRidingHorse != null)

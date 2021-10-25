@@ -1957,7 +1957,7 @@ namespace HISP.Server
                     auctionEntry.OwnerId = reader.GetInt32(3);
                     auctionEntry.Completed = reader.GetString(7) == "YES";
                     auctionEntry.auctionRoomPlacedIn = auction;
-                    auction.AuctionEntries.Add(auctionEntry);
+                    auction.AddExistingEntry(auctionEntry);
 
                 }
 
