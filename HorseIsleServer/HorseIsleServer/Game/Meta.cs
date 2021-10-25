@@ -4,12 +4,13 @@ using HISP.Game.Services;
 using HISP.Player;
 using HISP.Server;
 using HISP.Game.Items;
+using HISP.Game.Chat;
+using HISP.Game.Events;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
-using HISP.Game.Chat;
-using HISP.Game.Events;
 
 namespace HISP.Game
 {
@@ -2834,7 +2835,7 @@ namespace HISP.Game
                 }
 
                 message += Messages.FormatArenaCurrentlyTakingEntries(lastHours, lastMinutes, amOrPm, arena.RaceEvery - minutes);
-                if (arena.Entries.Count > arena.Slots)
+                if (arena.Entries.Length > arena.Slots)
                 {
                     message += Messages.ArenaCompetitionFull;
                 }

@@ -1,10 +1,11 @@
-﻿using HISP.Game.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+
+using HISP.Game.Services;
 using HISP.Server;
 using HISP.Game.Horse;
-using System.Threading;
 using HISP.Player;
 
 namespace HISP.Game.Events

@@ -117,7 +117,7 @@ namespace HISP.Game
         }
         private void updateOthers()
         {
-            foreach(User user in this.Multiroom.JoinedUsers.ToArray())
+            foreach(User user in this.Multiroom.JoinedUsers)
                 if (IsPlayerInGame(user))
                     if(user.Id != Invitee.Id && user.Id != Inviting.Id)
                         GameServer.UpdateArea(user.LoggedinClient);
