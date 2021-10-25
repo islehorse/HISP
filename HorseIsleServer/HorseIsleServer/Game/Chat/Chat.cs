@@ -177,6 +177,9 @@ namespace HISP.Game.Chat
 
                 else if (message.ToUpper().StartsWith("!DANCE"))
                     return Command.Dance(message, args, user);
+
+                else if (message.ToUpper().StartsWith("!VERSION"))
+                    return Command.Version(message, args, user);
             }
             return false;
         }

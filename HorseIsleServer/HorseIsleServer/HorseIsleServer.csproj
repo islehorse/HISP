@@ -3,7 +3,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>HISP</RootNamespace>
     <LangVersion>8.0</LangVersion>
-    <Platforms>x64;x86;ARM;ARM64;AnyCPU</Platforms>
+    <Platforms>x64;x86;ARM;ARM64</Platforms>
     <Configurations>Windows;Debug;Linux;MacOS</Configurations>
   </PropertyGroup>
   <ItemGroup>
@@ -39,6 +39,8 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoWin32Manifest>true</NoWin32Manifest>
     <ApplicationIcon>icon.ico</ApplicationIcon>
+    <StartupObject>HISP.Program</StartupObject>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x86'">
     <ApplicationIcon>icon.ico</ApplicationIcon>
@@ -46,6 +48,7 @@
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <PlatformTarget>x86</PlatformTarget>
+    <DefineConstants>OS_WINDOWS;ARCH_X86</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x64'">
     <ApplicationIcon>icon.ico</ApplicationIcon>
@@ -53,34 +56,37 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>OS_WINDOWS;ARCH_X86_64</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|x64'">
     <TargetFramework>net5.0</TargetFramework>
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>    
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>OS_LINUX;ARCH_X86_64</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacOS|x64'">
     <TargetFramework>net5.0</TargetFramework>
     <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
     <Optimize>true</Optimize>
-    <PlatformTarget>x64</PlatformTarget>    
+    <PlatformTarget>x64</PlatformTarget>
+    <DefineConstants>OS_MACOS;ARCH_x86_64</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM'">
     <TargetFramework>net5.0</TargetFramework>
     <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <PlatformTarget>ARM</PlatformTarget>
+    <DefineConstants>OS_LINUX;ARCH_ARM</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM64'">
     <TargetFramework>net5.0</TargetFramework>
     <RuntimeIdentifier>linux-arm64</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <PlatformTarget>ARM64</PlatformTarget>
+    <DefineConstants>OS_LINUX;ARCH_ARM64</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All|Any CPU'">
-    <TargetFramework>net5.0</TargetFramework>
-    <RuntimeIdentifiers>win-x86;win-x64;win-arm;win-arm64;linux-x64;linux-arm;linux-arm64;osx-x64</RuntimeIdentifiers>
-    <Optimize>true</Optimize>
-  </PropertyGroup>
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="git rev-parse --verify HEAD&gt;&quot;$(ProjectDir)Resources\GitCommit&quot;" />
+  </Target>
 </Project>

@@ -160,6 +160,17 @@ namespace HISP.Game.Chat
             return true;
         }
 
+        public static bool Version(string message, string[] args, User user)
+        {
+            // Get current version and send to client
+            byte[] versionPacket = PacketBuilder.CreateChat(ServerVersion.GetBuildString(), PacketBuilder.CHAT_BOTTOM_RIGHT);
+            user.LoggedinClient.SendPacket(versionPacket);
+
+            // Send Command complete message to client.
+            byte[] versionCommandCompletePacket = PacketBuilder.CreateChat(Messages.FormatPlayerCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(versionCommandCompletePacket);
+            return true;
+        }
         public static bool Ban(string message, string[] args, User user)
         {
             if (args.Length <= 0)

@@ -104,5 +104,15 @@ namespace HISP.Properties {
                 return ResourceManager.GetString("DefaultServerProperties", resourceCulture);
             }
         }
+		
+		/// <summary>
+        ///   UNKNOWN COMMIT HASH
+        /// </summary>
+        internal static string GitCommit {
+            get {
+                return ResourceManager.GetString("GitCommit", resourceCulture);
+            }
+        }
+
     }
 }
