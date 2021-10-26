@@ -21,23 +21,23 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 5.0.x
+        dotnet-version: 6.0.x
 
     - name: Restore dependencies
       run: dotnet restore
       
       
-    - name: Build mac-64
+    - name: Build mac-x64
       continue-on-error: false
       run: |
-        dotnet publish -p:PublishProfile=MacOS.pubxml
-        cp ../HorseIsleData/*.json "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/"
-        cp ../HorseIsleData/*.MAP "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/"
-        mkdir "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/www"
-        cp -R ../HorseIsleWeb/* "HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/www"
+        dotnet publish -p:PublishProfile=Osx64.pubxml
+        cp ../HorseIsleData/*.json "HorseIsleServer/bin/x64/MacOS/net6.0/osx-x64/publish/"
+        cp ../HorseIsleData/*.MAP "HorseIsleServer/bin/x64/MacOS/net6.0/osx-x64/publish/"
+        mkdir "HorseIsleServer/bin/x64/MacOS/net6.0/osx-x64/publish/www"
+        cp -R ../HorseIsleWeb/* "HorseIsleServer/bin/x64/MacOS/net6.0/osx-x64/publish/www"
     
-    - name: upload mac-64
+    - name: upload mac-x64
       uses: actions/upload-artifact@v2
       with:
         name: mac-x64
-        path: HorseIsleServer/HorseIsleServer/bin/x64/MacOS/net5.0/osx-x64/publish/
+        path: HorseIsleServer/HorseIsleServer/bin/x64/MacOS/net6.0/osx-x64/publish/
