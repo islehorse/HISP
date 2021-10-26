@@ -41,6 +41,13 @@ jobs:
         copy ..\HorseIsleData\gamedata.json "HorseIsleServer\bin\x86\Windows\net5.0\win-x86\publish\gamedata.json"
         copy ..\HorseIsleData\HI1.MAP "HorseIsleServer\bin\x86\Windows\net5.0\win-x86\publish\HI1.MAP"
         copy ..\HorseIsleWeb "HorseIsleServer\bin\x86\Windows\net5.0\win-x86\publish\www" -Recurse
+    - name: Build win-arm
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=WinARM.pubxml
+        copy ..\HorseIsleData\gamedata.json "HorseIsleServer\bin\arm\Windows\net5.0\windows-arm\publish\gamedata.json"
+        copy ..\HorseIsleData\HI1.MAP "HorseIsleServer\bin\arm\Windows\net5.0\windows-arm\publish\HI1.MAP"
+        copy ..\HorseIsleWeb "HorseIsleServer\bin\arm\Windows\net5.0\windows-arm\publish\www" -Recurse
     - name: Upload win-x64
       uses: actions/upload-artifact@v2
       with:
@@ -52,3 +59,9 @@ jobs:
       with:
         name: win-x86
         path: HorseIsleServer\HorseIsleServer\bin\x86\Windows\net5.0\win-x86\publish\
+        
+    - name: Upload win-arm
+      uses: actions/upload-artifact@v2
+      with:
+        name: win-arm
+        path: HorseIsleServer\HorseIsleServer\bin\arm\Windows\net5.0\win-arm\publish\
