@@ -24,7 +24,7 @@ namespace HISP.Server
 #elif ARCH_ARM
             return "ARM";
 #elif ARCH_ARM64
-            return "ARM64"
+            return "ARM64";
 #else
             return "UNK_ARCH";
 #endif
