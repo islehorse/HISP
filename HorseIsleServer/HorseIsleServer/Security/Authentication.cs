@@ -57,14 +57,13 @@ namespace HISP.Security
         {
             byte[] plaintextBytes = Encoding.UTF8.GetBytes(plaintext);
 
-            SHA512 sha512 = new SHA512Managed();
+            SHA512 sha512 = SHA512.Create();
             byte[] hash = sha512.ComputeHash(plaintextBytes);
 
             for (int i = 0; i < hash.Length; i++)
             {
                 hash[i] ^= salt[i];
             }
-
 
             byte[] finalHash = sha512.ComputeHash(hash);
 
