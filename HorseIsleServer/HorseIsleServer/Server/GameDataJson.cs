@@ -136,7 +136,7 @@ namespace HISP.Server
                 Chat.Reason reason = new Chat.Reason();
                 reason.Name = gameData.messages.chat.reason_messages[i].name;
                 reason.Message = gameData.messages.chat.reason_messages[i].message;
-                Chat.Reasons.Add(reason);
+                Chat.AddReason(reason);
 
                 Logger.DebugPrint("Registered Chat Warning Reason: " + reason.Name + " (Message: " + reason.Message + ")");
             }
@@ -149,7 +149,7 @@ namespace HISP.Server
                 filter.FilteredWord = gameData.messages.chat.filter[i].word;
                 filter.MatchAll = gameData.messages.chat.filter[i].match_all;
                 filter.Reason = Chat.GetReason((string)gameData.messages.chat.filter[i].reason_type);
-                Chat.FilteredWords.Add(filter);
+                Chat.AddFilter(filter);
 
                 Logger.DebugPrint("Registered Filtered Word: " + filter.FilteredWord + " With reason: " + filter.Reason.Name + " (Matching all: " + filter.MatchAll + ")");
             }
@@ -161,7 +161,7 @@ namespace HISP.Server
                 Chat.Correction correction = new Chat.Correction();
                 correction.FilteredWord = gameData.messages.chat.correct[i].word;
                 correction.ReplacedWord = gameData.messages.chat.correct[i].new_word;
-                Chat.CorrectedWords.Add(correction);
+                Chat.AddCorrection(correction);
 
                 Logger.DebugPrint("Registered Word Correction: " + correction.FilteredWord + " to " + correction.ReplacedWord);
             }
@@ -230,7 +230,7 @@ namespace HISP.Server
                 item.SpawnParamaters.SpawnNearSpecialTile = gameData.item.item_list[i].spawn_parameters.spawn_near_special_tile;
 
                 Logger.DebugPrint("Registered Item ID: " + item.Id + " Name: " + item.Name + " spawns on: " + item.SpawnParamaters.SpawnOnTileType);
-                Item.Items.Add(item);
+                Item.AddItemInfo(item);
             }
             // Register Throwables
             int totalThrowable = gameData.item.throwable.Count;
@@ -241,7 +241,7 @@ namespace HISP.Server
                 throwableItem.HitMessage = gameData.item.throwable[i].message_hit;
                 throwableItem.ThrowMessage = gameData.item.throwable[i].message_throw;
                 throwableItem.HitYourselfMessage = gameData.item.throwable[i].message_hit_yourself;
-                Item.ThrowableItems.Add(throwableItem);
+                Item.AddThrowableItem(throwableItem);
             }
 
             // Register NPCs
@@ -317,7 +317,7 @@ namespace HISP.Server
                     chats.Add(npcChat);
                 }
                 npcEntry.Chatpoints = chats.ToArray();
-                Npc.NpcList.Add(npcEntry);
+                Npc.AddNpc(npcEntry);
             }
 
             // Register Quests
@@ -392,7 +392,7 @@ namespace HISP.Server
                     quest.ChainedQuestId = gameData.quest_list[i].chained_questid;
                 quest.Minigame = gameData.quest_list[i].minigame;
                 Logger.DebugPrint("Registered Quest: " + quest.Id + " - " + quest.Title);
-                Quest.QuestList.Add(quest);
+                Quest.AddQuestEntry(quest);
             }
 
             int totalShops = gameData.shop_list.Count;
@@ -479,7 +479,7 @@ namespace HISP.Server
                 entry.Id = gameData.poetry[i].id;
                 entry.Word = gameData.poetry[i].word;
                 entry.Room = gameData.poetry[i].room_id;
-                Brickpoet.PoetList.Add(entry);
+                Brickpoet.AddPoetEntry(entry);
 
                 Logger.DebugPrint("Registered poet: " + entry.Id.ToString() + " word: " + entry.Word + " in room " + entry.Room.ToString());
             }
@@ -512,7 +512,7 @@ namespace HISP.Server
                 horseBreed.Swf = gameData.horses.breeds[i].swf;
                 horseBreed.Type = gameData.horses.breeds[i].type;
 
-                HorseInfo.Breeds.Add(horseBreed);
+                HorseInfo.AddBreed(horseBreed);
                 Logger.DebugPrint("Registered Horse Breed: #" + horseBreed.Id + ": " + horseBreed.Name);
             }
             // Register Breed Prices @ Pawneer Order
@@ -522,7 +522,7 @@ namespace HISP.Server
                 int id = gameData.horses.pawneer_base_price[i].breed_id;
                 int price = gameData.horses.pawneer_base_price[i].price;
                 Pawneer pawneerPricing = new Pawneer(id, price);
-                Pawneer.PawneerPriceModels.Add(pawneerPricing);
+                Pawneer.AddPawneerPriceModel(pawneerPricing);
                 Logger.DebugPrint("Registered Pawneer Base Price " + pawneerPricing.BreedId + " for $" + pawneerPricing.BasePrice.ToString("N0", CultureInfo.InvariantCulture));
             }
 
@@ -533,7 +533,7 @@ namespace HISP.Server
                 category.Name = gameData.horses.categorys[i].name;
                 category.MetaOthers = gameData.horses.categorys[i].message_others;
                 category.Meta = gameData.horses.categorys[i].message;
-                HorseInfo.HorseCategories.Add(category);
+                HorseInfo.AddHorseCategory(category);
                 Logger.DebugPrint("Registered horse category type: " + category.Name);
             }
             int totalTrackedItems = gameData.messages.meta.misc_stats.tracked_items.Count;
@@ -626,12 +626,12 @@ namespace HISP.Server
                         Workshop.RequiredItem requiredItem = new Workshop.RequiredItem();
                         requiredItem.RequiredItemId = gameData.workshop[i].craftable_items[ii].required_items[iii].req_item;
                         requiredItem.RequiredItemCount = gameData.workshop[i].craftable_items[ii].required_items[iii].req_quantity;
-                        craftableItem.RequiredItems.Add(requiredItem);
+                        craftableItem.AddRequiredItem(requiredItem);
                     }
-                    wkShop.CraftableItems.Add(craftableItem);
+                    wkShop.AddCraftableItem(craftableItem);
                 }
 
-                Workshop.Workshops.Add(wkShop);
+                Workshop.AddWorkshop(wkShop);
                 Logger.DebugPrint("Registered Workshop at X: " + wkShop.X + " Y: " + wkShop.Y);
 
             }
@@ -793,7 +793,7 @@ namespace HISP.Server
                 leaser.Inteligence = gameData.leaser[i].horse.advanced_stats.inteligence;
                 leaser.Personality = gameData.leaser[i].horse.advanced_stats.personality;
 
-                Leaser.HorseLeasers.Add(leaser);
+                Leaser.AddHorseLeaser(leaser);
                 Logger.DebugPrint("Registered Leaser: " + leaser.LeaseId.ToString() + " For a " + leaser.HorseName);
             }
 

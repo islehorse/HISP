@@ -27,9 +27,39 @@ namespace HISP.Player
         public string Stage = "OPEN";
 
         public int MoneyOffered = 0;
-        public List<HorseInstance> HorsesOffered = new List<HorseInstance>();
-        public List<ItemInstance[]> ItemsOffered = new List<ItemInstance[]>();
+        private List<HorseInstance> horsesOffered = new List<HorseInstance>();
+        private List<ItemInstance[]> itemsOffered = new List<ItemInstance[]>();
+        public ItemInstance[][] ItemsOffered
+        {
+            get
+            {
+                return itemsOffered.ToArray();
+            }
+        }
+        public HorseInstance[] HorsesOffered
+        {
+            get
+            {
+                return horsesOffered.ToArray();
+            }
+        }
+        public void RemoveOfferedHorse(HorseInstance horse)
+        {
+            horsesOffered.Remove(horse);
+        }
+        public void OfferHorse(HorseInstance horse)
+        {
+            horsesOffered.Add(horse);
+        }
 
+        public void OfferItems(ItemInstance[] items)
+        {
+            itemsOffered.Add(items);
+        }
+        public void RemoveOfferedItems(ItemInstance[] items)
+        {
+            itemsOffered.Remove(items);
+        }
         private void endTrade()
         {
             Trader.PendingTradeTo = 0;
@@ -70,13 +100,13 @@ namespace HISP.Player
                 Trader.LoggedinClient.SendPacket(tradeNotAllowedWhileBidding);
                 fail = true;
             }
-            if (OtherTrade.Trader.HorseInventory.HorseList.Length + HorsesOffered.Count > OtherTrade.Trader.MaxHorses)
+            if (OtherTrade.Trader.HorseInventory.HorseList.Length + HorsesOffered.Length > OtherTrade.Trader.MaxHorses)
             {
                 byte[] tradeYouHaveTooManyHorses = PacketBuilder.CreateChat(Messages.TradeYouCantHandleMoreHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeYouHaveTooManyHorses);
                 fail = true;
             }
-            if (Trader.HorseInventory.HorseList.Length + OtherTrade.HorsesOffered.Count > Trader.MaxHorses)
+            if (Trader.HorseInventory.HorseList.Length + OtherTrade.HorsesOffered.Length > Trader.MaxHorses)
             {
                 byte[] tradeYouHaveTooManyHorses = PacketBuilder.CreateChat(Messages.TradeYouCantHandleMoreHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeYouHaveTooManyHorses);

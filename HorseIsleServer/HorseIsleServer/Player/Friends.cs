@@ -7,25 +7,41 @@ namespace HISP.Player
     public class Friends
     {
         private User baseUser;
-        public List<int> List;
+        private List<int> list;
+        public int[] List
+        {
+            get
+            {
+                return list.ToArray();
+            }
+        }
 
         public int Count
         {
             get
             {
-                return List.Count;
+                return List.Length;
             }
         }
 
+        public void RemoveFromLocalList(int value)
+        {
+            list.Remove(value);
+        }
+
+        public void AddToLocalList(int value)
+        {
+            list.Remove(value);
+        }
         public Friends(User user)
         {
             baseUser = user;
-            List = new List<int>();
+            list = new List<int>();
 
             int[] friends = Database.GetBuddyList(user.Id);
             foreach(int friendId in friends)
             {
-                List.Add(friendId);
+                list.Add(friendId);
             }
 
         }
@@ -47,13 +63,13 @@ namespace HISP.Player
             {
 
                 User removeFrom = GameServer.GetUserById(userid);
-                removeFrom.Friends.List.Remove(baseUser.Id);
+                removeFrom.Friends.RemoveFromLocalList(baseUser.Id);
 
             }
             catch (KeyNotFoundException) { /* User is offline, remove from database is sufficent */ };
  
 
-            baseUser.Friends.List.Remove(userid);
+            baseUser.Friends.RemoveFromLocalList(userid);
         }
         public void AddFriend(User userToFriend)
         {
@@ -79,8 +95,8 @@ namespace HISP.Player
             if (userToFriend.PendingBuddyRequestTo == baseUser)
             {
                 Database.AddBuddy(baseUser.Id, userToFriend.Id);
-                List.Add(userToFriend.Id);
-                userToFriend.Friends.List.Add(baseUser.Id);
+                list.Add(userToFriend.Id);
+                userToFriend.Friends.AddToLocalList(baseUser.Id);
 
                 byte[] nowFriendsMsg = PacketBuilder.CreateChat(Messages.FormatAddBuddyConfirmed(userToFriend.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
                 byte[] nowFriendsOther = PacketBuilder.CreateChat(Messages.FormatAddBuddyConfirmed(baseUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);

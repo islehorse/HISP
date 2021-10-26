@@ -13,11 +13,22 @@ namespace HISP.Game.Events
             public ThrowTracker(User thrower)
             {
                 Thrower = thrower;
-                ThrownAt = new List<User>();
-                
+                thrownAt = new List<User>();   
+            }
+
+            public void AddThrownAt(User user)
+            {
+                thrownAt.Add(user);
             }
             public User Thrower;
-            public List<User> ThrownAt;
+            private List<User> thrownAt;
+            public User[] ThrownAt
+            {
+                get
+                {
+                    return thrownAt.ToArray();
+                }
+            }
         }
 
         public bool Active = false;
@@ -139,7 +150,7 @@ namespace HISP.Game.Events
                 thrower.LoggedinClient.SendPacket(youEarned);
                 throwAt.LoggedinClient.SendPacket(otherEarned);
 
-                throwCounter.ThrownAt.Add(throwAt);
+                throwCounter.AddThrownAt(throwAt);
             }
         }
 

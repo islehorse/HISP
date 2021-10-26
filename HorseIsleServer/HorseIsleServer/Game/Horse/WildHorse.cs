@@ -195,7 +195,7 @@ namespace HISP.Game.Horse
             Logger.InfoPrint("Generating horses.");
             while(wildHorses.Count < 40)
             {
-                HorseInfo.Breed horseBreed = HorseInfo.Breeds[GameServer.RandomNumberGenerator.Next(0, HorseInfo.Breeds.Count)];
+                HorseInfo.Breed horseBreed = HorseInfo.Breeds[GameServer.RandomNumberGenerator.Next(0, HorseInfo.Breeds.Length)];
                 if (horseBreed.Swf == "")
                     continue;
                 if (horseBreed.SpawnInArea == "none") // no unipegs >_>

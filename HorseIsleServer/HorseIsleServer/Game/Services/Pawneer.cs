@@ -14,7 +14,18 @@ namespace HISP.Game.Services
             BreedId = breedId;
             BasePrice = basePrice;
         }
-        public static List<Pawneer> PawneerPriceModels = new List<Pawneer>();
+        private static List<Pawneer> pawneerPriceModels = new List<Pawneer>();
+        private static Pawneer[] PawneerPriceModels
+        {
+            get
+            {
+                return pawneerPriceModels.ToArray();
+            }
+        }
+        public static void AddPawneerPriceModel(Pawneer pawneerPrice)
+        {
+            pawneerPriceModels.Add(pawneerPrice);
+        }
         public int BreedId;
         public int BasePrice;
 

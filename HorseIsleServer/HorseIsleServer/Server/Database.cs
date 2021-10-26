@@ -4050,7 +4050,7 @@ namespace HISP.Server
                 sqlCommand.Dispose();
             }
         }
-        public static List<ItemInstance> GetShopInventory(int shopId)
+        public static ItemInstance[] GetShopInventory(int shopId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
@@ -4068,7 +4068,7 @@ namespace HISP.Server
                     instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1)));
                 }
                 sqlCommand.Dispose();
-                return instances;
+                return instances.ToArray();
             }
         }
 
@@ -4105,7 +4105,7 @@ namespace HISP.Server
             }
         }
 
-        public static List<ItemInstance> GetPlayerInventory(int playerId)
+        public static ItemInstance[] GetPlayerInventory(int playerId)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
@@ -4123,7 +4123,7 @@ namespace HISP.Server
                     instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2)));
                 }
                 sqlCommand.Dispose();
-                return instances;
+                return instances.ToArray();
             }
         }
         public static int[] GetModsAndAdmins()

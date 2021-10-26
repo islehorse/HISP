@@ -484,7 +484,7 @@ namespace HISP.Server
 
                             HorseInstance horse = sender.LoggedinUser.HorseInventory.GetHorseById(horseRandomId);
                             if(!sender.LoggedinUser.TradingWith.HorsesOffered.Contains(horse))
-                                sender.LoggedinUser.TradingWith.HorsesOffered.Add(horse);
+                                sender.LoggedinUser.TradingWith.OfferHorse(horse);
 
                             UpdateArea(sender);
 
@@ -2380,7 +2380,7 @@ namespace HISP.Server
                                         {
                                             if(existingItems[0].ItemId == sender.LoggedinUser.AttemptingToOfferItem)
                                             {
-                                                sender.LoggedinUser.TradingWith.ItemsOffered.Remove(existingItems);
+                                                sender.LoggedinUser.TradingWith.RemoveOfferedItems(existingItems);
                                                 break;
                                             }
                                         }
@@ -2392,7 +2392,7 @@ namespace HISP.Server
                                         {
                                             items[i] = item.ItemInstances[i];
                                         }
-                                        sender.LoggedinUser.TradingWith.ItemsOffered.Add(items);
+                                        sender.LoggedinUser.TradingWith.OfferItems(items);
 
                                         UpdateArea(sender);
                                         if (sender.LoggedinUser.TradingWith != null)
@@ -4086,7 +4086,7 @@ namespace HISP.Server
                         int roomId = packet[3] - 40;
                         Dressup.DressupRoom room = Dressup.GetDressupRoom(roomId);
 
-                        if (room.DressupPeices.Count > 0)
+                        if (room.DressupPeices.Length > 0)
                         {
                             byte[] allDressupsResponse = PacketBuilder.CreateDressupRoomPeiceResponse(room.DressupPeices.ToArray());
                             sender.SendPacket(allDressupsResponse);

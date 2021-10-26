@@ -59,8 +59,31 @@ namespace HISP.Game.Items
             public string HitYourselfMessage;
         }
 
-        public static List<ItemInformation> Items = new List<ItemInformation>();
-        public static List<ThrowableItem> ThrowableItems = new List<ThrowableItem>();
+        private static List<ItemInformation> items = new List<ItemInformation>();
+        private static List<ThrowableItem> throwableItems = new List<ThrowableItem>();
+        public static void AddItemInfo(ItemInformation itm)
+        {
+            items.Add(itm);
+        }
+        public static void AddThrowableItem(ThrowableItem throwableItem)
+        {
+            throwableItems.Add(throwableItem);
+        }
+        public static ItemInformation[] Items
+        {
+            get
+            {
+                return items.ToArray();
+            }
+        }
+        public static ThrowableItem[] ThrowableItems
+        {
+            get
+            {
+                return throwableItems.ToArray();
+            }
+        }
+
 
         public static int Present;
         public static int MailMessage;

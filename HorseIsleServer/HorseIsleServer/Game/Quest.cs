@@ -63,8 +63,18 @@ namespace HISP.Game
             public bool Minigame;
         }
 
-        public static List<QuestEntry> QuestList = new List<QuestEntry>();
-
+        private static List<QuestEntry> questList = new List<QuestEntry>();
+        public static void AddQuestEntry(QuestEntry quest)
+        {
+            questList.Add(quest);
+        }
+        private static QuestEntry[] QuestList
+        {
+            get
+            {
+                return questList.ToArray();
+            }
+        }
         public static int GetTotalQuestPoints()
         {
             int totalQp = 0;

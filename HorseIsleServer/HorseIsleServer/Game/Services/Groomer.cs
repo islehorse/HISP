@@ -6,14 +6,20 @@ namespace HISP.Game.Services
     public class Groomer
     {
 
-        public static List<Groomer> Groomers = new List<Groomer>();
-
+        private static List<Groomer> groomers = new List<Groomer>();
+        public static Groomer[] Groomers
+        {
+            get
+            {
+                return groomers.ToArray();
+            }
+        }
         public Groomer(int id, double price, int max)
         {
             Id = id;
             PriceMultiplier = price;
             Max = max;
-            Groomers.Add(this);
+            groomers.Add(this);
         }
 
         public int Id;
