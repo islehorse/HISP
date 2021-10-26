@@ -1,5 +1,4 @@
-﻿using HISP.Game.Inventory;
-using HISP.Game.Items;
+﻿using HISP.Game.Items;
 using HISP.Player;
 using HISP.Server;
 using System.Collections.Generic;
@@ -99,8 +98,11 @@ namespace HISP.Game.Events
             List<ThrownCounter> winningCounter = new List<ThrownCounter>();
 
             // Find the highest throw count
-            foreach(ThrownCounter throwMemory in ThrownWaterBalloonMemory)
+            foreach (ThrownCounter throwMemory in ThrownWaterBalloonMemory)
             {
+                if (throwMemory == null)
+                    continue;
+
                 if(throwMemory.NumThrown >= maxThrown)
                 {
                     maxThrown = throwMemory.NumThrown;
@@ -108,8 +110,11 @@ namespace HISP.Game.Events
             }
 
             // Find all with that throw count and add to winner list
-            foreach (ThrownCounter throwMemory in thrownWaterBalloonMemory)
+            foreach (ThrownCounter throwMemory in ThrownWaterBalloonMemory)
             {
+                if (throwMemory == null)
+                    continue;
+
                 if (throwMemory.NumThrown == maxThrown)
                 {
                     winningCounter.Add(throwMemory);
@@ -123,6 +128,9 @@ namespace HISP.Game.Events
         {
             foreach (ThrownCounter thrownMemory in ThrownWaterBalloonMemory)
             {
+                if (thrownMemory == null)
+                    continue;
+
                 if (thrownMemory.UserHit.Id == userToLeave.Id)
                     thrownWaterBalloonMemory.Remove(thrownMemory);
             }
@@ -132,6 +140,9 @@ namespace HISP.Game.Events
         {
             foreach(ThrownCounter thrownMemory in ThrownWaterBalloonMemory)
             {
+                if (thrownMemory == null)
+                    continue;
+
                 if (thrownMemory.UserHit.Id == userToGet.Id)
                     return thrownMemory;
             }
