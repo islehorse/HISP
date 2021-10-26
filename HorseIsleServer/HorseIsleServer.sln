@@ -11,6 +11,7 @@ Global
 		Debug|ARM64 = Debug|ARM64
 		Debug|x64 = Debug|x64
 		Debug|x86 = Debug|x86
+		Debug|AnyCPU = Debug|AnyCPU
 		Linux|ARM = Linux|ARM
 		Linux|ARM64 = Linux|ARM64
 		Linux|x64 = Linux|x64
@@ -33,6 +34,8 @@ Global
 		{C48CBD82-AB30-494A-8FFA-4DE7069B5827}.Debug|x64.Build.0 = Debug|x64
 		{C48CBD82-AB30-494A-8FFA-4DE7069B5827}.Debug|x86.ActiveCfg = Debug|x86
 		{C48CBD82-AB30-494A-8FFA-4DE7069B5827}.Debug|x86.Build.0 = Debug|x86
+		{C48CBD82-AB30-494A-8FFA-4DE7069B5827}.Debug|x86.ActiveCfg = Debug|AnyCPU
+		{C48CBD82-AB30-494A-8FFA-4DE7069B5827}.Debug|x86.Build.0 = Debug|AnyCPU
 		{C48CBD82-AB30-494A-8FFA-4DE7069B5827}.Linux|ARM.ActiveCfg = Linux|ARM
 		{C48CBD82-AB30-494A-8FFA-4DE7069B5827}.Linux|ARM.Build.0 = Linux|ARM
 		{C48CBD82-AB30-494A-8FFA-4DE7069B5827}.Linux|ARM64.ActiveCfg = Linux|ARM64
