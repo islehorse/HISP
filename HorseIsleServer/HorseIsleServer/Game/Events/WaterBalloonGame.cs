@@ -15,12 +15,18 @@ namespace HISP.Game.Events
             Active = false;
         }
 
-
         private List<ThrownCounter> thrownWaterBalloonMemory;
-        public ThrownCounter[] ThrownWaterBalloonMemory;
         public bool Active;
         private Timer gameTimeout;
         private const int WATER_BALLOON_GAME_TIMEOUT = 5;
+        public ThrownCounter[] ThrownWaterBalloonMemory
+        {
+            get
+            {
+                return thrownWaterBalloonMemory.ToArray();
+            }
+        }
+
         public class ThrownCounter
         {
             public ThrownCounter(WaterBalloonGame game, User userHit, int numThrown)
