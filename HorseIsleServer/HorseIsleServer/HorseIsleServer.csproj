@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <RootNamespace>HISP</RootNamespace>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>10.0</LangVersion>
     <Platforms>x64;x86;ARM;ARM64</Platforms>
     <Configurations>Windows;Debug;Linux;MacOS</Configurations>
 	
