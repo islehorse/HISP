@@ -163,7 +163,7 @@ namespace HISP.Game
                 InventoryItem[] items = user.Inventory.GetItemList();
                 foreach (InventoryItem item in items)
                 {
-                    if (item.ItemId == itemInfo.ItemId && item.ItemInstances.Count >= itemInfo.Quantity)
+                    if (item.ItemId == itemInfo.ItemId && item.ItemInstances.Length >= itemInfo.Quantity)
                     {
                         hasThisItem = true;
                         break;

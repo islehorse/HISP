@@ -8,14 +8,29 @@ namespace HISP.Game.Inventory
     {
         public InventoryItem()
         {
-            ItemInstances = new List<ItemInstance>();
+            itemInstances = new List<ItemInstance>();
             Infinite = false;
             ItemId = 0;
         }
 
         public int ItemId;
         public bool Infinite;
-        public List<ItemInstance> ItemInstances;
+        private List<ItemInstance> itemInstances;
+        public void RemoveItem(ItemInstance itm)
+        {
+            itemInstances.Remove(itm);
+        }
+        public void AddItem(ItemInstance itm)
+        {
+            itemInstances.Add(itm);
+        }
+        public ItemInstance[] ItemInstances
+        {
+            get
+            {
+                return itemInstances.ToArray();
+            }
+        }
     }
 
 }

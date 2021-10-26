@@ -156,7 +156,7 @@ namespace HISP.Game
                 message += Messages.R1;
                 Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
 
-                int count = item.ItemInstances.Count;
+                int count = item.ItemInstances.Length;
                 string countStr = count.ToString();
                 if (item.Infinite)
                     countStr = Messages.InfinitySign;
@@ -187,7 +187,7 @@ namespace HISP.Game
                     continue;
 
 
-                int count = shopperitem.ItemInstances.Count;
+                int count = shopperitem.ItemInstances.Length;
                 string countStr = count.ToString();
 
 
@@ -214,7 +214,7 @@ namespace HISP.Game
             else
             {
                 InventoryItem wishingCoins = user.Inventory.GetItemByItemId(Item.WishingCoin);
-                int totalCoins = wishingCoins.ItemInstances.Count;
+                int totalCoins = wishingCoins.ItemInstances.Length;
                 message += Messages.FormatNumberOfWishingCoins(totalCoins);
                 message += Messages.WishingWellMeta;
             }
@@ -536,7 +536,7 @@ namespace HISP.Game
                     Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
                     if (itemInfo.Type == "QUEST" || itemInfo.Type == "TEXT" || itemInfo.Id == Item.DorothyShoes)
                         continue;
-                    message += Messages.FormatTradeOfferItem(itemInfo.IconId, itemInfo.Name, item.ItemInstances.Count, item.ItemId);
+                    message += Messages.FormatTradeOfferItem(itemInfo.IconId, itemInfo.Name, item.ItemInstances.Length, item.ItemId);
                 }
             }
 
@@ -2170,11 +2170,11 @@ namespace HISP.Game
             {
                 Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
                 string title = itemInfo.Name;
-                if (item.ItemInstances.Count > 1 && itemInfo.PluralName != "")
+                if (item.ItemInstances.Length > 1 && itemInfo.PluralName != "")
                     title = itemInfo.PluralName;
 
 
-                message += Messages.FormatPlayerInventoryItemMeta(itemInfo.IconId, item.ItemInstances.Count, title);
+                message += Messages.FormatPlayerInventoryItemMeta(itemInfo.IconId, item.ItemInstances.Length, title);
 
                 int randomId = item.ItemInstances[0].RandomId;
                 if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" &&  !(itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope) && World.CanDropItems(inv.BaseUser.X, inv.BaseUser.Y))
@@ -2220,7 +2220,7 @@ namespace HISP.Game
                     isHorseFood = (itemInfo.Effects[1].EffectsWhat == "MOOD" && itemInfo.Effects[0].EffectsWhat == "HUNGER");
                 if (itemInfo.Type == "HORSEFOOD" || isHorseFood)
                 {
-                    message += Messages.FormatHorseFeedEntry(itemInfo.IconId, item.ItemInstances.Count, itemInfo.Name, item.ItemInstances[0].RandomId);
+                    message += Messages.FormatHorseFeedEntry(itemInfo.IconId, item.ItemInstances.Length, itemInfo.Name, item.ItemInstances[0].RandomId);
                 }
                 
             }
@@ -2257,7 +2257,7 @@ namespace HISP.Game
                 Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
                 if(itemInfo.Type == "COMPANION")
                 {
-                    message += Messages.FormatHorseCompanionOption(itemInfo.IconId, item.ItemInstances.Count, itemInfo.Name, item.ItemId);
+                    message += Messages.FormatHorseCompanionOption(itemInfo.IconId, item.ItemInstances.Length, itemInfo.Name, item.ItemId);
                 }
             }
             message += Messages.BackToHorse;
@@ -2519,7 +2519,7 @@ namespace HISP.Game
                         continue;
                     else if (itemInfo.GetMiscFlag(2) != 0)
                         continue;
-                    message += Messages.FormatHorseEquip(itemInfo.IconId, item.ItemInstances.Count, itemInfo.Name, itemInfo.Id);
+                    message += Messages.FormatHorseEquip(itemInfo.IconId, item.ItemInstances.Length, itemInfo.Name, itemInfo.Id);
                 }
             }
 

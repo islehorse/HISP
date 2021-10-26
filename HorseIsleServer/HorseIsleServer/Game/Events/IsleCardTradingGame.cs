@@ -55,7 +55,7 @@ namespace HISP.Game.Events
 
                     foreach (int itemId in Item.TradingCards)
                         if (client.LoggedinUser.Inventory.HasItemId(itemId))
-                            totalCards += client.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances.Count;
+                            totalCards += client.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances.Length;
 
                     if (client.LoggedinUser.Inventory.HasItemId(Item.ColtTradingCard))
                         totalTypes++;

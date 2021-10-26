@@ -42,7 +42,7 @@ namespace HISP.Game.Inventory
             {
                 if (invetoryItem.ItemId == item.ItemId)
                 {
-                    invetoryItem.ItemInstances.Add(item);
+                    invetoryItem.AddItem(item);
                     return;
                 }
             }
@@ -50,7 +50,7 @@ namespace HISP.Game.Inventory
             InventoryItem inventoryItem = new InventoryItem();
 
             inventoryItem.ItemId = item.ItemId;
-            inventoryItem.ItemInstances.Add(item);
+            inventoryItem.AddItem(item);
             inventoryItems.Add(inventoryItem);
         }
 
@@ -77,9 +77,9 @@ namespace HISP.Game.Inventory
                     {
                         if(instance.RandomId == item.RandomId)
                         {
-                            inventoryItem.ItemInstances.Remove(instance);
+                            inventoryItem.RemoveItem(instance);
 
-                            if (inventoryItem.ItemInstances.Count <= 0)
+                            if (inventoryItem.ItemInstances.Length <= 0)
                                 inventoryItems.Remove(inventoryItem);
 
                             return;
@@ -162,7 +162,7 @@ namespace HISP.Game.Inventory
             if(HasItemId(item.ItemId))
             {
                 InventoryItem items = GetItemByItemId(item.ItemId);
-                if (items.ItemInstances.Count >= ConfigReader.MAX_STACK)
+                if (items.ItemInstances.Length >= ConfigReader.MAX_STACK)
                 {
                     throw new InventoryMaxStackException();
                 }

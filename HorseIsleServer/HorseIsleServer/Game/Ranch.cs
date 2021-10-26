@@ -96,7 +96,7 @@ namespace HISP.Game
                 User user = GameServer.GetUserById(Id);
                 user.OwnedRanch = null;
                 InventoryItem items = user.Inventory.GetItemByItemId(Item.DorothyShoes);
-                foreach (ItemInstance itm in items.ItemInstances.ToArray())
+                foreach (ItemInstance itm in items.ItemInstances)
                 {
                     user.Inventory.Remove(itm);
                 }
