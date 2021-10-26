@@ -6,13 +6,14 @@
     <Platforms>x64;x86;ARM;ARM64;AnyCPU</Platforms>
     <Configurations>Windows;Debug;Linux;MacOS</Configurations>
 	
-	<DefineConstants Condition="'$(Platform)'=='x86'">ARCH_x86</DefineConstants>
-    <DefineConstants Condition="'$(Platform)'=='x64'">ARCH_x86_64</DefineConstants>
-    <DefineConstants Condition="'$(Platform)'=='ARM'">ARCH_ARM</DefineConstants>
-    <DefineConstants Condition="'$(Platform)'=='ARM64'">ARCH_ARM64</DefineConstants>
+	<DefineConstants Condition="'$(Platform)'=='x86'">$(DefineConstants);ARCH_x86</DefineConstants>
+    <DefineConstants Condition="'$(Platform)'=='x64'">$(DefineConstants);ARCH_x86_64</DefineConstants>
+    <DefineConstants Condition="'$(Platform)'=='ARM'">$(DefineConstants);ARCH_ARM</DefineConstants>
+    <DefineConstants Condition="'$(Platform)'=='ARM64'">$(DefineConstants);ARCH_ARM64</DefineConstants>
     <DefineConstants Condition="'$(Configuration)'=='Linux'">$(DefineConstants);OS_LINUX</DefineConstants>
     <DefineConstants Condition="'$(Configuration)'=='MacOS'">$(DefineConstants);OS_MACOS</DefineConstants>
     <DefineConstants Condition="'$(Configuration)'=='Windows'">$(DefineConstants);OS_WINDOWS</DefineConstants>
+    <DefineConstants Condition="'$(Configuration)'=='Debug'">$(DefineConstants);DEBUG;TRACE</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -43,7 +44,7 @@
     <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoWin32Manifest>true</NoWin32Manifest>
     <ApplicationIcon>icon.ico</ApplicationIcon>
@@ -64,7 +65,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|ARM'">
     <RuntimeIdentifier>win-arm</RuntimeIdentifier>
     <Optimize>true</Optimize>
-    <PlatformTarget>ARM</PlatformTarget>
+    <PlatformTarget>ARM32</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|ARM64'">
     <RuntimeIdentifier>win-arm64</RuntimeIdentifier>
@@ -102,9 +103,24 @@
 
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All|AnyCPU'">
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
     <RuntimeIdentifiers>win-x86;win-x64;win-arm;win-arm64;linux-x64;linux-arm;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <Optimize>true</Optimize>
+  </PropertyGroup>
+
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
+    <PlatformTarget>ARM32</PlatformTarget>
+  </PropertyGroup>
+
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
+    <PlatformTarget>ARM64</PlatformTarget>
+  </PropertyGroup>
+
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
   </PropertyGroup>
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
