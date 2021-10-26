@@ -12,12 +12,13 @@ namespace HISP.Game.Events
     {
         public WaterBalloonGame()
         {
-            ThrownWaterBalloonMemory = new List<ThrownCounter>();
+            thrownWaterBalloonMemory = new List<ThrownCounter>();
             Active = false;
         }
 
 
-        public List<ThrownCounter> ThrownWaterBalloonMemory;
+        private List<ThrownCounter> thrownWaterBalloonMemory;
+        public ThrownCounter[] ThrownWaterBalloonMemory;
         public bool Active;
         private Timer gameTimeout;
         private const int WATER_BALLOON_GAME_TIMEOUT = 5;
@@ -29,7 +30,7 @@ namespace HISP.Game.Events
                 NumThrown = numThrown;
                 baseGame = game;
 
-                game.ThrownWaterBalloonMemory.Add(this);
+                game.thrownWaterBalloonMemory.Add(this);
             }
             private WaterBalloonGame baseGame;
             public User UserHit;
@@ -89,17 +90,16 @@ namespace HISP.Game.Events
         {
             gameTimeout.Dispose();
             gameTimeout = null;
-            ThrownWaterBalloonMemory.Clear();
+            thrownWaterBalloonMemory.Clear();
             Active = false;
         }
         private ThrownCounter[] getWinners()
         {
             int maxThrown = 0;
-            ThrownCounter[] thrownWaterBalloonMemory = ThrownWaterBalloonMemory.ToArray();
             List<ThrownCounter> winningCounter = new List<ThrownCounter>();
 
             // Find the highest throw count
-            foreach(ThrownCounter throwMemory in thrownWaterBalloonMemory)
+            foreach(ThrownCounter throwMemory in ThrownWaterBalloonMemory)
             {
                 if(throwMemory.NumThrown >= maxThrown)
                 {
@@ -121,16 +121,16 @@ namespace HISP.Game.Events
 
         public void LeaveEvent(User userToLeave)
         {
-            foreach (ThrownCounter thrownMemory in ThrownWaterBalloonMemory.ToArray())
+            foreach (ThrownCounter thrownMemory in ThrownWaterBalloonMemory)
             {
                 if (thrownMemory.UserHit.Id == userToLeave.Id)
-                    ThrownWaterBalloonMemory.Remove(thrownMemory);
+                    thrownWaterBalloonMemory.Remove(thrownMemory);
             }
         }
 
         private ThrownCounter getThrownCounter(User userToGet)
         {
-            foreach(ThrownCounter thrownMemory in ThrownWaterBalloonMemory.ToArray())
+            foreach(ThrownCounter thrownMemory in ThrownWaterBalloonMemory)
             {
                 if (thrownMemory.UserHit.Id == userToGet.Id)
                     return thrownMemory;

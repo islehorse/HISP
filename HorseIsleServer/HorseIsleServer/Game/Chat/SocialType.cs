@@ -6,13 +6,31 @@ namespace HISP.Game.Chat
     {
         public SocialType(string type)
         {
-            Socials = new List<Social>();
+            socials = new List<Social>();
             Type = type;
-            SocialTypes.Add(this);
+            socialTypes.Add(this);
         }
-        public static List<SocialType> SocialTypes = new List<SocialType>();
+        private static List<SocialType> socialTypes = new List<SocialType>();
         public string Type;
-        public List<Social> Socials;
+        private List<Social> socials;
+        public void AddSocial(Social social)
+        {
+            socials.Add(social);
+        }
+        public static SocialType[] SocialTypes
+        {
+            get
+            {
+                return socialTypes.ToArray();
+            }
+        }
+        public Social[] Socials
+        {
+            get
+            {
+                return socials.ToArray();
+            }
+        }
         public class Social
         {
             public SocialType BaseSocialType;
@@ -47,13 +65,13 @@ namespace HISP.Game.Chat
                 if(stype.Type == type)
                 {
                     social.BaseSocialType = stype;
-                    stype.Socials.Add(social);
+                    stype.AddSocial(social);
                     return; 
                 }
             }
             SocialType sType = new SocialType(type);
             social.BaseSocialType = sType;
-            sType.Socials.Add(social);
+            sType.AddSocial(social);
             return;
         }
     }

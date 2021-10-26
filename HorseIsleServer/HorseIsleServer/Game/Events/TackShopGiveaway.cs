@@ -86,7 +86,7 @@ namespace HISP.Game.Events
  
             while(true)
             {
-                int hrsIdx = GameServer.RandomNumberGenerator.Next(0, HorseInfo.Breeds.Count);
+                int hrsIdx = GameServer.RandomNumberGenerator.Next(0, HorseInfo.Breeds.Length);
                 HorseInfo.Breed breed = HorseInfo.Breeds[hrsIdx];
                 if (breed.SpawnInArea == "none")
                     continue;

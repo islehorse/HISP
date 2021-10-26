@@ -8,10 +8,17 @@ namespace HISP.Game
 {
     public class TwoPlayer
     {
-        public static List<TwoPlayer> TwoPlayerGames = new List<TwoPlayer>();
+        private static List<TwoPlayer> twoPlayerGames = new List<TwoPlayer>();
+        public static TwoPlayer[] TwoPlayerGames
+        {
+            get
+            {
+                return twoPlayerGames.ToArray();
+            }
+        }
         public static void TwoPlayerRemove(User user)
         {
-            foreach(TwoPlayer twoPlayerGame in TwoPlayerGames.ToArray())
+            foreach(TwoPlayer twoPlayerGame in TwoPlayerGames)
             {
                 if((twoPlayerGame.Invitee.Id == user.Id))
                 {
@@ -21,7 +28,7 @@ namespace HISP.Game
         }
         public static bool IsPlayerInvitingPlayer(User sender, User checkInvites)
         {
-            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames.ToArray())
+            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames)
             {
                 if ((twoPlayerGame.Invitee.Id == sender.Id && twoPlayerGame.Inviting.Id == checkInvites.Id) && !twoPlayerGame.Accepted)
                 {
@@ -32,7 +39,7 @@ namespace HISP.Game
         }
         public static TwoPlayer GetGameInvitingPlayer(User sender, User checkInvites)
         {
-            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames.ToArray())
+            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames)
             {
                 if ((twoPlayerGame.Invitee.Id == sender.Id && twoPlayerGame.Inviting.Id == checkInvites.Id) && !twoPlayerGame.Accepted)
                 {
@@ -44,7 +51,7 @@ namespace HISP.Game
 
         public static bool IsPlayerInGame(User user)
         {
-            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames.ToArray())
+            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames)
             {
                 if ((twoPlayerGame.Invitee.Id == user.Id || twoPlayerGame.Inviting.Id == user.Id) && twoPlayerGame.Accepted)
                 {
@@ -56,7 +63,7 @@ namespace HISP.Game
 
         public static TwoPlayer GetTwoPlayerGameInProgress(User user)
         {
-            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames.ToArray())
+            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames)
             {
                 if ((twoPlayerGame.Invitee.Id == user.Id || twoPlayerGame.Inviting.Id == user.Id) && twoPlayerGame.Accepted)
                 {
@@ -84,7 +91,7 @@ namespace HISP.Game
 
             deleteTimer = new Timer(new TimerCallback(deleteTwoPlayer), null, 2 * 60 * 1000, 2 * 60 * 1000);
 
-            TwoPlayerGames.Add(this);
+            twoPlayerGames.Add(this);
 
             update();
 
@@ -105,7 +112,7 @@ namespace HISP.Game
 
                 update();
 
-                TwoPlayerGames.Remove(this);
+                twoPlayerGames.Remove(this);
             }
             deleteTimer.Dispose();
         }
@@ -219,7 +226,7 @@ namespace HISP.Game
                 else
                     updateOthers();
                 
-                TwoPlayerGames.Remove(this);
+                twoPlayerGames.Remove(this);
             }
         }
 

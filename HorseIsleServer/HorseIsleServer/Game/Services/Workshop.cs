@@ -10,7 +10,7 @@ namespace HISP.Game.Services
     {
         public Workshop()
         {
-            CraftableItems = new List<CraftableItem>();
+            craftableItems = new List<CraftableItem>();
         }
         public class RequiredItem
         {
@@ -21,19 +21,51 @@ namespace HISP.Game.Services
         {
             public CraftableItem()
             {
-                RequiredItems = new List<RequiredItem>();
+                requiredItems = new List<RequiredItem>();
             }
             public int Id;
             public int GiveItemId;
             public int MoneyCost;
-            public List<RequiredItem> RequiredItems;
+            private List<RequiredItem> requiredItems;
+
+            public void AddRequiredItem(RequiredItem item)
+            {
+                requiredItems.Add(item);
+            }
+            public RequiredItem[] RequiredItems
+            {
+                get
+                {
+                    return requiredItems.ToArray();
+                }
+            }
         }
         public int X;
         public int Y;
-        public List<CraftableItem> CraftableItems;
-
-        public static List<Workshop> Workshops = new List<Workshop>();
-
+        private List<CraftableItem> craftableItems;
+        private static List<Workshop> workshops = new List<Workshop>();
+        public void AddCraftableItem(CraftableItem craftItem)
+        {
+            craftableItems.Add(craftItem);
+        }
+        public static void AddWorkshop(Workshop wkShop)
+        {
+            workshops.Add(wkShop);
+        }
+        public CraftableItem[] CraftableItems
+        {
+            get
+            {
+                return craftableItems.ToArray();
+            }
+        }
+        public static Workshop[] Workshops
+        {
+            get
+            {
+                return workshops.ToArray();
+            }
+        }
         public static Workshop GetWorkshopAt(int x, int y)
         {
             foreach(Workshop wkShop in Workshops)

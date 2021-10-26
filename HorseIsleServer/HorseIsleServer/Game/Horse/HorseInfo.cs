@@ -573,8 +573,33 @@ namespace HISP.Game.Horse
         }
 
         public static string[] HorseNames;
-        public static List<Category> HorseCategories = new List<Category>();
-        public static List<Breed> Breeds = new List<Breed>();
+        private static List<Category> horseCategories = new List<Category>();
+        private static List<Breed> breeds = new List<Breed>();
+
+        public static void AddBreed(Breed breed)
+        {
+            breeds.Add(breed);
+        }
+
+        public static void AddHorseCategory(Category category)
+        {
+            horseCategories.Add(category);
+        }
+        public static Category[] HorseCategories
+        {
+            get 
+            {
+                return horseCategories.ToArray();
+            }
+        }
+
+        public static Breed[] Breeds
+        {
+            get
+            {
+                return breeds.ToArray();
+            }
+        }
 
         public static string GenerateHorseName()
         {

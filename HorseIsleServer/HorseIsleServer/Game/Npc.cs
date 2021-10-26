@@ -227,8 +227,18 @@ namespace HISP.Game
             public NpcChat[] Chatpoints;
         }
 
-        public static List<NpcEntry> NpcList = new List<NpcEntry>();
-
+        private static List<NpcEntry> npcList = new List<NpcEntry>();
+        public static void AddNpc(NpcEntry npc)
+        {
+            npcList.Add(npc);
+        }
+        public static NpcEntry[] NpcList
+        {
+            get
+            {
+                return npcList.ToArray();
+            }
+        }
         public static NpcReply GetNpcReply(NpcEntry npc, int id)
         {
 

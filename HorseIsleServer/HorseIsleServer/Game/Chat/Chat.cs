@@ -42,9 +42,43 @@ namespace HISP.Game.Chat
         }
         public static string PrivateMessageSound;
 
-        public static List<Filter> FilteredWords = new List<Filter>();
-        public static List<Correction> CorrectedWords = new List<Correction>();
-        public static List<Reason> Reasons = new List<Reason>();
+        private static List<Filter> filteredWords = new List<Filter>();
+        private static List<Correction> correctedWords = new List<Correction>();
+        private static List<Reason> reasons = new List<Reason>();
+
+        public static void AddFilter(Filter filter)
+        {
+            filteredWords.Add(filter);
+        }
+        public static void AddCorrection(Correction correction)
+        {
+            correctedWords.Add(correction);
+        }
+        public static void AddReason(Reason reason)
+        {
+            reasons.Add(reason);
+        }
+        public static Filter[] FilteredWords
+        {
+            get
+            {
+                return filteredWords.ToArray();
+            }
+        }
+        public static Correction[] CorrectedWords
+        {
+            get
+            {
+                return correctedWords.ToArray();
+            }
+        }
+        public static Reason[] Reasons
+        {
+            get
+            {
+                return reasons.ToArray();
+            }
+        }
         public static bool ProcessCommand(User user, string message)
         {
             if (message.Length < 1)

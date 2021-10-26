@@ -79,8 +79,19 @@ namespace HISP.Game.SwfModules
         
         }
 
-        public static List<PoetryEntry> PoetList = new List<PoetryEntry>();
+        private static List<PoetryEntry> poetList = new List<PoetryEntry>();
         private static List<PoetryPeice[]> poetryRooms = new List<PoetryPeice[]>();
+        public static void AddPoetEntry(PoetryEntry poetEntry)
+        {
+            poetList.Add(poetEntry);
+        }
+        public static PoetryEntry[] PoetList
+        {
+            get
+            {
+                return poetList.ToArray();
+            }
+        }
         public static PoetryPeice[][] PoetryRooms
         {
             get
@@ -93,7 +104,7 @@ namespace HISP.Game.SwfModules
         {
             List<PoetryEntry> entries = new List<PoetryEntry>();
 
-            foreach(PoetryEntry poet in PoetList.ToArray())
+            foreach(PoetryEntry poet in PoetList)
             {
                 if(poet.Room == roomId)
                 {
@@ -152,11 +163,6 @@ namespace HISP.Game.SwfModules
             }
 
         }
-
-        
-
-
-
 
     }
 }

@@ -1,32 +1,42 @@
 ﻿using HISP.Server;
-using System;
 using System.Collections.Generic;
-
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HISP.Game.SwfModules
 {
     public class Dressup
     {
 
-        public static List<DressupRoom> DressupRooms = new List<DressupRoom>();
+        private static List<DressupRoom> dressupRooms = new List<DressupRoom>();
+        public static DressupRoom[] DressupRooms 
+        {
+            get
+            {
+                return dressupRooms.ToArray();
+            }
+        }
         public class DressupRoom
         {
+            public int RoomId;
+            private List<DressupPeice> dressupPeices;
+            public DressupPeice[] DressupPeices
+            {
+                get
+                {
+                    return dressupPeices.ToArray();
+                }
+            }
             public DressupRoom(int roomId)
             {
                 RoomId = roomId;
-                DressupPeices = new List<DressupPeice>();
+                dressupPeices = new List<DressupPeice>();
 
                 DressupPeice[] peices = Database.LoadDressupRoom(this);
                 foreach (DressupPeice peice in peices)
-                    DressupPeices.Add(peice);
+                    dressupPeices.Add(peice);
 
-                DressupRooms.Add(this);
+                dressupRooms.Add(this);
             }
-            public int RoomId;
-            public List<DressupPeice> DressupPeices;
-
+            
             public DressupPeice GetDressupPeice(int peiceId)
             {
                 foreach(DressupPeice peice in DressupPeices)
@@ -36,7 +46,7 @@ namespace HISP.Game.SwfModules
                 }
                 // Else create peice
                 DressupPeice dPeice = new DressupPeice(this, peiceId, 0, 0, false, true);
-                DressupPeices.Add(dPeice);
+                dressupPeices.Add(dPeice);
                 return dPeice;
             }
         }

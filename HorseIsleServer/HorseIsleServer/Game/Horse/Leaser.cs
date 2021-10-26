@@ -6,7 +6,19 @@ namespace HISP.Game.Horse
 {
     public class Leaser
     {
-        public static List<Leaser> HorseLeasers = new List<Leaser>();
+        private static List<Leaser> horseLeasers = new List<Leaser>();
+        public static void AddHorseLeaser(Leaser leaser)
+        {
+            horseLeasers.Add(leaser);
+        }
+
+        public static Leaser[] HorseLeasers
+        {
+            get
+            {
+                return horseLeasers.ToArray();
+            }
+        }
         public Leaser(int breedId, int saddle, int saddlePad, int bridle)
         {
             Breed = HorseInfo.GetBreedById(breedId);

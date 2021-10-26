@@ -601,14 +601,14 @@ namespace HISP.Game
 
 
             message += Messages.FormatTradeYourOffering(trade.OtherTrade.Trader.Username);
-            if (trade.MoneyOffered == 0 && trade.ItemsOffered.Count == 0 && trade.HorsesOffered.Count == 0)
+            if (trade.MoneyOffered == 0 && trade.ItemsOffered.Length == 0 && trade.HorsesOffered.Length == 0)
                 message += Messages.TradeOfferingNothing;
             if (trade.MoneyOffered > 0)
                 message += Messages.FormatTradeMoneyOffer(trade.MoneyOffered);
-            if(trade.HorsesOffered.Count > 0)
+            if(trade.HorsesOffered.Length > 0)
                 foreach(HorseInstance horse in trade.HorsesOffered)
                     message += Messages.FormatTradeHorseOffer(horse.Name, horse.RandomId);
-            if(trade.ItemsOffered.Count > 0)
+            if(trade.ItemsOffered.Length > 0)
                 foreach(ItemInstance[] item in trade.ItemsOffered)
                 {
                     Item.ItemInformation itemInfo = item[0].GetItemInfo();
@@ -623,14 +623,14 @@ namespace HISP.Game
                 message += Messages.TradeAddItems;
 
             message += Messages.FormatTradeOtherOffering(trade.OtherTrade.Trader.Username);
-            if (trade.OtherTrade.MoneyOffered == 0 && trade.OtherTrade.ItemsOffered.Count == 0 && trade.OtherTrade.HorsesOffered.Count == 0)
+            if (trade.OtherTrade.MoneyOffered == 0 && trade.OtherTrade.ItemsOffered.Length == 0 && trade.OtherTrade.HorsesOffered.Length == 0)
                 message += Messages.TradeOfferingNothing;
             if (trade.OtherTrade.MoneyOffered > 0)
                 message += Messages.FormatTradeMoneyOffer(trade.OtherTrade.MoneyOffered);
-            if (trade.OtherTrade.HorsesOffered.Count > 0)
+            if (trade.OtherTrade.HorsesOffered.Length > 0)
                 foreach (HorseInstance horse in trade.OtherTrade.HorsesOffered)
                     message += Messages.FormatTradeHorseOffer(horse.Name, horse.RandomId);
-            if (trade.OtherTrade.ItemsOffered.Count > 0)
+            if (trade.OtherTrade.ItemsOffered.Length > 0)
                 foreach (ItemInstance[] item in trade.OtherTrade.ItemsOffered)
                 {
                     Item.ItemInformation itemInfo = item[0].GetItemInfo();
