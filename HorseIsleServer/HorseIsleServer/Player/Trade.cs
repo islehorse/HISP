@@ -135,7 +135,7 @@ namespace HISP.Player
                 if (Trader.Inventory.HasItemId(inst[0].ItemId))
                 {
                     InventoryItem items = Trader.Inventory.GetItemByItemId(inst[0].ItemId);
-                    if (items.ItemInstances.Count + inst.Length >= ConfigReader.MAX_STACK)
+                    if (items.ItemInstances.Length + inst.Length >= ConfigReader.MAX_STACK)
                     {
                         itemYouFail = true;
                     }
@@ -155,7 +155,7 @@ namespace HISP.Player
                 if (OtherTrade.Trader.Inventory.HasItemId(inst[0].ItemId))
                 {
                     InventoryItem items = OtherTrade.Trader.Inventory.GetItemByItemId(inst[0].ItemId);
-                    if (items.ItemInstances.Count + inst.Length >= ConfigReader.MAX_STACK)
+                    if (items.ItemInstances.Length + inst.Length >= ConfigReader.MAX_STACK)
                     {
                         itemOtherFail = true;
                     }

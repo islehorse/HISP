@@ -42,7 +42,7 @@ namespace HISP.Game.Inventory
                     if (invetoryItem.Infinite) // no need to add +1, theres allready infinite quanity.
                         return;
 
-                    invetoryItem.ItemInstances.Add(item);
+                    invetoryItem.AddItem(item);
 
                     goto retrn;
                 }
@@ -52,7 +52,7 @@ namespace HISP.Game.Inventory
 
             inventoryItem.ItemId = item.ItemId;
             inventoryItem.Infinite = false;
-            inventoryItem.ItemInstances.Add(item);
+            inventoryItem.AddItem(item);
             inventoryItems.Add(inventoryItem);
 
             retrn:
@@ -74,7 +74,7 @@ namespace HISP.Game.Inventory
             inventoryItem.Infinite = true;
 
             for(int i = 0; i < 25; i++) // add 25
-                inventoryItem.ItemInstances.Add(new ItemInstance(inventoryItem.ItemId));
+                inventoryItem.AddItem(new ItemInstance(inventoryItem.ItemId));
 
             inventoryItems.Add(inventoryItem);
         }
@@ -155,16 +155,16 @@ namespace HISP.Game.Inventory
                     {
                         if (instance.RandomId == item.RandomId)
                         {
-                            inventoryItem.ItemInstances.Remove(instance);
+                            inventoryItem.RemoveItem(instance);
 
-                            if (inventoryItem.ItemInstances.Count <= 0)
+                            if (inventoryItem.ItemInstances.Length <= 0)
                                 inventoryItems.Remove(inventoryItem);
                             
 
                             if (!inventoryItem.Infinite) // no need to bug the database.
                                 Database.RemoveItemFromShopInventory(baseShop.Id, item);
                             else
-                                inventoryItem.ItemInstances.Add(new ItemInstance(inventoryItem.ItemId)); // Gen new item in inventory to replace it.
+                                inventoryItem.AddItem(new ItemInstance(inventoryItem.ItemId)); // Gen new item in inventory to replace it.
                             return;
                         }
                     }

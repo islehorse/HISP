@@ -511,7 +511,7 @@ namespace HISP.Server
                             sender.LoggedinUser.TradeMenuPriority = true;
                             sender.LoggedinUser.AttemptingToOfferItem = itemId;
                             InventoryItem item = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
-                            byte[] addItemPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAddItem(item.ItemInstances.Count));
+                            byte[] addItemPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAddItem(item.ItemInstances.Length));
                             sender.SendPacket(addItemPacket);
                             break;
 
@@ -2369,9 +2369,9 @@ namespace HISP.Server
                                             sender.SendPacket(MustBeAtleast1);
                                             break;
                                         }
-                                        if(itemCount > item.ItemInstances.Count)
+                                        if(itemCount > item.ItemInstances.Length)
                                         {
-                                            byte[] TooMuchItems = PacketBuilder.CreateChat(Messages.FormatTradeItemOfferTooMuch(item.ItemInstances.Count, itemCount), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                            byte[] TooMuchItems = PacketBuilder.CreateChat(Messages.FormatTradeItemOfferTooMuch(item.ItemInstances.Length, itemCount), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(TooMuchItems);
                                             break;
                                         }
@@ -6650,7 +6650,7 @@ namespace HISP.Server
                             {
                                 if (sender.LoggedinUser.Inventory.HasItemId(reqItem.RequiredItemId))
                                 {
-                                    if (sender.LoggedinUser.Inventory.GetItemByItemId(reqItem.RequiredItemId).ItemInstances.Count < reqItem.RequiredItemCount)
+                                    if (sender.LoggedinUser.Inventory.GetItemByItemId(reqItem.RequiredItemId).ItemInstances.Length < reqItem.RequiredItemCount)
                                         goto failMissingItem;
                                 }
                                 else
@@ -6752,7 +6752,7 @@ namespace HISP.Server
                     }
                     invItem = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
 
-                    totalSold = invItem.ItemInstances.Count;
+                    totalSold = invItem.ItemInstances.Length;
                     message = 2;
                     goto doSell;
                 doSell:;
@@ -6926,7 +6926,7 @@ namespace HISP.Server
                         }
                         if (shop.Inventory.HasItemId(itemId))
                         {
-                            if (shop.Inventory.GetItemByItemId(itemId).ItemInstances.Count < count)
+                            if (shop.Inventory.GetItemByItemId(itemId).ItemInstances.Length < count)
                             {
                                 Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to buy more of an item than is in stock.");
                                 break;
@@ -6937,7 +6937,7 @@ namespace HISP.Server
                             if (sender.LoggedinUser.Inventory.HasItemId(itemId)) 
                             {
                                 InventoryItem items = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
-                                if (items.ItemInstances.Count + count > ConfigReader.MAX_STACK)
+                                if (items.ItemInstances.Length + count > ConfigReader.MAX_STACK)
                                 {
                                     goto showError;
                                 }
