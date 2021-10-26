@@ -4,7 +4,7 @@
     <RootNamespace>HISP</RootNamespace>
     <LangVersion>10.0</LangVersion>
     <Platforms>x64;x86;ARM;ARM64;AnyCPU</Platforms>
-    <Configurations>Windows;Debug;Linux;MacOS</Configurations>
+    <Configurations>;Debug;Windows;Linux;MacOS</Configurations>
 	
 	<DefineConstants Condition="'$(Platform)'=='x86'">$(DefineConstants);ARCH_x86</DefineConstants>
     <DefineConstants Condition="'$(Platform)'=='x64'">$(DefineConstants);ARCH_x86_64</DefineConstants>
@@ -118,10 +118,6 @@
     <PlatformTarget>ARM64</PlatformTarget>
   </PropertyGroup>
 
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DefineConstants>TRACE;DEBUG</DefineConstants>
-  </PropertyGroup>
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
     <Exec Command="git rev-parse --verify HEAD&gt;&quot;$(ProjectDir)Resources\GitCommit&quot;" />

@@ -72,10 +72,10 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: win-arm
-        path: HorseIsleServer\HorseIsleServer\bin\arm\Windows\net5.0\win-arm\publish\
+        path: HorseIsleServer\HorseIsleServer\bin\arm\Windows\net5.0\windows-arm\publish\
 
     - name: Upload win-arm64
       uses: actions/upload-artifact@v2
       with:
         name: win-arm64
-        path: HorseIsleServer\HorseIsleServer\bin\arm64\Windows\net5.0\win-arm64\publish\
+        path: HorseIsleServer\HorseIsleServer\bin\arm64\Windows\net5.0\windows-arm64\publish\
