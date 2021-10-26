@@ -64,7 +64,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|ARM'">
     <RuntimeIdentifier>win-arm</RuntimeIdentifier>
     <Optimize>true</Optimize>
-    <PlatformTarget>arm</PlatformTarget>
+    <PlatformTarget>ARM</PlatformTarget>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|x64'">
@@ -74,13 +74,19 @@
   </PropertyGroup>  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM'">
     <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
-    <PlatformTarget>arm</PlatformTarget>
+    <PlatformTarget>ARM</PlatformTarget>
     <Optimize>true</Optimize>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM64'">
     <RuntimeIdentifier>linux-arm64</RuntimeIdentifier>
-    <PlatformTarget>arm64</PlatformTarget>
+    <PlatformTarget>ARM64</PlatformTarget>
     <Optimize>true</Optimize>
+  </PropertyGroup>
+  
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacOS|x64'">
+    <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
+    <Optimize>true</Optimize>
+    <PlatformTarget>x64</PlatformTarget>    
   </PropertyGroup>
   
   
