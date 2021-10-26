@@ -333,8 +333,6 @@ namespace HISP.Server
                 }
             }
 
-            
-
             ms.WriteByte(PACKET_TERMINATOR);
             ms.Seek(0x00, SeekOrigin.Begin);
             return ms.ToArray();

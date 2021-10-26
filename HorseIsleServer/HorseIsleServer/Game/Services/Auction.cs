@@ -274,19 +274,10 @@ namespace HISP.Game.Services
 
         public void UpdateAuctionRoom()
         {
-            foreach (World.SpecialTile tile in World.SpecialTiles)
+            World.SpecialTile[] tiles = World.GetSpecialTilesByName("AUCTION-" + this.RoomId.ToString());
+            foreach (World.SpecialTile tile in tiles)
             {
-                if (tile.Code != null)
-                {
-                    if (tile.Code.StartsWith("AUCTION-"))
-                    {
-                        int id = int.Parse(tile.Code.Split('-')[1]);
-                        if (id == this.RoomId)
-                        {
-                            GameServer.UpdateAreaForAll(tile.X, tile.Y);
-                        }
-                    }
-                }
+                GameServer.UpdateAreaForAll(tile.X, tile.Y, true);
             }
         }
         public void DeleteEntry(AuctionEntry entry)
