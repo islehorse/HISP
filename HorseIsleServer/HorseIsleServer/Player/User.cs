@@ -33,16 +33,39 @@ namespace HISP.Player
         private int hunger;
         private int thirst;
         private int tired;
+        private bool noClip = false;
 
+        public bool NoClip
+        {
+            get
+            {
+                if(CurrentlyRidingHorse != null)
+                {
+                    if(CurrentlyRidingHorse.Breed != null)
+                    {
+                        if (CurrentlyRidingHorse.Breed.Type == "pegasus")
+                        {
+                            return true;
+                        }
+                        if (CurrentlyRidingHorse.Breed.Id == 170)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                return noClip;
+            }
+            set
+            {
+                noClip = true;
+            }
+        }
         public Trade TradingWith = null;
-
         public int AttemptingToOfferItem;
         public bool TradeMenuPriority = false;
-
         public byte[] SecCodeSeeds = new byte[3];
         public int SecCodeInc = 0;
         public int SecCodeCount = 0;
-
         public int Id;
         public string Username;
         public bool Administrator;
@@ -62,7 +85,6 @@ namespace HISP.Player
         public bool MuteSocials = false;
         public bool MuteAll = false;
         public bool MuteLogins = false;
-        public bool NoClip = false;
         public string Gender;
         public bool MetaPriority = false;
         public bool Idle;

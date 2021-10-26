@@ -1985,6 +1985,10 @@ namespace HISP.Server
                     { 
                         if(sender.LoggedinUser.CurrentlyRidingHorse != null)
                         {
+
+                            byte[] stopRidingHorseMessagePacket = PacketBuilder.CreateChat(Messages.HorseStopRidingMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(stopRidingHorseMessagePacket);
+
                             StopRidingHorse(sender);
                         }
                         else
@@ -2007,6 +2011,10 @@ namespace HISP.Server
                     }
                     if (sender.LoggedinUser.HorseInventory.HorseIdExist(randomId))
                     {
+
+                        byte[] stopRidingHorseMessagePacket = PacketBuilder.CreateChat(Messages.HorseStopRidingMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(stopRidingHorseMessagePacket);
+
                         StopRidingHorse(sender);
                     }
                     else
@@ -7949,12 +7957,10 @@ namespace HISP.Server
             if (horseMountInst.Breed.Type == "pegasus")
             {
                 incBy = 16;
-                sender.LoggedinUser.NoClip = true;
             }
             if (horseMountInst.Breed.Id == 170) // Unipeg
             {
                 incBy = 17;
-                sender.LoggedinUser.NoClip = true;
             }
 
             incBy *= 5;
@@ -7972,14 +7978,9 @@ namespace HISP.Server
         {
             sender.LoggedinUser.CurrentlyRidingHorse = null;
 
-            byte[] stopRidingHorseMessagePacket = PacketBuilder.CreateChat(Messages.HorseStopRidingMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            sender.SendPacket(stopRidingHorseMessagePacket);
-
-
             sender.LoggedinUser.Facing %= 5;
             byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
             sender.SendPacket(rideHorsePacket);
-            sender.LoggedinUser.NoClip = false;
 
             UpdateUserFacingAndLocation(sender.LoggedinUser);
         }
