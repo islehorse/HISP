@@ -768,9 +768,11 @@ namespace HISP.Server
                                 }
                                 if (!auctionRoom.HasAuctionEntry(auctionEntryId))
                                     break;
+                              
                                 Auction.AuctionEntry entry = auctionRoom.GetAuctionEntry(auctionEntryId);
                                 entry.Bid(sender.LoggedinUser, bidAmount);
 
+                                UpdateAreaForAll(tile.X, tile.Y, true, null);
                             }
                         }
                     }
@@ -3803,8 +3805,7 @@ namespace HISP.Server
                         catch(KeyNotFoundException)
                         {
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to load an invalid drawing room: " + roomId);
-                            break;
-                        
+                            break;   
                         }
 
                         if(room.Drawing != "")
@@ -3923,7 +3924,6 @@ namespace HISP.Server
                         }
                         
                         Database.SetLastPlayer("D" + room.Id.ToString(), sender.LoggedinUser.Id);
-                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                         UpdateDrawingForAll("D" + room.Id, sender, drawingToAdd, true);
 
                         byte[] loadedDrawingMessage = PacketBuilder.CreateChat(Messages.FormatDrawingRoomLoaded(slotNo), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -3975,7 +3975,6 @@ namespace HISP.Server
                             break;
                         }
                         Database.SetLastPlayer("D" + room.Id.ToString(), sender.LoggedinUser.Id);
-                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                         UpdateDrawingForAll("D" + room.Id, sender, drawing, false);
 
                     }
@@ -7650,19 +7649,20 @@ namespace HISP.Server
 
         public static void UpdateDrawingForAll(string id, GameClient sender, string drawing, bool includingSender=false)
         {
-
-            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y);
-            User[] usersHere = GetUsersOnSpecialTileCode("MULTIROOM-D" + id);
-            foreach (User user in usersHere)
+            World.SpecialTile[] tiles = World.GetSpecialTilesByName("MULTIROOM-D" + id);
+            foreach (World.SpecialTile tile in tiles)
             {
-                if(!includingSender)
-                    if (user.Id == sender.LoggedinUser.Id)
-                        continue;
-                
+                UpdateAreaForAll(tile.X, tile.Y, true, null);
+                User[] usersHere = GameServer.GetUsersAt(tile.X, tile.Y, true, true);
+                foreach (User user in usersHere)
+                {
+                    if (!includingSender)
+                        if (user.Id == sender.LoggedinUser.Id)
+                            continue;
 
-                byte[] patchDrawing = PacketBuilder.CreateDrawingUpdatePacket(drawing);
-                user.LoggedinClient.SendPacket(patchDrawing);
-
+                    byte[] patchDrawing = PacketBuilder.CreateDrawingUpdatePacket(drawing);
+                    user.LoggedinClient.SendPacket(patchDrawing);
+                }
             }
         }
         public static void UpdateHorseMenu(GameClient forClient, HorseInstance horseInst)

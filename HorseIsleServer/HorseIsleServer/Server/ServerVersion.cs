@@ -1,16 +1,11 @@
 ﻿using HISP.Properties;
-using System;
-using System.Collections.Generic;
-
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HISP.Server
 {
     public class ServerVersion
     {
         public static int MAJOR = 1;
-        public static int MINOR = 3;
+        public static int MINOR = 2;
         public static string PRODUCT = "HISP";
 
         public static string GetArchitecture()
