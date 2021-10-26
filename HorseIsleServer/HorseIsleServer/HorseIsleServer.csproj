@@ -36,7 +36,7 @@
     </PostBuildEvent>
     <PostBuildEvent Condition="'$(OS)' != 'Windows_NT'">
       cp -f "$(SolutionDir)../HorseIsleData/gamedata.json" "$(TargetDir)gamedata.json"
-      cp -f "$(SolutionDir)./HorseIsleData/HI1.MAP" "$(TargetDir)HI1.MAP"
+      cp -f "$(SolutionDir)../HorseIsleData/HI1.MAP" "$(TargetDir)HI1.MAP"
     </PostBuildEvent> 
   </PropertyGroup>
   <PropertyGroup>
