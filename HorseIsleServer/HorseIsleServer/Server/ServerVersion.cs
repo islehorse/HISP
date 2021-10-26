@@ -15,7 +15,9 @@ namespace HISP.Server
 
         public static string GetArchitecture()
         {
-#if ARCH_X86_64
+#if ARCH_ANYCPU
+            return "ANYCPU";
+#elif ARCH_X86_64
             return "x86_64";
 #elif ARCH_X86
             return "x86";
@@ -29,7 +31,9 @@ namespace HISP.Server
         }
         public static string GetPlatform()
         {
-#if OS_WINDOWS
+#if OS_DEBUG
+            return "DEBUG";
+#elif OS_WINDOWS
             return "WINDOWS";
 #elif OS_LINUX
             return "LINUX";
@@ -50,7 +54,7 @@ namespace HISP.Server
         }
         public static string GetBuildString()
         {
-            return PRODUCT + " " + GetVersionString() + " " + GetCommitHash(4) + "; (" + GetArchitecture() + "; " + GetPlatform() + ")";
+            return PRODUCT + " " + GetVersionString() + " @" + GetCommitHash(4) + "; (" + GetArchitecture() + "; " + GetPlatform() + ")";
         }
     }
 }
