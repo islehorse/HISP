@@ -2,6 +2,6 @@
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ActiveDebugProfile>HorseIsleServer</ActiveDebugProfile>
-    <_LastSelectedProfileId>C:\Users\SilicaAndPina\Documents\HISP\HorseIsleServer\HorseIsleServer\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
+    <_LastSelectedProfileId>C:\Users\Silica\Documents\GitHub\HISP\HorseIsleServer\HorseIsleServer\Properties\PublishProfiles\Win32.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
 </Project>
