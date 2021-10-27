@@ -241,12 +241,6 @@ namespace HISP.Server
             SendPacket(chatPacket);
             if (LoggedIn)
                 LoggedinUser.Idle = true;
-            if(warnTimer != null)
-            {
-                warnTimer.Dispose();
-                warnTimer = null;
-            }
-
         }
 
         private void kickTimerTick(object state)
@@ -358,12 +352,12 @@ namespace HISP.Server
                     LoggedinUser.Idle = false;
                 inactivityTimer.Change(keepAliveInterval, keepAliveInterval);
             }
-           
+
             if (kickTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
-                kickTimer = new Timer(new TimerCallback(kickTimerTick), null, kickInterval, kickInterval);
+                kickTimer.Change(kickInterval, kickInterval);
 
             if (warnTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
-                warnTimer = new Timer(new TimerCallback(warnTimerTick), null, warnInterval, warnInterval);
+                warnTimer.Change(warnInterval, warnInterval);
 
             if (!LoggedIn) // Must be either login or policy-file-request
             {

@@ -3954,8 +3954,11 @@ namespace HISP.Server
                         packetStr = Encoding.UTF8.GetString(packet);
                         
                         string drawing = packetStr.Substring(3, packetStr.Length - 5);
-                        if (drawing.Contains("X")) // Clear byte
+                        if (drawing.Contains("X!")) // Clear byte
+                        {  
                             room.Drawing = "";
+                            goto update;
+                        }
 
                         try { 
                             room.Drawing += drawing;
@@ -3966,9 +3969,9 @@ namespace HISP.Server
                             sender.SendPacket(roomFullMessage);
                             break;
                         }
+                    update:;
                         Database.SetLastPlayer("D" + room.Id.ToString(), sender.LoggedinUser.Id);
                         UpdateDrawingForAll("D" + room.Id, sender, drawing, false);
-
                     }
 
                     break;
@@ -7643,7 +7646,7 @@ namespace HISP.Server
 
         public static void UpdateDrawingForAll(string id, GameClient sender, string drawing, bool includingSender=false)
         {
-            World.SpecialTile[] tiles = World.GetSpecialTilesByName("MULTIROOM-D" + id);
+            World.SpecialTile[] tiles = World.GetSpecialTilesByCode("MULTIROOM-" + id);
             foreach (World.SpecialTile tile in tiles)
             {
                 UpdateAreaForAll(tile.X, tile.Y, true, null);

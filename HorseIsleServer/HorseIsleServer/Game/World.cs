@@ -299,6 +299,18 @@ namespace HISP.Game
             }
             throw new KeyNotFoundException("Zone not found.");
         }
+        public static SpecialTile[] GetSpecialTilesByCode(string code)
+        {
+            List<SpecialTile> tiles = new List<SpecialTile>();
+            foreach (SpecialTile tile in SpecialTiles)
+            {
+                if (tile.Code == code)
+                {
+                    tiles.Add(tile);
+                }
+            }
+            return tiles.ToArray();
+        }
         public static SpecialTile[] GetSpecialTilesByName(string name)
         {
             List<SpecialTile> tiles = new List<SpecialTile>();

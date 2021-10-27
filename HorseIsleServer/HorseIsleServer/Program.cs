@@ -18,7 +18,7 @@ namespace HISP
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
         #endif
             
-            Console.Title = ServerVersion.GetVersionString();
+            Console.Title = ServerVersion.GetBuildString();
             ConfigReader.OpenConfig();
             CrossDomainPolicy.GetPolicy();
             Database.OpenDatabase();
