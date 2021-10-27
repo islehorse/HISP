@@ -18,7 +18,7 @@ namespace HISP
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
         #endif
             
-            Console.Title = "HISP - HorseIsleServer Emulator";
+            Console.Title = ServerVersion.GetVersionString();
             ConfigReader.OpenConfig();
             CrossDomainPolicy.GetPolicy();
             Database.OpenDatabase();
@@ -41,6 +41,7 @@ namespace HISP
 
             GameServer.StartServer();
 
+            while (true) { };
         }
 
         private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)

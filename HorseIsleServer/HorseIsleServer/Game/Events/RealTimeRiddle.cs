@@ -37,7 +37,7 @@ namespace HISP.Game.Events
             riddleTimeout = new Timer(new TimerCallback(riddleTimedOut), null, RIDDLE_TIMEOUT * 60 * 1000, RIDDLE_TIMEOUT * 60 * 1000);
 
             // Send riddle message to all players
-            foreach(GameClient client in GameServer.ConnectedClients)
+            foreach(GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                     ShowStartMessage(client);
@@ -74,7 +74,7 @@ namespace HISP.Game.Events
             winner.AddMoney(Reward);
             byte[] riddleWonMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeRiddleWonForOthers(winner.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
             byte[] riddleYouWonMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeRiddleWonForYou(Reward), PacketBuilder.CHAT_BOTTOM_RIGHT);
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                     if (client.LoggedinUser.Id != winner.Id)
@@ -95,7 +95,7 @@ namespace HISP.Game.Events
         private void riddleTimedOut(object state)
         {
             byte[] riddleTimedOutMessage = PacketBuilder.CreateChat(Messages.EventEndRealTimeRiddle, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                     client.SendPacket(riddleTimedOutMessage);

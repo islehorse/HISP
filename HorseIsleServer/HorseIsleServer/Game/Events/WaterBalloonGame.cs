@@ -48,7 +48,7 @@ namespace HISP.Game.Events
             gameTimeout = new Timer(new TimerCallback(gameTimedOut), null, WATER_BALLOON_GAME_TIMEOUT * 60 * 1000, WATER_BALLOON_GAME_TIMEOUT * 60 * 1000);
 
             byte[] gameStartMessage = PacketBuilder.CreateChat(Messages.EventStartWaterBallonGame, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                     client.SendPacket(gameStartMessage);
 
@@ -71,7 +71,7 @@ namespace HISP.Game.Events
             
             // Send to all online users
             byte[] gameWinnerAnnoucement = PacketBuilder.CreateChat(winMsg, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                     client.SendPacket(gameWinnerAnnoucement);
 

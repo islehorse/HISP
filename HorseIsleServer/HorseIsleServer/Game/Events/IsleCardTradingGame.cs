@@ -18,7 +18,7 @@ namespace HISP.Game.Events
             tradingTimeout = new Timer(new TimerCallback(tradeTimedOut), null, TRADING_TIMEOUT * 60 * 1000, TRADING_TIMEOUT * 60 * 1000);
             byte[] msg = PacketBuilder.CreateChat(Messages.EventStartIsleTradingGame, PacketBuilder.CHAT_BOTTOM_RIGHT);
 
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                     client.SendPacket(msg);
 
@@ -46,7 +46,7 @@ namespace HISP.Game.Events
         {
             Active = false; 
 
-            foreach(GameClient client in GameServer.ConnectedClients)
+            foreach(GameClient client in GameClient.ConnectedClients)
             {
                 if(client.LoggedIn)
                 {

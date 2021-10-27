@@ -304,7 +304,7 @@ namespace HISP.Game.Chat
             if (channel == ChatChannel.All)
             {
                 List<GameClient> recipiants = new List<GameClient>();
-                foreach (GameClient client in GameServer.ConnectedClients)
+                foreach (GameClient client in GameClient.ConnectedClients)
                 {
                     if (client.LoggedIn)
                         if (!client.LoggedinUser.MuteGlobal && !client.LoggedinUser.MuteAll)
@@ -318,7 +318,7 @@ namespace HISP.Game.Chat
             if(channel == ChatChannel.Ads)
             { 
                 List<GameClient> recipiants = new List<GameClient>();
-                foreach (GameClient client in GameServer.ConnectedClients)
+                foreach (GameClient client in GameClient.ConnectedClients)
                 {
                     if (client.LoggedIn)
                         if (!client.LoggedinUser.MuteAds && !client.LoggedinUser.MuteAll)
@@ -332,7 +332,7 @@ namespace HISP.Game.Chat
             if(channel == ChatChannel.Buddies)
             {
                 List<GameClient> recipiants = new List<GameClient>();
-                foreach (GameClient client in GameServer.ConnectedClients)
+                foreach (GameClient client in GameClient.ConnectedClients)
                 {
                     if (client.LoggedIn)
                         if (!client.LoggedinUser.MuteBuddy && !client.LoggedinUser.MuteAll)
@@ -403,7 +403,7 @@ namespace HISP.Game.Chat
                 }
 
                 List<GameClient> recipiants = new List<GameClient>();
-                foreach (GameClient client in GameServer.ConnectedClients)
+                foreach (GameClient client in GameClient.ConnectedClients)
                 {
                     if (client.LoggedIn)
                         if (client.LoggedinUser.Moderator)
@@ -423,7 +423,7 @@ namespace HISP.Game.Chat
                     
 
                 List<GameClient> recipiants = new List<GameClient>();
-                foreach (GameClient client in GameServer.ConnectedClients)
+                foreach (GameClient client in GameClient.ConnectedClients)
                 {
                     if (client.LoggedIn)
                         if (client.LoggedinUser.Administrator)
@@ -438,7 +438,7 @@ namespace HISP.Game.Chat
                 if (to != null)
                 {
                     List<GameClient> recipiants = new List<GameClient>();
-                    foreach (GameClient client in GameServer.ConnectedClients)
+                    foreach (GameClient client in GameClient.ConnectedClients)
                     {
                         if (client.LoggedIn)
                             if (!client.LoggedinUser.MutePrivateMessage && !client.LoggedinUser.MuteAll)

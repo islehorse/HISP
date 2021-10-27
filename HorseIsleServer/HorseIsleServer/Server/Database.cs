@@ -21,7 +21,17 @@ namespace HISP.Server
             ConnectionString = "server=" + ConfigReader.DatabaseIP + ";user=" + ConfigReader.DatabaseUsername + ";password=" + ConfigReader.DatabasePassword + ";database=" + ConfigReader.DatabaseName;
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
-                db.Open();
+                
+                try
+                {
+                    db.Open();
+                }
+                catch (MySqlException e)
+                {
+                    Logger.ErrorPrint("Failed to connect to Database: "+e.Message);
+                    Environment.Exit(1);
+                }
+
                 string UserTable = "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16), PassHash TEXT(128), Salt TEXT(128), Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
                 string ExtTable = "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(4000),IpAddress TEXT(1028),PrivateNotes Text(65535), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT, TotalLogins INT)";
                 string MailTable = "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(100), Message Text(65535), TimeSent INT, BeenRead TEXT(3))";

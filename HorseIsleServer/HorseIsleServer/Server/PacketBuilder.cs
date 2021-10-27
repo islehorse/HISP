@@ -340,10 +340,12 @@ namespace HISP.Server
         public static byte[] CreateDrawingUpdatePacket(string Drawing)
         {
             MemoryStream ms = new MemoryStream();
+
             ms.WriteByte(PACKET_SWFMODULE);
             byte[] drawingBytes = Encoding.UTF8.GetBytes(Drawing);
             ms.Write(drawingBytes, 0x00, drawingBytes.Length);
             ms.WriteByte(PACKET_TERMINATOR);
+
             ms.Seek(0x00, SeekOrigin.Begin);
             return ms.ToArray();
         }

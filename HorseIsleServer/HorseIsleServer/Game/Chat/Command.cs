@@ -13,7 +13,7 @@ namespace HISP.Game.Chat
 
         private static User findNamePartial(string name)
         {
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client == null)
                     continue;
