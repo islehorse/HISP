@@ -169,7 +169,7 @@ namespace HISP.Game.Events
             quizTimer = new Timer(new TimerCallback(quizTimesUp), null, QUIZ_TIMEOUT * 60 * 1000, QUIZ_TIMEOUT * 60 * 1000);
 
             byte[] quizStartMessage = PacketBuilder.CreateChat(Messages.EventStartRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                     client.SendPacket(quizStartMessage);
 
@@ -181,7 +181,7 @@ namespace HISP.Game.Events
         public void WinEvent(User winner)
         {
             byte[] eventWinMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeQuizWin(winner.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                     client.SendPacket(eventWinMessage);
 
@@ -199,7 +199,7 @@ namespace HISP.Game.Events
         public void EndEvent()
         {
             byte[] eventEndMessage = PacketBuilder.CreateChat(Messages.EventEndRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if(client.LoggedIn)
                     client.SendPacket(eventEndMessage);
             

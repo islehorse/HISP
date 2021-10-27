@@ -26,13 +26,6 @@ namespace HISP.Server
 
         public static Socket ServerSocket;
 
-        public static GameClient[] ConnectedClients // Done to prevent Enumerator Changed errors.
-        {
-            get {
-                return connectedClients.ToArray();
-            }
-        }
-
         public static int IdleTimeout;
         public static int IdleWarning;
 
@@ -52,7 +45,6 @@ namespace HISP.Server
         private static int gameTickSpeed = 480; // Changing this to ANYTHING else will cause desync with the client.
         private static int totalMinutesElapsed = 0;
         private static int oneMinute = 1000 * 60;
-        private static List<GameClient> connectedClients = new List<GameClient>();
         private static Timer gameTimer; // Controls in-game time.
         private static Timer minuteTimer; // ticks every real world minute.
         private static int lastServerTime = 0;
@@ -193,7 +185,7 @@ namespace HISP.Server
             }
 
 
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client == null)
                     continue;
@@ -3629,7 +3621,7 @@ namespace HISP.Server
 
             UpdateArea(sender);
 
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                 {
@@ -3690,7 +3682,7 @@ namespace HISP.Server
 
             // Send login message
             byte[] loginMessageBytes = PacketBuilder.CreateChat(Messages.FormatLoginMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                     if (!client.LoggedinUser.MuteLogins && !client.LoggedinUser.MuteAll)
                         if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
@@ -3702,7 +3694,7 @@ namespace HISP.Server
             byte[] yourPlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.Facing, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Username);
             byte[] yourPlayerInfoOffscreen = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, sender.LoggedinUser.Facing, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Username);
 
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                 {
@@ -5687,7 +5679,6 @@ namespace HISP.Server
             Chat.ChatChannel channel = (Chat.ChatChannel)packet[1];
             string message = packetStr.Substring(2, packetStr.Length - 4);
 
-
             Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to say '" + message + "' in channel: " + channel.ToString());
 
             string nameTo = null;
@@ -5697,14 +5688,11 @@ namespace HISP.Server
                 message = Chat.GetDmMessage(message);
             }
 
-            if (message == "")
-                return;
-            
-            if(message.StartsWith("/"))
+            if (message.StartsWith("/"))
             {
                 string channelString = message.Split(' ')[0].ToLower();
                 string newMessage = string.Join(' ', message.Split(' ').Skip(1));
-                message = newMessage;
+                message = newMessage.Trim();
                 switch(channelString)
                 {
                     case "/$":
@@ -5748,11 +5736,20 @@ namespace HISP.Server
                         nameTo = channelString.Substring(1);
                         break;
                 }
+
+                if (message == "") // this is how pinto does it, im serious.
+                {
+                    channel = Chat.ChatChannel.Dm;
+                    nameTo = channelString.Substring(1);
+                }
             }
 
             message = message.Trim();
 
-            if(channel == Chat.ChatChannel.All && message.Length > 150)
+            if (message == "")
+                return;
+
+            if (channel == Chat.ChatChannel.All && message.Length > 150)
             {
                 byte[] tooLong = PacketBuilder.CreateChat(Messages.GlobalChatTooLong, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 sender.SendPacket(tooLong);
@@ -6573,7 +6570,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. (drop)");
                         return;
                     }
 
@@ -6592,6 +6589,8 @@ namespace HISP.Server
                         byte[] chatPacket = PacketBuilder.CreateChat(Messages.DroppedAnItemMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(chatPacket);
                         UpdateInventory(sender);
+
+                        UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, false, sender.LoggedinUser);
                     }
                     else
                     {
@@ -7283,10 +7282,6 @@ namespace HISP.Server
 
         public static void OnDisconnect(GameClient sender)
         {
-
-            connectedClients.Remove(sender);
-
-
             if (sender.LoggedIn)
             {
                 Database.SetPlayerLastLogin(Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds()), sender.LoggedinUser.Id); // Set last login date
@@ -7321,7 +7316,7 @@ namespace HISP.Server
 
                 // Send disconnect message
                 byte[] logoutMessageBytes = PacketBuilder.CreateChat(Messages.FormatLogoutMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
-                foreach (GameClient client in ConnectedClients)
+                foreach (GameClient client in GameClient.ConnectedClients)
                     if (client.LoggedIn)
                         if (!client.LoggedinUser.MuteLogins && !client.LoggedinUser.MuteAll)
                             if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
@@ -7329,12 +7324,11 @@ namespace HISP.Server
 
                 // Tell clients of diconnect (remove from chat)
                 byte[] playerRemovePacket = PacketBuilder.CreatePlayerLeavePacket(sender.LoggedinUser.Username);
-                foreach (GameClient client in ConnectedClients)
+                foreach (GameClient client in GameClient.ConnectedClients)
                     if (client.LoggedIn)
                         if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
                             client.SendPacket(playerRemovePacket);
             }
-
 
         }
 
@@ -7359,7 +7353,7 @@ namespace HISP.Server
         public static User[] GetUsersInTown(World.Town town, bool includeStealth = false, bool includeMuted = false)
         {
             List<User> usersInTown = new List<User>();
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                 {
                     if (!includeStealth && client.LoggedinUser.Stealth)
@@ -7376,7 +7370,7 @@ namespace HISP.Server
         public static User[] GetUsersInIsle(World.Isle isle, bool includeStealth = false, bool includeMuted = false)
         {
             List<User> usersInIsle = new List<User>();
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                 {
                     if (!includeStealth && client.LoggedinUser.Stealth)
@@ -7395,7 +7389,7 @@ namespace HISP.Server
         {
             List<User> userList = new List<User>();
 
-            foreach (GameClient client in connectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                 {
@@ -7416,7 +7410,7 @@ namespace HISP.Server
         public static User[] GetUsersAt(int x, int y, bool includeStealth = false, bool includeMuted = false)
         {
             List<User> usersHere = new List<User>();
-            foreach(GameClient client in ConnectedClients)
+            foreach(GameClient client in GameClient.ConnectedClients)
             {
                 if(client.LoggedIn)
                 {
@@ -7432,7 +7426,7 @@ namespace HISP.Server
         }
         public static User GetUserByName(string username)
         {
-            foreach(GameClient client in ConnectedClients)
+            foreach(GameClient client in GameClient.ConnectedClients)
             {
                 if(client.LoggedIn)
                 {
@@ -7445,7 +7439,7 @@ namespace HISP.Server
 
         public static User GetUserById(int id)
         {
-            foreach(GameClient client in ConnectedClients)
+            foreach(GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                     if (client.LoggedinUser.Id == id)
@@ -7463,7 +7457,7 @@ namespace HISP.Server
             int endY = y + 3;
             List<User> usersNearby = new List<User>();
 
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                 {
                     if (startX <= client.LoggedinUser.X && endX >= client.LoggedinUser.X && startY <= client.LoggedinUser.Y && endY >= client.LoggedinUser.Y)
@@ -7490,7 +7484,7 @@ namespace HISP.Server
 
             List<User> usersOnScreen = new List<User>();
 
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                 {
                     if (!includeStealth && client.LoggedinUser.Stealth)
@@ -7512,7 +7506,7 @@ namespace HISP.Server
             int endY = y + 19;
             List<User> usersNearby = new List<User>();
 
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                 {
                     if (!includeStealth && client.LoggedinUser.Stealth)
@@ -7528,7 +7522,7 @@ namespace HISP.Server
         public static int GetNumberOfPlayers(bool includeStealth=false)
         {
             int count = 0;
-            foreach(GameClient client in ConnectedClients)
+            foreach(GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                 {
                     if (!includeStealth && client.LoggedinUser.Stealth)
@@ -7544,7 +7538,7 @@ namespace HISP.Server
         {
             List<Point> allLocations = new List<Point>();
 
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                 {
@@ -7566,7 +7560,7 @@ namespace HISP.Server
         {
             List<Point> allLocations = new List<Point>();
             
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                 {
@@ -7586,7 +7580,7 @@ namespace HISP.Server
         public static int GetNumberOfPlayersListeningToAdsChat()
         {
             int count = 0;
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                     if (!client.LoggedinUser.MuteAds)
@@ -7598,7 +7592,7 @@ namespace HISP.Server
         public static int GetNumberOfModsOnline()
         {
             int count = 0;
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                     if(client.LoggedinUser.Moderator)
@@ -7623,7 +7617,7 @@ namespace HISP.Server
         public static int GetNumberOfAdminsOnline()
         {
             int count = 0;
-            foreach (GameClient client in ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                     if (client.LoggedinUser.Administrator)
@@ -7740,7 +7734,7 @@ namespace HISP.Server
         }
         public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPrio=false, User exceptMe=null)
         {
-            foreach(GameClient client in ConnectedClients)
+            foreach(GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
                     if (client.LoggedinUser.X == x && client.LoggedinUser.Y == y)
@@ -7856,7 +7850,7 @@ namespace HISP.Server
         public static void RemoveAllItemsOfIdInTheGame(int id)
         {
             // Remove from all online players
-            foreach (GameClient connectedClient in GameServer.ConnectedClients)
+            foreach (GameClient connectedClient in GameClient.ConnectedClients)
             {
                 if (connectedClient.LoggedIn)
                     if (connectedClient.LoggedinUser.Inventory.HasItemId(id))
@@ -8042,22 +8036,15 @@ namespace HISP.Server
             IPAddress hostIP = IPAddress.Parse(ConfigReader.BindIP);
             IPEndPoint ep = new IPEndPoint(hostIP, ConfigReader.Port);
             ServerSocket.Bind(ep);
-            Logger.InfoPrint("Binding to ip: " + ConfigReader.BindIP + " On port: " + ConfigReader.Port.ToString());
-            ServerSocket.Listen(10000);
+            ServerSocket.Listen(0x7fffffff);
             gameTimer = new Timer(new TimerCallback(onGameTick), null, gameTickSpeed, gameTickSpeed);
             minuteTimer = new Timer(new TimerCallback(onMinuteTick), null, oneMinute, oneMinute);
-            while (true)
-            {
-                Logger.InfoPrint("Waiting for new connections...");
+            Logger.InfoPrint("Binding to ip: " + ConfigReader.BindIP + " On port: " + ConfigReader.Port.ToString());
 
-                Socket cientSocket = ServerSocket.Accept();
-                GameClient client = new GameClient(cientSocket);
-                connectedClients.Add(client);
-            }
+            SocketAsyncEventArgs e = new SocketAsyncEventArgs();
+            e.Completed += GameClient.CreateClient;
+            GameClient.AcceptConnections(e, ServerSocket);
         }
-
-        
-        
 
     }
 }

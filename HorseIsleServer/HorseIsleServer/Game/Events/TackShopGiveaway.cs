@@ -32,7 +32,7 @@ namespace HISP.Game.Events
             if (timesTicked >= 1)
             {
                 byte[] giveAwayMessage = PacketBuilder.CreateChat(Messages.FormatEventTackShopGiveaway1Min(HorseGiveaway.Color, HorseGiveaway.Breed.Name, HorseGiveaway.Gender, ShopName, Town.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                foreach (GameClient client in GameServer.ConnectedClients)
+                foreach (GameClient client in GameClient.ConnectedClients)
                     if (client.LoggedIn)
                         client.SendPacket(giveAwayMessage);
             }
@@ -105,7 +105,7 @@ namespace HISP.Game.Events
             giveAwayTimer = new Timer(new TimerCallback(giveawayTick), null, TACKSHOP_TIMEOUT * 60 * 1000, TACKSHOP_TIMEOUT * 60 * 1000);
 
             byte[] giveAwayMessage = PacketBuilder.CreateChat(Messages.FormatEventTackShopGiveawayStart(HorseGiveaway.Color, HorseGiveaway.Breed.Name, HorseGiveaway.Gender, ShopName, Town.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                     client.SendPacket(giveAwayMessage);
 
@@ -132,7 +132,7 @@ namespace HISP.Game.Events
                 winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.TackShopGiveaway).Count++;
 
                 byte[] horseWonMessage = PacketBuilder.CreateChat(Messages.FormatEventTackShopGiveawayWon(winner.Username, HorseGiveaway.Breed.Name, ShopName, Town.Name, usersHere.Length), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                foreach (GameClient client in GameServer.ConnectedClients)
+                foreach (GameClient client in GameClient.ConnectedClients)
                     if (client.LoggedIn)
                         client.SendPacket(horseWonMessage);
 
@@ -140,7 +140,7 @@ namespace HISP.Game.Events
             else
             {
                 byte[] eventEndedMessage = PacketBuilder.CreateChat(Messages.FormatEventTackShopGiveawayEnd(ShopName, Town.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                foreach (GameClient client in GameServer.ConnectedClients)
+                foreach (GameClient client in GameClient.ConnectedClients)
                     if (client.LoggedIn)
                         client.SendPacket(eventEndedMessage);
             }

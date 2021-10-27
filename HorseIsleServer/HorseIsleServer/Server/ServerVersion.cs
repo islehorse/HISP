@@ -45,7 +45,7 @@ namespace HISP.Server
         }
         public static string GetCommitHash(int TotalBytes)
         {
-            return Resources.GitCommit.Substring(0, TotalBytes * 2);
+            return Resources.GitCommit.Substring(0, TotalBytes);
         }
         public static string GetBuildString()
         {

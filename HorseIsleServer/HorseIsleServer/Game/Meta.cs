@@ -1165,7 +1165,7 @@ namespace HISP.Game
         public static string BuildPlayerListAlphabetical(User currentUser)
         {
             string message = Messages.PlayerListAllAlphabeticalHeader;
-            GameClient[] clients = GameServer.ConnectedClients;
+            GameClient[] clients = GameClient.ConnectedClients;
             List<User> onlineUsers = new List<User>();
 
             foreach (GameClient client in clients)
@@ -1202,7 +1202,7 @@ namespace HISP.Game
         public static string BuildPlayerList(User currentUser)
         {
             string message = Messages.PlayerListAllHeader;
-            GameClient[] clients = GameServer.ConnectedClients;
+            GameClient[] clients = GameClient.ConnectedClients;
             foreach (GameClient client in clients)
             {
                 if (client.LoggedIn)

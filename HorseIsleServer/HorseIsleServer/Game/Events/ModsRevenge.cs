@@ -72,7 +72,7 @@ namespace HISP.Game.Events
 
             byte[] annoucePacket = PacketBuilder.CreateChat(Messages.EventStartModsRevenge, PacketBuilder.CHAT_BOTTOM_RIGHT);
 
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                     client.SendPacket(annoucePacket);
         }
@@ -83,7 +83,7 @@ namespace HISP.Game.Events
 
             byte[] annoucePacket = PacketBuilder.CreateChat(Messages.EventEndModsRevenge, PacketBuilder.CHAT_BOTTOM_RIGHT);
 
-            foreach (GameClient client in GameServer.ConnectedClients)
+            foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
                     client.SendPacket(annoucePacket);
         }

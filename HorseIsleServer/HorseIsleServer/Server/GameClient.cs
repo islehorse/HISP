@@ -3,6 +3,7 @@ using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Collections.Generic;
 using HISP.Player;
 using HISP.Game;
 using HISP.Game.Horse;
@@ -12,6 +13,15 @@ namespace HISP.Server
 {
     public class GameClient
     {
+        private static List<GameClient> connectedClients = new List<GameClient>();
+        public static GameClient[] ConnectedClients // Done to prevent Enumerator Changed errors.
+        {
+            get
+            {
+                return connectedClients.ToArray();
+            }
+        }
+
         public Socket ClientSocket;
         public string RemoteIp;
 
@@ -33,8 +43,6 @@ namespace HISP.Server
             }
         }
         public User LoggedinUser;
-
-        private Thread recvPackets;
         
         private Timer inactivityTimer;
 
@@ -233,8 +241,11 @@ namespace HISP.Server
             SendPacket(chatPacket);
             if (LoggedIn)
                 LoggedinUser.Idle = true;
-            warnTimer.Dispose();
-            warnTimer = null;
+            if(warnTimer != null)
+            {
+                warnTimer.Dispose();
+                warnTimer = null;
+            }
 
         }
 
@@ -246,7 +257,7 @@ namespace HISP.Server
         public void Login(int id)
         {
             // Check for duplicate
-            foreach(GameClient Client in GameServer.ConnectedClients)
+            foreach(GameClient Client in GameClient.ConnectedClients)
             {
                 if(Client.LoggedIn)
                 {
@@ -317,16 +328,17 @@ namespace HISP.Server
                 warnTimer.Dispose();
             if(kickTimer != null)
                 kickTimer.Dispose();
-            
+
             // Call OnDisconnect
+            connectedClients.Remove(this);
             GameServer.OnDisconnect(this);
             LoggedIn = false;
-            // LoggedinUser = null;
-            // Close Sockets
+            
+            // Close Socket
             ClientSocket.Close();
             ClientSocket.Dispose();
 
-            return isDisconnecting; // Stop the thread.
+            return isDisconnecting; // Stop the task.
         }
 
         private void parsePackets(byte[] Packet)
@@ -492,12 +504,25 @@ namespace HISP.Server
             warnTimer = new Timer(new TimerCallback(warnTimerTick), null, warnInterval, warnInterval);
             minuteTimer = new Timer(new TimerCallback(minuteTimerTick), null, oneMinute, oneMinute);
 
-            recvPackets = new Thread(() =>
-            {
-                receivePackets();
-            });
-            recvPackets.Start();
-            
+            connectedClients.Add(this);
+
+            receivePackets();
         }
+
+        public static void AcceptConnections(SocketAsyncEventArgs e, Socket socket)
+        {
+            e.AcceptSocket = null;
+            socket.AcceptAsync(e);
+        }
+        public static void CreateClient(object sender, SocketAsyncEventArgs e)
+        {
+            Socket eSocket = e.AcceptSocket;
+            AcceptConnections(e, GameServer.ServerSocket);
+
+            GameClient client = new GameClient(eSocket);
+        }
+
     }
+
+
 }
