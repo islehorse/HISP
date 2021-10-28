@@ -5691,12 +5691,19 @@ namespace HISP.Server
                 message = Chat.GetDmMessage(message);
             }
 
+            if (message == "")
+                return;
+
             if (message.StartsWith("/"))
             {
                 string channelString = message.Split(' ')[0].ToLower();
                 string newMessage = string.Join(' ', message.Split(' ').Skip(1));
                 message = newMessage.Trim();
-                switch(channelString)
+                
+                if (message == "")
+                    channelString = "/";
+
+                switch (channelString)
                 {
                     case "/$":
                     case "/ads":
@@ -5748,9 +5755,6 @@ namespace HISP.Server
             }
 
             message = message.Trim();
-
-            if (message == "")
-                return;
 
             if (channel == Chat.ChatChannel.All && message.Length > 150)
             {
