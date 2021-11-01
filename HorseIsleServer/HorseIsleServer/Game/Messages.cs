@@ -1445,7 +1445,7 @@ namespace HISP.Game
         }
         public static string FormatSocialMenuType(string type)
         {
-            return SocialTypeFormat.Replace("%TYPE%", Converters.CapitalizeFirstLetter(type.ToLower()));
+            return SocialTypeFormat.Replace("%TYPE%", Util.CapitalizeFirstLetter(type.ToLower()));
         }
 
         // Trading

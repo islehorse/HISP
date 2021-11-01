@@ -1,9 +1,10 @@
 ﻿using System;
-
+using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Server
 {
-    public class Converters
+    public class Util
     {
         // Thanks Stackoverflow (https://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array)
         private static int getHexVal(char hex)
@@ -45,6 +46,9 @@ namespace HISP.Server
             return dtDateTime;
         }
 
-
+        public static void ByteArrayToByteList(byte[] byteArray, List<byte> byteList)
+        {
+            byteList.AddRange(byteArray.ToList());
+        }
     }
 }

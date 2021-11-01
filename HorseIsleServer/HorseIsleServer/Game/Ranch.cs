@@ -134,7 +134,7 @@ namespace HISP.Game
                         return ownerId;
 
                     int subExp = Database.GetUserSubscriptionExpireDate(ownerId);
-                    DateTime expTime = Converters.UnixTimeStampToDateTime(subExp);
+                    DateTime expTime = Util.UnixTimeStampToDateTime(subExp);
                     if ((DateTime.UtcNow.Date - expTime.Date).Days >= 30)
                     {
                         int price = GetSellPrice();
