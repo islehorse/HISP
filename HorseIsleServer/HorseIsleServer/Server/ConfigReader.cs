@@ -20,7 +20,7 @@ namespace HISP.Server
         public static string GameDataFile;
         public static string CrossDomainPolicyFile;
 
-        public static bool Debug = false;
+        public static int LogLevel = 0;
         public static bool AllUsersSubbed = false;
         public static bool BadWords = true;
         public static bool DoCorrections = true;
@@ -109,8 +109,8 @@ namespace HISP.Server
                     case "intrest_rate":
                         IntrestRate = int.Parse(data);
                         break;
-                    case "debug":
-                        Debug = data == "true";
+                    case "log_level":
+                        LogLevel = int.Parse(data);
                         break;
                 }
 

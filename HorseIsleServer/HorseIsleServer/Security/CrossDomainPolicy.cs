@@ -1,5 +1,4 @@
 ﻿using HISP.Properties;
-using System;
 using System.IO;
 using HISP.Server;
 namespace HISP.Security
@@ -9,8 +8,7 @@ namespace HISP.Security
         public static byte[] GetPolicy()
         {
             if (!File.Exists(ConfigReader.CrossDomainPolicyFile)) {
-                if (ConfigReader.Debug)
-                    Console.WriteLine("[DEBUG] Cross-Domain-Policy file not found, using default");
+                Logger.InfoPrint("Cross-Domain-Policy file not found, using default");
                 File.WriteAllText(ConfigReader.CrossDomainPolicyFile, Resources.DefaultCrossDomain);
             } 
                 

@@ -267,28 +267,26 @@ namespace HISP.Game
 
         public static bool InSpecialTile(int x, int y)
         {
-            try
+            foreach (SpecialTile specialTile in SpecialTiles)
             {
-                GetSpecialTile(x, y);
-                return true;
+                if (specialTile.X == x && specialTile.Y == y)
+                {
+                    return true;
+                }
             }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
+            return false;
         }
 
         public static bool InIsle(int x, int y)
         {
-            try
+            foreach (Isle isle in Isles)
             {
-                GetIsle(x, y);
-                return true;
+                if (isle.StartX <= x && isle.EndX >= x && isle.StartY <= y && isle.EndY >= y)
+                {
+                    return true;
+                }
             }
-            catch(KeyNotFoundException)
-            {
-                return false;
-            }
+            return false;
         }
         public static Zone GetZoneByName(string name)
         {

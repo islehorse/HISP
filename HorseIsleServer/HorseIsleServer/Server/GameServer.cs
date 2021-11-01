@@ -8050,7 +8050,7 @@ namespace HISP.Server
 
             SocketAsyncEventArgs e = new SocketAsyncEventArgs();
             e.Completed += GameClient.CreateClient;
-            GameClient.AcceptConnections(e, ServerSocket);
+            ServerSocket.AcceptAsync(e);
         }
 
     }
