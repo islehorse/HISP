@@ -1,5 +1,6 @@
 HorseIsleServer/HorseIsleServer/bin/*
 HorseIsleServer/HorseIsleServer/obj/*
 HorseIsleServer/.vs/*
+HorseIsleServer/HorseIsleServer/Resources/GitCommit
 *.log
 *.suo
