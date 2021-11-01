@@ -246,7 +246,7 @@ namespace HISP.Player
         {
             get
             {
-                return Converters.UnixTimeStampToDateTime(subscribedUntil);
+                return Util.UnixTimeStampToDateTime(subscribedUntil);
             }
         }
         public int FreeMinutes

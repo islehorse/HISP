@@ -122,13 +122,13 @@ namespace HISP.Game.Items
 
                     try
                     {
-                        TackSet set = GetSetByName(Converters.CapitalizeFirstLetter(itemInfo.EmbedSwf));
+                        TackSet set = GetSetByName(Util.CapitalizeFirstLetter(itemInfo.EmbedSwf));
                         set.Add(itemInfo);
                     }
                     catch(KeyNotFoundException)
                     {                   
                         TackSet tackSet = new TackSet();
-                        tackSet.SetName = Converters.CapitalizeFirstLetter(itemInfo.EmbedSwf);
+                        tackSet.SetName = Util.CapitalizeFirstLetter(itemInfo.EmbedSwf);
                         tackSet.Add(itemInfo);
                         tackSets.Add(tackSet);
                     }

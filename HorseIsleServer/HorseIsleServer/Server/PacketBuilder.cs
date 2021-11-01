@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Text;
@@ -430,120 +431,106 @@ namespace HISP.Server
         }
         public static byte[] CreatePlayerInfoUpdateOrCreate(int x, int y, int facing, int charId, string username)
         {
-            MemoryStream ms = new MemoryStream();
+            byte[] userBytes = Encoding.UTF8.GetBytes(username);
+            byte[] packet = new byte[(1 * 10) + userBytes.Length];
 
-            ms.WriteByte(PACKET_PLAYERINFO);
-            ms.WriteByte(PLAYERINFO_UPDATE_OR_CREATE);
+            packet[0] = PACKET_PLAYERINFO;
+            packet[1] = PLAYERINFO_UPDATE_OR_CREATE;
 
-            ms.WriteByte((byte)(((x - 4) / 64) + 20)); 
-            ms.WriteByte((byte)(((x - 4) % 64) + 20));
+            packet[2] = (byte)(((x - 4) / 64) + 20);
+            packet[3] = (byte)(((x - 4) % 64) + 20);
 
-            ms.WriteByte((byte)(((y - 1) / 64) + 20)); 
-            ms.WriteByte((byte)(((y - 1) % 64) + 20));
+            packet[4] = (byte)(((y - 1) / 64) + 20);
+            packet[5] = (byte)(((y - 1) % 64) + 20);
 
-            ms.WriteByte((byte)(facing + 20));
+            packet[6] = (byte)(facing + 20);
 
-            ms.WriteByte((byte)((charId / 64) + 20)); //6
-            ms.WriteByte((byte)((charId % 64) + 20)); //7
+            packet[7] = (byte)((charId / 64) + 20);
+            packet[8] = (byte)((charId % 64) + 20);
 
+            Array.Copy(userBytes, 0, packet, 9, userBytes.Length);
 
-            byte[] strBytes = Encoding.UTF8.GetBytes(username);
-            ms.Write(strBytes, 0x00, strBytes.Length);
+            packet[packet.Length] = PACKET_TERMINATOR;
 
-            ms.WriteByte(PACKET_TERMINATOR);
-
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            return packet;
         }
 
         public static byte[] CreateLoginPacket(bool Success, string message="")
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_LOGIN);
-            if (message != "")
-                ms.WriteByte(LOGIN_CUSTOM_MESSAGE);
-            else if (Success)
-                ms.WriteByte(LOGIN_SUCCESS);
-            else
-                ms.WriteByte(LOGIN_INVALID_USER_PASS);
-
             byte[] loginFailMessage = Encoding.UTF8.GetBytes(message);
-            ms.Write(loginFailMessage, 0x00, loginFailMessage.Length);
+            byte[] packet = new byte[(1 * 3) + loginFailMessage.Length];
 
-            ms.WriteByte(PACKET_TERMINATOR);
+            packet[0] = PACKET_LOGIN;
+            if (message != "")
+                packet[1] = LOGIN_CUSTOM_MESSAGE;
+            else if (Success)
+                packet[1] = LOGIN_SUCCESS;
+            else
+                packet[1] = LOGIN_INVALID_USER_PASS;
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
+            Array.Copy(loginFailMessage, 0, packet, 2, loginFailMessage.Length);
 
-            return Packet;
+            packet[packet.Length] = PACKET_TERMINATOR;
+
+            return packet;
         }
 
         public static byte[] CreateProfilePacket(string userProfile)
         {
-            MemoryStream ms = new MemoryStream();
+            byte[] profileBytes = Encoding.UTF8.GetBytes(userProfile);
+            byte[] packet = new byte[(1 * 2) + profileBytes.Length];
 
-            ms.WriteByte(PACKET_PLAYER);
+            packet[0] = PACKET_PLAYER;
+            Array.Copy(profileBytes, 0, packet, 1, profileBytes.Length);
+            packet[packet.Length] = PACKET_TERMINATOR;
 
-            byte[] strBytes = Encoding.UTF8.GetBytes(userProfile);
-            ms.Write(strBytes, 0x00, strBytes.Length);
-
-            ms.WriteByte(PACKET_TERMINATOR);
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            return packet;
         }
 
         public static byte[] CreateHorseRidePacket(int x, int y, int charId, int facing, int direction, bool walk)
         {
             // Header information
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_MOVE);
+            byte[] packet = new byte[(1 * 10)];
+            packet[0] = PACKET_MOVE;
 
-            ms.WriteByte((byte)(((x - 4) / 64) + 20)); //1
-            ms.WriteByte((byte)(((x - 4) % 64) + 20)); //2
+            packet[1] = (byte)(((x - 4) / 64) + 20);
+            packet[2] = (byte)(((x - 4) % 64) + 20);
 
-            ms.WriteByte((byte)(((y - 1) / 64) + 20)); //3
-            ms.WriteByte((byte)(((y - 1) % 64) + 20)); //4
+            packet[3] = (byte)(((y - 1) / 64) + 20);
+            packet[4] = (byte)(((y - 1) % 64) + 20);
 
-            ms.WriteByte((byte)(facing + 20)); //5
+            packet[5] = (byte)(facing + 20);
 
-            ms.WriteByte((byte)((charId / 64) + 20)); //6
-            ms.WriteByte((byte)((charId % 64) + 20)); //7
+            packet[6] = (byte)((charId / 64) + 20);
+            packet[7] = (byte)((charId % 64) + 20);
 
-            ms.WriteByte((byte)(direction + 20)); //8
+            packet[8] = (byte)(direction + 20);
 
-            ms.WriteByte((byte)(Convert.ToInt32(walk) + 20)); //9\
-            ms.WriteByte(PACKET_TERMINATOR);
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] packetData = ms.ToArray();
-            ms.Dispose();
-            return packetData;
+            packet[9] = (byte)(Convert.ToInt32(walk) + 20);
+            packet[packet.Length] = PACKET_TERMINATOR;
+
+            return packet;
         }
 
-        public static byte[] CreateMovementPacket(int x, int y,int charId,int facing, int direction, bool walk)
+        public static byte[] CreateMovementPacket(int x, int y, int charId, int facing, int direction, bool walk)
         {
             // Header information
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_MOVE);
+            List<byte> packet = new List<byte>();
 
-            ms.WriteByte((byte)(((x-4) / 64) + 20)); //1
-            ms.WriteByte((byte)(((x-4) % 64) + 20)); //2
+            packet.Add(PACKET_MOVE);
 
-            ms.WriteByte((byte)(((y-1) / 64) + 20)); //3
-            ms.WriteByte((byte)(((y-1) % 64) + 20)); //4
+            packet.Add((byte)(((x-4) / 64) + 20)); //1
+            packet.Add((byte)(((x-4) % 64) + 20)); //2
 
-            ms.WriteByte((byte)(facing + 20)); //5
+            packet.Add((byte)(((y-1) / 64) + 20)); //3
+            packet.Add((byte)(((y-1) % 64) + 20)); //4
 
-            ms.WriteByte((byte)((charId / 64) + 20)); //6
-            ms.WriteByte((byte)((charId % 64) + 20)); //7
-            ms.WriteByte((byte)(direction + 20)); //8
-            ms.WriteByte((byte)(Convert.ToInt32(walk) + 20)); //9
+            packet.Add((byte)(facing + 20)); //5
+
+            packet.Add((byte)((charId / 64) + 20)); //6
+            packet.Add((byte)((charId % 64) + 20)); //7
+            packet.Add((byte)(direction + 20)); //8
+            packet.Add((byte)(Convert.ToInt32(walk) + 20)); //9
 
 
             // Map Data
@@ -577,19 +564,17 @@ namespace HISP.Server
 
                         if (tileId >= 190)
                         {
-                            ms.WriteByte((byte)190);
+                            packet.Add((byte)190);
                             tileId -= 100;
                         }
-                        ms.WriteByte((byte)tileId);
+                        packet.Add((byte)tileId);
 
                         if (otileId >= 190)
                         {
-                            ms.WriteByte((byte)190);
+                            packet.Add((byte)190);
                             otileId -= 100;
                         }
-                        ms.WriteByte((byte)otileId);
-
-
+                        packet.Add((byte)otileId);
                     }
                 }
             }
@@ -614,19 +599,17 @@ namespace HISP.Server
 
                         if (tileId >= 190)
                         {
-                            ms.WriteByte((byte)190);
+                            packet.Add((byte)190);
                             tileId -= 100;
                         }
-                        ms.WriteByte((byte)tileId);
+                        packet.Add((byte)tileId);
 
                         if (otileId >= 190)
                         {
-                            ms.WriteByte((byte)190);
+                            packet.Add((byte)190);
                             otileId -= 100;
                         }
-                        ms.WriteByte((byte)otileId);
-
-
+                        packet.Add((byte)otileId);
                     }
                 }
             }
@@ -652,17 +635,17 @@ namespace HISP.Server
 
                         if (tileId >= 190)
                         {
-                            ms.WriteByte((byte)190);
+                            packet.Add((byte)190);
                             tileId -= 100;
                         }
-                        ms.WriteByte((byte)tileId);
+                        packet.Add((byte)tileId);
 
                         if (otileId >= 190)
                         {
-                            ms.WriteByte((byte)190);
+                            packet.Add((byte)190);
                             otileId -= 100;
                         }
-                        ms.WriteByte((byte)otileId);
+                        packet.Add((byte)otileId);
 
                     }
                 }
@@ -688,17 +671,17 @@ namespace HISP.Server
 
                         if (tileId >= 190)
                         {
-                            ms.WriteByte((byte)190);
+                            packet.Add((byte)190);
                             tileId -= 100;
                         }
-                        ms.WriteByte((byte)tileId);
+                        packet.Add((byte)tileId);
 
                         if (otileId >= 190)
                         {
-                            ms.WriteByte((byte)190);
+                            packet.Add((byte)190);
                             otileId -= 100;
                         }
-                        ms.WriteByte((byte)otileId);
+                        packet.Add((byte)otileId);
 
                     }
                 }
@@ -715,30 +698,25 @@ namespace HISP.Server
 
                         if(tileId >= 190)
                         {
-                            ms.WriteByte((byte)190);
+                            packet.Add((byte)190);
                             tileId -= 100;
                         }
-                        ms.WriteByte((byte)tileId);
+                        packet.Add((byte)tileId);
 
                         if (otileId >= 190)
                         {
-                            ms.WriteByte((byte)190);
+                            packet.Add((byte)190);
                             otileId -= 100;
                         }
-                        ms.WriteByte((byte)otileId);
+                        packet.Add((byte)otileId);
 
                     }
                 }
 
             }
+            packet.Add(PACKET_TERMINATOR);
 
-
-            ms.WriteByte(PACKET_TERMINATOR);
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            return packet.ToArray();
         }
 
         public static byte[] CreateClickTileInfoPacket(string text)

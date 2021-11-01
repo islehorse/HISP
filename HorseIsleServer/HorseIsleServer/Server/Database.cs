@@ -3352,7 +3352,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     string expectedHash = sqlCommand.ExecuteScalar().ToString();
                     sqlCommand.Dispose();
-                    return Converters.StringToByteArray(expectedHash);
+                    return Util.StringToByteArray(expectedHash);
                 }
                 else
                 {
@@ -6047,7 +6047,7 @@ namespace HISP.Server
                     string expectedHash = sqlCommand.ExecuteScalar().ToString();
 
                     sqlCommand.Dispose();
-                    return Converters.StringToByteArray(expectedHash);
+                    return Util.StringToByteArray(expectedHash);
                 }
                 else
                 {

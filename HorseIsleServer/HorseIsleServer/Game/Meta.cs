@@ -1259,7 +1259,7 @@ namespace HISP.Game
                     continue;
 
                 string username = Database.GetUsername(id);
-                int minutes = Convert.ToInt32(Math.Round(DateTime.UtcNow.Subtract(Converters.UnixTimeStampToDateTime(Database.GetPlayerLastLogin(id))).TotalMinutes));
+                int minutes = Convert.ToInt32(Math.Round(DateTime.UtcNow.Subtract(Util.UnixTimeStampToDateTime(Database.GetPlayerLastLogin(id))).TotalMinutes));
 
                 message += Messages.FormatOfflineBuddyEntry(username, id, minutes);
             }
@@ -2124,7 +2124,7 @@ namespace HISP.Game
         }
         public static string BuildMailLetter(Mailbox.Mail mailMessage, int itemRandomId)
         {
-            DateTime time = Converters.UnixTimeStampToDateTime(mailMessage.Timestamp);
+            DateTime time = Util.UnixTimeStampToDateTime(mailMessage.Timestamp);
             string amOrPm = "am";
             string[] months = new string[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
             string minutes = time.Minute.ToString();
@@ -2596,7 +2596,7 @@ namespace HISP.Game
         {
             string message = Messages.FormatPawneerOrderSelectGender(color, breed.Name);
             foreach (string gender in breed.GenderTypes())
-                message += Messages.FormatPawneerOrderGenderEntry(Converters.CapitalizeFirstLetter(gender), gender);
+                message += Messages.FormatPawneerOrderGenderEntry(Util.CapitalizeFirstLetter(gender), gender);
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;

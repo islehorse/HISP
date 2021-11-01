@@ -2818,7 +2818,7 @@ namespace HISP.Server
 
                                 if(Transport.GetTransportLocation(tpPoint.Locations[0]).Type == "WAGON") // is wagon?
                                 {
-                                    double distance = Converters.PointsToDistance(ranchX, ranchY, tpPoint.X, tpPoint.Y);
+                                    double distance = Util.PointsToDistance(ranchX, ranchY, tpPoint.X, tpPoint.Y);
                                     if(distance < smallestDistance)
                                     {
                                         smallestDistance = distance;
