@@ -339,22 +339,17 @@ namespace HISP.Server
         }
         public static byte[] CreateDrawingUpdatePacket(string Drawing)
         {
-            MemoryStream ms = new MemoryStream();
-
-            ms.WriteByte(PACKET_SWFMODULE);
             byte[] drawingBytes = Encoding.UTF8.GetBytes(Drawing);
-            ms.Write(drawingBytes, 0x00, drawingBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
+            byte[] packet = new byte[(1 * 2) + drawingBytes.Length];
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            return ms.ToArray();
+            packet[0] = PACKET_SWFMODULE;
+            Array.Copy(drawingBytes, 0, packet, 1, drawingBytes.Length);
+            packet[packet.Length] = PACKET_TERMINATOR;
+
+            return packet;
         }
         public static byte[] CreateBrickPoetMovePacket(Brickpoet.PoetryPeice peice)
         {
-
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_SWFMODULE);
-            ms.WriteByte(BRICKPOET_MOVE);
             string packetStr = "|";
             packetStr += peice.Id + "|";
             packetStr += peice.X + "|";
@@ -362,10 +357,16 @@ namespace HISP.Server
             packetStr += "^";
 
             byte[] infoBytes = Encoding.UTF8.GetBytes(packetStr);
-            ms.Write(infoBytes, 0x00, infoBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
-            ms.Seek(0x00, SeekOrigin.Begin);
-            return ms.ToArray();
+            byte[] packet = new byte[(1 * 3) + infoBytes.Length];
+
+            packet[0] = PACKET_SWFMODULE;
+            packet[1] = BRICKPOET_MOVE;
+
+            Array.Copy(infoBytes, 0, packet, 2, infoBytes.Length);
+
+            packet[packet.Length] = PACKET_TERMINATOR;
+
+            return packet;
         }
         public static byte[] CreateBrickPoetListPacket(Brickpoet.PoetryPeice[] room)
         {

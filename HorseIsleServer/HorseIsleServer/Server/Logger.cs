@@ -4,29 +4,35 @@ namespace HISP.Server
 {
     public class Logger
     {
-        public static void HackerPrint(string text) // When someone is obviously cheating.
+        public static void ErrorPrint(string text)
         {
-            ConsoleColor prevColor = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("[HACK] " + text);
-            Console.ForegroundColor = prevColor;
-        }
-        public static void DebugPrint(string text)
-        {
-            if (ConfigReader.Debug)
-                Console.WriteLine("[DEBUG] " + text);   
+            if (ConfigReader.LogLevel >= 1)
+                Console.WriteLine("[ERROR] " + text);
         }
         public static void WarnPrint(string text)
         {
-            Console.WriteLine("[WARN] " + text);
+            if (ConfigReader.LogLevel >= 2)
+                Console.WriteLine("[WARN] " + text);
         }
-        public static void ErrorPrint(string text) 
+        public static void HackerPrint(string text) // When someone is obviously cheating.
         {
-            Console.WriteLine("[ERROR] " + text);
+            if (ConfigReader.LogLevel >= 3)
+            {
+                ConsoleColor prevColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("[HACK] " + text);
+                Console.ForegroundColor = prevColor;
+            }
         }
         public static void InfoPrint(string text)
         {
-            Console.WriteLine("[INFO] " + text);
+            if (ConfigReader.LogLevel >= 4)
+                Console.WriteLine("[INFO] " + text);
+        }
+        public static void DebugPrint(string text)
+        {
+            if (ConfigReader.LogLevel >= 5)
+                Console.WriteLine("[DEBUG] " + text);
         }
     }
 }

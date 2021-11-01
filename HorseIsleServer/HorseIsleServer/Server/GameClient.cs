@@ -24,7 +24,6 @@ namespace HISP.Server
 
         public Socket ClientSocket;
         public string RemoteIp;
-
         private bool loggedIn = false;
         public bool LoggedIn 
         {
@@ -58,8 +57,95 @@ namespace HISP.Server
         private int warnInterval = GameServer.IdleWarning * 60 * 1000;
         private int kickInterval = GameServer.IdleTimeout * 60 * 1000;
 
-        
+        private List<byte> currentPacket = new List<byte>();
+        private byte[] workBuffer = new byte[1028];
         private bool dcLock = false;
+
+        public GameClient(Socket clientSocket)
+        {
+            ClientSocket = clientSocket;
+            RemoteIp = clientSocket.RemoteEndPoint.ToString();
+
+            if (RemoteIp.Contains(":"))
+                RemoteIp = RemoteIp.Substring(0, RemoteIp.IndexOf(":"));
+
+            Logger.DebugPrint("Client connected @ " + RemoteIp);
+
+            kickTimer = new Timer(new TimerCallback(kickTimerTick), null, kickInterval, kickInterval);
+            warnTimer = new Timer(new TimerCallback(warnTimerTick), null, warnInterval, warnInterval);
+            minuteTimer = new Timer(new TimerCallback(minuteTimerTick), null, oneMinute, oneMinute);
+
+            connectedClients.Add(this);
+
+            SocketAsyncEventArgs e = new SocketAsyncEventArgs();
+            e.Completed += receivePackets;
+            e.SetBuffer(workBuffer, 0, workBuffer.Length);
+            ClientSocket.ReceiveAsync(e);
+        }
+
+        public static void CreateClient(object sender, SocketAsyncEventArgs e)
+        {
+            Socket eSocket = e.AcceptSocket;
+            e.AcceptSocket = null;
+            GameServer.ServerSocket.AcceptAsync(e);
+
+            GameClient client = new GameClient(eSocket);
+        }
+
+        private void receivePackets(object sender, SocketAsyncEventArgs e)
+        {
+
+            // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
+
+            if (e.SocketError == SocketError.Success && !isDisconnecting)
+            {
+
+                int availble = e.BytesTransferred;
+                if (availble >= 1)
+                {
+
+                    for (int i = 0; i < availble; i++)
+                    {
+                        currentPacket.Add(e.Buffer[i]);
+                        if (e.Buffer[i] == PacketBuilder.PACKET_TERMINATOR)
+                        {
+                            parsePackets(currentPacket.ToArray());
+                            currentPacket.Clear();
+                        }
+                    }
+                }
+
+                Array.Clear(e.Buffer);
+                ClientSocket.ReceiveAsync(e);
+                return;
+            }
+            else
+            {
+                Disconnect();
+            }
+
+            while (dcLock) { }; // Refuse to shut down until dcLock is cleared. (prevents TOCTOU issues.)
+
+
+            // Stop Timers
+            if (inactivityTimer != null)
+                inactivityTimer.Dispose();
+            if (warnTimer != null)
+                warnTimer.Dispose();
+            if (kickTimer != null)
+                kickTimer.Dispose();
+
+            // Call OnDisconnect
+            connectedClients.Remove(this);
+            GameServer.OnDisconnect(this);
+            LoggedIn = false;
+
+            // Close Socket
+            ClientSocket.Close();
+            ClientSocket.Dispose();
+
+            return; // Stop the task.
+        }
 
         private void minuteTimerTick(object state)
         {
@@ -251,88 +337,21 @@ namespace HISP.Server
         public void Login(int id)
         {
             // Check for duplicate
-            foreach(GameClient Client in GameClient.ConnectedClients)
+            foreach (GameClient Client in GameClient.ConnectedClients)
             {
-                if(Client.LoggedIn)
+                if (Client.LoggedIn)
                 {
                     if (Client.LoggedinUser.Id == id)
                         Client.Kick(Messages.KickReasonDuplicateLogin);
                 }
             }
-            LoggedinUser = new User(this,id);
+            LoggedinUser = new User(this, id);
             LoggedIn = true;
 
             Database.SetIpAddress(id, RemoteIp);
             Database.SetLoginCount(id, Database.GetLoginCount(id) + 1);
 
             inactivityTimer = new Timer(new TimerCallback(keepAliveTimerTick), null, keepAliveInterval, keepAliveInterval);
-        }
-        private bool receivePackets()
-        {
-            // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
-            
-
-            while(ClientSocket.Connected && !isDisconnecting)
-            {
-                if(isDisconnecting)
-                    break;
-
-                try
-                {
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        if (ClientSocket.Available >= 1)
-                        {
-                            byte[] buffer = new byte[ClientSocket.Available];
-                            ClientSocket.Receive(buffer);
-
-                            foreach (Byte b in buffer)
-                            {
-                                if (isDisconnecting)
-                                    break;
-
-                                ms.WriteByte(b);
-                                if (b == 0x00)
-                                {
-                                    ms.Seek(0x00, SeekOrigin.Begin);
-                                    byte[] fullPacket = ms.ToArray();
-                                    parsePackets(fullPacket);
-                                    ms.Seek(0x00, SeekOrigin.Begin);
-                                    ms.SetLength(0);
-                                }
-                            }
-                        }
-                    }
-                }
-                catch(SocketException)
-                {
-                    Disconnect();
-                    break;
-                }
-
-            }
-
-            while (dcLock) { }; // Refuse to shut down until dcLock is cleared. (prevents TOCTOU issues.)
-            
-
-            // Stop Timers
-            if(inactivityTimer != null)
-                inactivityTimer.Dispose();
-            if(warnTimer != null)
-                warnTimer.Dispose();
-            if(kickTimer != null)
-                kickTimer.Dispose();
-
-            // Call OnDisconnect
-            connectedClients.Remove(this);
-            GameServer.OnDisconnect(this);
-            LoggedIn = false;
-            
-            // Close Socket
-            ClientSocket.Close();
-            ClientSocket.Dispose();
-
-            return isDisconnecting; // Stop the task.
         }
 
         private void parsePackets(byte[] Packet)
@@ -482,38 +501,6 @@ namespace HISP.Server
                     Logger.ErrorPrint("Exception occured: " + e.Message);
                 Disconnect();
             }
-        }
-
-        public GameClient(Socket clientSocket)
-        {
-            ClientSocket = clientSocket;
-            RemoteIp = clientSocket.RemoteEndPoint.ToString();
-            
-            if(RemoteIp.Contains(":"))
-                RemoteIp = RemoteIp.Substring(0, RemoteIp.IndexOf(":"));
-
-            Logger.DebugPrint("Client connected @ " + RemoteIp);
-
-            kickTimer = new Timer(new TimerCallback(kickTimerTick), null, kickInterval, kickInterval);
-            warnTimer = new Timer(new TimerCallback(warnTimerTick), null, warnInterval, warnInterval);
-            minuteTimer = new Timer(new TimerCallback(minuteTimerTick), null, oneMinute, oneMinute);
-
-            connectedClients.Add(this);
-
-            receivePackets();
-        }
-
-        public static void AcceptConnections(SocketAsyncEventArgs e, Socket socket)
-        {
-            e.AcceptSocket = null;
-            socket.AcceptAsync(e);
-        }
-        public static void CreateClient(object sender, SocketAsyncEventArgs e)
-        {
-            Socket eSocket = e.AcceptSocket;
-            AcceptConnections(e, GameServer.ServerSocket);
-
-            GameClient client = new GameClient(eSocket);
         }
 
     }
