@@ -98,9 +98,12 @@ namespace HISP.Server
             // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
 
             if (!ClientSocket.Connected)
-                isDisconnecting = true;
+                Disconnect();
+            
+            if(e.SocketError != SocketError.Success)
+                Disconnect();
 
-            if (e.SocketError == SocketError.Success && !isDisconnecting)
+            if (!isDisconnecting)
             {
 
                 int availble = e.BytesTransferred;
@@ -123,8 +126,6 @@ namespace HISP.Server
                 return;
             }
             
-            Disconnect();
-
             // Stop Timers
             if (inactivityTimer != null)
                 inactivityTimer.Dispose();
