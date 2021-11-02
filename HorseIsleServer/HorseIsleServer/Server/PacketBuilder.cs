@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using HISP.Game;
-using HISP.Game.Horse;
 using HISP.Game.SwfModules;
 
 namespace HISP.Server
@@ -229,15 +228,12 @@ namespace HISP.Server
 
         public static byte[] Create2PlayerClose()
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_SWFMODULE);
-            ms.WriteByte(SWFMODULE_2PLAYER_CLOSED);
-            ms.WriteByte(PACKET_TERMINATOR);
+            byte[] packet = new byte[3];
+            packet[0] = PACKET_SWFMODULE;
+            packet[1] = SWFMODULE_2PLAYER_CLOSED;
+            packet[2] = PACKET_TERMINATOR;
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] response = ms.ToArray();
-            ms.Dispose();
-            return response;
+            return packet;
         }
         public static byte[] CreateDressupRoomPeiceMove(int peiceId, double x, double y, bool active)
         {
