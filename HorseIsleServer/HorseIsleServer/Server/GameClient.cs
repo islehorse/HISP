@@ -59,7 +59,6 @@ namespace HISP.Server
 
         private List<byte> currentPacket = new List<byte>();
         private byte[] workBuffer = new byte[1028];
-        private bool dcLock = false;
 
         public GameClient(Socket clientSocket)
         {
@@ -81,6 +80,7 @@ namespace HISP.Server
             e.Completed += receivePackets;
             e.SetBuffer(workBuffer, 0, workBuffer.Length);
             ClientSocket.ReceiveAsync(e);
+            
         }
 
         public static void CreateClient(object sender, SocketAsyncEventArgs e)
@@ -96,6 +96,9 @@ namespace HISP.Server
         {
 
             // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
+
+            if (!ClientSocket.Connected)
+                isDisconnecting = true;
 
             if (e.SocketError == SocketError.Success && !isDisconnecting)
             {
@@ -119,13 +122,8 @@ namespace HISP.Server
                 ClientSocket.ReceiveAsync(e);
                 return;
             }
-            else
-            {
-                Disconnect();
-            }
-
-            while (dcLock) { }; // Refuse to shut down until dcLock is cleared. (prevents TOCTOU issues.)
-
+            
+            Disconnect();
 
             // Stop Timers
             if (inactivityTimer != null)
@@ -144,12 +142,11 @@ namespace HISP.Server
             ClientSocket.Close();
             ClientSocket.Dispose();
 
-            return; // Stop the task.
+            return;
         }
 
         private void minuteTimerTick(object state)
         {
-            dcLock = true;
             totalMinutesElapsed++;
             if (LoggedIn)
             {
@@ -166,7 +163,6 @@ namespace HISP.Server
                     LoggedinUser.FreeMinutes = 0;
                     if (!LoggedinUser.Subscribed && !LoggedinUser.Moderator && !LoggedinUser.Administrator)
                     {
-                        dcLock = false;
                         Kick(Messages.KickReasonNoTime);
                         return;
                     }
@@ -311,7 +307,6 @@ namespace HISP.Server
 
             if (!isDisconnecting)
                minuteTimer.Change(oneMinute, oneMinute);
-            dcLock = false;
         }
         private void keepAliveTimerTick(object state)
         {
