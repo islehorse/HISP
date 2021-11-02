@@ -341,7 +341,7 @@ namespace HISP.Server
 
             packet[0] = PACKET_SWFMODULE;
             Array.Copy(drawingBytes, 0, packet, 1, drawingBytes.Length);
-            packet[packet.Length] = PACKET_TERMINATOR;
+            packet[packet.Length-1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -361,7 +361,7 @@ namespace HISP.Server
 
             Array.Copy(infoBytes, 0, packet, 2, infoBytes.Length);
 
-            packet[packet.Length] = PACKET_TERMINATOR;
+            packet[packet.Length-1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -446,7 +446,7 @@ namespace HISP.Server
 
             Array.Copy(userBytes, 0, packet, 9, userBytes.Length);
 
-            packet[packet.Length] = PACKET_TERMINATOR;
+            packet[packet.Length-1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -466,7 +466,7 @@ namespace HISP.Server
 
             Array.Copy(loginFailMessage, 0, packet, 2, loginFailMessage.Length);
 
-            packet[packet.Length] = PACKET_TERMINATOR;
+            packet[packet.Length-1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -478,7 +478,7 @@ namespace HISP.Server
 
             packet[0] = PACKET_PLAYER;
             Array.Copy(profileBytes, 0, packet, 1, profileBytes.Length);
-            packet[packet.Length] = PACKET_TERMINATOR;
+            packet[packet.Length-1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -503,7 +503,7 @@ namespace HISP.Server
             packet[8] = (byte)(direction + 20);
 
             packet[9] = (byte)(Convert.ToInt32(walk) + 20);
-            packet[packet.Length] = PACKET_TERMINATOR;
+            packet[packet.Length-1] = PACKET_TERMINATOR;
 
             return packet;
         }
