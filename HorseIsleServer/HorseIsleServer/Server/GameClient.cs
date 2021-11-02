@@ -54,11 +54,11 @@ namespace HISP.Server
 
         private int totalMinutesElapsed = 0;
         private int oneMinute = 60 * 1000;
-        private int warnInterval = GameServer.IdleWarning * 60 * 1000;
-        private int kickInterval = GameServer.IdleTimeout * 60 * 1000;
-
+        private int warnInterval = GameServer.IdleWarning * 60 * 1000; // Time before showing a idle warning
+        private int kickInterval = GameServer.IdleTimeout * 60 * 1000; // Time before kicking for inactivity
+        
         private List<byte> currentPacket = new List<byte>();
-        private byte[] workBuffer = new byte[1028];
+        private byte[] workBuffer = new byte[0x8000];
 
         public GameClient(Socket clientSocket)
         {
@@ -76,11 +76,13 @@ namespace HISP.Server
 
             connectedClients.Add(this);
 
-            SocketAsyncEventArgs e = new SocketAsyncEventArgs();
-            e.Completed += receivePackets;
-            e.SetBuffer(workBuffer, 0, workBuffer.Length);
-            ClientSocket.ReceiveAsync(e);
-            
+/*            
+            SocketAsyncEventArgs evt = new SocketAsyncEventArgs();
+            evt.Completed += receivePackets;
+            evt.SetBuffer(workBuffer);
+            clientSocket.ReceiveAsync(evt);
+*/
+            receivePackets();
         }
 
         public static void CreateClient(object sender, SocketAsyncEventArgs e)
@@ -89,8 +91,35 @@ namespace HISP.Server
             e.AcceptSocket = null;
             GameServer.ServerSocket.AcceptAsync(e);
 
-            GameClient client = new GameClient(eSocket);
+            new GameClient(eSocket);
         }
+
+/*
+        public void Disconnect()
+        {
+            this.isDisconnecting = true;
+            // Cant outright stop threads anymore in .NET core,
+            // Lets just let the thread stop gracefully.
+
+            // Stop Timers
+            if (inactivityTimer != null)
+                inactivityTimer.Dispose();
+            if (warnTimer != null)
+                warnTimer.Dispose();
+            if (kickTimer != null)
+                kickTimer.Dispose();
+
+            // Call OnDisconnect
+            connectedClients.Remove(this);
+            GameServer.OnDisconnect(this);
+            LoggedIn = false;
+
+            // Close Socket
+            ClientSocket.Close();
+            ClientSocket.Dispose();
+
+        }
+
 
         private void receivePackets(object sender, SocketAsyncEventArgs e)
         {
@@ -98,10 +127,16 @@ namespace HISP.Server
             // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
 
             if (!ClientSocket.Connected)
+            {
                 Disconnect();
+                return;
+            }
             
             if(e.SocketError != SocketError.Success)
+            {
                 Disconnect();
+                return;
+            }
 
             if (!isDisconnecting)
             {
@@ -121,11 +156,60 @@ namespace HISP.Server
                     }
                 }
 
-                Array.Clear(e.Buffer);
                 ClientSocket.ReceiveAsync(e);
                 return;
             }
             
+        }
+
+*/
+        public void Disconnect()
+        {
+
+            // Cant outright stop threads anymore in .NET core,
+            // Lets just let the thread stop gracefully.
+
+            this.isDisconnecting = true;
+        }
+        private bool receivePackets()
+        {
+            // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
+            Logger.DebugPrint("Reciving Packets...");
+
+            while (ClientSocket.Connected && !isDisconnecting)
+            {
+                if (isDisconnecting)
+                    break;
+
+                try
+                {
+                    int availble = ClientSocket.Available;
+                    if (availble >= 1)
+                    {
+                        byte[] buffer = new byte[availble];
+                        ClientSocket.Receive(buffer);
+
+                        for (int i = 0; i < availble; i++)
+                        {
+                            currentPacket.Add(buffer[i]);
+                            if (buffer[i] == PacketBuilder.PACKET_TERMINATOR)
+                            {
+                                parsePackets(currentPacket.ToArray());
+                                currentPacket.Clear();
+                            }
+                        }
+
+                    }
+                }
+                catch (SocketException)
+                {
+                    Disconnect();
+                    break;
+                }
+
+            }
+
+
             // Stop Timers
             if (inactivityTimer != null)
                 inactivityTimer.Dispose();
@@ -143,7 +227,7 @@ namespace HISP.Server
             ClientSocket.Close();
             ClientSocket.Dispose();
 
-            return;
+            return isDisconnecting; // Stop the task.
         }
 
         private void minuteTimerTick(object state)
@@ -467,16 +551,7 @@ namespace HISP.Server
             }
         }
 
-       public void Disconnect()
-        {
-            
-            // Cant outright stop threads anymore in .NET core,
-            // Lets just let the thread stop gracefully.
-
-            this.isDisconnecting = true;
-        }
-
-       public void Kick(string Reason)
+        public void Kick(string Reason)
         {
             byte[] kickPacket = PacketBuilder.CreateKickMessage(Reason);
             SendPacket(kickPacket);

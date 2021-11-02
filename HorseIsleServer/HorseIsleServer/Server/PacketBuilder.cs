@@ -393,37 +393,30 @@ namespace HISP.Server
         }
         public static byte[] CreatePlaysoundPacket(string sound)
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_PLAYSOUND);
+            byte[] soundBytes = Encoding.UTF8.GetBytes(sound);
+            byte[] packet = new byte[(1 * 2) + soundBytes.Length];
 
-            byte[] strBytes = Encoding.UTF8.GetBytes(sound);
-            ms.Write(strBytes, 0x00, strBytes.Length);
+            packet[0] = PACKET_PLAYSOUND;
 
-            ms.WriteByte(PACKET_TERMINATOR);
+            Array.Copy(soundBytes, 0, packet, 1, soundBytes.Length);
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
-            return Packet;
+            return packet;
         }
         public static byte[] CreatePlayerLeavePacket(string username)
         {
-            MemoryStream ms = new MemoryStream();
+            byte[] userBytes = Encoding.UTF8.GetBytes(username);
+            byte[] packet = new byte[(1 * 3) + userBytes.Length];
 
-            ms.WriteByte(PACKET_PLAYERINFO);
-            ms.WriteByte(PLAYERINFO_LEAVE);
+            packet[0] = PACKET_PLAYERINFO;
+            packet[1] = PLAYERINFO_LEAVE;
 
-            byte[] strBytes = Encoding.UTF8.GetBytes(username);
-            ms.Write(strBytes, 0x00, strBytes.Length);
+            Array.Copy(userBytes, 0, packet, 2, userBytes.Length);
 
-            ms.WriteByte(PACKET_TERMINATOR);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            return packet;
         }
         public static byte[] CreatePlayerInfoUpdateOrCreate(int x, int y, int facing, int charId, string username)
         {
