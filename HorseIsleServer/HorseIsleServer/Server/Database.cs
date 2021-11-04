@@ -74,8 +74,7 @@ namespace HISP.Server
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = ItemQueue;
-                    sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    sqlCommand.ExecuteNonQuery();                    
                 }
                 catch (Exception e)
                 {
@@ -86,8 +85,7 @@ namespace HISP.Server
                 {
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = SolvedRealTimeRiddles;
-                    sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    sqlCommand.ExecuteNonQuery();                    
                 }
                 catch (Exception e)
                 {
@@ -100,7 +98,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = MutedPlayers;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -112,7 +110,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = MessageQueue;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -124,7 +122,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = SolvedRealTimeRiddle;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -136,7 +134,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = DressupRooms;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -149,7 +147,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = AuctionTable;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -161,7 +159,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = NpcPos;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -175,7 +173,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = RiddlesComplete;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -188,7 +186,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = Ranches;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -201,7 +199,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = Treasure;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -215,7 +213,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = SavedDrawings;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -228,7 +226,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = DrawingRooms;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -242,7 +240,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = TrackingStats;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -257,7 +255,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = Horses;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -271,7 +269,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = UserTable;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -284,7 +282,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = AbuseReorts;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -296,7 +294,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = ExtTable;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -309,7 +307,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = MailTable;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -322,7 +320,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = BuddyTable;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -335,7 +333,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = Jewelry;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -348,7 +346,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = WeatherTable;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -361,7 +359,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = Awards;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -374,7 +372,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = DroppedItems;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -387,7 +385,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = InventoryTable;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -400,7 +398,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = ShopInventory;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -412,7 +410,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = TrackedQuest;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -424,7 +422,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = PoetryRooms;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -437,7 +435,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = BannedPlayers;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -450,7 +448,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = CompetitionGear;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -463,7 +461,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = NpcStartPoint;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -476,7 +474,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = LastPlayer;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -490,7 +488,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = WildHorse;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -512,7 +510,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -525,7 +523,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = Leaderboards;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -538,7 +536,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = DeleteOnlineUsers;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -550,7 +548,7 @@ namespace HISP.Server
                     MySqlCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = OnlineUsers;
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
                 catch (Exception e)
                 {
@@ -570,7 +568,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int[] GetMutedPlayers(int playerId)
@@ -586,7 +584,7 @@ namespace HISP.Server
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
                     MutedPlayerIds.Add(reader.GetInt32(0));
-                sqlCommand.Dispose();
+                
             }
             return MutedPlayerIds.ToArray();
         }
@@ -601,7 +599,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@mutedPlayerId", playerToMute);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -616,7 +614,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@mutedPlayerId", playerToMute);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -630,7 +628,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return count >= 1;
             }
         }
@@ -645,7 +643,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -668,7 +666,7 @@ namespace HISP.Server
                     itm.ItemCount = reader.GetInt32(2);
                     queueItems.Add(itm);
                 }
-                sqlCommand.Dispose();
+                
             }
             return queueItems.ToArray();
         }
@@ -687,7 +685,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@y", y);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -702,7 +700,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@message", message);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void ClearMessageQueue(int userId)
@@ -715,7 +713,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@id", userId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static string[] GetMessageQueue(int userId)
@@ -733,7 +731,7 @@ namespace HISP.Server
                 {
                     msgQueue.Add(reader.GetString(0));
                 }
-                sqlCommand.Dispose();
+                
             }
             return msgQueue.ToArray();
         }
@@ -750,7 +748,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@x", newX);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -766,7 +764,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@y", newY);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -782,7 +780,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@active", active ? "YES" : "NO");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -806,7 +804,7 @@ namespace HISP.Server
                     Dressup.DressupPeice peice = new Dressup.DressupPeice(room, peiceId, x, y, active, false);
                     peices.Add(peice);
                 }
-                sqlCommand.Dispose();
+                
             }
             return peices.ToArray();
         }
@@ -826,7 +824,7 @@ namespace HISP.Server
                 {
                     solvedRiddleId.Add(reader.GetInt32(0));
                 }
-                sqlCommand.Dispose();
+                
                 return solvedRiddleId.ToArray();
             }
         }
@@ -841,7 +839,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int invested = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return invested;
             }
         }
@@ -856,7 +854,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@upgradeLevel", upgradeLevel);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchInvestment(int ranchId, int investedMoney)
@@ -870,7 +868,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@investedMoney", investedMoney);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchOwner(int ranchId, int ownerId)
@@ -884,7 +882,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ownerId", ownerId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchDescription(int ranchId, string description)
@@ -898,7 +896,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@description", description);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchTitle(int ranchId, string title)
@@ -912,7 +910,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@title", title);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding16(int ranchId, int buildingId)
@@ -926,7 +924,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding15(int ranchId, int buildingId)
@@ -940,7 +938,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding14(int ranchId, int buildingId)
@@ -954,7 +952,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding13(int ranchId, int buildingId)
@@ -968,7 +966,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding12(int ranchId, int buildingId)
@@ -982,7 +980,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding11(int ranchId, int buildingId)
@@ -996,7 +994,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding10(int ranchId, int buildingId)
@@ -1010,7 +1008,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding9(int ranchId, int buildingId)
@@ -1024,7 +1022,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding8(int ranchId, int buildingId)
@@ -1038,7 +1036,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding7(int ranchId, int buildingId)
@@ -1052,7 +1050,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding6(int ranchId, int buildingId)
@@ -1066,7 +1064,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding5(int ranchId, int buildingId)
@@ -1080,7 +1078,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding4(int ranchId, int buildingId)
@@ -1094,7 +1092,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding3(int ranchId, int buildingId)
@@ -1108,7 +1106,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding2(int ranchId, int buildingId)
@@ -1122,7 +1120,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetRanchBuilding1(int ranchId, int buildingId)
@@ -1136,7 +1134,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@buildingId", buildingId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetRanchBuilding16(int ranchId)
@@ -1149,7 +1147,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1163,7 +1161,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1177,7 +1175,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1191,7 +1189,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1205,7 +1203,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1219,7 +1217,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1233,7 +1231,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1247,7 +1245,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1261,7 +1259,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1275,7 +1273,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1289,7 +1287,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1303,7 +1301,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1317,7 +1315,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1331,7 +1329,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1345,7 +1343,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1359,7 +1357,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return building;
             }
         }
@@ -1373,7 +1371,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int upgradeLevel = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return upgradeLevel;
             }
         }
@@ -1388,7 +1386,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 string description = sqlCommand.ExecuteScalar().ToString();
-                sqlCommand.Dispose();
+                
                 return description;
             }
         }
@@ -1402,7 +1400,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 string title = sqlCommand.ExecuteScalar().ToString();
-                sqlCommand.Dispose();
+                
                 return title;
             }
         }
@@ -1416,7 +1414,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int playerId = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return playerId;
             }
         }
@@ -1431,7 +1429,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return count;
             }
         }
@@ -1447,7 +1445,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return count >= 1;
             }
 
@@ -1463,7 +1461,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static bool HasPlayerCompletedRiddle(int riddleId, int playerId)
@@ -1477,7 +1475,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return count >= 1;
             }
         }
@@ -1492,7 +1490,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1528,7 +1526,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetTreasureValue(int randomId, int value)
@@ -1543,7 +1541,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1558,7 +1556,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1577,7 +1575,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
         public static Treasure[] GetTreasures()
@@ -1599,7 +1597,7 @@ namespace HISP.Server
                     Treasure treasure = new Treasure(x, y, type, randomId, value);
                     treasures.Add(treasure);
                 }
-                sqlCommand.Dispose();
+                
                 return treasures.ToArray();
             }
         }
@@ -1617,7 +1615,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1633,7 +1631,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return count > 0;
             }
         }
@@ -1650,7 +1648,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return count;
             }
         }
@@ -1666,7 +1664,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1682,7 +1680,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1700,7 +1698,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1716,7 +1714,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1730,7 +1728,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Parameters.AddWithValue("@x", x);
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetWildHorseTimeout(int randomId, int timeout)
@@ -1743,7 +1741,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Parameters.AddWithValue("@timeout", timeout);
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void RemoveWildHorse(int randomId)
@@ -1755,7 +1753,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "DELETE FROM WildHorse WHERE randomId=@randomId";
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1769,7 +1767,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Parameters.AddWithValue("@y", x);
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1782,7 +1780,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "DELETE FROM Horses WHERE randomId=@randomId";
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1858,7 +1856,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
 
         }
@@ -1938,7 +1936,7 @@ namespace HISP.Server
 
                 }
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1971,7 +1969,7 @@ namespace HISP.Server
 
                 }
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -1985,7 +1983,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void AddAuctionRoom(Auction.AuctionEntry entry, int roomId)
@@ -2005,7 +2003,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@done", entry.Completed ? "YES" : "NO");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2020,7 +2018,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@ipAddress", ip);
                 sqlCommand.Parameters.AddWithValue("@reason", reason);
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2033,7 +2031,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "DELETE FROM BannedPlayers WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", userId);
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2047,7 +2045,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "SELECT COUNT(1) FROM BannedPlayers WHERE ipAddress=@ipAddr";
                 sqlCommand.Parameters.AddWithValue("@ipAddr", ip);
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return count >= 1;
             }
         }
@@ -2060,7 +2058,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "SELECT COUNT(1) FROM BannedPlayers WHERE playerId=@playerId";
                 sqlCommand.Parameters.AddWithValue("@playerId", userId);
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return count >= 1;
             }
 
@@ -2137,7 +2135,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
 
         }
@@ -2207,7 +2205,7 @@ namespace HISP.Server
 
                 }
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2222,7 +2220,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return count > 0;
             }
         }
@@ -2241,7 +2239,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 int playerId = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return playerId;
             }
         }
@@ -2261,7 +2259,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2279,7 +2277,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2297,7 +2295,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2313,7 +2311,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return count > 0;
             }
         }
@@ -2329,7 +2327,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 int xpos = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return xpos;
             }
         }
@@ -2346,7 +2344,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 int ypos = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return ypos;
             }
         }
@@ -2362,7 +2360,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return count >= 1;
             }
         }
@@ -2377,7 +2375,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2392,7 +2390,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return count >= 1;
             }
         }
@@ -2408,7 +2406,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2424,7 +2422,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
         public static string GetDrawingRoomDrawing(int room)
@@ -2438,7 +2436,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 string drawing = sqlCommand.ExecuteScalar().ToString();
 
-                sqlCommand.Dispose();
+                
                 return drawing;
             }
         }
@@ -2456,7 +2454,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 string drawing = sqlCommand.ExecuteScalar().ToString();
 
-                sqlCommand.Dispose();
+                
                 return drawing;
             }
         }
@@ -2474,7 +2472,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 string drawing = sqlCommand.ExecuteScalar().ToString();
 
-                sqlCommand.Dispose();
+                
                 return drawing;
             }
         }
@@ -2492,7 +2490,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 string drawing = sqlCommand.ExecuteScalar().ToString();
 
-                sqlCommand.Dispose();
+                
                 return drawing;
             }
         }
@@ -2511,7 +2509,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2529,7 +2527,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2547,7 +2545,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2561,7 +2559,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@startTimer", startTime);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2577,7 +2575,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@year", year);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2589,7 +2587,7 @@ namespace HISP.Server
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT Time FROM World";
                 int serverTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return serverTime;
             }
         }
@@ -2602,7 +2600,7 @@ namespace HISP.Server
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT StartTime FROM World";
                 int startTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return startTime;
             }
         }
@@ -2615,7 +2613,7 @@ namespace HISP.Server
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT Day FROM World";
                 int serverTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return serverTime;
             }
         }
@@ -2628,7 +2626,7 @@ namespace HISP.Server
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "SELECT Year FROM World";
                 int creationTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return creationTime;
             }
         }
@@ -2645,7 +2643,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "SELECT COUNT(*) FROM Weather WHERE Area=@area";
                 sqlCommand.Parameters.AddWithValue("@area", Area);
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return count > 0;
             }
         }
@@ -2660,7 +2658,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@weather", Weather);
                 sqlCommand.Parameters.AddWithValue("@area", Area);
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetWeather(string Area, string Weather)
@@ -2675,7 +2673,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
         public static string GetWeather(string Area)
@@ -2687,7 +2685,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "SELECT Weather FROM Weather WHERE Area=@area";
                 sqlCommand.Parameters.AddWithValue("@area", Area);
                 string Weather = sqlCommand.ExecuteScalar().ToString();
-                sqlCommand.Dispose();
+                
                 return Weather;
             }
         }
@@ -2701,7 +2699,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "UPDATE Horses SET trainTimer=trainTimer-1 WHERE trainTimer-1 > -1";
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2723,7 +2721,7 @@ namespace HISP.Server
                 {
                     instances.Add(ReadHorseInstance(reader));
                 }
-                sqlCommand.Dispose();
+                
                 return instances.ToArray(); 
             }
         }
@@ -2745,7 +2743,7 @@ namespace HISP.Server
                     break;
                 }
                 
-                sqlCommand.Dispose();
+                
                 if (instance == null)
                     throw new KeyNotFoundException();
                 return instance;
@@ -2762,7 +2760,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 int trainTimer = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return trainTimer;
             }
         }
@@ -2778,7 +2776,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2793,7 +2791,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2808,7 +2806,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2823,7 +2821,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2839,7 +2837,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2854,7 +2852,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseTrainTimeout(int horseRandomId, int trainTimeout)
@@ -2868,7 +2866,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseColor(int horseRandomId, string Color)
@@ -2882,7 +2880,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseCategory(int horseRandomId, string Category)
@@ -2896,7 +2894,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2911,7 +2909,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseMagicUsed(int horseRandomId, int MagicUsed)
@@ -2925,7 +2923,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetLeaseTime(int horseRandomId, int leaseTime)
@@ -2939,7 +2937,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -2954,7 +2952,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseDescription(int horseRandomId, string Description)
@@ -2968,7 +2966,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseTiredness(int horseRandomId, int Tiredness)
@@ -2982,7 +2980,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseSpeed(int horseRandomId, int Speed)
@@ -2996,7 +2994,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseStrength(int horseRandomId, int Strength)
@@ -3010,7 +3008,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseConformation(int horseRandomId, int Conformation)
@@ -3024,7 +3022,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseAgility(int horseRandomId, int Agility)
@@ -3038,7 +3036,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseEndurance(int horseRandomId, int Endurance)
@@ -3052,7 +3050,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorsePersonality(int horseRandomId, int Personality)
@@ -3066,7 +3064,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseInteligence(int horseRandomId, int Inteligence)
@@ -3080,7 +3078,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseSpoiled(int horseRandomId, int Spoiled)
@@ -3094,7 +3092,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseExperience(int horseRandomId, int Experience)
@@ -3108,7 +3106,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseShoes(int horseRandomId, int Shoes)
@@ -3122,7 +3120,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseHeight(int horseRandomId, int Height)
@@ -3136,7 +3134,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseMood(int horseRandomId, int Mood)
@@ -3150,7 +3148,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseGroom(int horseRandomId, int Groom)
@@ -3164,7 +3162,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3179,7 +3177,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseThirst(int horseRandomId, int Thirst)
@@ -3193,7 +3191,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetHorseHealth(int horseRandomId, int Health)
@@ -3207,7 +3205,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3222,7 +3220,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3237,7 +3235,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3252,7 +3250,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetCompanion(int horseRandomId, int companionItemId)
@@ -3266,7 +3264,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3280,7 +3278,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3294,7 +3292,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3308,7 +3306,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3322,7 +3320,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3335,7 +3333,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@weather", Weather);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3351,7 +3349,7 @@ namespace HISP.Server
                     sqlCommand.Parameters.AddWithValue("@name", username);
                     sqlCommand.Prepare();
                     string expectedHash = sqlCommand.ExecuteScalar().ToString();
-                    sqlCommand.Dispose();
+                    
                     return Util.StringToByteArray(expectedHash);
                 }
                 else
@@ -3373,7 +3371,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return timesComplete > 0;
             }
         }
@@ -3390,7 +3388,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3409,7 +3407,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetJewelrySlot1(int playerId)
@@ -3423,7 +3421,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return timesComplete;
             }
         }
@@ -3441,7 +3439,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetJewelrySlot2(int playerId)
@@ -3455,7 +3453,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return timesComplete;
             }
         }
@@ -3474,7 +3472,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetJewelrySlot3(int playerId)
@@ -3488,7 +3486,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return timesComplete;
             }
         }
@@ -3506,7 +3504,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetJewelrySlot4(int playerId)
@@ -3520,7 +3518,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return timesComplete;
             }
         }
@@ -3544,7 +3542,7 @@ namespace HISP.Server
                 {
                     Awards.Add(reader.GetInt32(0));
                 }
-                sqlCommand.Dispose();
+                
                 return Awards.ToArray();
             }
         }
@@ -3561,7 +3559,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
                 return;
             }
         }
@@ -3579,7 +3577,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return timesComplete > 0;
             }
         }
@@ -3596,7 +3594,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -3613,7 +3611,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetCompetitionGearHeadPeice(int playerId)
@@ -3627,7 +3625,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return timesComplete;
             }
         }
@@ -3645,7 +3643,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetCompetitionGearBodyPeice(int playerId)
@@ -3659,7 +3657,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return timesComplete;
             }
         }
@@ -3677,7 +3675,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetCompetitionGearLegPeice(int playerId)
@@ -3691,7 +3689,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return timesComplete;
             }
         }
@@ -3709,7 +3707,7 @@ namespace HISP.Server
 
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetCompetitionGearFeetPeice(int playerId)
@@ -3723,7 +3721,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return timesComplete;
             }
         }
@@ -3743,7 +3741,7 @@ namespace HISP.Server
                     sqlCommand.Parameters.AddWithValue("@questId", questId);
                     sqlCommand.Prepare();
                     int timesComplete = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                    sqlCommand.Dispose();
+                    
                     return timesComplete;
                 }
             }
@@ -3765,7 +3763,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@questId", questId);
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
 
                 if (count >= 1)
                     return true;
@@ -3792,7 +3790,7 @@ namespace HISP.Server
                     TrackedQuest TrackedQuest = new TrackedQuest(playerId, reader.GetInt32(0), reader.GetInt32(1));
                     TrackedQuests.Add(TrackedQuest);
                 }
-                sqlCommand.Dispose();
+                
             }
             return TrackedQuests.ToArray();
         }
@@ -3811,7 +3809,7 @@ namespace HISP.Server
                     sqlCommand.Parameters.AddWithValue("@timesCompleted", timesCompleted);
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
-                    sqlCommand.Dispose();
+                    
                 }
             }
             else
@@ -3833,7 +3831,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
 
                 return subscribed;
             }
@@ -3849,7 +3847,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 string gender = sqlCommand.ExecuteScalar().ToString();
-                sqlCommand.Dispose();
+                
 
                 return gender;
             }
@@ -3865,7 +3863,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
 
                 return count;
             }
@@ -3882,7 +3880,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@count", count);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetExperience(int playerId)
@@ -3896,7 +3894,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int xp = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
 
                 return xp;
             }
@@ -3913,7 +3911,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@xp", exp);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void IncAllUsersFreeTime(int minutes)
@@ -3927,7 +3925,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@minutes", minutes);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetFreeTime(int playerId, int minutes)
@@ -3942,7 +3940,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@minutes", minutes);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetFreeTime(int playerId)
@@ -3956,7 +3954,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int freeMinutes = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
 
                 return freeMinutes;
             }
@@ -3972,7 +3970,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 int subscribedUntil = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
 
                 return subscribedUntil;
             }
@@ -3988,7 +3986,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 bool admin = sqlCommand.ExecuteScalar().ToString() == "YES";
-                sqlCommand.Dispose();
+                
 
                 return admin;
             }
@@ -4007,7 +4005,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 bool subscribed = sqlCommand.ExecuteScalar().ToString() == "YES";
-                sqlCommand.Dispose();
+                
 
                 return subscribed; 
             }
@@ -4025,7 +4023,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@timesCompleted", timesCompleted);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void AddOnlineUser(int playerId, bool Admin, bool Moderator, bool Subscribed, bool New)
@@ -4043,7 +4041,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@new", New ? "YES" : "NO");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void RemoveOnlineUser(int playerId)
@@ -4057,7 +4055,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", playerId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static ItemInstance[] GetShopInventory(int shopId)
@@ -4077,7 +4075,7 @@ namespace HISP.Server
                 {
                     instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1)));
                 }
-                sqlCommand.Dispose();
+                
                 return instances.ToArray();
             }
         }
@@ -4095,7 +4093,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@itemId", instance.ItemId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -4111,7 +4109,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -4132,7 +4130,7 @@ namespace HISP.Server
                 {
                     instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2)));
                 }
-                sqlCommand.Dispose();
+                
                 return instances.ToArray();
             }
         }
@@ -4150,7 +4148,7 @@ namespace HISP.Server
                 {
                     userList.Add(reader.GetInt32(0));
                 }
-                sqlCommand.Dispose();
+                
             }
             return userList.ToArray();
         }
@@ -4169,7 +4167,7 @@ namespace HISP.Server
                 {
                     userList.Add(reader.GetInt32(0));
                 }
-                sqlCommand.Dispose();
+                
             }
             return userList.ToArray();
         }
@@ -4187,7 +4185,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@data", instance.Data);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -4203,7 +4201,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@itemId", itemId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void RemoveItemFromInventory(int playerId, ItemInstance instance)
@@ -4218,7 +4216,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -4234,7 +4232,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@npcId", npcId);
                 sqlCommand.Prepare();
                 int total = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return total >= 1;
             }
         }
@@ -4249,7 +4247,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@npcId", npcId);
                 sqlCommand.Prepare();
                 int total = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return total >= 1;
             }
         }
@@ -4265,7 +4263,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@npcId", npcId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetNpcX(int npcId, int x)
@@ -4280,7 +4278,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@npcId", npcId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetNpcUdlrPointer(int npcId, int udlr)
@@ -4295,7 +4293,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@npcId", npcId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static int GetNpcUdlrPointer(int npcId)
@@ -4309,7 +4307,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@npcId", npcId);
                 sqlCommand.Prepare();
                 int udlrPointer = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return udlrPointer;
             }
         }
@@ -4324,7 +4322,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@npcId", npcId);
                 sqlCommand.Prepare();
                 int y = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return y;
             }
         }
@@ -4339,7 +4337,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@npcId", npcId);
                 sqlCommand.Prepare();
                 int x = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return x;
             }
         }
@@ -4357,7 +4355,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@udlr", udlrPointer);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void AddNpcStartPoint(int playerId, int npcId, int startChatpoint)
@@ -4373,7 +4371,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@chatpointId", startChatpoint);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void SetNpcStartPoint(int playerId, int npcId, int startChatpoint)
@@ -4389,7 +4387,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@chatpointId", startChatpoint);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -4403,7 +4401,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "SELECT COUNT(1) FROM DroppedItems";
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return count;
             }
         }
@@ -4419,7 +4417,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@npcId", npcId);
                 sqlCommand.Prepare();
                 int startPoint = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
                 return startPoint;
             }
         }
@@ -4434,7 +4432,7 @@ namespace HISP.Server
                 sqlCommand.CommandText = "DELETE FROM DroppedItems WHERE despawnTimer <=0";
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -4450,7 +4448,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -4474,7 +4472,7 @@ namespace HISP.Server
                     droppedItem.Data = reader.GetInt32(5);
                     itemList.Add(droppedItem);
                 }
-                sqlCommand.Dispose();
+                
 
             }
             return itemList.ToArray();
@@ -4489,7 +4487,7 @@ namespace HISP.Server
                 MySqlCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "UPDATE DroppedItems SET DespawnTimer=DespawnTimer-1";
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
 
             }
         }
@@ -4511,7 +4509,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@data", item.Data);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
 
             }
         }
@@ -4531,7 +4529,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@reportReason", reportReason);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
 
         }
@@ -4560,7 +4558,7 @@ namespace HISP.Server
                     MailMessage.Read = reader.GetString(6) == "YES";
                     mailList.Add(MailMessage);
                 }
-                sqlCommand.Dispose();
+                
             }
             return mailList.ToArray();
         }
@@ -4576,7 +4574,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@toId", toId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void DeleteMail(int randomId)
@@ -4591,7 +4589,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
         public static void AddMail(int randomId, int toId, int fromId, string subject, string message, int timestamp, bool read)
@@ -4612,7 +4610,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@read", read ? "YES" : "NO");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
 
         }
@@ -4629,7 +4627,7 @@ namespace HISP.Server
 
                 Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return count >= 1;
             }
         }
@@ -4645,7 +4643,7 @@ namespace HISP.Server
 
                 Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return count >= 1;
             }
         }
@@ -4661,7 +4659,7 @@ namespace HISP.Server
 
                 Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return count >= 1;
             }
         }
@@ -4680,7 +4678,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     string modStr = sqlCommand.ExecuteScalar().ToString();
 
-                    sqlCommand.Dispose();
+                    
                     return modStr == "YES";
                 }
                 else
@@ -4704,7 +4702,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     string adminStr = sqlCommand.ExecuteScalar().ToString();
 
-                    sqlCommand.Dispose();
+                    
                     return adminStr == "YES";
                 }
                 else
@@ -4725,7 +4723,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
 
                 Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
-                sqlCommand.Dispose();
+                
 
                 return count;
             }
@@ -4757,7 +4755,7 @@ namespace HISP.Server
                         BuddyList.Add(friend);
                 }
 
-                sqlCommand.Dispose();
+                
                 return BuddyList.ToArray();
             }
         }
@@ -4773,7 +4771,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@friendId", friendId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -4789,7 +4787,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
         public static string GetIpAddress(int id)
@@ -4805,7 +4803,7 @@ namespace HISP.Server
                 sqlCommand.Parameters.AddWithValue("@playerId", id);
                 sqlCommand.Prepare();
                 string IpAddress = sqlCommand.ExecuteScalar().ToString();
-                sqlCommand.Dispose();
+                
                 return IpAddress;
             }
         }
@@ -4824,7 +4822,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -4845,7 +4843,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -4862,7 +4860,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     int userId = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return userId;
                 }
                 else
@@ -4885,7 +4883,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     string privateNotes = sqlCommand.ExecuteScalar().ToString();
 
-                    sqlCommand.Dispose();
+                    
                     return privateNotes;
                 }
                 else
@@ -4909,7 +4907,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -4932,7 +4930,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     int CharId = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return CharId;
                 }
                 else
@@ -4956,7 +4954,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -4978,7 +4976,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     int X = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return X;
                 }
                 else
@@ -5002,7 +5000,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -5024,7 +5022,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     int Y = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return Y;
                 }
                 else
@@ -5047,7 +5045,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     int violations = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return violations;
                 }
                 else
@@ -5072,7 +5070,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -5094,7 +5092,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -5117,7 +5115,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -5138,7 +5136,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     int QuestPoints = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return QuestPoints;
                 }
                 else
@@ -5163,7 +5161,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -5187,7 +5185,7 @@ namespace HISP.Server
                 {
                     inst.Add(ReadHorseInstance(reader));
                 }
-                sqlCommand.Dispose();
+                
             }
             return inst.ToArray();
         }
@@ -5206,7 +5204,7 @@ namespace HISP.Server
                 {
                     userIds.Add(reader.GetInt32(0));
                 }
-                sqlCommand.Dispose();
+                
             }
             return userIds.ToArray();
         }
@@ -5227,7 +5225,7 @@ namespace HISP.Server
                 {
                     userIds.Add(reader.GetInt32(0));
                 }
-                sqlCommand.Dispose();
+                
             }
             return userIds.ToArray();
 
@@ -5247,7 +5245,7 @@ namespace HISP.Server
                 {
                     userIds.Add(reader.GetInt32(0));
                 }
-                sqlCommand.Dispose();
+                
             }
             return userIds.ToArray();
 
@@ -5267,7 +5265,7 @@ namespace HISP.Server
                 {
                     userIds.Add(reader.GetInt32(0));
                 }
-                sqlCommand.Dispose();
+                
             }
             return userIds.ToArray();
             
@@ -5287,7 +5285,7 @@ namespace HISP.Server
                 {
                     inst.Add(ReadHorseInstance(reader));
                 }
-                sqlCommand.Dispose();
+                
             }
             return inst.ToArray();
         }
@@ -5306,7 +5304,7 @@ namespace HISP.Server
                 {
                     inst.Add(ReadHorseInstance(reader));
                 }
-                sqlCommand.Dispose();
+                
             }
             return inst.ToArray();
         }
@@ -5325,7 +5323,7 @@ namespace HISP.Server
                 {
                     inst.Add(ReadHorseInstance(reader));
                 }
-                sqlCommand.Dispose();
+                
             }
             return inst.ToArray();
         }
@@ -5341,7 +5339,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                sqlCommand.Dispose();
+                
                 return count;
             }
         }
@@ -5362,7 +5360,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
                 return;
             }
         }
@@ -5381,7 +5379,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
                 return;
             }
         }
@@ -5412,7 +5410,7 @@ namespace HISP.Server
                 }
 
 
-                sqlCommand.Dispose();
+                
                 return entires.ToArray();
             }
         }
@@ -5444,7 +5442,7 @@ namespace HISP.Server
                 }
 
 
-                sqlCommand.Dispose();
+                
                 return entires.ToArray();
             }
         }
@@ -5476,7 +5474,7 @@ namespace HISP.Server
                 }
 
 
-                sqlCommand.Dispose();
+                
                 return entires.ToArray();
             }
         }
@@ -5500,7 +5498,7 @@ namespace HISP.Server
                     i++;
                 }
 
-                sqlCommand.Dispose();
+                
                 return i;
             }
         }
@@ -5517,7 +5515,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
                 return;
             }
         }
@@ -5534,7 +5532,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
                 return;
             }
         }
@@ -5552,7 +5550,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
                 return;
             }
         }
@@ -5567,7 +5565,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
                 return;
             }
         }
@@ -5609,7 +5607,7 @@ namespace HISP.Server
 
                 }
 
-                sqlCommand.Dispose();
+                
                 return;
             }
         }
@@ -5624,7 +5622,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
                 return;
             }
             
@@ -5639,7 +5637,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
                 return;
             }
         }
@@ -5657,7 +5655,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     int tiredness = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return tiredness;
                 }
                 else
@@ -5681,7 +5679,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -5704,7 +5702,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -5728,7 +5726,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     int hunger = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return hunger;
                 }
                 else
@@ -5752,7 +5750,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -5774,7 +5772,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     int tiredness = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return tiredness;
                 }
                 else
@@ -5797,7 +5795,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     int lastLogin = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return lastLogin;
                 }
                 else
@@ -5821,7 +5819,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -5843,7 +5841,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     int Money = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return Money;
                 }
                 else
@@ -5866,7 +5864,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     double BankMoney = Convert.ToDouble(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return BankMoney;
                 }
                 else
@@ -5889,7 +5887,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     double BankInterest = Convert.ToDouble(sqlCommand.ExecuteScalar());
 
-                    sqlCommand.Dispose();
+                    
                     return BankInterest;
                 }
                 else
@@ -5915,7 +5913,7 @@ namespace HISP.Server
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
-                sqlCommand.Dispose();
+                
             }
         }
 
@@ -5933,7 +5931,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -5955,7 +5953,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -5978,7 +5976,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
 
-                    sqlCommand.Dispose();
+                    
                 }
                 else
                 {
@@ -6000,7 +5998,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     string profilePage = sqlCommand.ExecuteScalar().ToString();
 
-                    sqlCommand.Dispose();
+                    
                     return profilePage;
                 }
                 else
@@ -6024,7 +6022,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     string username = sqlCommand.ExecuteScalar().ToString();
 
-                    sqlCommand.Dispose();
+                    
                     return username;
                 }
                 else
@@ -6046,7 +6044,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     string expectedHash = sqlCommand.ExecuteScalar().ToString();
 
-                    sqlCommand.Dispose();
+                    
                     return Util.StringToByteArray(expectedHash);
                 }
                 else
