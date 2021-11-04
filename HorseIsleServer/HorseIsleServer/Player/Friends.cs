@@ -31,7 +31,7 @@ namespace HISP.Player
 
         public void AddToLocalList(int value)
         {
-            list.Remove(value);
+            list.Add(value);
         }
         public Friends(User user)
         {
