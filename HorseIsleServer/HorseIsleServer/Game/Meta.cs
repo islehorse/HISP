@@ -228,6 +228,7 @@ namespace HISP.Game
 
         private static string buildCommonInfo(User user, int x, int y)
         {
+            user.HorseWindowOpen = false;
             string message = "";
             message += buildPlayersHere(user, x, y);
             message += buildNearbyString(x, y);
@@ -2285,6 +2286,7 @@ namespace HISP.Game
         public static string BuildHorseInformation(HorseInstance horse, User user)
         {
             bool isMyHorse = horse.Owner == user.Id;
+            user.HorseWindowOpen = true;
 
             string message = "";
             if (isMyHorse)
@@ -2899,7 +2901,7 @@ namespace HISP.Game
             {
 
                 user.MetaPriority = true;
-
+                
                 string TileCode = specialTile.Code;
 
                 string TileArg = "";

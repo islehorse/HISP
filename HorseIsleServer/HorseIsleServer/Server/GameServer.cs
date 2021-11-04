@@ -8017,6 +8017,8 @@ namespace HISP.Server
             sender.SendPacket(rideHorsePacket);
 
             UpdateUserFacingAndLocation(sender.LoggedinUser);
+            if (sender.LoggedinUser.HorseWindowOpen)
+                UpdateArea(sender);
         }
         public static void StopRidingHorse(GameClient sender)
         {
@@ -8027,6 +8029,8 @@ namespace HISP.Server
             sender.SendPacket(rideHorsePacket);
 
             UpdateUserFacingAndLocation(sender.LoggedinUser);
+            if (sender.LoggedinUser.HorseWindowOpen)
+                UpdateArea(sender);
         }
         public static bool ProcessMapCodeWithArg(GameClient forClient, World.SpecialTile tile)
         {
