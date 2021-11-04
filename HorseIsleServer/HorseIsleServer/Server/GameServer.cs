@@ -1347,71 +1347,75 @@ namespace HISP.Server
                         if (World.InSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y))
                         {
                             World.SpecialTile tile = World.GetSpecialTile(sender.LoggedinUser.X, sender.LoggedinUser.Y);
-                            if (tile.Code.StartsWith("TRAINER-"))
+                            if (tile.Code != null)
                             {
-                                if(trainHorseInst.TrainTimer > 0)
+                                if (tile.Code.StartsWith("TRAINER-"))
                                 {
-                                    byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainerCantTrainAgainIn(trainHorseInst.TrainTimer), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(trainSuccessfulMessage);
-                                    break;
-                                }
-                                string[] trainerInfo = tile.Code.Split('-');
-                                int trainerId = int.Parse(trainerInfo[1]);
-
-                                Trainer trainer = Trainer.GetTrainerById(trainerId);
-
-                                if(sender.LoggedinUser.Money >= trainer.MoneyCost)
-                                {
-                                    sender.LoggedinUser.TakeMoney(trainer.MoneyCost);
-                                    trainHorseInst.BasicStats.Mood -= trainer.MoodCost;
-                                    trainHorseInst.BasicStats.Thirst -= trainer.ThirstCost;
-                                    trainHorseInst.BasicStats.Hunger -= trainer.HungerCost;
-
-
-                                    switch (trainer.ImprovesStat.ToUpper())
+                                    if (trainHorseInst.TrainTimer > 0)
                                     {
-                                        case "SPEED":
-                                            trainHorseInst.AdvancedStats.Speed += trainer.ImprovesAmount;
-                                            break;
-                                        case "STRENGTH":
-                                            trainHorseInst.AdvancedStats.Strength += trainer.ImprovesAmount;
-                                            break;
-                                        case "AGILITY":
-                                            trainHorseInst.AdvancedStats.Agility += trainer.ImprovesAmount;
-                                            break;
-                                        case "ENDURANCE":
-                                            trainHorseInst.AdvancedStats.Endurance += trainer.ImprovesAmount;
-                                            break;
-                                        case "CONFORMATION":
-                                            trainHorseInst.AdvancedStats.Conformation += trainer.ImprovesAmount;
-                                            break;
-                                        default:
-                                            trainHorseInst.AdvancedStats.Speed += trainer.ImprovesAmount;
-                                            break;
+                                        byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainerCantTrainAgainIn(trainHorseInst.TrainTimer), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(trainSuccessfulMessage);
+                                        break;
                                     }
-                                    trainHorseInst.BasicStats.Experience += trainer.ExperienceGained;
-                                    if(sender.LoggedinUser.Subscribed)
-                                        trainHorseInst.TrainTimer = 1440;
+                                    string[] trainerInfo = tile.Code.Split('-');
+                                    int trainerId = int.Parse(trainerInfo[1]);
+
+                                    Trainer trainer = Trainer.GetTrainerById(trainerId);
+
+                                    if (sender.LoggedinUser.Money >= trainer.MoneyCost)
+                                    {
+                                        sender.LoggedinUser.TakeMoney(trainer.MoneyCost);
+                                        trainHorseInst.BasicStats.Mood -= trainer.MoodCost;
+                                        trainHorseInst.BasicStats.Thirst -= trainer.ThirstCost;
+                                        trainHorseInst.BasicStats.Hunger -= trainer.HungerCost;
+
+
+                                        switch (trainer.ImprovesStat.ToUpper())
+                                        {
+                                            case "SPEED":
+                                                trainHorseInst.AdvancedStats.Speed += trainer.ImprovesAmount;
+                                                break;
+                                            case "STRENGTH":
+                                                trainHorseInst.AdvancedStats.Strength += trainer.ImprovesAmount;
+                                                break;
+                                            case "AGILITY":
+                                                trainHorseInst.AdvancedStats.Agility += trainer.ImprovesAmount;
+                                                break;
+                                            case "ENDURANCE":
+                                                trainHorseInst.AdvancedStats.Endurance += trainer.ImprovesAmount;
+                                                break;
+                                            case "CONFORMATION":
+                                                trainHorseInst.AdvancedStats.Conformation += trainer.ImprovesAmount;
+                                                break;
+                                            default:
+                                                trainHorseInst.AdvancedStats.Speed += trainer.ImprovesAmount;
+                                                break;
+                                        }
+                                        trainHorseInst.BasicStats.Experience += trainer.ExperienceGained;
+                                        if (sender.LoggedinUser.Subscribed)
+                                            trainHorseInst.TrainTimer = 1440;
+                                        else
+                                            trainHorseInst.TrainTimer = 720;
+
+                                        byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainedInStatFormat(trainHorseInst.Name, trainer.ImprovesStat), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(trainSuccessfulMessage);
+
+
+                                        sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count++;
+
+                                        if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 1000)
+                                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(26)); // Pro Trainer
+                                        if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 10000)
+                                            sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(53)); // Top Trainer
+
+                                        UpdateArea(sender);
+                                    }
                                     else
-                                        trainHorseInst.TrainTimer = 720;
+                                    {
+                                        byte[] cantAffordPacket = PacketBuilder.CreateChat(Messages.TrainerCantAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(cantAffordPacket);
+                                    }
 
-                                    byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainedInStatFormat(trainHorseInst.Name, trainer.ImprovesStat), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(trainSuccessfulMessage);
-
-
-                                    sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count++;
-
-                                    if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 1000)
-                                        sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(26)); // Pro Trainer
-                                    if (sender.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 10000)
-                                        sender.LoggedinUser.Awards.AddAward(Award.GetAwardById(53)); // Top Trainer
-
-                                    UpdateArea(sender);
-                                }
-                                else
-                                {
-                                    byte[] cantAffordPacket = PacketBuilder.CreateChat(Messages.TrainerCantAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(cantAffordPacket);
                                 }
 
                             }
