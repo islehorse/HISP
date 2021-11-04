@@ -87,6 +87,7 @@ namespace HISP.Player
         public bool MuteLogins = false;
         public string Gender;
         public bool MetaPriority = false;
+        public bool HorseWindowOpen = false;
         public bool Idle;
         public int Facing;
         public HorseInfo.Breed PawneerOrderBreed = null;
