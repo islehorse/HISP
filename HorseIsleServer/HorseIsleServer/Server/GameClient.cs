@@ -79,9 +79,7 @@ namespace HISP.Server
             evt.Completed += receivePackets;
             evt.SetBuffer(workBuffer, 0, workBuffer.Length);
             if (!clientSocket.ReceiveAsync(evt))
-            {
                 receivePackets(null, evt);
-            }
         }
 
         public static void CreateClient(object sender, SocketAsyncEventArgs e)
@@ -89,16 +87,17 @@ namespace HISP.Server
             do
             {
                 Socket eSocket = e.AcceptSocket;
-                new GameClient(eSocket);
+                if(eSocket != null)
+                    new GameClient(eSocket);
                 e.AcceptSocket = null;
             } while (!GameServer.ServerSocket.AcceptAsync(e));
         }
 
         public void Disconnect()
         {
+            if (this.isDisconnecting)
+                return;
             this.isDisconnecting = true;
-            // Cant outright stop threads anymore in .NET core,
-            // Lets just let the thread stop gracefully.
 
             // Stop Timers
             if (inactivityTimer != null)
@@ -125,7 +124,7 @@ namespace HISP.Server
             do
             {
                 // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
-
+                ClientSocket.Poll(0, SelectMode.SelectRead);
                 if (!ClientSocket.Connected)
                 {
                     Disconnect();
