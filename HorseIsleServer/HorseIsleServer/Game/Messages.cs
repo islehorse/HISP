@@ -17,6 +17,10 @@ namespace HISP.Game
         public static string PlaytimeMessageFormat;
         public static string[] RngMessages;
 
+        // Prision Isle
+        public static string PrisonIsleSentMessage;
+        public static string PrisonIsleCommandMessageFormat;
+
         // Rules Isle
         public static string RulesIsleSentMessage;
         public static string RulesIsleCommandMessageFormat;
@@ -1296,6 +1300,12 @@ namespace HISP.Game
         public static string FormatEventRealTimeRiddleWonForYou(int prize)
         {
             return EventWonRealTimeRiddleForYouFormat.Replace("%PRIZE%", prize.ToString("N0", CultureInfo.InvariantCulture));
+        }
+
+        // Prison Command
+        public static string FormatPrisonCommandMessage(string username)
+        {
+            return PrisonIsleCommandMessageFormat.Replace("%USERNAME%", username.ToUpper());
         }
 
         // Rules Command

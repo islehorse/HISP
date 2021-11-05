@@ -963,7 +963,7 @@ namespace HISP.Server
             Messages.OnlyUnicornCanWarp = gameData.messages.commands.warp.only_unicorn;
             Messages.FailedToUnderstandLocation = gameData.messages.commands.warp.location_unknown;
 
-            // Mod
+            // Mod Isle
             Messages.ModSplatterballEarnedYouFormat = gameData.messages.mods_revenge.awarded_you;
             Messages.ModSplatterballEarnedOtherFormat = gameData.messages.mods_revenge.awareded_others;
             Messages.ModIsleMessage = gameData.messages.commands.mod_isle.message;
@@ -975,6 +975,13 @@ namespace HISP.Server
             Map.RulesIsleY = gameData.messages.commands.rules_isle.y;
             Messages.RulesIsleSentMessage = gameData.messages.commands.rules_isle.message;
             Messages.RulesIsleCommandMessageFormat = gameData.messages.commands.rules_isle.command_msg;
+
+            // Prison Isle
+            Map.PrisonIsleX = gameData.messages.commands.prison_isle.x;
+            Map.PrisonIsleY = gameData.messages.commands.prison_isle.y;
+            Messages.PrisonIsleSentMessage = gameData.messages.commands.prison_isle.message;
+            Messages.PrisonIsleCommandMessageFormat = gameData.messages.commands.prison_isle.command_msg;
+
 
             // Tag
 

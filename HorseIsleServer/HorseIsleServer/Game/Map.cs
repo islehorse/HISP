@@ -32,6 +32,9 @@ namespace HISP.Game
         public static int RulesIsleX;
         public static int RulesIsleY;
 
+        public static int PrisonIsleX;
+        public static int PrisonIsleY;
+
         public static int GetTileId(int x, int y, bool overlay)
         {
             int pos = ((x * Height) + y);
