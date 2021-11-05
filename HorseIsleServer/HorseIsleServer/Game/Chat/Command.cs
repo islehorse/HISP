@@ -462,7 +462,7 @@ namespace HISP.Game.Chat
             int amount = 0;
             try
             {
-                id = int.Parse(args[0]);
+                id = int.Parse(args[0])-1;
                 amount = int.Parse(args[2]);
             }
             catch (Exception)
@@ -470,12 +470,12 @@ namespace HISP.Game.Chat
                 return false;
             }
 
-            if (id < 0 && id > instances.Length)
+            if (id < 0 || id > instances.Length-1)
                 return false;
 
             switch (args[1].ToUpper())
             {
-                case "INTELIGENCE":
+                case "INTELLIGENCE":
                     instances[id].AdvancedStats.Inteligence = amount;
                     break;
                 case "PERSONALITY":
