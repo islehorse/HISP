@@ -456,13 +456,12 @@ namespace HISP.Game.Chat
             if (args.Length < 3)
                 return false;
 
-            HorseInstance[] instances = user.HorseInventory.HorseList.OrderBy(o => o.Name).ToArray();
-
+            
             int id = 0;
             int amount = 0;
             try
             {
-                id = int.Parse(args[0])-1;
+                id = int.Parse(args[0]);
                 amount = int.Parse(args[2]);
             }
             catch (Exception)
@@ -470,35 +469,49 @@ namespace HISP.Game.Chat
                 return false;
             }
 
-            if (id < 0 || id > instances.Length)
-                return false;
 
-            switch (args[1].ToUpper())
+            int i = 0;
+            foreach (HorseInfo.Category category in HorseInfo.HorseCategories)
             {
-                case "INTELLIGENCE":
-                    instances[id].AdvancedStats.Inteligence = amount;
-                    break;
-                case "PERSONALITY":
-                    instances[id].AdvancedStats.Personality = amount;
-                    break;
-                case "EXPERIENCE":
-                    instances[id].BasicStats.Experience = amount;
-                    break;
-                case "SPEED":
-                    instances[id].AdvancedStats.Speed = amount;
-                    break;
-                case "STRENGTH":
-                    instances[id].AdvancedStats.Strength = amount;
-                    break;
-                case "CONFORMATION":
-                    instances[id].AdvancedStats.Conformation = amount;
-                    break;
-                case "ENDURANCE":
-                    instances[id].AdvancedStats.Endurance = amount;
-                    break;
-                case "AGILITY":
-                    instances[id].AdvancedStats.Agility = amount;
-                    break;
+                HorseInstance[] horsesInCategory = user.HorseInventory.GetHorsesInCategory(category).OrderBy(o => o.Name).ToArray();
+                if (horsesInCategory.Length > 0)
+                {
+                    foreach (HorseInstance instance in horsesInCategory)
+                    {
+                        i++;
+
+                        if(i == id)
+                        {
+                            switch (args[1].ToUpper())
+                            {
+                                case "INTELLIGENCE":
+                                    instance.AdvancedStats.Inteligence = amount;
+                                    break;
+                                case "PERSONALITY":
+                                    instance.AdvancedStats.Personality = amount;
+                                    break;
+                                case "EXPERIENCE":
+                                    instance.BasicStats.Experience = amount;
+                                    break;
+                                case "SPEED":
+                                    instance.AdvancedStats.Speed = amount;
+                                    break;
+                                case "STRENGTH":
+                                    instance.AdvancedStats.Strength = amount;
+                                    break;
+                                case "CONFORMATION":
+                                    instance.AdvancedStats.Conformation = amount;
+                                    break;
+                                case "ENDURANCE":
+                                    instance.AdvancedStats.Endurance = amount;
+                                    break;
+                                case "AGILITY":
+                                    instance.AdvancedStats.Agility = amount;
+                                    break;
+                            }
+                        }
+                    }
+                }
             }
 
 
