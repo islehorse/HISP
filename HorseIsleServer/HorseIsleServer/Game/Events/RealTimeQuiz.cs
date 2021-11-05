@@ -247,7 +247,6 @@ namespace HISP.Game.Events
             }
 
             participents.Clear();
-            participents = null;
             quizTimer.Dispose();
 
             Active = false;

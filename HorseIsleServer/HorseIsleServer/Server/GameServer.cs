@@ -7311,11 +7311,12 @@ namespace HISP.Server
                     }
 
 
-                    sender.Login(userId);
-                    sender.LoggedinUser.Password = password;
 
                     byte[] ResponsePacket = PacketBuilder.CreateLoginPacket(true);
                     sender.SendPacket(ResponsePacket);
+
+                    sender.Login(userId);
+                    sender.LoggedinUser.Password = password;
 
                     Logger.DebugPrint(sender.RemoteIp + " Logged into : " + sender.LoggedinUser.Username + " (ADMIN: " + sender.LoggedinUser.Administrator + " MOD: " + sender.LoggedinUser.Moderator + ")");
 
