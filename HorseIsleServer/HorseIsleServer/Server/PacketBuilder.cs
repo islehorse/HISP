@@ -476,31 +476,6 @@ namespace HISP.Server
             return packet;
         }
 
-        public static byte[] CreateHorseRidePacket(int x, int y, int charId, int facing, int direction, bool walk)
-        {
-            // Header information
-            byte[] packet = new byte[(1 * 10)];
-            packet[0] = PACKET_MOVE;
-
-            packet[1] = (byte)(((x - 4) / 64) + 20);
-            packet[2] = (byte)(((x - 4) % 64) + 20);
-
-            packet[3] = (byte)(((y - 1) / 64) + 20);
-            packet[4] = (byte)(((y - 1) % 64) + 20);
-
-            packet[5] = (byte)(facing + 20);
-
-            packet[6] = (byte)((charId / 64) + 20);
-            packet[7] = (byte)((charId % 64) + 20);
-
-            packet[8] = (byte)(direction + 20);
-
-            packet[9] = (byte)(Convert.ToInt32(walk) + 20);
-            packet[packet.Length-1] = PACKET_TERMINATOR;
-
-            return packet;
-        }
-
         public static byte[] CreateMovementPacket(int x, int y, int charId, int facing, int direction, bool walk)
         {
             // Header information
