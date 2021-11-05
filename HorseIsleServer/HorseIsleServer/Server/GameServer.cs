@@ -8099,7 +8099,8 @@ namespace HISP.Server
 
             SocketAsyncEventArgs e = new SocketAsyncEventArgs();
             e.Completed += GameClient.CreateClient;
-            ServerSocket.AcceptAsync(e);
+            if (!ServerSocket.AcceptAsync(e))
+                GameClient.CreateClient(null, e);
         }
 
     }
