@@ -209,7 +209,10 @@ namespace HISP.Game.Events
         {
             foreach(Participent participent in Participents)
             {
-                
+
+                if (participent == null)
+                    continue;
+
                 if (participent.Quit)
                     continue;
 
