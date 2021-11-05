@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using HISP.Game.Events;
 using HISP.Game.Horse;
+using System.Linq;
 
 namespace HISP.Game.Chat
 {
@@ -264,6 +265,31 @@ namespace HISP.Game.Chat
             return true;
         }
 
+        public static bool Prision(string message, string[] args, User user)
+        {
+            if (!(user.Administrator || user.Moderator))
+                return false;
+            if (args.Length <= 0)
+                return false;
+
+            try
+            {
+                User toSend = GameServer.GetUserByName(args[0]);
+                
+                toSend.Teleport(Map.PrisonIsleX, Map.PrisonIsleY);
+                byte[] dontDoTheTime = PacketBuilder.CreateChat(Messages.PrisonIsleSentMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                toSend.LoggedinClient.SendPacket(dontDoTheTime);
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)) + Messages.FormatPrisonCommandMessage(args[0]), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+
+        }
         public static bool Kick(string message, string[] args, User user)
         {
             if (!(user.Administrator || user.Moderator))
@@ -419,6 +445,65 @@ namespace HISP.Game.Chat
             user.LoggedinClient.SendPacket(chatPacket);
 
             
+            return true;
+        }
+
+        public static bool ModHorse(string message, string[] args, User user)
+        {
+            if (!user.Administrator)
+                return false;
+
+            if (args.Length < 3)
+                return false;
+
+            HorseInstance[] instances = user.HorseInventory.HorseList.OrderBy(o => o.Name).ToArray();
+
+            int id = 0;
+            int amount = 0;
+            try
+            {
+                id = int.Parse(args[0]);
+                amount = int.Parse(args[2]);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            if (id < 0 && id > instances.Length)
+                return false;
+
+            switch (args[1].ToUpper())
+            {
+                case "INTELIGENCE":
+                    instances[id].AdvancedStats.Inteligence = amount;
+                    break;
+                case "PERSONALITY":
+                    instances[id].AdvancedStats.Personality = amount;
+                    break;
+                case "EXPERIENCE":
+                    instances[id].BasicStats.Experience = amount;
+                    break;
+                case "SPEED":
+                    instances[id].AdvancedStats.Speed = amount;
+                    break;
+                case "STRENGTH":
+                    instances[id].AdvancedStats.Strength = amount;
+                    break;
+                case "CONFORMATION":
+                    instances[id].AdvancedStats.Conformation = amount;
+                    break;
+                case "ENDURANCE":
+                    instances[id].AdvancedStats.Endurance = amount;
+                    break;
+                case "AGILITY":
+                    instances[id].AdvancedStats.Agility = amount;
+                    break;
+            }
+
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
         public static bool Warp(string message, string[] args, User user)

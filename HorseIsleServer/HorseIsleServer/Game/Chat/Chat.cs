@@ -100,6 +100,8 @@ namespace HISP.Game.Chat
                         return Command.Kick(message, args, user);
                     if (message.ToUpper().StartsWith("%RULES"))
                         return Command.Rules(message, args, user);
+                    if (message.ToUpper().StartsWith("%PRISON"))
+                        return Command.Prision(message, args, user);
                     if (message.ToUpper().StartsWith("%NOCLIP"))
                         return Command.NoClip(message, args, user);
                     if (message.ToUpper().StartsWith("%STEALTH"))
@@ -110,6 +112,8 @@ namespace HISP.Game.Chat
                         return Command.UnBan(message, args, user);
                     if (message.ToUpper().StartsWith("%ESCAPE"))
                         return Command.Escape(message, args, user);
+                    if (message.ToUpper().StartsWith("%MODHORSE"))
+                        return Command.ModHorse(message, args, user);
                     if (message.ToUpper().StartsWith("%CALL HORSE"))
                         return Command.CallHorse(message, args, user);
                     return false;
