@@ -1221,7 +1221,7 @@ namespace HISP.Server
 
             Messages.ArenaFirstPlace = gameData.messages.meta.arena.first_place;
             Messages.ArenaSecondPlace = gameData.messages.meta.arena.second_place;
-            Messages.ArenaThirdPlace = gameData.messages.meta.arena.thirst_place;
+            Messages.ArenaThirdPlace = gameData.messages.meta.arena.third_place;
             Messages.ArenaFourthPlace = gameData.messages.meta.arena.fourth_place;
             Messages.ArenaFifthPlace = gameData.messages.meta.arena.fifth_place;
             Messages.ArenaSixthPlace = gameData.messages.meta.arena.sixth_place;
