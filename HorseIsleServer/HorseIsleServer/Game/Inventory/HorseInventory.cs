@@ -41,9 +41,9 @@ namespace HISP.Game.Inventory
                 }
             }
         }
-        public void AddHorse(HorseInstance horse, bool addToDb=true)
+        public void AddHorse(HorseInstance horse, bool addToDb=true, bool ignoreFull=false)
         {
-            if (HorseList.Length + 1 > baseUser.MaxHorses)
+            if (HorseList.Length + 1 > baseUser.MaxHorses && !ignoreFull)
                 throw new InventoryFullException();
 
             horse.Owner = baseUser.Id;

@@ -2702,7 +2702,7 @@ namespace HISP.Game
         private static string buildPawneer(User user)
         {
             string message = "";
-            if (user.Inventory.HasItemId(Item.PawneerOrder))
+            if (user.Inventory.HasItemId(Item.PawneerOrder) && (user.HorseInventory.HorseList.Length < user.MaxHorses))
                 message += Messages.PawneerOrderMeta;
             message += Messages.PawneerUntackedHorsesICanBuy;
             foreach(HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).ToList())

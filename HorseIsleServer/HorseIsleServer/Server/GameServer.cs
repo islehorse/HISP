@@ -3331,7 +3331,7 @@ namespace HISP.Server
                                     horseInstance.Name = "Pawneer Order";
 
                                     sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(Item.PawneerOrder).ItemInstances[0]);
-                                    sender.LoggedinUser.HorseInventory.AddHorse(horseInstance);
+                                    sender.LoggedinUser.HorseInventory.AddHorse(horseInstance, true, true);
 
                                     sender.LoggedinUser.MetaPriority = true;
                                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPawneerOrderFound(horseInstance));
