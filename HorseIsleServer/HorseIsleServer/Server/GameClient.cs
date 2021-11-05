@@ -87,9 +87,11 @@ namespace HISP.Server
 
         public static void CreateClient(object sender, SocketAsyncEventArgs e)
         {
+        restart:;
             Socket eSocket = e.AcceptSocket;
             e.AcceptSocket = null;
-            GameServer.ServerSocket.AcceptAsync(e);
+            if (!GameServer.ServerSocket.AcceptAsync(e))
+                goto restart;
 
             new GameClient(eSocket);
         }
