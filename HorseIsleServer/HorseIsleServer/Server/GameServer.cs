@@ -3022,10 +3022,14 @@ namespace HISP.Server
                                     break;
                                 }
 
-                                if(IsUserOnline(horseToSell.Owner))
+                                sender.LoggedinUser.TakeMoney(horseToSell.AutoSell);
+
+                                if (IsUserOnline(horseToSell.Owner))
                                 {
                                     User seller = GetUserById(horseToSell.Owner);
-                                    sender.LoggedinUser.HorseInventory.DeleteHorse(horseToSell, false);
+                                    seller.HorseInventory.DeleteHorse(horseToSell, false);
+
+                                    seller.AddMoney(horseToSell.AutoSell);
 
                                     byte[] horseBrought = PacketBuilder.CreateChat(Messages.FormatAutoSellSold(horseToSell.Name, horseToSell.AutoSell, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     seller.LoggedinClient.SendPacket(horseBrought);
@@ -3033,6 +3037,7 @@ namespace HISP.Server
                                 else
                                 {
                                     Database.AddMessageToQueue(horseToSell.Owner, Messages.FormatAutoSellSoldOffline(horseToSell.Name, horseToSell.AutoSell, sender.LoggedinUser.Username));
+                                    Database.SetPlayerMoney((Database.GetPlayerMoney(horseToSell.Owner) + horseToSell.AutoSell), horseToSell.Owner);
                                 }
 
                                 horseToSell.Owner = sender.LoggedinUser.Id;
