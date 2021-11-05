@@ -124,7 +124,16 @@ namespace HISP.Server
             do
             {
                 // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
-                ClientSocket.Poll(0, SelectMode.SelectRead);
+
+                if (isDisconnecting || ClientSocket == null)
+                    return;
+
+                if(ClientSocket.Poll(0, SelectMode.SelectRead))
+                {
+                    Disconnect();
+                    return;
+                }
+
                 if (!ClientSocket.Connected)
                 {
                     Disconnect();
@@ -153,7 +162,7 @@ namespace HISP.Server
                     }
                 }
 
-                if (isDisconnecting)
+                if (isDisconnecting || ClientSocket == null)
                     return;
 
 
