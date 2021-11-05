@@ -2837,7 +2837,7 @@ namespace HISP.Game
                 }
 
                 message += Messages.FormatArenaCurrentlyTakingEntries(lastHours, lastMinutes, amOrPm, arena.RaceEvery - minutes);
-                if (arena.Entries.Length > arena.Slots)
+                if (arena.Entries.Length + 1 > arena.Slots)
                 {
                     message += Messages.ArenaCompetitionFull;
                 }
