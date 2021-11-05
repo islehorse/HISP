@@ -361,6 +361,9 @@ namespace HISP.Game
         }
         public void AddEntry(User user, HorseInstance horse)
         {
+            if (Entries.Length + 1 > Slots)
+                return;
+
             if(!UserHasHorseEntered(user))
             {
                 ArenaEntry arenaEntry = new ArenaEntry();
