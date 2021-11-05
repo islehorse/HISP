@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -76,27 +75,30 @@ namespace HISP.Server
 
             connectedClients.Add(this);
 
-/*            
+
             SocketAsyncEventArgs evt = new SocketAsyncEventArgs();
             evt.Completed += receivePackets;
-            evt.SetBuffer(workBuffer);
-            clientSocket.ReceiveAsync(evt);
-*/
-            receivePackets();
+            evt.SetBuffer(workBuffer, 0, workBuffer.Length);
+            if (!clientSocket.ReceiveAsync(evt))
+            {
+                receivePackets(null, evt);
+            }
         }
 
         public static void CreateClient(object sender, SocketAsyncEventArgs e)
         {
-        restart:;
+        restart2:;
             Socket eSocket = e.AcceptSocket;
-            e.AcceptSocket = null;
-            if (!GameServer.ServerSocket.AcceptAsync(e))
-                goto restart;
-
             new GameClient(eSocket);
+            SocketAsyncEventArgs evt = new SocketAsyncEventArgs();
+            evt.Completed += GameClient.CreateClient;
+            if (!GameServer.ServerSocket.AcceptAsync(evt))
+            {
+                e = evt;
+                goto restart2;
+            }
         }
 
-/*
         public void Disconnect()
         {
             this.isDisconnecting = true;
@@ -125,7 +127,7 @@ namespace HISP.Server
 
         private void receivePackets(object sender, SocketAsyncEventArgs e)
         {
-
+        restart:;
             // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
 
             if (!ClientSocket.Connected)
@@ -140,32 +142,39 @@ namespace HISP.Server
                 return;
             }
 
-            if (!isDisconnecting)
+
+            int availble = e.BytesTransferred;
+            if (availble >= 1)
             {
 
-                int availble = e.BytesTransferred;
-                if (availble >= 1)
+                for (int i = 0; i < availble; i++)
                 {
-
-                    for (int i = 0; i < availble; i++)
+                    currentPacket.Add(e.Buffer[i]);
+                    if (e.Buffer[i] == PacketBuilder.PACKET_TERMINATOR)
                     {
-                        currentPacket.Add(e.Buffer[i]);
-                        if (e.Buffer[i] == PacketBuilder.PACKET_TERMINATOR)
-                        {
-                            parsePackets(currentPacket.ToArray());
-                            currentPacket.Clear();
-                        }
+                        parsePackets(currentPacket.ToArray());
+                        currentPacket.Clear();
                     }
                 }
-
-                ClientSocket.ReceiveAsync(e);
-                return;
             }
+
+            if (isDisconnecting)
+                return;
+
+            SocketAsyncEventArgs evt = new SocketAsyncEventArgs();
+            evt.Completed += receivePackets;
+            evt.SetBuffer(workBuffer, 0, workBuffer.Length);
+            if (ClientSocket != null && !ClientSocket.ReceiveAsync(evt))
+            {
+                e = evt;
+                goto restart;
+            }
+
             
         }
 
-*/
-        public void Disconnect()
+
+/*        public void Disconnect()
         {
 
             // Cant outright stop threads anymore in .NET core,
@@ -231,7 +240,7 @@ namespace HISP.Server
 
             return isDisconnecting; // Stop the task.
         }
-
+*/
         private void minuteTimerTick(object state)
         {
             totalMinutesElapsed++;

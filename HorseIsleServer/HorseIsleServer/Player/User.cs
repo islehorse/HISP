@@ -577,45 +577,6 @@ namespace HISP.Player
             }
 
             // Players now offscreen tell the client is at 1000,1000.
-            /* foreach (User onScreenBeforeUser in onScreenBefore)
-             {
-                 bool found = false;
-                 foreach (User onScreenNowUser in onScreenNow)
-                 {
-                     if (onScreenNowUser.Id == onScreenBeforeUser.Id)
-                     {
-                         found = true;
-                         break;
-                     }
-                 }
-
-                 if (!found)
-                 {
-                     byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, Facing, CharacterId, Username);
-                     onScreenBeforeUser.LoggedinClient.SendPacket(playerInfoBytes);
-                 }
-             }
-
-             // Players now onscreen tell the client there real pos
-             foreach (User onScreenNowUser in onScreenNow)
-             {
-                 bool found = false;
-                 foreach (User onScreenBeforeUser in onScreenBefore)
-                 {
-                     if (onScreenNowUser.Id == onScreenBeforeUser.Id)
-                     {
-                         found = true;
-                         break;
-                     }
-                 }
-
-                 if (!found)
-                 {
-                     byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenNowUser.X, onScreenNowUser.Y, onScreenNowUser.Facing, onScreenNowUser.CharacterId, onScreenNowUser.Username);
-                     LoggedinClient.SendPacket(playerInfoBytes);
-                 }
-             }
-            */
             GameServer.Update(LoggedinClient);
         }
 
