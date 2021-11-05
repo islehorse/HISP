@@ -108,6 +108,7 @@ namespace HISP.Server
                 kickTimer.Dispose();
 
             // Call OnDisconnect
+            
             connectedClients.Remove(this);
             GameServer.OnDisconnect(this);
             LoggedIn = false;

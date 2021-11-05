@@ -1424,7 +1424,7 @@ namespace HISP.Server
                                                 break;
                                         }
                                         trainHorseInst.BasicStats.Experience += trainer.ExperienceGained;
-                                        if (sender.LoggedinUser.Subscribed)
+                                        if (!sender.LoggedinUser.Subscribed)
                                             trainHorseInst.TrainTimer = 1440;
                                         else
                                             trainHorseInst.TrainTimer = 720;
