@@ -125,27 +125,15 @@ namespace HISP.Server
             {
                 // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
 
-                if (isDisconnecting || ClientSocket == null)
-                    return;
-
-                if(ClientSocket.Poll(0, SelectMode.SelectRead))
+                if (isDisconnecting ||
+                    ClientSocket == null || 
+                    ClientSocket.Poll(0, SelectMode.SelectRead) ||
+                    !ClientSocket.Connected || 
+                    e.SocketError != SocketError.Success)
                 {
                     Disconnect();
                     return;
                 }
-
-                if (!ClientSocket.Connected)
-                {
-                    Disconnect();
-                    return;
-                }
-
-                if (e.SocketError != SocketError.Success)
-                {
-                    Disconnect();
-                    return;
-                }
-
 
                 int availble = e.BytesTransferred;
                 if (availble >= 1)
