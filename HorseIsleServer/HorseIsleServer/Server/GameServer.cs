@@ -8012,11 +8012,11 @@ namespace HISP.Server
             sender.LoggedinUser.Facing += incBy;
             sender.LoggedinUser.LastRiddenHorse = horseRandomId;
 
-
-            byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
-            sender.SendPacket(rideHorsePacket);
-
             UpdateUserFacingAndLocation(sender.LoggedinUser);
+
+            byte[] updatePlayer = PacketBuilder.CreateMovementPacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, PacketBuilder.DIRECTION_NONE, true);
+            sender.SendPacket(updatePlayer);
+
             if (sender.LoggedinUser.HorseWindowOpen)
                 UpdateArea(sender);
         }
@@ -8025,10 +8025,11 @@ namespace HISP.Server
             sender.LoggedinUser.CurrentlyRidingHorse = null;
 
             sender.LoggedinUser.Facing %= 5;
-            byte[] rideHorsePacket = PacketBuilder.CreateHorseRidePacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, 10, true);
-            sender.SendPacket(rideHorsePacket);
-
             UpdateUserFacingAndLocation(sender.LoggedinUser);
+
+            byte[] updatePlayer = PacketBuilder.CreateMovementPacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, PacketBuilder.DIRECTION_NONE, true);
+            sender.SendPacket(updatePlayer);
+
             if (sender.LoggedinUser.HorseWindowOpen)
                 UpdateArea(sender);
         }
