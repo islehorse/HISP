@@ -470,7 +470,7 @@ namespace HISP.Game.Chat
                 return false;
             }
 
-            if (id < 0 || id > instances.Length-1)
+            if (id < 0 || id > instances.Length)
                 return false;
 
             switch (args[1].ToUpper())
