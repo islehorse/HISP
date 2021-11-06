@@ -6068,7 +6068,7 @@ namespace HISP.Server
             }
             if (packet.Length < 3)
             {
-                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                 return;
             }
 
@@ -6109,7 +6109,7 @@ namespace HISP.Server
                     }
                     catch(FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                         return;
                     }
 
@@ -6274,7 +6274,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. (THROW)");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. (THROW) " + BitConverter.ToString(packet));
                         return;
                     }
                     if (sender.LoggedinUser.Inventory.HasItemId(itemId))
@@ -6340,7 +6340,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                         return;
                     }
                     if (sender.LoggedinUser.Inventory.HasItem(randomId))
@@ -6376,7 +6376,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                         return;
                     }
                     if (sender.LoggedinUser.Inventory.HasItem(randomId))
@@ -6426,7 +6426,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                         return;
                     }
                     if (sender.LoggedinUser.Inventory.HasItem(randomId))
@@ -7192,7 +7192,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. "+BitConverter.ToString(packet));
                         return;
                     }
                     if (packet[2] == PacketBuilder.ITEM_INFORMATON)
@@ -7838,15 +7838,17 @@ namespace HISP.Server
             forClient.LoggedinUser.ListingAuction = false;
 
             string LocationStr = "";
-            if (!World.InSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y))
+            int tileX = forClient.LoggedinUser.X;
+            int tileY = forClient.LoggedinUser.Y;
+            if (!World.InSpecialTile(tileX, tileY))
             {
                 if (forClient.LoggedinUser.InRealTimeQuiz)
                     return;
-                LocationStr = Meta.BuildMetaInfo(forClient.LoggedinUser, forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
+                LocationStr = Meta.BuildMetaInfo(forClient.LoggedinUser, tileX, tileY);
             }
             else
             {
-                World.SpecialTile specialTile = World.GetSpecialTile(forClient.LoggedinUser.X, forClient.LoggedinUser.Y);
+                World.SpecialTile specialTile = World.GetSpecialTile(tileX, tileY);
                 if (specialTile.AutoplaySwf != null && specialTile.AutoplaySwf != "")
                 {
                     byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(specialTile.AutoplaySwf,PacketBuilder.PACKET_SWF_MODULE_GENTLE);
