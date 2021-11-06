@@ -84,6 +84,27 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
+            else if(args[0].ToUpper() == "AWARD")
+            {
+                int awardId = 0;
+                try
+                {
+                    awardId = int.Parse(args[1]);
+                    if (args.Length >= 3)
+                    {
+                        findNamePartial(args[2]).Awards.AddAward(Award.GetAwardById(awardId));
+                    }
+                    else
+                    {
+                        user.Awards.AddAward(Award.GetAwardById(awardId));
+                    }
+
+                }
+                catch (Exception)
+                {
+                    return false;
+                }
+            }
             else if (args[0].ToUpper() == "MONEY")
             {
                 int money = 0;
