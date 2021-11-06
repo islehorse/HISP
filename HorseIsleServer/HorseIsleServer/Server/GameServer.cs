@@ -6446,7 +6446,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                         return;
                     }
                     if (sender.LoggedinUser.Inventory.HasItem(randomId))
@@ -6587,7 +6587,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                         return;
                     }
 
@@ -6625,7 +6625,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. (drop)");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. (drop)"+BitConverter.ToString(packet));
                         return;
                     }
 
@@ -7087,7 +7087,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                         return;
                     }
 
@@ -7122,7 +7122,7 @@ namespace HISP.Server
                         }
                         catch (FormatException)
                         {
-                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                             return;
                         }
 
@@ -7151,7 +7151,7 @@ namespace HISP.Server
                         }
                         catch (FormatException)
                         {
-                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet.");
+                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                             return;
                         }
 

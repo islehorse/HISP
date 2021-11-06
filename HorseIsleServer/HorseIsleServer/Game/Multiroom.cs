@@ -95,12 +95,13 @@ namespace HISP.Game
             {
                 Logger.DebugPrint(user.Username + " Left multiroom @ " + x.ToString() + "," + y.ToString());
                 joinedUsers.Remove(user);
-            }
 
-            foreach (User joinedUser in JoinedUsers)
-                if (!TwoPlayer.IsPlayerInGame(joinedUser))
-                    if (!joinedUser.ListingAuction)
-                        GameServer.UpdateArea(joinedUser.LoggedinClient);
+
+                foreach (User joinedUser in JoinedUsers)
+                    if (!TwoPlayer.IsPlayerInGame(joinedUser))
+                        if (!joinedUser.ListingAuction)
+                            GameServer.UpdateArea(joinedUser.LoggedinClient);
+            }
 
         }
     }
