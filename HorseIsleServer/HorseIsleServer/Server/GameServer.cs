@@ -2372,7 +2372,7 @@ namespace HISP.Server
                                         {
                                             amountMoney = int.Parse(answer);
                                         }
-                                        catch (FormatException)
+                                        catch (Exception)
                                         {
                                             Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (Money TRADE, amount is NaN)");
                                         }
