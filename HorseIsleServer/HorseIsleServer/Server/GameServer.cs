@@ -5798,7 +5798,9 @@ namespace HISP.Server
                         channel = Chat.ChatChannel.Dm;
                         string find = channelString.Substring(1);
                         nameTo = "";
-                        // Search for closest user
+                        if (find == "")
+                            break;
+                        // Search for closest-matching user
                         foreach (GameClient client in GameClient.ConnectedClients)
                         {
                             if (client.LoggedIn)
