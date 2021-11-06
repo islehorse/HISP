@@ -2374,15 +2374,16 @@ namespace HISP.Server
                                         }
                                         catch (Exception)
                                         {
-                                            goto error;
+                                            byte[] tooMuchMoney = PacketBuilder.CreateChat(Messages.TradeMoneyOfferTooMuch, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                            sender.SendPacket(tooMuchMoney);
+                                            break;
                                         }
-                                        if(amountMoney <= 0)
+                                        if(amountMoney < 0)
                                         {
                                             Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to trade less than 0$");
                                         }
-                                        if(sender.LoggedinUser.Money <= amountMoney)
+                                        if(amountMoney >= sender.LoggedinUser.Money)
                                         {
-                                        error:;
                                             byte[] tooMuchMoney = PacketBuilder.CreateChat(Messages.TradeMoneyOfferTooMuch, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(tooMuchMoney);
                                             break;
