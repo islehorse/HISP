@@ -605,7 +605,8 @@ namespace HISP.Server
                             sender.SendPacket(cantSocialize);
                             break;
                         }
-                        else if (sender.LoggedinUser.SocializingWith.MutePlayer.IsUserMuted(sender.LoggedinUser))
+                        
+                        if (sender.LoggedinUser.SocializingWith.MutePlayer.IsUserMuted(sender.LoggedinUser))
                         {
                             byte[] cantSocialize = PacketBuilder.CreateChat(Messages.PlayerIgnoringYourSocials, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(cantSocialize);
@@ -621,23 +622,26 @@ namespace HISP.Server
                     }
                     
 
-                    foreach (User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true))
+                    if(social.ForEveryone != null)
                     {
-                        if (social.BaseSocialType.Type != "GROUP")
-                            if (user.Id == sender.LoggedinUser.SocializingWith.Id)
+                        foreach (User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true))
+                        {
+                            if (social.BaseSocialType.Type != "GROUP")
+                                if (user.Id == sender.LoggedinUser.SocializingWith.Id)
+                                    continue;
+
+                            if (user.Id == sender.LoggedinUser.Id)
                                 continue;
 
-                        if (user.Id == sender.LoggedinUser.Id)
-                            continue;
+                            if (user.MuteAll || user.MuteSocials)
+                                continue;
+                            string socialTarget = "";
+                            if(sender.LoggedinUser.SocializingWith != null)
+                                socialTarget = sender.LoggedinUser.SocializingWith.Username;
+                            byte[] msgEveryone = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForEveryone, socialTarget, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            user.LoggedinClient.SendPacket(msgEveryone);
+                        }
 
-                        if (user.MuteAll || user.MuteSocials)
-                            continue;
-                        string socialTarget = "";
-                        if(sender.LoggedinUser.SocializingWith != null)
-                            socialTarget = sender.LoggedinUser.SocializingWith.Username;
-
-                        byte[] msgEveryone = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForEveryone, socialTarget, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        user.LoggedinClient.SendPacket(msgEveryone);
                     }
                     if(social.ForTarget != null)
                     {
@@ -662,10 +666,11 @@ namespace HISP.Server
                         
                     }
 
-                    foreach(User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true))
+                    if (social.SoundEffect != null)
                     {
-                        if (social.SoundEffect != null)
+                        foreach (User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true))
                         {
+
                             if (user.MuteAll || user.MuteSocials)
                                 continue;
 
