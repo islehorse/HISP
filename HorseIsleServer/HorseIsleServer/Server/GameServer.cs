@@ -2374,11 +2374,15 @@ namespace HISP.Server
                                         }
                                         catch (Exception)
                                         {
-                                            Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to send a invalid dynamic input (Money TRADE, amount is NaN)");
+                                            goto error;
                                         }
-
+                                        if(amountMoney <= 0)
+                                        {
+                                            Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to trade less than 0$");
+                                        }
                                         if(sender.LoggedinUser.Money <= amountMoney)
                                         {
+                                        error:;
                                             byte[] tooMuchMoney = PacketBuilder.CreateChat(Messages.TradeMoneyOfferTooMuch, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(tooMuchMoney);
                                             break;
