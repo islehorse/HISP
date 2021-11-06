@@ -5796,7 +5796,21 @@ namespace HISP.Server
                         break;
                     default:
                         channel = Chat.ChatChannel.Dm;
-                        nameTo = channelString.Substring(1);
+                        string find = channelString.Substring(1);
+                        nameTo = "";
+                        // Search for closest user
+                        foreach (GameClient client in GameClient.ConnectedClients)
+                        {
+                            if (client.LoggedIn)
+                            {
+                                if (client.LoggedinUser.Username.StartsWith(find))
+                                {
+                                    nameTo = client.LoggedinUser.Username;
+                                    break;
+                                }
+                            }
+                        }
+
                         break;
                 }
 
@@ -6414,6 +6428,7 @@ namespace HISP.Server
                         {
                             InventoryItem itm = sender.LoggedinUser.Inventory.GetItemByItemId(Item.DorothyShoes);
                             Item.UseItem(sender.LoggedinUser, itm.ItemInstances[0]);
+                            return;
                         }
                         else
                         {
