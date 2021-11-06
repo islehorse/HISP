@@ -73,7 +73,16 @@ namespace HISP.Server
                             if (GameServer.IsUserOnline(ranchOwner))
                                 GameServer.GetUserById(ranchOwner).AddMoney(moneyToAdd);
                             else
-                                Database.SetPlayerMoney(Database.GetPlayerMoney(ranchOwner) + moneyToAdd, ranchOwner);
+                            {
+                                try
+                                {
+                                    Database.SetPlayerMoney(Database.GetPlayerMoney(ranchOwner) + moneyToAdd, ranchOwner);
+                                }
+                                catch (OverflowException)
+                                {
+                                    Database.SetPlayerMoney(2147483647, ranchOwner);
+                                }
+                            }
                         }
                     }
                 }
@@ -3047,7 +3056,14 @@ namespace HISP.Server
                                 else
                                 {
                                     Database.AddMessageToQueue(horseToSell.Owner, Messages.FormatAutoSellSoldOffline(horseToSell.Name, horseToSell.AutoSell, sender.LoggedinUser.Username));
-                                    Database.SetPlayerMoney((Database.GetPlayerMoney(horseToSell.Owner) + horseToSell.AutoSell), horseToSell.Owner);
+                                    try
+                                    {
+                                        Database.SetPlayerMoney((Database.GetPlayerMoney(horseToSell.Owner) + horseToSell.AutoSell), horseToSell.Owner);
+                                    }
+                                    catch (OverflowException)
+                                    {
+                                        Database.SetPlayerMoney(2147483647, horseToSell.Owner);
+                                    }
                                 }
 
                                 horseToSell.Owner = sender.LoggedinUser.Id;
@@ -5801,22 +5817,10 @@ namespace HISP.Server
                         break;
                     default:
                         channel = Chat.ChatChannel.Dm;
-                        string find = channelString.Substring(1);
-                        nameTo = "";
-                        if (find == "")
+                        nameTo = channelString.Substring(1);
+                        
+                        if (nameTo == "")
                             break;
-                        // Search for closest-matching user
-                        foreach (GameClient client in GameClient.ConnectedClients)
-                        {
-                            if (client.LoggedIn)
-                            {
-                                if (client.LoggedinUser.Username.StartsWith(find))
-                                {
-                                    nameTo = client.LoggedinUser.Username;
-                                    break;
-                                }
-                            }
-                        }
 
                         break;
                 }
@@ -5902,7 +5906,7 @@ namespace HISP.Server
             {
                 try
                 {
-                    nameTo = GetUserByName(nameTo).Username;
+                    nameTo = GetUserByNameStartswith(nameTo).Username;
                 }
                 catch(KeyNotFoundException)
                 {
@@ -5940,7 +5944,7 @@ namespace HISP.Server
             {
                 try
                 {
-                    User userTo = GetUserByName(nameTo);
+                    User userTo = GetUserByNameStartswith(nameTo);
                     if (sender.LoggedinUser.MutePlayer.IsUserMuted(userTo))
                     {
                         byte[] dmWasBlocked = PacketBuilder.CreateChat(Messages.FormatCantSendYourIgnoringPlayer(userTo.Username), PacketBuilder.CHAT_DM_RIGHT);
@@ -7507,6 +7511,19 @@ namespace HISP.Server
             }
             return usersHere.ToArray();
         }
+        public static User GetUserByNameStartswith(string username)
+        {
+            foreach (GameClient client in GameClient.ConnectedClients)
+            {
+                if (client.LoggedIn)
+                {
+                    if (client.LoggedinUser.Username.ToLower().StartsWith(username.ToLower()))
+                        return client.LoggedinUser;
+                }
+            }
+            throw new KeyNotFoundException("User was not found.");
+        }
+
         public static User GetUserByName(string username)
         {
             foreach(GameClient client in GameClient.ConnectedClients)
