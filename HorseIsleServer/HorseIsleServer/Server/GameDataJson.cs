@@ -734,16 +734,18 @@ namespace HISP.Server
             int totalArenas = gameData.arena.Count;
             for (int i = 0; i < totalArenas; i++)
             {
-                int arenaId = gameData.arena[i].arena_id;
-                string arenaType = gameData.arena[i].arena_type;
-                int arenaEntryCost = gameData.arena[i].entry_cost;
-                int raceEvery = gameData.arena[i].race_every;
-                int slots = gameData.arena[i].slots;
-                int timeout = gameData.arena[i].timeout;
+                int arenaId = gameData.arena.arena_list[i].arena_id;
+                string arenaType = gameData.arena.arena_list[i].arena_type;
+                int arenaEntryCost = gameData.arena.arena_list[i].entry_cost;
+                int raceEvery = gameData.arena.arena_list[i].race_every;
+                int slots = gameData.arena.arena_list[i].slots;
+                int timeout = gameData.arena.arena_list[i].timeout;
 
                 Arena arena = new Arena(arenaId, arenaType, arenaEntryCost, raceEvery, slots, timeout);
                 Logger.DebugPrint("Registered Arena: " + arena.Id.ToString() + " as " + arena.Type);
             }
+            Arena.ExpRewards = gameData.arena.arena_exp.ToObject<int[]>();
+
             // Register Leaser
             int totalLeasers = gameData.leaser.Count;
             for (int i = 0; i < totalLeasers; i++)

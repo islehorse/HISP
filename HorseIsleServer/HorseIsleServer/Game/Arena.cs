@@ -16,7 +16,7 @@ namespace HISP.Game
         private static List<Arena> arenas = new List<Arena>();
         private List<ArenaEntry> entries;
         private Timer arenaTimeout;
-
+        public static int[] ExpRewards;
         public int Id;
         public string Type;
         public int EntryCost;
@@ -247,23 +247,9 @@ namespace HISP.Game
             if(Mode == "COMPETING")
             {
                 string chatMessage = Messages.ArenaResultsMessage;
-                
+
                 string[] avaliblePlacings = new string[6] { Messages.ArenaFirstPlace, Messages.ArenaSecondPlace, Messages.ArenaThirdPlace, Messages.ArenaFourthPlace, Messages.ArenaFifthPlace, Messages.ArenaSixthPlace };
-                
-                int[] expRewards = new int[Entries.Length];
-                expRewards[0] = 1;
-                int expAwardMul = 1;
-                for(int i = 1; i < Entries.Length; i++)
-                {
-                    expRewards[i] = 2 * expAwardMul;
-
-                    if (expAwardMul == 1)
-                        expAwardMul = 2;
-                    else
-                        expAwardMul += 2;
-                }
-
-                expRewards = expRewards.ToArray().Reverse().ToArray();
+                int[] expRewards = ExpRewards.ToArray().Reverse().ToArray();
 
                 int place = 0;
                 ArenaEntry[] winners = Entries.OrderByDescending(o => o.SubmitScore).ToArray();
