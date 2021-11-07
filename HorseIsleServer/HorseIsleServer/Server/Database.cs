@@ -3597,13 +3597,16 @@ namespace HISP.Server
             return entires.ToArray();
         }
 
-        public static Highscore.HighscoreTableEntry[] GetTopScores(string gameTitle, int limit)
+        public static Highscore.HighscoreTableEntry[] GetTopScores(string gameTitle, int limit, bool scores=true)
         {
             List<Highscore.HighscoreTableEntry> entires = new();
 
             using MySqlConnection db = Connect();
             MySqlCommand sqlCommand = db.CreateCommand();
-            sqlCommand.CommandText = "SELECT * FROM Leaderboards WHERE minigame=@gameTitle ORDER BY score DESC LIMIT @limit";
+                if(scores)
+                    sqlCommand.CommandText = "SELECT * FROM Leaderboards WHERE minigame=@gameTitle ORDER BY score DESC LIMIT @limit";
+                else
+                    sqlCommand.CommandText = "SELECT * FROM Leaderboards WHERE minigame=@gameTitle ORDER BY score ASC LIMIT @limit";
             sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
             sqlCommand.Parameters.AddWithValue("@limit", limit);
             sqlCommand.Prepare();

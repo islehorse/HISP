@@ -1642,31 +1642,31 @@ namespace HISP.Server
                                     Arena arena = Arena.GetAreaById(arenaId);
                                     if (!Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
                                     {
-                                        if (horseInstance.BasicStats.Thirst <= 300)
+                                        if (horseInstance.BasicStats.Thirst <= 200)
                                         {
                                             byte[] tooThirsty = PacketBuilder.CreateChat(Messages.ArenaTooThirsty, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(tooThirsty);
                                             break;
                                         }
-                                        else if (horseInstance.BasicStats.Hunger <= 300)
+                                        else if (horseInstance.BasicStats.Hunger <= 200)
                                         {
                                             byte[] tooHungry = PacketBuilder.CreateChat(Messages.ArenaTooHungry, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(tooHungry);
                                             break;
                                         }
-                                        else if (horseInstance.BasicStats.Shoes <= 300)
+                                        else if (horseInstance.BasicStats.Shoes <= 200)
                                         {
                                             byte[] needsFarrier = PacketBuilder.CreateChat(Messages.ArenaNeedsFarrier, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(needsFarrier);
                                             break;
                                         }
-                                        else if (horseInstance.BasicStats.Tiredness <= 300)
+                                        else if (horseInstance.BasicStats.Tiredness <= 200)
                                         {
                                             byte[] tooTired = PacketBuilder.CreateChat(Messages.ArenaTooTired, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(tooTired);
                                             break;
                                         }
-                                        else if (horseInstance.BasicStats.Health <= 300)
+                                        else if (horseInstance.BasicStats.Health <= 200)
                                         {
                                             byte[] needsVet = PacketBuilder.CreateChat(Messages.ArenaNeedsVet, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(needsVet);
@@ -7553,11 +7553,13 @@ namespace HISP.Server
             List<User> usersNearby = new List<User>();
 
             foreach (GameClient client in GameClient.ConnectedClients)
+            {
                 if (client.LoggedIn)
                 {
                     if (startX <= client.LoggedinUser.X && endX >= client.LoggedinUser.X && startY <= client.LoggedinUser.Y && endY >= client.LoggedinUser.Y)
                         usersNearby.Add(client.LoggedinUser);
                 }
+            }
 
             return usersNearby.ToArray();
         }
@@ -7602,6 +7604,7 @@ namespace HISP.Server
             List<User> usersNearby = new List<User>();
 
             foreach (GameClient client in GameClient.ConnectedClients)
+            {
                 if (client.LoggedIn)
                 {
                     if (!includeStealth && client.LoggedinUser.Stealth)
@@ -7611,6 +7614,7 @@ namespace HISP.Server
                     if (startX <= client.LoggedinUser.X && endX >= client.LoggedinUser.X && startY <= client.LoggedinUser.Y && endY >= client.LoggedinUser.Y)
                         usersNearby.Add(client.LoggedinUser);
                 }
+            }
 
             return usersNearby.ToArray();
         }
@@ -7950,12 +7954,26 @@ namespace HISP.Server
             foreach (GameClient connectedClient in GameClient.ConnectedClients)
             {
                 if (connectedClient.LoggedIn)
+                {
                     if (connectedClient.LoggedinUser.Inventory.HasItemId(id))
                     {
                         InventoryItem invItm = connectedClient.LoggedinUser.Inventory.GetItemByItemId(id);
                         foreach (ItemInstance itm in invItm.ItemInstances.ToArray())
                             connectedClient.LoggedinUser.Inventory.Remove(itm);
                     }
+                }
+            }
+
+            // Remove from shops
+            foreach(Shop shop in Shop.ShopList)
+            {
+                if (shop.Inventory.HasItemId(id))
+                {
+                    InventoryItem invItm = shop.Inventory.GetItemByItemId(id);
+                    foreach (ItemInstance itm in invItm.ItemInstances.ToArray())
+                        shop.Inventory.Remove(itm);
+                }
+
             }
             DroppedItems.DeleteAllItemsWithId(id); // Delete all dropped items
             Database.DeleteAllItemsFromUsers(id); // Delete from offline players

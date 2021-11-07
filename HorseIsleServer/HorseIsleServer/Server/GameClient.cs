@@ -114,6 +114,8 @@ namespace HISP.Server
             // Stop Timers
             if (timeoutTimer != null)
                 timeoutTimer.Dispose();
+            if (keepAliveTimer != null)
+                keepAliveTimer.Dispose();
             if (warnTimer != null)
                 warnTimer.Dispose();
             if (kickTimer != null)
@@ -126,8 +128,11 @@ namespace HISP.Server
             LoggedIn = false;
 
             // Close Socket
-            ClientSocket.Close();
-            ClientSocket.Dispose();
+            if(ClientSocket != null)
+            {
+                ClientSocket.Close();
+                ClientSocket.Dispose();
+            }
 
         }
 
@@ -512,10 +517,8 @@ namespace HISP.Server
             {
                 ClientSocket.Send(PacketData);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                if(!(e is SocketException))
-                    Logger.ErrorPrint("Exception occured: " + e.Message);
                 Disconnect();
             }
         }

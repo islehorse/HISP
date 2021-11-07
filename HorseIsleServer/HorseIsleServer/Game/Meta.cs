@@ -864,7 +864,7 @@ namespace HISP.Game
         {
             Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameName, 20);
             if (scores.Length <= 0)
-                return "ERROR: No scores recorded.";
+                return "ERROR: No scores recorded." + Messages.BackToMap + Messages.MetaTerminator;
             string message = "";
 
             message += Messages.FormatHighscoreHeader(gameName);
@@ -881,7 +881,7 @@ namespace HISP.Game
         {
             Highscore.HighscoreTableEntry[] scores = Database.GetTopWinners(gameName, 20);
             if (scores.Length <= 0)
-                return "No wins recorded.";
+                return "ERROR: No wins recorded." + Messages.BackToMap + Messages.MetaTerminator;
             string message = "";
 
             message += Messages.FormatWinlooseHeader(gameName);
@@ -896,9 +896,9 @@ namespace HISP.Game
         }
         public static string BuildTopTimes(string gameName)
         {
-            Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameName, 20);
+            Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameName, 20, false);
             if (scores.Length <= 0)
-                return "No times recorded.";
+                return "ERROR: No times recorded. "+Messages.BackToMap+Messages.MetaTerminator;
             string message = "";
 
             message += Messages.FormatBestTimeHeader(gameName);
@@ -2512,14 +2512,14 @@ namespace HISP.Game
 
             foreach(InventoryItem item in user.Inventory.GetItemList())
             {
-                Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
+                Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
                 if (itemInfo.Type == "TACK")
                 {
-                    if (horse.Breed.Type == "camel" && itemInfo.GetMiscFlag(2) != 1)
+                    if (horse.Breed.Type == "camel" && itemInfo.GetMiscFlag(1) != 1)
                         continue;
-                    else if (horse.Breed.Type == "llama" && itemInfo.GetMiscFlag(2) != 2)
+                    else if (horse.Breed.Type == "llama" && itemInfo.GetMiscFlag(1) != 2)
                         continue;
-                    else if (itemInfo.GetMiscFlag(2) != 0)
+                    else if (itemInfo.GetMiscFlag(1) != 0)
                         continue;
                     message += Messages.FormatHorseEquip(itemInfo.IconId, item.ItemInstances.Length, itemInfo.Name, itemInfo.Id);
                 }
