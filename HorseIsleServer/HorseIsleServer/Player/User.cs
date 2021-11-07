@@ -526,12 +526,12 @@ namespace HISP.Player
             if (Subscribed)
             {
                 int months = (SubscribedUntil.Month - DateTime.UtcNow.Month) + ((SubscribedUntil.Year - DateTime.UtcNow.Year) * 12);
-                if (months <= 1)
-                    icon = Messages.MonthSubscriptionIcon;
-                else if (months <= 3)
+                if (months >= 3)
                     icon = Messages.ThreeMonthSubscripitionIcon;
-                else if(months <= (12+3))
+                else if(months >= (12+3))
                     icon = Messages.YearSubscriptionIcon;
+                else
+                    icon = Messages.MonthSubscriptionIcon;
             }
             if (Moderator)
                 icon = Messages.ModeratorIcon;
