@@ -41,15 +41,17 @@ namespace HISP.Server
             }
         }
         public User LoggedinUser;
-        
-        private Timer inactivityTimer;
+
+        private Timer keepAliveTimer;
+        private Timer timeoutTimer;
 
         private Timer warnTimer;
         private Timer kickTimer;
         private Timer minuteTimer;
 
         private bool isDisconnecting = false;
-        private int keepAliveInterval = 60 * 1000;
+
+        private int timeoutInterval = 95 * 1000;
 
         private int totalMinutesElapsed = 0;
         private int oneMinute = 60 * 1000;
@@ -61,6 +63,9 @@ namespace HISP.Server
 
         public GameClient(Socket clientSocket)
         {
+            clientSocket.SendTimeout = 10 * 1000; // 10sec
+            clientSocket.ReceiveTimeout = 10 * 1000; // 10sec
+
             ClientSocket = clientSocket;
             RemoteIp = clientSocket.RemoteEndPoint.ToString();
 
@@ -92,6 +97,13 @@ namespace HISP.Server
                 e.AcceptSocket = null;
             } while (!GameServer.ServerSocket.AcceptAsync(e));
         }
+        private void timeoutTimerTick(object state)
+        {
+            if (this.LoggedIn)
+            {
+                Disconnect();
+            }
+        }
 
         public void Disconnect()
         {
@@ -100,8 +112,8 @@ namespace HISP.Server
             this.isDisconnecting = true;
 
             // Stop Timers
-            if (inactivityTimer != null)
-                inactivityTimer.Dispose();
+            if (timeoutTimer != null)
+                timeoutTimer.Dispose();
             if (warnTimer != null)
                 warnTimer.Dispose();
             if (kickTimer != null)
@@ -159,12 +171,20 @@ namespace HISP.Server
 
         }
 
-
+        private void keepAliveTick(object state)
+        {
+            Logger.DebugPrint("Sending keep-alive packet to " + LoggedinUser.Username);
+            byte[] updatePacket = PacketBuilder.CreateKeepAlive();
+            SendPacket(updatePacket);
+            keepAliveTimer.Change(oneMinute, oneMinute);
+        }
         private void minuteTimerTick(object state)
         {
             totalMinutesElapsed++;
             if (LoggedIn)
             {
+                GameServer.UpdatePlayer(this);
+
                 LoggedinUser.CanUseAdsChat = true;
                 LoggedinUser.FreeMinutes -= 1;
 
@@ -322,12 +342,7 @@ namespace HISP.Server
 
             if (!isDisconnecting)
                minuteTimer.Change(oneMinute, oneMinute);
-        }
-        private void keepAliveTimerTick(object state)
-        {
-            Logger.DebugPrint("Sending keep-alive packet to "+ LoggedinUser.Username);
-            byte[] updatePacket = PacketBuilder.CreateKeepAlive();
-            SendPacket(updatePacket);
+
         }
 
         private void warnTimerTick(object state)
@@ -361,7 +376,8 @@ namespace HISP.Server
             Database.SetIpAddress(id, RemoteIp);
             Database.SetLoginCount(id, Database.GetLoginCount(id) + 1);
 
-            inactivityTimer = new Timer(new TimerCallback(keepAliveTimerTick), null, keepAliveInterval, keepAliveInterval);
+            keepAliveTimer = new Timer(new TimerCallback(keepAliveTick), null, oneMinute, oneMinute);
+            timeoutTimer = new Timer(new TimerCallback(timeoutTimerTick), null, timeoutInterval, timeoutInterval);
         }
 
         private void parsePackets(byte[] Packet)
@@ -372,14 +388,14 @@ namespace HISP.Server
             }
             byte identifier = Packet[0];
 
-            // Reset timers
-           
+            if (timeoutTimer != null)
+                timeoutTimer.Change(timeoutInterval, timeoutInterval); // Reset time before timing out
 
-            if (inactivityTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
+            if (keepAliveTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
             {
                 if (LoggedIn)
                     LoggedinUser.Idle = false;
-                inactivityTimer.Change(keepAliveInterval, keepAliveInterval);
+                keepAliveTimer.Change(oneMinute, oneMinute);
             }
 
             if (kickTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)

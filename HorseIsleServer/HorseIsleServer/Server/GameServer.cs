@@ -4387,11 +4387,6 @@ namespace HISP.Server
         }
         public static void OnKeepAlive(GameClient sender, byte[] packet)
         {
-            if (!sender.LoggedIn)
-            {
-                Logger.ErrorPrint(sender.RemoteIp + " Requested update when not logged in.");
-                return;
-            }
             if (packet.Length < 2)
             {
                 Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent an invalid update Packet");
@@ -4400,8 +4395,8 @@ namespace HISP.Server
 
             if (packet[1] == PacketBuilder.PACKET_CLIENT_TERMINATOR)
             {
-                Logger.DebugPrint("Sending " + sender.LoggedinUser.Username + " updated info...");
-                UpdatePlayer(sender);
+                Logger.DebugPrint("Received KEEP_ALIVE from: " + sender.LoggedinUser.Username);
+                return;
             }
         }
         public static void OnStatsPacket(GameClient sender, byte[] packet)
@@ -5828,7 +5823,7 @@ namespace HISP.Server
                 if (message == "") // this is how pinto does it, im serious.
                 {
                     channel = Chat.ChatChannel.Dm;
-                    nameTo = channelString.Substring(1);
+                    nameTo = "";
                 }
             }
 
