@@ -1642,31 +1642,31 @@ namespace HISP.Server
                                     Arena arena = Arena.GetAreaById(arenaId);
                                     if (!Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
                                     {
-                                        if (horseInstance.BasicStats.Thirst <= 300)
+                                        if (horseInstance.BasicStats.Thirst <= 200)
                                         {
                                             byte[] tooThirsty = PacketBuilder.CreateChat(Messages.ArenaTooThirsty, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(tooThirsty);
                                             break;
                                         }
-                                        else if (horseInstance.BasicStats.Hunger <= 300)
+                                        else if (horseInstance.BasicStats.Hunger <= 200)
                                         {
                                             byte[] tooHungry = PacketBuilder.CreateChat(Messages.ArenaTooHungry, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(tooHungry);
                                             break;
                                         }
-                                        else if (horseInstance.BasicStats.Shoes <= 300)
+                                        else if (horseInstance.BasicStats.Shoes <= 200)
                                         {
                                             byte[] needsFarrier = PacketBuilder.CreateChat(Messages.ArenaNeedsFarrier, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(needsFarrier);
                                             break;
                                         }
-                                        else if (horseInstance.BasicStats.Tiredness <= 300)
+                                        else if (horseInstance.BasicStats.Tiredness <= 200)
                                         {
                                             byte[] tooTired = PacketBuilder.CreateChat(Messages.ArenaTooTired, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(tooTired);
                                             break;
                                         }
-                                        else if (horseInstance.BasicStats.Health <= 300)
+                                        else if (horseInstance.BasicStats.Health <= 200)
                                         {
                                             byte[] needsVet = PacketBuilder.CreateChat(Messages.ArenaNeedsVet, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                             sender.SendPacket(needsVet);

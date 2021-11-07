@@ -731,7 +731,7 @@ namespace HISP.Server
             }
 
             // Register Arenas
-            int totalArenas = gameData.arena.Count;
+            int totalArenas = gameData.arena.arena_list.Count;
             for (int i = 0; i < totalArenas; i++)
             {
                 int arenaId = gameData.arena.arena_list[i].arena_id;
