@@ -43,7 +43,9 @@ namespace HISP.Game.Items
 
             public int GetMiscFlag(int no)
             {
-                if (MiscFlags.Length <= no)
+                if (no < 0)
+                    return 0;
+                if (no >= MiscFlags.Length)
                     return 0;
                 else
                     return MiscFlags[no];
