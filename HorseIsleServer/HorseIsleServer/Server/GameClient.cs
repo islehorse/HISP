@@ -512,7 +512,7 @@ namespace HISP.Server
             {
                 ClientSocket.Send(PacketData);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Disconnect();
             }
