@@ -7553,11 +7553,13 @@ namespace HISP.Server
             List<User> usersNearby = new List<User>();
 
             foreach (GameClient client in GameClient.ConnectedClients)
+            {
                 if (client.LoggedIn)
                 {
                     if (startX <= client.LoggedinUser.X && endX >= client.LoggedinUser.X && startY <= client.LoggedinUser.Y && endY >= client.LoggedinUser.Y)
                         usersNearby.Add(client.LoggedinUser);
                 }
+            }
 
             return usersNearby.ToArray();
         }
@@ -7602,6 +7604,7 @@ namespace HISP.Server
             List<User> usersNearby = new List<User>();
 
             foreach (GameClient client in GameClient.ConnectedClients)
+            {
                 if (client.LoggedIn)
                 {
                     if (!includeStealth && client.LoggedinUser.Stealth)
@@ -7611,6 +7614,7 @@ namespace HISP.Server
                     if (startX <= client.LoggedinUser.X && endX >= client.LoggedinUser.X && startY <= client.LoggedinUser.Y && endY >= client.LoggedinUser.Y)
                         usersNearby.Add(client.LoggedinUser);
                 }
+            }
 
             return usersNearby.ToArray();
         }
