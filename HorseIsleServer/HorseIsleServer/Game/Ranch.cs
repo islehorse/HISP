@@ -247,70 +247,13 @@ namespace HISP.Game
         }
         private void updateBuildings()
         {
-            if (buildings[0] != null)
-                Database.SetRanchBuilding1(this.Id, buildings[0].Id);
-            else
-                Database.SetRanchBuilding1(this.Id, 0);
-            if (buildings[1] != null)
-                Database.SetRanchBuilding2(this.Id, buildings[1].Id);
-            else
-                Database.SetRanchBuilding2(this.Id, 0);
-            if (buildings[2] != null)
-                Database.SetRanchBuilding3(this.Id, buildings[2].Id);
-            else
-                Database.SetRanchBuilding3(this.Id, 0);
-            if (buildings[3] != null)
-                Database.SetRanchBuilding4(this.Id, buildings[3].Id);
-            else
-                Database.SetRanchBuilding4(this.Id, 0);
-            if (buildings[4] != null)
-                Database.SetRanchBuilding5(this.Id, buildings[4].Id);
-            else
-                Database.SetRanchBuilding5(this.Id, 0);
-            if (buildings[5] != null)
-                Database.SetRanchBuilding6(this.Id, buildings[5].Id);
-            else
-                Database.SetRanchBuilding6(this.Id, 0);
-            if (buildings[6] != null)
-                Database.SetRanchBuilding7(this.Id, buildings[6].Id);
-            else
-                Database.SetRanchBuilding7(this.Id, 0);
-            if (buildings[7] != null)
-                Database.SetRanchBuilding8(this.Id, buildings[7].Id);
-            else
-                Database.SetRanchBuilding8(this.Id, 0);
-            if (buildings[8] != null)
-                Database.SetRanchBuilding9(this.Id, buildings[8].Id);
-            else
-                Database.SetRanchBuilding9(this.Id, 0);
-            if (buildings[9] != null)
-                Database.SetRanchBuilding10(this.Id, buildings[9].Id);
-            else
-                Database.SetRanchBuilding10(this.Id, 0);
-            if (buildings[10] != null)
-                Database.SetRanchBuilding11(this.Id, buildings[10].Id);
-            else
-                Database.SetRanchBuilding11(this.Id, 0);
-            if (buildings[11] != null)
-                Database.SetRanchBuilding12(this.Id, buildings[11].Id);
-            else
-                Database.SetRanchBuilding12(this.Id, 0);
-            if (buildings[12] != null)
-                Database.SetRanchBuilding13(this.Id, buildings[12].Id);
-            else
-                Database.SetRanchBuilding13(this.Id, 0);
-            if (buildings[13] != null)
-                Database.SetRanchBuilding14(this.Id, buildings[13].Id);
-            else
-                Database.SetRanchBuilding14(this.Id, 0);
-            if (buildings[14] != null)
-                Database.SetRanchBuilding15(this.Id, buildings[14].Id);
-            else
-                Database.SetRanchBuilding15(this.Id, 0);
-            if (buildings[15] != null)
-                Database.SetRanchBuilding16(this.Id, buildings[15].Id);
-            else
-                Database.SetRanchBuilding16(this.Id, 0);
+            for(int i = 0; i < buildings.Length; i++)
+            {
+                if (buildings[i] != null)
+                    Database.SetRanchBuilding(Id, i + 1, buildings[i].Id);
+                else
+                    Database.SetRanchBuilding(Id, i + 1, 0);
+            }
         }
         public RanchBuilding GetBuilding(int buildingId)
         {
@@ -360,56 +303,13 @@ namespace HISP.Game
                 title = Database.GetRanchTitle(id);
                 description = Database.GetRanchDescription(id);
                 ownerId = Database.GetRanchOwner(id);
-                int b1 = Database.GetRanchBuilding1(id);
-                int b2 = Database.GetRanchBuilding2(id);
-                int b3 = Database.GetRanchBuilding3(id);
-                int b4 = Database.GetRanchBuilding4(id);
-                int b5 = Database.GetRanchBuilding5(id);
-                int b6 = Database.GetRanchBuilding6(id);
-                int b7 = Database.GetRanchBuilding7(id);
-                int b8 = Database.GetRanchBuilding8(id);
-                int b9 = Database.GetRanchBuilding9(id);
-                int b10 = Database.GetRanchBuilding10(id);
-                int b11 = Database.GetRanchBuilding11(id);
-                int b12 = Database.GetRanchBuilding12(id);
-                int b13 = Database.GetRanchBuilding13(id);
-                int b14 = Database.GetRanchBuilding14(id);
-                int b15 = Database.GetRanchBuilding15(id);
-                int b16 = Database.GetRanchBuilding16(id);
 
-                if (RanchBuilding.RanchBuildingExists(b1))
-                    buildings[0] = RanchBuilding.GetRanchBuildingById(b1);
-                if (RanchBuilding.RanchBuildingExists(b2))
-                    buildings[1] = RanchBuilding.GetRanchBuildingById(b2);
-                if (RanchBuilding.RanchBuildingExists(b3))
-                    buildings[2] = RanchBuilding.GetRanchBuildingById(b3);
-                if (RanchBuilding.RanchBuildingExists(b4))
-                    buildings[3] = RanchBuilding.GetRanchBuildingById(b4);
-                if (RanchBuilding.RanchBuildingExists(b5))
-                    buildings[4] = RanchBuilding.GetRanchBuildingById(b5);
-                if (RanchBuilding.RanchBuildingExists(b6))
-                    buildings[5] = RanchBuilding.GetRanchBuildingById(b6);
-                if (RanchBuilding.RanchBuildingExists(b7))
-                    buildings[6] = RanchBuilding.GetRanchBuildingById(b7);
-                if (RanchBuilding.RanchBuildingExists(b8))
-                    buildings[7] = RanchBuilding.GetRanchBuildingById(b8);
-                if (RanchBuilding.RanchBuildingExists(b9))
-                    buildings[8] = RanchBuilding.GetRanchBuildingById(b9);
-                if (RanchBuilding.RanchBuildingExists(b10))
-                    buildings[9] = RanchBuilding.GetRanchBuildingById(b10);
-                if (RanchBuilding.RanchBuildingExists(b11))
-                    buildings[10] = RanchBuilding.GetRanchBuildingById(b11);
-                if (RanchBuilding.RanchBuildingExists(b12))
-                    buildings[11] = RanchBuilding.GetRanchBuildingById(b12);
-                if (RanchBuilding.RanchBuildingExists(b13))
-                    buildings[12] = RanchBuilding.GetRanchBuildingById(b13);
-                if (RanchBuilding.RanchBuildingExists(b14))
-                    buildings[13] = RanchBuilding.GetRanchBuildingById(b14);
-                if (RanchBuilding.RanchBuildingExists(b15))
-                    buildings[14] = RanchBuilding.GetRanchBuildingById(b15);
-                if (RanchBuilding.RanchBuildingExists(b16))
-                    buildings[15] = RanchBuilding.GetRanchBuildingById(b16);
-
+                for (int i = 1; i <= 16; i++)
+                {
+                    int bid = Database.GetRanchBuilding(id, i);
+                    if(RanchBuilding.RanchBuildingExists(bid))
+                        buildings[i - 1] = RanchBuilding.GetRanchBuildingById(bid);
+                }
 
                 InvestedMoney = Database.GetRanchInvestment(id);
             }
