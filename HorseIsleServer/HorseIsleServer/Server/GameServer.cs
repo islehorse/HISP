@@ -7954,12 +7954,26 @@ namespace HISP.Server
             foreach (GameClient connectedClient in GameClient.ConnectedClients)
             {
                 if (connectedClient.LoggedIn)
+                {
                     if (connectedClient.LoggedinUser.Inventory.HasItemId(id))
                     {
                         InventoryItem invItm = connectedClient.LoggedinUser.Inventory.GetItemByItemId(id);
                         foreach (ItemInstance itm in invItm.ItemInstances.ToArray())
                             connectedClient.LoggedinUser.Inventory.Remove(itm);
                     }
+                }
+            }
+
+            // Remove from shops
+            foreach(Shop shop in Shop.ShopList)
+            {
+                if (shop.Inventory.HasItemId(id))
+                {
+                    InventoryItem invItm = shop.Inventory.GetItemByItemId(id);
+                    foreach (ItemInstance itm in invItm.ItemInstances.ToArray())
+                        shop.Inventory.Remove(itm);
+                }
+
             }
             DroppedItems.DeleteAllItemsWithId(id); // Delete all dropped items
             Database.DeleteAllItemsFromUsers(id); // Delete from offline players
