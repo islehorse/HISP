@@ -2512,14 +2512,14 @@ namespace HISP.Game
 
             foreach(InventoryItem item in user.Inventory.GetItemList())
             {
-                Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
+                Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
                 if (itemInfo.Type == "TACK")
                 {
-                    if (horse.Breed.Type == "camel" && itemInfo.GetMiscFlag(2) != 1)
+                    if (horse.Breed.Type == "camel" && itemInfo.GetMiscFlag(1) != 1)
                         continue;
-                    else if (horse.Breed.Type == "llama" && itemInfo.GetMiscFlag(2) != 2)
+                    else if (horse.Breed.Type == "llama" && itemInfo.GetMiscFlag(1) != 2)
                         continue;
-                    else if (itemInfo.GetMiscFlag(2) != 0)
+                    else if (itemInfo.GetMiscFlag(1) != 0)
                         continue;
                     message += Messages.FormatHorseEquip(itemInfo.IconId, item.ItemInstances.Length, itemInfo.Name, itemInfo.Id);
                 }
