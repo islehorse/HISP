@@ -511,6 +511,12 @@ namespace HISP.Game.Chat
                                 case "PERSONALITY":
                                     instance.AdvancedStats.Personality = amount;
                                     break;
+                                case "HEIGHT":
+                                    instance.AdvancedStats.Height = amount;
+                                    break;
+                                case "COLOR":
+                                    instance.Color = args[2].ToLower();
+                                    break;
                                 case "EXPERIENCE":
                                     instance.BasicStats.Experience = amount;
                                     break;

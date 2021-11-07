@@ -1056,6 +1056,11 @@ namespace HISP.Game
                 message += Messages.FormatOtherHorsesMeta(pronoun);
 
                 message += buildHorseList(user, false);
+
+                message += Messages.FormatAwardHeaderOthers(user.Username);
+                foreach (Award.AwardEntry award in user.Awards.AwardsEarned)
+                    message += Messages.FormatAwardEntry(award.IconId, award.Title, award.MoneyBonus);
+
             }
 
 
@@ -1088,9 +1093,6 @@ namespace HISP.Game
             else
                 foreach (Award.AwardEntry award in user.Awards.AwardsEarned)
                     message += Messages.FormatAwardEntry(award.IconId, award.Title, award.MoneyBonus);
-
-
-
 
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;

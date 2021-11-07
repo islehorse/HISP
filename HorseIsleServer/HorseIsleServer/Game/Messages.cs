@@ -997,6 +997,7 @@ namespace HISP.Game
 
         // Awards
 
+        public static string AwardOthersFormat;
         public static string AwardHeader;
         public static string NoAwards;
         public static string AwardFormat;
@@ -2513,6 +2514,10 @@ namespace HISP.Game
         public static string FormatConsumeItemMessaege(string itemName)
         {
             return ConsumeItemFormat.Replace("%ITEM%", itemName);
+        }
+        public static string FormatAwardHeaderOthers(string username)
+        {
+            return AwardOthersFormat.Replace("%USERNAME%", username);
         }
         public static string FormatAwardEntry(int iconId, string title, int moneyBonus)
         {

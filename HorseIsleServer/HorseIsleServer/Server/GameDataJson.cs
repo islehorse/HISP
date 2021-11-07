@@ -2042,6 +2042,7 @@ namespace HISP.Server
             // Awards
 
             Messages.AwardHeader = gameData.messages.meta.awards_page.awards_header;
+            Messages.AwardOthersFormat = gameData.messages.meta.awards_page.awards_head;
             Messages.NoAwards = gameData.messages.meta.awards_page.no_awards;
             Messages.AwardFormat = gameData.messages.meta.awards_page.award_format;
 
