@@ -439,15 +439,23 @@ namespace HISP.Game.Chat
 
             if(channel == ChatChannel.Dm)
             {
-                if (to != null)
+                if (to != null && to != "")
                 {
                     List<GameClient> recipiants = new List<GameClient>();
                     foreach (GameClient client in GameClient.ConnectedClients)
                     {
                         if (client.LoggedIn)
+                        {
                             if (!client.LoggedinUser.MutePrivateMessage && !client.LoggedinUser.MuteAll)
+                            {
                                 if (client.LoggedinUser.Username.ToLower().StartsWith(to.ToLower()))
+                                {
                                     recipiants.Add(client);
+                                    break;
+                                }
+
+                            }
+                        }
                     }
                     return recipiants.ToArray();
                 }
