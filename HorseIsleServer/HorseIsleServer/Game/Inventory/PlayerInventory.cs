@@ -59,7 +59,7 @@ namespace HISP.Game.Inventory
 
         public InventoryItem[] GetItemList()
         {
-            return inventoryItems.OrderBy(o => o.ItemInstances[0].GetItemInfo().SortBy).ToArray();
+            return inventoryItems.OrderBy(o => Item.GetItemById(o.ItemId).SortBy).ToArray();
         }
 
 
