@@ -864,7 +864,7 @@ namespace HISP.Game
         {
             Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameName, 20);
             if (scores.Length <= 0)
-                return "ERROR: No scores recorded.";
+                return "ERROR: No scores recorded." + Messages.BackToMap + Messages.MetaTerminator;
             string message = "";
 
             message += Messages.FormatHighscoreHeader(gameName);
@@ -881,7 +881,7 @@ namespace HISP.Game
         {
             Highscore.HighscoreTableEntry[] scores = Database.GetTopWinners(gameName, 20);
             if (scores.Length <= 0)
-                return "No wins recorded.";
+                return "ERROR: No wins recorded." + Messages.BackToMap + Messages.MetaTerminator;
             string message = "";
 
             message += Messages.FormatWinlooseHeader(gameName);
@@ -896,9 +896,9 @@ namespace HISP.Game
         }
         public static string BuildTopTimes(string gameName)
         {
-            Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameName, 20);
+            Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameName, 20, false);
             if (scores.Length <= 0)
-                return "No times recorded.";
+                return "ERROR: No times recorded. "+Messages.BackToMap+Messages.MetaTerminator;
             string message = "";
 
             message += Messages.FormatBestTimeHeader(gameName);
