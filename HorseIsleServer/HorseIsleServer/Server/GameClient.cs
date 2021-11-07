@@ -514,8 +514,6 @@ namespace HISP.Server
             }
             catch (Exception e)
             {
-                if(!(e is SocketException))
-                    Logger.ErrorPrint("Exception occured: " + e.Message);
                 Disconnect();
             }
         }
