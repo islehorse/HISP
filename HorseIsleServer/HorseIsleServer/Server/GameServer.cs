@@ -4594,7 +4594,7 @@ namespace HISP.Server
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid score value");
                             return;
                         }
-                        Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameTitle, 5);
+                        Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameTitle, 5, !time);
                         bool bestScoreEver = false;
                         if (scores.Length >= 1)
                             bestScoreEver = scores[0].Score <= value;
