@@ -549,7 +549,7 @@ namespace HISP.Game.Chat
             try
             {
                 id = int.Parse(args[0]);
-                if(args[1].ToUpper() == "COLOR")
+                if(args[1].ToUpper() != "COLOR")
                     amount = int.Parse(args[2]);
             }
             catch (Exception)
