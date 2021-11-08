@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using HISP.Game.Events;
 using HISP.Game.Horse;
 using System.Linq;
+using HISP.Game.Inventory;
 
 namespace HISP.Game.Chat
 {
@@ -20,7 +21,7 @@ namespace HISP.Game.Chat
                     continue;
                 if (client.LoggedIn)
                 {
-                    if (client.LoggedinUser.Username.ToLower().Contains(name.ToLower()))
+                    if (client.LoggedinUser.Username.ToLower().StartsWith(name.ToLower()))
                     {
                         return client.LoggedinUser;
                     }
@@ -286,7 +287,7 @@ namespace HISP.Game.Chat
             return true;
         }
 
-        public static bool Prision(string message, string[] args, User user)
+        public static bool Prison(string message, string[] args, User user)
         {
             if (!(user.Administrator || user.Moderator))
                 return false;
@@ -368,7 +369,41 @@ namespace HISP.Game.Chat
             return true;
         }
 
+        public static bool DelItem(string message, string[] args, User user)
+        {
+            if (args.Length <= 0)
+                return false;
+            if (!user.Administrator)
+                return false;
 
+            int itemId = 0;
+            try
+            {
+                itemId = int.Parse(args[0]);
+                User target = user;
+                if (args.Length > 1)
+                    target = findNamePartial(args[1]);
+
+                if (target.Inventory.HasItemId(itemId))
+                {
+                    InventoryItem itm = target.Inventory.GetItemByItemId(itemId);
+                    
+                    foreach (ItemInstance instance in itm.ItemInstances)
+                    {
+                        itm.RemoveItem(instance);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+
+            return true;
+        }
         public static bool Goto(string message, string[] args, User user)
         {
             if (args.Length <= 0)
@@ -464,7 +499,6 @@ namespace HISP.Game.Chat
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
-
             
             return true;
         }
@@ -483,7 +517,8 @@ namespace HISP.Game.Chat
             try
             {
                 id = int.Parse(args[0]);
-                amount = int.Parse(args[2]);
+                if(args[1].ToUpper() == "COLOR")
+                    amount = int.Parse(args[2]);
             }
             catch (Exception)
             {
@@ -546,6 +581,7 @@ namespace HISP.Game.Chat
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
+
         public static bool Warp(string message, string[] args, User user)
         {
 
@@ -577,10 +613,13 @@ namespace HISP.Game.Chat
             }
             else
             {
-                string areaName = string.Join(" ", args).ToLower(); 
+                string areaName = string.Join(" ", args).ToLower();
+                areaName = areaName.Trim();
+                if (areaName == "")
+                    areaName = "Horse Isle";
                 try
                 {
-                    User tp = findNamePartial(areaName);
+                    User tp = GameServer.GetUserByName(areaName);
 
                     user.Teleport(tp.X, tp.Y);
                     formattedmessage += Messages.SuccessfullyWarpedToPlayer;
@@ -591,7 +630,7 @@ namespace HISP.Game.Chat
                 {
                     foreach (World.Waypoint waypoint in World.Waypoints)
                     {
-                        if (waypoint.Name.ToLower().Contains(areaName))
+                        if (waypoint.Name.ToLower().StartsWith(areaName))
                         {
                             user.Teleport(waypoint.PosX, waypoint.PosY);
                             formattedmessage += Messages.SuccessfullyWarpedToLocation;

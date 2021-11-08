@@ -1048,6 +1048,7 @@ namespace HISP.Server
             Messages.EventEndRealTimeRiddle = gameData.messages.events.real_time_riddle.event_end;
             Messages.EventWonRealTimeRiddleForOthersFormat = gameData.messages.events.real_time_riddle.event_won_others;
             Messages.EventWonRealTimeRiddleForYouFormat = gameData.messages.events.real_time_riddle.event_won_you;
+            Messages.EventAlreadySovledRealTimeRiddle = gameData.messages.events.real_time_riddle.event_solved_already;
 
             // Events : Tack Shop Giveaway
 
@@ -2042,7 +2043,7 @@ namespace HISP.Server
             // Awards
 
             Messages.AwardHeader = gameData.messages.meta.awards_page.awards_header;
-            Messages.AwardOthersFormat = gameData.messages.meta.awards_page.awards_head;
+            Messages.AwardOthersFormat = gameData.messages.meta.awards_page.awards_others_header;
             Messages.NoAwards = gameData.messages.meta.awards_page.no_awards;
             Messages.AwardFormat = gameData.messages.meta.awards_page.award_format;
 

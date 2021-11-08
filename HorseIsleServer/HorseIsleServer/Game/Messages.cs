@@ -119,6 +119,7 @@ namespace HISP.Game
         public static string EventEndRealTimeRiddle;
         public static string EventWonRealTimeRiddleForOthersFormat;
         public static string EventWonRealTimeRiddleForYouFormat;
+        public static string EventAlreadySovledRealTimeRiddle;
 
         // Events : Tack Shop Giveaway
         public static string EventStartTackShopGiveawayFormat;
