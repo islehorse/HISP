@@ -409,96 +409,109 @@ namespace HISP.Server
             if (warnTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
                 warnTimer.Change(warnInterval, warnInterval);
 
-            if (!LoggedIn) // Must be either login or policy-file-request
+            try
             {
-                if (Encoding.UTF8.GetString(Packet).StartsWith("<policy-file-request/>")) // Policy File Request
+                if (!LoggedIn) // Must be either login or policy-file-request
                 {
-                    GameServer.OnCrossdomainPolicyRequest(this);
+                    if (Encoding.UTF8.GetString(Packet).StartsWith("<policy-file-request/>")) // Policy File Request
+                    {
+                        GameServer.OnCrossdomainPolicyRequest(this);
+                    }
+                    switch (identifier)
+                    {
+                        case PacketBuilder.PACKET_LOGIN:
+                            GameServer.OnLoginRequest(this, Packet);
+                            break;
+                    }
                 }
-                switch (identifier)
+                else
                 {
-                    case PacketBuilder.PACKET_LOGIN:
-                        GameServer.OnLoginRequest(this, Packet);
-                        break;
+                    switch (identifier)
+                    {
+                        case PacketBuilder.PACKET_LOGIN:
+                            GameServer.OnUserInfoRequest(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_MOVE:
+                            GameServer.OnMovementPacket(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_PLAYERINFO:
+                            GameServer.OnPlayerInfoPacket(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_PLAYER:
+                            GameServer.OnProfilePacket(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_CHAT:
+                            GameServer.OnChatPacket(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_CLICK:
+                            GameServer.OnClickPacket(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_KEEP_ALIVE:
+                            GameServer.OnKeepAlive(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_TRANSPORT:
+                            GameServer.OnTransportUsed(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_INVENTORY:
+                            GameServer.OnInventoryRequested(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_DYNAMIC_BUTTON:
+                            GameServer.OnDynamicButtonPressed(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_DYNAMIC_INPUT:
+                            GameServer.OnDynamicInputReceived(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_ITEM_INTERACTION:
+                            GameServer.OnItemInteraction(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_ARENA_SCORE:
+                            GameServer.OnArenaScored(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_QUIT:
+                            GameServer.OnQuitPacket(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_NPC:
+                            GameServer.OnNpcInteraction(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_BIRDMAP:
+                            GameServer.OnBirdMapRequested(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_SWFMODULE:
+                            GameServer.OnSwfModuleCommunication(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_HORSE:
+                            GameServer.OnHorseInteraction(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_WISH:
+                            GameServer.OnWish(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_RANCH:
+                            GameServer.OnRanchPacket(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_AUCTION:
+                            GameServer.OnAuctionPacket(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_PLAYER_INTERACTION:
+                            GameServer.OnPlayerInteration(this, Packet);
+                            break;
+                        case PacketBuilder.PACKET_SOCIALS:
+                            GameServer.OnSocialPacket(this, Packet);
+                            break;
+                        default:
+                            Logger.ErrorPrint("Unimplemented Packet: " + BitConverter.ToString(Packet).Replace('-', ' '));
+                            break;
+                    }
                 }
+
             }
-            else
+            catch(Exception e)
             {
-                switch (identifier)
-                {
-                    case PacketBuilder.PACKET_LOGIN:
-                        GameServer.OnUserInfoRequest(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_MOVE:
-                        GameServer.OnMovementPacket(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_PLAYERINFO:
-                        GameServer.OnPlayerInfoPacket(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_PLAYER:
-                        GameServer.OnProfilePacket(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_CHAT:
-                        GameServer.OnChatPacket(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_CLICK:
-                        GameServer.OnClickPacket(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_KEEP_ALIVE:
-                        GameServer.OnKeepAlive(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_TRANSPORT:
-                        GameServer.OnTransportUsed(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_INVENTORY:
-                        GameServer.OnInventoryRequested(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_DYNAMIC_BUTTON:
-                        GameServer.OnDynamicButtonPressed(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_DYNAMIC_INPUT:
-                        GameServer.OnDynamicInputReceived(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_ITEM_INTERACTION:
-                        GameServer.OnItemInteraction(this,Packet);
-                        break;
-                    case PacketBuilder.PACKET_ARENA_SCORE:
-                        GameServer.OnArenaScored(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_QUIT:
-                        GameServer.OnQuitPacket(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_NPC:
-                        GameServer.OnNpcInteraction(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_BIRDMAP:
-                        GameServer.OnBirdMapRequested(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_SWFMODULE:
-                        GameServer.OnSwfModuleCommunication(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_HORSE:
-                        GameServer.OnHorseInteraction(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_WISH:
-                        GameServer.OnWish(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_RANCH:
-                        GameServer.OnRanchPacket(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_AUCTION:
-                        GameServer.OnAuctionPacket(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_PLAYER_INTERACTION:
-                        GameServer.OnPlayerInteration(this, Packet);
-                        break;
-                    case PacketBuilder.PACKET_SOCIALS:
-                        GameServer.OnSocialPacket(this, Packet);
-                        break;
-                    default:
-                        Logger.ErrorPrint("Unimplemented Packet: " + BitConverter.ToString(Packet).Replace('-', ' '));
-                        break;
-                }
+                Logger.ErrorPrint("Unhandled Exception: " + e.ToString());
+                Logger.ErrorPrint(e.Message);
+                Logger.ErrorPrint("");
+                Logger.ErrorPrint(e.StackTrace);
+
+                Kick("Unhandled Exception: " + e.ToString());
             }
         }
 

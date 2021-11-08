@@ -7688,6 +7688,20 @@ namespace HISP.Server
             return count;
         }
 
+        public static void CheckMail(User user)
+        {
+            if (user.MailBox.UnreadMailCount > 0)
+            {
+
+                byte[] RipOffAOLSound = PacketBuilder.CreatePlaysoundPacket(Messages.MailSe);
+                user.LoggedinClient.SendPacket(RipOffAOLSound);
+
+                byte[] mailReceivedText = PacketBuilder.CreateChat(Messages.MailReceivedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                user.LoggedinClient.SendPacket(mailReceivedText);
+
+                user.MailBox.ReadAllMail();
+            }
+        }
         public static int GetNumberOfModsOnline()
         {
             int count = 0;

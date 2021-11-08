@@ -525,7 +525,7 @@ namespace HISP.Game
                 message += Messages.FormatTradeOfferHorse(horse.Name, tacked, horse.RandomId);
             }
 
-            if(trade.Trader.Inventory.Count >= trade.Trader.MaxItems)
+            if(trade.OtherTrade.Trader.Inventory.Count >= trade.OtherTrade.Trader.MaxItems)
             {
                 message += Messages.TradeOfferItemOtherPlayerInvFull;
             }
@@ -1762,6 +1762,7 @@ namespace HISP.Game
 
             if (mine) // This is My DS.
             {
+                GameServer.CheckMail(user);
                 user.DoRanchActions();
 
                 string title = ranch.Title;
@@ -2799,17 +2800,7 @@ namespace HISP.Game
         }
         private static string buildTownHall(User user)
         {
-            if(user.MailBox.UnreadMailCount > 0)
-            {
-                
-                byte[] RipOffAOLSound = PacketBuilder.CreatePlaysoundPacket(Messages.MailSe);
-                user.LoggedinClient.SendPacket(RipOffAOLSound);
-
-                byte[] mailReceivedText = PacketBuilder.CreateChat(Messages.MailReceivedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                user.LoggedinClient.SendPacket(mailReceivedText);
-
-                user.MailBox.ReadAllMail();
-            }
+            GameServer.CheckMail(user);
 
             string message = Messages.CityHallMenu;
             message += Messages.ExitThisPlace;
