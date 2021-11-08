@@ -57,7 +57,11 @@ namespace HISP.Game.Events
                 return;
 
             if (Database.HasPlayerCompletedRealTimeRiddle(RiddleId, winner.Id))
+            {
+                byte[] alreadyWonRiddleMessage = PacketBuilder.CreateChat(Messages.EventAlreadySovledRealTimeRiddle, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                winner.LoggedinClient.SendPacket(alreadyWonRiddleMessage);
                 return;
+            }
 
             LastWon = true;
 
@@ -86,10 +90,13 @@ namespace HISP.Game.Events
         }
         public void EndEvent()
         {
-            Active = false;
+            if(Active)
+            {
+                Active = false;
 
-            riddleTimeout.Dispose();
-            riddleTimeout = null;
+                riddleTimeout.Dispose();
+                riddleTimeout = null;
+            }
         }
 
         private void riddleTimedOut(object state)

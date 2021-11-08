@@ -1678,11 +1678,6 @@ namespace HISP.Server
                                         if (sender.LoggedinUser.Money >= arena.EntryCost)
                                         {
                                             arena.AddEntry(sender.LoggedinUser, horseInstance);
-                                            sender.LoggedinUser.TakeMoney(arena.EntryCost);
-
-                                            byte[] enteredIntoCompetition = PacketBuilder.CreateChat(Messages.ArenaEnteredInto, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                            sender.SendPacket(enteredIntoCompetition);
-                                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                                             break;
                                         }
                                         else
@@ -4594,7 +4589,7 @@ namespace HISP.Server
                             Logger.ErrorPrint(sender.LoggedinUser.Username + " Sent correct sec code, but invalid score value");
                             return;
                         }
-                        Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameTitle, 5);
+                        Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameTitle, 5, !time);
                         bool bestScoreEver = false;
                         if (scores.Length >= 1)
                             bestScoreEver = scores[0].Score <= value;
@@ -7688,6 +7683,20 @@ namespace HISP.Server
             return count;
         }
 
+        public static void CheckMail(User user)
+        {
+            if (user.MailBox.UnreadMailCount > 0)
+            {
+
+                byte[] RipOffAOLSound = PacketBuilder.CreatePlaysoundPacket(Messages.MailSe);
+                user.LoggedinClient.SendPacket(RipOffAOLSound);
+
+                byte[] mailReceivedText = PacketBuilder.CreateChat(Messages.MailReceivedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                user.LoggedinClient.SendPacket(mailReceivedText);
+
+                user.MailBox.ReadAllMail();
+            }
+        }
         public static int GetNumberOfModsOnline()
         {
             int count = 0;

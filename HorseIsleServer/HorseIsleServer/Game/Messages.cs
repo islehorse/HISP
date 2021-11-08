@@ -119,6 +119,7 @@ namespace HISP.Game
         public static string EventEndRealTimeRiddle;
         public static string EventWonRealTimeRiddleForOthersFormat;
         public static string EventWonRealTimeRiddleForYouFormat;
+        public static string EventAlreadySovledRealTimeRiddle;
 
         // Events : Tack Shop Giveaway
         public static string EventStartTackShopGiveawayFormat;
@@ -332,6 +333,7 @@ namespace HISP.Game
         public static string ArenaNeedsVet;
 
         public static string ArenaEventNameFormat;
+        public static string ArenaFullErrorMessage;
 
         public static string ArenaCurrentlyTakingEntriesFormat;
         public static string ArenaCompetitionInProgress;
@@ -997,6 +999,7 @@ namespace HISP.Game
 
         // Awards
 
+        public static string AwardOthersFormat;
         public static string AwardHeader;
         public static string NoAwards;
         public static string AwardFormat;
@@ -2513,6 +2516,10 @@ namespace HISP.Game
         public static string FormatConsumeItemMessaege(string itemName)
         {
             return ConsumeItemFormat.Replace("%ITEM%", itemName);
+        }
+        public static string FormatAwardHeaderOthers(string username)
+        {
+            return AwardOthersFormat.Replace("%USERNAME%", username);
         }
         public static string FormatAwardEntry(int iconId, string title, int moneyBonus)
         {

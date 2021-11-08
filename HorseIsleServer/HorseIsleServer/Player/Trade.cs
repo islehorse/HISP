@@ -112,13 +112,13 @@ namespace HISP.Player
                 Trader.LoggedinClient.SendPacket(tradeYouHaveTooManyHorses);
                 fail = true;
             }
-            if(OtherTrade.Trader.Money + MoneyOffered > 2100000000)
+            if(MoneyOffered > 0 && OtherTrade.Trader.Money + MoneyOffered > 2100000000)
             {
                 byte[] tradeOtherHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveOtherTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeOtherHasTooMuchMoney);
                 fail = true;
             }
-            if(Trader.Money + OtherTrade.MoneyOffered > 2100000000)
+            if(OtherTrade.MoneyOffered > 0 && Trader.Money + OtherTrade.MoneyOffered > 2100000000)
             {
                 byte[] tradeYouHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveYouTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeYouHasTooMuchMoney);
@@ -135,7 +135,7 @@ namespace HISP.Player
                 if (Trader.Inventory.HasItemId(inst[0].ItemId))
                 {
                     InventoryItem items = Trader.Inventory.GetItemByItemId(inst[0].ItemId);
-                    if (items.ItemInstances.Length + inst.Length >= ConfigReader.MAX_STACK)
+                    if (items.ItemInstances.Length + inst.Length > ConfigReader.MAX_STACK)
                     {
                         itemYouFail = true;
                     }
@@ -155,7 +155,7 @@ namespace HISP.Player
                 if (OtherTrade.Trader.Inventory.HasItemId(inst[0].ItemId))
                 {
                     InventoryItem items = OtherTrade.Trader.Inventory.GetItemByItemId(inst[0].ItemId);
-                    if (items.ItemInstances.Length + inst.Length >= ConfigReader.MAX_STACK)
+                    if (items.ItemInstances.Length + inst.Length > ConfigReader.MAX_STACK)
                     {
                         itemOtherFail = true;
                     }
@@ -218,7 +218,7 @@ namespace HISP.Player
                 foreach (ItemInstance itm in item)
                 {
                     Trader.Inventory.Remove(itm);
-                    OtherTrade.Trader.Inventory.Add(itm);
+                    OtherTrade.Trader.Inventory.AddIgnoringFull(itm);
                 }
             }
 

@@ -101,7 +101,7 @@ namespace HISP.Game.Chat
                     if (message.ToUpper().StartsWith("%RULES"))
                         return Command.Rules(message, args, user);
                     if (message.ToUpper().StartsWith("%PRISON"))
-                        return Command.Prision(message, args, user);
+                        return Command.Prison(message, args, user);
                     if (message.ToUpper().StartsWith("%NOCLIP"))
                         return Command.NoClip(message, args, user);
                     if (message.ToUpper().StartsWith("%STEALTH"))
@@ -114,6 +114,10 @@ namespace HISP.Game.Chat
                         return Command.Escape(message, args, user);
                     if (message.ToUpper().StartsWith("%MODHORSE"))
                         return Command.ModHorse(message, args, user);
+                    if (message.ToUpper().StartsWith("%DELITEM"))
+                        return Command.DelItem(message, args, user);
+                    if (message.ToUpper().StartsWith("%SHUTDOWN"))
+                        return Command.Shutdown(message, args, user);
                     if (message.ToUpper().StartsWith("%CALL HORSE"))
                         return Command.CallHorse(message, args, user);
                     return false;

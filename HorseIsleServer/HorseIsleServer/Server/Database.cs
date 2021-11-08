@@ -3628,11 +3628,14 @@ namespace HISP.Server
             return entires.ToArray();
         }
 
-        public static int GetRanking(int score, string gameTitle)
+        public static int GetRanking(int score, string gameTitle, bool time=false)
         {
             using MySqlConnection db = Connect();
             MySqlCommand sqlCommand = db.CreateCommand();
-            sqlCommand.CommandText = "SELECT DISTINCT score FROM Leaderboards WHERE minigame=@gameTitle ORDER BY score DESC";
+            if(time)
+                sqlCommand.CommandText = "SELECT DISTINCT score FROM Leaderboards WHERE minigame=@gameTitle ORDER BY score ASC";
+            else
+                sqlCommand.CommandText = "SELECT DISTINCT score FROM Leaderboards WHERE minigame=@gameTitle ORDER BY score DESC";
             sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
             sqlCommand.Prepare();
             MySqlDataReader reader = sqlCommand.ExecuteReader();
@@ -3643,7 +3646,6 @@ namespace HISP.Server
                     break;
                 i++;
             }
-
             return i;
         }
         public static void UpdateHighscoreWinGame(int playerId, string gameTitle)
