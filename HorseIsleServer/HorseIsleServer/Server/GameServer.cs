@@ -1678,11 +1678,6 @@ namespace HISP.Server
                                         if (sender.LoggedinUser.Money >= arena.EntryCost)
                                         {
                                             arena.AddEntry(sender.LoggedinUser, horseInstance);
-                                            sender.LoggedinUser.TakeMoney(arena.EntryCost);
-
-                                            byte[] enteredIntoCompetition = PacketBuilder.CreateChat(Messages.ArenaEnteredInto, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                            sender.SendPacket(enteredIntoCompetition);
-                                            UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                                             break;
                                         }
                                         else

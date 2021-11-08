@@ -1255,6 +1255,8 @@ namespace HISP.Server
             Messages.ArenaYouHaveHorseEntered = gameData.messages.meta.arena.horse_entered;
             Messages.ArenaCompetitionFull = gameData.messages.meta.arena.competiton_full;
 
+            Messages.ArenaFullErrorMessage = gameData.messages.meta.arena.arena_join_fail_full;
+
             Messages.ArenaEnterHorseFormat = gameData.messages.meta.arena.enter_horse;
             Messages.ArenaCurrentCompetitors = gameData.messages.meta.arena.current_competitors;
             Messages.ArenaCompetingHorseFormat = gameData.messages.meta.arena.competing_horses;
