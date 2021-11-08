@@ -116,6 +116,8 @@ namespace HISP.Game.Chat
                         return Command.ModHorse(message, args, user);
                     if (message.ToUpper().StartsWith("%DELITEM"))
                         return Command.DelItem(message, args, user);
+                    if (message.ToUpper().StartsWith("%SHUTDOWN"))
+                        return Command.Shutdown(message, args, user);
                     if (message.ToUpper().StartsWith("%CALL HORSE"))
                         return Command.CallHorse(message, args, user);
                     return false;

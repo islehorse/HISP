@@ -101,6 +101,7 @@ namespace HISP.Game.Items
         public static int BirthdayToken;
         public static int MagicBean;
         public static int MagicDroplet;
+        public static int Ruby;
 
         public static int StallionTradingCard;
         public static int MareTradingCard;

@@ -30,6 +30,38 @@ namespace HISP.Game.Chat
             throw new KeyNotFoundException("name not found");
         }
 
+        public static bool Shutdown(string message, string[] args, User user)
+        {
+            if (!user.Administrator)
+                return false;
+
+            try
+            {
+                foreach(GameClient client in GameClient.ConnectedClients)
+                {
+
+                    if (client.LoggedIn)
+                    {
+                        for(int i = 0; i < 2; i++)
+                        {
+                            ItemInstance rubyItem = new ItemInstance(Item.Ruby);
+                            client.LoggedinUser.Inventory.AddIgnoringFull(rubyItem);
+                        }
+
+                        client.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.GameUpdates).Count++;
+                    }
+
+                    client.Kick("Server was closed by an Administrator.");
+
+                }
+            }
+            catch (Exception) { };
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            Program.ShuttingDown = true;
+            return true;
+        }
         public static bool Give(string message, string[] args, User user)
         {
             if (args.Length <= 0)
@@ -390,7 +422,7 @@ namespace HISP.Game.Chat
                     
                     foreach (ItemInstance instance in itm.ItemInstances)
                     {
-                        itm.RemoveItem(instance);
+                        target.Inventory.Remove(instance);
                     }
                 }
             }
