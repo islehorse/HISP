@@ -258,13 +258,18 @@ namespace HISP.Game
             // Insert LGBT Patch here
 
             string pronoun = "";
+
             if (other)
             {
                 if (user.Gender == "FEMALE")
+                {
                     pronoun = Messages.PronounFemaleShe;
+                }
 
                 if (user.Gender == "MALE")
+                {
                     pronoun = Messages.PronounMaleHe;
+                }
             }
 
             if (!other)
@@ -363,13 +368,19 @@ namespace HISP.Game
             // Insert LGBT Patch Here
 
             string pronoun = Messages.PronounYouYour;
-            if(other)
+            string pronoun2 = Messages.PronounYouYour;
+            if (other)
             {
                 if (user.Gender == "FEMALE")
+                {
                     pronoun = Messages.PronounFemaleShe;
-
-                if (user.Gender == "MALE")
+                    pronoun2 = Messages.PronounFemaleHer;
+                }
+                else if (user.Gender == "MALE")
+                {
                     pronoun = Messages.PronounMaleHe;
+                    pronoun2 = Messages.PronounMaleHis;
+                }
 
                 message = Messages.FormatOtherCompetitionGear(pronoun);
             }
@@ -378,22 +389,22 @@ namespace HISP.Game
 
             if (user.EquipedCompetitionGear.Head != null)
             {
-                message += Messages.FormatCompetitionGearHead(user.EquipedCompetitionGear.Head.Name, pronoun, user.EquipedCompetitionGear.Head.IconId, other);
+                message += Messages.FormatCompetitionGearHead(user.EquipedCompetitionGear.Head.Name, pronoun2, user.EquipedCompetitionGear.Head.IconId, other);
                 hasMsg = true;
             }
             if (user.EquipedCompetitionGear.Body != null)
             {
-                message += Messages.FormatCompetitionGearBody(user.EquipedCompetitionGear.Body.Name, pronoun, user.EquipedCompetitionGear.Body.IconId, other);
+                message += Messages.FormatCompetitionGearBody(user.EquipedCompetitionGear.Body.Name, pronoun2, user.EquipedCompetitionGear.Body.IconId, other);
                 hasMsg = true;
             }
             if (user.EquipedCompetitionGear.Legs != null)
             {
-                message += Messages.FormatCompetitionGearLegs(user.EquipedCompetitionGear.Legs.Name, pronoun, user.EquipedCompetitionGear.Legs.IconId, other);
+                message += Messages.FormatCompetitionGearLegs(user.EquipedCompetitionGear.Legs.Name, pronoun2, user.EquipedCompetitionGear.Legs.IconId, other);
                 hasMsg = true;
             }
             if (user.EquipedCompetitionGear.Feet != null)
             {
-                message += Messages.FormatCompetitionGearFeet(user.EquipedCompetitionGear.Feet.Name, pronoun, user.EquipedCompetitionGear.Feet.IconId, other);
+                message += Messages.FormatCompetitionGearFeet(user.EquipedCompetitionGear.Feet.Name, pronoun2, user.EquipedCompetitionGear.Feet.IconId, other);
                 hasMsg = true;
             }
 
@@ -919,7 +930,7 @@ namespace HISP.Game
                 if (highscore.Type == "SCORE")
                     message += Messages.FormatHighscoreStat(highscore.GameName, Database.GetRanking(highscore.Score, highscore.GameName), highscore.Score, highscore.TimesPlayed);
                 else if (highscore.Type == "TIME")
-                    message += Messages.FormatBestTimeStat(highscore.GameName, Database.GetRanking(highscore.Score, highscore.GameName), highscore.Score, highscore.TimesPlayed);
+                    message += Messages.FormatBestTimeStat(highscore.GameName, Database.GetRanking(highscore.Score, highscore.GameName, true), highscore.Score, highscore.TimesPlayed);
             }
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;

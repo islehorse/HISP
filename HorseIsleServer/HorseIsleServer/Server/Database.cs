@@ -5482,14 +5482,17 @@ namespace HISP.Server
             }
         }
 
-        public static int GetRanking(int score, string gameTitle)
+        public static int GetRanking(int score, string gameTitle, bool time=false)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
             {
 
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT DISTINCT score FROM Leaderboards WHERE minigame=@gameTitle ORDER BY score DESC";
+                if(time)
+                    sqlCommand.CommandText = "SELECT DISTINCT score FROM Leaderboards WHERE minigame=@gameTitle ORDER BY score ASC";
+                else
+                    sqlCommand.CommandText = "SELECT DISTINCT score FROM Leaderboards WHERE minigame=@gameTitle ORDER BY score DESC";
                 sqlCommand.Parameters.AddWithValue("@gameTitle", gameTitle);
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
