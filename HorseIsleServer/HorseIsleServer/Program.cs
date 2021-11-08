@@ -12,6 +12,7 @@ namespace HISP
 {
     public class Program
     {
+        public static bool ShuttingDown = false;
         static void Main(string[] args)
         {
         #if (!DEBUG)
@@ -54,7 +55,7 @@ namespace HISP
             Logger.ErrorPrint("");
             Logger.ErrorPrint(execpt.StackTrace);
 
-            while (true) { };
+            while (!ShuttingDown) {  /*Allow asyncronous operations to happen.*/ };
         }
     }
 }

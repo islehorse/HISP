@@ -903,6 +903,7 @@ namespace HISP.Server
             Item.ModSplatterball = gameData.item.special.mod_splatterball;
             Item.MagicBean = gameData.item.special.magic_bean;
             Item.MagicDroplet = gameData.item.special.magic_droplet;
+            Item.Ruby = gameData.item.special.ruby;
 
             Item.StallionTradingCard = gameData.item.special.stallion_trading_card;
             Item.MareTradingCard = gameData.item.special.mare_trading_card;
