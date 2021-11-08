@@ -348,7 +348,15 @@ namespace HISP.Game
         public void AddEntry(User user, HorseInstance horse)
         {
             if (Entries.Length + 1 > Slots)
-                return;
+            {
+                if (Entries.Length + 1 > Slots)
+                {
+                    byte[] enterFailed = PacketBuilder.CreateChat(Messages.ArenaFullErrorMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                    user.LoggedinClient.SendPacket(enterFailed);
+                    GameServer.UpdateArea(user.LoggedinClient);
+                    return;
+                }
+            }
 
             if(!UserHasHorseEntered(user))
             {
@@ -357,6 +365,14 @@ namespace HISP.Game
                 arenaEntry.EnteredHorse = horse;
                 entries.Add(arenaEntry);
             }
+
+            user.TakeMoney(EntryCost);
+
+            byte[] enteredIntoCompetition = PacketBuilder.CreateChat(Messages.ArenaEnteredInto, PacketBuilder.CHAT_BOTTOM_RIGHT);
+            user.LoggedinClient.SendPacket(enteredIntoCompetition);
+            GameServer.UpdateAreaForAll(user.X, user.Y, true);
+
+            return;
         }
 
         public static Arena GetArenaUserEnteredIn(User user)

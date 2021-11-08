@@ -333,6 +333,7 @@ namespace HISP.Game
         public static string ArenaNeedsVet;
 
         public static string ArenaEventNameFormat;
+        public static string ArenaFullErrorMessage;
 
         public static string ArenaCurrentlyTakingEntriesFormat;
         public static string ArenaCompetitionInProgress;
