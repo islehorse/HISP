@@ -218,7 +218,7 @@ namespace HISP.Player
                 foreach (ItemInstance itm in item)
                 {
                     Trader.Inventory.Remove(itm);
-                    OtherTrade.Trader.Inventory.Add(itm);
+                    OtherTrade.Trader.Inventory.AddIgnoringFull(itm);
                 }
             }
 

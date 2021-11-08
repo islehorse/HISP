@@ -181,7 +181,8 @@ namespace HISP.Server
             Logger.DebugPrint("Sending keep-alive packet to " + LoggedinUser.Username);
             byte[] updatePacket = PacketBuilder.CreateKeepAlive();
             SendPacket(updatePacket);
-            keepAliveTimer.Change(oneMinute, oneMinute);
+            if(keepAliveTimer != null)
+               keepAliveTimer.Change(oneMinute, oneMinute);
         }
         private void minuteTimerTick(object state)
         {

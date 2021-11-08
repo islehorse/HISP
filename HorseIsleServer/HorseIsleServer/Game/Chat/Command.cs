@@ -51,7 +51,7 @@ namespace HISP.Game.Chat
                         client.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.GameUpdates).Count++;
                     }
 
-                    client.Kick("Server was closed by an Administrator.");
+                    client.Kick("%SHUTDOWN Command Executed by an Administrator (Probably a server restart)");
 
                 }
             }
@@ -60,6 +60,8 @@ namespace HISP.Game.Chat
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             Program.ShuttingDown = true;
+            Thread.Sleep(1000); // give it a few seconds to shut down, if it doesnt force exit
+            Environment.Exit(0);
             return true;
         }
         public static bool Give(string message, string[] args, User user)
