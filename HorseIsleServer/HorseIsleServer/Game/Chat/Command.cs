@@ -7,6 +7,7 @@ using HISP.Game.Events;
 using HISP.Game.Horse;
 using System.Linq;
 using HISP.Game.Inventory;
+using System.Threading;
 
 namespace HISP.Game.Chat
 {
