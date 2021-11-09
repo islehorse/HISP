@@ -3727,17 +3727,9 @@ namespace HISP.Server
             if (RiddleEvent != null)
                 if (RiddleEvent.Active)
                     RiddleEvent.ShowStartMessage(sender);
-            
+
             // Give Queued Itmes
-            Item.ItemPurchaseQueueItem[] queueItems = Database.GetItemPurchaseQueue(sender.LoggedinUser.Id);
-            foreach (Item.ItemPurchaseQueueItem queueItem in queueItems)
-            {
-                for(int i = 0; i < queueItem.ItemCount; i++)
-                {
-                    sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(queueItem.ItemId));
-                }
-            }
-            Database.ClearItemPurchaseQueue(sender.LoggedinUser.Id);
+            DoItemPurchases(sender);
 
             // Send Queued Messages
             string[] queuedMessages = Database.GetMessageQueue(sender.LoggedinUser.Id);
@@ -5902,28 +5894,32 @@ namespace HISP.Server
             }
             
             // Spam filter
-            if(channel == Chat.ChatChannel.Ads)
+            if(ConfigReader.EnableSpamFilter)
             {
-                if(!sender.LoggedinUser.CanUseAdsChat && !sender.LoggedinUser.Administrator)
+                if (channel == Chat.ChatChannel.Ads)
                 {
-                    byte[] cantSendInAds = PacketBuilder.CreateChat(Messages.AdsOnlyOncePerMinute, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    sender.SendPacket(cantSendInAds);
+                    if (!sender.LoggedinUser.CanUseAdsChat && !sender.LoggedinUser.Administrator)
+                    {
+                        byte[] cantSendInAds = PacketBuilder.CreateChat(Messages.AdsOnlyOncePerMinute, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(cantSendInAds);
 
-                    return;
+                        return;
+                    }
+                    sender.LoggedinUser.CanUseAdsChat = false;
                 }
-                sender.LoggedinUser.CanUseAdsChat = false;
-            }
-            else if(channel == Chat.ChatChannel.All)
-            {
-                if(sender.LoggedinUser.TotalGlobalChatMessages <= 0 && !sender.LoggedinUser.Administrator)
+                else if (channel == Chat.ChatChannel.All)
                 {
-                    byte[] globalLimited = PacketBuilder.CreateChat(Messages.GlobalChatLimited, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    sender.SendPacket(globalLimited);
+                    if (sender.LoggedinUser.TotalGlobalChatMessages <= 0 && !sender.LoggedinUser.Administrator)
+                    {
+                        byte[] globalLimited = PacketBuilder.CreateChat(Messages.GlobalChatLimited, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.SendPacket(globalLimited);
 
-                    return;
+                        return;
+                    }
+                    sender.LoggedinUser.TotalGlobalChatMessages--;
                 }
-                sender.LoggedinUser.TotalGlobalChatMessages--;
             }
+
 
             // Muted user checks
             if(channel == Chat.ChatChannel.Dm) 
@@ -8089,6 +8085,22 @@ namespace HISP.Server
 
             if (sender.LoggedinUser.HorseWindowOpen)
                 UpdateArea(sender);
+        }
+        public static void DoItemPurchases(GameClient sender)
+        {
+            if (!sender.LoggedIn)
+                return;
+
+            Item.ItemPurchaseQueueItem[] queueItems = Database.GetItemPurchaseQueue(sender.LoggedinUser.Id);
+            foreach (Item.ItemPurchaseQueueItem queueItem in queueItems)
+            {
+                for (int i = 0; i < queueItem.ItemCount; i++)
+                {
+                    sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(queueItem.ItemId));
+                }
+            }
+            Database.ClearItemPurchaseQueue(sender.LoggedinUser.Id);
+
         }
         public static void StopRidingHorse(GameClient sender)
         {
