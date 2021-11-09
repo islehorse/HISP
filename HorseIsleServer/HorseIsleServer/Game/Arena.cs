@@ -249,15 +249,21 @@ namespace HISP.Game
                 string chatMessage = Messages.ArenaResultsMessage;
 
                 string[] avaliblePlacings = new string[6] { Messages.ArenaFirstPlace, Messages.ArenaSecondPlace, Messages.ArenaThirdPlace, Messages.ArenaFourthPlace, Messages.ArenaFifthPlace, Messages.ArenaSixthPlace };
-                int[] expRewards = ExpRewards.ToArray().Reverse().ToArray();
+                
 
                 int place = 0;
                 ArenaEntry[] winners = Entries.OrderByDescending(o => o.SubmitScore).ToArray();
+
+                int[] expRewards = new int[winners.Length];
+                Array.Copy(ExpRewards, expRewards, winners.Length);
+                expRewards = expRewards.Reverse().ToArray();
+
                 foreach (ArenaEntry entry in winners)
                 {
                     string placing = avaliblePlacings[place % avaliblePlacings.Length];
 
                     chatMessage += Messages.FormatArenaPlacing(placing, entry.EnteredUser.Username, entry.SubmitScore);
+                    
                     place++;
                 }
                 place = 0;

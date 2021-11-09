@@ -3042,7 +3042,6 @@ namespace HISP.Server
                                 {
                                     User seller = GetUserById(horseToSell.Owner);
                                     seller.HorseInventory.DeleteHorse(horseToSell, false);
-
                                     seller.AddMoney(horseToSell.AutoSell);
 
                                     byte[] horseBrought = PacketBuilder.CreateChat(Messages.FormatAutoSellSold(horseToSell.Name, horseToSell.AutoSell, sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -5807,11 +5806,7 @@ namespace HISP.Server
                         break;
                     default:
                         channel = Chat.ChatChannel.Dm;
-                        nameTo = channelString.Substring(1);
-                        
-                        if (nameTo == "")
-                            break;
-
+                        nameTo = channelString.Substring(1).Trim(); 
                         break;
                 }
 
@@ -5890,23 +5885,24 @@ namespace HISP.Server
 
             GameClient[] recipiants = Chat.GetRecipiants(sender.LoggedinUser, channel, nameTo);
 
-            // Spam Protection
-
+            
             if(channel == Chat.ChatChannel.Dm)
             {
-                try
-                {
-                    nameTo = GetUserByNameStartswith(nameTo).Username;
-                }
-                catch(KeyNotFoundException)
+                if(recipiants.Length <= 0)
                 {
                     byte[] cantFindPlayer = PacketBuilder.CreateChat(Messages.CantFindPlayerToPrivateMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(cantFindPlayer);
 
                     return;
                 }
+                else
+                {
+                    nameTo = recipiants[0].LoggedinUser.Username;
+                }
             }
-            else if(channel == Chat.ChatChannel.Ads)
+            
+            // Spam filter
+            if(channel == Chat.ChatChannel.Ads)
             {
                 if(!sender.LoggedinUser.CanUseAdsChat && !sender.LoggedinUser.Administrator)
                 {

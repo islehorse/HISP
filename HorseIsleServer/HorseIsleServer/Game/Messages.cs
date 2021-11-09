@@ -236,7 +236,7 @@ namespace HISP.Game
         public static string PlayerHereAddBuddyButton;
         public static string PlayerHereTagButton;
 
-        public static string PlayerHerePmButton;
+        public static string PmButton;
 
         // Auction House
         public static string AuctionsRunning;
@@ -1085,7 +1085,6 @@ namespace HISP.Game
 
         public static string MuteButton;
         public static string HearButton;
-        public static string PmButton;
 
         public static int ThreeMonthSubscripitionIcon;
         public static int YearSubscriptionIcon;
@@ -1529,9 +1528,9 @@ namespace HISP.Game
         }
 
         // Player Interactions
-        public static string FormatPlayerHerePMButton(string playerName)
+        public static string FormatPmButton(string playerName)
         {
-            return PlayerHerePmButton.Replace("%PLAYERNAME%", playerName);
+            return PmButton.Replace("%PLAYERNAME%", playerName);
         }
         public static string FormatPlayerHereTagButton(int playerId)
         {
@@ -2249,9 +2248,9 @@ namespace HISP.Game
         {
             return HorseNameYoursFormat.Replace("%NAME%", name);
         }
-        public static string FormatHorseNameOthers(string name)
+        public static string FormatHorseNameOthers(string name, string username)
         {
-            return HorseNameOthersFormat.Replace("%NAME%", name);
+            return HorseNameOthersFormat.Replace("%NAME%", name).Replace("%USERNAME%", username);
         }
         public static string FormatHorseDescription(string Description)
         {
@@ -2487,10 +2486,6 @@ namespace HISP.Game
         {
             return HearButton.Replace("%PLAYERID%", playerId.ToString());
         }
-        public static string FormatPmButton(string playerName)
-        {
-            return PmButton.Replace("%USERNAME%", playerName);
-        }
         public static string FormatPlayerEntry(string iconFormat, string username, int userId, int time, int x, int y, bool idle, bool muteOrHear, bool isYou)
         {
             string xy = FormatMapLocation(x, y);
@@ -2501,7 +2496,7 @@ namespace HISP.Game
             if (isYou)
                 msg = msg.Replace("%MUTEORHEAR%", "").Replace("%PMBUTTON%", "");
             else
-                msg = msg.Replace("%MUTEORHEAR%", muteOrHear ? hearButton : muteButton).Replace("%PMBUTTON", pmButton);
+                msg = msg.Replace("%MUTEORHEAR%", muteOrHear ? hearButton : muteButton).Replace("%PMBUTTON%", pmButton);
             return msg;
         }
         public static string FormatOnlineBuddyEntry(string iconFormat, string username, int userId, int time, int x, int y)

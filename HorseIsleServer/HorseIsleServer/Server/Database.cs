@@ -5297,7 +5297,7 @@ namespace HISP.Server
 
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Horses ORDER BY experience DESC LIMIT 50";
+                sqlCommand.CommandText = "SELECT * FROM Horses WHERE autoSell > 0 ORDER BY experience DESC LIMIT 50";
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
@@ -5316,7 +5316,7 @@ namespace HISP.Server
 
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Horses ORDER BY autoSell LIMIT 100";
+                sqlCommand.CommandText = "SELECT * FROM Horses WHERE autoSell > 0 ORDER BY autoSell LIMIT 100";
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
                 while(reader.Read())

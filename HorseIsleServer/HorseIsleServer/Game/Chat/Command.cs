@@ -642,41 +642,33 @@ namespace HISP.Game.Chat
             
             doCommand:;
 
-            if (args.Length <= 0)
+            string areaName = string.Join(" ", args).ToLower();
+            areaName = areaName.Trim();
+            if (areaName == "")
+                areaName = "Horse Isle";
+            try
             {
-                goto cantUnderstandCommand;
+                User tp = GameServer.GetUserByName(areaName);
+
+                user.Teleport(tp.X, tp.Y);
+                formattedmessage += Messages.SuccessfullyWarpedToPlayer;
+                goto playSwf;
+
             }
-            else
+            catch (KeyNotFoundException)
             {
-                string areaName = string.Join(" ", args).ToLower();
-                areaName = areaName.Trim();
-                if (areaName == "")
-                    areaName = "Horse Isle";
-                try
+                foreach (World.Waypoint waypoint in World.Waypoints)
                 {
-                    User tp = GameServer.GetUserByName(areaName);
-
-                    user.Teleport(tp.X, tp.Y);
-                    formattedmessage += Messages.SuccessfullyWarpedToPlayer;
-                    goto playSwf;
-
-                }
-                catch (KeyNotFoundException)
-                {
-                    foreach (World.Waypoint waypoint in World.Waypoints)
+                    if (waypoint.Name.ToLower().StartsWith(areaName))
                     {
-                        if (waypoint.Name.ToLower().StartsWith(areaName))
-                        {
-                            user.Teleport(waypoint.PosX, waypoint.PosY);
-                            formattedmessage += Messages.SuccessfullyWarpedToLocation;
-                            goto playSwf;
-                        }
+                        user.Teleport(waypoint.PosX, waypoint.PosY);
+                        formattedmessage += Messages.SuccessfullyWarpedToLocation;
+                        goto playSwf;
                     }
-
-                    goto cantUnderstandCommand;
                 }
-                
-            }
+
+                goto cantUnderstandCommand;
+            }                
 
             playSwf:;
             byte[] swfPacket = PacketBuilder.CreateSwfModulePacket("warpcutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
