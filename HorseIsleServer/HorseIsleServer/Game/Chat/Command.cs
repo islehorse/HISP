@@ -877,6 +877,10 @@ namespace HISP.Game.Chat
             {
                 user.MuteIsland = false;
             }
+            else if (muteType.ToUpper() == "ADS")
+            {
+                user.MuteAds = false;
+            }
             else if (muteType.ToUpper() == "NEAR")
             {
                 user.MuteNear = false;
