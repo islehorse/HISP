@@ -644,8 +644,8 @@ namespace HISP.Game.Chat
 
             string areaName = string.Join(" ", args).ToLower();
             areaName = areaName.Trim();
-            if (areaName == "")
-                areaName = "Horse Isle";
+            if (args.Length <= 0)
+                areaName = "horse isle";
             try
             {
                 User tp = GameServer.GetUserByName(areaName);
