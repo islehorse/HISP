@@ -2533,7 +2533,7 @@ namespace HISP.Game
                         continue;
                     else if (horse.Breed.Type == "llama" && itemInfo.GetMiscFlag(1) != 2)
                         continue;
-                    else if (itemInfo.GetMiscFlag(1) != 0)
+                    else if (!(horse.Breed.Type == "llama" || horse.Breed.Type == "camel") && itemInfo.GetMiscFlag(1) != 0)
                         continue;
                     message += Messages.FormatHorseEquip(itemInfo.IconId, item.ItemInstances.Length, itemInfo.Name, itemInfo.Id);
                 }
