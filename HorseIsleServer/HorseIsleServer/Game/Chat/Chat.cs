@@ -409,7 +409,7 @@ namespace HISP.Game.Chat
 
             if (channel == ChatChannel.Mod)
             {
-                if (!user.Moderator || !user.Administrator) // No mod chat for non-mods!
+                if (!user.Moderator && !user.Administrator) // No mod chat for non-mods!
                 {
                     Logger.WarnPrint(user.Username + " attempted to send in MOD chat, without being a MOD.");
                     return new GameClient[0];
