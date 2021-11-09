@@ -189,12 +189,15 @@ namespace HISP.Server
             totalMinutesElapsed++;
             if (LoggedIn)
             {
+
                 GameServer.UpdatePlayer(this);
 
                 LoggedinUser.CanUseAdsChat = true;
                 LoggedinUser.FreeMinutes -= 1;
 
-                if(totalMinutesElapsed % 2 == 0)
+                GameServer.DoItemPurchases(this);
+
+                if (totalMinutesElapsed % 2 == 0)
                 {
                     LoggedinUser.TotalGlobalChatMessages++;
                 }

@@ -21,6 +21,7 @@ namespace HISP.Server
         public static string CrossDomainPolicyFile;
 
         public static int LogLevel = 0;
+        public static bool EnableSpamFilter = true;
         public static bool AllUsersSubbed = false;
         public static bool BadWords = true;
         public static bool DoCorrections = true;
@@ -102,6 +103,9 @@ namespace HISP.Server
                         break;
                     case "non_violation":
                         DoNonViolations = data == "true";
+                        break;
+                    case "enable_spam_filter":
+                        EnableSpamFilter = data == "true";
                         break;
                     case "enable_word_filter":
                         BadWords = data == "true";
