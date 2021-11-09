@@ -1169,7 +1169,7 @@ namespace HISP.Server
             Messages.PlayerHereTradeButton = gameData.messages.meta.player_interaction.trade_button;
             Messages.PlayerHereAddBuddyButton = gameData.messages.meta.player_interaction.buddy_button;
             Messages.PlayerHereTagButton = gameData.messages.meta.player_interaction.tag_button;
-            Messages.PlayerHerePmButton = gameData.messages.meta.player_interaction.pm_button;
+            Messages.PmButton = gameData.messages.meta.player_interaction.pm_button;
 
 
             // Auction
@@ -1950,7 +1950,6 @@ namespace HISP.Server
 
             Messages.MuteButton = gameData.messages.meta.player_list.mute_button;
             Messages.HearButton = gameData.messages.meta.player_list.hear_button;
-            Messages.PmButton = gameData.messages.meta.player_list.pm_button;
 
             Messages.ThreeMonthSubscripitionIcon = gameData.messages.meta.player_list.icon_subbed_3month;
             Messages.YearSubscriptionIcon = gameData.messages.meta.player_list.icon_subbed_year;

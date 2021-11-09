@@ -52,11 +52,23 @@ namespace HISP.Game.Inventory
             horsesList.Add(horse);
         }
 
+        public void DeleteHorseId(int id, bool removeFromDb = true)
+        {
+            foreach(HorseInstance horse in HorseList)
+            {
+                if(horse.RandomId == id)
+                {
+                    if (removeFromDb)
+                        Database.RemoveHorse(horse.RandomId);
+                    horsesList.Remove(horse);
+
+                }
+            }
+        }
+
         public void DeleteHorse(HorseInstance horse, bool removeFromDb=true)
         {
-            if(removeFromDb)
-                Database.RemoveHorse(horse.RandomId);
-            horsesList.Remove(horse);
+            DeleteHorseId(horse.RandomId, removeFromDb);
         }
         
         public bool HorseIdExist(int randomId)

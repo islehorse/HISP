@@ -60,7 +60,7 @@ namespace HISP.Game
                         buttons += Messages.FormatPlayerHereTagButton(playerAt.Id);
                     else
                         buttons += Messages.FormatPlayerHereBuddyButton(playerAt.Id);
-                    buttons += Messages.FormatPlayerHerePMButton(playerAt.Username);
+                    buttons += Messages.FormatPmButton(playerAt.Username);
 
                     playersHere += Messages.FormatPlayerHereMenu(playerAt.GetPlayerListIcon(), playerAt.Username,buttons);
                     count++;
@@ -1670,15 +1670,13 @@ namespace HISP.Game
             HorseInstance[] horses = Database.GetCheapestHorseAutoSell();
             foreach(HorseInstance horse in horses)
             {
-                if(horse.AutoSell > 0)
-                    message += Messages.FormatCityHallCheapAutoSellEntry(horse.AutoSell, Database.GetUsername(horse.Owner), horse.Name, horse.Color, horse.Breed.Name, horse.BasicStats.Experience);
+                message += Messages.FormatCityHallCheapAutoSellEntry(horse.AutoSell, Database.GetUsername(horse.Owner), horse.Name, horse.Color, horse.Breed.Name, horse.BasicStats.Experience);
             }
             message += Messages.CityHallMostExpAutoSells;
-            horses = Database.GetBiggestExpAutoSell();
-            foreach (HorseInstance horse in horses)
+            HorseInstance[] horsesExp = Database.GetBiggestExpAutoSell();
+            foreach (HorseInstance horse in horsesExp)
             {
-                if(horse.AutoSell > 0)
-                    message += Messages.FormatCityHallBestExpAutoSellEntry(horse.BasicStats.Experience, Database.GetUsername(horse.Owner), horse.Name, horse.AutoSell, horse.Color, horse.Breed.Name);
+                message += Messages.FormatCityHallBestExpAutoSellEntry(horse.BasicStats.Experience, Database.GetUsername(horse.Owner), horse.Name, horse.AutoSell, horse.Color, horse.Breed.Name);
             }
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
@@ -2306,7 +2304,7 @@ namespace HISP.Game
             if (isMyHorse)
                 message += Messages.FormatHorseNameYours(horse.Name);
             else
-                message += Messages.FormatHorseNameOthers(horse.Name);
+                message += Messages.FormatHorseNameOthers(horse.Name, Database.GetUsername(horse.Owner));
 
             message += Messages.FormatHorseDescription(horse.Description);
             message += Messages.FormatHorseHandsHigh(horse.Color, horse.Breed.Name, horse.Gender, HorseInfo.CalculateHands(horse.AdvancedStats.Height, false));

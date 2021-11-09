@@ -215,8 +215,13 @@ namespace HISP.Game.Chat
                 else if (message.ToUpper().StartsWith("!QUIZ"))
                     return Command.Quiz(message, args, user);
 
-                else if (message.ToUpper().StartsWith("!WARP"))
-                    return Command.Warp(message, args, user);
+                else if (message.ToUpper().StartsWith("!WARP")) // some stupid handling on this one.
+                {
+                    string placeName = message.Substring("!WARP".Length);
+                    placeName = placeName.Trim();
+
+                    return Command.Warp(message, placeName.Split(' '), user);
+                }
 
                 else if (message.ToUpper().StartsWith("!DANCE"))
                     return Command.Dance(message, args, user);
