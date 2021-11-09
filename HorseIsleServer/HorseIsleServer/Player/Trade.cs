@@ -130,18 +130,20 @@ namespace HISP.Player
             */
 
             bool itemYouFail = false;
-            foreach (ItemInstance[] inst in OtherTrade.ItemsOffered)
+            if (OtherTrade.ItemsOffered.Length > 0)
             {
-                if (Trader.Inventory.HasItemId(inst[0].ItemId))
+                foreach (ItemInstance[] inst in OtherTrade.ItemsOffered)
                 {
-                    InventoryItem items = Trader.Inventory.GetItemByItemId(inst[0].ItemId);
-                    if (items.ItemInstances.Length + inst.Length > ConfigReader.MAX_STACK)
+                    if (Trader.Inventory.HasItemId(inst[0].ItemId))
                     {
-                        itemYouFail = true;
+                        InventoryItem items = Trader.Inventory.GetItemByItemId(inst[0].ItemId);
+                        if (items.ItemInstances.Length + inst.Length > ConfigReader.MAX_STACK)
+                        {
+                            itemYouFail = true;
+                        }
                     }
                 }
             }
-
             if (itemYouFail)
             {
                 fail = true;
@@ -150,14 +152,18 @@ namespace HISP.Player
             }
 
             bool itemOtherFail = false;
-            foreach (ItemInstance[] inst in ItemsOffered)
+            if (ItemsOffered.Length > 0)
             {
-                if (OtherTrade.Trader.Inventory.HasItemId(inst[0].ItemId))
+
+                foreach (ItemInstance[] inst in ItemsOffered)
                 {
-                    InventoryItem items = OtherTrade.Trader.Inventory.GetItemByItemId(inst[0].ItemId);
-                    if (items.ItemInstances.Length + inst.Length > ConfigReader.MAX_STACK)
+                    if (OtherTrade.Trader.Inventory.HasItemId(inst[0].ItemId))
                     {
-                        itemOtherFail = true;
+                        InventoryItem items = OtherTrade.Trader.Inventory.GetItemByItemId(inst[0].ItemId);
+                        if (items.ItemInstances.Length + inst.Length > ConfigReader.MAX_STACK)
+                        {
+                            itemOtherFail = true;
+                        }
                     }
                 }
             }
