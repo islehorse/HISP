@@ -2701,7 +2701,7 @@ namespace HISP.Game
                         break;
                 }
                 
-                if(statCalculator.BreedValue < statCalculator.MaxValue)
+                if((statCalculator.BreedValue + trainer.ImprovesAmount) < statCalculator.MaxValue)
                     message += Messages.FormatTrainerTrainInEntry(horse.Name, statCalculator.BreedValue, statCalculator.MaxValue, horse.RandomId);
                 else
                     message += Messages.FormatTrainerFullyTrained(horse.Name, statCalculator.BreedValue);

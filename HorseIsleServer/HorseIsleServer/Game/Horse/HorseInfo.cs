@@ -251,7 +251,7 @@ namespace HISP.Game.Horse
                 set
                 {
                     if (value > ((baseHorse.Breed.BaseStats.Speed * 2) - baseHorse.Breed.BaseStats.Speed))
-                        value = (baseHorse.Breed.BaseStats.Speed - baseHorse.Breed.BaseStats.Speed * 2);
+                        value = ((baseHorse.Breed.BaseStats.Speed * 2) - baseHorse.Breed.BaseStats.Speed);
                     Database.SetHorseSpeed(baseHorse.RandomId, value);
                     speed = value;
                 }
@@ -265,7 +265,7 @@ namespace HISP.Game.Horse
                 }
                 set
                 {
-                    if (value > ((baseHorse.Breed.BaseStats.Strength * 2)- baseHorse.Breed.BaseStats.Strength))
+                    if (value > ((baseHorse.Breed.BaseStats.Strength * 2) - baseHorse.Breed.BaseStats.Strength))
                         value = ((baseHorse.Breed.BaseStats.Strength * 2) - baseHorse.Breed.BaseStats.Strength);
                     Database.SetHorseStrength(baseHorse.RandomId, value);
                     strength = value;
