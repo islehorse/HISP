@@ -53,10 +53,10 @@ namespace HISP.Game.Events
         {
             revengeTimeout = new Timer(new TimerCallback(revengeTimedOut), null, REVENGE_TIMEOUT * 60 * 1000, REVENGE_TIMEOUT * 60 * 1000);
 
-            int TOTAL_SPLATTERBALLS = 8; // I dont know the actural amount t-t
+            int TOTAL_SPLATTERBALLS = 50; // Thanks MayDay!
 
             // Give Splatterballs
-            int[] allUsers = Database.GetUsers();
+            int[] allUsers = Database.GetModeratorUsers();
             foreach (int userid in allUsers)
             {
                 for (int i = 0; i < TOTAL_SPLATTERBALLS; i++)

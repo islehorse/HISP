@@ -110,9 +110,17 @@ namespace HISP.Game.Inventory
             }
             throw new KeyNotFoundException("random id: " + randomId + " not found in shop inventory");
         }
+        public int GetSortPos(InventoryItem item)
+        {
+            int bias = 1000;
+            int sortBy = Item.GetItemById(item.ItemId).SortBy;
+            if (item.Infinite)
+                sortBy += bias;
+            return sortBy;
+        }
         public InventoryItem[] GetItemList()
         {
-            return inventoryItems.OrderBy(o => o.ItemInstances[0].GetItemInfo().SortBy).OrderBy(o => o.Infinite).ToArray();
+            return inventoryItems.OrderBy(o => GetSortPos(o)).ToArray();
         }
 
         public bool HasItem(int randomId)
