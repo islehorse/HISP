@@ -4171,6 +4171,25 @@ namespace HISP.Server
             }
             return userList.ToArray();
         }
+        public static int[] GetModeratorUsers()
+        {
+            List<int> userList = new List<int>();
+            using (MySqlConnection db = new MySqlConnection(ConnectionString))
+            {
+                db.Open();
+                MySqlCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT id FROM Users WHERE Moderator=\"YES\" OR Admin=\"YES\"";
+                MySqlDataReader reader = sqlCommand.ExecuteReader();
+                while (reader.Read())
+                {
+                    userList.Add(reader.GetInt32(0));
+                }
+
+            }
+            return userList.ToArray();
+        }
+
         public static void AddItemToInventory(int playerId, ItemInstance instance)
         {
             using (MySqlConnection db = new MySqlConnection(ConnectionString))
