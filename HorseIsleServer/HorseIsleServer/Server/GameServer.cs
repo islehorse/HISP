@@ -2577,13 +2577,12 @@ namespace HISP.Server
                                     }
                                     catch (Exception)
                                     {
-                                        goto tooHigh;
+                                        newSellPrice = 2147483647; // too high
                                     }
 
-                                    if(newSellPrice > 500000000)
+                                    if(newSellPrice > 500000000 || newSellPrice < 0)
                                     {
-                                    tooHigh:;
-                                        priceTooHigh = PacketBuilder.CreateChat(Messages.HorseAutoSellValueTooHigh, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        byte[] priceTooHigh = PacketBuilder.CreateChat(Messages.HorseAutoSellValueTooHigh, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                         sender.SendPacket(priceTooHigh);
                                         break;
                                     }
