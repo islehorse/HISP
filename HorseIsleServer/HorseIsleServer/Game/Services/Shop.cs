@@ -14,18 +14,25 @@ namespace HISP.Game.Services
         public int SellPricePercentage;
         public ShopInventory Inventory;
 
-        public Shop(int[] infiniteStocks)
+        public Shop(int[] infiniteStocks, int id)
         {
             this.Inventory = new ShopInventory(this);
+            this.Id = id;
 
-
-            foreach(int stock in infiniteStocks)
+            foreach (int stock in infiniteStocks)
             {
                 if (Item.ItemIdExist(stock))
                     this.Inventory.AddInfinity(Item.GetItemById(stock));
                 else
                     Logger.WarnPrint("Item ID: " + stock + " Does not exist.");
             }
+
+            ItemInstance[] instances = Database.GetShopInventory(this.Id);
+            foreach (ItemInstance instance in instances)
+            {
+                this.Inventory.Add(instance, false);
+            }
+
             Shop.ShopList.Add(this);
         }
         
