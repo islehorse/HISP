@@ -933,7 +933,7 @@ namespace HISP.Server
             Messages.AutoSellTooManyHorses = gameData.messages.meta.auto_sell.toomany_horses;
             Messages.AutoSellYouSoldHorseFormat = gameData.messages.meta.auto_sell.you_sold;
             Messages.AutoSellYouSoldHorseOfflineFormat = gameData.messages.meta.auto_sell.sold_offline;
-
+            
             // Mute Command
             Messages.NowMutingPlayerFormat = gameData.messages.meta.mute_command.now_ignoring_player;
             Messages.StoppedMutingPlayerFormat = gameData.messages.meta.mute_command.stop_ignoring_player;
@@ -1760,6 +1760,7 @@ namespace HISP.Server
             Messages.HorseAutoSellMenuFormat = gameData.messages.meta.horse.auto_sell.auto_sell_meta;
             Messages.HorseIsAutoSell = gameData.messages.meta.horse.auto_sell.is_auto_sell;
             Messages.HorseAutoSellConfirmedFormat = gameData.messages.meta.horse.auto_sell.auto_sell_confirmed;
+            Messages.HorseAutoSellValueTooHigh = gameData.messages.meta.horse.auto_sell.auto_sell_to_high;
             Messages.HorseAutoSellRemoved = gameData.messages.meta.horse.auto_sell.auto_sell_remove;
 
             Messages.HorseSetAutoSell = gameData.messages.meta.horse.horse_inventory.set_auto_sell;

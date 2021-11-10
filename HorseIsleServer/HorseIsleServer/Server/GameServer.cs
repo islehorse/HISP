@@ -2575,12 +2575,18 @@ namespace HISP.Server
                                     {
                                         newSellPrice = int.Parse(dynamicInput[1]);
                                     }
-                                    catch (FormatException)
+                                    catch (Exception)
                                     {
-                                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to set sell price to non int value.");
-                                        break;
+                                        goto tooHigh;
                                     }
 
+                                    if(newSellPrice > 500000000)
+                                    {
+                                    tooHigh:;
+                                        priceTooHigh = PacketBuilder.CreateChat(Messages.HorseAutoSellValueTooHigh, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(priceTooHigh);
+                                        break;
+                                    }
                                     byte[] sellPricePacket;
                                     if (newSellPrice > 0)
                                         sellPricePacket = PacketBuilder.CreateChat(Messages.FormatAutoSellConfirmedMessage(newSellPrice), PacketBuilder.CHAT_BOTTOM_RIGHT);
