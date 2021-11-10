@@ -191,10 +191,13 @@ namespace HISP.Game
                         entry.EnteredHorse.BasicStats.Shoes -= 100;
                         message = Messages.ArenaJumpingStartup;
                         break;
-                    case "DRESSAGE":
+                    case "CONFORMATION":
                         entry.EnteredHorse.BasicStats.Mood -= 300;
                         entry.EnteredHorse.BasicStats.Tiredness -= 200;
                         message = Messages.ArenaConformationStartup;
+                        break;
+                    default:
+                        message = "<B>Arena Type not recognized.</B><BR>Why dont you stop asking questions and get to fucking beating the competition.";
                         break;
                 }
                 byte[] startingUpEventPacket = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_RIGHT);

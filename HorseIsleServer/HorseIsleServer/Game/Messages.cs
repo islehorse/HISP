@@ -65,6 +65,7 @@ namespace HISP.Game
         // Auto Sell
         public static string AutoSellNotStandingInSamePlace;
         public static string AutoSellSuccessFormat;
+        public static string HorseAutoSellValueTooHigh;
         public static string AutoSellInsufficentFunds;
         public static string AutoSellTooManyHorses;
         public static string AutoSellYouSoldHorseFormat;
