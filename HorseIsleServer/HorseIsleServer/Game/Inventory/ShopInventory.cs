@@ -21,14 +21,7 @@ namespace HISP.Game.Inventory
         public ShopInventory(Shop shopkeeper)
         {
             baseShop = shopkeeper;
-
-            ItemInstance[] instances = Database.GetShopInventory(baseShop.Id).ToArray();
             inventoryItems = new List<InventoryItem>();
-
-            foreach (ItemInstance instance in instances)
-            {
-                addItem(instance, false);
-            }
         }
 
         private void addItem(ItemInstance item, bool addToDatabase)
@@ -39,8 +32,13 @@ namespace HISP.Game.Inventory
             {
                 if (invetoryItem.ItemId == item.ItemId)
                 {
-                    if (invetoryItem.Infinite) // no need to add +1, theres allready infinite quanity.
-                        return;
+                    if (invetoryItem.Infinite)
+                    {
+                        addToDatabase = false;
+                        goto retrn;
+                    }
+                    // no need to add +1, theres allready infinite quanity.
+
 
                     invetoryItem.AddItem(item);
 
@@ -54,7 +52,7 @@ namespace HISP.Game.Inventory
             inventoryItem.Infinite = false;
             inventoryItem.AddItem(item);
             inventoryItems.Add(inventoryItem);
-
+            
             retrn:
             {
                 if (addToDatabase)
@@ -78,6 +76,11 @@ namespace HISP.Game.Inventory
 
             inventoryItems.Add(inventoryItem);
         }
+        public void Add(ItemInstance item, bool addToDb)
+        {
+            addItem(item, addToDb);
+        }
+
         public void Add(ItemInstance item)
         {
             addItem(item, true);
@@ -115,7 +118,7 @@ namespace HISP.Game.Inventory
             int bias = 1000;
             int sortBy = Item.GetItemById(item.ItemId).SortBy;
             if (item.Infinite)
-                sortBy += bias;
+                sortBy -= bias;
             return sortBy;
         }
         public InventoryItem[] GetItemList()
