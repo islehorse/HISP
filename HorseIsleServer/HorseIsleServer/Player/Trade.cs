@@ -72,15 +72,22 @@ namespace HISP.Player
             GameServer.UpdateArea(OtherTrade.Trader.LoggedinClient);
         }
 
+        public bool Fail = false;
         public void CompleteTrade()
         {
-            bool fail = false;
+            
+
+            /*
+             *  Money Checks
+             */
+
             // Check if other player has no money
             if (MoneyOffered > 0 && OtherTrade.Trader.Money < 0)
             {
                 byte[] otherNegativeMoneyNotAllowed = PacketBuilder.CreateChat(Messages.TradeOtherPlayerHasNegativeMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(otherNegativeMoneyNotAllowed);
-                fail = true;
+                Fail = true;
+                OtherTrade.Fail = true;
             }
 
             // Check if current player has no money
@@ -88,7 +95,8 @@ namespace HISP.Player
             {
                 byte[] negativeMoneyNotAllowed = PacketBuilder.CreateChat(Messages.TradeYouHaveNegativeMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(negativeMoneyNotAllowed);
-                fail = true;
+                Fail = true;
+                OtherTrade.Fail = true;
             }
             
             // Check if other player has any bids
@@ -96,7 +104,8 @@ namespace HISP.Player
             {
                 byte[] tradeNotAllowedWhileOtherBidding = PacketBuilder.CreateChat(Messages.TradeNotAllowedWhileOtherBidding, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeNotAllowedWhileOtherBidding);
-                fail = true;
+                Fail = true;
+                OtherTrade.Fail = true;
             }
 
             // check if current player has bids'
@@ -104,44 +113,55 @@ namespace HISP.Player
             {
                 byte[] tradeNotAllowedWhileBidding = PacketBuilder.CreateChat(Messages.TradeNotAllowedWhileBidding, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeNotAllowedWhileBidding);
-                fail = true;
+                Fail = true;
+                OtherTrade.Fail = true;
             }
 
-            // Check if current player has max horses
+            // Check if other player has max money
+            if (MoneyOffered > 0 && OtherTrade.Trader.Money + MoneyOffered > 2100000000)
+            {
+                byte[] tradeOtherHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveOtherTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                Trader.LoggedinClient.SendPacket(tradeOtherHasTooMuchMoney);
+                Fail = true;
+                OtherTrade.Fail = true;
+            }
+
+            // Check if you have no money
+            if (OtherTrade.MoneyOffered > 0 && Trader.Money + OtherTrade.MoneyOffered > 2100000000)
+            {
+                byte[] tradeYouHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveYouTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                Trader.LoggedinClient.SendPacket(tradeYouHasTooMuchMoney);
+                Fail = true;
+                OtherTrade.Fail = true;
+            }
+
+
+            /*
+             *  Horse Checks
+             */
+
+            // Check if other player has max horses
             if (HorsesOffered.Length > 0 && OtherTrade.Trader.HorseInventory.HorseList.Length + HorsesOffered.Length > OtherTrade.Trader.MaxHorses)
             {
                 byte[] tradeYouHaveTooManyHorses = PacketBuilder.CreateChat(Messages.TradeYouCantHandleMoreHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeYouHaveTooManyHorses);
-                fail = true;
+                Fail = true;
+                OtherTrade.Fail = true;
             }
 
-            // Check if other player has max horses
+            // Check if current player has max horses
             if (OtherTrade.HorsesOffered.Length > 0 && Trader.HorseInventory.HorseList.Length + OtherTrade.HorsesOffered.Length > Trader.MaxHorses)
             {
                 byte[] tradeYouHaveTooManyHorses = PacketBuilder.CreateChat(Messages.TradeYouCantHandleMoreHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeYouHaveTooManyHorses);
-                fail = true;
-            }
-            // Check if other player has max money
-            if(MoneyOffered > 0 && OtherTrade.Trader.Money + MoneyOffered > 2100000000)
-            {
-                byte[] tradeOtherHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveOtherTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeOtherHasTooMuchMoney);
-                fail = true;
-            }
-            // Check if you have no money
-            if(OtherTrade.MoneyOffered > 0 && Trader.Money + OtherTrade.MoneyOffered > 2100000000)
-            {
-                byte[] tradeYouHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveYouTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeYouHasTooMuchMoney);
-                fail = true;
+                Fail = true;
+                OtherTrade.Fail = true;
             }
 
             /*
             *      Item Checks
             */
 
-            bool itemYouFail = false;
             if (OtherTrade.ItemsOffered.Length > 0)
             {
                 foreach (ItemInstance[] inst in OtherTrade.ItemsOffered)
@@ -151,19 +171,15 @@ namespace HISP.Player
                         InventoryItem items = Trader.Inventory.GetItemByItemId(inst[0].ItemId);
                         if (items.ItemInstances.Length + inst.Length > ConfigReader.MAX_STACK)
                         {
-                            itemYouFail = true;
+                            byte[] tradeTooManyItems = PacketBuilder.CreateChat(Messages.TradeYouCantCarryMoreItems, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            Trader.LoggedinClient.SendPacket(tradeTooManyItems);
+                            Fail = true;
+                            OtherTrade.Fail = true;
                         }
                     }
                 }
             }
-            if (itemYouFail)
-            {
-                fail = true;
-                byte[] tradeTooManyItems = PacketBuilder.CreateChat(Messages.TradeYouCantCarryMoreItems, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeTooManyItems);
-            }
 
-            bool itemOtherFail = false;
             if (ItemsOffered.Length > 0)
             {
                 foreach (ItemInstance[] inst in ItemsOffered)
@@ -173,30 +189,29 @@ namespace HISP.Player
                         InventoryItem items = OtherTrade.Trader.Inventory.GetItemByItemId(inst[0].ItemId);
                         if (items.ItemInstances.Length + inst.Length > ConfigReader.MAX_STACK)
                         {
-                            itemOtherFail = true;
+                            byte[] tradeTooManyItems = PacketBuilder.CreateChat(Messages.TradeOtherCantCarryMoreItems, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            Trader.LoggedinClient.SendPacket(tradeTooManyItems);
+                            Fail = true;
+                            OtherTrade.Fail = true;
                         }
                     }
                 }
             }
 
-            if (itemOtherFail)
-            {
-                fail = true;
-                byte[] tradeTooManyItems = PacketBuilder.CreateChat(Messages.TradeOtherCantCarryMoreItems, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeTooManyItems);
-            }
 
-            if (fail)
+            if (this.Fail)
                 goto cancelTrade;
             else
                 goto acceptTrade;
 
-
+            
             acceptTrade:;
             byte[] tradeAccepted = PacketBuilder.CreateChat(Messages.TradeAcceptedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
             Trader.LoggedinClient.SendPacket(tradeAccepted);
 
-            if (MoneyOffered > 0) // Transfer Money
+            // Transfer Money
+
+            if (MoneyOffered > 0) 
             {
                 Trader.TakeMoney(MoneyOffered);
                 byte[] tradeSpentMoney = PacketBuilder.CreateChat(Messages.FormatTradeYouSpent(MoneyOffered), PacketBuilder.CHAT_BOTTOM_RIGHT);
