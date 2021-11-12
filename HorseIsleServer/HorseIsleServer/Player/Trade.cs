@@ -75,49 +75,61 @@ namespace HISP.Player
         public void CompleteTrade()
         {
             bool fail = false;
-            // Check hell
-            if (OtherTrade.Trader.Money < 0)
+            // Check if other player has no money
+            if (MoneyOffered > 0 && OtherTrade.Trader.Money < 0)
             {
                 byte[] otherNegativeMoneyNotAllowed = PacketBuilder.CreateChat(Messages.TradeOtherPlayerHasNegativeMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(otherNegativeMoneyNotAllowed);
                 fail = true;
             }
-            if (Trader.Money < 0)
+
+            // Check if current player has no money
+            if (OtherTrade.MoneyOffered > 0 && Trader.Money < 0)
             {
                 byte[] negativeMoneyNotAllowed = PacketBuilder.CreateChat(Messages.TradeYouHaveNegativeMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(negativeMoneyNotAllowed);
                 fail = true;
             }
+            
+            // Check if other player has any bids
             if (OtherTrade.Trader.Bids.Length > 0)
             {
                 byte[] tradeNotAllowedWhileOtherBidding = PacketBuilder.CreateChat(Messages.TradeNotAllowedWhileOtherBidding, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeNotAllowedWhileOtherBidding);
                 fail = true;
             }
+
+            // check if current player has bids'
             if (Trader.Bids.Length > 0)
             {
                 byte[] tradeNotAllowedWhileBidding = PacketBuilder.CreateChat(Messages.TradeNotAllowedWhileBidding, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeNotAllowedWhileBidding);
                 fail = true;
             }
-            if (OtherTrade.Trader.HorseInventory.HorseList.Length + HorsesOffered.Length > OtherTrade.Trader.MaxHorses)
+
+            // Check if current player has max horses
+            if (HorsesOffered.Length > 0 && OtherTrade.Trader.HorseInventory.HorseList.Length + HorsesOffered.Length > OtherTrade.Trader.MaxHorses)
             {
                 byte[] tradeYouHaveTooManyHorses = PacketBuilder.CreateChat(Messages.TradeYouCantHandleMoreHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeYouHaveTooManyHorses);
                 fail = true;
             }
-            if (Trader.HorseInventory.HorseList.Length + OtherTrade.HorsesOffered.Length > Trader.MaxHorses)
+
+            // Check if other player has max horses
+            if (OtherTrade.HorsesOffered.Length > 0 && Trader.HorseInventory.HorseList.Length + OtherTrade.HorsesOffered.Length > Trader.MaxHorses)
             {
                 byte[] tradeYouHaveTooManyHorses = PacketBuilder.CreateChat(Messages.TradeYouCantHandleMoreHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeYouHaveTooManyHorses);
                 fail = true;
             }
+            // Check if other player has max money
             if(MoneyOffered > 0 && OtherTrade.Trader.Money + MoneyOffered > 2100000000)
             {
                 byte[] tradeOtherHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveOtherTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.LoggedinClient.SendPacket(tradeOtherHasTooMuchMoney);
                 fail = true;
             }
+            // Check if you have no money
             if(OtherTrade.MoneyOffered > 0 && Trader.Money + OtherTrade.MoneyOffered > 2100000000)
             {
                 byte[] tradeYouHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveYouTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -154,7 +166,6 @@ namespace HISP.Player
             bool itemOtherFail = false;
             if (ItemsOffered.Length > 0)
             {
-
                 foreach (ItemInstance[] inst in ItemsOffered)
                 {
                     if (OtherTrade.Trader.Inventory.HasItemId(inst[0].ItemId))
