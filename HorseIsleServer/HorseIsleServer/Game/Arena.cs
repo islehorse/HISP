@@ -399,13 +399,17 @@ namespace HISP.Game
             return false;
         }
 
-        public static void StartArenas(int minutes)
+        public static void StartArenas(int Minutes)
         {
             foreach(Arena arena in Arenas)
             {
-                if (minutes % arena.RaceEvery == 0)
-                    if(arena.Mode == "TAKINGENTRIES")
-                       arena.Start();
+                if ((Minutes % arena.RaceEvery) == 1)
+                {
+                    if (arena.Mode == "TAKINGENTRIES")
+                    {
+                        arena.Start();
+                    }
+                }
             }
 
         }
