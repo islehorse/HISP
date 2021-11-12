@@ -21,6 +21,7 @@ namespace HISP.Player
 
         public static AwardEntry GetAwardById(int id)
         {
+            //99% fo the time this will work
             try
             {
                 AwardEntry award = GlobalAwardList[id - 1];
@@ -29,6 +30,7 @@ namespace HISP.Player
             }
             catch (Exception) { };
 
+            // Incase it doesnt...
             foreach(AwardEntry award in GlobalAwardList)
             {
                 if (award.Id == id)
