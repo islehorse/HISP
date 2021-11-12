@@ -416,7 +416,7 @@ namespace HISP.Server
             {
 
                 Award.AwardEntry award = new Award.AwardEntry();
-                award.Id = i + 1;
+                award.Id = gameData.award_list[i].id;
                 award.Sort = gameData.award_list[i].sort_by;
                 award.Title = gameData.award_list[i].title;
                 award.IconId = gameData.award_list[i].icon_id;
