@@ -53,11 +53,15 @@ namespace HISP.Server
             World.TickWorldClock();
             if(World.ServerTime.Minutes != lastServerTime)
             {
+                lastServerTime = World.ServerTime.Minutes;
+
+                // Start all events with this RaceEvery set.
                 Arena.StartArenas(World.ServerTime.Minutes);
 
+                // Decrement horse train timer
                 Database.DecHorseTrainTimeout();
 
-                // write time to database:
+                // Write time to database:
                 Database.SetServerTime(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years);
 
                 // Ranch Windmill Payments
@@ -103,7 +107,6 @@ namespace HISP.Server
                 }
 
                 gameTimer.Change(gameTickSpeed, gameTickSpeed);
-                lastServerTime = World.ServerTime.Minutes;
             }
 
         }
@@ -146,29 +149,34 @@ namespace HISP.Server
             {
                 ModsRevengeEvent.StartEvent();
             }
+            
             // Isle Card Trading Game
             if(totalMinutesElapsed % (60 *2) == 0)
             {
                 IsleCardTrading = new IsleCardTradingGame();
                 IsleCardTrading.StartEvent();
             }
+            
             // Water Balloon Game
             if(totalMinutesElapsed % (60 * 2) == 0)
             {
                 WaterBalloonEvent.StartEvent();
             }
+            
             // Tack Shop Giveaway
             if(totalMinutesElapsed % ((60 * 3)+5) == 0)
             {
                 TackShopGiveawayEvent = new TackShopGiveaway();
                 TackShopGiveawayEvent.StartEvent();
             }
+            
             // Real Time Riddle
             if(totalMinutesElapsed % (RealTimeRiddle.LastWon ? 20 : 15) == 0)
             {
                 RiddleEvent = RealTimeRiddle.GetRandomRiddle();
                 RiddleEvent.StartEvent();   
             }
+
             // Real Time Quiz
             if(totalMinutesElapsed % (60 + 30) == 0)
             {

@@ -144,8 +144,8 @@ namespace HISP.Server
                 // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
 
                 if (isDisconnecting ||
-                    ClientSocket == null || 
-                    ClientSocket.Poll(0, SelectMode.SelectRead) ||
+                    ClientSocket == null ||
+                    e.BytesTransferred <= 0 ||
                     !ClientSocket.Connected || 
                     e.SocketError != SocketError.Success)
                 {
@@ -154,19 +154,22 @@ namespace HISP.Server
                 }
 
                 int availble = e.BytesTransferred;
-                if (availble >= 1)
+                if (availble >= 1) // More than 1 byte transfered..
                 {
 
                     for (int i = 0; i < availble; i++)
                     {
                         currentPacket.Add(e.Buffer[i]);
-                        if (e.Buffer[i] == PacketBuilder.PACKET_TERMINATOR)
+                        if (e.Buffer[i] == PacketBuilder.PACKET_TERMINATOR) // Read until \0...
                         {
                             parsePackets(currentPacket.ToArray());
                             currentPacket.Clear();
                         }
                     }
                 }
+
+                if (availble == 0)
+                    Disconnect();
 
                 if (isDisconnecting || ClientSocket == null)
                     return;
