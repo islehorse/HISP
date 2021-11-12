@@ -184,7 +184,7 @@ namespace HISP.Server
             Logger.DebugPrint("Sending keep-alive packet to " + LoggedinUser.Username);
             byte[] updatePacket = PacketBuilder.CreateKeepAlive();
             SendPacket(updatePacket);
-            if(keepAliveTimer != null)
+            if(!isDisconnecting && keepAliveTimer != null) // wtf how is this still a problem?
                keepAliveTimer.Change(oneMinute, oneMinute);
         }
         private void minuteTimerTick(object state)
