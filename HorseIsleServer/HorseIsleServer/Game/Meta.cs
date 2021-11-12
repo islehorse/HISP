@@ -1758,7 +1758,7 @@ namespace HISP.Game
 
             if(!Ranch.RanchExists(ranchId)) // Ghost ranchs exist.. apparently?
             {
-                user.MetaPriority = false;
+                user.MajorPriority = false;
                 return BuildMetaInfo(user, user.X, user.Y);
             }
 
@@ -2550,7 +2550,7 @@ namespace HISP.Game
                 Quest.QuestResult result = Quest.ActivateQuest(user, quest, true);
                 if (result.QuestCompleted)
                 {
-                    user.MetaPriority = true;
+                    user.MajorPriority = true;
                     if (result.SetChatpoint != -1)
                         Npc.SetDefaultChatpoint(user, npc, result.SetChatpoint);
                     if (result.GotoChatpoint != -1)
@@ -2902,7 +2902,7 @@ namespace HISP.Game
             else
             {
 
-                user.MetaPriority = true;
+                user.MinorPriority = true;
                 
                 string TileCode = specialTile.Code;
 

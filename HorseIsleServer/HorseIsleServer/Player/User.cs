@@ -86,7 +86,8 @@ namespace HISP.Player
         public bool MuteAll = false;
         public bool MuteLogins = false;
         public string Gender;
-        public bool MetaPriority = false;
+        public bool MajorPriority = false;
+        public bool MinorPriority = false;
         public bool HorseWindowOpen = false;
         public bool Idle;
         public int Facing;

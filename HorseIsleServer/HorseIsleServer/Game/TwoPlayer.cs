@@ -107,8 +107,8 @@ namespace HISP.Game
             {
                 Accepted = false; 
 
-                Invitee.MetaPriority = false;
-                Inviting.MetaPriority = false;
+                Invitee.MajorPriority = false;
+                Inviting.MajorPriority = false;
 
                 update();
 
@@ -217,8 +217,8 @@ namespace HISP.Game
                     }
                 }
 
-                Invitee.MetaPriority = false;
-                Inviting.MetaPriority = false;
+                Invitee.MajorPriority = false;
+                Inviting.MajorPriority = false;
 
                 
                 if (!closeSilently)
