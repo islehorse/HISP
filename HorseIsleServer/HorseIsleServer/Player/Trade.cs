@@ -76,7 +76,6 @@ namespace HISP.Player
         public void CompleteTrade()
         {
             
-
             /*
              *  Money Checks
              */
