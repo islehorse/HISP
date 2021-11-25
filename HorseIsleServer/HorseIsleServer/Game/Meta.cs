@@ -113,13 +113,13 @@ namespace HISP.Game
                     angle = (angle % 360 + 360) % 360;
 
                     if (angle >= 270 && angle <= 360 )
-                        usersWest += " " + nearbyUser.Username + " ";
+                        usersWest += nearbyUser.Username + " ";
                     else if (angle >= 90 && angle <= 180)
-                        usersEast += " " + nearbyUser.Username + " ";
+                        usersEast += nearbyUser.Username + " ";
                     else if (angle >= 180 && angle <= 270)
-                        usersSouth += " " + nearbyUser.Username + " ";
+                        usersSouth += nearbyUser.Username + " ";
                     else if (angle >= 0 && angle <= 90)
-                        usersNorth += " " + nearbyUser.Username + " ";
+                        usersNorth += nearbyUser.Username + " ";
 
 
                     count++;
