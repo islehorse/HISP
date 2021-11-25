@@ -412,20 +412,23 @@ namespace HISP.Server
              */
             try
             {
-                if (timeoutTimer != null)
-                    timeoutTimer.Change(timeoutInterval, timeoutInterval); // Reset time before timing out
-                else
-                    return;
+                if (LoggedIn)
+                {
+                    if (timeoutTimer != null)
+                        timeoutTimer.Change(timeoutInterval, timeoutInterval); // Reset time before timing out
+                    else
+                        return;
 
-                if (keepAliveTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
-                {
-                    if (LoggedIn)
-                        LoggedinUser.Idle = false;
-                    keepAliveTimer.Change(oneMinute, oneMinute);
-                }
-                else
-                {
-                    return;
+                    if (keepAliveTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
+                    {
+                        if (LoggedIn)
+                            LoggedinUser.Idle = false;
+                        keepAliveTimer.Change(oneMinute, oneMinute);
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
 
                 if (kickTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
@@ -437,7 +440,6 @@ namespace HISP.Server
                     warnTimer.Change(warnInterval, warnInterval);
                 else
                     return;
-
             }
             catch (ObjectDisposedException) 
             {
@@ -454,12 +456,11 @@ namespace HISP.Server
             {
                 if (!LoggedIn) // Must be either login or policy-file-request
                 {
-                    if (Encoding.UTF8.GetString(Packet).StartsWith("<policy-file-request/>")) // Policy File Request
-                    {
-                        GameServer.OnCrossdomainPolicyRequest(this);
-                    }
                     switch (identifier)
                     {
+                        case PacketBuilder.PACKET_FLASH_XML_CROSSDOMAIN:
+                            GameServer.OnCrossdomainPolicyRequest(this, Packet);
+                            break;
                         case PacketBuilder.PACKET_LOGIN:
                             GameServer.OnLoginRequest(this, Packet);
                             break;
@@ -547,10 +548,7 @@ namespace HISP.Server
             }
             catch(Exception e)
             {
-                Logger.ErrorPrint("Unhandled Exception: " + e.ToString());
-                Logger.ErrorPrint(e.Message);
-                Logger.ErrorPrint("");
-                Logger.ErrorPrint(e.StackTrace);
+                Logger.ErrorPrint("Unhandled Exception: " + e.ToString() + "\n" + e.Message + "\n" + e.StackTrace);
 
                 Kick("Unhandled Exception: " + e.ToString());
             }

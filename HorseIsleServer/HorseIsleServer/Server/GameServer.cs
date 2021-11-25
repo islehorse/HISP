@@ -259,13 +259,15 @@ namespace HISP.Server
          */
 
 
-        public static void OnCrossdomainPolicyRequest(GameClient sender)
+        public static void OnCrossdomainPolicyRequest(GameClient sender, byte[] packet)
         {
-            Logger.DebugPrint("Cross-Domain-Policy request received from: " + sender.RemoteIp);
+            if (Encoding.UTF8.GetString(packet).StartsWith("<policy-file-request/>"))
+            {
+                Logger.DebugPrint("Cross-Domain-Policy request received from: " + sender.RemoteIp);
+                byte[] crossDomainPolicyResponse = CrossDomainPolicy.GetPolicy();
+                sender.SendPacket(crossDomainPolicyResponse);
 
-            byte[] crossDomainPolicyResponse = CrossDomainPolicy.GetPolicy();
-
-            sender.SendPacket(crossDomainPolicyResponse);
+            }
         }
 
         public static void OnPlayerInteration(GameClient sender, byte[] packet)
