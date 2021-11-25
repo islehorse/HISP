@@ -5531,7 +5531,7 @@ namespace HISP.Server
                 {
                     Ranch.RanchBuilding building = Ranch.RanchBuilding.GetRanchBuildingById(buildingId);
                     int ranchBuild = sender.LoggedinUser.LastClickedRanchBuilding;
-                    if (ranchBuild == 0)
+                    if (ranchBuild <= 0)
                         return;
                     if (sender.LoggedinUser.OwnedRanch != null)
                     {
@@ -5540,7 +5540,12 @@ namespace HISP.Server
                             Logger.HackerPrint(sender.LoggedinUser.Username + " Tried to remove more buildings than the limit.");
                             return;
                         }
+                        
                         Ranch.RanchBuilding ranchBuilding = sender.LoggedinUser.OwnedRanch.GetBuilding(ranchBuild - 1);
+
+                        if (ranchBuilding == null)
+                            return;
+
                         if (ranchBuilding.Id == buildingId)
                         {
                             sender.LoggedinUser.OwnedRanch.SetBuilding(ranchBuild - 1, null);
