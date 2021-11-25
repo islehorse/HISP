@@ -5856,6 +5856,7 @@ namespace HISP.Server
                     RiddleEvent.Win(sender.LoggedinUser);
                 
            
+
             // Check if player is muting channel
 
             if( (sender.LoggedinUser.MuteGlobal && channel == Chat.ChatChannel.All) || (sender.LoggedinUser.MuteAds && channel == Chat.ChatChannel.Ads) || (sender.LoggedinUser.MuteHere && channel == Chat.ChatChannel.Here) && (sender.LoggedinUser.MuteBuddy && channel == Chat.ChatChannel.Buddies) && (sender.LoggedinUser.MuteNear && channel == Chat.ChatChannel.Near) && (sender.LoggedinUser.MuteIsland && channel == Chat.ChatChannel.Isle))
@@ -5885,7 +5886,9 @@ namespace HISP.Server
             byte chatSide = Chat.GetSide(channel);
             message = Chat.DoCorrections(message);
             message = Chat.EscapeMessage(message);
-
+            // Encode bbcode message.
+            if(ConfigReader.AllowBbcode || (sender.LoggedinUser.Moderator || sender.LoggedinUser.Administrator))
+                message = BBCode.EncodeBBCodeToMeta(message);
 
             string failedReason = Chat.NonViolationChecks(sender.LoggedinUser, message);
             if (failedReason != null)

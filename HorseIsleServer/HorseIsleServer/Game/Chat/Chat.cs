@@ -492,7 +492,7 @@ namespace HISP.Game.Chat
         }
         public static string EscapeMessage(string message)
         {
-            return message.Replace("<", "&lt;");
+            return message.Replace("&", "&amp;").Replace("<", "&lt;");
         }
 
         public static string FormatChatForOthers(User user, ChatChannel channel, string message, bool autoReply=false)
