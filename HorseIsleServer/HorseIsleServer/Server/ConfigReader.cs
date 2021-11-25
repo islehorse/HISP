@@ -23,6 +23,7 @@ namespace HISP.Server
         public static int LogLevel = 0;
         public static bool EnableSpamFilter = true;
         public static bool AllUsersSubbed = false;
+        public static bool AllowBbcode = false;
         public static bool BadWords = true;
         public static bool DoCorrections = true;
         public static bool DoNonViolations = true;
@@ -106,6 +107,9 @@ namespace HISP.Server
                         break;
                     case "enable_spam_filter":
                         EnableSpamFilter = data == "true";
+                        break;
+                    case "allow_bbcode_in_chat":
+                        AllowBbcode = data == "true";
                         break;
                     case "enable_word_filter":
                         BadWords = data == "true";
