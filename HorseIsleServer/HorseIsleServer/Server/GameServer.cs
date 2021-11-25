@@ -3671,38 +3671,53 @@ namespace HISP.Server
                 Logger.ErrorPrint(sender.RemoteIp + " Requested user information when not logged in.");
                 return;
             }
+
+            // Prevent duplicate requests.
+            if (sender.LoggedinUser.UserInfoSend) 
+                return;
+
+            sender.LoggedinUser.UserInfoSend = true;
+
+            // This allows the website to view that the player is online.
             Database.AddOnlineUser(sender.LoggedinUser.Id, sender.LoggedinUser.Administrator, sender.LoggedinUser.Moderator, sender.LoggedinUser.Subscribed, sender.LoggedinUser.NewPlayer);
             
             Logger.DebugPrint(sender.LoggedinUser.Username + " Requested user information.");
-
             User user = sender.LoggedinUser;
 
+            // Send player current location & map data
             byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
             sender.SendPacket(MovementPacket);
 
+            // Send "Welcome to the Secret Land of Horses" message.
             byte[] WelcomeMessage = PacketBuilder.CreateWelcomeMessage(user.Username);
             sender.SendPacket(WelcomeMessage);
 
-            
+            // Send weather effects, and current server time.
             byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, sender.LoggedinUser.GetWeatherSeen());
             sender.SendPacket(WorldData);
 
-            // Send first time message;
+            // if the player is logging in for the first time, send Welcome newest rider of Horse Isle message.
             if (sender.LoggedinUser.NewPlayer)
             {
                 byte[] NewUserMessage = PacketBuilder.CreateChat(Messages.NewUserMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 sender.SendPacket(NewUserMessage);
             }
 
-
+            // Send Security Codes, used (badly) to verify Minigame Rewards
             byte[] SecCodePacket = PacketBuilder.CreateSecCode(user.SecCodeSeeds, user.SecCodeInc, user.Administrator, user.Moderator);
             sender.SendPacket(SecCodePacket);
 
+            // Send player money count, total players and total unread mail.
             byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(user.Money, GameServer.GetNumberOfPlayers(), user.MailBox.UnreadMailCount);
             sender.SendPacket(BaseStatsPacketData);
 
+            // Sends Meta Window information (Nearby, current tile, etc)
             UpdateArea(sender);
 
+            /*
+             *  Send all nearby players locations to the client
+             *  if there not nearby, say there at 1000,1000.
+             */
             foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
@@ -3723,18 +3738,29 @@ namespace HISP.Server
                 }
             }
 
+            /*
+             *  Update all nearby users 
+             *  that the new player logged in.
+             */
             foreach (User nearbyUser in GameServer.GetNearbyUsers(sender.LoggedinUser.X, sender.LoggedinUser.Y, false, false))
                 if (nearbyUser.Id != sender.LoggedinUser.Id)
                     if(!nearbyUser.MajorPriority)
                         if(!nearbyUser.MinorPriority)
                             UpdateArea(nearbyUser.LoggedinClient);
 
+            /*
+             * Send a list of isles, towns and areas to the player
+             * This is used for the world map.
+             */
+
             byte[] IsleData = PacketBuilder.CreatePlaceData(World.Isles.ToArray(), World.Towns.ToArray(), World.Areas.ToArray());
             sender.SendPacket(IsleData);
 
+            // Tells the client which tiles are passable, which the player should appear ontop of and which it should be below.
             byte[] TileFlags = PacketBuilder.CreateTileOverlayFlags(Map.OverlayTileDepth);
             sender.SendPacket(TileFlags);
 
+            // Send Todays Note:
             byte[] MotdData = PacketBuilder.CreateMotd();
             sender.SendPacket(MotdData);
 
@@ -3743,7 +3769,11 @@ namespace HISP.Server
                 if (RiddleEvent.Active)
                     RiddleEvent.ShowStartMessage(sender);
 
-            // Give Queued Itmes
+            /*
+             *  Gives Queued Items
+             *  When you buy a PO from the store on the website
+             *  its added to this queued items list.
+             */
             DoItemPurchases(sender);
 
             // Send Queued Messages
@@ -3755,7 +3785,7 @@ namespace HISP.Server
             }
             Database.ClearMessageQueue(sender.LoggedinUser.Id);
 
-            // Send login message
+            // Send "Playername Logged in" message
             byte[] loginMessageBytes = PacketBuilder.CreateChat(Messages.FormatLoginMessage(sender.LoggedinUser.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
             foreach (GameClient client in GameClient.ConnectedClients)
                 if (client.LoggedIn)
@@ -3764,8 +3794,10 @@ namespace HISP.Server
                             client.SendPacket(loginMessageBytes);
 
 
-            // Tell other clients you exist
-            
+            /*
+             *  Send players nearby to you 
+             *  your position, otherwise just send 1000,1000
+             */
             byte[] yourPlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.Facing, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Username);
             byte[] yourPlayerInfoOffscreen = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, sender.LoggedinUser.Facing, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Username);
 
@@ -5886,6 +5918,7 @@ namespace HISP.Server
             byte chatSide = Chat.GetSide(channel);
             message = Chat.DoCorrections(message);
             message = Chat.EscapeMessage(message);
+
             // Encode bbcode message.
             if(ConfigReader.AllowBbcode || (sender.LoggedinUser.Moderator || sender.LoggedinUser.Administrator))
                 message = BBCode.EncodeBBCodeToMeta(message);
@@ -7352,12 +7385,11 @@ namespace HISP.Server
                     }
 
 
+                    sender.Login(userId);
+                    sender.LoggedinUser.Password = password;
 
                     byte[] ResponsePacket = PacketBuilder.CreateLoginPacket(true);
                     sender.SendPacket(ResponsePacket);
-
-                    sender.Login(userId);
-                    sender.LoggedinUser.Password = password;
 
                     Logger.DebugPrint(sender.RemoteIp + " Logged into : " + sender.LoggedinUser.Username + " (ADMIN: " + sender.LoggedinUser.Administrator + " MOD: " + sender.LoggedinUser.Moderator + ")");
 

@@ -110,29 +110,43 @@ namespace HISP.Server
             if (this.isDisconnecting)
                 return;
             this.isDisconnecting = true;
+            
+            // Close Socket
+            if (ClientSocket != null)
+            {
+                ClientSocket.Close();
+                ClientSocket.Dispose();
+                ClientSocket = null;
+            }
+
 
             // Stop Timers
             if (timeoutTimer != null)
+            {
                 timeoutTimer.Dispose();
+                timeoutTimer = null;
+            }
             if (keepAliveTimer != null)
+            {
                 keepAliveTimer.Dispose();
+                keepAliveTimer = null;
+            }
             if (warnTimer != null)
+            {
                 warnTimer.Dispose();
+                warnTimer = null;
+            }
             if (kickTimer != null)
+            {
                 kickTimer.Dispose();
+                kickTimer = null;
+            }
 
             // Call OnDisconnect
             
             connectedClients.Remove(this);
             GameServer.OnDisconnect(this);
             LoggedIn = false;
-
-            // Close Socket
-            if(ClientSocket != null)
-            {
-                ClientSocket.Close();
-                ClientSocket.Dispose();
-            }
 
         }
 
@@ -373,15 +387,6 @@ namespace HISP.Server
 
         public void Login(int id)
         {
-            // Check for duplicate
-            foreach (GameClient Client in GameClient.ConnectedClients)
-            {
-                if (Client.LoggedIn)
-                {
-                    if (Client.LoggedinUser.Id == id)
-                        Client.Kick(Messages.KickReasonDuplicateLogin);
-                }
-            }
             LoggedinUser = new User(this, id);
             LoggedIn = true;
 
@@ -400,22 +405,51 @@ namespace HISP.Server
             }
             byte identifier = Packet[0];
 
-            if (timeoutTimer != null)
-                timeoutTimer.Change(timeoutInterval, timeoutInterval); // Reset time before timing out
-
-            if (keepAliveTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
+            /*
+             *  Every time ive tried to fix this properly by just checking if its null or something
+             *  it keeps happening, so now im just going to catch the exception
+             *  and hope it works.
+             */
+            try
             {
-                if (LoggedIn)
-                    LoggedinUser.Idle = false;
-                keepAliveTimer.Change(oneMinute, oneMinute);
+                if (timeoutTimer != null)
+                    timeoutTimer.Change(timeoutInterval, timeoutInterval); // Reset time before timing out
+                else
+                    return;
+
+                if (keepAliveTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
+                {
+                    if (LoggedIn)
+                        LoggedinUser.Idle = false;
+                    keepAliveTimer.Change(oneMinute, oneMinute);
+                }
+                else
+                {
+                    return;
+                }
+
+                if (kickTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
+                    kickTimer.Change(kickInterval, kickInterval);
+                else
+                    return;
+
+                if (warnTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
+                    warnTimer.Change(warnInterval, warnInterval);
+                else
+                    return;
+
+            }
+            catch (ObjectDisposedException) 
+            {
+                return;
             }
 
-            if (kickTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
-                kickTimer.Change(kickInterval, kickInterval);
 
-            if (warnTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
-                warnTimer.Change(warnInterval, warnInterval);
-
+            /*
+             *  Put packet handling in a try/catch
+             *  this prevents the entire server from crashing
+             *  if theres an error in handling a particular packet.
+             */
             try
             {
                 if (!LoggedIn) // Must be either login or policy-file-request
