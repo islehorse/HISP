@@ -314,6 +314,12 @@ namespace HISP.Game
         }
         public RanchBuilding GetBuilding(int buildingId)
         {
+            if (buildingId < 0)
+                return null;
+
+            if (buildingId >= buildings.Length)
+                return null;
+
             return buildings[buildingId];
         }
         public void SetBuilding(int buildingId, RanchBuilding value)

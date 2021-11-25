@@ -1932,8 +1932,7 @@ namespace HISP.Server
 
                 while (reader.Read())
                 {
-                    inv.AddHorse(ReadHorseInstance(reader), false);
-
+                    inv.AddHorse(ReadHorseInstance(reader), false, true);
                 }
 
                 
