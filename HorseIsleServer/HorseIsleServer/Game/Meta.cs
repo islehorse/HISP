@@ -2701,8 +2701,20 @@ namespace HISP.Game
                         statCalculator = speedStat;
                         break;
                 }
-                
-                if(statCalculator.BreedValue < statCalculator.MaxValue)
+
+                bool allowed = false;
+
+                /*
+                 * Pinto bug: If you try to train a horse, but doing so would go over the maximum amount 
+                 * Then it just says its maxed trained, and u have to use a ranch.
+                 */
+
+                if (ConfigReader.FixOfficalBugs)
+                    allowed = (statCalculator.BreedValue < statCalculator.MaxValue);
+                else
+                    allowed = (statCalculator.BreedValue + statCalculator.BreedOffset < statCalculator.MaxValue);
+
+                if(allowed)
                     message += Messages.FormatTrainerTrainInEntry(horse.Name, statCalculator.BreedValue, statCalculator.MaxValue, horse.RandomId);
                 else
                     message += Messages.FormatTrainerFullyTrained(horse.Name, statCalculator.BreedValue);

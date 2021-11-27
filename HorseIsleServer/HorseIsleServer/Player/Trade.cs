@@ -168,7 +168,7 @@ namespace HISP.Player
                     if (Trader.Inventory.HasItemId(inst[0].ItemId))
                     {
                         InventoryItem items = Trader.Inventory.GetItemByItemId(inst[0].ItemId);
-                        if (items.ItemInstances.Length + inst.Length > ConfigReader.MAX_STACK)
+                        if (items.ItemInstances.Length + inst.Length > Item.MAX_STACK)
                         {
                             byte[] tradeTooManyItems = PacketBuilder.CreateChat(Messages.TradeYouCantCarryMoreItems, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             Trader.LoggedinClient.SendPacket(tradeTooManyItems);
@@ -186,7 +186,7 @@ namespace HISP.Player
                     if (OtherTrade.Trader.Inventory.HasItemId(inst[0].ItemId))
                     {
                         InventoryItem items = OtherTrade.Trader.Inventory.GetItemByItemId(inst[0].ItemId);
-                        if (items.ItemInstances.Length + inst.Length > ConfigReader.MAX_STACK)
+                        if (items.ItemInstances.Length + inst.Length > Item.MAX_STACK)
                         {
                             byte[] tradeTooManyItems = PacketBuilder.CreateChat(Messages.TradeOtherCantCarryMoreItems, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             Trader.LoggedinClient.SendPacket(tradeTooManyItems);

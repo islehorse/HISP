@@ -162,7 +162,7 @@ namespace HISP.Game.Inventory
             if(HasItemId(item.ItemId))
             {
                 InventoryItem items = GetItemByItemId(item.ItemId);
-                if (items.ItemInstances.Length >= ConfigReader.MAX_STACK)
+                if (items.ItemInstances.Length >= Item.MAX_STACK)
                 {
                     throw new InventoryMaxStackException();
                 }
