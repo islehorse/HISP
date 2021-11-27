@@ -6455,8 +6455,14 @@ namespace HISP.Server
                         int newItem = item.ItemInstances[0].Data;
                         if(newItem == 0)
                         {
-                            // TODO: Get "Present is empty" message.
                             sender.LoggedinUser.Inventory.Remove(item.ItemInstances[0]);
+                            
+                            byte[] itemOpenFailedNothingInside = PacketBuilder.CreateChat(Messages.SantaCantOpenNothingInside, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(itemOpenFailedNothingInside);
+
+                            UpdateInventory(sender);
+
+                            break;
                         }
                         try
                         {

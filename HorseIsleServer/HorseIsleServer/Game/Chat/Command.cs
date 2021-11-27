@@ -82,7 +82,7 @@ namespace HISP.Game.Chat
                     }
                     else
                     {
-                        itemId = Item.GetRandomItem(false).Id;
+                        itemId = Item.GetRandomItem().Id;
                     }
 
                     Item.GetItemById(itemId); // Calling this makes sure this item id exists.
