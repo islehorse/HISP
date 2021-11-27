@@ -4064,7 +4064,7 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "SELECT ItemId,RandomId FROM ShopInventory WHERE ShopID=@shopId";
+                sqlCommand.CommandText = "SELECT ItemId,RandomId,Data FROM ShopInventory WHERE ShopID=@shopId";
                 sqlCommand.Parameters.AddWithValue("@shopId", shopId);
                 sqlCommand.Prepare();
                 MySqlDataReader reader = sqlCommand.ExecuteReader();
