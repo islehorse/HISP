@@ -92,6 +92,8 @@ namespace HISP.Game.Chat
                 {
                     if (message.ToUpper().StartsWith("%GIVE"))
                         return Command.Give(message, args, user);
+                    if (message.ToUpper().StartsWith("%SWF"))
+                        return Command.Swf(message, args, user);
                     if (message.ToUpper().StartsWith("%GOTO"))
                         return Command.Goto(message, args, user);
                     if (message.ToUpper().StartsWith("%JUMP"))
@@ -492,7 +494,7 @@ namespace HISP.Game.Chat
         }
         public static string EscapeMessage(string message)
         {
-            return message.Replace("&", "&amp;").Replace("<", "&lt;");
+            return message.Replace("<", "&lt;");
         }
 
         public static string FormatChatForOthers(User user, ChatChannel channel, string message, bool autoReply=false)
