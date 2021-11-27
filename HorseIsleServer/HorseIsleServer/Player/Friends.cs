@@ -104,8 +104,11 @@ namespace HISP.Player
                 userToFriend.LoggedinClient.SendPacket(nowFriendsOther);
                 baseUser.LoggedinClient.SendPacket(nowFriendsMsg);
 
-                GameServer.UpdateArea(baseUser.LoggedinClient);
-                GameServer.UpdateArea(userToFriend.LoggedinClient);
+                if(!baseUser.MajorPriority)
+                    GameServer.UpdateArea(baseUser.LoggedinClient);
+
+                if (!userToFriend.MajorPriority)
+                    GameServer.UpdateArea(userToFriend.LoggedinClient);
             }
             else
             {
