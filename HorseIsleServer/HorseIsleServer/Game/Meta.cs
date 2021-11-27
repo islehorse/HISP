@@ -231,7 +231,8 @@ namespace HISP.Game
             user.HorseWindowOpen = false;
             string message = "";
             message += buildPlayersHere(user, x, y);
-            message += buildNearbyString(x, y, (message != ""));
+            bool playersHere = (GameServer.GetUsersAt(x, y, true, true).Length >= 1);
+            message += buildNearbyString(x, y, playersHere);
 
             // Dropped Items
             DroppedItems.DroppedItem[] Items = DroppedItems.GetItemsAt(x, y);
@@ -2701,7 +2702,7 @@ namespace HISP.Game
                         break;
                 }
                 
-                if((statCalculator.BreedValue + trainer.ImprovesAmount) < statCalculator.MaxValue)
+                if(statCalculator.BreedValue < statCalculator.MaxValue)
                     message += Messages.FormatTrainerTrainInEntry(horse.Name, statCalculator.BreedValue, statCalculator.MaxValue, horse.RandomId);
                 else
                     message += Messages.FormatTrainerFullyTrained(horse.Name, statCalculator.BreedValue);

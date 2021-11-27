@@ -241,7 +241,7 @@ namespace HISP.Game.Chat
                 }
                 else
                 {
-                    User player = findNamePartial(args[2]);
+                    User player = findNamePartial(args[1]);
                     player.LoggedinClient.SendPacket(packetBytes);
                 }
             }
