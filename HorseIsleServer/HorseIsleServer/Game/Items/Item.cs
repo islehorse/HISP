@@ -122,15 +122,14 @@ namespace HISP.Game.Items
             public int ItemCount;
         }
 
-        public static ItemInformation GetRandomItem(bool allowQuest)
+        public static ItemInformation GetRandomItem()
         {
             while (true)
             {
                 Item.ItemInformation itm = Items[GameServer.RandomNumberGenerator.Next(0, Items.Length)];
                 
-                if(!allowQuest)
-                    if (itm.Type == "QUEST" || itm.Type == "CONCEPTUAL")
-                        continue;
+                if (itm.Type == "QUEST" || itm.Type == "CONCEPTUAL" || itm.Type == "TEXT")
+                    continue;
 
                 return itm;
             }
