@@ -4,11 +4,11 @@
 
 # To use this script you must find/replace 
 # 'master' to your master db name
-# and 'beta' to your game db name
+# and 'game1' to your game db name
 CREATE DATABASE IF NOT EXISTS master;
 CREATE TABLE IF NOT EXISTS master.Users(Id INT, Username TEXT(16),Email TEXT(128),Country TEXT(128),SecurityQuestion Text(128),SecurityAnswerHash TEXT(128),Age INT,PassHash TEXT(128), Salt TEXT(128),Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3));
 # Transfer user table to master db
-USE beta;
+USE game1;
 INSERT INTO master.Users(SELECT Id,Username,Email,Country,SecurityQuestion,SecurityAnswerHash,Age,PassHash,Salt,Gender,Admin,Moderator FROM Users);
 ALTER TABLE Users DROP COLUMN Email;
 ALTER TABLE Users DROP COLUMN Country;

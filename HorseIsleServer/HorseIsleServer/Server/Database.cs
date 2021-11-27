@@ -40,7 +40,7 @@ namespace HISP.Server
                 string WorldTable = "CREATE TABLE World(Time INT, Day INT, Year INT, StartTime INT)";
                 string WeatherTable = "CREATE TABLE IF NOT EXISTS Weather(Area TEXT(1028), Weather TEXT(64))";
                 string InventoryTable = "CREATE TABLE IF NOT EXISTS Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)";
-                string ShopInventory = "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, RandomID INT, ItemID INT)";
+                string ShopInventory = "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, RandomID INT, ItemID INT, Data INT)";
                 string DroppedItems = "CREATE TABLE IF NOT EXISTS DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT, Data INT)";
                 string TrackedQuest = "CREATE TABLE IF NOT EXISTS TrackedQuest(playerId INT, questId INT, timesCompleted INT)";
                 string CompetitionGear = "CREATE TABLE IF NOT EXISTS CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)";
@@ -4072,7 +4072,7 @@ namespace HISP.Server
 
                 while (reader.Read())
                 {
-                    instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1)));
+                    instances.Add(new ItemInstance(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2)));
                 }
                 
                 return instances.ToArray();
@@ -4086,10 +4086,11 @@ namespace HISP.Server
                 db.Open();
                 MySqlCommand sqlCommand = db.CreateCommand();
 
-                sqlCommand.CommandText = "INSERT INTO ShopInventory VALUES(@shopId,@randomId,@itemId)";
+                sqlCommand.CommandText = "INSERT INTO ShopInventory VALUES(@shopId,@randomId,@itemId,@data)";
                 sqlCommand.Parameters.AddWithValue("@shopId", shopId);
                 sqlCommand.Parameters.AddWithValue("@randomId", instance.RandomId);
                 sqlCommand.Parameters.AddWithValue("@itemId", instance.ItemId);
+                sqlCommand.Parameters.AddWithValue("@data", instance.Data);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
