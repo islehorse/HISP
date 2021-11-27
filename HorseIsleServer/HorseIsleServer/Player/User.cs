@@ -125,7 +125,6 @@ namespace HISP.Player
         public string LastSeenWeather;
         public string AutoReplyText = "";
         public int LastClickedRanchBuilding = 0;
-        public bool ListingAuction = false;
         public int TotalGlobalChatMessages = 1;
         public User[] BeingSocializedBy
         {
