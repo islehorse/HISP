@@ -1560,7 +1560,7 @@ namespace HISP.Server
             Messages.SantaCantWrapInvFull = gameData.messages.meta.santa.wrap_fail_inv_full;
 
             Messages.SantaItemOpenedFormat = gameData.messages.meta.santa.open_format;
-            Messages.SantaItemCantOpenInvFull = gameData.messages.meta.santa.open_format;
+            Messages.SantaItemCantOpenInvFull = gameData.messages.meta.santa.open_fail_inv_full;
 
             // Pawneer
             Messages.PawneerUntackedHorsesICanBuy = gameData.messages.meta.pawneer.untacked_i_can_buy;
