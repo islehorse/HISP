@@ -90,7 +90,7 @@ namespace HISP.Game.Chat
                     ItemInstance newItemInstance = new ItemInstance(itemId);
                     
                     if (itemId == Item.Present)
-                        newItemInstance.Data = Item.GetRandomItem(false).Id;
+                        newItemInstance.Data = Item.GetRandomItem().Id;
 
                     if (args.Length >= 3)
                     {
@@ -103,7 +103,7 @@ namespace HISP.Game.Chat
                                     ItemInstance itmInstance = new ItemInstance(itemId);
 
                                     if (itemId == Item.Present)
-                                        itmInstance.Data = Item.GetRandomItem(false).Id;
+                                        itmInstance.Data = Item.GetRandomItem().Id;
 
                                     client.LoggedinUser.Inventory.AddIgnoringFull(itmInstance);
                                 }

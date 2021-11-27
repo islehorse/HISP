@@ -6453,6 +6453,11 @@ namespace HISP.Server
                     {
                         InventoryItem item = sender.LoggedinUser.Inventory.GetItemByRandomid(randomId);
                         int newItem = item.ItemInstances[0].Data;
+                        if(newItem == 0)
+                        {
+                            // TODO: Get "Present is empty" message.
+                            sender.LoggedinUser.Inventory.Remove(item.ItemInstances[0]);
+                        }
                         try
                         {
                             sender.LoggedinUser.Inventory.Add(new ItemInstance(newItem));
