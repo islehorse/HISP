@@ -2710,7 +2710,7 @@ namespace HISP.Game
                 if (ConfigReader.FixOfficalBugs)
                     allowed = (statCalculator.BreedValue < statCalculator.MaxValue);
                 else
-                    allowed = (statCalculator.BreedValue + statCalculator.BreedOffset < statCalculator.MaxValue);
+                    allowed = ((statCalculator.BreedValue + trainer.ImprovesAmount) < statCalculator.MaxValue);
 
                 if(allowed)
                     message += Messages.FormatTrainerTrainInEntry(horse.Name, statCalculator.BreedValue, statCalculator.MaxValue, horse.RandomId);
