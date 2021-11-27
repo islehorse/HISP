@@ -1558,7 +1558,7 @@ namespace HISP.Server
             Messages.SantaWrapItemFormat = gameData.messages.meta.santa.wrap_format;
             Messages.SantaWrappedObjectMessage = gameData.messages.meta.santa.wrapped_object;
             Messages.SantaCantWrapInvFull = gameData.messages.meta.santa.wrap_fail_inv_full;
-
+            Messages.SantaCantOpenNothingInside = gameData.messages.meta.santa.open_fail_empty;
             Messages.SantaItemOpenedFormat = gameData.messages.meta.santa.open_format;
             Messages.SantaItemCantOpenInvFull = gameData.messages.meta.santa.open_fail_inv_full;
 

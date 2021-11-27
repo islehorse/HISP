@@ -478,7 +478,7 @@ namespace HISP.Game
         public static string SantaWrapItemFormat;
         public static string SantaWrappedObjectMessage;
         public static string SantaCantWrapInvFull;
-
+        public static string SantaCantOpenNothingInside;
         public static string SantaItemOpenedFormat;
         public static string SantaItemCantOpenInvFull;
 
