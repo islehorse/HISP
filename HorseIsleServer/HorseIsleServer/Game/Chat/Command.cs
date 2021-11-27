@@ -892,6 +892,10 @@ namespace HISP.Game.Chat
             {
                 user.MuteLogins = true;
             }
+            else if (muteType.ToUpper() == "ADS")
+            {
+                user.MuteAds = true;
+            }
             else if (muteType.ToUpper() == "ALL")
             {
                 user.MuteAll = true;
