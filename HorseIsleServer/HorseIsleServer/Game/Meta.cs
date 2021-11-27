@@ -16,8 +16,6 @@ namespace HISP.Game
 {
     public class Meta
     {
-        // Meta
-
         private static bool overwrite = false;
 
         private static string buildLocationString(int x, int y)
