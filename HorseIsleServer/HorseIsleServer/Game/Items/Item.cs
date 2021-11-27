@@ -129,7 +129,7 @@ namespace HISP.Game.Items
                 Item.ItemInformation itm = Items[GameServer.RandomNumberGenerator.Next(0, Items.Length)];
                 
                 if(!allowQuest)
-                    if (itm.Type == "QUEST")
+                    if (itm.Type == "QUEST" || itm.Type == "CONCEPTUAL")
                         continue;
 
                 return itm;
