@@ -3178,7 +3178,6 @@ namespace HISP.Server
                     break;
                 case "41": // Put horse into auction
                     sender.LoggedinUser.MajorPriority = true;
-                    sender.LoggedinUser.ListingAuction = true;
                     metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAuctionHorseList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
@@ -3541,6 +3540,7 @@ namespace HISP.Server
                                     entry.Completed = false;
                                     inst.Hidden = true;
                                     auctionRoom.AddEntry(entry);
+                                    UpdateArea(sender);
                                     UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                                     break;
                                 }
@@ -7819,6 +7819,9 @@ namespace HISP.Server
         }
         public static void UpdateHorseMenu(GameClient forClient, HorseInstance horseInst)
         {
+
+            forClient.LoggedinUser.MajorPriority = true;
+
             int TileID = Map.GetTileId(forClient.LoggedinUser.X, forClient.LoggedinUser.Y, false);
             string type = Map.TerrainTiles[TileID - 1].Type;
 
@@ -7827,7 +7830,6 @@ namespace HISP.Server
             else
                 forClient.LoggedinUser.LastViewedHorseOther = horseInst;
 
-            forClient.LoggedinUser.MajorPriority = true;
             byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInformation(horseInst, forClient.LoggedinUser));
             forClient.SendPacket(metaPacket);
 
@@ -7939,7 +7941,6 @@ namespace HISP.Server
 
             forClient.LoggedinUser.MajorPriority = false;
             forClient.LoggedinUser.MinorPriority = false;
-            forClient.LoggedinUser.ListingAuction = false;
 
             string LocationStr = "";
             int tileX = forClient.LoggedinUser.X;
