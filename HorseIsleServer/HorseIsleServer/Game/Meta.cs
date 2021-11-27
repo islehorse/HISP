@@ -231,7 +231,7 @@ namespace HISP.Game
             user.HorseWindowOpen = false;
             string message = "";
             message += buildPlayersHere(user, x, y);
-            message += buildNearbyString(x, y);
+            message += buildNearbyString(x, y, (message != ""));
 
             // Dropped Items
             DroppedItems.DroppedItem[] Items = DroppedItems.GetItemsAt(x, y);
