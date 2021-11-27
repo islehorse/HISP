@@ -121,6 +121,20 @@ namespace HISP.Game.Items
             public int ItemId;
             public int ItemCount;
         }
+
+        public static ItemInformation GetRandomItem(bool allowQuest)
+        {
+            while (true)
+            {
+                Item.ItemInformation itm = Items[GameServer.RandomNumberGenerator.Next(0, Items.Length)];
+                
+                if(!allowQuest)
+                    if (itm.Type == "QUEST")
+                        continue;
+
+                return itm;
+            }
+        }
         public static void UseItem(User user, ItemInstance item)
         {
             if (user.Inventory.HasItem(item.RandomId))

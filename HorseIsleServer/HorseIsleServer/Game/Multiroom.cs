@@ -64,7 +64,6 @@ namespace HISP.Game
                 }   
             }
         }
-
         public Multiroom(int x, int y)
         {
             this.x = x;
@@ -72,6 +71,7 @@ namespace HISP.Game
 
             multirooms.Add(this);
         }
+
         public void Join(User user)
         {
             if (!JoinedUsers.Contains(user))

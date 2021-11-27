@@ -76,20 +76,48 @@ namespace HISP.Game.Chat
                 int itemId = 0;
                 try
                 {
-                    itemId = int.Parse(args[1]);
-                    Item.GetItemById(itemId);
-                    ItemInstance newItemInstance = new ItemInstance(itemId);
-
-                    if(args.Length >= 3)
+                    if(args[1] != "RANDOM")
                     {
-                        findNamePartial(args[2]).Inventory.AddIgnoringFull(newItemInstance);
+                        itemId = int.Parse(args[1]);
+                    }
+                    else
+                    {
+                        itemId = Item.GetRandomItem(false).Id;
+                    }
+
+                    Item.GetItemById(itemId); // Calling this makes sure this item id exists.
+
+                    ItemInstance newItemInstance = new ItemInstance(itemId);
+                    
+                    if (itemId == Item.Present)
+                        newItemInstance.Data = Item.GetRandomItem(false).Id;
+
+                    if (args.Length >= 3)
+                    {
+                        if(args[2] == "ALL")
+                        {
+                            foreach (GameClient client in GameClient.ConnectedClients)
+                            {
+                                if (client.LoggedIn)
+                                {
+                                    ItemInstance itmInstance = new ItemInstance(itemId);
+
+                                    if (itemId == Item.Present)
+                                        itmInstance.Data = Item.GetRandomItem(false).Id;
+
+                                    client.LoggedinUser.Inventory.AddIgnoringFull(itmInstance);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            findNamePartial(args[2]).Inventory.AddIgnoringFull(newItemInstance);
+                        }
                     }
                     else
                     {
                         user.Inventory.AddIgnoringFull(newItemInstance);
                     }
-
-
                 }
                 catch(Exception)
                 {
@@ -112,8 +140,6 @@ namespace HISP.Game.Chat
                     {
                         user.HorseInventory.AddHorse(horse);
                     }
-
-
                 }
                 catch (Exception)
                 {
@@ -155,8 +181,6 @@ namespace HISP.Game.Chat
                     {
                         user.AddMoney(money);
                     }
-
-                    
                 }
                 catch (Exception)
                 {
@@ -191,6 +215,44 @@ namespace HISP.Game.Chat
         msg:;
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+        }
+
+        public static bool Swf(string message, string[] args, User user)
+        {
+            if (args.Length <= 2)
+                return false;
+
+            if (!(user.Administrator || user.Moderator))
+                return false;
+
+            try
+            {
+                string swfName = args[0];
+                string swfUser = args[1];
+                byte[] packetBytes = PacketBuilder.CreateSwfModulePacket(swfName, PacketBuilder.PACKET_SWF_MODULE_FORCE);
+                if (swfUser.ToUpper() == "ALL")
+                {
+                    foreach (GameClient client in GameClient.ConnectedClients)
+                    {
+                        if (client.LoggedIn)
+                            client.SendPacket(packetBytes);
+                    }
+                }
+                else
+                {
+                    User player = findNamePartial(args[2]);
+                    player.LoggedinClient.SendPacket(packetBytes);
+                }
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+
             return true;
         }
 
