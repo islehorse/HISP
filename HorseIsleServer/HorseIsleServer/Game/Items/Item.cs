@@ -8,6 +8,9 @@ namespace HISP.Game.Items
 {
     public class Item
     {
+
+        public const int MAX_STACK = 50;
+
         public struct Effects
         {
             public string EffectsWhat;

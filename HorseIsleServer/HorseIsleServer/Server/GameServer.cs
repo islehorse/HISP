@@ -2659,8 +2659,16 @@ namespace HISP.Server
                                 }
                                 byte[] descriptionEditedMessage = PacketBuilder.CreateChat(Messages.RanchSavedRanchDescripton, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(descriptionEditedMessage);
-                                // Completely forgot! public server opens your stats menu when you save your ranch info like DUH!!
-                                UpdateStats(sender); 
+
+                                /*
+                                 * Pinto bug: Saving ranch description will take you to the STATS menu
+                                 * instead of just back to your ranch.
+                                 */
+
+                                if (ConfigReader.FixOfficalBugs)
+                                    UpdateArea(sender);
+                                else
+                                    UpdateStats(sender); 
                             }
                             else
                             {
@@ -5921,10 +5929,6 @@ namespace HISP.Server
             message = Chat.DoCorrections(message);
             message = Chat.EscapeMessage(message);
 
-            // Encode bbcode message.
-            if(ConfigReader.AllowBbcode || (sender.LoggedinUser.Moderator || sender.LoggedinUser.Administrator))
-                message = BBCode.EncodeBBCodeToMeta(message);
-
             string failedReason = Chat.NonViolationChecks(sender.LoggedinUser, message);
             if (failedReason != null)
             {
@@ -6464,6 +6468,7 @@ namespace HISP.Server
 
                             break;
                         }
+
                         try
                         {
                             sender.LoggedinUser.Inventory.Add(new ItemInstance(newItem));
@@ -7080,7 +7085,7 @@ namespace HISP.Server
                             if (sender.LoggedinUser.Inventory.HasItemId(itemId)) 
                             {
                                 InventoryItem items = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
-                                if (items.ItemInstances.Length + count > ConfigReader.MAX_STACK)
+                                if (items.ItemInstances.Length + count > Item.MAX_STACK)
                                 {
                                     goto showError;
                                 }
@@ -7396,6 +7401,8 @@ namespace HISP.Server
                         sender.SendPacket(ipBannedPacket);
                         return;
                     }
+
+
 
 
                     sender.Login(userId);

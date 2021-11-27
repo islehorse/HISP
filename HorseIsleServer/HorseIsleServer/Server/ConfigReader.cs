@@ -6,29 +6,28 @@ namespace HISP.Server
 
     public class ConfigReader
     {
-        public static int Port;
+        public static int Port = 12321;
         public static string BindIP = "0.0.0.0";
 
-        public static string DatabaseIP;
-        public static string DatabaseUsername;
-        public static string DatabaseName;
-        public static string DatabasePassword;
-        public static int DatabasePort;
-        public static int IntrestRate;
-        public static string Motd;
-        public static string MapFile;
-        public static string GameDataFile;
-        public static string CrossDomainPolicyFile;
+        public static string DatabaseIP = "127.0.0.1";
+        public static string DatabaseName = "game1";
+        public static string DatabaseUsername = "root";
+        public static string DatabasePassword = "test123";
 
-        public static int LogLevel = 0;
+        public static int DatabasePort = 3306;
+        public static int IntrestRate = 3333;
+        public static string Motd = "April 11, 2020. New breed, Camarillo White Horse. Two new quests.";
+        public static string MapFile = "HI1.MAP";
+        public static string GameDataFile = "gamedata.json";
+        public static string CrossDomainPolicyFile = "CrossDomainPolicy.xml";
+
+        public static int LogLevel = 4;
         public static bool EnableSpamFilter = true;
         public static bool AllUsersSubbed = false;
-        public static bool AllowBbcode = false;
+        public static bool FixOfficalBugs = false;
         public static bool BadWords = true;
         public static bool DoCorrections = true;
         public static bool DoNonViolations = true;
-
-        public const int MAX_STACK = 50;
 
         private static string ConfigurationFileName = "server.properties";
         public static void OpenConfig()
@@ -36,8 +35,8 @@ namespace HISP.Server
             if (!File.Exists(ConfigurationFileName))
             {
                 Logger.WarnPrint(ConfigurationFileName+" not found! writing default.");
-                File.WriteAllText(ConfigurationFileName,Resources.DefaultServerProperties);
-                Logger.InfoPrint("! Its very likely database connection will fail...");
+                File.WriteAllText(ConfigurationFileName, Resources.DefaultServerProperties);
+                Logger.WarnPrint("! Its very likely database connection will fail...");
             }
 
             string[] configFile = File.ReadAllLines(ConfigurationFileName);
@@ -108,8 +107,8 @@ namespace HISP.Server
                     case "enable_spam_filter":
                         EnableSpamFilter = data == "true";
                         break;
-                    case "allow_bbcode_in_chat":
-                        AllowBbcode = data == "true";
+                    case "fix_offical_bugs":
+                        FixOfficalBugs = data == "true";
                         break;
                     case "enable_word_filter":
                         BadWords = data == "true";

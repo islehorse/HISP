@@ -387,6 +387,19 @@ namespace HISP.Server
 
         public void Login(int id)
         {
+            /*
+             *  Check for duplicate user
+             *  and disconnect them.
+             */
+            foreach (GameClient Client in GameClient.ConnectedClients)
+            {
+                if (Client.LoggedIn)
+                {
+                    if (Client.LoggedinUser.Id == id)
+                        Client.Kick(Messages.KickReasonDuplicateLogin);
+                }
+            }
+
             LoggedinUser = new User(this, id);
             LoggedIn = true;
 
