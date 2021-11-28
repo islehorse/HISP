@@ -36,13 +36,13 @@ namespace HISP.Game.Services
             Shop.ShopList.Add(this);
         }
         
-        public int CalculateBuyCost(Item.ItemInformation item)
+        public UInt64 CalculateBuyCost(Item.ItemInformation item)
         {
-            return (int)Math.Round((float)item.SellPrice * (100.0 / (float)BuyPricePercentage));
+            return (UInt64)Math.Round((float)item.SellPrice * (100.0 / (float)BuyPricePercentage));
         }
-        public int CalculateSellCost(Item.ItemInformation item)
+        public UInt64 CalculateSellCost(Item.ItemInformation item)
         {
-            return (int)Math.Round((float)item.SellPrice * (100.0 / (float)SellPricePercentage));
+            return (UInt64)Math.Round((float)item.SellPrice * (100.0 / (float)SellPricePercentage));
         }
 
         public bool CanSell(Item.ItemInformation item)

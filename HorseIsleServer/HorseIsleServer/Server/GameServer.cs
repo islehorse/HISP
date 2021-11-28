@@ -6909,11 +6909,11 @@ namespace HISP.Server
                     Shop shop = sender.LoggedinUser.LastShoppedAt;
                     if (shop != null)
                     {
-                        int sellPrice = shop.CalculateSellCost(itemInfo) * totalSold;
+                        UInt64 sellPrice = (shop.CalculateSellCost(itemInfo) * (UInt64)totalSold);
                         if (shop.CanSell(itemInfo))
                         {
                             // Check if goes over 2.1b
-                            if (sender.LoggedinUser.Money + sellPrice > 2100000000)
+                            if ((UInt64)sender.LoggedinUser.Money + sellPrice > 2100000000)
                             {
                                 byte[] cantSellMoneyCapCheck = PacketBuilder.CreateChat(Messages.CannotSellYoudGetTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(cantSellMoneyCapCheck);
@@ -6928,7 +6928,7 @@ namespace HISP.Server
                                 shop.Inventory.Add(itemInstance);
                             }
 
-                            sender.LoggedinUser.AddMoney(sellPrice);
+                            sender.LoggedinUser.AddMoney((int)sellPrice);
 
                             UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                             if(message == 1)
@@ -6939,10 +6939,11 @@ namespace HISP.Server
                             if(message == 2)
                             {
                                 string name = itemInfo.Name;
+
                                 if (totalSold > 1)
                                     name = itemInfo.PluralName;
 
-                                byte[] soldItemMessage = PacketBuilder.CreateChat(Messages.FormatSellAllMessage(name, sellPrice,totalSold), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                byte[] soldItemMessage = PacketBuilder.CreateChat(Messages.FormatSellAllMessage(name, sellPrice, totalSold), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(soldItemMessage);
                             }
 
@@ -7058,7 +7059,7 @@ namespace HISP.Server
                     shop = sender.LoggedinUser.LastShoppedAt;
                     if (shop != null)
                     {
-                        int buyCost = shop.CalculateBuyCost(itemInfo) * count;
+                        UInt64 buyCost = (shop.CalculateBuyCost(itemInfo) * (UInt64)count);
                         if (sender.LoggedinUser.Bids.Length > 0)
                         {
                             byte[] cantBuyWhileAuctioning = PacketBuilder.CreateChat(Messages.AuctionNoOtherTransactionAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -7066,7 +7067,7 @@ namespace HISP.Server
                             return;
                         }
 
-                        if (sender.LoggedinUser.Money < buyCost)
+                        if ((UInt64)sender.LoggedinUser.Money < buyCost)
                         {
                             byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.CantAfford1, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(cantAffordMessage);
@@ -7085,7 +7086,7 @@ namespace HISP.Server
                             if (sender.LoggedinUser.Inventory.HasItemId(itemId)) 
                             {
                                 InventoryItem items = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
-                                if (items.ItemInstances.Length + count > Item.MAX_STACK)
+                                if (items.ItemInstances.Length + (int)count > Item.MAX_STACK)
                                 {
                                     goto showError;
                                 }
@@ -7111,7 +7112,7 @@ namespace HISP.Server
                                 shop.Inventory.Remove(itemInstance);
                             }
 
-                            sender.LoggedinUser.TakeMoney(buyCost);
+                            sender.LoggedinUser.TakeMoney((int)buyCost);
 
 
                             // Send chat message to client.
