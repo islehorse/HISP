@@ -444,7 +444,7 @@ namespace HISP.Server
                     }
                     catch (FormatException)
                     {
-                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to trade with User ID NaN.");
+                        Logger.ErrorPrint(sender.LoggedinUser.Username + " tried to add friend with User ID NaN.");
                         break;
                     }
                     if (IsUserOnline(playerId))
