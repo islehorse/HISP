@@ -591,7 +591,7 @@ namespace HISP.Game.Chat
 
         public static string NonViolationChecks(User user, string message)
         {
-            if(ConfigReader.DoNonViolations)
+            if(!ConfigReader.DoNonViolations)
                 return null;
 
             // Check if contains password.

@@ -101,7 +101,7 @@ namespace HISP.Server
                     case "enable_corrections":
                         DoCorrections = data == "true";
                         break;
-                    case "non_violation":
+                    case "enable_non_violation_check":
                         DoNonViolations = data == "true";
                         break;
                     case "enable_spam_filter":
