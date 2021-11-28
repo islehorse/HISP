@@ -297,7 +297,6 @@ namespace HISP.Game.Chat
                 return false;
             if (!user.Administrator && !user.Moderator)
                 return false;
-
             try
             {
                 string userName = args[0];
