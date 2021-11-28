@@ -66,7 +66,7 @@ namespace HISP.Game
 
             public int GetTeardownPrice()
             {
-                return (int)Math.Round((float)this.Cost / (100 / 35.0));
+                return Convert.ToInt32(Math.Round((float)this.Cost / (100 / 35.0)));
             }
         }
         public static List<Ranch> Ranches = new List<Ranch>();
@@ -84,7 +84,7 @@ namespace HISP.Game
 
         public int GetSellPrice()
         {
-            return (int)Math.Round((float)this.InvestedMoney / (100 / 75.0));
+            return Convert.ToInt32(Math.Round((double)this.InvestedMoney / (100 / 75.0)));
         }
         private void removeDorothyShoes(int Id)
         {

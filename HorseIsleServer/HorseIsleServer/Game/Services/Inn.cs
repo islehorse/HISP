@@ -25,7 +25,7 @@ namespace HISP.Game.Services
         public int BuyPercentage;
         public int CalculateBuyCost(Item.ItemInformation item)
         {
-            return (int)Math.Floor((float)item.SellPrice * (100.0 / (float)BuyPercentage));
+            return Convert.ToInt32(Math.Floor((float)item.SellPrice * (100.0 / (float)BuyPercentage)));
         }
 
         public Item.ItemInformation GetStockedItem(int itemId)

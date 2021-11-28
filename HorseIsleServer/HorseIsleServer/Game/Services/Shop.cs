@@ -38,11 +38,11 @@ namespace HISP.Game.Services
         
         public UInt64 CalculateBuyCost(Item.ItemInformation item)
         {
-            return (UInt64)Math.Round((float)item.SellPrice * (100.0 / (float)BuyPricePercentage));
+            return Convert.ToUInt64(Math.Round((double)item.SellPrice * (100.0 / (double)BuyPricePercentage)));
         }
         public UInt64 CalculateSellCost(Item.ItemInformation item)
         {
-            return (UInt64)Math.Round((float)item.SellPrice * (100.0 / (float)SellPricePercentage));
+            return Convert.ToUInt64(Math.Round((double)item.SellPrice * (100.0 / (double)SellPricePercentage)));
         }
 
         public bool CanSell(Item.ItemInformation item)

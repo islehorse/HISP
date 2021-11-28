@@ -6909,11 +6909,11 @@ namespace HISP.Server
                     Shop shop = sender.LoggedinUser.LastShoppedAt;
                     if (shop != null)
                     {
-                        UInt64 sellPrice = (shop.CalculateSellCost(itemInfo) * (UInt64)totalSold);
+                        UInt64 sellPrice = Convert.ToUInt32(shop.CalculateSellCost(itemInfo) * Convert.ToUInt32(totalSold));
                         if (shop.CanSell(itemInfo))
                         {
                             // Check if goes over 2.1b
-                            if ((UInt64)sender.LoggedinUser.Money + sellPrice > 2100000000)
+                            if (Convert.ToUInt32(sender.LoggedinUser.Money) + sellPrice > 2100000000)
                             {
                                 byte[] cantSellMoneyCapCheck = PacketBuilder.CreateChat(Messages.CannotSellYoudGetTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(cantSellMoneyCapCheck);
@@ -6928,7 +6928,8 @@ namespace HISP.Server
                                 shop.Inventory.Add(itemInstance);
                             }
 
-                            sender.LoggedinUser.AddMoney((int)sellPrice);
+                            if (sellPrice < 2147483647) // Sanity Check (yes i checked it earlier)
+                                sender.LoggedinUser.AddMoney(Convert.ToInt32(sellPrice));
 
                             UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
                             if(message == 1)
@@ -7059,7 +7060,7 @@ namespace HISP.Server
                     shop = sender.LoggedinUser.LastShoppedAt;
                     if (shop != null)
                     {
-                        UInt64 buyCost = (shop.CalculateBuyCost(itemInfo) * (UInt64)count);
+                        UInt64 buyCost = Convert.ToUInt64(shop.CalculateBuyCost(itemInfo) * Convert.ToUInt64(count));
                         if (sender.LoggedinUser.Bids.Length > 0)
                         {
                             byte[] cantBuyWhileAuctioning = PacketBuilder.CreateChat(Messages.AuctionNoOtherTransactionAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -7067,7 +7068,7 @@ namespace HISP.Server
                             return;
                         }
 
-                        if ((UInt64)sender.LoggedinUser.Money < buyCost)
+                        if (Convert.ToUInt64(sender.LoggedinUser.Money) < buyCost)
                         {
                             byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.CantAfford1, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(cantAffordMessage);
@@ -7086,7 +7087,7 @@ namespace HISP.Server
                             if (sender.LoggedinUser.Inventory.HasItemId(itemId)) 
                             {
                                 InventoryItem items = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
-                                if (items.ItemInstances.Length + (int)count > Item.MAX_STACK)
+                                if (items.ItemInstances.Length + count > Item.MAX_STACK)
                                 {
                                     goto showError;
                                 }
@@ -7112,7 +7113,8 @@ namespace HISP.Server
                                 shop.Inventory.Remove(itemInstance);
                             }
 
-                            sender.LoggedinUser.TakeMoney((int)buyCost);
+                            if(buyCost < 2147483647) // Sanity Check (yes i checked it earlier)
+                                sender.LoggedinUser.TakeMoney(Convert.ToInt32(buyCost));
 
 
                             // Send chat message to client.
