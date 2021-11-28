@@ -748,6 +748,7 @@ namespace HISP.Game
         }
         public static string BuildRealTimeQuiz(RealTimeQuiz.Participent participent) 
         {
+            participent.UserInstance.MajorPriority = true;
             return Messages.FormatEventRealTimeQuizMeta(participent.CorrectAnswers, participent.MistakenAnswers, participent.OnQuestion.BaseCategory.Name, participent.OnQuestion.Question);
         }
         public static string BuildCompanionLibary()
