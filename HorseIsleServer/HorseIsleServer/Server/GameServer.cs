@@ -615,10 +615,9 @@ namespace HISP.Server
                 case PacketBuilder.SOCIALS_USE:
                     int socialId = Convert.ToInt32(packet[2] - (byte)0x21);
                     SocialType.Social social = SocialType.GetSocial(socialId);
-
-                    if (sender.LoggedinUser.SocializingWith != null)
+                    
+                    if (sender.LoggedinUser.SocializingWith != null && social.BaseSocialType.Type != "GROUP")
                     {
-
                         if (sender.LoggedinUser.SocializingWith.MuteAll || sender.LoggedinUser.SocializingWith.MuteSocials)
                         {
                             byte[] cantSocialize = PacketBuilder.CreateChat(Messages.PlayerIgnoringAllSocials, PacketBuilder.CHAT_BOTTOM_RIGHT);
