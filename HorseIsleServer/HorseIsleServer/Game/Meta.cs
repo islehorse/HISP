@@ -2548,13 +2548,14 @@ namespace HISP.Game
             if (chatpoint.ActivateQuestId != 0)
             {
                 Quest.QuestEntry quest = Quest.GetQuestById(chatpoint.ActivateQuestId);
+                user.MajorPriority = true;
 
                 Quest.QuestResult result = Quest.ActivateQuest(user, quest, true);
                 if (result.QuestCompleted)
                 {
-                    user.MajorPriority = true;
                     if (result.SetChatpoint != -1)
                         Npc.SetDefaultChatpoint(user, npc, result.SetChatpoint);
+
                     if (result.GotoChatpoint != -1)
                         chatpoint = Npc.GetNpcChatpoint(npc, result.GotoChatpoint);
 
@@ -2567,6 +2568,7 @@ namespace HISP.Game
                 {
                     if (result.GotoChatpoint != -1)
                         chatpoint = Npc.GetNpcChatpoint(npc, result.GotoChatpoint);
+                    
                     if (result.NpcChat != null)
                         chatpoint.ChatText = result.NpcChat;
                     
