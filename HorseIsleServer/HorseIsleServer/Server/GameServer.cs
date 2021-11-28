@@ -6909,11 +6909,11 @@ namespace HISP.Server
                     Shop shop = sender.LoggedinUser.LastShoppedAt;
                     if (shop != null)
                     {
-                        UInt64 sellPrice = Convert.ToUInt32(shop.CalculateSellCost(itemInfo) * Convert.ToUInt32(totalSold));
+                        UInt64 sellPrice = Convert.ToUInt64(shop.CalculateSellCost(itemInfo) * Convert.ToUInt64(totalSold));
                         if (shop.CanSell(itemInfo))
                         {
                             // Check if goes over 2.1b
-                            if (Convert.ToUInt32(sender.LoggedinUser.Money) + sellPrice > 2100000000)
+                            if (Convert.ToUInt64(sender.LoggedinUser.Money) + sellPrice > 2100000000)
                             {
                                 byte[] cantSellMoneyCapCheck = PacketBuilder.CreateChat(Messages.CannotSellYoudGetTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(cantSellMoneyCapCheck);
