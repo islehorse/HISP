@@ -223,7 +223,7 @@ namespace HISP.Game.Chat
             if (args.Length <= 2)
                 return false;
 
-            if (!(user.Administrator || user.Moderator))
+            if (!user.Administrator && !user.Moderator)
                 return false;
 
             try
@@ -260,7 +260,7 @@ namespace HISP.Game.Chat
         {
             if(args.Length <= 0)
                 return false;
-            if(!(user.Administrator || user.Moderator))
+            if(!user.Administrator && !user.Moderator)
                 return false;
 
             try{
@@ -295,9 +295,11 @@ namespace HISP.Game.Chat
         {
             if (args.Length <= 0)
                 return false;
-            if (!(user.Administrator || user.Moderator))
+            if (!user.Administrator && !user.Moderator)
                 return false;
-            try{
+
+            try
+            {
                 string userName = args[0];
                 int id = Database.GetUserid(userName);
                 string ip = Database.GetIpAddress(id);
@@ -316,7 +318,6 @@ namespace HISP.Game.Chat
             try{
                 User bannedUser = GameServer.GetUserByName(args[0]);
                 bannedUser.LoggedinClient.Kick(Messages.KickReasonBanned);
-                
             }
             catch(KeyNotFoundException){};
 
@@ -327,9 +328,8 @@ namespace HISP.Game.Chat
         }
         public static bool Escape(string message, string[] args, User user)
         {
-            if (!(user.Administrator || user.Moderator))
+            if (!user.Administrator && !user.Moderator) 
                 return false;
-
 
             user.Teleport(Map.ModIsleX, Map.ModIsleY);
 
@@ -340,7 +340,7 @@ namespace HISP.Game.Chat
 
         public static bool Stealth(string message, string[] args, User user)
         {
-            if (!(user.Administrator || user.Moderator))
+            if (!user.Administrator && !user.Moderator)
                 return false;
 
             user.Stealth = !user.Stealth;
@@ -361,8 +361,9 @@ namespace HISP.Game.Chat
 
         public static bool Rules(string message, string[] args, User user)
         {
-            if (!(user.Administrator || user.Moderator))
+            if (!user.Administrator && !user.Moderator)
                 return false;
+
             if (args.Length <= 0)
                 return false;
 
@@ -386,8 +387,9 @@ namespace HISP.Game.Chat
 
         public static bool Prison(string message, string[] args, User user)
         {
-            if (!(user.Administrator || user.Moderator))
+            if (!user.Administrator && !user.Moderator)
                 return false;
+            
             if (args.Length <= 0)
                 return false;
 
@@ -411,8 +413,9 @@ namespace HISP.Game.Chat
         }
         public static bool Kick(string message, string[] args, User user)
         {
-            if (!(user.Administrator || user.Moderator))
+            if (!user.Administrator && !user.Moderator)
                 return false;
+
             if (args.Length <= 0)
                 return false;
 
@@ -426,7 +429,9 @@ namespace HISP.Game.Chat
                     toKick.LoggedinClient.Kick(reason);
                 }
                 else
+                {
                     toKick.LoggedinClient.Kick(Messages.KickReasonKicked);
+                }
             }
             catch (KeyNotFoundException)
             {

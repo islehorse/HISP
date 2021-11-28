@@ -68,8 +68,8 @@ namespace HISP.Player
         public int SecCodeCount = 0;
         public int Id;
         public string Username;
-        public bool Administrator;
-        public bool Moderator;
+        public bool Administrator = false;
+        public bool Moderator = false;
         public bool NewPlayer = false;
         public GameClient LoggedinClient;
         public CompetitionGear EquipedCompetitionGear;

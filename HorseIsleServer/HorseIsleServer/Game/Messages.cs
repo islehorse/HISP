@@ -2707,27 +2707,27 @@ namespace HISP.Game
         {
             return YouEarnedAnItemFormat.Replace("%ITEM%", itemName);
         }
-        public static string FormatSellMessage(string itemName, int price)
+        public static string FormatSellMessage(string itemName, UInt64 price)
         {
             return Sold1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatSellAllMessage(string itemName, int price, int sellAmount)
+        public static string FormatSellAllMessage(string itemName, UInt64 price, int sellAmount)
         {
             return SoldAllFormat.Replace("%AMOUNT%",sellAmount.ToString()).Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatBuy25Message(string itemName, int price)
+        public static string FormatBuy25Message(string itemName, UInt64 price)
         {
             return Brought25Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatBuy5Message(string itemName, int price)
+        public static string FormatBuy5Message(string itemName, UInt64 price)
         {
             return Brought5Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatBuyMessage(string itemName, int price)
+        public static string FormatBuyMessage(string itemName, UInt64 price)
         {
             return Brought1Format.Replace("%ITEM%", itemName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatShopEntry(int iconid, string count, string name, int price)
+        public static string FormatShopEntry(int iconid, string count, string name, UInt64 price)
         {
             return ShopEntryFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count).Replace("%TITLE%", name).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
