@@ -5259,6 +5259,7 @@ namespace HISP.Server
                 string packetStr = Encoding.UTF8.GetString(packet);
                 string number = packetStr.Substring(2, packetStr.Length - 4);
                 int chatId = 0;
+                
                 try
                 {
                     chatId = int.Parse(number);
@@ -5268,14 +5269,12 @@ namespace HISP.Server
                     Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to start talking to an NPC with id that is NaN.");
                     return;
                 }
-                
                 if(!Npc.NpcExists(chatId))
                 {
                     Logger.ErrorPrint(sender.LoggedinUser.Username + " Tried to start talking to an NPC that doesnt exist.");
                     return;
                 }
                 sender.LoggedinUser.MajorPriority = true;
-
                 Npc.NpcEntry entry = Npc.GetNpcById(chatId);
                 
                 if(entry.Chatpoints.Length <= 0)
@@ -5285,7 +5284,6 @@ namespace HISP.Server
                 }
 
                 int defaultChatpointId = Npc.GetDefaultChatpoint(sender.LoggedinUser, entry);
-
                 Npc.NpcChat startingChatpoint = Npc.GetNpcChatpoint(entry, defaultChatpointId);
 
                 string metaInfo = Meta.BuildNpcChatpoint(sender.LoggedinUser, entry, startingChatpoint);

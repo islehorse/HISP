@@ -748,6 +748,8 @@ namespace HISP.Game
         }
         public static string BuildRealTimeQuiz(RealTimeQuiz.Participent participent) 
         {
+            // Uber Priority xD
+            participent.UserInstance.MinorPriority = true;
             participent.UserInstance.MajorPriority = true;
             return Messages.FormatEventRealTimeQuizMeta(participent.CorrectAnswers, participent.MistakenAnswers, participent.OnQuestion.BaseCategory.Name, participent.OnQuestion.Question);
         }
@@ -2555,8 +2557,11 @@ namespace HISP.Game
                         Npc.SetDefaultChatpoint(user, npc, result.SetChatpoint);
                     if (result.GotoChatpoint != -1)
                         chatpoint = Npc.GetNpcChatpoint(npc, result.GotoChatpoint);
-                    if (result.NpcChat != null)
-                        chatpoint.ChatText = result.NpcChat;
+
+                    if (chatpoint.ChatText.Trim() == "")
+                        if (result.NpcChat != null)
+                            if(result.NpcChat.Trim() != "")
+                                chatpoint.ChatText = result.NpcChat;
                 }
                 else
                 {
