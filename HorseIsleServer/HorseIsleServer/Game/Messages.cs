@@ -2333,7 +2333,7 @@ namespace HISP.Game
         {
             return HorseBreedDetailsFormat.Replace("%BREED%", breedName).Replace("%DESCRIPTION%", description);
         }
-        public static string FormatHorseHeight(int minHeight, int maxHeight)
+        public static string FormatHorseHeight(double minHeight, double maxHeight)
         {
             return HorseHeightRangeFormat.Replace("%MIN%", minHeight.ToString()).Replace("%MAX%", maxHeight.ToString());
         }
