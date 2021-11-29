@@ -115,6 +115,9 @@ namespace HISP.Game.Inventory
         }
         public int GetSortPos(InventoryItem item)
         {
+            if (item == null)
+                return 0;
+
             int bias = 1000;
             int sortBy = Item.GetItemById(item.ItemId).SortBy;
             if (item.Infinite)

@@ -615,7 +615,10 @@ namespace HISP.Server
                 case PacketBuilder.SOCIALS_USE:
                     int socialId = Convert.ToInt32(packet[2] - (byte)0x21);
                     SocialType.Social social = SocialType.GetSocial(socialId);
-                    
+                    /*
+                     *  Check if player being socialed with
+                     *  is actually on this tile, not muted, etc
+                     */
                     if (sender.LoggedinUser.SocializingWith != null && social.BaseSocialType.Type != "GROUP")
                     {
                         if (sender.LoggedinUser.SocializingWith.MuteAll || sender.LoggedinUser.SocializingWith.MuteSocials)
