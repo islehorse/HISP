@@ -21,29 +21,29 @@ well they essentailly run off "Server Emulators".
               MONEY <amount> [username]             
               HORSE <breedid> [username]         
               QUEST <questid> [FORCE]       
-			  AWARD <awardid> [username]
+              AWARD <awardid> [username]
     %GOTO                             
               <x>,<y>         
               PLAYER <playername>        
               AREA <locationname>           
               NPC <npcname>             
-	%SWF <swf> [username / ALL]
-	%DELITEM <itemid> [username]
+    %SWF <swf> [username / ALL]
+    %DELITEM <itemid> [username]
     %JUMP <playername> HERE              
     %NOCLIP (toggle)            
-	%MODHORSE <id> <stat> <value>
+    %MODHORSE <id> <stat> <value>
     %CALL HORSE            
-	%SHUTDOWN
+    %SHUTDOWN
 == Moderator Commands ==         
     %KICK <username> [reason]         
     %RULES <username>          
     %STEALTH (toggle)        
     %BAN <username> [reason]     
-	%PRISON <username>
+    %PRISON <username>
     %UNBAN <username>       
     %ESCAPE               
 == Player Commands ==         
-	!VERSION 
+    !VERSION 
     !MUTE                    
               ALL        
               GLOBAL       
