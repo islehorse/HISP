@@ -184,7 +184,7 @@ namespace HISP.Server
                 QuizEvent.StartEvent();
             }
 
-
+            
             if (totalMinutesElapsed % 60 == 0) // Do spoils
             {
                 foreach (HorseInstance horse in Database.GetMostSpoiledHorses())

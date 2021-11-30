@@ -546,6 +546,7 @@ namespace HISP.Player
             Logger.DebugPrint("Teleporting: " + Username + " to: " + newX.ToString() + "," + newY.ToString());
 
             User[] onScreenBefore = GameServer.GetOnScreenUsers(X, Y, true, true);
+            User[] onScreenNow = GameServer.GetOnScreenUsers(newX, newY, true, true);
 
             X = newX;
             Y = newY;
@@ -554,20 +555,22 @@ namespace HISP.Player
             LoggedinClient.SendPacket(MovementPacket);
             GameServer.UpdateWeather(LoggedinClient);
 
-            User[] onScreenNow = GameServer.GetOnScreenUsers(X, Y, true, true);
 
             User[] goneOffScreen = onScreenBefore.Except(onScreenNow).ToArray();
             User[] goneOnScreen = onScreenNow.Except(onScreenBefore).ToArray();
 
-            foreach(User offScreenUsers in goneOffScreen)
+
+            // Players now offscreen tell the client is at 1000,1000.
+            foreach (User offScreenUsers in goneOffScreen)
             {
                 if (offScreenUsers.Id == this.Id)
                     continue;
 
-                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, Facing, CharacterId, Username);
+                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, this.Facing, this.CharacterId, this.Username);
                 offScreenUsers.LoggedinClient.SendPacket(playerInfoBytes);
             }
 
+            // Tell players now on screen there locations
             foreach (User onScreenUsers in goneOnScreen)
             {
                 if (onScreenUsers.Id == this.Id)
@@ -577,7 +580,7 @@ namespace HISP.Player
                 LoggedinClient.SendPacket(playerInfoBytes);
             }
 
-            // Players now offscreen tell the client is at 1000,1000.
+
             GameServer.Update(LoggedinClient);
         }
 
