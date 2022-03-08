@@ -62,6 +62,16 @@ jobs:
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+      
+   - name: Build mac-x64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=Osx64.pubxml
+    
+   - name: Build mac-arm64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=OsxARM64.pubxml
 
     - name: Upload win-x64
       uses: actions/upload-artifact@v2
@@ -117,3 +127,15 @@ jobs:
       with:
         name: linux-arm64
         path: HorseIsleServer/HISP/bin/ARM64/Linux/net6.0/linux-arm64/publish/
+
+    - name: Upload mac-x64
+      uses: actions/upload-artifact@v2
+      with:
+        name: mac-x64
+        path: HorseIsleServer/HISP/bin/x64/MacOS/net6.0/osx-x64/publish/
+
+    - name: Upload mac-arm64
+      uses: actions/upload-artifact@v2
+      with:
+        name: mac-arm64
+        path: HorseIsleServer/HISP/bin/arm64/MacOS/net6.0/osx-arm64/publish/
