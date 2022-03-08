@@ -32,28 +32,20 @@ jobs:
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=Osx64.pubxml
-        cp ../HorseIsleData/*.json "HorseIsleServer/bin/x64/MacOS/net6.0/osx-x64/publish/"
-        cp ../HorseIsleData/*.MAP "HorseIsleServer/bin/x64/MacOS/net6.0/osx-x64/publish/"
-        mkdir "HorseIsleServer/bin/x64/MacOS/net6.0/osx-x64/publish/www"
-        cp -R ../HorseIsleWeb/* "HorseIsleServer/bin/x64/MacOS/net6.0/osx-x64/publish/www"
     
     - name: Build mac-arm64
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=OsxARM64.pubxml
-        cp ../HorseIsleData/*.json "HorseIsleServer/bin/arm64/MacOS/net6.0/osx-arm64/publish/"
-        cp ../HorseIsleData/*.MAP "HorseIsleServer/bin/arm64/MacOS/net6.0/osx-arm64/publish/"
-        mkdir "HorseIsleServer/bin/arm64/MacOS/net6.0/osx-arm64/publish/www"
-        cp -R ../HorseIsleWeb/* "HorseIsleServer/bin/arm64/MacOS/net6.0/osx-arm64/publish/www"
 
     - name: upload mac-x64
       uses: actions/upload-artifact@v2
       with:
         name: mac-x64
-        path: HorseIsleServer/HorseIsleServer/bin/x64/MacOS/net6.0/osx-x64/publish/
+        path: HorseIsleServer/HISP/bin/x64/MacOS/net6.0/osx-x64/publish/
 
     - name: upload mac-arm64
       uses: actions/upload-artifact@v2
       with:
         name: mac-arm64
-        path: HorseIsleServer/HorseIsleServer/bin/arm64/MacOS/net6.0/osx-arm64/publish/
+        path: HorseIsleServer/HISP/bin/arm64/MacOS/net6.0/osx-arm64/publish/

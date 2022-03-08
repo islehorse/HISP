@@ -32,18 +32,22 @@ jobs:
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=Win64.pubxml
+
     - name: Build win-x86
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=Win32.pubxml
+
     - name: Build win-arm
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=WinARM.pubxml
+
     - name: Build win-arm64
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=WinARM64.pubxml
+
     - name: Upload win-x64
       uses: actions/upload-artifact@v2
       with:
@@ -67,6 +71,10 @@ jobs:
       with:
         name: HISP-WinARM64
         path: HorseIsleServer\HISP\bin\arm64\Windows\net6.0\windows-arm64\publish\
+
+
+
+
 
 
     - name: Upload win-x86-noobs
