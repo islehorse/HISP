@@ -18,6 +18,7 @@ using HISP.Game.SwfModules;
 using HISP.Game.Horse;
 using HISP.Game.Events;
 using HISP.Game.Items;
+using System.Diagnostics;
 
 namespace HISP.Server
 {
@@ -8251,6 +8252,20 @@ namespace HISP.Server
             }
             return true;
         }
+        public static void OnShutdown()
+        {
+            ServerSocket.Dispose();
+            gameTimer.Dispose();
+            minuteTimer.Dispose();
+        }
+        public static void ShutdownServer()
+        {
+            GameClient.OnShutdown();
+            GameServer.OnShutdown();
+            Database.OnShutdown();
+            Entry.OnShutdown();
+        }
+
         public static void StartServer()
         {
             ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);

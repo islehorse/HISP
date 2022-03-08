@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace HISP.Game.SwfModules
 {
-    class Drawingroom
+    public class Drawingroom
     {
         private static List<Drawingroom> drawingRooms = new List<Drawingroom>();
         public static Drawingroom[] DrawingRooms

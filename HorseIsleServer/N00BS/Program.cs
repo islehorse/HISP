@@ -1,21 +1,31 @@
 ﻿// An HTTP Server, and Horse Isle Server, Flash Player, in a single package
 // Idea is to just be open and play.
 
+using HISP.Game;
+using HISP.Game.Horse;
+using HISP.Game.Items;
+using HISP.Game.Services;
+using HISP.Game.SwfModules;
 using HISP.Security;
 using HISP.Server;
 using HTTP;
+using System;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
+using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace HISP
 {
     public static class Program
     {
+        private static LoadingForm lfrm;
         private static string baseDir;
         private static ContentServer cs;
         private static void addToList(string path)
         {
-            string Name = path.Remove(0, Path.Combine(baseDir, "client").Length+1);
+            string Name = path.Remove(0, Path.Combine(baseDir, "client").Length);
             Name = Name.Replace("\\", "/");
 
             ContentItem ci = new ContentItem(Name, path);
@@ -23,35 +33,62 @@ namespace HISP
 
         }
 
+        public static void OnShutdown()
+        {
+            if(!Process.GetCurrentProcess().CloseMainWindow())
+                Process.GetCurrentProcess().Close();
+        }
+
+        public static void StartLRFrm()
+        {
+            if (lfrm.ShowDialog() == DialogResult.Cancel)
+            {
+                GameServer.ShutdownServer();
+            }
+        }
+
+        public static void IncrementProgress()
+        {
+            if (lfrm.InvokeRequired)
+            {
+                lfrm.Invoke(() =>
+                {
+                    lfrm.StartProgress.Increment(1);
+                });
+            }
+            else
+            {
+                lfrm.StartProgress.Increment(1);
+            }
+        }
 
         public static void Main(string[] args)
         {
-            baseDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            baseDir = Directory.GetCurrentDirectory();
+            
+            lfrm = new LoadingForm();
+            Task startForm = new Task(StartLRFrm);
+            startForm.Start();
 
             ConfigReader.OpenConfig();
-            if (File.Exists(ConfigReader.ConfigurationFileName))
-                File.WriteAllText(ConfigReader.ConfigurationFileName, File.ReadAllText(ConfigReader.ConfigurationFileName).Replace("sql_lite=false", "sql_lite=true"));
+            ConfigReader.SqlLite = true;
+            ConfigReader.LogLevel = 0;
+
+            IncrementProgress();
+
 
             Database.OpenDatabase();
-            if(Database.GetUsers().Length == 0)
+            IncrementProgress();
+
+            if (Database.GetUsers().Length <= 0)
             {
-                Console.Write("Username: ");
-                string username = Console.ReadLine();
-                Console.Write("Password: ");
-                string password = Console.ReadLine();
-                Console.Write("Gender: ");
-                string gender = Console.ReadLine();
+                RegisterForm rfrm = new RegisterForm();
+                if (rfrm.ShowDialog() == DialogResult.Cancel)
+                    GameServer.ShutdownServer();
+
+                lfrm.Focus();
                 
-                Random r = new Random();
-                byte[] salt = new byte[64];
-
-                r.NextBytes(salt);
-                
-                string saltText  = BitConverter.ToString(salt).Replace("-", "");
-
-                string hashsalt = BitConverter.ToString(Authentication.HashAndSalt(password, salt)).Replace("-", "");
-
-                Database.CreateUser(0, username, hashsalt, saltText, gender, true, true);
             }
 
             // Start Web Server
@@ -60,18 +97,62 @@ namespace HISP
             foreach (string file in fileList)
                 addToList(file);
 
+            IncrementProgress();
+
             // Start HI1 Server
             Logger.SetCallback(Console.WriteLine);
-            Start.InitalizeAndStart();
+            IncrementProgress();
 
-            // Start Flash (Windows)
-            Process p = new Process();
-            p.StartInfo.FileName = Path.Combine(baseDir, "flash.dll");
-            p.StartInfo.Arguments = "http://127.0.0.1:12515/horseisle.swf?SERVER=127.0.0.1&PORT=12321";
-            p.Start();
+            Entry.SetShutdownCallback(OnShutdown);
+            IncrementProgress();
 
-            while (true) {  /* Allow asyncronous operations to happen. */ };
+            CrossDomainPolicy.GetPolicy();
+            IncrementProgress();
 
+            GameDataJson.ReadGamedata();
+            IncrementProgress();
+
+            Map.OpenMap();
+            IncrementProgress();
+
+            World.ReadWorldData();
+            IncrementProgress();
+
+            Treasure.Init();
+            IncrementProgress();
+
+            DroppedItems.Init();
+            IncrementProgress();
+
+            WildHorse.Init();
+            IncrementProgress();
+
+            Drawingroom.LoadAllDrawingRooms();
+            IncrementProgress();
+
+            Brickpoet.LoadPoetryRooms();
+            IncrementProgress();
+
+            Multiroom.CreateMultirooms();
+            IncrementProgress();
+
+            Auction.LoadAllAuctionRooms();
+            IncrementProgress();
+
+            Item.DoSpecialCases();
+            IncrementProgress();
+
+            GameServer.StartServer();
+            IncrementProgress();
+
+            lfrm.DialogResult = DialogResult.OK;
+            startForm.Wait();
+
+            SystemTrayIcon stry = new SystemTrayIcon();
+            stry.ShowDialog();
+
+            // Finally, shutdown server
+            GameServer.ShutdownServer();
         }
     }
 }

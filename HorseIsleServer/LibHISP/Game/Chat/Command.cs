@@ -34,34 +34,12 @@ namespace HISP.Game.Chat
         public static bool Shutdown(string message, string[] args, User user)
         {
             if (!user.Administrator)
-                return false;
-
-            try
-            {
-                foreach(GameClient client in GameClient.ConnectedClients)
-                {
-
-                    if (client.LoggedIn)
-                    {
-                        for(int i = 0; i < 2; i++)
-                        {
-                            ItemInstance rubyItem = new ItemInstance(Item.Ruby);
-                            client.LoggedinUser.Inventory.AddIgnoringFull(rubyItem);
-                        }
-
-                        client.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.GameUpdates).Count++;
-                    }
-
-                    client.Kick("%SHUTDOWN Command Executed by an Administrator (Probably a server restart)");
-
-                }
-            }
-            catch (Exception) { };
+                return false;         
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
-            Thread.Sleep(1000); // give it a few seconds to shut down, if it doesnt force exit
-            Environment.Exit(0);
+            GameServer.ShutdownServer();
+
             return true;
         }
         public static bool Give(string message, string[] args, User user)

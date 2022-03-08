@@ -17,16 +17,6 @@
     </Compile>
   </ItemGroup>
   <PropertyGroup>
-    <PostBuildEvent Condition="'$(OS)' == 'Windows_NT'">
-      copy "$(SolutionDir)..\HorseIsleData\gamedata.json" "$(TargetDir)gamedata.json" /Y
-      copy "$(SolutionDir)..\HorseIsleData\HI1.MAP" "$(TargetDir)HI1.MAP" /Y
-    </PostBuildEvent>
-    <PostBuildEvent Condition="'$(OS)' != 'Windows_NT'">
-      cp -f "$(SolutionDir)../HorseIsleData/gamedata.json" "$(TargetDir)gamedata.json"
-      cp -f "$(SolutionDir)../HorseIsleData/HI1.MAP" "$(TargetDir)HI1.MAP"
-    </PostBuildEvent> 
-  </PropertyGroup>
-  <PropertyGroup>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <GenerateBindingRedirectsOutputType>false</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
@@ -37,7 +27,7 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <StartupObject>HISP.Program</StartupObject>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <DebugType>none</DebugType>
+    <DebugType>embedded</DebugType>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
     <AnalysisLevel>none</AnalysisLevel>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
@@ -216,7 +206,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>3</WarningLevel>
     <NoWarn>1701;1702;2026</NoWarn>
-    <Optimize>True</Optimize>
+    <Optimize>False</Optimize>
   </PropertyGroup>
 
   
