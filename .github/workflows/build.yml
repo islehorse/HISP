@@ -63,12 +63,12 @@ jobs:
       run: |
         dotnet publish -p:PublishProfile=LinuxARM64.pubxml
       
-   - name: Build mac-x64
+    - name: Build mac-x64
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=Osx64.pubxml
     
-   - name: Build mac-arm64
+    - name: Build mac-arm64
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=OsxARM64.pubxml
