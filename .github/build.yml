@@ -1,4 +1,4 @@
-name: windows
+name: build
 
 on:
   push:
@@ -48,6 +48,21 @@ jobs:
       run: |
         dotnet publish -p:PublishProfile=WinARM64.pubxml
 
+    - name: Build linux-64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=Linux64.pubxml
+    
+    - name: Build linux-arm
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=LinuxARM.pubxml
+    
+    - name: Build linux-arm64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+
     - name: Upload win-x64
       uses: actions/upload-artifact@v2
       with:
@@ -72,11 +87,6 @@ jobs:
         name: HISP-WinARM64
         path: HorseIsleServer\HISP\bin\arm64\Windows\net6.0\windows-arm64\publish\
 
-
-
-
-
-
     - name: Upload win-x86-noobs
       uses: actions/upload-artifact@v2
       with:
@@ -89,3 +99,21 @@ jobs:
       with:
         name: HISP-Win64-Noobs
         path: HorseIsleServer\N00BS\bin\x64\Windows\net6.0\win-x64\publish\
+        
+    - name: Upload linux-x64
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-x64
+        path: HorseIsleServer/HISP/bin/x64/Linux/net6.0/linux-x64/publish/
+
+    - name: Upload linux-arm
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-arm
+        path: HorseIsleServer/HISP/bin/ARM/Linux/net6.0/linux-arm/publish/
+    
+    - name: Upload linux-arm64
+      uses: actions/upload-artifact@v2
+      with:
+        name: linux-arm64
+        path: HorseIsleServer/HISP/bin/ARM64/Linux/net6.0/linux-arm64/publish/
