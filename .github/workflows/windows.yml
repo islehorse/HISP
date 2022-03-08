@@ -67,3 +67,17 @@ jobs:
       with:
         name: HISP-WinARM64
         path: HorseIsleServer\HISP\bin\arm64\Windows\net6.0\windows-arm64\publish\
+
+
+    - name: Upload win-x86-noobs
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Win32-Noobs
+        path: HorseIsleServer\N00BS\bin\x86\Windows\net6.0\win-x86\publish\
+
+
+    - name: Upload win-x64-noobs
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Win64-Noobs
+        path: HorseIsleServer\N00BS\bin\x64\Windows\net6.0\win-x64\publish\
