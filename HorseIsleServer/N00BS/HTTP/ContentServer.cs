@@ -1,4 +1,7 @@
-﻿using System.Net;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
@@ -31,7 +34,6 @@ namespace HTTP
         {
             clientSock = ClientSocket;
             baseServ = Server;
-            Server.Clients.Add(this);
             baseServ.WriteDebugOutput("Client Connected @ " + clientSock.RemoteEndPoint.ToString());
             ProcessRequests();
             clientSock.Close();
@@ -103,11 +105,10 @@ namespace HTTP
             return headers;
         }
 
-        private void RespondGet(string path, Dictionary<string, string> query)
+        private void RespondGet(string name)
         {
-            baseServ.WriteDebugOutput("GET " + path);
-            string name = path.Remove(0, 1);
-
+            baseServ.WriteDebugOutput("GET " + name);
+         
             if (ContentItemExists(name))
             {
                 ContentItem ci = GetContentItem(name);
@@ -143,8 +144,8 @@ namespace HTTP
             }
             else
             {
-                string body = GeneratePage(path);
-                string requestStr = GenerateHeaders(path, body.Length);
+                string body = GeneratePage(name);
+                string requestStr = GenerateHeaders(name, body.Length);
                 requestStr += body;
                 
                 SendString(requestStr);
@@ -204,12 +205,7 @@ namespace HTTP
         {
             if (path == "/")
             {
-                string body = "Content Downloader Server.<br>Open this url in PSVita's \"Content Downloader\" To view avalible files.";
-                foreach (ContentItem content in baseServ.Contents)
-                {
-                    body += "<a href=\"" + content.name + "\"></a>";
-                }
-
+                string body = "Horse Isle Web Server..<br>Fork of SilicaAndPina's \"Content Server\"";
                 return body;
             }
             else
@@ -226,23 +222,6 @@ namespace HTTP
                 return relativeUri.Substring(0, questionIndex);
             else
                 return relativeUri;
-        }
-        private Dictionary<string,string> ExtractQuery(string relativeUri)
-        {
-            int questionIndex = relativeUri.IndexOf("?");
-            if (questionIndex != -1)
-            {
-                string[] queryStrList = relativeUri.Substring(questionIndex + 1).Split('&');
-                Dictionary<string,string> queryDict = new Dictionary<string, string>();
-                foreach(string queryStr in queryStrList)
-                {
-                    string[] qStr = queryStr.Split('=');
-                    queryDict.Add(qStr[0], qStr[1]);
-                }
-                return queryDict;
-            }
-            else
-                return new Dictionary<string, string>();
         }
         private string ExtractRelativeUrl(string header)
         {
@@ -264,8 +243,8 @@ namespace HTTP
                 {
                     string relUrl = ExtractRelativeUrl(line);
                     string path = ExtractPath(relUrl);
-                    Dictionary<string,string> query = ExtractQuery(relUrl);
-                    RespondGet(path, query);
+                    //Dictionary<string,string> query = ExtractQuery(relUrl);
+                    RespondGet(path);
                     return;
                 }
                 else if (line.StartsWith("HEAD"))
@@ -282,36 +261,34 @@ namespace HTTP
     class ContentServer
     {
         public List<ContentItem> Contents = new List<ContentItem>();
-        public List<ContentClient> Clients = new List<ContentClient>();
-
+        public Socket ServerSocket;
         public void WriteDebugOutput(string txt)
         {
-            Console.WriteLine("[HTTP] "+txt);
+            Console.WriteLine("[HTTP] " + txt);
         }
 
+        public void CreateClient(object sender, SocketAsyncEventArgs e)
+        {
+            do
+            {
+                Socket eSocket = e.AcceptSocket;
+                if (eSocket != null)
+                    new ContentClient(this, eSocket);
+                e.AcceptSocket = null;
+            } while (!ServerSocket.AcceptAsync(e));
+        }
         public ContentServer()
         {
 
-            new Thread(() =>
-            {
-                WriteDebugOutput("Listening for connections on port 12515.");
-                IPEndPoint localEndPoint = new IPEndPoint(IPAddress.Parse("0.0.0.0"), 12515);
-                Socket newsock = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                newsock.Bind(localEndPoint);
-                newsock.Listen(20);
+            WriteDebugOutput("Listening for connections on port 80.");
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("0.0.0.0"), 80);
+            ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            ServerSocket.Bind(ep);
+            ServerSocket.Listen(0x7fffffff);
 
-                while(true)
-                {
-                    Socket clientSock = newsock.Accept();
-
-                    new Thread(() =>
-                    {
-                        ContentClient client = new ContentClient(this, clientSock);
-                        Clients.Remove(client);
-                    }).Start();
-                }
-                
-            }).Start();
+            SocketAsyncEventArgs e = new SocketAsyncEventArgs();
+            e.Completed += CreateClient;
+            CreateClient(this, e);
         }
 
 

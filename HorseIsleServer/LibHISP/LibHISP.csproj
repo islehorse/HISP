@@ -14,6 +14,18 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <ContentWithTargetPath Include="..\..\HorseIsleData\gamedata.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>gamedata.json</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+  <ItemGroup>
+    <ContentWithTargetPath Include="..\..\HorseIsleData\HI1.MAP">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>HI1.MAP</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="6.0.2" />
     <PackageReference Include="MySqlConnector" Version="2.1.8" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
@@ -206,7 +218,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <WarningLevel>3</WarningLevel>
     <NoWarn>1701;1702;2026</NoWarn>
-    <Optimize>True</Optimize>
+    <Optimize>False</Optimize>
   </PropertyGroup>
 
   

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
+
 using HISP.Game;
 using HISP.Player;
 using HISP.Game.Horse;
@@ -11,7 +13,6 @@ using HISP.Game.SwfModules;
 
 using MySqlConnector;
 using Microsoft.Data.Sqlite;
-using System.Data.Common;
 
 namespace HISP.Server
 {
@@ -39,12 +40,18 @@ namespace HISP.Server
                 return new SqliteConnection(ConnectionString);
         }
 
+        public static void OnShutdown()
+        {
+            MySqlConnection.ClearAllPools();
+            SqliteConnection.ClearAllPools();
+        }
+
         public static void OpenDatabase()
         {
             if (!ConfigReader.SqlLite)
-                ConnectionString = "server=" + ConfigReader.DatabaseIP + ";user=" + ConfigReader.DatabaseUsername + ";password=" + ConfigReader.DatabasePassword + ";database=" + ConfigReader.DatabaseName;
+               ConnectionString = "server=" + ConfigReader.DatabaseIP + ";user=" + ConfigReader.DatabaseUsername + ";password=" + ConfigReader.DatabasePassword + ";database=" + ConfigReader.DatabaseName;
             else
-                ConnectionString = "Data Source=./" + ConfigReader.DatabaseName + ".db;";
+               ConnectionString = "Data Source=./" + ConfigReader.DatabaseName + ".db;";
 
             Logger.InfoPrint(ConnectionString);
 
@@ -60,6 +67,8 @@ namespace HISP.Server
                     Logger.ErrorPrint("Failed to connect to Database: "+e.Message);
                     Environment.Exit(1);
                 }
+
+                string SqlPragma = "PRAGMA journal_mode=WAL;";
 
                 string UserTable = "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16), PassHash TEXT(128), Salt TEXT(128), Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
                 string ExtTable = "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(4000),IpAddress TEXT(1028),PrivateNotes Text(65535), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT, TotalLogins INT)";
@@ -98,6 +107,20 @@ namespace HISP.Server
                 string ItemQueue = "CREATE TABLE IF NOT EXISTS ItemPurchaseQueue(playerId INT, itemId INT, count INT)";
                 string DeleteOnlineUsers = "DROP TABLE OnlineUsers";
                 string OnlineUsers = "CREATE TABLE IF NOT EXISTS OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3), New TEXT(3))";
+
+                if (ConfigReader.SqlLite)
+                {
+                    try
+                    {
+                        DbCommand sqlCommand = db.CreateCommand();
+                        sqlCommand.CommandText = SqlPragma;
+                        sqlCommand.ExecuteNonQuery();
+                    }
+                    catch (Exception e)
+                    {
+                        Logger.WarnPrint(e.Message);
+                    };
+                }
 
                 try
                 {
@@ -4675,7 +4698,6 @@ namespace HISP.Server
 
                 Int32 count = Convert.ToInt32(sqlCommand.ExecuteScalar());
 
-                
                 return count >= 1;
             }
         }
@@ -4874,6 +4896,23 @@ namespace HISP.Server
             }
         }
 
+        public static int GetNextFreeUserId()
+        {
+            using (DbConnection db = connectDb())
+            {
+                db.Open();
+                DbCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "SELECT MAX(Id)+1 FROM Users";
+                sqlCommand.Prepare();
+
+                object res = sqlCommand.ExecuteScalar();
+                if (res == DBNull.Value)
+                    return 0;
+
+                return Convert.ToInt32(res);
+            }
+        }
+         
         public static void CreateUser(int id, string username, string passhash, string salt, string gender, bool admin, bool moderator)
         {
             using (DbConnection db = connectDb())

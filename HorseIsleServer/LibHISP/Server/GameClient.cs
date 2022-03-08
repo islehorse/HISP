@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Collections.Generic;
 using HISP.Player;
 using HISP.Game;
 using HISP.Game.Horse;
 using HISP.Game.Events;
+using HISP.Game.Items;
+using HISP.Game.Inventory;
 
 namespace HISP.Server
 {
@@ -87,6 +88,30 @@ namespace HISP.Server
                 receivePackets(null, evt);
         }
 
+        public static void OnShutdown()
+        {
+            try
+            {
+                foreach (GameClient client in ConnectedClients)
+                {
+
+                    if (client.LoggedIn)
+                    {
+                        for (int i = 0; i < 2; i++)
+                        {
+                            ItemInstance rubyItem = new ItemInstance(Item.Ruby);
+                            client.LoggedinUser.Inventory.AddIgnoringFull(rubyItem);
+                        }
+
+                        client.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.GameUpdates).Count++;
+                    }
+
+                    client.Kick("Server shutdown.");
+
+                }
+            }
+            catch (Exception) { };
+        }
         public static void CreateClient(object sender, SocketAsyncEventArgs e)
         {
             do
@@ -114,7 +139,7 @@ namespace HISP.Server
             // Close Socket
             if (ClientSocket != null)
             {
-                ClientSocket.Close();
+                ClientSocket.Disconnect(false);
                 ClientSocket.Dispose();
                 ClientSocket = null;
             }
