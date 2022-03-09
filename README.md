@@ -1,8 +1,6 @@
 # HISP - HorseIsleServer Program
 
-[![Linux](https://github.com/islehorse/HISP/workflows/linux/badge.svg)](https://github.com/islehorse/HISP/actions?query=workflow%3Alinux)
-[![Windows](https://github.com/islehorse/HISP/workflows/windows/badge.svg)](https://github.com/islehorse/HISP/actions?query=workflow%3Awindows)
-[![MacOS](https://github.com/islehorse/HISP/workflows/macos/badge.svg)](https://github.com/islehorse/HISP/actions?query=workflow%macos)
+[![Build](https://github.com/islehorse/HISP/workflows/build/badge.svg)](https://github.com/islehorse/HISP/actions?query=workflow%3Abuild)
 
 HISP is a "Server Emulator" for Horse Isle 1          
 You may know of "private servers" for big MMO games such as **Runescape** or **Club Penguin**          
