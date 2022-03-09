@@ -85,8 +85,6 @@ namespace HISP
                 RegisterForm rfrm = new RegisterForm();
                 if (rfrm.ShowDialog() == DialogResult.Cancel)
                     GameServer.ShutdownServer();
-
-                lfrm.Focus();
                 
             }
 
