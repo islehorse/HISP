@@ -72,7 +72,13 @@ well they essentailly run off "Server Emulators".
               <locationame>        
     !DANCE <udlr>       
 ```
-# Setup     
+
+# Noobs Package (For people who go WTF IS A SQL ?)
+- Download HISP-N00BS zip
+- Open the HISP-N00BS executable
+- Within a few secs should now be playing Horse Isle.
+
+# Normal Setup (I want to actually run a server).      
 - Download the latest Windows or Linux binary.        
 - Setup a SQL Server, (eg, MariaDB).         
 - Setup a webserver with PHP8.0, intl and mysqli modules (eg, Apache).       
@@ -104,10 +110,6 @@ well they essentailly run off "Server Emulators".
  HISP Depends on a SQL Server, 
  its been tested and known to work specifically with MariaDB, https://mariadb.org/
  Set its information into server.properties or the server will just crash on first run /-/
- 
-# Platforms
- The server has been tried and known to work on Windows x86, x64, Linux x64, ARM and ARM64. 
- CI Provides pre-built binaries for all these platforms,
  
 # Building
  Building the server from source requires Microsoft .NET Core SDK, targetting version 5.0 https://dotnet.microsoft.com/download/dotnet-core
