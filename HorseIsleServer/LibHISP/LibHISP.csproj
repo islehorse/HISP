@@ -228,6 +228,6 @@
 
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="git rev-parse --verify HEAD&gt;&quot;$(ProjectDir)Resources\Versioning\GitCommit&quot; &#xD;&#xA;&#xD;&#xA;git describe --abbrev=0 --tags&gt;&quot;$(ProjectDir)Resources\Versioning\GitTag&quot; &#xD;&#xA;&#xD;&#xA;git branch --show-current&gt;&quot;$(ProjectDir)Resources\Versioning\GitBranch&quot; &#xD;&#xA;&#xD;&#xA;date /t&gt;&quot;$(ProjectDir)Resources\Versioning\BuildDate&quot; &#xD;&#xA;&#xD;&#xA;time /t&gt;&quot;$(ProjectDir)Resources\Versioning\BuildTime&quot; " />
+    <Exec Command="mkdir $(ProjectDir)Resources\Versioning&#xD;&#xA;&#xD;&#xA;git rev-parse --verify HEAD&gt;&quot;$(ProjectDir)Resources\Versioning\GitCommit&quot; &#xD;&#xA;&#xD;&#xA;git describe --abbrev=0 --tags&gt;&quot;$(ProjectDir)Resources\Versioning\GitTag&quot; &#xD;&#xA;&#xD;&#xA;git branch --show-current&gt;&quot;$(ProjectDir)Resources\Versioning\GitBranch&quot; &#xD;&#xA;&#xD;&#xA;date /t&gt;&quot;$(ProjectDir)Resources\Versioning\BuildDate&quot; &#xD;&#xA;&#xD;&#xA;time /t&gt;&quot;$(ProjectDir)Resources\Versioning\BuildTime&quot; " />
   </Target>
 </Project>
