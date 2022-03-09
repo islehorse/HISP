@@ -4,8 +4,7 @@ namespace HISP.Server
 {
     public class ServerVersion
     {
-        public static int MAJOR = 1;
-        public static int MINOR = 3;
+        
         public static string PRODUCT = "HISP";
 
         public static string GetArchitecture()
@@ -41,7 +40,19 @@ namespace HISP.Server
         }
         public static string GetVersionString()
         {
-            return "v" + MAJOR.ToString() + "." + MINOR.ToString();
+            return Resources.GitTag;
+        }
+        public static string GetBranch()
+        {
+            return Resources.GitBranch;
+        }
+        public static string GetBuildDate()
+        {
+            return Resources.BuildDate.Replace("\r", "").Replace("\n", ""); ;
+        }
+        public static string GetBuildTime()
+        {
+            return Resources.BuildTime.Replace("\r", "").Replace("\n", "");
         }
         public static string GetCommitHash(int TotalBytes)
         {
@@ -49,7 +60,7 @@ namespace HISP.Server
         }
         public static string GetBuildString()
         {
-            return PRODUCT + " " + GetVersionString() + " @" + GetCommitHash(7) + "; (" + GetArchitecture() + "; " + GetPlatform() + ")";
+            return PRODUCT + " " + GetVersionString() + " `" + GetBranch() + "@" + GetCommitHash(7) + "`; (" + GetArchitecture() + "; " + GetPlatform() + "); Built @ " + GetBuildDate() + " at " + GetBuildTime();
         }
     }
 }

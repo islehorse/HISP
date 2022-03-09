@@ -114,5 +114,34 @@ namespace HISP.Properties {
             }
         }
 
+        internal static string GitTag
+        {
+            get
+            {
+                return ResourceManager.GetString("GitTag", resourceCulture);
+            }
+        }
+        internal static string GitBranch
+        {
+            get
+            {
+                return ResourceManager.GetString("GitBranch", resourceCulture);
+            }
+        }
+        internal static string BuildDate
+        {
+            get
+            {
+                return ResourceManager.GetString("BuildDate", resourceCulture);
+            }
+        }
+        internal static string BuildTime
+        {
+            get
+            {
+                return ResourceManager.GetString("BuildTime", resourceCulture);
+            }
+        }
+
     }
 }
