@@ -64,7 +64,6 @@ namespace HISP
 
         public static void Main(string[] args)
         {
-            Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
             baseDir = Directory.GetCurrentDirectory();
             
             lfrm = new LoadingForm();
