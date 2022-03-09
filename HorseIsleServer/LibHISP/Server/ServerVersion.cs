@@ -40,15 +40,15 @@ namespace HISP.Server
         }
         public static string GetVersionString()
         {
-            return Resources.GitTag;
+            return Resources.GitTag.Replace("\r", "").Replace("\n", "");
         }
         public static string GetBranch()
         {
-            return Resources.GitBranch;
+            return Resources.GitBranch.Replace("\r", "").Replace("\n", "");
         }
         public static string GetBuildDate()
         {
-            return Resources.BuildDate.Replace("\r", "").Replace("\n", ""); ;
+            return Resources.BuildDate.Replace("\r", "").Replace("\n", "");
         }
         public static string GetBuildTime()
         {
@@ -56,7 +56,7 @@ namespace HISP.Server
         }
         public static string GetCommitHash(int TotalBytes)
         {
-            return Resources.GitCommit.Substring(0, TotalBytes);
+            return Resources.GitCommit.Substring(0, TotalBytes).Replace("\r", "").Replace("\n", "");
         }
         public static string GetBuildString()
         {
