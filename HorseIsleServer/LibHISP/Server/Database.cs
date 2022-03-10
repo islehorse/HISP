@@ -5812,7 +5812,7 @@ namespace HISP.Server
                 {
                     DbCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = "UPDATE UserExt SET Hunger=@hunger WHERE Id=@id";
-                    addWithValue(sqlCommand, "@Hunger", hunger);
+                    addWithValue(sqlCommand, "@hunger", hunger);
                     addWithValue(sqlCommand, "@id", id);
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
