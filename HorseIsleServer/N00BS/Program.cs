@@ -89,10 +89,14 @@ namespace HISP
             }
 
             // Start Web Server
-            cs = new ContentServer();
-            string[] fileList = Directory.GetFiles(Path.Combine(baseDir, "client"), "*", SearchOption.AllDirectories);
-            foreach (string file in fileList)
-                addToList(file);
+            try{
+                cs = new ContentServer();
+                string[] fileList = Directory.GetFiles(Path.Combine(baseDir, "client"), "*", SearchOption.AllDirectories);
+                foreach (string file in fileList)
+                    addToList(file);
+            }catch(Exception as e){
+                MessageBox.Show("Web server failed to start: "+e.Message, "Error starting web server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
 
             IncrementProgress();
 
@@ -138,13 +142,15 @@ namespace HISP
 
             Item.DoSpecialCases();
             IncrementProgress();
-
+            try{
             GameServer.StartServer();
+            }catch(Exception as e){
+                MessageBox.Show("Horse Isle server failed to start: "+e.Message, "Error starting web server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
             IncrementProgress();
 
             lfrm.DialogResult = DialogResult.OK;
-            startForm.Wait();
-
+            
             SystemTrayIcon stry = new SystemTrayIcon();
             stry.ShowDialog();
 
