@@ -207,7 +207,7 @@
             this.MinimizeBox = false;
             this.MinimumSize = new System.Drawing.Size(365, 280);
             this.Name = "RegisterForm";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.WindowsDefaultLocation;
             this.Text = "Create Account";
             this.Load += new System.EventHandler(this.RegisterForm_Load);
             this.ResumeLayout(false);
