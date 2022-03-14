@@ -4,7 +4,7 @@
     <RootNamespace>HISP</RootNamespace>
     <LangVersion>10.0</LangVersion>
     <Platforms>x64;x86;ARM;ARM64;AnyCPU</Platforms>
-    <Configurations>Debug;Windows;Linux;MacOS</Configurations>
+    <Configurations>Debug;Windows;Linux;MacOS;Android</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -83,6 +83,23 @@
     <Optimize>true</Optimize>
     <PlatformTarget>ARM64</PlatformTarget>
     <DefineConstants>OS_WINDOWS;ARCH_ARM64</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <NoWarn>1701;1702;2026</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|ARM'">
+    <RuntimeIdentifier>android-arm</RuntimeIdentifier>
+    <Optimize>true</Optimize>
+    <PlatformTarget>ARM32</PlatformTarget>
+    <DefineConstants>OS_ANDROID;ARCH_ARM</DefineConstants>
+    <WarningLevel>3</WarningLevel>
+    <NoWarn>1701;1702;2026</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|ARM64'">
+    <RuntimeIdentifier>android-arm64</RuntimeIdentifier>
+    <Optimize>true</Optimize>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DefineConstants>OS_ANDROID;ARCH_ARM64</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <NoWarn>1701;1702;2026</NoWarn>
   </PropertyGroup>

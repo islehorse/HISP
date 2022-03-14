@@ -29,6 +29,8 @@ namespace HISP.Server
             return "DEBUG";
 #elif OS_WINDOWS
             return "WINDOWS";
+#elif OS_ANDROID
+            return "ANDROID";
 #elif OS_LINUX
             return "LINUX";
 #elif OS_MACOS
