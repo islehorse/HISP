@@ -96,6 +96,7 @@ namespace HISP
                     addToList(file);
             }catch(Exception e){
                 MessageBox.Show("Web server failed to start: "+e.Message, "Error starting web server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
 
             IncrementProgress();
@@ -146,6 +147,7 @@ namespace HISP
             GameServer.StartServer();
             }catch(Exception e){
                 MessageBox.Show("Horse Isle server failed to start: "+e.Message, "Error starting web server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
             IncrementProgress();
 
