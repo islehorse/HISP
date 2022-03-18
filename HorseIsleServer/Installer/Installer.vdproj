@@ -85,7 +85,7 @@
         "PackageFilesAs" = "3:2"
         "PackageFileSize" = "3:-2147483648"
         "CabType" = "3:1"
-        "Compression" = "3:2"
+        "Compression" = "3:3"
         "SignOutput" = "11:FALSE"
         "CertificateFile" = "8:"
         "PrivateKeyFile" = "8:"
@@ -924,7 +924,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_DBECA6BD50F344FFAF7D3BC0A6A35A2B"
             {
-            "SourcePath" = "8:..\\N00BS\\bin\\x64\\Windows\\net6.0\\win-x64\\publish\\HISP-N00BS.exe"
+            "SourcePath" = "8:..\\N00BS\\bin\\x64\\Windows\\net6.0\\win-x64\\publish\\N00BS.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E3419B32123541589220537FB1154298"
