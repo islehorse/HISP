@@ -8,8 +8,11 @@
 HorseIsleServer/N00BS/obj/*
 HorseIsleServer/N00BS/bin/*
 
-HorseIsleServer/HISP/obj/*
-HorseIsleServer/HISP/bin/*
+HorseIsleServer/HISPCli/obj/*
+HorseIsleServer/HISPCli/bin/*
+
+HorseIsleServer/Installer/obj/*
+HorseIsleServer/Installer/bin/*
 
 HorseIsleServer/LibHISP/obj/*
 HorseIsleServer/LibHISP/bin/*

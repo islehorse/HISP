@@ -49,9 +49,9 @@ namespace HISP.Server
         public static void OpenDatabase()
         {
             if (!ConfigReader.SqlLite)
-               ConnectionString = "server=" + ConfigReader.DatabaseIP + ";user=" + ConfigReader.DatabaseUsername + ";password=" + ConfigReader.DatabasePassword + ";database=" + ConfigReader.DatabaseName;
+                ConnectionString = "server=" + ConfigReader.DatabaseIP + ";user=" + ConfigReader.DatabaseUsername + ";password=" + ConfigReader.DatabasePassword + ";database=" + ConfigReader.DatabaseName;
             else
-               ConnectionString = "Data Source=./" + ConfigReader.DatabaseName + ".db;";
+                ConnectionString = "Data Source=\"" + ConfigReader.DatabaseName + ".db\";";
 
             Logger.InfoPrint(ConnectionString);
 
@@ -6143,6 +6143,26 @@ namespace HISP.Server
                 else
                 {
                     throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                }
+            }
+        }
+        public static void SetPasswordHash(string username, string passhash)
+        {
+            using (DbConnection db = connectDb())
+            {
+                db.Open();
+                if (CheckUserExist(username))
+                {
+                    DbCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "UPDATE Users SET PassHash=@hash WHERE Username=@name";
+                    addWithValue(sqlCommand, "@hash", passhash);
+                    addWithValue(sqlCommand, "@name", username);
+                    sqlCommand.Prepare();
+                    sqlCommand.ExecuteNonQuery();
+                }
+                else
+                {
+                    throw new KeyNotFoundException("Username " + username + " not found in database.");
                 }
             }
         }

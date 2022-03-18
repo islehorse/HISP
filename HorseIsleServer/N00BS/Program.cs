@@ -12,7 +12,6 @@ using HTTP;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -21,11 +20,11 @@ namespace HISP
     public static class Program
     {
         private static LoadingForm lfrm;
-        private static string baseDir;
+        public static string BaseDir;
         private static ContentServer cs;
         private static void addToList(string path)
         {
-            string Name = path.Remove(0, Path.Combine(baseDir, "client").Length);
+            string Name = path.Remove(0, Path.Combine(Directory.GetCurrentDirectory(), "client").Length);
             Name = Name.Replace("\\", "/");
 
             ContentItem ci = new ContentItem(Name, path);
@@ -64,19 +63,22 @@ namespace HISP
 
         public static void Main(string[] args)
         {
-            baseDir = Directory.GetCurrentDirectory();
-            
+            BaseDir = Path.Combine(Environment.GetEnvironmentVariable("APPDATA"), "HISP", "N00BS");
+            Directory.CreateDirectory(BaseDir);
+
             lfrm = new LoadingForm();
             Task startForm = new Task(StartLRFrm);
             startForm.Start();
 
+            ConfigReader.ConfigurationFileName = Path.Combine(BaseDir, "server.properties");
             ConfigReader.OpenConfig();
             ConfigReader.SqlLite = true;
             ConfigReader.LogLevel = 0;
+            ConfigReader.BindIP = "127.0.0.1";
+            ConfigReader.CrossDomainPolicyFile = Path.Combine(BaseDir, "CrossDomainPolicy.xml");
+            ConfigReader.DatabaseName = Path.Combine(BaseDir, "game1.db");
 
             IncrementProgress();
-
-
             Database.OpenDatabase();
             IncrementProgress();
 
@@ -91,7 +93,7 @@ namespace HISP
             // Start Web Server
             try{
                 cs = new ContentServer();
-                string[] fileList = Directory.GetFiles(Path.Combine(baseDir, "client"), "*", SearchOption.AllDirectories);
+                string[] fileList = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(),"client"), "*", SearchOption.AllDirectories);
                 foreach (string file in fileList)
                     addToList(file);
             }catch(Exception e){

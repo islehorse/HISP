@@ -73,7 +73,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|ARM'">
     <RuntimeIdentifier>win-arm</RuntimeIdentifier>
     <Optimize>true</Optimize>
-    <PlatformTarget>ARM32</PlatformTarget>
+    <PlatformTarget>ARM</PlatformTarget>
     <DefineConstants>OS_WINDOWS;ARCH_ARM</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <NoWarn>1701;1702;2026</NoWarn>
@@ -90,7 +90,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|ARM'">
     <RuntimeIdentifier>android-arm</RuntimeIdentifier>
     <Optimize>true</Optimize>
-    <PlatformTarget>ARM32</PlatformTarget>
+    <PlatformTarget>ARM</PlatformTarget>
     <DefineConstants>OS_ANDROID;ARCH_ARM</DefineConstants>
     <WarningLevel>3</WarningLevel>
     <NoWarn>1701;1702;2026</NoWarn>
@@ -156,7 +156,7 @@
 
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <PlatformTarget>ARM32</PlatformTarget>
+    <PlatformTarget>ARM</PlatformTarget>
     <Optimize>False</Optimize>
     <DefineConstants>DEBUG;TRACE;OS_DEBUG;ARCH_ARM</DefineConstants>
     <WarningLevel>3</WarningLevel>
