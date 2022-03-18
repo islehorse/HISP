@@ -124,43 +124,43 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Linux64
-        path: HorseIsleServer/HISP/bin/x64/Linux/net6.0/linux-x64/publish/
+        path: HorseIsleServer/HISPCli/bin/x64/Linux/net6.0/linux-x64/publish/
 
     - name: Upload linux-arm
       uses: actions/upload-artifact@v2
       with:
         name: HISP-LinuxARM
-        path: HorseIsleServer/HISP/bin/ARM/Linux/net6.0/linux-arm/publish/
+        path: HorseIsleServer/HISPCli/bin/ARM/Linux/net6.0/linux-arm/publish/
     
     - name: Upload linux-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-LinuxARM64
-        path: HorseIsleServer/HISP/bin/ARM64/Linux/net6.0/linux-arm64/publish/
+        path: HorseIsleServer/HISPCli/bin/ARM64/Linux/net6.0/linux-arm64/publish/
 
     - name: Upload mac-x64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Mac64
-        path: HorseIsleServer/HISP/bin/x64/MacOS/net6.0/osx-x64/publish/
+        path: HorseIsleServer/HISPCli/bin/x64/MacOS/net6.0/osx-x64/publish/
 
     - name: Upload mac-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-MacARM64
-        path: HorseIsleServer/HISP/bin/arm64/MacOS/net6.0/osx-arm64/publish/
+        path: HorseIsleServer/HISPCli/bin/arm64/MacOS/net6.0/osx-arm64/publish/
 
     - name: Upload android-arm
       uses: actions/upload-artifact@v2
       with:
         name: HISP-AndroidARM
-        path: HorseIsleServer/HISP/bin/arm/Android/net6.0/android-arm/publish/
+        path: HorseIsleServer/HISPCli/bin/arm/Android/net6.0/android-arm/publish/
 
     - name: Upload android-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-AndroidARM64
-        path: HorseIsleServer/HISP/bin/arm64/Android/net6.0/android-arm64/publish/
+        path: HorseIsleServer/HISPCli/bin/arm64/Android/net6.0/android-arm64/publish/
 
 
     - name: Upload Website (master)
