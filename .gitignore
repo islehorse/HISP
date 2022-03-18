@@ -11,8 +11,7 @@ HorseIsleServer/N00BS/bin/*
 HorseIsleServer/HISPCli/obj/*
 HorseIsleServer/HISPCli/bin/*
 
-HorseIsleServer/Installer/obj/*
-HorseIsleServer/Installer/bin/*
+HorseIsleServer/Installer/Windows/*
 
 HorseIsleServer/LibHISP/obj/*
 HorseIsleServer/LibHISP/bin/*
