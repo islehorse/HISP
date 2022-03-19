@@ -7,7 +7,6 @@ using HISP.Game;
 using HISP.Game.Horse;
 using HISP.Game.Events;
 using HISP.Game.Items;
-using HISP.Game.Inventory;
 
 namespace HISP.Server
 {
