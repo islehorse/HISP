@@ -277,11 +277,11 @@ namespace HTTP
                 e.AcceptSocket = null;
             } while (!ServerSocket.AcceptAsync(e));
         }
-        public ContentServer()
+        public ContentServer(string ip)
         {
 
             WriteDebugOutput("Listening for connections on port 80.");
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 80);
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(ip), 80);
             ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ServerSocket.Bind(ep);
             ServerSocket.Listen(0x7fffffff);
