@@ -88,25 +88,25 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64
-        path: HorseIsleServer\HISP\bin\x64\Windows\net6.0\win-x64\publish\
+        path: HorseIsleServer\HISPCli\bin\x64\Windows\net6.0\win-x64\publish\
     
     - name: Upload win-x86
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win32
-        path: HorseIsleServer\HISP\bin\x86\Windows\net6.0\win-x86\publish\
+        path: HorseIsleServer\HISPCli\bin\x86\Windows\net6.0\win-x86\publish\
         
     - name: Upload win-arm
       uses: actions/upload-artifact@v2
       with:
         name: HISP-WinARM
-        path: HorseIsleServer\HISP\bin\arm\Windows\net6.0\windows-arm\publish\
+        path: HorseIsleServer\HISPCli\bin\arm\Windows\net6.0\windows-arm\publish\
 
     - name: Upload win-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-WinARM64
-        path: HorseIsleServer\HISP\bin\arm64\Windows\net6.0\windows-arm64\publish\
+        path: HorseIsleServer\HISPCli\bin\arm64\Windows\net6.0\windows-arm64\publish\
 
     - name: Upload win-x86-noobs
       uses: actions/upload-artifact@v2

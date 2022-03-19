@@ -349,7 +349,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:HISP-N00BS"
         "ProductCode" = "8:{60BA2AF1-4913-4A37-9280-093E8E7DAADE}"
-        "PackageCode" = "8:{88A7C3C4-CB07-4D31-ADA6-1FA3B9FFAB19}"
+        "PackageCode" = "8:{96A4B673-929B-49DC-B013-F53F41FCA43A}"
         "UpgradeCode" = "8:{FAD2FB5F-7B7C-4293-BF2D-09384146449E}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -483,7 +483,7 @@
             "Icon" = "8:_611F30D5162547E3BA321F145FD40AC5"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_8C2FF2BBC6C5459CB7C3C3D7563A6B24"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_A605B12DD6E64941ACDA0011A43463E0"
             {
             "Name" = "8:HISP-N00BS"
             "Arguments" = "8:"
