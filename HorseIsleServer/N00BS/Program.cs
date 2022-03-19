@@ -19,7 +19,9 @@ namespace HISP
 {
     public static class Program
     {
+        public static Random rand = new Random(Guid.NewGuid().GetHashCode());
         private static LoadingForm lfrm;
+        public static string IP;
         public static string BaseDir;
         private static ContentServer cs;
         private static void addToList(string path)
@@ -34,7 +36,7 @@ namespace HISP
 
         public static void OnShutdown()
         {
-            if(!Process.GetCurrentProcess().CloseMainWindow())
+            if (!Process.GetCurrentProcess().CloseMainWindow())
                 Process.GetCurrentProcess().Close();
         }
 
@@ -60,11 +62,21 @@ namespace HISP
                 lfrm.StartProgress.Increment(1);
             }
         }
+        public static string GetOctlet()
+        {
+            return rand.Next(0, 255).ToString();
+        }
+
+        public static string GenIP()
+        {
+            return "127" + "." + GetOctlet() + "." + GetOctlet() + "." + GetOctlet();
+        }
 
         public static void Main(string[] args)
         {
             BaseDir = Path.Combine(Environment.GetEnvironmentVariable("APPDATA"), "HISP", "N00BS");
             Directory.CreateDirectory(BaseDir);
+            IP = GenIP();
 
             lfrm = new LoadingForm();
             Task startForm = new Task(StartLRFrm);
@@ -74,13 +86,14 @@ namespace HISP
             ConfigReader.OpenConfig();
             ConfigReader.SqlLite = true;
             ConfigReader.LogLevel = 0;
-            ConfigReader.BindIP = "127.0.0.1";
+            ConfigReader.BindIP = IP;
             ConfigReader.CrossDomainPolicyFile = Path.Combine(BaseDir, "CrossDomainPolicy.xml");
             ConfigReader.DatabaseName = Path.Combine(BaseDir, "game1.db");
 
             IncrementProgress();
             Database.OpenDatabase();
             IncrementProgress();
+            
 
             if (Database.GetUsers().Length <= 0)
             {
@@ -92,7 +105,7 @@ namespace HISP
 
             // Start Web Server
             try{
-                cs = new ContentServer();
+                cs = new ContentServer(IP);
                 string[] fileList = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(),"client"), "*", SearchOption.AllDirectories);
                 foreach (string file in fileList)
                     addToList(file);
