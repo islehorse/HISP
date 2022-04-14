@@ -21,7 +21,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 6.0.x
+        dotnet-version: 7.0.x
         include-prerelease: true
 
     - name: Restore dependencies
@@ -88,79 +88,79 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64
-        path: HorseIsleServer\HISPCli\bin\x64\Windows\net6.0\win-x64\publish\
+        path: HorseIsleServer\HISPCli\bin\x64\Windows\net7.0\win-x64\publish\
     
     - name: Upload win-x86
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win32
-        path: HorseIsleServer\HISPCli\bin\x86\Windows\net6.0\win-x86\publish\
+        path: HorseIsleServer\HISPCli\bin\x86\Windows\net7.0\win-x86\publish\
         
     - name: Upload win-arm
       uses: actions/upload-artifact@v2
       with:
         name: HISP-WinARM
-        path: HorseIsleServer\HISPCli\bin\arm\Windows\net6.0\windows-arm\publish\
+        path: HorseIsleServer\HISPCli\bin\arm\Windows\net7.0\windows-arm\publish\
 
     - name: Upload win-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-WinARM64
-        path: HorseIsleServer\HISPCli\bin\arm64\Windows\net6.0\windows-arm64\publish\
+        path: HorseIsleServer\HISPCli\bin\arm64\Windows\net7.0\windows-arm64\publish\
 
     - name: Upload win-x86-noobs
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win32-Noobs
-        path: HorseIsleServer\N00BS\bin\x86\Windows\net6.0\win-x86\publish\
+        path: HorseIsleServer\N00BS\bin\x86\Windows\net7.0\win-x86\publish\
 
     - name: Upload win-x64-noobs
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64-Noobs
-        path: HorseIsleServer\N00BS\bin\x64\Windows\net6.0\win-x64\publish\
+        path: HorseIsleServer\N00BS\bin\x64\Windows\net7.0\win-x64\publish\
         
     - name: Upload linux-x64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Linux64
-        path: HorseIsleServer/HISPCli/bin/x64/Linux/net6.0/linux-x64/publish/
+        path: HorseIsleServer/HISPCli/bin/x64/Linux/net7.0/linux-x64/publish/
 
     - name: Upload linux-arm
       uses: actions/upload-artifact@v2
       with:
         name: HISP-LinuxARM
-        path: HorseIsleServer/HISPCli/bin/ARM/Linux/net6.0/linux-arm/publish/
+        path: HorseIsleServer/HISPCli/bin/ARM/Linux/net7.0/linux-arm/publish/
     
     - name: Upload linux-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-LinuxARM64
-        path: HorseIsleServer/HISPCli/bin/ARM64/Linux/net6.0/linux-arm64/publish/
+        path: HorseIsleServer/HISPCli/bin/ARM64/Linux/net7.0/linux-arm64/publish/
 
     - name: Upload mac-x64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Mac64
-        path: HorseIsleServer/HISPCli/bin/x64/MacOS/net6.0/osx-x64/publish/
+        path: HorseIsleServer/HISPCli/bin/x64/MacOS/net7.0/osx-x64/publish/
 
     - name: Upload mac-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-MacARM64
-        path: HorseIsleServer/HISPCli/bin/arm64/MacOS/net6.0/osx-arm64/publish/
+        path: HorseIsleServer/HISPCli/bin/arm64/MacOS/net7.0/osx-arm64/publish/
 
     - name: Upload android-arm
       uses: actions/upload-artifact@v2
       with:
         name: HISP-AndroidARM
-        path: HorseIsleServer/HISPCli/bin/arm/Android/net6.0/android-arm/publish/
+        path: HorseIsleServer/HISPCli/bin/arm/Android/net7.0/android-arm/publish/
 
     - name: Upload android-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-AndroidARM64
-        path: HorseIsleServer/HISPCli/bin/arm64/Android/net6.0/android-arm64/publish/
+        path: HorseIsleServer/HISPCli/bin/arm64/Android/net7.0/android-arm64/publish/
 
 
     - name: Upload Website (master)
