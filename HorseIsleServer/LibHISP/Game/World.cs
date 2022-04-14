@@ -158,14 +158,7 @@ namespace HISP.Game
 
         public class Time
         {
-            public double PreciseMinutes;
-            public int Minutes
-            {
-                get
-                {
-                    return Convert.ToInt32(Math.Floor(PreciseMinutes));
-                }
-            }
+            public int Minutes;
             public int Days;
             public int Years;
         }
@@ -198,13 +191,13 @@ namespace HISP.Game
 
         public static void TickWorldClock() 
         {
-            ServerTime.PreciseMinutes += 0.1;
+            ServerTime.Minutes++;
 
 
             if (ServerTime.Minutes > 1440) // 1 day
             {
                 ServerTime.Days += 1;
-                ServerTime.PreciseMinutes = 0.0;
+                ServerTime.Minutes = 0;
                 
                 Database.DoIntrestPayments(ConfigReader.IntrestRate);
             }
@@ -219,7 +212,7 @@ namespace HISP.Game
         public static void ReadWorldData()
         {
             Logger.DebugPrint("Reading time from database...");
-            ServerTime.PreciseMinutes = Database.GetServerTime();
+            ServerTime.Minutes = Database.GetServerTime();
             ServerTime.Days = Database.GetServerDay();
             ServerTime.Years = Database.GetServerYear();
             StartDate = Database.GetServerStartTime();
