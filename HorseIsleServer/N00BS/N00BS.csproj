@@ -109,7 +109,6 @@
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='All|AnyCPU'">
-    <TargetFramework>net6.0</TargetFramework>
     <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
     <Optimize>True</Optimize>
     <DefineConstants>OS_ALL;ARCH_ANYCPU</DefineConstants>
