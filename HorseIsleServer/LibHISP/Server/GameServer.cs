@@ -42,72 +42,68 @@ namespace HISP.Server
         /*
          *  Private stuff 
          */
-        private static int gameTickSpeed = 480; // Changing this to ANYTHING else will cause desync with the client.
+        private static int gameTickSpeed = 4800; // Changing this to ANYTHING else will cause desync with the client.
         private static int totalMinutesElapsed = 0;
         private static int oneMinute = 1000 * 60;
         private static Timer gameTimer; // Controls in-game time.
         private static Timer minuteTimer; // ticks every real world minute.
-        private static int lastServerTime = 0;
         private static void onGameTick(object state)
         {
+            // Tick the game clock.
             World.TickWorldClock();
-            if(World.ServerTime.Minutes != lastServerTime)
+
+            // Start all events with this RaceEvery set.
+            Arena.StartArenas(World.ServerTime.Minutes);
+
+            // Decrement horse train timer
+            Database.DecHorseTrainTimeout();
+
+            // Write time to database:
+            Database.SetServerTime(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years);
+
+            // Ranch Windmill Payments
+            if (World.ServerTime.Minutes % 720 == 0) // every 12 hours
             {
-                lastServerTime = World.ServerTime.Minutes;
-
-                // Start all events with this RaceEvery set.
-                Arena.StartArenas(World.ServerTime.Minutes);
-
-                // Decrement horse train timer
-                Database.DecHorseTrainTimeout();
-
-                // Write time to database:
-                Database.SetServerTime(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years);
-
-                // Ranch Windmill Payments
-                if (World.ServerTime.Minutes % 720 == 0) // every 12 hours
+                Logger.DebugPrint("Paying windmill owners . . . ");
+                foreach (Ranch ranch in Ranch.Ranches)
                 {
-                    Logger.DebugPrint("Paying windmill owners . . . ");
-                    foreach (Ranch ranch in Ranch.Ranches)
+                    int ranchOwner = ranch.OwnerId;
+                    if (ranchOwner != -1)
                     {
-                        int ranchOwner = ranch.OwnerId;
-                        if (ranchOwner != -1)
+                        int moneyToAdd = 5000 * ranch.GetBuildingCount(8); // Windmill
+                        if (GameServer.IsUserOnline(ranchOwner))
+                            GameServer.GetUserById(ranchOwner).AddMoney(moneyToAdd);
+                        else
                         {
-                            int moneyToAdd = 5000 * ranch.GetBuildingCount(8); // Windmill
-                            if (GameServer.IsUserOnline(ranchOwner))
-                                GameServer.GetUserById(ranchOwner).AddMoney(moneyToAdd);
-                            else
+                            try
                             {
-                                try
-                                {
-                                    Database.SetPlayerMoney(Database.GetPlayerMoney(ranchOwner) + moneyToAdd, ranchOwner);
-                                }
-                                catch (OverflowException)
-                                {
-                                    Database.SetPlayerMoney(2147483647, ranchOwner);
-                                }
+                                Database.SetPlayerMoney(Database.GetPlayerMoney(ranchOwner) + moneyToAdd, ranchOwner);
+                            }
+                            catch (OverflowException)
+                            {
+                                Database.SetPlayerMoney(2147483647, ranchOwner);
                             }
                         }
                     }
                 }
-
-                if((World.StartDate != -1)) // Birthday tokens
-                {
-                    int curTime = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                    if (curTime >= World.StartDate + 378691200)
-                    {
-                        Logger.InfoPrint("Your server has been running for 12 years! Adding birthday tokens");
-                        Database.SetStartTime(-1);
-                        World.StartDate = -1;
-
-
-                        AddItemToAllUsersEvenOffline(Item.BirthdayToken, 10);
-                    }
- 
-                }
-
-                gameTimer.Change(gameTickSpeed, gameTickSpeed);
             }
+
+            if((World.StartDate != -1)) // Birthday tokens
+            {
+                int curTime = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                if (curTime >= World.StartDate + 378691200)
+                {
+                    Logger.InfoPrint("Your server has been running for 12 years! Adding birthday tokens");
+                    Database.SetStartTime(-1);
+                    World.StartDate = -1;
+
+
+                    AddItemToAllUsersEvenOffline(Item.BirthdayToken, 10);
+                }
+ 
+            }
+
+            gameTimer.Change(gameTickSpeed, gameTickSpeed);
 
         }
         private static void onMinuteTick(object state)

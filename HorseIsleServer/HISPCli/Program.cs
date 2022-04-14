@@ -1,6 +1,7 @@
 ﻿using HISP.Server;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HISP.Cli
@@ -10,6 +11,7 @@ namespace HISP.Cli
         private static StreamWriter sw = null;
         private static FileStream fs = null;
         private static string logFile;
+        private static EventWaitHandle shutdownHandle;
 
         public static bool ShuttingDown = false;
         public static string BaseDir;
@@ -42,7 +44,7 @@ namespace HISP.Cli
 
         public static void OnShutdown()
         {
-            ShuttingDown = true;
+            shutdownHandle.Set();
         }
         public static void LogToFile(bool error, string type,string text)
         {
@@ -125,9 +127,9 @@ namespace HISP.Cli
 
             Entry.SetShutdownCallback(OnShutdown);
             Entry.Start();
-            while (!ShuttingDown) {  /* Allow asyncronous operations to happen. */ };
-            Task.WaitAll();
-            
+
+            shutdownHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
+            shutdownHandle.WaitOne();
         }
     }
 }
