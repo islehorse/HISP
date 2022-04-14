@@ -53,8 +53,7 @@ namespace HISP.Server
             else
                 ConnectionString = "Data Source=\"" + ConfigReader.DatabaseName + ".db\";";
 
-            Logger.InfoPrint(ConnectionString);
-
+            
             using (DbConnection db = connectDb())
             {
                 
