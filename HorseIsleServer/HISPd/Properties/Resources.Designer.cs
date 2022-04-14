@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HISP.Properties {
+namespace HISP.Cli.Properties {
     using System;
     
     
