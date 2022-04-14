@@ -18,7 +18,6 @@ using HISP.Game.SwfModules;
 using HISP.Game.Horse;
 using HISP.Game.Events;
 using HISP.Game.Items;
-using System.Diagnostics;
 
 namespace HISP.Server
 {
@@ -8276,7 +8275,7 @@ namespace HISP.Server
             gameTimer = new Timer(new TimerCallback(onGameTick), null, gameTickSpeed, gameTickSpeed);
             minuteTimer = new Timer(new TimerCallback(onMinuteTick), null, oneMinute, oneMinute);
             Logger.InfoPrint("Binding to ip: " + ConfigReader.BindIP + " On port: " + ConfigReader.Port.ToString());
-
+            
             SocketAsyncEventArgs e = new SocketAsyncEventArgs();
             e.Completed += GameClient.CreateClient;
             GameClient.CreateClient(null, e);
