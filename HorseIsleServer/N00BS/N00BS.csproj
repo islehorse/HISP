@@ -4,7 +4,8 @@
     <RootNamespace>HISP.Noobs</RootNamespace>
     <LangVersion>10.0</LangVersion>
     <UseWindowsForms>true</UseWindowsForms>
-    
+    <TargetFramework>net7.0-windows</TargetFramework>
+
     <Platforms>x64;x86;AnyCPU</Platforms>
     <Configurations>Debug;Windows</Configurations>
   </PropertyGroup>
@@ -76,7 +77,6 @@
     <GenerateBindingRedirectsOutputType>false</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
   <PropertyGroup>
-    <TargetFramework>net7.0-windows</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoWin32Manifest>true</NoWin32Manifest>
     <ApplicationIcon>icon.ico</ApplicationIcon>
