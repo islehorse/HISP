@@ -27,7 +27,7 @@ User=horseisle
 Group=horseisle
 
 WorkingDirectory=/etc/hisp
-ExecStart=/usr/bin/HISPCli
+ExecStart=/usr/bin/HISPd
 
 Environment=USER=horseisle HOME=/etc/hisp/home HISP_BASE_DIR=/etc/hisp HISP_CONF_FILE=/etc/hisp/server.properties
 
