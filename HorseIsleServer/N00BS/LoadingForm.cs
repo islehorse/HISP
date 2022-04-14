@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace HISP
+namespace HISP.Noobs
 {
     public partial class LoadingForm : Form
     {

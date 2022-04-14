@@ -4,7 +4,7 @@ using System.Windows.Forms;
 using HISP.Security;
 using HISP.Server;
 
-namespace HISP
+namespace HISP.Noobs
 {
     public partial class ResetForm : Form
     {

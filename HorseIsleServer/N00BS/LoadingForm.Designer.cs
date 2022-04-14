@@ -1,4 +1,4 @@
-﻿namespace HISP
+﻿namespace HISP.Noobs
 {
     partial class LoadingForm
     {
@@ -55,7 +55,7 @@
             // 
             // StartProgress
             // 
-            this.StartProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.StartProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.StartProgress.Location = new System.Drawing.Point(79, 40);
             this.StartProgress.Maximum = 18;

@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace HISP.Properties {
+namespace HISP.Cli.Properties {
     using System;
     
     
@@ -60,57 +60,9 @@ namespace HISP.Properties {
             }
         }
         
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;cross-domain-policy&gt;
-        ///	&lt;allow-access-from domain=&quot;*&quot; to-ports=&quot;12321&quot; secure=&quot;false&quot;/&gt;
-        ///&lt;/cross-domain-policy&gt;.
-        /// </summary>
-        internal static string DefaultCrossDomain {
+        internal static string HISPService {
             get {
-                return ResourceManager.GetString("DefaultCrossDomain", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to # HorseIsleServer Default Configuration File
-        ///
-        ///# Ip address the server will bind to (default: 0.0.0.0 ALL INTERFACES)
-        ///ip=0.0.0.0
-        ///# Port the server will bind to (default: 12321)
-        ///port=12321
-        ///
-        ///# MariaDB Database 
-        ///db_ip=127.0.0.1
-        ///db_name=beta
-        ///db_username=root
-        ///db_password=test123
-        ///db_port=3306
-        ///
-        ///# Map Data
-        ///map=HI1.MAP
-        ///
-        ///# JSON Format Data
-        ///
-        ///gamedata=gamedata.json
-        ///
-        ///# Cross-Domain Policy File
-        ///crossdomain=CrossDomainPolicy.xml
-        ///
-        ///# Red Text Stating &quot;Todays Note:&quot;
-        ///motd=April 11, 2020. New breed, C [rest of string was truncated]&quot;;.
-        /// </summary>
-        internal static string DefaultServerProperties {
-            get {
-                return ResourceManager.GetString("DefaultServerProperties", resourceCulture);
-            }
-        }
-		
-		/// <summary>
-        ///   UNKNOWN COMMIT HASH
-        /// </summary>
-        internal static string GitCommit {
-            get {
-                return ResourceManager.GetString("GitCommit", resourceCulture);
+                return ResourceManager.GetString("HISPService", resourceCulture);
             }
         }
 

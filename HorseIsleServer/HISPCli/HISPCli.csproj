@@ -25,7 +25,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoWin32Manifest>true</NoWin32Manifest>
     <ApplicationIcon>icon.ico</ApplicationIcon>
-    <StartupObject>HISP.Program</StartupObject>
+    <StartupObject>HISP.Cli.Program</StartupObject>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <DebugType>embedded</DebugType>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
