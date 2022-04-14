@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 
-namespace HISP
+namespace HISP.Noobs
 {
     public partial class SystemTrayIcon : Form
     {

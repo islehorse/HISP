@@ -1,4 +1,4 @@
-﻿namespace HISP
+﻿namespace HISP.Noobs
 {
     partial class ResetForm
     {
@@ -48,7 +48,7 @@
             // 
             // Username
             // 
-            this.Username.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.Username.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Username.Location = new System.Drawing.Point(12, 27);
             this.Username.MaxLength = 16;
@@ -61,7 +61,7 @@
             // 
             // Password
             // 
-            this.Password.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.Password.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.Password.Location = new System.Drawing.Point(12, 56);
             this.Password.MaxLength = 16;
@@ -75,7 +75,7 @@
             // 
             // ResetPassword
             // 
-            this.ResetPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.ResetPassword.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.ResetPassword.Enabled = false;
             this.ResetPassword.Location = new System.Drawing.Point(12, 118);

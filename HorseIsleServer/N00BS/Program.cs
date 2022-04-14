@@ -15,7 +15,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace HISP
+namespace HISP.Noobs
 {
     public static class Program
     {
@@ -117,7 +117,6 @@ namespace HISP
             IncrementProgress();
 
             // Start HI1 Server
-            Logger.SetCallback(Console.WriteLine);
             IncrementProgress();
 
             Entry.SetShutdownCallback(OnShutdown);

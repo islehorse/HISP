@@ -1,0 +1,25 @@
+[Unit]
+Description=HISP (Horse Isle Server Program)
+
+After=syslog.target
+After=network.target
+
+Wants=mariadb.service
+After=mariadb.service
+
+
+[Service]
+RestartSec=2s
+Type=simple
+
+User=horseisle
+Group=horseisle
+
+WorkingDirectory=/etc/hisp
+ExecStart=/usr/bin/HISPCli
+
+Restart=always
+Environment=USER=horseisle HOME=/etc/hisp/home HISP_BASE_DIR=/etc/hisp HISP_CONF_FILE=/etc/hisp/server.properties
+
+[Install]
+WantedBy=multi-user.target

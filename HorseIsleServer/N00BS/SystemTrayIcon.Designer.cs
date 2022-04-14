@@ -1,4 +1,4 @@
-﻿namespace HISP
+﻿namespace HISP.Noobs
 {
     partial class SystemTrayIcon
     {
