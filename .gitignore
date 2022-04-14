@@ -9,8 +9,8 @@ HorseIsleServer/N00BS/obj/*
 HorseIsleServer/N00BS/bin/*
 HorseIsleServer/N00BS/flash.dll.idb
 
-HorseIsleServer/HISPCli/obj/*
-HorseIsleServer/HISPCli/bin/*
+HorseIsleServer/HISPd/obj/*
+HorseIsleServer/HISPd/bin/*
 
 HorseIsleServer/Installer/Windows/*
 

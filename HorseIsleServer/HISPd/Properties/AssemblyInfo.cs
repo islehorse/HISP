@@ -4,11 +4,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("HISP")]
+[assembly: AssemblyTitle("HISPd")]
 [assembly: AssemblyDescription("Server Emulator for \"Horse Isle\"")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("SilicaAndPina")]
-[assembly: AssemblyProduct("HISP")]
+[assembly: AssemblyProduct("HISPd")]
 [assembly: AssemblyCopyright("Public Domain © 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

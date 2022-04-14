@@ -61,84 +61,12 @@ namespace HISP.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Fri 15/04/2022 
-        ///.
+        ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        public static string BuildDate {
+        public static byte[] HISPService {
             get {
-                return ResourceManager.GetString("BuildDate", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 12:19 am
-        ///.
-        /// </summary>
-        public static string BuildTime {
-            get {
-                return ResourceManager.GetString("BuildTime", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to &lt;cross-domain-policy&gt;
-        ///	&lt;allow-access-from domain=&quot;*&quot; to-ports=&quot;12321&quot; secure=&quot;false&quot;/&gt;
-        ///&lt;/cross-domain-policy&gt;.
-        /// </summary>
-        public static string DefaultCrossDomain {
-            get {
-                return ResourceManager.GetString("DefaultCrossDomain", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to # =======================
-        ///# Horse Isle Server Configuration    
-        ///# =======================
-        ///# 
-        ///# Configuration Version 1.3.1
-        ///# HISP was Created and Developed by SilicaAndPina
-        ///# However it is NOT COPYRIGHTED! This software is in the Public Domain!
-        ///#
-        ///# Ip address the server will bind to (default: 0.0.0.0 ALL INTERFACES)
-        ///ip=0.0.0.0
-        ///
-        ///# Port the server will bind to defaults: (on beta.horseisle.com: 12321, on pinto.horseisle.com: 443)
-        ///# Though, 443 is likely to interfere with TLS, if you happen to have a web server [rest of string was truncated]&quot;;.
-        /// </summary>
-        public static string DefaultServerProperties {
-            get {
-                return ResourceManager.GetString("DefaultServerProperties", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to master
-        ///.
-        /// </summary>
-        public static string GitBranch {
-            get {
-                return ResourceManager.GetString("GitBranch", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to 03b55d148a1a109b501162095b1d04101c103cc3
-        ///.
-        /// </summary>
-        public static string GitCommit {
-            get {
-                return ResourceManager.GetString("GitCommit", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to v1.3
-        ///.
-        /// </summary>
-        public static string GitTag {
-            get {
-                return ResourceManager.GetString("GitTag", resourceCulture);
+                object obj = ResourceManager.GetObject("HISPService", resourceCulture);
+                return ((byte[])(obj));
             }
         }
     }
