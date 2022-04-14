@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <RootNamespace>HISP</RootNamespace>
+    <RootNamespace>HISP.Cli</RootNamespace>
     <LangVersion>10.0</LangVersion>
     <Platforms>x64;x86;ARM;ARM64;AnyCPU</Platforms>
     <Configurations>Debug;Windows;Linux;MacOS;Android</Configurations>
