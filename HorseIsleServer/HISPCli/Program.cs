@@ -21,7 +21,7 @@ namespace HISP.Cli
             }
             set
             {
-                logFile = value;
+                logFile = value;        
                 if(sw != null)
                 {
                     sw.Flush();

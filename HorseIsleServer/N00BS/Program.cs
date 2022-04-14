@@ -9,6 +9,7 @@ using HISP.Game.SwfModules;
 using HISP.Security;
 using HISP.Server;
 using HTTP;
+
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -78,100 +79,118 @@ namespace HISP.Noobs
             Directory.CreateDirectory(BaseDir);
             IP = GenIP();
 
-            lfrm = new LoadingForm();
-            Task startForm = new Task(StartLRFrm);
-            startForm.Start();
-
-            ConfigReader.ConfigurationFileName = Path.Combine(BaseDir, "server.properties");
-            ConfigReader.OpenConfig();
-            ConfigReader.SqlLite = true;
-            ConfigReader.LogLevel = 0;
-            ConfigReader.BindIP = IP;
-            ConfigReader.CrossDomainPolicyFile = Path.Combine(BaseDir, "CrossDomainPolicy.xml");
-            ConfigReader.DatabaseName = Path.Combine(BaseDir, "game1.db");
-
-            IncrementProgress();
-            Database.OpenDatabase();
-            IncrementProgress();
-            
-
-            if (Database.GetUsers().Length <= 0)
-            {
-                RegisterForm rfrm = new RegisterForm();
-                if (rfrm.ShowDialog() == DialogResult.Cancel)
-                    GameServer.ShutdownServer();
-                
-            }
-
             // Start Web Server
-            try{
+            try
+            {
                 cs = new ContentServer(IP);
-                string[] fileList = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(),"client"), "*", SearchOption.AllDirectories);
+                string[] fileList = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "client"), "*", SearchOption.AllDirectories);
                 foreach (string file in fileList)
                     addToList(file);
-            }catch(Exception e){
-                MessageBox.Show("Web server failed to start: "+e.Message, "Error starting web server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("Web server failed to start: " + e.Message, "Error starting web server", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            IncrementProgress();
-
-            // Start HI1 Server
-            IncrementProgress();
-
-            Entry.SetShutdownCallback(OnShutdown);
-            IncrementProgress();
-
-            CrossDomainPolicy.GetPolicy();
-            IncrementProgress();
-
-            GameDataJson.ReadGamedata();
-            IncrementProgress();
-
-            Map.OpenMap();
-            IncrementProgress();
-
-            World.ReadWorldData();
-            IncrementProgress();
-
-            Treasure.Init();
-            IncrementProgress();
-
-            DroppedItems.Init();
-            IncrementProgress();
-
-            WildHorse.Init();
-            IncrementProgress();
-
-            Drawingroom.LoadAllDrawingRooms();
-            IncrementProgress();
-
-            Brickpoet.LoadPoetryRooms();
-            IncrementProgress();
-
-            Multiroom.CreateMultirooms();
-            IncrementProgress();
-
-            Auction.LoadAllAuctionRooms();
-            IncrementProgress();
-
-            Item.DoSpecialCases();
-            IncrementProgress();
-            try{
-            GameServer.StartServer();
-            }catch(Exception e){
-                MessageBox.Show("Horse Isle server failed to start: "+e.Message, "Error starting web server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MpOrSp mporsp = new MpOrSp();
+            if (mporsp.ShowDialog() != DialogResult.OK)
                 return;
+
+            if (mporsp.Mutliplayer)
+            {
+                ServerSelection ssel = new ServerSelection();
+                ssel.ShowDialog();
             }
-            IncrementProgress();
+            else
+            {
+                lfrm = new LoadingForm();
+                Task startForm = new Task(StartLRFrm);
+                startForm.Start();
 
-            lfrm.DialogResult = DialogResult.OK;
-            
-            SystemTrayIcon stry = new SystemTrayIcon();
-            stry.ShowDialog();
+                ConfigReader.ConfigurationFileName = Path.Combine(BaseDir, "server.properties");
+                ConfigReader.OpenConfig();
+                ConfigReader.SqlLite = true;
+                ConfigReader.LogLevel = 0;
+                ConfigReader.BindIP = IP;
+                ConfigReader.CrossDomainPolicyFile = Path.Combine(BaseDir, "CrossDomainPolicy.xml");
+                ConfigReader.DatabaseName = Path.Combine(BaseDir, "game1.db");
 
-            // Finally, shutdown server
-            GameServer.ShutdownServer();
+                IncrementProgress();
+                Database.OpenDatabase();
+                IncrementProgress();
+
+
+                if (Database.GetUsers().Length <= 0)
+                {
+                    RegisterForm rfrm = new RegisterForm();
+                    if (rfrm.ShowDialog() == DialogResult.Cancel)
+                        GameServer.ShutdownServer();
+
+                }
+
+                // Start HI1 Server
+                IncrementProgress();
+
+                Entry.SetShutdownCallback(OnShutdown);
+                IncrementProgress();
+
+                CrossDomainPolicy.GetPolicy();
+                IncrementProgress();
+
+                GameDataJson.ReadGamedata();
+                IncrementProgress();
+
+                Map.OpenMap();
+                IncrementProgress();
+
+                World.ReadWorldData();
+                IncrementProgress();
+
+                Treasure.Init();
+                IncrementProgress();
+
+                DroppedItems.Init();
+                IncrementProgress();
+
+                WildHorse.Init();
+                IncrementProgress();
+
+                Drawingroom.LoadAllDrawingRooms();
+                IncrementProgress();
+
+                Brickpoet.LoadPoetryRooms();
+                IncrementProgress();
+
+                Multiroom.CreateMultirooms();
+                IncrementProgress();
+
+                Auction.LoadAllAuctionRooms();
+                IncrementProgress();
+
+                Item.DoSpecialCases();
+                IncrementProgress();
+                try
+                {
+                    GameServer.StartServer();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("Horse Isle server failed to start: " + e.Message, "Error starting web server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                IncrementProgress();
+
+                lfrm.DialogResult = DialogResult.OK;
+
+                SystemTrayIcon stry = new SystemTrayIcon();
+                stry.ShowDialog();
+
+                // Finally, shutdown server
+                GameServer.ShutdownServer();
+            }
+
+
         }
     }
 }
