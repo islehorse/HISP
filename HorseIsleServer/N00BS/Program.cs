@@ -22,7 +22,6 @@ namespace HISP.Noobs
     {
         public static Random rand = new Random(Guid.NewGuid().GetHashCode());
         private static LoadingForm lfrm;
-        public static string IP;
         public static string BaseDir;
         private static ContentServer cs;
         private static void addToList(string path)
