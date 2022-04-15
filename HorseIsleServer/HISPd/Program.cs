@@ -1,4 +1,5 @@
-﻿using HISP.Server;
+﻿using HISP.Cli.Properties;
+using HISP.Server;
 using System;
 using System.IO;
 using System.Threading;
@@ -74,7 +75,7 @@ namespace HISP.Cli
                 {
                     case "--install-service":
                         #if OS_LINUX
-                        File.WriteAllText("/etc/systemd/system/HISP.service", Properties.Resources.HISPService);
+                        File.WriteAllBytes("/etc/systemd/system/HISP.service", Resources.HISPService);
                         LogStdout(false, "INFO", "Crreated Service! enable it with \"sudo systemctl enable HISP\"");
                         #else
                         LogStdout(true, "ERROR", "Installing as a service unsupported on this platform");
