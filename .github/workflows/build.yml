@@ -14,11 +14,11 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     
     - name: Git Submodule update
-      run: |
-        git submodule update --init --recursive
-        git fetch --tags
+      run: git submodule update --init --recursive
       
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
