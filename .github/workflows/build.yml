@@ -18,7 +18,7 @@ jobs:
     - name: Git Submodule update
       run: |
         git submodule update --init --recursive
-        git fetch -tags
+        git fetch --tags
       
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
