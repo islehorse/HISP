@@ -15,7 +15,7 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_0A60FDE4B10F4534872956DB03BF83D8"
+        "MsmKey" = "8:_7686E608D62344A3B6FD5C91755693AA"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -167,7 +167,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:HISP-N00BS"
         "ProductCode" = "8:{6415E694-470B-43CC-8D9A-5955EF0AD4B7}"
-        "PackageCode" = "8:{B37B11B8-2541-4D08-932B-C44869E4200B}"
+        "PackageCode" = "8:{7CE3E717-9AAB-415E-AD02-324C01F63ED7}"
         "UpgradeCode" = "8:{FAD2FB5F-7B7C-4293-BF2D-09384146449E}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -287,7 +287,7 @@
         }
         "Shortcut"
         {
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2F026FA8197A4CF5B7273B427AAFF9AA"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_2D6B5B28608E4FE5BD5E9AE8F9799C42"
             {
             "Name" = "8:HISP-N00BS"
             "Arguments" = "8:"
@@ -295,13 +295,13 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_0A60FDE4B10F4534872956DB03BF83D8"
+            "Target" = "8:_7686E608D62344A3B6FD5C91755693AA"
             "Folder" = "8:_3B89F894B58B4F149DD0DBE5EC931BA2"
             "WorkingFolder" = "8:_E3419B32123541589220537FB1154298"
             "Icon" = "8:_C3608492E4D74B8683DE9CB3B3DE5D8A"
             "Feature" = "8:"
             }
-            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_B6866EE5025E414BA27D663484ABD2F3"
+            "{970C0BB2-C7D0-45D7-ABFA-7EC378858BC0}:_E1442F9672E44E8ABE7FF8CE91B674A0"
             {
             "Name" = "8:HISP-N00BS"
             "Arguments" = "8:"
@@ -309,7 +309,7 @@
             "ShowCmd" = "3:1"
             "IconIndex" = "3:0"
             "Transitive" = "11:FALSE"
-            "Target" = "8:_0A60FDE4B10F4534872956DB03BF83D8"
+            "Target" = "8:_7686E608D62344A3B6FD5C91755693AA"
             "Folder" = "8:_2BED5EC5191147F4815904695DFB5319"
             "WorkingFolder" = "8:_E3419B32123541589220537FB1154298"
             "Icon" = "8:_C3608492E4D74B8683DE9CB3B3DE5D8A"
@@ -714,9 +714,9 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_0A60FDE4B10F4534872956DB03BF83D8"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_7686E608D62344A3B6FD5C91755693AA"
             {
-            "SourcePath" = "8:..\\N00BS\\obj\\x86\\Windows\\net6.0-windows\\win-x86\\apphost.exe"
+            "SourcePath" = "8:..\\N00BS\\obj\\x86\\Windows\\net7.0-windows\\win-x86\\apphost.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_E3419B32123541589220537FB1154298"
@@ -734,7 +734,7 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:Windows|x86"
+            "OutputConfiguration" = "8:"
             "OutputGroupCanonicalName" = "8:PublishItems"
             "OutputProjectGuid" = "8:{6B45A1E8-0F54-4BF7-AF48-41B9FE676570}"
             "ShowKeyOutput" = "11:TRUE"

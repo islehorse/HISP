@@ -68,21 +68,16 @@ namespace HISP.Noobs
             return rand.Next(0, 255).ToString();
         }
 
-        public static string GenIP()
-        {
-            return "0.0.0.0";
-        }
 
         public static void Main(string[] args)
         {
             BaseDir = Path.Combine(Environment.GetEnvironmentVariable("APPDATA"), "HISP", "N00BS");
             Directory.CreateDirectory(BaseDir);
-            IP = GenIP();
 
             // Start Web Server
             try
             {
-                cs = new ContentServer(IP);
+                cs = new ContentServer("127.0.0.1");
                 string[] fileList = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "client"), "*", SearchOption.AllDirectories);
                 foreach (string file in fileList)
                     addToList(file);
@@ -112,7 +107,6 @@ namespace HISP.Noobs
                 ConfigReader.OpenConfig();
                 ConfigReader.SqlLite = true;
                 ConfigReader.LogLevel = 0;
-                ConfigReader.BindIP = IP;
                 ConfigReader.CrossDomainPolicyFile = Path.Combine(BaseDir, "CrossDomainPolicy.xml");
                 ConfigReader.DatabaseName = Path.Combine(BaseDir, "game1.db");
 
