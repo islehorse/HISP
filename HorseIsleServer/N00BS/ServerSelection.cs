@@ -1,13 +1,6 @@
 ﻿using HISP.Noobs;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace HISP
@@ -39,7 +32,7 @@ namespace HISP
             this.Hide();
             Process clientProcess = new Process();
             clientProcess.StartInfo.FileName = "flash.dll";
-            clientProcess.StartInfo.Arguments = "http://" + Program.IP + "/horseisle.swf?SERVER=" + serverIp.Text + "&PORT=" + portNumber.Value.ToString();
+            clientProcess.StartInfo.Arguments = "http://127.0.0.1/horseisle.swf?SERVER=" + serverIp.Text + "&PORT=" + portNumber.Value.ToString();
 
             clientProcess.StartInfo.RedirectStandardOutput = true;
             clientProcess.StartInfo.RedirectStandardError = true;
