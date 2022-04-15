@@ -70,7 +70,7 @@ namespace HISP.Noobs
 
         public static string GenIP()
         {
-            return "127" + "." + GetOctlet() + "." + GetOctlet() + "." + GetOctlet();
+            return "0.0.0.0";
         }
 
         public static void Main(string[] args)
