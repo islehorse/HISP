@@ -36,7 +36,12 @@ namespace HISP.Noobs
         private void SystemTrayIcon_Load(object sender, EventArgs e)
         {
             clientProcess.StartInfo.FileName = "flash.dll";
-            clientProcess.StartInfo.Arguments = "http://127.0.0.1/horseisle.swf?SERVER=127.0.0.1&PORT=12321";
+
+            string serverIp = ConfigReader.BindIP;
+            if (serverIp == "0.0.0.0")
+                serverIp = "127.0.0.1";
+
+            clientProcess.StartInfo.Arguments = "http://127.0.0.1/horseisle.swf?SERVER=" + serverIp + "&PORT=" + ConfigReader.Port;
 
             clientProcess.StartInfo.RedirectStandardOutput = true;
             clientProcess.StartInfo.RedirectStandardError = true;
