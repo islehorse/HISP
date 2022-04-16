@@ -4,7 +4,7 @@
     <RootNamespace>HISP</RootNamespace>
     <LangVersion>10.0</LangVersion>
     <Platforms>x64;x86;ARM;ARM64;AnyCPU</Platforms>
-    <Configurations>Debug;Windows;Linux;MacOS;Android</Configurations>
+    <Configurations>Debug;Windows;Linux;MacOS;Android;iOS</Configurations>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
@@ -79,6 +79,19 @@
     <Optimize>true</Optimize>
     <PlatformTarget>ARM64</PlatformTarget>
     <DefineConstants>OS_WINDOWS;ARCH_ARM64</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='iOS|ARM'">
+    <RuntimeIdentifier>ios-arm</RuntimeIdentifier>
+    <Optimize>true</Optimize>
+    <PlatformTarget>ARM</PlatformTarget>
+    <DefineConstants>OS_IOS;ARCH_ARM</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='iOS|ARM64'">
+    <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
+    <Optimize>true</Optimize>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <DefineConstants>OS_IOS;ARCH_ARM64</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|ARM'">

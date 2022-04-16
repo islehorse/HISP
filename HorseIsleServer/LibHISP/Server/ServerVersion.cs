@@ -31,6 +31,8 @@ namespace HISP.Server
             return "WINDOWS";
 #elif OS_ANDROID
             return "ANDROID";
+#elif OS_IOS
+            return "IOS";
 #elif OS_LINUX
             return "LINUX";
 #elif OS_MACOS
