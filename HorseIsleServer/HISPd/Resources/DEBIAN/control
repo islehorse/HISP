@@ -1,0 +1,7 @@
+Package: hisp
+Version: 1.6.1
+Depends: coreutils,systemd,mariadb-server,libsqlite3-dev
+Maintainer: Islehorse
+Homepage: https://islehorse.com
+Architecture: amd64
+Description: Open Source Implementation of the flash game "Horse Isle" server.
