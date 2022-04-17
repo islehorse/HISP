@@ -25,7 +25,10 @@ jobs:
       with:
         dotnet-version: 7.0.x
         include-prerelease: true
-
+        
+    - name: Setup WSL
+      uses: Vampire/setup-wsl@v1.2.0
+    
     - name: Restore dependencies
       run: dotnet restore
       
