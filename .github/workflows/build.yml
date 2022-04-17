@@ -31,6 +31,39 @@ jobs:
     
     - name: Restore dependencies
       run: dotnet restore
+
+    - name: Build linux-x64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=Linux64.pubxml
+
+    - name: Build .deb
+      continue-on-error: false
+      shell: wsl-bash -u root {0}
+      run: |
+        sudo umount /mnt/d
+        sudo mount -t drvfs D: /mnt/d -o metadata
+        mkdir Debian64
+        mkdir Debian64/etc
+        mkdir Debian64/usr
+        mkdir Debian64/etc/hisp
+        mkdir Debian64/etc/hisp/gamedata
+        mkdir Debian64/etc/systemd
+        mkdir Debian64/etc/systemd/system
+        mkdir Debian64/usr/bin
+        mkdir Debian64/usr/lib
+        mkdir Debian64/DEBIAN
+        cp -r HISPd/Resources/DEBIAN/* Debian64/DEBIAN
+        chmod 755 -R Debian64/DEBIAN
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd Debian64/usr/bin/HISPd
+        chmod +x Debian64/usr/bin/HISPd
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so Debian64/usr/lib/libe_sqlite3.so
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP Debian64/etc/hisp/HI1.MAP
+        cp LibHISP/Resources/server.properties Debian64/etc/hisp/server.properties
+        cp LibHISP/Resources/default_cross_domain.xml Debian64/etc/hisp/CrossDomainPolicy.xml
+        cp -r ../HorseIsleData/gamedata/* Debian64/etc/hisp/gamedata
+        dpkg-deb --build Debian64 
+        
       
       
     - name: Build win-x64
@@ -53,11 +86,6 @@ jobs:
       run: |
         dotnet publish -p:PublishProfile=WinARM64.pubxml
 
-    - name: Build linux-x64
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=Linux64.pubxml
-    
     - name: Build linux-arm
       continue-on-error: false
       run: |
@@ -87,31 +115,6 @@ jobs:
 #      continue-on-error: false
 #      run: |
 #        dotnet publish -p:PublishProfile=AndroidARM64.pubxm
-    - name: Build .deb
-      continue-on-error: false
-      shell: wsl-bash -u root {0}
-      run: |
-        mkdir Debian64
-        mkdir Debian64/etc
-        mkdir Debian64/usr
-        mkdir Debian64/etc/hisp
-        mkdir Debian64/etc/hisp/gamedata
-        mkdir Debian64/etc/systemd
-        mkdir Debian64/etc/systemd/system
-        mkdir Debian64/usr/bin
-        mkdir Debian64/usr/lib
-        mkdir Debian64/DEBIAN
-        cp -r HISPd/Resources/DEBIAN/* Debian64/DEBIAN
-        chmod 755 -R Debian64/DEBIAN
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd Debian64/usr/bin/HISPd
-        chmod +x Debian64/usr/bin/HISPd
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so Debian64/usr/lib/libe_sqlite3.so
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP Debian64/etc/hisp/HI1.MAP
-        cp LibHISP/Resources/server.properties Debian64/etc/hisp/server.properties
-        cp LibHISP/Resources/default_cross_domain.xml Debian64/etc/hisp/CrossDomainPolicy.xml
-        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata/* Debian64/etc/hisp/gamedata
-        dpkg-deb --build Debian64 
-        
 
     - name: Upload win-x64
       uses: actions/upload-artifact@v2
