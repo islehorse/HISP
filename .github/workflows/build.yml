@@ -89,7 +89,7 @@ jobs:
 #        dotnet publish -p:PublishProfile=AndroidARM64.pubxm
     - name: Create Debian Package
       continue-on-error: false
-      shell: wsl-bash -u root
+      shell: wsl-bash -u root {0}
       run: |
         mkdir Debian64
         mkdir Debian64/etc/hisp
@@ -97,16 +97,16 @@ jobs:
         mkdir Debian64/usr/bin
         mkdir Debian64/usr/lib
         mkdir Debian64/DEBIAN
-        cp -r HorseIsleServer/HISPd/Resources/DEBIAN/* Debian64/DEBIAN
+        cp -r HISPd/Resources/DEBIAN/* Debian64/DEBIAN
         chmod +x Debian64/DEBIAN/postinst
         chmod +x Debian64/DEBIAN/postrm
-        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd Debian64/usr/bin/HISPd
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd Debian64/usr/bin/HISPd
         chmod +x Debian64/usr/bin/HISPd
-        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so Debian64/usr/lib/libe_sqlite3.so
-        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP Debian64/etc/hisp/HI1.MAP
-        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/server.properties Debian64/etc/hisp/server.properties
-        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/CrossDomainPolicy.xml Debian64/etc/hisp/CrossDomainPolicy.xml
-        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata.json Debian64/etc/hisp/gamedata.json
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so Debian64/usr/lib/libe_sqlite3.so
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP Debian64/etc/hisp/HI1.MAP
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/server.properties Debian64/etc/hisp/server.properties
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/CrossDomainPolicy.xml Debian64/etc/hisp/CrossDomainPolicy.xml
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata.json Debian64/etc/hisp/gamedata.json
         dpkg-deb --build Debian64 
         
 
