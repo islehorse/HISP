@@ -107,8 +107,8 @@ jobs:
         chmod +x Debian64/usr/bin/HISPd
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so Debian64/usr/lib/libe_sqlite3.so
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP Debian64/etc/hisp/HI1.MAP
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/server.properties Debian64/etc/hisp/server.properties
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/CrossDomainPolicy.xml Debian64/etc/hisp/CrossDomainPolicy.xml
+        cp LibHISP/Resources/server.properties Debian64/etc/hisp/server.properties
+        cp LibHISP/Resources/default_cross_domain.xml Debian64/etc/hisp/CrossDomainPolicy.xml
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata.json Debian64/etc/hisp/gamedata.json
         dpkg-deb --build Debian64 
         
