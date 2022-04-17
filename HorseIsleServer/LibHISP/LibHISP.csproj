@@ -14,14 +14,16 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ContentWithTargetPath Include="..\..\HorseIsleData\gamedata.json">
+    <ContentWithTargetPath Include="..\..\HorseIsleData\gamedata\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>gamedata.json</TargetPath>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      <TargetPath>gamedata\%(Filename)%(Extension)</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
   <ItemGroup>
     <ContentWithTargetPath Include="..\..\HorseIsleData\HI1.MAP">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <TargetPath>HI1.MAP</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>

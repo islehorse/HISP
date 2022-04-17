@@ -219,7 +219,7 @@ namespace HISP.Game
             res.QuestCompleted = true;
             if (npcActivation)
             {
-                if (quest.SuccessNpcChat != null && quest.SuccessNpcChat != "")
+                if (quest.SuccessNpcChat != null && quest.SuccessNpcChat.Trim() != "")
                     res.NpcChat = quest.SuccessNpcChat;
 
                 if(quest.SetNpcChatpoint != -1)
@@ -241,7 +241,7 @@ namespace HISP.Game
                 user.LoggedinClient.SendPacket(ChatPacket);
             }
 
-            if (quest.SuccessNpcChat != null)
+            if (quest.SuccessNpcChat != null && quest.SuccessNpcChat.Trim() != "")
             {
                 if (!npcActivation)
                 {

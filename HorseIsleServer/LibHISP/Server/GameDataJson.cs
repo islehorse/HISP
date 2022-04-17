@@ -12,21 +12,41 @@ using System.Globalization;
 using HISP.Security;
 using System;
 using HISP.Game.Events;
+using System.Dynamic;
+using Newtonsoft.Json.Linq;
 
 namespace HISP.Server
 {
     public class GameDataJson
     {
-
         public static void ReadGamedata()
         {
-            if (!File.Exists(ConfigReader.GameDataFile))
+            dynamic gameData;
+            if (Directory.Exists(ConfigReader.GameData))
             {
-                Logger.ErrorPrint("Game Data JSON File: " + ConfigReader.GameDataFile + " Does not exist!");
-                throw new FileNotFoundException(ConfigReader.GameDataFile + " Not found :(");
+                gameData = new JObject();
+                string[] files = Directory.GetFiles(ConfigReader.GameData);
+                foreach(string file in files)
+                {
+                    string jsonData = File.ReadAllText(file);
+                    JObject thisData = (JObject)JsonConvert.DeserializeObject(jsonData);
+                    JObject jData = (JObject)gameData;
+                    jData.Merge(thisData);
+
+                }
             }
-            string jsonData = File.ReadAllText(ConfigReader.GameDataFile);
-            dynamic gameData = JsonConvert.DeserializeObject(jsonData);
+            else if (File.Exists(ConfigReader.GameData))
+            {
+                string jsonData = File.ReadAllText(ConfigReader.GameData);
+                gameData = JsonConvert.DeserializeObject(jsonData);
+            }
+            else
+            {
+                Logger.ErrorPrint("Game Data : " + ConfigReader.GameData + " Does not exist!");
+                GameServer.ShutdownServer();
+                return;
+            }
+            
 
             // Register Towns
             int totalTowns = gameData.places.towns.Count;

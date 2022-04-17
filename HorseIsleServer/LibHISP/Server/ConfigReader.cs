@@ -18,7 +18,7 @@ namespace HISP.Server
         public static int IntrestRate = 3333;
         public static string Motd = "April 11, 2020. New breed, Camarillo White Horse. Two new quests.";
         public static string MapFile = "HI1.MAP";
-        public static string GameDataFile = "gamedata.json";
+        public static string GameData = "gamedata.json";
         public static string CrossDomainPolicyFile = "CrossDomainPolicy.xml";
 
         public static int LogLevel = 4;
@@ -92,7 +92,7 @@ namespace HISP.Server
                         Motd = data;
                         break;
                     case "gamedata":
-                        GameDataFile = data;
+                        GameData = data;
                         break;
                     case "crossdomain":
                         CrossDomainPolicyFile = data;
