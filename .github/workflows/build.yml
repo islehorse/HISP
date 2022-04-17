@@ -87,7 +87,7 @@ jobs:
 #      continue-on-error: false
 #      run: |
 #        dotnet publish -p:PublishProfile=AndroidARM64.pubxm
-    - name: build .deb
+    - name: Build .deb
       continue-on-error: false
       shell: wsl-bash -u root {0}
       run: |
@@ -102,16 +102,14 @@ jobs:
         mkdir Debian64/usr/lib
         mkdir Debian64/DEBIAN
         cp -r HISPd/Resources/DEBIAN/* Debian64/DEBIAN
-        chmod -x Debian64/DEBIAN/control
-        chmod +x Debian64/DEBIAN/postinst
-        chmod +x Debian64/DEBIAN/postrm
+        chmod 755 -R Debian64/DEBIAN
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd Debian64/usr/bin/HISPd
         chmod +x Debian64/usr/bin/HISPd
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so Debian64/usr/lib/libe_sqlite3.so
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP Debian64/etc/hisp/HI1.MAP
         cp LibHISP/Resources/server.properties Debian64/etc/hisp/server.properties
         cp LibHISP/Resources/default_cross_domain.xml Debian64/etc/hisp/CrossDomainPolicy.xml
-        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata Debian64/etc/hisp/gamedata
+        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata/* Debian64/etc/hisp/gamedata
         dpkg-deb --build Debian64 
         
 
