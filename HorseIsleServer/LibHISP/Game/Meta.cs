@@ -2559,17 +2559,15 @@ namespace HISP.Game
                     if (result.GotoChatpoint != -1)
                         chatpoint = Npc.GetNpcChatpoint(npc, result.GotoChatpoint);
 
-                    if (chatpoint.ChatText.Trim() == "")
-                        if (result.NpcChat != null)
-                            if(result.NpcChat.Trim() != "")
-                                chatpoint.ChatText = result.NpcChat;
+                    if (result.NpcChat != null && result.NpcChat.Trim() != "")
+                            chatpoint.ChatText = result.NpcChat;
                 }
                 else
                 {
                     if (result.GotoChatpoint != -1)
                         chatpoint = Npc.GetNpcChatpoint(npc, result.GotoChatpoint);
                     
-                    if (result.NpcChat != null)
+                    if (result.NpcChat != null && result.NpcChat.Trim() != "")
                         chatpoint.ChatText = result.NpcChat;
                     
                     if (result.HideRepliesOnFail)
