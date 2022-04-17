@@ -92,8 +92,11 @@ jobs:
       shell: wsl-bash -u root {0}
       run: |
         mkdir Debian64
+        mkdir Debian64/etc
+        mkdir Debian64/usr
         mkdir Debian64/etc/hisp
-        mkdir Debian64/systemd/system
+        mkdir Debian64/etc/systemd
+        mkdir Debian64/etc/systemd/system
         mkdir Debian64/usr/bin
         mkdir Debian64/usr/lib
         mkdir Debian64/DEBIAN
