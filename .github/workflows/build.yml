@@ -3,13 +3,13 @@ name: build
 on:
   push:
     branches: [ master ]
-    
 defaults:
   run:
     working-directory: ./HorseIsleServer
 
 jobs:
   build:
+
     runs-on: windows-latest
 
     steps:
@@ -25,9 +25,6 @@ jobs:
       with:
         dotnet-version: 7.0.x
         include-prerelease: true
-
-#    - name: Setup WSL
-#      uses: Vampire/setup-wsl@v1.2.0
 
     - name: Restore dependencies
       run: dotnet restore
@@ -88,7 +85,8 @@ jobs:
 #      run: |
 #        dotnet publish -p:PublishProfile=AndroidARM64.pubxml
 
-   - name: Upload win-x64
+
+    - name: Upload win-x64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64
@@ -165,13 +163,6 @@ jobs:
 #      with:
 #        name: HISP-AndroidARM64
 #        path: HorseIsleServer/HISPd/bin/arm64/Android/net7.0/android-arm64/publish/
-
-
-    - name: Upload Debian package
-      uses: actions/upload-artifact@v2
-      with:
-        name: HISP-DebPackage
-        path: Debian64.deb
 
 
     - name: Upload Website (master)
