@@ -89,7 +89,6 @@ jobs:
 #        dotnet publish -p:PublishProfile=AndroidARM64.pubxm
     - name: Create Debian Package
       continue-on-error: false
-    - name: Upload win-x64
       shell: wsl-bash -u root
       run: |
         mkdir Debian64
