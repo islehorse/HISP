@@ -26,6 +26,9 @@ jobs:
         dotnet-version: 7.0.x
         include-prerelease: true
 
+    - name: Setup WSL
+      uses: Vampire/setup-wsl@v1.2.0
+
     - name: Restore dependencies
       run: dotnet restore
       
@@ -84,9 +87,29 @@ jobs:
 #      continue-on-error: false
 #      run: |
 #        dotnet publish -p:PublishProfile=AndroidARM64.pubxml
-
-
-    - name: Upload win-x64
+    - name: Create Debian Package
+      continue-on-error: false
+      shell: wsl-bash -u root
+      run: |
+        mkdir Debian64
+        mkdir Debian64/etc/hisp
+        mkdir Debian64/systemd/system
+        mkdir Debian64/usr/bin
+        mkdir Debian64/usr/lib
+        mkdir Debian64/DEBIAN
+        cp -r HorseIsleServer/HISPd/Resources/DEBIAN/* Debian64/DEBIAN
+        chmod +x Debian64/DEBIAN/postinst
+        chmod +x Debian64/DEBIAN/postrm
+        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd Debian64/usr/bin/HISPd
+        chmod +x Debian64/usr/bin/HISPd
+        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so Debian64/usr/lib/libe_sqlite3.so
+        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP Debian64/etc/hisp/HI1.MAP
+        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/server.properties Debian64/etc/hisp/server.properties
+        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/CrossDomainPolicy.xml Debian64/etc/hisp/CrossDomainPolicy.xml
+        cp HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata.json Debian64/etc/hisp/gamedata.json
+        dpkg-deb --build Debian64 
+        
+   - name: Upload win-x64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64
@@ -163,6 +186,13 @@ jobs:
 #      with:
 #        name: HISP-AndroidARM64
 #        path: HorseIsleServer/HISPd/bin/arm64/Android/net7.0/android-arm64/publish/
+
+
+    - name: Upload Debian package
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-DebPackage
+        path: Debian64.deb
 
 
     - name: Upload Website (master)

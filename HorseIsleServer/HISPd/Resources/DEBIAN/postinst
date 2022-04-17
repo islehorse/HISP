@@ -1,0 +1,8 @@
+#!/bin/sh
+
+useradd horseisle
+chown -R horseisle /etc/hisp
+systemctl enable HISP.service
+systemctl start HISP
+
+echo "Make sure to edit /etc/hisp/server.properties!"
