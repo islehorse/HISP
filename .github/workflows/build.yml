@@ -53,16 +53,16 @@ jobs:
         mkdir /mnt/fucking-windows/Debian64/usr/bin
         mkdir /mnt/fucking-windows/Debian64/usr/lib
         mkdir /mnt/fucking-windows/Debian64/DEBIAN
-        cp -r HISPd/Resources/DEBIAN/* /mnt/fucking-windows/Debian64/DEBIAN
-        chmod 755 -R /mnt/fucking-windows/Debian64/DEBIAN
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd /mnt/fucking-windows/Debian64/usr/bin/HISPd
-        chmod +x /mnt/fucking-windows/Debian64/usr/bin/HISPd
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so /mnt/fucking-windows/Debian64/usr/lib/libe_sqlite3.so
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP /mnt/fucking-windows/Debian64/etc/hisp/HI1.MAP
+        chmod 755 -R /mnt/fucking-windows/Debian64
         cp LibHISP/Resources/server.properties /mnt/fucking-windows/Debian64/etc/hisp/server.properties
         cp LibHISP/Resources/default_cross_domain.xml /mnt/fucking-windows/Debian64/etc/hisp/CrossDomainPolicy.xml
-        cp -r ../HorseIsleData/gamedata/* /mnt/fucking-windows/Debian64/etc/hisp/gamedata
-        dpkg-deb --build /mnt/fucking-windows/Debian64 
+        cp -r HISPd/Resources/DEBIAN/* /mnt/fucking-windows/Debian64/DEBIAN
+        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata/* /mnt/fucking-windows/Debian64/etc/hisp/gamedata
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so /mnt/fucking-windows/Debian64/usr/lib/libe_sqlite3.so
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP /mnt/fucking-windows/Debian64/etc/hisp/HI1.MAP
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd /mnt/fucking-windows/Debian64/usr/bin/HISPd
+        chmod +x /mnt/fucking-windows/Debian64/usr/bin/HISPd
+        dpkg-deb --build /mnt/fucking-windows/Debian64
         
       
       
