@@ -41,8 +41,7 @@ jobs:
       continue-on-error: false
       shell: wsl-bash -u root {0}
       run: |
-        sudo umount /mnt/d
-        sudo mount -t drvfs D: /mnt/d -o metadata
+        mount -t drvfs D: /mnt/d -o metadata,uid=1000,gid=1000,umask=22,fmask=111
         mkdir Debian64
         mkdir Debian64/etc
         mkdir Debian64/usr
