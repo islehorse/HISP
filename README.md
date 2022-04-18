@@ -24,7 +24,7 @@ sudo apt install hisp
 Install on Debian via APT:
 ```
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 34F644BC70C746CE48139C595129317F33AE659C
-sudo  bash -c 'echo 'deb http://deb.silica.codes debian main'>>/etc/apt/sources.list'
+sudo  bash -c 'echo "deb http://deb.silica.codes debian main">>/etc/apt/sources.list'
 sudo apt update
 sudo apt install hisp
 ```
