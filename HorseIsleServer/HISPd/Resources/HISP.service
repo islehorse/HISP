@@ -9,16 +9,12 @@ After=mariadb.service
 
 
 [Service]
-RestartSec=5s
-Restart=on-abort
-
 Type=simple
 
 # Disable access to features HISP doesnt need
 # (For security ...)
 ProtectSystem=full
 PrivateDevices=true
-ProtectHome=true
 
 StandardError=syslog+console
 StandardOutput=syslog+console
@@ -29,7 +25,7 @@ Group=horseisle
 WorkingDirectory=/etc/hisp
 ExecStart=/usr/bin/HISPd
 
-Environment=USER=horseisle HOME=/etc/hisp/home HISP_BASE_DIR=/etc/hisp HISP_CONF_FILE=/etc/hisp/server.properties
+Environment=USER=horseisle HOME=/etc/hisp HISP_BASE_DIR=/etc/hisp HISP_CONF_FILE=/etc/hisp/server.properties
 
 [Install]
 WantedBy=multi-user.target
