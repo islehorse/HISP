@@ -1,5 +1,7 @@
 # HISP - HorseIsleServer Program
 
+
+
 [![Build](https://github.com/islehorse/HISP/workflows/build/badge.svg)](https://github.com/islehorse/HISP/actions?query=workflow%3Abuild)
 
 HISP is a "Server Emulator" for Horse Isle 1          
@@ -9,6 +11,16 @@ well they essentailly run off "Server Emulators".
 !!! ALL FEATURES NOW IMPLEMENTED (um, unless theres some obscure thing i dont know about :D)
 
 **tl;dr, think "Club Penguin Rewritten" but with Horse Isle.**
+
+# Installation:
+Install on Ubuntu or Debian via APT:
+```
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 34F644BC70C746CE48139C595129317F33AE659C
+sudo add-apt-repository 'deb http://deb.silica.codes debian main'
+sudo apt update
+sudo apt install hisp
+```
+
 
 # Commands     
 (legend: <> Required, [] Optional)
