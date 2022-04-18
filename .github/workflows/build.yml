@@ -41,6 +41,7 @@ jobs:
       continue-on-error: false
       shell: wsl-bash -u root {0}
       run: |
+        apt update
         apt install -y dos2unix
         mkdir /mnt/fucking-windows
         mount -t tmpfs -o size=800M tmpfs /mnt/fucking-windows
@@ -54,7 +55,6 @@ jobs:
         mkdir /mnt/fucking-windows/Debian64/usr/bin
         mkdir /mnt/fucking-windows/Debian64/usr/lib
         mkdir /mnt/fucking-windows/Debian64/DEBIAN
-        chmod 755 -R /mnt/fucking-windows/Debian64
         cp LibHISP/Resources/server.properties /mnt/fucking-windows/Debian64/etc/hisp/server.properties
         cp LibHISP/Resources/default_cross_domain.xml /mnt/fucking-windows/Debian64/etc/hisp/CrossDomainPolicy.xml
         cp -r HISPd/Resources/DEBIAN/* /mnt/fucking-windows/Debian64/DEBIAN
@@ -62,13 +62,14 @@ jobs:
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so /mnt/fucking-windows/Debian64/usr/lib/libe_sqlite3.so
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP /mnt/fucking-windows/Debian64/etc/hisp/HI1.MAP
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd /mnt/fucking-windows/Debian64/usr/bin/HISPd
-        chmod +x /mnt/fucking-windows/Debian64/usr/bin/HISPd
         dos2unix /mnt/fucking-windows/Debian64/DEBIAN/conffiles
         dos2unix /mnt/fucking-windows/Debian64/DEBIAN/control
         dos2unix /mnt/fucking-windows/Debian64/DEBIAN/postinst
         dos2unix /mnt/fucking-windows/Debian64/DEBIAN/postrm
-        dpkg-deb --build /mnt/fucking-windows/Debian64
-        
+        chmod 644 -R /mnt/fucking-windows/Debian64
+        chmod +x /mnt/fucking-windows/Debian64/usr/bin/HISPd
+        chmod 755 -R /mnt/fucking-windows/Debian64/DEBIAN
+        dpkg-deb --build /mnt/fucking-windows/Debian64        
       
       
     - name: Build win-x64
