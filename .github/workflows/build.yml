@@ -108,9 +108,8 @@ jobs:
         dos2unix /mnt/fucking-windows/Debian64/DEBIAN/postinst
         dos2unix /mnt/fucking-windows/Debian64/DEBIAN/postrm
         dos2unix /mnt/fucking-windows/Debian64/etc/systemd/system/HISP.service
-        chmod 644 -R /mnt/fucking-windows/Debian64
+        chmod 755 -R /mnt/fucking-windows/Debian64
         chmod +x /mnt/fucking-windows/Debian64/usr/bin/HISPd
-        chmod 755 -R /mnt/fucking-windows/Debian64/DEBIAN
         mkdir debpackage
         dpkg-deb --build /mnt/fucking-windows/Debian64
         mv /mnt/fucking-windows/Debian64.deb debpackage/HISP.deb
