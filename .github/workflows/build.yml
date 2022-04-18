@@ -109,8 +109,9 @@ jobs:
         chmod 644 -R /mnt/fucking-windows/Debian64
         chmod +x /mnt/fucking-windows/Debian64/usr/bin/HISPd
         chmod 755 -R /mnt/fucking-windows/Debian64/DEBIAN
+        mkdir debpackage
         dpkg-deb --build /mnt/fucking-windows/Debian64
-      
+        mv Debian64.deb debpackage/HISP.deb
 #    - name: Build android-arm
 #      continue-on-error: false
 #      run: |
@@ -191,7 +192,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-DebianPackage
-        path: HorseIsleServer/Debian64.deb
+        path: HorseIsleServer/debpackage
 
 
 #    - name: Upload android-arm
