@@ -241,7 +241,7 @@ namespace HISP.Game
                 user.LoggedinClient.SendPacket(ChatPacket);
             }
 
-            if (quest.SuccessNpcChat != null && quest.SuccessNpcChat.Trim() != "")
+            if (quest.SuccessNpcChat != null)
             {
                 if (!npcActivation)
                 {
