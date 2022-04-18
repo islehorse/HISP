@@ -31,13 +31,53 @@ jobs:
     
     - name: Restore dependencies
       run: dotnet restore
+      
+    - name: Build win-x64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=Win64.pubxml
 
+    - name: Build win-x86
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=Win32.pubxml
+
+    - name: Build win-arm
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=WinARM.pubxml
+
+    - name: Build win-arm64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=WinARM64.pubxml
+    
     - name: Build linux-x64
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=Linux64.pubxml
-
-    - name: Build .deb
+      
+    - name: Build linux-arm
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=LinuxARM.pubxml
+    
+    - name: Build linux-arm64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+      
+    - name: Build mac-x64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=Osx64.pubxml
+    
+    - name: Build mac-arm64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=OsxARM64.pubxml
+        
+    - name: Build deb package
       continue-on-error: false
       shell: wsl-bash -u root {0}
       run: |
@@ -69,49 +109,8 @@ jobs:
         chmod 644 -R /mnt/fucking-windows/Debian64
         chmod +x /mnt/fucking-windows/Debian64/usr/bin/HISPd
         chmod 755 -R /mnt/fucking-windows/Debian64/DEBIAN
-        dpkg-deb --build /mnt/fucking-windows/Debian64        
+        dpkg-deb --build /mnt/fucking-windows/Debian64
       
-      
-    - name: Build win-x64
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=Win64.pubxml
-
-    - name: Build win-x86
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=Win32.pubxml
-
-    - name: Build win-arm
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=WinARM.pubxml
-
-    - name: Build win-arm64
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=WinARM64.pubxml
-
-    - name: Build linux-arm
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=LinuxARM.pubxml
-    
-    - name: Build linux-arm64
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
-      
-    - name: Build mac-x64
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=Osx64.pubxml
-    
-    - name: Build mac-arm64
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=OsxARM64.pubxml
-
 #    - name: Build android-arm
 #      continue-on-error: false
 #      run: |
@@ -187,6 +186,13 @@ jobs:
       with:
         name: HISP-MacARM64
         path: HorseIsleServer/HISPd/bin/arm64/MacOS/net7.0/osx-arm64/publish/
+
+    - name: Upload deb package
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-DebianPackage
+        path: HorseIsleServer/Debian64.deb
+
 
 #    - name: Upload android-arm
 #      uses: actions/upload-artifact@v2
