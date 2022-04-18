@@ -13,7 +13,7 @@ well they essentailly run off "Server Emulators".
 **tl;dr, think "Club Penguin Rewritten" but with Horse Isle.**
 
 # Installation:
-Install on Ubuntu or Debian via APT:
+Install on Ubuntu via APT:
 ```
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 34F644BC70C746CE48139C595129317F33AE659C
 sudo add-apt-repository 'deb http://deb.silica.codes debian main'
@@ -21,6 +21,13 @@ sudo apt update
 sudo apt install hisp
 ```
 
+Install on Debian via APT:
+```
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 34F644BC70C746CE48139C595129317F33AE659C
+sudo echo 'deb http://deb.silica.codes debian main'>>/etc/sources.list
+sudo apt update
+sudo apt install hisp
+```
 
 # Commands     
 (legend: <> Required, [] Optional)
