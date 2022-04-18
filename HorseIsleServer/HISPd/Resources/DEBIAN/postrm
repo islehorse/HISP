@@ -1,4 +1,5 @@
 #!/bin/sh
+systemctl daemon-reload
 systemctl stop HISP
 systemctl disable HISP
 userdel horseisle
