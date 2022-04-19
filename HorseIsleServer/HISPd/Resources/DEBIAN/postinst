@@ -1,6 +1,6 @@
 #!/bin/sh
 
-useradd horseisle
+useradd -r horseisle
 chown -R horseisle:horseisle /etc/hisp
 systemctl enable HISP.service
 systemctl start HISP
