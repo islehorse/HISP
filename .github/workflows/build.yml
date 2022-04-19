@@ -113,7 +113,7 @@ jobs:
         chmod +x /mnt/fucking-windows/Debian64/usr/bin/HISPd
         mkdir debpackage
         dpkg-deb --build /mnt/fucking-windows/Debian64
-        mv /mnt/fucking-windows/Debian64.deb debpackage/HISP.deb
+        mv /mnt/fucking-windows/Debian64.deb debpackage/HISP-Debian-AMD64.deb
 #    - name: Build android-arm
 #      continue-on-error: false
 #      run: |
