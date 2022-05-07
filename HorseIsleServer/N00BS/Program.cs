@@ -2,6 +2,7 @@
 // Idea is to just be open and play.
 
 using HISP.Game;
+using HISP.Game.Chat;
 using HISP.Game.Horse;
 using HISP.Game.Items;
 using HISP.Game.Services;
@@ -159,6 +160,9 @@ namespace HISP.Noobs
                 IncrementProgress();
 
                 Auction.LoadAllAuctionRooms();
+                IncrementProgress();
+
+                Command.RegisterCommands();
                 IncrementProgress();
 
                 Item.DoSpecialCases();

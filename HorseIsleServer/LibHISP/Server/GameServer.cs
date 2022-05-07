@@ -18,6 +18,7 @@ using HISP.Game.SwfModules;
 using HISP.Game.Horse;
 using HISP.Game.Events;
 using HISP.Game.Items;
+using HISP.Modding;
 
 namespace HISP.Server
 {
@@ -8249,12 +8250,16 @@ namespace HISP.Server
         }
         public static void OnShutdown()
         {
-            ServerSocket.Dispose();
-            gameTimer.Dispose();
-            minuteTimer.Dispose();
+            if(ServerSocket != null)
+                ServerSocket.Dispose();
+            if (gameTimer != null)
+                gameTimer.Dispose();
+            if (minuteTimer != null)
+                minuteTimer.Dispose();
         }
         public static void ShutdownServer()
         {
+            ModLoader.OnShutdown();
             GameClient.OnShutdown();
             GameServer.OnShutdown();
             Database.OnShutdown();
@@ -8271,6 +8276,9 @@ namespace HISP.Server
             gameTimer = new Timer(new TimerCallback(onGameTick), null, gameTickSpeed, gameTickSpeed);
             minuteTimer = new Timer(new TimerCallback(onMinuteTick), null, oneMinute, oneMinute);
             Logger.InfoPrint("Binding to ip: " + ConfigReader.BindIP + " On port: " + ConfigReader.Port.ToString());
+
+            // Load all/any mods
+            ModLoader.ReloadModsFromFilesystem();
             
             SocketAsyncEventArgs e = new SocketAsyncEventArgs();
             e.Completed += GameClient.CreateClient;
