@@ -8277,8 +8277,6 @@ namespace HISP.Server
             minuteTimer = new Timer(new TimerCallback(onMinuteTick), null, oneMinute, oneMinute);
             Logger.InfoPrint("Binding to ip: " + ConfigReader.BindIP + " On port: " + ConfigReader.Port.ToString());
 
-            // Load all/any mods
-            ModLoader.ReloadModsFromFilesystem();
             
             SocketAsyncEventArgs e = new SocketAsyncEventArgs();
             e.Completed += GameClient.CreateClient;

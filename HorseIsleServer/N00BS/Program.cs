@@ -7,6 +7,7 @@ using HISP.Game.Horse;
 using HISP.Game.Items;
 using HISP.Game.Services;
 using HISP.Game.SwfModules;
+using HISP.Modding;
 using HISP.Security;
 using HISP.Server;
 using HTTP;
@@ -74,6 +75,8 @@ namespace HISP.Noobs
             BaseDir = Path.Combine(Environment.GetEnvironmentVariable("APPDATA"), "HISP", "N00BS");
             Directory.CreateDirectory(BaseDir);
 
+            ModLoader.ReloadModsFromFilesystem();
+
             // Start Web Server
             try
             {
@@ -109,6 +112,7 @@ namespace HISP.Noobs
                 ConfigReader.LogLevel = 0;
                 ConfigReader.CrossDomainPolicyFile = Path.Combine(BaseDir, "CrossDomainPolicy.xml");
                 ConfigReader.DatabaseName = Path.Combine(BaseDir, "game1.db");
+
 
                 IncrementProgress();
                 Database.OpenDatabase();
