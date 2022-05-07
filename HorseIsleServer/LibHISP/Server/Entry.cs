@@ -3,6 +3,7 @@ using HISP.Game.Horse;
 using HISP.Game.Items;
 using HISP.Game.Services;
 using HISP.Game.SwfModules;
+using HISP.Game.Chat;
 using HISP.Security;
 using System;
 using System.Diagnostics;
@@ -12,7 +13,6 @@ namespace HISP.Server
     public static class Entry
     {
         // "Entry Point"
-
 
         private static void defaultOnShutdownCallback()
         {
@@ -52,6 +52,7 @@ namespace HISP.Server
             Auction.LoadAllAuctionRooms();
 
             Item.DoSpecialCases();
+            Command.RegisterCommands();
 
             GameServer.StartServer();
         }
