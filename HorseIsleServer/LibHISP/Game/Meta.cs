@@ -253,23 +253,10 @@ namespace HISP.Game
         private static string buildWornJewelery(User user, bool other)
         {
             string message = "";
-
-            // Insert LGBT Patch here
-
             string pronoun = "";
 
             if (other)
-            {
-                if (user.Gender == "FEMALE")
-                {
-                    pronoun = Messages.PronounFemaleShe;
-                }
-
-                if (user.Gender == "MALE")
-                {
-                    pronoun = Messages.PronounMaleHe;
-                }
-            }
+                pronoun = user.GetPronouns(false);
 
             if (!other)
                 message += Messages.JewelrySelected;
@@ -364,22 +351,12 @@ namespace HISP.Game
             if (!other)
                 message = Messages.CompetitionGearSelected;
 
-            // Insert LGBT Patch Here
-
-            string pronoun = Messages.PronounYouYour;
-            string pronoun2 = Messages.PronounYouYour;
+            string pronoun = Messages.PronounNeutralYour;
+            string possessivePronoun = Messages.PronounNeutralYour;
             if (other)
             {
-                if (user.Gender == "FEMALE")
-                {
-                    pronoun = Messages.PronounFemaleShe;
-                    pronoun2 = Messages.PronounFemaleHer;
-                }
-                else if (user.Gender == "MALE")
-                {
-                    pronoun = Messages.PronounMaleHe;
-                    pronoun2 = Messages.PronounMaleHis;
-                }
+                pronoun = user.GetPronouns(false);
+                possessivePronoun = user.GetPronouns(true);
 
                 message = Messages.FormatOtherCompetitionGear(pronoun);
             }
@@ -388,22 +365,22 @@ namespace HISP.Game
 
             if (user.EquipedCompetitionGear.Head != null)
             {
-                message += Messages.FormatCompetitionGearHead(user.EquipedCompetitionGear.Head.Name, pronoun2, user.EquipedCompetitionGear.Head.IconId, other);
+                message += Messages.FormatCompetitionGearHead(user.EquipedCompetitionGear.Head.Name, possessivePronoun, user.EquipedCompetitionGear.Head.IconId, other);
                 hasMsg = true;
             }
             if (user.EquipedCompetitionGear.Body != null)
             {
-                message += Messages.FormatCompetitionGearBody(user.EquipedCompetitionGear.Body.Name, pronoun2, user.EquipedCompetitionGear.Body.IconId, other);
+                message += Messages.FormatCompetitionGearBody(user.EquipedCompetitionGear.Body.Name, possessivePronoun, user.EquipedCompetitionGear.Body.IconId, other);
                 hasMsg = true;
             }
             if (user.EquipedCompetitionGear.Legs != null)
             {
-                message += Messages.FormatCompetitionGearLegs(user.EquipedCompetitionGear.Legs.Name, pronoun2, user.EquipedCompetitionGear.Legs.IconId, other);
+                message += Messages.FormatCompetitionGearLegs(user.EquipedCompetitionGear.Legs.Name, possessivePronoun, user.EquipedCompetitionGear.Legs.IconId, other);
                 hasMsg = true;
             }
             if (user.EquipedCompetitionGear.Feet != null)
             {
-                message += Messages.FormatCompetitionGearFeet(user.EquipedCompetitionGear.Feet.Name, pronoun2, user.EquipedCompetitionGear.Feet.IconId, other);
+                message += Messages.FormatCompetitionGearFeet(user.EquipedCompetitionGear.Feet.Name, possessivePronoun, user.EquipedCompetitionGear.Feet.IconId, other);
                 hasMsg = true;
             }
 
@@ -1054,20 +1031,8 @@ namespace HISP.Game
             }
             else
             {
-                // Insert LGBT Patch here
-
-                string pronoun = "";
-                if (other)
-                {
-                    if (user.Gender == "FEMALE")
-                        pronoun = Messages.PronounFemaleHer;
-
-                    if (user.Gender == "MALE")
-                        pronoun = Messages.PronounMaleHis;
-                }
-
+                string pronoun = user.GetPronouns(true);
                 message += Messages.FormatOtherHorsesMeta(pronoun);
-
                 message += buildHorseList(user, false);
 
                 message += Messages.FormatAwardHeaderOthers(user.Username);

@@ -495,8 +495,10 @@ namespace HISP.Game
         public static string PronounFemaleShe;
         public static string PronounFemaleHer;
 
-        public static string PronounYouYour;
+        public static string PronounNeutralYour;
 
+        public static string PronounNeutralThey;
+        public static string PronounNeutralTheir;
         // Stats Page
         public static string StatsBarFormat;
         public static string StatsAreaFormat;
