@@ -1,5 +1,5 @@
 Package: hisp
-Version: 1.6.1
+Version: 1.6.2
 Depends: coreutils,systemd,mariadb-server,libsqlite3-dev
 Maintainer: Li
 Homepage: https://islehorse.com
