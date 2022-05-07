@@ -584,6 +584,17 @@ namespace HISP.Player
             GameServer.Update(LoggedinClient);
         }
 
+        // Insert LGBT Patch here
+        public string GetPronouns(bool possessive)
+        {
+            if (Gender == "FEMALE")
+                return possessive ? Messages.PronounFemaleHer : Messages.PronounFemaleShe;
+            else if (Gender == "MALE")
+                return possessive ? Messages.PronounMaleHis : Messages.PronounMaleHe;
+            else
+                return possessive ? Messages.PronounNeutralTheir : Messages.PronounNeutralThey;
+        }
+
         public byte[] GenerateSecCode()
         {
             var i = 0;

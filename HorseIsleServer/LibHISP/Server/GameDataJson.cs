@@ -1431,7 +1431,10 @@ namespace HISP.Server
             Messages.PronounMaleHe = gameData.messages.meta.stats_page.pronouns.male_he;
             Messages.PronounMaleHis = gameData.messages.meta.stats_page.pronouns.male_his;
 
-            Messages.PronounYouYour = gameData.messages.meta.stats_page.pronouns.you_your;
+            Messages.PronounNeutralYour = gameData.messages.meta.stats_page.pronouns.neutral_your;
+
+            Messages.PronounNeutralThey = gameData.messages.meta.stats_page.pronouns.neutral_they;
+            Messages.PronounNeutralTheir = gameData.messages.meta.stats_page.pronouns.neutral_their;
 
             // Stats
             Messages.StatsBarFormat = gameData.messages.meta.stats_page.stats_bar_format;
