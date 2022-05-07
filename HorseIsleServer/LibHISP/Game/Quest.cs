@@ -15,7 +15,7 @@ namespace HISP.Game
         public const string Binoculars = "BINOCS";
         public const string Rake = "RAKE";
         public const string MagnifyingGlass = "MAGNIFY";
-
+        public const int CloudIslesQuest = 1373;
         public struct QuestItemInfo
         {
             public int ItemId;
@@ -262,7 +262,7 @@ namespace HISP.Game
                 user.Awards.AddAward(Award.GetAwardById(4)); // 100% Quest Completion Award.
 
             // Is cloud isles quest?
-            if (quest.Id == 1373)
+            if (quest.Id == CloudIslesQuest)
             {
                 byte[] swfLoadPacket = PacketBuilder.CreateSwfModulePacket("ballooncutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
                 user.LoggedinClient.SendPacket(swfLoadPacket);

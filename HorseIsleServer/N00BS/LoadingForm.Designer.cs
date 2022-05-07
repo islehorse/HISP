@@ -55,10 +55,10 @@
             // 
             // StartProgress
             // 
-            this.StartProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.StartProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.StartProgress.Location = new System.Drawing.Point(79, 40);
-            this.StartProgress.Maximum = 18;
+            this.StartProgress.Maximum = 19;
             this.StartProgress.Name = "StartProgress";
             this.StartProgress.Size = new System.Drawing.Size(618, 23);
             this.StartProgress.Step = 1;

@@ -21,6 +21,7 @@ namespace HISP.Server
         public static string GameData = "gamedata.json";
         public static string CrossDomainPolicyFile = "CrossDomainPolicy.xml";
 
+        public static string ModsFolder = "mods";
         public static int LogLevel = 4;
 
         public static bool SqlLite = false;
@@ -117,6 +118,9 @@ namespace HISP.Server
                         break;
                     case "enable_word_filter":
                         BadWords = data == "true";
+                        break;
+                    case "mods_folder":
+                        ModsFolder = data;
                         break;
                     case "intrest_rate":
                         IntrestRate = int.Parse(data);

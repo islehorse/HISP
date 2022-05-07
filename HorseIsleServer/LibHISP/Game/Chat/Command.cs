@@ -1,19 +1,19 @@
 ﻿using HISP.Player;
 using HISP.Server;
 using HISP.Game.Items;
-using System;
-using System.Collections.Generic;
 using HISP.Game.Events;
 using HISP.Game.Horse;
-using System.Linq;
 using HISP.Game.Inventory;
-using System.Threading;
+using HISP.Modding;
+
+using System.Linq;
+using System;
+using System.Collections.Generic;
 
 namespace HISP.Game.Chat
 {
     public class Command
     {
-
         private static User findNamePartial(string name)
         {
             foreach (GameClient client in GameClient.ConnectedClients)
@@ -31,12 +31,57 @@ namespace HISP.Game.Chat
             throw new KeyNotFoundException("name not found");
         }
 
+        public static void RegisterCommands()
+        {
+            // Admin Commands
+            new CommandRegister('%', "GIVE", Command.Give);
+            new CommandRegister('%', "SWF", Command.Swf);
+            new CommandRegister('%', "GOTO", Command.Goto);
+            new CommandRegister('%', "JUMP", Command.Jump);
+            new CommandRegister('%', "KICK", Command.Kick);
+            new CommandRegister('%', "NOCLIP", Command.NoClip);
+            new CommandRegister('%', "MODHORSE", Command.ModHorse);
+            new CommandRegister('%', "DELITEM", Command.DelItem);
+            new CommandRegister('%', "SHUTDOWN", Command.Shutdown);
+            new CommandRegister('%', "RELOAD", Command.Reload);
+            new CommandRegister('%', "CALL", Command.CallHorse);
+
+            // Moderator commands
+            new CommandRegister('%', "RULES", Command.Rules);
+            new CommandRegister('%', "PRISON", Command.Prison);
+            new CommandRegister('%', "STEALTH", Command.Stealth);
+            new CommandRegister('%', "BAN", Command.Ban);
+            new CommandRegister('%', "UNBAN", Command.UnBan);
+            new CommandRegister('%', "ESCAPE", Command.Escape);
+
+            // User commands
+            new CommandRegister('!', "MUTE", Command.Mute);
+            new CommandRegister('!', "UNMUTE", Command.UnMute);
+            new CommandRegister('!', "HEAR", Command.UnMute);
+            new CommandRegister('!', "AUTOREPLY", Command.AutoReply);
+            new CommandRegister('!', "QUIZ", Command.Quiz);
+            new CommandRegister('!', "WARP", Command.Warp);
+            new CommandRegister('!', "DANCE", Command.Dance);
+            new CommandRegister('!', "VERSION", Command.Version);
+        }
+
+        public static bool Reload(string message, string[] args, User user)
+        {
+            if (!user.Administrator)
+                return false;
+
+            ModLoader.ReloadModsFromFilesystem();
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
+            return true;
+        }
         public static bool Shutdown(string message, string[] args, User user)
         {
             if (!user.Administrator)
                 return false;         
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             GameServer.ShutdownServer();
 
@@ -190,7 +235,7 @@ namespace HISP.Game.Chat
                 return false;
             }
         msg:;
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
@@ -227,7 +272,7 @@ namespace HISP.Game.Chat
                 return false;
             }
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
 
             return true;
@@ -251,7 +296,7 @@ namespace HISP.Game.Chat
                 return false;
             }
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
 
             return true;
@@ -264,7 +309,7 @@ namespace HISP.Game.Chat
             user.LoggedinClient.SendPacket(versionPacket);
 
             // Send Command complete message to client.
-            byte[] versionCommandCompletePacket = PacketBuilder.CreateChat(Messages.FormatPlayerCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] versionCommandCompletePacket = PacketBuilder.CreateChat(Messages.FormatPlayerCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(versionCommandCompletePacket);
             return true;
         }
@@ -297,7 +342,7 @@ namespace HISP.Game.Chat
             }
             catch(KeyNotFoundException){};
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
 
             return true;
@@ -309,7 +354,7 @@ namespace HISP.Game.Chat
 
             user.Teleport(Map.ModIsleX, Map.ModIsleY);
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)) + Messages.ModIsleMessage, PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message) + Messages.ModIsleMessage, PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
@@ -320,7 +365,7 @@ namespace HISP.Game.Chat
                 return false;
 
             user.Stealth = !user.Stealth;
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
@@ -330,7 +375,7 @@ namespace HISP.Game.Chat
                 return false;
             
             user.NoClip = !user.NoClip;
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
@@ -356,7 +401,7 @@ namespace HISP.Game.Chat
                 return false;
             }
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1))+Messages.FormatRulesCommandMessage(args[0]), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message)+Messages.FormatRulesCommandMessage(args[0]), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
@@ -382,7 +427,7 @@ namespace HISP.Game.Chat
                 return false;
             }
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)) + Messages.FormatPrisonCommandMessage(args[0]), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message) + Messages.FormatPrisonCommandMessage(args[0]), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
 
@@ -414,7 +459,7 @@ namespace HISP.Game.Chat
                 return false;
             }
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
@@ -442,7 +487,7 @@ namespace HISP.Game.Chat
                 return false;
             }
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
@@ -477,7 +522,7 @@ namespace HISP.Game.Chat
                 return false;
             }
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
 
             return true;
@@ -575,7 +620,7 @@ namespace HISP.Game.Chat
 
         
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             
             return true;
@@ -655,7 +700,7 @@ namespace HISP.Game.Chat
             }
 
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message.Substring(1)), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
@@ -663,7 +708,7 @@ namespace HISP.Game.Chat
         public static bool Warp(string message, string[] args, User user)
         {
 
-            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
 
             if (user.CurrentlyRidingHorse == null)
                 goto onlyRiddenUnicorn;
@@ -730,7 +775,11 @@ namespace HISP.Game.Chat
             if (!user.Administrator)
                 return false;
 
-            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+            if (args.Length >= 1)
+                if (args[1].ToUpper() != "HORSE")
+                    return false;
+
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
 
             WildHorse horse = WildHorse.WildHorses[GameServer.RandomNumberGenerator.Next(0, WildHorse.WildHorses.Length)];
             horse.X = user.X;
@@ -747,7 +796,7 @@ namespace HISP.Game.Chat
         public static bool AutoReply(string message, string[] args, User user)
         {
             string replyMessage = string.Join(" ", args);
-            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
             replyMessage = replyMessage.Trim();
 
             if (replyMessage.Length > 1024)
@@ -776,7 +825,7 @@ namespace HISP.Game.Chat
         public static bool Dance(string message, string[] args, User user)
         {
             string moves = string.Join(" ", args).ToLower();
-            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
 
             if (user.ActiveDance != null)
                 user.ActiveDance.Dispose();
@@ -800,7 +849,7 @@ namespace HISP.Game.Chat
             }
             if (quizActive)
             {
-                string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+                string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
 
                 RealTimeQuiz.Participent participent = GameServer.QuizEvent.JoinEvent(user);
 
@@ -832,7 +881,7 @@ namespace HISP.Game.Chat
 
         public static bool Mute(string message, string[] args, User user)
         {
-            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
 
             if (args.Length <= 0)
             {
@@ -906,7 +955,7 @@ namespace HISP.Game.Chat
 
         public static bool UnMute(string message, string[] args, User user)
         {
-            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message.Substring(1));
+            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
 
             if (args.Length <= 0)
             {
