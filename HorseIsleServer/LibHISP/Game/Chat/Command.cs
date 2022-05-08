@@ -782,17 +782,27 @@ namespace HISP.Game.Chat
             if (!user.Administrator)
                 return false;
 
-            if (args.Length >= 1)
+            if (args.Length <= 0)
+                return;
+
+            try
+            {
                 if (args[0].ToUpper() != "HORSE")
                     return false;
 
-            string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
+                string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
 
-            WildHorse horse = WildHorse.WildHorses[GameServer.RandomNumberGenerator.Next(0, WildHorse.WildHorses.Length)];
-            horse.X = user.X;
-            horse.Y = user.Y;
+                WildHorse horse = WildHorse.WildHorses[GameServer.RandomNumberGenerator.Next(0, WildHorse.WildHorses.Length)];
+                horse.X = user.X;
+                horse.Y = user.Y;
 
-            GameServer.UpdateAreaForAll(user.X, user.Y);
+                GameServer.UpdateAreaForAll(user.X, user.Y);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+            
 
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
