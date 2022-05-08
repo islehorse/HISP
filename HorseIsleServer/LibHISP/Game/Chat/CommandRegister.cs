@@ -18,12 +18,14 @@ namespace HISP.Game.Chat
 
         public char CmdLetter;
         public string CmdName;
+        public string CmdUsage;
         public Func<string,string[],User, bool> CmdCallback;
-        public CommandRegister(char cmdLetter, string cmdName, Func<string, string[], User, bool> cmdCallback)
+        public CommandRegister(char cmdLetter, string cmdName, string cmdUsage, Func<string, string[], User, bool> cmdCallback)
         {
             CmdLetter = cmdLetter;
             CmdName = cmdName.ToUpper(CultureInfo.InvariantCulture);
             CmdCallback = cmdCallback;
+            CmdUsage = cmdUsage;
 
             registeredComamnds.Add(this);
         }
