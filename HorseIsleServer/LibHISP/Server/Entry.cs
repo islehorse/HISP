@@ -7,7 +7,6 @@ using HISP.Game.Chat;
 using HISP.Security;
 using System;
 using System.Diagnostics;
-using HISP.Modding;
 
 namespace HISP.Server
 {
@@ -33,8 +32,7 @@ namespace HISP.Server
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 #endif
 
-            ModLoader.ReloadModsFromFilesystem();
-
+            
             Console.Title = ServerVersion.GetBuildString();
             ConfigReader.OpenConfig();
             CrossDomainPolicy.GetPolicy();

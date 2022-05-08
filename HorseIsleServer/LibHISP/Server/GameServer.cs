@@ -18,7 +18,6 @@ using HISP.Game.SwfModules;
 using HISP.Game.Horse;
 using HISP.Game.Events;
 using HISP.Game.Items;
-using HISP.Modding;
 
 namespace HISP.Server
 {
@@ -8259,7 +8258,6 @@ namespace HISP.Server
         }
         public static void ShutdownServer()
         {
-            ModLoader.OnShutdown();
             GameClient.OnShutdown();
             GameServer.OnShutdown();
             Database.OnShutdown();
