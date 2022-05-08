@@ -50,6 +50,6 @@ lines = open(assembly_info, "r").readlines()
 for i in range(0,len(lines)):
     if lines[i].startswith("[assembly: AssemblyVersion(\""):
         lines[i] = "[assembly: AssemblyVersion(\""+assembly_version+"\")]\r\n"
-    if lines[i].startswith("[assembly: AssemblyVersion(\""):
+    if lines[i].startswith("[assembly: AssemblyFileVersion(\""):
         lines[i] = "[assembly: AssemblyFileVersion(\""+assembly_version+"\")]\r\n"
 open(assembly_info, "w").writelines(lines)
