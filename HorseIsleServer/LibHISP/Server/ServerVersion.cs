@@ -1,4 +1,6 @@
-﻿using HISP.Properties;
+﻿using System;
+using System.Globalization;
+using HISP.Properties;
 
 namespace HISP.Server
 {
@@ -44,27 +46,33 @@ namespace HISP.Server
         }
         public static string GetVersionString()
         {
-            return Resources.GitTag.Replace("\r", "").Replace("\n", "");
+            return Resources.GitTag.Replace("\r", "").Replace("\n", "").ToString().Trim() + "."+ GetCommitHashVersion();
         }
         public static string GetBranch()
         {
-            return Resources.GitBranch.Replace("\r", "").Replace("\n", "");
+            return Resources.GitBranch.Replace("\r", "").Replace("\n", "").ToString().Trim();
         }
         public static string GetBuildDate()
         {
-            return Resources.BuildDate.Replace("\r", "").Replace("\n", "");
+            return Resources.BuildDate.Replace("\r", "").Replace("\n", "").ToString().Trim();
         }
         public static string GetBuildTime()
         {
-            return Resources.BuildTime.Replace("\r", "").Replace("\n", "");
+            return Resources.BuildTime.Replace("\r", "").Replace("\n", "").ToString().Trim();
         }
+
+        public static string GetCommitHashVersion()
+        {
+            return UInt16.Parse(Resources.GitCommit.Substring(0, 4), NumberStyles.HexNumber).ToString();
+        }
+
         public static string GetCommitHash(int TotalBytes)
         {
-            return Resources.GitCommit.Substring(0, TotalBytes).Replace("\r", "").Replace("\n", "");
+            return Resources.GitCommit.Substring(0, TotalBytes).Replace("\r", "").Replace("\n", "").ToString().Trim();
         }
         public static string GetBuildString()
         {
-            return PRODUCT + " " + GetVersionString() + " `" + GetBranch() + "@" + GetCommitHash(7) + "`; (" + GetArchitecture() + "; " + GetPlatform() + "); Built on " + GetBuildDate() + " at " + GetBuildTime();
+            return PRODUCT + " " + GetVersionString() + " " + GetBranch() + " (" + GetArchitecture() + "; " + GetPlatform() + "); Built @ " + GetBuildDate() + " " + GetBuildTime();
         }
     }
 }
