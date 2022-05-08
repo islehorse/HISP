@@ -4,7 +4,6 @@ using HISP.Game.Items;
 using HISP.Game.Events;
 using HISP.Game.Horse;
 using HISP.Game.Inventory;
-using HISP.Modding;
 
 using System.Linq;
 using System;
@@ -70,7 +69,6 @@ namespace HISP.Game.Chat
             if (!user.Administrator)
                 return false;
 
-            ModLoader.ReloadModsFromFilesystem();
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);

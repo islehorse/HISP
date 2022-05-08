@@ -7,7 +7,6 @@ using HISP.Game.Horse;
 using HISP.Game.Items;
 using HISP.Game.Services;
 using HISP.Game.SwfModules;
-using HISP.Modding;
 using HISP.Security;
 using HISP.Server;
 using HTTP;
@@ -75,7 +74,6 @@ namespace HISP.Noobs
             BaseDir = Path.Combine(Environment.GetEnvironmentVariable("APPDATA"), "HISP", "N00BS");
             Directory.CreateDirectory(BaseDir);
 
-            ModLoader.ReloadModsFromFilesystem();
 
             // Start Web Server
             try

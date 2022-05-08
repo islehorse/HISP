@@ -1,0 +1,41 @@
+#!/bin/python3
+import os
+import subprocess
+import date
+import datetime
+import struct
+import binascii
+
+global commit_hash
+global commit_tag
+global commit_branch
+
+
+def derive_version():
+    commit_tag + "." + struct.unpack("h", binascii.unhexlify())
+
+versioning_folder = os.path.join("LibHISP", "Resources", "Versioning")
+if not os.path.exists(versioning_folder):
+    os.mkdir(versioning_folder)
+
+commit_hash = "0"*40
+commit_tag = "v0.0.0"
+commit_branch = "master"
+
+try:
+    commit_hash = subprocess.run(['git', 'rev-parse', '--verify', 'HEAD'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
+    commit_tag = subprocess.run(['git', 'describe', '--abbrev=0', '--tags'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
+    commit_branch = subprocess.run(['git', 'branch', '--show-current'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
+except FileNotFoundError:
+    print("Git not installed")
+
+commit_date = datetime.datetime.now().strftime("%d/%m/%Y")
+commit_time = datetime.datetime.now().strftime("%H:%M:%S")
+
+open(os.path.join(versioning_folder, "GitCommit"), "w").write(commit_hash)
+open(os.path.join(versioning_folder, "GitTag"   ), "w").write(commit_tag)
+open(os.path.join(versioning_folder, "GitBranch"), "w").write(commit_branch)
+open(os.path.join(versioning_folder, "BuildDate"), "w").write(commit_date)
+open(os.path.join(versioning_folder, "BuildTime"), "w").write(commit_time)
+
+
