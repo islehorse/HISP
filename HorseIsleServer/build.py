@@ -1,7 +1,7 @@
-#!/bin/python3
+#!/usr/bin/python3
 import os
 import subprocess
-import date
+import time
 import datetime
 import struct
 import binascii
@@ -23,8 +23,12 @@ commit_tag = "v0.0.0"
 commit_branch = "master"
 
 try:
+    subprocess.run(['git', 'add', '-A'], stdout=subprocess.PIPE)
+    subprocess.run(['git', 'commit', '-m', 'Update made automatically due to pressing build'], stdout=subprocess.PIPE)
     commit_hash = subprocess.run(['git', 'rev-parse', '--verify', 'HEAD'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
     commit_tag = subprocess.run(['git', 'describe', '--abbrev=0', '--tags'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
+    commits_since_tag = subprocess.run(['git rev-list', commit_tag+'..HEAD', '--count'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
+    commit_tag = + "." + commits_since_tag
     commit_branch = subprocess.run(['git', 'branch', '--show-current'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
 except FileNotFoundError:
     print("Git not installed")
