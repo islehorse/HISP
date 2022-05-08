@@ -5,7 +5,6 @@ import time
 import datetime
 import binascii
 
-
 def update_asm_info(assemblyinfofile):
     global commit_hash
     global commit_tag
@@ -14,9 +13,9 @@ def update_asm_info(assemblyinfofile):
     lines = open(assemblyinfofile, "rb").readlines()
     for i in range(0,len(lines)):
         if lines[i].startswith(b"[assembly: AssemblyVersion(\""):
-            lines[i] = b"[assembly: AssemblyVersion(\""+bytes(assembly_version, "UTF-8")+b"\")]\n"
+            lines[i] = b"[assembly: AssemblyVersion(\""+bytes(assembly_version, "UTF-8")+b"\")]\r\n"
         if lines[i].startswith(b"[assembly: AssemblyFileVersion(\""):
-            lines[i] = b"[assembly: AssemblyFileVersion(\""+bytes(assembly_version, "UTF-8")+b"\")]\n"
+            lines[i] = b"[assembly: AssemblyFileVersion(\""+bytes(assembly_version, "UTF-8")+b"\")]\r\n"
     open(assemblyinfofile, "wb").writelines(lines)
 
     
@@ -57,6 +56,7 @@ update_asm_info(os.path.join("LibHISP", "Properties", "AssemblyInfo.cs"))
 update_asm_info(os.path.join("N00BS", "Properties", "AssemblyInfo.cs"))
 update_asm_info(os.path.join("HISPd", "Properties", "AssemblyInfo.cs"))
 
+# Update control file
 control_file = os.path.join("HISPd", "Resources", "DEBIAN", "control")
 lines = open(control_file, "rb").readlines()
 for i in range(0,len(lines)):
@@ -64,8 +64,3 @@ for i in range(0,len(lines)):
             lines[i] = b"Version: "+bytes(commit_tag.replace("v", ""), "UTF-8")+b"\n"
 open(control_file, "wb").writelines(lines)
 
-try:
-    subprocess.run(['git', 'add', '-A'], stdout=subprocess.PIPE)
-    subprocess.run(['git', 'commit', '-m', 'Update made automatically due to pressing build'], stdout=subprocess.PIPE)
-except FileNotFoundError:
-    pass
