@@ -3,18 +3,14 @@ import os
 import subprocess
 import time
 import datetime
-import struct
 import binascii
 
 global commit_hash
 global commit_tag
 global commit_branch
 
-
-def derive_version():
-    commit_tag + "." + struct.unpack("h", binascii.unhexlify())
-
 versioning_folder = os.path.join("LibHISP", "Resources", "Versioning")
+
 if not os.path.exists(versioning_folder):
     os.mkdir(versioning_folder)
 
