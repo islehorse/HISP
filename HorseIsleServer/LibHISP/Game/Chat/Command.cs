@@ -33,36 +33,35 @@ namespace HISP.Game.Chat
         public static void RegisterCommands()
         {
             // Admin Commands
-            new CommandRegister('%', "GIVE", Command.Give);
-            new CommandRegister('%', "SWF", Command.Swf);
-            new CommandRegister('%', "GOTO", Command.Goto);
-            new CommandRegister('%', "JUMP", Command.Jump);
-            new CommandRegister('%', "KICK", Command.Kick);
-            new CommandRegister('%', "NOCLIP", Command.NoClip);
-            new CommandRegister('%', "MODHORSE", Command.ModHorse);
-            new CommandRegister('%', "DELITEM", Command.DelItem);
-            new CommandRegister('%', "SHUTDOWN", Command.Shutdown);
-            new CommandRegister('%', "CALL", Command.CallHorse);
-            new CommandRegister('%', "MESSAGE", Command.Message);
-            new CommandRegister('%', "%", Command.Message);
+            new CommandRegister('%', "GIVE", "OBJECT <itemid / RANDOM> [username / ALL]\nMONEY <amount> [username]\nHORSE <breedid> [username]\nQUEST <questid> [FORCE]\nAWARD <awardid> [username]", Command.Give);
+            new CommandRegister('%', "SWF", "<swf> [username / ALL]", Command.Swf);
+            new CommandRegister('%', "GOTO", "<x>,<y>\nPLAYER <playername>\nAREA <locationname>\nNPC <npcname>", Command.Goto);
+            new CommandRegister('%', "JUMP", "<username> HERE", Command.Jump);
+            new CommandRegister('%', "KICK" , "<username> [reason]", Command.Kick);
+            new CommandRegister('%', "NOCLIP", "", Command.NoClip);
+            new CommandRegister('%', "MODHORSE", "<slot id> <stat> <value>", Command.ModHorse);
+            new CommandRegister('%', "DELITEM", "<item id> [username]", Command.DelItem);
+            new CommandRegister('%', "SHUTDOWN", "", Command.Shutdown);
+            new CommandRegister('%', "CALL", "HORSE", Command.CallHorse);
+            new CommandRegister('%', "MESSAGE", "<message>", Command.Message);
 
             // Moderator commands
-            new CommandRegister('%', "RULES", Command.Rules);
-            new CommandRegister('%', "PRISON", Command.Prison);
-            new CommandRegister('%', "STEALTH", Command.Stealth);
-            new CommandRegister('%', "BAN", Command.Ban);
-            new CommandRegister('%', "UNBAN", Command.UnBan);
-            new CommandRegister('%', "ESCAPE", Command.Escape);
+            new CommandRegister('%', "RULES", "<username>", Command.Rules);
+            new CommandRegister('%', "PRISON", "<username>", Command.Prison);
+            new CommandRegister('%', "STEALTH", "", Command.Stealth);
+            new CommandRegister('%', "BAN", "<username> [reason]", Command.Ban);
+            new CommandRegister('%', "UNBAN", "<username>", Command.UnBan);
+            new CommandRegister('%', "ESCAPE", "", Command.Escape);
 
             // User commands
-            new CommandRegister('!', "MUTE", Command.Mute);
-            new CommandRegister('!', "UNMUTE", Command.UnMute);
-            new CommandRegister('!', "HEAR", Command.UnMute);
-            new CommandRegister('!', "AUTOREPLY", Command.AutoReply);
-            new CommandRegister('!', "QUIZ", Command.Quiz);
-            new CommandRegister('!', "WARP", Command.Warp);
-            new CommandRegister('!', "DANCE", Command.Dance);
-            new CommandRegister('!', "VERSION", Command.Version);
+            new CommandRegister('!', "MUTE", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS \nLOGINS  ", Command.Mute);
+            new CommandRegister('!', "UNMUTE", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS \nLOGINS  ", Command.UnMute);
+            new CommandRegister('!', "HEAR", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS \nLOGINS  ", Command.UnMute);
+            new CommandRegister('!', "AUTOREPLY", "[message]", Command.AutoReply);
+            new CommandRegister('!', "QUIZ", "", Command.Quiz);
+            new CommandRegister('!', "WARP", "<username / location>", Command.Warp);
+            new CommandRegister('!', "DANCE", "<udlr>", Command.Dance);
+            new CommandRegister('!', "VERSION", "", Command.Version);
         }
 
         public static bool Message(string message, string[] args, User user)
@@ -252,7 +251,7 @@ namespace HISP.Game.Chat
 
         public static bool Swf(string message, string[] args, User user)
         {
-            if (args.Length <= 2)
+            if (args.Length <= 0)
                 return false;
 
             if (!user.Administrator && !user.Moderator)
@@ -261,7 +260,10 @@ namespace HISP.Game.Chat
             try
             {
                 string swfName = args[0];
-                string swfUser = args[1];
+                string swfUser = user.Username;
+                if (args.Length <= 2)
+                    swfUser = args[1];
+
                 byte[] packetBytes = PacketBuilder.CreateSwfModulePacket(swfName, PacketBuilder.PACKET_SWF_MODULE_FORCE);
                 if (swfUser.ToUpper() == "ALL")
                 {
@@ -273,7 +275,7 @@ namespace HISP.Game.Chat
                 }
                 else
                 {
-                    User player = findNamePartial(args[1]);
+                    User player = findNamePartial(swfUser);
                     player.LoggedinClient.SendPacket(packetBytes);
                 }
             }
@@ -317,7 +319,6 @@ namespace HISP.Game.Chat
             // Get current version and send to client
             byte[] versionPacket = PacketBuilder.CreateChat(ServerVersion.GetBuildString(), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(versionPacket);
-
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatPlayerCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
@@ -476,15 +477,11 @@ namespace HISP.Game.Chat
 
         public static bool Jump(string message, string[] args, User user)
         {
-            if (args.Length <= 0)
+            if (args.Length <= 2)
                 return false;
             if (!user.Administrator)
                 return false;
 
-            if(args.Length < 2)
-            {
-                return false;
-            }
 
             try
             {
@@ -952,10 +949,8 @@ namespace HISP.Game.Chat
             else
             {
                 formattedmessage += Messages.MuteHelp;
-                goto leave;
             }
 
-        leave:;
             
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
