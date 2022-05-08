@@ -218,6 +218,6 @@
 
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="mkdir $(ProjectDir)Resources\Versioning&#xD;&#xA;git rev-parse --verify HEAD&gt;&quot;$(ProjectDir)Resources\Versioning\GitCommit&quot; &#xD;&#xA;git describe --abbrev=0 --tags&gt;&quot;$(ProjectDir)Resources\Versioning\GitTag&quot; &#xD;&#xA;git branch --show-current&gt;&quot;$(ProjectDir)Resources\Versioning\GitBranch&quot; &#xD;&#xA;date /t&gt;&quot;$(ProjectDir)Resources\Versioning\BuildDate&quot; &#xD;&#xA;time /t&gt;&quot;$(ProjectDir)Resources\Versioning\BuildTime&quot; " />
+    <Exec Command="cd &quot;$(SolutionDir)&quot;&#xD;&#xA;py &quot;$(SolutionDir)prebuild.py&quot;" />
   </Target>
 </Project>
