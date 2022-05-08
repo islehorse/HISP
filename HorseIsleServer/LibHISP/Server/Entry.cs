@@ -64,11 +64,9 @@ namespace HISP.Server
 
             Logger.ErrorPrint("HISP HAS CRASHED :(");
             Logger.ErrorPrint("Unhandled Exception: " + execpt.ToString());
-            Logger.ErrorPrint(execpt.Message);
-            Logger.ErrorPrint("");
             Logger.ErrorPrint(execpt.StackTrace);
-
-            while (true) {  /* Allow asyncronous operations to happen. */ };
+            
+            new EventWaitHandle(false, EventResetMode.ManualReset).WaitOne();
         }
     }
 }
