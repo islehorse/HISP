@@ -63,5 +63,5 @@ control_file = os.path.join("HISPd", "Resources", "DEBIAN", "control")
 lines = open(control_file, "rb").readlines()
 for i in range(0,len(lines)):
     if lines[i].startswith(b"Version: "):
-            lines[i] = b"Version: "+bytes(commit_tag.replace("v", ""), "UTF-8")
+            lines[i] = b"Version: "+bytes(commit_tag.replace("v", "")+b"\n", "UTF-8")
 open(control_file, "wb").writelines(lines)
