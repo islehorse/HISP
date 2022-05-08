@@ -72,7 +72,7 @@ namespace HISP.Server
         }
         public static string GetBuildString()
         {
-            return PRODUCT + " " + GetVersionString() + " " + GetBranch() + "@" + GetCommitHash(4) + " (" + GetArchitecture() + "; " + GetPlatform() + "); Built @ " + GetBuildDate() + " " + GetBuildTime();
+            return PRODUCT + " " + GetVersionString() + " " + GetBranch() + "@" + GetCommitHash(6) + " (" + GetArchitecture() + "; " + GetPlatform() + "); Built @ " + GetBuildDate() + " " + GetBuildTime();
         }
     }
 }

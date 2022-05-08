@@ -42,8 +42,9 @@ namespace HISP.Game.Chat
             new CommandRegister('%', "MODHORSE", Command.ModHorse);
             new CommandRegister('%', "DELITEM", Command.DelItem);
             new CommandRegister('%', "SHUTDOWN", Command.Shutdown);
-            new CommandRegister('%', "RELOAD", Command.Reload);
             new CommandRegister('%', "CALL", Command.CallHorse);
+            new CommandRegister('%', "MESSAGE", Command.Message);
+            new CommandRegister('%', "%", Command.Message);
 
             // Moderator commands
             new CommandRegister('%', "RULES", Command.Rules);
@@ -64,14 +65,25 @@ namespace HISP.Game.Chat
             new CommandRegister('!', "VERSION", Command.Version);
         }
 
-        public static bool Reload(string message, string[] args, User user)
+        public static bool Message(string message, string[] args, User user)
         {
             if (!user.Administrator)
                 return false;
 
+            string serverAnnoucement = String.Join(" ", args);
 
-            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            byte[] chatLeftPacket = PacketBuilder.CreateChat(Messages.FormatServerAnnoucement(serverAnnoucement), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatRightPacket = PacketBuilder.CreateChat(Messages.FormatServerAnnoucement(serverAnnoucement), PacketBuilder.CHAT_BOTTOM_LEFT);
+
+            foreach (GameClient client in GameClient.ConnectedClients)
+            {
+                if (client.LoggedIn)
+                {
+                    client.SendPacket(chatLeftPacket);
+                    client.SendPacket(chatRightPacket);
+                }
+            }
+
             return true;
         }
         public static bool Shutdown(string message, string[] args, User user)
@@ -303,12 +315,12 @@ namespace HISP.Game.Chat
         public static bool Version(string message, string[] args, User user)
         {
             // Get current version and send to client
-            byte[] versionPacket = PacketBuilder.CreateChat(ServerVersion.GetBuildString(), PacketBuilder.CHAT_BOTTOM_RIGHT);
+            byte[] versionPacket = PacketBuilder.CreateChat(ServerVersion.GetBuildString(), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(versionPacket);
 
-            // Send Command complete message to client.
-            byte[] versionCommandCompletePacket = PacketBuilder.CreateChat(Messages.FormatPlayerCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(versionCommandCompletePacket);
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatPlayerCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.LoggedinClient.SendPacket(chatPacket);
             return true;
         }
         public static bool Ban(string message, string[] args, User user)
@@ -774,7 +786,7 @@ namespace HISP.Game.Chat
                 return false;
 
             if (args.Length >= 1)
-                if (args[1].ToUpper() != "HORSE")
+                if (args[0].ToUpper() != "HORSE")
                     return false;
 
             string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
