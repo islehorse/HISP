@@ -72,7 +72,7 @@ namespace HISP.Game.Chat
             string serverAnnoucement = String.Join(" ", args);
 
             byte[] chatLeftPacket = PacketBuilder.CreateChat(Messages.FormatServerAnnoucement(serverAnnoucement), PacketBuilder.CHAT_BOTTOM_LEFT);
-            byte[] chatRightPacket = PacketBuilder.CreateChat(Messages.FormatServerAnnoucement(serverAnnoucement), PacketBuilder.CHAT_BOTTOM_LEFT);
+            byte[] chatRightPacket = PacketBuilder.CreateChat(Messages.FormatServerAnnoucement(serverAnnoucement), PacketBuilder.CHAT_BOTTOM_RIGHT);
 
             foreach (GameClient client in GameClient.ConnectedClients)
             {
