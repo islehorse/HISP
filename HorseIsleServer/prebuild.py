@@ -11,13 +11,13 @@ def update_asm_info(assemblyinfofile):
     global commit_tag
     global commit_branch
     global assembly_version
-    lines = open(assemblyinfofile, "r").readlines()
+    lines = open(assemblyinfofile, "rb").readlines()
     for i in range(0,len(lines)):
-        if lines[i].startswith("[assembly: AssemblyVersion(\""):
-            lines[i] = "[assembly: AssemblyVersion(\""+assembly_version+"\")]\n"
-        if lines[i].startswith("[assembly: AssemblyFileVersion(\""):
-            lines[i] = "[assembly: AssemblyFileVersion(\""+assembly_version+"\")]\n"
-    open(assemblyinfofile, "w").writelines(lines)
+        if lines[i].startswith(b"[assembly: AssemblyVersion(\""):
+            lines[i] = b"[assembly: AssemblyVersion(\""+bytes(assembly_version, "UTF-8")+b"\")]\n"
+        if lines[i].startswith(b"[assembly: AssemblyFileVersion(\""):
+            lines[i] = b"[assembly: AssemblyFileVersion(\""+bytes(assembly_version, "UTF-8")+b"\")]\n"
+    open(assemblyinfofile, "wb").writelines(lines)
 
     
 # Determine git stuff.
@@ -31,14 +31,12 @@ commit_tag = "v0.0.0"
 commit_branch = "master"
 
 try:
-    subprocess.run(['git', 'add', '-A'], stdout=subprocess.PIPE)
-    subprocess.run(['git', 'commit', '-m', 'Update made automatically due to pressing build'], stdout=subprocess.PIPE)
     commit_hash = subprocess.run(['git', 'rev-parse', '--verify', 'HEAD'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
     commit_tag = subprocess.run(['git', 'describe', '--abbrev=0', '--tags'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
     commit_tag += "." + subprocess.run(['git', 'rev-list', commit_tag+'..HEAD', '--count'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
     commit_branch = subprocess.run(['git', 'branch', '--show-current'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
 except FileNotFoundError:
-    print("Git not installed")
+    pass
 
 commit_date = datetime.datetime.now().strftime("%d/%m/%Y")
 commit_time = datetime.datetime.now().strftime("%H:%M:%S")
@@ -65,3 +63,9 @@ for i in range(0,len(lines)):
     if lines[i].startswith(b"Version: "):
             lines[i] = b"Version: "+bytes(commit_tag.replace("v", ""), "UTF-8")+b"\n"
 open(control_file, "wb").writelines(lines)
+
+try:
+    subprocess.run(['git', 'add', '-A'], stdout=subprocess.PIPE)
+    subprocess.run(['git', 'commit', '-m', 'Update made automatically due to pressing build'], stdout=subprocess.PIPE)
+except FileNotFoundError:
+    pass
