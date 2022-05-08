@@ -893,64 +893,70 @@ namespace HISP.Game.Chat
             if (args.Length <= 0)
             {
                 formattedmessage += Messages.MuteHelp;
-                goto leave;
             }
-            
-            string muteType = args[0];
-
-            if (muteType.ToUpper() == "GLOBAL")
-            {
-                user.MuteGlobal = true;
-            } else if (muteType.ToUpper() == "ISLAND")
-            {
-                user.MuteIsland = true;
-            } else if (muteType.ToUpper() == "NEAR")
-            {
-                user.MuteNear = true;
-            } else if (muteType.ToUpper() == "HERE")
-            {
-                user.MuteHere = true;
-            } else if (muteType.ToUpper() == "BUDDY")
-            {
-                user.MuteBuddy = true;
-            } else if (muteType.ToUpper() == "SOCIALS")
-            {
-                user.MuteSocials = true;
-            }
-            else if (muteType.ToUpper() == "PM")
-            {
-                user.MutePrivateMessage = true;
-            }
-            else if (muteType.ToUpper() == "BR")
-            {
-                user.MuteBuddyRequests = true;
-            }
-            else if (muteType.ToUpper() == "LOGINS")
-            {
-                user.MuteLogins = true;
-            }
-            else if (muteType.ToUpper() == "ADS")
-            {
-                user.MuteAds = true;
-            }
-            else if (muteType.ToUpper() == "ALL")
-            {
-                user.MuteAll = true;
-                user.MuteGlobal = true;
-                user.MuteIsland = true;
-                user.MuteNear = true;
-                user.MuteHere = true;
-                user.MuteBuddy = true;
-                user.MuteSocials = true;
-                user.MutePrivateMessage = true;
-                user.MuteBuddyRequests = true;
-                user.MuteLogins = true;
-            } 
             else
             {
-                formattedmessage += Messages.MuteHelp;
-            }
 
+                string muteType = args[0];
+
+                if (muteType.ToUpper() == "GLOBAL")
+                {
+                    user.MuteGlobal = true;
+                }
+                else if (muteType.ToUpper() == "ISLAND")
+                {
+                    user.MuteIsland = true;
+                }
+                else if (muteType.ToUpper() == "NEAR")
+                {
+                    user.MuteNear = true;
+                }
+                else if (muteType.ToUpper() == "HERE")
+                {
+                    user.MuteHere = true;
+                }
+                else if (muteType.ToUpper() == "BUDDY")
+                {
+                    user.MuteBuddy = true;
+                }
+                else if (muteType.ToUpper() == "SOCIALS")
+                {
+                    user.MuteSocials = true;
+                }
+                else if (muteType.ToUpper() == "PM")
+                {
+                    user.MutePrivateMessage = true;
+                }
+                else if (muteType.ToUpper() == "BR")
+                {
+                    user.MuteBuddyRequests = true;
+                }
+                else if (muteType.ToUpper() == "LOGINS")
+                {
+                    user.MuteLogins = true;
+                }
+                else if (muteType.ToUpper() == "ADS")
+                {
+                    user.MuteAds = true;
+                }
+                else if (muteType.ToUpper() == "ALL")
+                {
+                    user.MuteAll = true;
+                    user.MuteGlobal = true;
+                    user.MuteIsland = true;
+                    user.MuteNear = true;
+                    user.MuteHere = true;
+                    user.MuteBuddy = true;
+                    user.MuteSocials = true;
+                    user.MutePrivateMessage = true;
+                    user.MuteBuddyRequests = true;
+                    user.MuteLogins = true;
+                }
+                else
+                {
+                    formattedmessage += Messages.MuteHelp;
+                }
+            }
             
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
@@ -965,71 +971,70 @@ namespace HISP.Game.Chat
             if (args.Length <= 0)
             {
                 formattedmessage += Messages.UnMuteHelp;
-                goto leave;
-            }
-
-            string muteType = args[0];
-
-            if (muteType.ToUpper() == "GLOBAL")
-            {
-                user.MuteGlobal = false;
-            }
-            else if (muteType.ToUpper() == "ISLAND")
-            {
-                user.MuteIsland = false;
-            }
-            else if (muteType.ToUpper() == "ADS")
-            {
-                user.MuteAds = false;
-            }
-            else if (muteType.ToUpper() == "NEAR")
-            {
-                user.MuteNear = false;
-            }
-            else if (muteType.ToUpper() == "HERE")
-            {
-                user.MuteHere = false;
-            }
-            else if (muteType.ToUpper() == "BUDDY")
-            {
-                user.MuteBuddy = false;
-            }
-            else if (muteType.ToUpper() == "SOCIALS")
-            {
-                user.MuteSocials = false;
-            }
-            else if (muteType.ToUpper() == "PM")
-            {
-                user.MutePrivateMessage = false;
-            }
-            else if (muteType.ToUpper() == "BR")
-            {
-                user.MuteBuddyRequests = false;
-            }
-            else if (muteType.ToUpper() == "LOGINS")
-            {
-                user.MuteLogins = false;
-            }
-            else if (muteType.ToUpper() == "ALL")
-            {
-                user.MuteAll = false;
-                user.MuteGlobal = false;
-                user.MuteIsland = false;
-                user.MuteNear = false;
-                user.MuteHere = false;
-                user.MuteBuddy = false;
-                user.MuteSocials = false;
-                user.MutePrivateMessage = false;
-                user.MuteBuddyRequests = false;
-                user.MuteLogins = false;
             }
             else
             {
-                formattedmessage += Messages.UnMuteHelp;
-                goto leave;
+                string muteType = args[0];
+
+                if (muteType.ToUpper() == "GLOBAL")
+                {
+                    user.MuteGlobal = false;
+                }
+                else if (muteType.ToUpper() == "ISLAND")
+                {
+                    user.MuteIsland = false;
+                }
+                else if (muteType.ToUpper() == "ADS")
+                {
+                    user.MuteAds = false;
+                }
+                else if (muteType.ToUpper() == "NEAR")
+                {
+                    user.MuteNear = false;
+                }
+                else if (muteType.ToUpper() == "HERE")
+                {
+                    user.MuteHere = false;
+                }
+                else if (muteType.ToUpper() == "BUDDY")
+                {
+                    user.MuteBuddy = false;
+                }
+                else if (muteType.ToUpper() == "SOCIALS")
+                {
+                    user.MuteSocials = false;
+                }
+                else if (muteType.ToUpper() == "PM")
+                {
+                    user.MutePrivateMessage = false;
+                }
+                else if (muteType.ToUpper() == "BR")
+                {
+                    user.MuteBuddyRequests = false;
+                }
+                else if (muteType.ToUpper() == "LOGINS")
+                {
+                    user.MuteLogins = false;
+                }
+                else if (muteType.ToUpper() == "ALL")
+                {
+                    user.MuteAll = false;
+                    user.MuteGlobal = false;
+                    user.MuteIsland = false;
+                    user.MuteNear = false;
+                    user.MuteHere = false;
+                    user.MuteBuddy = false;
+                    user.MuteSocials = false;
+                    user.MutePrivateMessage = false;
+                    user.MuteBuddyRequests = false;
+                    user.MuteLogins = false;
+                }
+                else
+                {
+                    formattedmessage += Messages.UnMuteHelp;
+                }
             }
 
-        leave:;
 
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);

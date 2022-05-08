@@ -17,7 +17,6 @@ namespace HISP.Player
         private List<Auction.AuctionBid> bids = new List<Auction.AuctionBid>();
         private List<User> beingSocializedBy = new List<User>();
 
-
         private int chatViolations;
         private int charId;
         private int subscribedUntil;
