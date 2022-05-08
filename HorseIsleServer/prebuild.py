@@ -49,7 +49,7 @@ assembly_info = os.path.join("LibHISP", "Properties", "AssemblyInfo.cs")
 lines = open(assembly_info, "r").readlines()
 for i in range(0,len(lines)):
     if lines[i].startswith("[assembly: AssemblyVersion(\""):
-        lines[i] = "[assembly: AssemblyVersion(\""+assembly_version+"\")]\r\n"
+        lines[i] = "[assembly: AssemblyVersion(\""+assembly_version+"\")]\n"
     if lines[i].startswith("[assembly: AssemblyFileVersion(\""):
-        lines[i] = "[assembly: AssemblyFileVersion(\""+assembly_version+"\")]\r\n"
+        lines[i] = "[assembly: AssemblyFileVersion(\""+assembly_version+"\")]\n"
 open(assembly_info, "w").writelines(lines)
