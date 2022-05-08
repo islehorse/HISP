@@ -5,6 +5,8 @@ import time
 import datetime
 import binascii
 
+# Determine git stuff.
+
 global commit_hash
 global commit_tag
 global commit_branch
@@ -37,4 +39,17 @@ open(os.path.join(versioning_folder, "GitBranch"), "w").write(commit_branch)
 open(os.path.join(versioning_folder, "BuildDate"), "w").write(commit_date)
 open(os.path.join(versioning_folder, "BuildTime"), "w").write(commit_time)
 
+# Derive assembly version 
+points = commit_tag.replace("v", "").split(".")
+while len(points) < 4:
+    points.append("0")
+assembly_version = ".".join(points)
 
+assembly_info = os.path.join("LibHISP", "Properties", "AssemblyInfo.cs")
+lines = open(assembly_info, "r").readlines()
+for line in lines:
+    if line.startswith("[assembly: AssemblyVersion(\""):
+        line = "[assembly: AssemblyVersion(\""+assembly_version+"\")]"
+    if line.startswith("[assembly: AssemblyVersion(\""):
+        line = "[assembly: AssemblyFileVersion(\""+assembly_version+"\")]"
+open(assembly_info, "w").writelines(lines)
