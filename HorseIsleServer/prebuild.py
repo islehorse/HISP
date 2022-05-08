@@ -5,12 +5,22 @@ import time
 import datetime
 import binascii
 
+
+def update_asm_info(assemblyinfofile):
+    global commit_hash
+    global commit_tag
+    global commit_branch
+    global assembly_version
+    lines = open(assemblyinfofile, "r").readlines()
+    for i in range(0,len(lines)):
+        if lines[i].startswith("[assembly: AssemblyVersion(\""):
+            lines[i] = "[assembly: AssemblyVersion(\""+assembly_version+"\")]\n"
+        if lines[i].startswith("[assembly: AssemblyFileVersion(\""):
+            lines[i] = "[assembly: AssemblyFileVersion(\""+assembly_version+"\")]\n"
+    open(assemblyinfofile, "w").writelines(lines)
+
+    
 # Determine git stuff.
-
-global commit_hash
-global commit_tag
-global commit_branch
-
 versioning_folder = os.path.join("LibHISP", "Resources", "Versioning")
 
 if not os.path.exists(versioning_folder):
@@ -45,11 +55,13 @@ while len(points) < 4:
     points.append("0")
 assembly_version = ".".join(points)
 
-assembly_info = os.path.join("LibHISP", "Properties", "AssemblyInfo.cs")
-lines = open(assembly_info, "r").readlines()
+update_asm_info(os.path.join("LibHISP", "Properties", "AssemblyInfo.cs"))
+update_asm_info(os.path.join("N00BS", "Properties", "AssemblyInfo.cs"))
+update_asm_info(os.path.join("HISPd", "Properties", "AssemblyInfo.cs"))
+
+control_file = os.path.join("HISPd", "Resources", "DEBIAN", "control")
+lines = open(control_file, "rb").readlines()
 for i in range(0,len(lines)):
-    if lines[i].startswith("[assembly: AssemblyVersion(\""):
-        lines[i] = "[assembly: AssemblyVersion(\""+assembly_version+"\")]\n"
-    if lines[i].startswith("[assembly: AssemblyFileVersion(\""):
-        lines[i] = "[assembly: AssemblyFileVersion(\""+assembly_version+"\")]\n"
-open(assembly_info, "w").writelines(lines)
+    if lines[i].startswith(b"Version: "):
+            lines[i] = b"Version: "+bytes(commit_tag.replace("v", ""), "UTF-8")
+open(control_file, "wb").writelines(control_file)
