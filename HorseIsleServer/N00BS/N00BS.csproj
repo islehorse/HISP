@@ -143,5 +143,9 @@
     <Optimize>False</Optimize>
   </PropertyGroup>
 
+  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
+    <Exec Command="cd &quot;$(SolutionDir)&quot;&#xD;&#xA;py &quot;$(SolutionDir)prebuild.py&quot;" />
+  </Target>
+
   
 </Project>
