@@ -656,6 +656,8 @@ namespace HISP.Game
         public static string AdminChatFormatForSender;
         public static string ModChatFormatForSender;
 
+        public static string ServerAnnoucementFormat;
+
         public static string DmModBadge;
         public static string DmAutoResponse;
 
@@ -2946,7 +2948,7 @@ namespace HISP.Game
         {
             return ModChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
         }
-
+        // NOTE: i dont have the correct format for this, im just guessing
         public static string FormatAdminChatMessage(string username, string message)
         {
             return AdminChatFormat.Replace("%USERNAME%", username).Replace("%MESSAGE%", message);
@@ -3011,6 +3013,12 @@ namespace HISP.Game
         public static string FormatWelcomeMessage(string username)
         {
             return WelcomeFormat.Replace("%USERNAME%", username);
+        }
+
+        // NOTE: i dont have the correct format for this, im just guessing
+        public static string FormatServerAnnoucement(string message)
+        {
+            return ServerAnnoucementFormat.Replace("%MESSAGE%", message);
         }
 
         // Transport

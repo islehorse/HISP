@@ -1887,6 +1887,8 @@ namespace HISP.Server
             Messages.AdsChatFormatForSender = gameData.messages.chat.for_sender.ads_format;
             Messages.AdminChatFormatForSender = gameData.messages.chat.for_sender.admin_format;
 
+            Messages.ServerAnnoucementFormat = gameData.messages.chat.server_annoucement;
+
             Messages.DmModBadge = gameData.messages.chat.dm_moderator;
             Messages.DmAutoResponse = gameData.messages.chat.dm_autoreply;
 
