@@ -20,11 +20,13 @@ def update_asm_info(assemblyinfofile):
 
     
 # Determine git stuff.
-versioning_folder = os.path.join("LibHISP", "Resources", "Versioning")
-
-if not os.path.exists(versioning_folder):
-    os.mkdir(versioning_folder)
-
+try:
+    versioning_folder = os.path.join("LibHISP", "Resources", "Versioning")
+    if not os.path.exists(versioning_folder):
+        os.mkdir(versioning_folder)
+except FileExistsError:
+    pass
+    
 commit_hash = "0"*40
 commit_tag = "v0.0.0"
 commit_branch = "master"
