@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("HISP Noobs")]
 [assembly: AssemblyDescription("Noob-Friendly One-Click Run HISP.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("SilicaAndPina")]
+[assembly: AssemblyCompany("Li")]
 [assembly: AssemblyProduct("HISP")]
 [assembly: AssemblyCopyright("Public Domain © 2022")]
 [assembly: AssemblyTrademark("")]
