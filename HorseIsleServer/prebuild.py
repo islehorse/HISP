@@ -60,8 +60,8 @@ update_asm_info(os.path.join("N00BS", "Properties", "AssemblyInfo.cs"))
 update_asm_info(os.path.join("HISPd", "Properties", "AssemblyInfo.cs"))
 
 control_file = os.path.join("HISPd", "Resources", "DEBIAN", "control")
-lines = open(control_file, "rb").readlines()
+lines = open(control_file, "r").readlines()
 for i in range(0,len(lines)):
     if lines[i].startswith(b"Version: "):
             lines[i] = b"Version: "+bytes(commit_tag.replace("v", ""), "UTF-8")
-open(control_file, "wb").writelines(control_file)
+open(control_file, "w").writelines(control_file)
