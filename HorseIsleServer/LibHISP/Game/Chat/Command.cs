@@ -54,9 +54,9 @@ namespace HISP.Game.Chat
             new CommandRegister('%', "ESCAPE", "", Command.Escape);
 
             // User commands
-            new CommandRegister('!', "MUTE", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS \nLOGINS  ", Command.Mute);
-            new CommandRegister('!', "UNMUTE", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS \nLOGINS  ", Command.UnMute);
-            new CommandRegister('!', "HEAR", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS \nLOGINS  ", Command.UnMute);
+            new CommandRegister('!', "MUTE", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS\nLOGINS", Command.Mute);
+            new CommandRegister('!', "UNMUTE", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS\nLOGINS", Command.UnMute);
+            new CommandRegister('!', "HEAR", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS\nLOGINS", Command.UnMute);
             new CommandRegister('!', "AUTOREPLY", "[message]", Command.AutoReply);
             new CommandRegister('!', "QUIZ", "", Command.Quiz);
             new CommandRegister('!', "WARP", "<username / location>", Command.Warp);
