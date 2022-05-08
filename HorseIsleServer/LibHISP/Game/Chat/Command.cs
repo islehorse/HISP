@@ -783,14 +783,14 @@ namespace HISP.Game.Chat
                 return false;
 
             if (args.Length <= 0)
-                return;
-
+                return false;
+            string formattedmessage = "";
             try
             {
                 if (args[0].ToUpper() != "HORSE")
                     return false;
 
-                string formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
+                formattedmessage = Messages.FormatPlayerCommandCompleteMessage(message);
 
                 WildHorse horse = WildHorse.WildHorses[GameServer.RandomNumberGenerator.Next(0, WildHorse.WildHorses.Length)];
                 horse.X = user.X;
