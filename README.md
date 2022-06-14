@@ -104,7 +104,7 @@ and start the server using ``systemctl start hisp``
  Set its information into server.properties or the server will just crash on first run /-/
  
 # Building
- Building the server from source requires Microsoft .NET Core SDK, targetting version 5.0 https://dotnet.microsoft.com/download/dotnet-core
+ Building the server from source requires Microsoft .NET Core SDK, targetting version 7.0 https://dotnet.microsoft.com/download/dotnet-core
  use ``dotnet build`` to build a debug build, (requires .NET Core Runtime) quickly or one of our publishing XML's
  ex:        
  ``dotnet publish -p:PublishProfile=Linux64.pubxml`` to to build it standalone.
