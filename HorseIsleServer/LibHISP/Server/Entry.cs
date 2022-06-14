@@ -30,11 +30,11 @@ namespace HISP.Server
 
         public static void Start()
         {
+
 #if (!DEBUG)
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
 #endif
 
-            
             Console.Title = ServerVersion.GetBuildString();
             ConfigReader.OpenConfig();
             CrossDomainPolicy.GetPolicy();
