@@ -134,7 +134,6 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64
-#        path: HorseIsleServer\HISPd\bin\x64\Windows\net7.0\win-x64\publish\
          path: HorseIsleServer\HISPd\bin\x64\Windows\net7.0\win-x64\native\
     
     - name: Upload win-x86
