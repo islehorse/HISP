@@ -35,7 +35,9 @@ jobs:
     - name: Build win-x64
       continue-on-error: false
       run: |
+        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
         dotnet publish -p:PublishProfile=Win64.pubxml
+        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
 
     - name: Build win-x86
       continue-on-error: false
