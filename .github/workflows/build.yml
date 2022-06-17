@@ -36,7 +36,11 @@ jobs:
       continue-on-error: false
       run: |
         dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
-        dotnet publish -p:PublishProfile=Win64.pubxml
+        dotnet publish -r win-x64 -c Windows --self-contained
+        mkdir "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
+        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
+        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\x64\Windows\net7.0\win-x64\native\HI1.MAP"
+        copy "HISPd\bin\x64\Windows\net7.0\win-x64\e_sqlite3.dll" "HISPd\bin\x64\Windows\net7.0\win-x64\native\e_sqlite3.dll"
         dotnet remove HISPd package Microsoft.DotNet.ILCompiler
 
     - name: Build win-x86
@@ -130,7 +134,8 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64
-        path: HorseIsleServer\HISPd\bin\x64\Windows\net7.0\win-x64\publish\
+#        path: HorseIsleServer\HISPd\bin\x64\Windows\net7.0\win-x64\publish\
+         path: HorseIsleServer\HISPd\bin\x64\Windows\net7.0\win-x64\native\
     
     - name: Upload win-x86
       uses: actions/upload-artifact@v2
