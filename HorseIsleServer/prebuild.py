@@ -11,6 +11,7 @@ def update_asm_info(assemblyinfofile):
     global commit_tag
     global commit_branch
     global assembly_version
+    print("Updating Versopn inside: "+assemblyinfofile)
     lines = open(assemblyinfofile, "rb").readlines()
     for i in range(0,len(lines)):
         if lines[i].startswith(b"[assembly: AssemblyVersion(\""):
@@ -67,6 +68,7 @@ update_asm_info(os.path.join("HISPd"  , "Properties", "AssemblyInfo.cs"))
 
 # Update control file in dpkg
 control_file = os.path.join("HISPd", "Resources", "DEBIAN", "control")
+print("Updating Versopn inside: "+control_file)
 lines = open(control_file, "rb").readlines()
 for i in range(0,len(lines)):
     if lines[i].startswith(b"Version: "):
