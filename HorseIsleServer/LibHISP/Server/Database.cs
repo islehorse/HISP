@@ -58,7 +58,7 @@ namespace HISP.Server
                     sqlCommand.ExecuteNonQuery();
                     return true;
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     return false;
                 };
@@ -2643,7 +2643,7 @@ namespace HISP.Server
                 }
                 return false;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return true;
             };
@@ -2662,7 +2662,7 @@ namespace HISP.Server
                 }
                 return false;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return true;
             }
