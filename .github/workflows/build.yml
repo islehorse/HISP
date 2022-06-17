@@ -27,7 +27,7 @@ jobs:
         include-prerelease: true
         
     - name: Setup WSL
-      uses: Vampire/setup-wsl@v1.2.0
+      uses: Vampire/setup-wsl@v1.2.1
     
     - name: Restore dependencies
       run: dotnet restore
