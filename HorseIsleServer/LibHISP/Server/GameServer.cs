@@ -8258,6 +8258,7 @@ namespace HISP.Server
         }
         public static void ShutdownServer()
         {
+            Logger.InfoPrint("Shutting down.");
             GameClient.OnShutdown();
             GameServer.OnShutdown();
             Database.OnShutdown();

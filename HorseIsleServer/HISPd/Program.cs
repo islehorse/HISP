@@ -62,6 +62,8 @@ namespace HISP.Cli
 
         public static void Main(string[] args)
         {
+            AppDomain.CurrentDomain.ProcessExit += ProcessQuitHandler;
+
             string BaseDir = Directory.GetCurrentDirectory();
             Logger.SetCallback(LogStdout);
 
@@ -131,6 +133,11 @@ namespace HISP.Cli
 
             shutdownHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
             shutdownHandle.WaitOne();
+        }
+
+        private static void ProcessQuitHandler(object sender, EventArgs e)
+        {
+            GameServer.ShutdownServer();
         }
     }
 }
