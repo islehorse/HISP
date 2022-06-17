@@ -46,6 +46,24 @@ namespace HISP.Server
             SqliteConnection.ClearAllPools();
         }
 
+        public static bool TryExecuteSqlQuery(string query)
+        {
+            using (DbConnection db = connectDb())
+            {
+                db.Open();
+                DbCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = query;
+                try
+                {
+                    sqlCommand.ExecuteNonQuery();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    return false;
+                };
+            }
+        }
         public static void OpenDatabase()
         {
             if (!ConfigReader.SqlLite)
@@ -53,7 +71,8 @@ namespace HISP.Server
             else
                 ConnectionString = "Data Source=\"" + ConfigReader.DatabaseName + ".db\";";
 
-            
+            DataFixerUpper.FixUpDb();
+
             using (DbConnection db = connectDb())
             {
                 
@@ -74,7 +93,7 @@ namespace HISP.Server
                 string MailTable = "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(100), Message Text(65535), TimeSent INT, BeenRead TEXT(3))";
                 string BuddyTable = "CREATE TABLE IF NOT EXISTS BuddyList(Id INT, IdFriend INT)";
                 string MessageQueue = "CREATE TABLE IF NOT EXISTS MessageQueue(Id INT, Message TEXT(1028))";
-                string WorldTable = "CREATE TABLE World(Time INT, Day INT, Year INT, StartTime INT)";
+                string WorldTable = "CREATE TABLE IF NOT EXISTS World(Time INT, Day INT, Year INT, StartTime INT, LastLoadedInVersion TEXT(64))";
                 string WeatherTable = "CREATE TABLE IF NOT EXISTS Weather(Area TEXT(1028), Weather TEXT(64))";
                 string InventoryTable = "CREATE TABLE IF NOT EXISTS Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)";
                 string ShopInventory = "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, RandomID INT, ItemID INT, Data INT)";
@@ -550,18 +569,16 @@ namespace HISP.Server
 
                 try
                 {
-
                     DbCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = WorldTable;
                     sqlCommand.ExecuteNonQuery();
 
                     sqlCommand = db.CreateCommand();
-                    sqlCommand.CommandText = "INSERT INTO World VALUES(0,0,0,@startDate)";
-                    addWithValue(sqlCommand, "@startDate", (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
+                    sqlCommand.CommandText = "INSERT INTO World VALUES(0,0,0,@startDate,@version)";
+                    addWithValue(sqlCommand, "@startDate", (UInt32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
+                    addWithValue(sqlCommand, "@version", ServerVersion.GetVersionString());
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
-
-                    
                 }
                 catch (Exception e)
                 {
@@ -2596,6 +2613,80 @@ namespace HISP.Server
                 sqlCommand.ExecuteNonQuery();
 
                 
+            }
+        }
+        public static void SetLastLoadedVersion(string version)
+        {
+            using (DbConnection db = connectDb())
+            {
+                db.Open();
+                DbCommand sqlCommand = db.CreateCommand();
+                sqlCommand.CommandText = "UPDATE World SET LastLoadedInVersion=@version";
+                addWithValue(sqlCommand, "@version", version);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+            }
+        }
+
+        // Tests if the game was previously loaded in 1.0
+        public static bool TestFor1_0()
+        {
+            try
+            {
+                using (DbConnection db = connectDb())
+                {
+                    db.Open();
+                    DbCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "SELECT TotalLogins FROM UserExt LIMIT 1;";
+                    sqlCommand.ExecuteNonQuery();
+                }
+                return false;
+            }
+            catch (Exception e)
+            {
+                return true;
+            };
+        }
+        //Tests if game was previously loaded in v1.1
+        public static bool TestFor1_1()
+        {
+            try
+            {
+                using (DbConnection db = connectDb())
+                {
+                    db.Open();
+                    DbCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "SELECT Data FROM ShopInventory LIMIT 1;";
+                    sqlCommand.ExecuteNonQuery();
+                }
+                return false;
+            }
+            catch (Exception e)
+            {
+                return true;
+            }
+        }
+
+        public static string GetLastLoadedVersion()
+        {
+            try
+            {
+                using (DbConnection db = connectDb())
+                {
+                    db.Open();
+                    DbCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "SELECT LastLoadedInVersion FROM World";
+                    string lastVersion = sqlCommand.ExecuteScalar().ToString();
+
+                    return lastVersion;
+                }
+            }
+            catch (Exception) // table not found? must have been before v1.7.20.
+            {
+                if (TestFor1_0()) return "v1.0";
+                if (TestFor1_1()) return "v1.1";
+                return "v1.7.20";
             }
         }
 
