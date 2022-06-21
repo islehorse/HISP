@@ -41,18 +41,16 @@ jobs:
         copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
         copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\x64\Windows\net7.0\win-x64\native\HI1.MAP"
         copy "HISPd\bin\x64\Windows\net7.0\win-x64\e_sqlite3.dll" "HISPd\bin\x64\Windows\net7.0\win-x64\native\e_sqlite3.dll"
+        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.pdb"
+        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.lib"
+        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.exp"
         dotnet remove HISPd package Microsoft.DotNet.ILCompiler
 
     - name: Build win-x86
       continue-on-error: false
       run: |
-        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
-        dotnet publish -a x86 -r win-x86 -c Windows --self-contained
-        mkdir "HISPd\bin\x86\Windows\net7.0\win-x86\native\gamedata"
-        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x86\Windows\net7.0\win-x86\native\gamedata"
-        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\x86\Windows\net7.0\win-x86\native\HI1.MAP"
-        copy "HISPd\bin\x86\Windows\net7.0\win-x86\e_sqlite3.dll" "HISPd\bin\x86\Windows\net7.0\win-x86\native\e_sqlite3.dll"
-        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
+        dotnet publish -p:PublishProfile=Win32.pubxml
+        
     - name: Build win-arm
       continue-on-error: false
       run: |
@@ -146,7 +144,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win32
-        path: HorseIsleServer\HISPd\bin\x86\Windows\net7.0\win-x86\native\
+        path: HorseIsleServer\HISPd\bin\x86\Windows\net7.0\win-x86\publish\
         
     - name: Upload win-arm
       uses: actions/upload-artifact@v2
