@@ -45,9 +45,7 @@ jobs:
         del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.lib"
         del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.exp"
         dotnet remove HISPd package Microsoft.DotNet.ILCompiler
-        cd N00BS
         dotnet publish -p:PublishProfile=Win64.pubxml
-        cd ..
         
     - name: Build win-x86
       continue-on-error: false
