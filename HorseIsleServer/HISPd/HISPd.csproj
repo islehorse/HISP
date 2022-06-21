@@ -48,12 +48,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x86'">
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <Optimize>true</Optimize>
+    <Platforms>x86</Platforms>
     <PlatformTarget>x86</PlatformTarget>
   	<DefineConstants>OS_WINDOWS;ARCH_X86</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x64'">
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Optimize>true</Optimize>
+    <Platforms>x64</Platforms>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>OS_WINDOWS;ARCH_X86_64</DefineConstants>
   </PropertyGroup>
@@ -204,9 +206,4 @@
   </PropertyGroup>
 
 
-  <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="cd &quot;$(SolutionDir)&quot;&#xD;&#xA;py &quot;$(SolutionDir)prebuild.py&quot;" />
-  </Target>
-
-  
 </Project>
