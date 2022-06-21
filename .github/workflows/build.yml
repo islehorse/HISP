@@ -46,6 +46,7 @@ jobs:
     - name: Build win-x86
       continue-on-error: false
       run: |
+        set PlatformTarget=x86
         dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
         dotnet publish -r win-x86 -c Windows --self-contained
         mkdir "HISPd\bin\x86\Windows\net7.0\win-x86\native\gamedata"
