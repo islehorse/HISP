@@ -122,13 +122,13 @@ jobs:
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP /mnt/fucking-windows/Debian64/etc/hisp/HI1.MAP
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd /mnt/fucking-windows/Debian64/usr/bin/HISPd
         cp HISPd/Resources/HISP.service /mnt/fucking-windows/Debian64/etc/systemd/system/HISP.service
+        cat /mnt/fucking-windows/Debian64/DEBIAN/control
         dos2unix /mnt/fucking-windows/Debian64/DEBIAN/conffiles
         dos2unix /mnt/fucking-windows/Debian64/DEBIAN/control
         dos2unix /mnt/fucking-windows/Debian64/DEBIAN/postinst
         dos2unix /mnt/fucking-windows/Debian64/DEBIAN/postrm
         dos2unix /mnt/fucking-windows/Debian64/DEBIAN/prerm
         dos2unix /mnt/fucking-windows/Debian64/etc/systemd/system/HISP.service
-        cat /mnt/fucking-windows/Debian64/DEBIAN/control
         chmod 755 -R /mnt/fucking-windows/Debian64
         chmod +x /mnt/fucking-windows/Debian64/usr/bin/HISPd
         mkdir debpackage
