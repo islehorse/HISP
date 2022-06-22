@@ -60,8 +60,17 @@ jobs:
     - name: Build win-arm64
       continue-on-error: false
       run: |
-        dotnet publish -p:PublishProfile=WinARM64.pubxml
-    
+        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
+        dotnet publish -r win-arm64 -c Windows /p:Platform=ARM64  --self-contained
+        mkdir "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
+        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
+        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HI1.MAP"
+        copy "HISPd\bin\ARM64\Windows\net7.0\win-arm64\e_sqlite3.dll" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\e_sqlite3.dll"
+        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.pdb"
+        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.lib"
+        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.exp"
+        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
+        
     - name: Build linux-x64
       continue-on-error: false
       run: |
