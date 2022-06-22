@@ -160,7 +160,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-WinARM
-        path: HorseIsleServer\HISPd\bin\arm\Windows\net7.0\windows-arm\publish\
+        path: HorseIsleServer\HISPd\bin\arm\Windows\net7.0\win-arm\publish\
 
     - name: Upload win-arm64
       uses: actions/upload-artifact@v2
