@@ -8259,10 +8259,17 @@ namespace HISP.Server
         public static void ShutdownServer()
         {
             Logger.InfoPrint("Shutting down.");
-            GameClient.OnShutdown();
-            GameServer.OnShutdown();
-            Database.OnShutdown();
-            Entry.OnShutdown();
+            try
+            {
+                GameClient.OnShutdown();
+                GameServer.OnShutdown();
+                Database.OnShutdown();
+                Entry.OnShutdown();
+            }
+            catch (Exception)
+            {
+                Environment.Exit(1);
+            }
         }
 
         public static void StartServer()
