@@ -44,7 +44,6 @@ jobs:
         mkdir -p "HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata"
         cp -r "../HorseIsleData/gamedata" "HISPd/bin/x64/Linux/net7.0/linux-x64/native"
         cp "../HorseIsleData/HI1.MAP" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP"
-        tree
         cp "HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.pdb"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.lib"
@@ -82,10 +81,10 @@ jobs:
         cp LibHISP/Resources/server.properties /tmp/debpkg/Debian64/etc/hisp/server.properties
         cp LibHISP/Resources/default_cross_domain.xml /tmp/debpkg/Debian64/etc/hisp/CrossDomainPolicy.xml
         cp -r HISPd/Resources/DEBIAN/* /tmp/debpkg/Debian64/DEBIAN
-        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata/* /tmp/debpkg/Debian64/etc/hisp/gamedata
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so /tmp/debpkg/Debian64/usr/lib/libe_sqlite3.so
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP /tmp/debpkg/Debian64/etc/hisp/HI1.MAP
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd /tmp/debpkg/Debian64/usr/bin/HISPd
+        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata/* /tmp/debpkg/Debian64/etc/hisp/gamedata
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so /tmp/debpkg/Debian64/usr/lib/libe_sqlite3.so
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP /tmp/debpkg/Debian64/etc/hisp/HI1.MAP
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd /tmp/debpkg/Debian64/usr/bin/HISPd
         cp HISPd/Resources/HISP.service /tmp/debpkg/Debian64/etc/systemd/system/HISP.service
         cat /tmp/debpkg/Debian64/DEBIAN/control
         dos2unix /tmp/debpkg/Debian64/DEBIAN/conffiles
@@ -176,7 +175,9 @@ jobs:
       continue-on-error: false
       run: |
         dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
+        cd HISPd
         dotnet publish -r win-x64 -c Windows /p:Platform=x64 --self-contained
+        cd ..
         tree /F /A
         mkdir "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
         copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
