@@ -41,13 +41,10 @@ jobs:
         cd HISPd
         dotnet publish -r linux-x64 -c Linux /p:Platform=x64 --self-contained
         cd ..
-        mkdir -p "HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata"
-        cp -r "../HorseIsleData/gamedata/*" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata"
-        cp "../HorseIsleData/HI1.MAP" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP"
-        cp "HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so"
-        rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.pdb"
-        rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.lib"
-        rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.exp"
+        mkdir -p HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata
+        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/gamedata/* HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/HI1.MAP HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so
         dotnet remove HISPd package Microsoft.DotNet.ILCompiler
         
         
@@ -65,13 +62,10 @@ jobs:
         cd HISPd
         dotnet publish -r linux-arm64 -c Linux /p:Platform=ARM64 --self-contained
         cd ..
-        mkdir -p "HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/gamedata"
-        cp -r "../HorseIsleData/gamedata/*" "HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/gamedata"
-        cp "../HorseIsleData/HI1.MAP" "HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/HI1.MAP"
-        cp "HISPd/bin/ARM64/Linux/net7.0/linux-arm64/publish/libe_sqlite3.so" "HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/libe_sqlite3.so"
-        rm -f "HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/HISPd.pdb"
-        rm -f "HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/HISPd.lib"
-        rm -f "HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/HISPd.exp"
+        mkdir -p HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/gamedata
+        cp -r HISPd/bin/ARM64/Linux/net7.0/linux-arm64/publish/gamedata/* HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/gamedata
+        cp HISPd/bin/ARM64/Linux/net7.0/linux-arm64/publish/HI1.MAP HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/HI1.MAP
+        cp HISPd/bin/ARM64/Linux/net7.0/linux-arm64/publish/libe_sqlite3.so HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/libe_sqlite3.so
         dotnet remove HISPd package Microsoft.DotNet.ILCompiler
         
     - name: Build deb package
