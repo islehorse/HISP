@@ -27,7 +27,7 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y dos2unix
-        sudo apt install -y tree
+
     - name: Restore dependencies
       run: |
         dotnet restore LibHISP
@@ -39,11 +39,10 @@ jobs:
         dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
         cd HISPd
         dotnet publish -r linux-x64 -c Linux --self-contained
-        tree
         mkdir -p "HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata"
         cp -r "../../HorseIsleData/gamedata" "HISPd/bin/x64/Linux/net7.0/linux-x64/native"
         cp "../../HorseIsleData/HI1.MAP" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP"
-        cp "HISPd/bin/x64/Linux/net7.0/linux-x64/publish/e_sqlite3.so" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/e_sqlite3.so"
+        cp "HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.pdb"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.lib"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.exp"
@@ -66,8 +65,6 @@ jobs:
     - name: Build deb package
       continue-on-error: false
       run: |
-        apt update
-        apt install -y dos2unix
         mkdir /tmp/debpkg
         mkdir /tmp/debpkg/Debian64
         mkdir /tmp/debpkg/Debian64/etc
