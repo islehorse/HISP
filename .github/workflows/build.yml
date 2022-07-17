@@ -26,7 +26,10 @@ jobs:
     - name: Install utils
       run: |
         sudo apt update
-        sudo apt install -y clang zlib1g-dev dos2unix binutils-aarch64-linux-gnu binutils-arm-linux-gnueabihf binutils-arm-linux-gnueabi
+        sudo apt install -y clang zlib1g-dev dos2unix qemu qemu-user-static binfmt-support debootstrap binutils-aarch64-linux-gnu binutils-arm-linux-gnueabihf binutils-arm-linux-gnueabi
+        
+    - name: Setup cross compiling
+      run: |
         wget https://raw.githubusercontent.com/dotnet/runtime/main/eng/common/cross/build-rootfs.sh -O build-rootfs.sh
         chmod +x build-rootfs.sh
         sudo mkdir /usr/armroot
