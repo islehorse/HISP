@@ -33,7 +33,7 @@ jobs:
       run: |
         dotnet restore LibHISP
         dotnet restore HISPd
-
+# nativeaot linux x54
     - name: Build linux-x64
       continue-on-error: false
       run: |
@@ -180,7 +180,6 @@ jobs:
         mkdir "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
         copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
         copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\x64\Windows\net7.0\win-x64\native\HI1.MAP"
-        tree /F /A
         copy "HISPd\bin\x64\Windows\net7.0\win-x64\publish\e_sqlite3.dll" "HISPd\bin\x64\Windows\net7.0\win-x64\native\e_sqlite3.dll"
         del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.pdb"
         del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.lib"
@@ -202,6 +201,7 @@ jobs:
       continue-on-error: false
       run: |
         dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
+        dotnet add HISPd package runtime.win-x64.Microsoft.DotNet.ILCompiler --prerelease
         dotnet publish -r win-arm64 -c Windows /p:Platform=ARM64  --self-contained
         mkdir "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
         copy "..\HorseIsleData\gamedata\*" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
@@ -212,17 +212,7 @@ jobs:
         del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.exp"
         dotnet remove HISPd package Microsoft.DotNet.ILCompiler
 
-# MacOS stuff, because no where else to put it
 
-    - name: Build mac-x64
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=Osx64.pubxml
-    
-    - name: Build mac-arm64
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=OsxARM64.pubxml
 
 # Upload WINDOWS
 
@@ -262,8 +252,40 @@ jobs:
         name: HISP-Win64-Noobs
         path: HorseIsleServer\N00BS\bin\x64\Windows\net7.0\win-x64\publish\
 
-# Upload MACOS
 
+
+
+  build-mac:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Git Submodule update
+      run: git submodule update --init --recursive
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.0.x
+        include-prerelease: true
+
+    - name: Restore dependencies
+      run: |
+        dotnet restore LibHISP
+        dotnet restore HISPd
+
+    - name: Build mac-x64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=Osx64.pubxml
+    
+    - name: Build mac-arm64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=OsxARM64.pubxml
+        
     - name: Upload mac-x64
       uses: actions/upload-artifact@v2
       with:
@@ -275,10 +297,7 @@ jobs:
       with:
         name: HISP-MacARM64
         path: HorseIsleServer/HISPd/bin/arm64/MacOS/net7.0/osx-arm64/publish/
-
-
-
-
+        
   build-web:
     runs-on: ubuntu-latest
     steps:
