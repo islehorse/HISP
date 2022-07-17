@@ -22,12 +22,15 @@ namespace HISP.Server
         public static void ReadGamedata()
         {
             dynamic gameData;
+            Logger.DebugPrint("Reading GAMEDATA");
             if (Directory.Exists(ConfigReader.GameData))
             {
+                Logger.DebugPrint("Found GAMEDATA DIR ... ");
                 gameData = new JObject();
                 string[] files = Directory.GetFiles(ConfigReader.GameData);
                 foreach(string file in files)
                 {
+                    Logger.DebugPrint("Reading: "+file);
                     string jsonData = File.ReadAllText(file);
                     JObject thisData = (JObject)JsonConvert.DeserializeObject(jsonData);
                     JObject jData = (JObject)gameData;
@@ -37,12 +40,14 @@ namespace HISP.Server
             }
             else if (File.Exists(ConfigReader.GameData))
             {
+
+                Logger.DebugPrint("Found GAMEDATA FILE ... ");
                 string jsonData = File.ReadAllText(ConfigReader.GameData);
                 gameData = JsonConvert.DeserializeObject(jsonData);
             }
             else
             {
-                Logger.ErrorPrint("Game Data : " + ConfigReader.GameData + " Does not exist!");
+                Logger.ErrorPrint("Could not find GAMEDATA, configured as; " + ConfigReader.GameData + " But no file or directory exists!");
                 GameServer.ShutdownServer();
                 return;
             }
