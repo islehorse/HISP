@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HISPd", "HISPd\HISPd.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "N00BS", "N00BS\N00BS.csproj", "{6B45A1E8-0F54-4BF7-AF48-41B9FE676570}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Installer", "Installer\Installer.vdproj", "{D330A197-67D4-42B0-8906-54264AF95EC1}"
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "N00BSInstaller", "N00BSInstaller\N00BSInstaller.vdproj", "{D330A197-67D4-42B0-8906-54264AF95EC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
