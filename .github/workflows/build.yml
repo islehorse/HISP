@@ -40,16 +40,17 @@ jobs:
         dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
         cd HISPd
         dotnet publish -r linux-x64 -c Linux /p:Platform=x64 --self-contained
+        cd ..
         mkdir -p "HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata"
-        cp -r "../../HorseIsleData/gamedata" "HISPd/bin/x64/Linux/net7.0/linux-x64/native"
-        cp "../../HorseIsleData/HI1.MAP" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP"
+        cp -r "../HorseIsleData/gamedata" "HISPd/bin/x64/Linux/net7.0/linux-x64/native"
+        cp "../HorseIsleData/HI1.MAP" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP"
         tree
         cp "HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.pdb"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.lib"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.exp"
         dotnet remove HISPd package Microsoft.DotNet.ILCompiler
-        cd ..
+        
         
     - name: Build linux-arm
       continue-on-error: false
