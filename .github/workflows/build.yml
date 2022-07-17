@@ -26,8 +26,7 @@ jobs:
     - name: Install utils
       run: |
         sudo apt update
-        sudo apt install -y clang zlib1g-dev dos2unix qemu qemu-user-static binfmt-support debootstrap binutils-aarch64-linux-gnu binutils-arm-linux-gnueabihf binutils-arm-linux-gnueabi
-        
+        sudo apt install -y clang zlib1g-dev dos2uni        
 
     - name: Restore dependencies
       run: |
@@ -155,7 +154,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-LinuxARM64
-        path: HorseIsleServer/HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/
+        path: HorseIsleServer/HISPd/bin/ARM64/Linux/net7.0/linux-arm64/publish/
 
     - name: Upload deb package
       uses: actions/upload-artifact@v2
