@@ -23,7 +23,11 @@ jobs:
       with:
         dotnet-version: 7.0.x
         include-prerelease: true
-        
+    - name: Install utils
+      run: |
+        apt update
+        apt install -y dos2unix
+        apt install -y tree
     - name: Restore dependencies
       run: |
         dotnet restore LibHISP
@@ -35,6 +39,7 @@ jobs:
         dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
         cd HISPd
         dotnet publish -r linux-x64 -c Linux --self-contained
+        tree
         mkdir -p "HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata"
         cp -r "../../HorseIsleData/gamedata" "HISPd/bin/x64/Linux/net7.0/linux-x64/native"
         cp "../../HorseIsleData/HI1.MAP" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP"
@@ -271,7 +276,19 @@ jobs:
         path: HorseIsleServer/HISPd/bin/arm64/MacOS/net7.0/osx-arm64/publish/
 
 
-# UPLOAD WEB
+
+
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Git Submodule update
+      run: git submodule update --init --recursive
+
+    # UPLOAD WEB
 
     - name: Upload Website (master)
       uses: actions/upload-artifact@v2
