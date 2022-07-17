@@ -131,7 +131,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Linux64
-        path: HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/
+        path: HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/native/
 
     - name: Upload linux-arm
       uses: actions/upload-artifact@v2
