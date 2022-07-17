@@ -26,8 +26,7 @@ jobs:
     - name: Install utils
       run: |
         sudo apt update
-        sudo apt install -y dos2unix
-
+        sudo apt install -y clang zlib1g-dev dos2unix
     - name: Restore dependencies
       run: |
         dotnet restore LibHISP
@@ -150,7 +149,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-LinuxARM64
-        path: HorseIsleServer/HISPd/bin/ARM64/Linux/net7.0/linux-arm64/publish/
+        path: HorseIsleServer/HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/
 
     - name: Upload deb package
       uses: actions/upload-artifact@v2
