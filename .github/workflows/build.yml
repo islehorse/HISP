@@ -8,10 +8,8 @@ defaults:
     working-directory: ./HorseIsleServer
 
 jobs:
-  build:
-
-    runs-on: windows-latest
-
+  build-linux:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
@@ -25,13 +23,135 @@ jobs:
       with:
         dotnet-version: 7.0.x
         include-prerelease: true
-        
-    - name: Setup WSL
-      uses: Vampire/setup-wsl@v1.2.1
     
     - name: Restore dependencies
       run: dotnet restore
+            
+    - name: Build linux-x64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=Linux64.pubxml
       
+    - name: Build linux-arm
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=LinuxARM.pubxml
+    
+    - name: Build linux-arm64
+      continue-on-error: false
+      run: |
+        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+
+    - name: Build deb package
+      continue-on-error: false
+      run: |
+        apt update
+        apt install -y dos2unix
+        mkdir /mnt/debpkg
+        mount -t tmpfs -o size=800M tmpfs /mnt/debpkg
+        mkdir /mnt/debpkg/Debian64
+        mkdir /mnt/debpkg/Debian64/etc
+        mkdir /mnt/debpkg/Debian64/usr
+        mkdir /mnt/debpkg/Debian64/etc/hisp
+        mkdir /mnt/debpkg/Debian64/etc/hisp/gamedata
+        mkdir /mnt/debpkg/Debian64/etc/systemd
+        mkdir /mnt/debpkg/Debian64/etc/systemd/system
+        mkdir /mnt/debpkg/Debian64/usr/bin
+        mkdir /mnt/debpkg/Debian64/usr/lib
+        mkdir /mnt/debpkg/Debian64/DEBIAN
+        cp LibHISP/Resources/server.properties /mnt/debpkg/Debian64/etc/hisp/server.properties
+        cp LibHISP/Resources/default_cross_domain.xml /mnt/debpkg/Debian64/etc/hisp/CrossDomainPolicy.xml
+        cp -r HISPd/Resources/DEBIAN/* /mnt/debpkg/Debian64/DEBIAN
+        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata/* /mnt/debpkg/Debian64/etc/hisp/gamedata
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so /mnt/debpkg/Debian64/usr/lib/libe_sqlite3.so
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP /mnt/debpkg/Debian64/etc/hisp/HI1.MAP
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd /mnt/debpkg/Debian64/usr/bin/HISPd
+        cp HISPd/Resources/HISP.service /mnt/debpkg/Debian64/etc/systemd/system/HISP.service
+        cat /mnt/debpkg/Debian64/DEBIAN/control
+        dos2unix /mnt/debpkg/Debian64/DEBIAN/conffiles
+        dos2unix /mnt/debpkg/Debian64/DEBIAN/control
+        dos2unix /mnt/debpkg/Debian64/DEBIAN/postinst
+        dos2unix /mnt/debpkg/Debian64/DEBIAN/postrm
+        dos2unix /mnt/debpkg/Debian64/DEBIAN/prerm
+        dos2unix /mnt/debpkg/Debian64/etc/systemd/system/HISP.service
+        chmod 755 -R /mnt/debpkg/Debian64
+        chmod +x /mnt/debpkg/Debian64/usr/bin/HISPd
+        mkdir debpackage
+        dpkg-deb --build /mnt/debpkg/Debian64
+        mv /mnt/debpkg/Debian64.deb debpackage/HISP-Debian-AMD64.deb
+        
+        
+#android .. maybe someday
+
+#    - name: Build android-arm
+#      continue-on-error: false
+#      run: |
+#        dotnet publish -p:PublishProfile=AndroidARM.pubxml
+
+#    - name: Build android-arm64
+#      continue-on-error: false
+#      run: |
+#        dotnet publish -p:PublishProfile=AndroidARM64.pubxml
+
+
+#    - name: Upload android-arm
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: HISP-AndroidARM
+#        path: HorseIsleServer/HISPd/bin/arm/Android/net7.0/android-arm/publish/
+
+#    - name: Upload android-arm64
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: HISP-AndroidARM64
+#        path: HorseIsleServer/HISPd/bin/arm64/Android/net7.0/android-arm64/publish/
+
+
+# Upload LINUX
+    - name: Upload linux-x64
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Linux64
+        path: HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/
+
+    - name: Upload linux-arm
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-LinuxARM
+        path: HorseIsleServer/HISPd/bin/ARM/Linux/net7.0/linux-arm/publish/
+    
+    - name: Upload linux-arm64
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-LinuxARM64
+        path: HorseIsleServer/HISPd/bin/ARM64/Linux/net7.0/linux-arm64/publish/
+
+    - name: Upload deb package
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-DebianPackage
+        path: HorseIsleServer/debpackage
+        
+  build-win:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Git Submodule update
+      run: git submodule update --init --recursive
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 7.0.x
+        include-prerelease: true
+    
+    - name: Restore dependencies
+      run: dotnet restore
+
+#nativeaot x64 build
     - name: Build win-x64
       continue-on-error: false
       run: |
@@ -56,7 +176,7 @@ jobs:
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=WinARM.pubxml
-
+#nativeaot arm64 build
     - name: Build win-arm64
       continue-on-error: false
       run: |
@@ -70,22 +190,9 @@ jobs:
         del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.lib"
         del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.exp"
         dotnet remove HISPd package Microsoft.DotNet.ILCompiler
-        
-    - name: Build linux-x64
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=Linux64.pubxml
-      
-    - name: Build linux-arm
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=LinuxARM.pubxml
-    
-    - name: Build linux-arm64
-      continue-on-error: false
-      run: |
-        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
-      
+
+# MacOS stuff, because no where else to put it
+
     - name: Build mac-x64
       continue-on-error: false
       run: |
@@ -95,54 +202,8 @@ jobs:
       continue-on-error: false
       run: |
         dotnet publish -p:PublishProfile=OsxARM64.pubxml
-        
-    - name: Build deb package
-      continue-on-error: false
-      shell: wsl-bash -u root {0}
-      run: |
-        apt update
-        apt install -y dos2unix
-        mkdir /mnt/fucking-windows
-        mount -t tmpfs -o size=800M tmpfs /mnt/fucking-windows
-        mkdir /mnt/fucking-windows/Debian64
-        mkdir /mnt/fucking-windows/Debian64/etc
-        mkdir /mnt/fucking-windows/Debian64/usr
-        mkdir /mnt/fucking-windows/Debian64/etc/hisp
-        mkdir /mnt/fucking-windows/Debian64/etc/hisp/gamedata
-        mkdir /mnt/fucking-windows/Debian64/etc/systemd
-        mkdir /mnt/fucking-windows/Debian64/etc/systemd/system
-        mkdir /mnt/fucking-windows/Debian64/usr/bin
-        mkdir /mnt/fucking-windows/Debian64/usr/lib
-        mkdir /mnt/fucking-windows/Debian64/DEBIAN
-        cp LibHISP/Resources/server.properties /mnt/fucking-windows/Debian64/etc/hisp/server.properties
-        cp LibHISP/Resources/default_cross_domain.xml /mnt/fucking-windows/Debian64/etc/hisp/CrossDomainPolicy.xml
-        cp -r HISPd/Resources/DEBIAN/* /mnt/fucking-windows/Debian64/DEBIAN
-        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata/* /mnt/fucking-windows/Debian64/etc/hisp/gamedata
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so /mnt/fucking-windows/Debian64/usr/lib/libe_sqlite3.so
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP /mnt/fucking-windows/Debian64/etc/hisp/HI1.MAP
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd /mnt/fucking-windows/Debian64/usr/bin/HISPd
-        cp HISPd/Resources/HISP.service /mnt/fucking-windows/Debian64/etc/systemd/system/HISP.service
-        cat /mnt/fucking-windows/Debian64/DEBIAN/control
-        dos2unix /mnt/fucking-windows/Debian64/DEBIAN/conffiles
-        dos2unix /mnt/fucking-windows/Debian64/DEBIAN/control
-        dos2unix /mnt/fucking-windows/Debian64/DEBIAN/postinst
-        dos2unix /mnt/fucking-windows/Debian64/DEBIAN/postrm
-        dos2unix /mnt/fucking-windows/Debian64/DEBIAN/prerm
-        dos2unix /mnt/fucking-windows/Debian64/etc/systemd/system/HISP.service
-        chmod 755 -R /mnt/fucking-windows/Debian64
-        chmod +x /mnt/fucking-windows/Debian64/usr/bin/HISPd
-        mkdir debpackage
-        dpkg-deb --build /mnt/fucking-windows/Debian64
-        mv /mnt/fucking-windows/Debian64.deb debpackage/HISP-Debian-AMD64.deb
-#    - name: Build android-arm
-#      continue-on-error: false
-#      run: |
-#        dotnet publish -p:PublishProfile=AndroidARM.pubxml
 
-#    - name: Build android-arm64
-#      continue-on-error: false
-#      run: |
-#        dotnet publish -p:PublishProfile=AndroidARM64.pubxm
+# Upload WINDOWS
 
     - name: Upload win-x64
       uses: actions/upload-artifact@v2
@@ -179,24 +240,8 @@ jobs:
       with:
         name: HISP-Win64-Noobs
         path: HorseIsleServer\N00BS\bin\x64\Windows\net7.0\win-x64\publish\
-        
-    - name: Upload linux-x64
-      uses: actions/upload-artifact@v2
-      with:
-        name: HISP-Linux64
-        path: HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/
 
-    - name: Upload linux-arm
-      uses: actions/upload-artifact@v2
-      with:
-        name: HISP-LinuxARM
-        path: HorseIsleServer/HISPd/bin/ARM/Linux/net7.0/linux-arm/publish/
-    
-    - name: Upload linux-arm64
-      uses: actions/upload-artifact@v2
-      with:
-        name: HISP-LinuxARM64
-        path: HorseIsleServer/HISPd/bin/ARM64/Linux/net7.0/linux-arm64/publish/
+# Upload MACOS
 
     - name: Upload mac-x64
       uses: actions/upload-artifact@v2
@@ -210,25 +255,8 @@ jobs:
         name: HISP-MacARM64
         path: HorseIsleServer/HISPd/bin/arm64/MacOS/net7.0/osx-arm64/publish/
 
-    - name: Upload deb package
-      uses: actions/upload-artifact@v2
-      with:
-        name: HISP-DebianPackage
-        path: HorseIsleServer/debpackage
 
-
-#    - name: Upload android-arm
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: HISP-AndroidARM
-#        path: HorseIsleServer/HISPd/bin/arm/Android/net7.0/android-arm/publish/
-
-#    - name: Upload android-arm64
-#      uses: actions/upload-artifact@v2
-#      with:
-#        name: HISP-AndroidARM64
-#        path: HorseIsleServer/HISPd/bin/arm64/Android/net7.0/android-arm64/publish/
-
+# UPLOAD WEB
 
     - name: Upload Website (master)
       uses: actions/upload-artifact@v2
