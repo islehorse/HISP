@@ -25,9 +25,9 @@ jobs:
         include-prerelease: true
     - name: Install utils
       run: |
-        apt update
-        apt install -y dos2unix
-        apt install -y tree
+        sudo apt update
+        sudo apt install -y dos2unix
+        sudo apt install -y tree
     - name: Restore dependencies
       run: |
         dotnet restore LibHISP
