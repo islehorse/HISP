@@ -26,7 +26,6 @@ jobs:
     - name: Install utils
       run: |
         sudo apt update
-        sudo apt install -y tree
         sudo apt install -y dos2unix
 
     - name: Restore dependencies
@@ -279,13 +278,15 @@ jobs:
     - name: Build mac-x64
       continue-on-error: false
       run: |
+        cd HISPd
         dotnet publish -p:PublishProfile=Osx64.pubxml
-    
+        cd ..
     - name: Build mac-arm64
       continue-on-error: false
       run: |
+        cd HISPd
         dotnet publish -p:PublishProfile=OsxARM64.pubxml
-        
+        cd ..
     - name: Upload mac-x64
       uses: actions/upload-artifact@v2
       with:
