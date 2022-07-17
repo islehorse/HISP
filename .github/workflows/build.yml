@@ -29,7 +29,8 @@ jobs:
         sudo apt install -y clang zlib1g-dev dos2unix binutils-aarch64-linux-gnu binutils-arm-linux-gnueabihf binutils-arm-linux-gnueabi
         wget https://raw.githubusercontent.com/dotnet/runtime/main/eng/common/cross/build-rootfs.sh -O build-rootfs.sh
         chmod +x build-rootfs.sh
-        ./build-rootfs.sh BuildArch arm64
+        sudo mkdir /usr/armroot
+        sudo sh build-rootfs.sh BuildArch arm64 --rootfsdir=/usr/armroot
     - name: Restore dependencies
       run: |
         dotnet restore LibHISP
