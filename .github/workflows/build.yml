@@ -37,7 +37,7 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=LinuxARM.pubxml
+        dotnet publish -p:PublishProfile=Linux64.pubxml
         cd ..
 # Currently broken ...
 
