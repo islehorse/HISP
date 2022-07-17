@@ -13,6 +13,7 @@ using HISP.Game.SwfModules;
 
 using MySqlConnector;
 using Microsoft.Data.Sqlite;
+using SQLitePCL;
 
 namespace HISP.Server
 {
@@ -67,11 +68,16 @@ namespace HISP.Server
         public static void OpenDatabase()
         {
             if (!ConfigReader.SqlLite)
+            {
                 ConnectionString = "server=" + ConfigReader.DatabaseIP + ";user=" + ConfigReader.DatabaseUsername + ";password=" + ConfigReader.DatabasePassword + ";database=" + ConfigReader.DatabaseName;
-            else
-                ConnectionString = "Data Source=\"" + ConfigReader.DatabaseName + ".db\";";
 
-            DataFixerUpper.FixUpDb();
+            }
+            else
+            {
+                ConnectionString = "Data Source=\"" + ConfigReader.DatabaseName + ".db\";";
+                Batteries.Init();
+            }
+
 
             using (DbConnection db = connectDb())
             {
@@ -128,6 +134,7 @@ namespace HISP.Server
 
                 if (ConfigReader.SqlLite)
                 {
+
                     try
                     {
                         DbCommand sqlCommand = db.CreateCommand();
@@ -624,6 +631,7 @@ namespace HISP.Server
                 };
             }
 
+            DataFixerUpper.FixUpDb();
         }
 
         public static void DeleteRanchOwner(int ranchId)
