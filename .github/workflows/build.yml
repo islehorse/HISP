@@ -38,7 +38,7 @@ jobs:
         mkdir -p "HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata"
         cp -r "../../HorseIsleData/gamedata" "HISPd/bin/x64/Linux/net7.0/linux-x64/native"
         cp "../../HorseIsleData/HI1.MAP" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP"
-        cp "HISPd/bin/x64/Linux/net7.0/linux-x64/e_sqlite3.so" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/e_sqlite3.so"
+        cp "HISPd/bin/x64/Linux/net7.0/linux-x64/publish/e_sqlite3.so" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/e_sqlite3.so"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.pdb"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.lib"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.exp"
@@ -63,38 +63,37 @@ jobs:
       run: |
         apt update
         apt install -y dos2unix
-        mkdir /mnt/debpkg
-        mount -t tmpfs -o size=800M tmpfs /mnt/debpkg
-        mkdir /mnt/debpkg/Debian64
-        mkdir /mnt/debpkg/Debian64/etc
-        mkdir /mnt/debpkg/Debian64/usr
-        mkdir /mnt/debpkg/Debian64/etc/hisp
-        mkdir /mnt/debpkg/Debian64/etc/hisp/gamedata
-        mkdir /mnt/debpkg/Debian64/etc/systemd
-        mkdir /mnt/debpkg/Debian64/etc/systemd/system
-        mkdir /mnt/debpkg/Debian64/usr/bin
-        mkdir /mnt/debpkg/Debian64/usr/lib
-        mkdir /mnt/debpkg/Debian64/DEBIAN
-        cp LibHISP/Resources/server.properties /mnt/debpkg/Debian64/etc/hisp/server.properties
-        cp LibHISP/Resources/default_cross_domain.xml /mnt/debpkg/Debian64/etc/hisp/CrossDomainPolicy.xml
-        cp -r HISPd/Resources/DEBIAN/* /mnt/debpkg/Debian64/DEBIAN
-        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata/* /mnt/debpkg/Debian64/etc/hisp/gamedata
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so /mnt/debpkg/Debian64/usr/lib/libe_sqlite3.so
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP /mnt/debpkg/Debian64/etc/hisp/HI1.MAP
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd /mnt/debpkg/Debian64/usr/bin/HISPd
-        cp HISPd/Resources/HISP.service /mnt/debpkg/Debian64/etc/systemd/system/HISP.service
-        cat /mnt/debpkg/Debian64/DEBIAN/control
-        dos2unix /mnt/debpkg/Debian64/DEBIAN/conffiles
-        dos2unix /mnt/debpkg/Debian64/DEBIAN/control
-        dos2unix /mnt/debpkg/Debian64/DEBIAN/postinst
-        dos2unix /mnt/debpkg/Debian64/DEBIAN/postrm
-        dos2unix /mnt/debpkg/Debian64/DEBIAN/prerm
-        dos2unix /mnt/debpkg/Debian64/etc/systemd/system/HISP.service
-        chmod 755 -R /mnt/debpkg/Debian64
-        chmod +x /mnt/debpkg/Debian64/usr/bin/HISPd
+        mkdir /tmp/debpkg
+        mkdir /tmp/debpkg/Debian64
+        mkdir /tmp/debpkg/Debian64/etc
+        mkdir /tmp/debpkg/Debian64/usr
+        mkdir /tmp/debpkg/Debian64/etc/hisp
+        mkdir /tmp/debpkg/Debian64/etc/hisp/gamedata
+        mkdir /tmp/debpkg/Debian64/etc/systemd
+        mkdir /tmp/debpkg/Debian64/etc/systemd/system
+        mkdir /tmp/debpkg/Debian64/usr/bin
+        mkdir /tmp/debpkg/Debian64/usr/lib
+        mkdir /tmp/debpkg/Debian64/DEBIAN
+        cp LibHISP/Resources/server.properties /tmp/debpkg/Debian64/etc/hisp/server.properties
+        cp LibHISP/Resources/default_cross_domain.xml /tmp/debpkg/Debian64/etc/hisp/CrossDomainPolicy.xml
+        cp -r HISPd/Resources/DEBIAN/* /tmp/debpkg/Debian64/DEBIAN
+        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata/* /tmp/debpkg/Debian64/etc/hisp/gamedata
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so /tmp/debpkg/Debian64/usr/lib/libe_sqlite3.so
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP /tmp/debpkg/Debian64/etc/hisp/HI1.MAP
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd /tmp/debpkg/Debian64/usr/bin/HISPd
+        cp HISPd/Resources/HISP.service /tmp/debpkg/Debian64/etc/systemd/system/HISP.service
+        cat /tmp/debpkg/Debian64/DEBIAN/control
+        dos2unix /tmp/debpkg/Debian64/DEBIAN/conffiles
+        dos2unix /tmp/debpkg/Debian64/DEBIAN/control
+        dos2unix /tmp/debpkg/Debian64/DEBIAN/postinst
+        dos2unix /tmp/debpkg/Debian64/DEBIAN/postrm
+        dos2unix /tmp/debpkg/Debian64/DEBIAN/prerm
+        dos2unix /tmp/debpkg/Debian64/etc/systemd/system/HISP.service
+        chmod 755 -R /tmp/debpkg/Debian64
+        chmod +x /tmp/debpkg/Debian64/usr/bin/HISPd
         mkdir debpackage
-        dpkg-deb --build /mnt/debpkg/Debian64
-        mv /mnt/debpkg/Debian64.deb debpackage/HISP-Debian-AMD64.deb
+        dpkg-deb --build /tmp/debpkg/Debian64
+        mv /tmp/debpkg/Debian64.deb debpackage/HISP-Debian-AMD64.deb
         
         
 #android .. maybe someday
@@ -176,7 +175,7 @@ jobs:
         mkdir "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
         copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
         copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\x64\Windows\net7.0\win-x64\native\HI1.MAP"
-        copy "HISPd\bin\x64\Windows\net7.0\win-x64\e_sqlite3.dll" "HISPd\bin\x64\Windows\net7.0\win-x64\native\e_sqlite3.dll"
+        copy "HISPd\bin\x64\Windows\net7.0\win-x64\publish\e_sqlite3.dll" "HISPd\bin\x64\Windows\net7.0\win-x64\native\e_sqlite3.dll"
         del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.pdb"
         del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.lib"
         del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.exp"
@@ -201,7 +200,7 @@ jobs:
         mkdir "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
         copy "..\HorseIsleData\gamedata\*" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
         copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HI1.MAP"
-        copy "HISPd\bin\ARM64\Windows\net7.0\win-arm64\e_sqlite3.dll" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\e_sqlite3.dll"
+        copy "HISPd\bin\ARM64\Windows\net7.0\win-arm64\publish\e_sqlite3.dll" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\e_sqlite3.dll"
         del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.pdb"
         del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.lib"
         del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.exp"
