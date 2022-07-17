@@ -45,6 +45,7 @@ jobs:
         cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/gamedata/* HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/HI1.MAP HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP
         cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so
+        rm -f HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.dbg
         dotnet remove HISPd package Microsoft.DotNet.ILCompiler
         
         
@@ -59,7 +60,7 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=LinuxARM.pubxml
+        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
         cd ..
         
     - name: Build deb package
