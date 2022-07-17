@@ -75,10 +75,10 @@ namespace HISP.Server
                 File.AppendAllText("crashlog.txt", "HISP HAS CRASHED :(\n");
                 File.AppendAllText("crashlog.txt", "Unhandled Exception: " + execpt.ToString() + "\n");
                 File.AppendAllText("crashlog.txt", execpt.StackTrace + "\n");
+                GameServer.ShutdownServer();
             }
             catch (Exception) { };
 
-            GameServer.ShutdownServer();
             Thread.Sleep(5000);
             Environment.Exit(1);
         }
