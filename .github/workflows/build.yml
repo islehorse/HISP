@@ -26,7 +26,7 @@ jobs:
     - name: Install utils
       run: |
         sudo apt update
-        sudo apt install -y clang zlib1g-dev dos2unix
+        sudo apt install -y clang zlib1g-dev dos2unix binutils-aarch64-linux-gnu
     - name: Restore dependencies
       run: |
         dotnet restore LibHISP
