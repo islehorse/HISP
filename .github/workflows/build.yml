@@ -232,7 +232,7 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=WinARM.pubxml
+        dotnet publish -p:PublishProfile=WinARM64.pubxml
         cd ..
 #        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
 #        dotnet add HISPd package runtime.win-x64.Microsoft.DotNet.ILCompiler --prerelease
