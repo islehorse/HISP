@@ -43,7 +43,7 @@ jobs:
         mkdir -p "HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata"
         cp -r "../../HorseIsleData/gamedata" "HISPd/bin/x64/Linux/net7.0/linux-x64/native"
         cp "../../HorseIsleData/HI1.MAP" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP"
-        tree "HISPd/bin/x64/Linux/net7.0/linux-x64"
+        tree
         cp "HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so" "HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.pdb"
         rm -f "HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.lib"
@@ -176,7 +176,7 @@ jobs:
       run: |
         dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
         dotnet publish -r win-x64 -c Windows --self-contained
-        tree
+        tree /F /A
         mkdir "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
         copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
         copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\x64\Windows\net7.0\win-x64\native\HI1.MAP"
