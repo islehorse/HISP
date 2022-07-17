@@ -26,7 +26,7 @@ jobs:
     - name: Install utils
       run: |
         sudo apt update
-        sudo apt install -y clang zlib1g-dev dos2uni        
+        sudo apt install -y clang zlib1g-dev dos2unix
 
     - name: Restore dependencies
       run: |
