@@ -24,9 +24,6 @@ jobs:
         dotnet-version: 7.0.x
         include-prerelease: true
         
-    - name: Fix Dumb Dotnet Stuff
-      run: rm -rf N00BS
-        
     - name: Restore dependencies
       run: |
         dotnet restore LibHISP
@@ -35,18 +32,32 @@ jobs:
     - name: Build linux-x64
       continue-on-error: false
       run: |
-        dotnet publish HISPd -p:PublishProfile=Linux64.pubxml
-      
+        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
+        cd HISPd
+        dotnet publish -r linux-x64 -c Linux --self-contained
+        mkdir "HISPd\bin\x64\Linux\net7.0\linux-x64\native\gamedata"
+        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x64\Linux\net7.0\linux-x64\native\gamedata"
+        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\x64\Linux\net7.0\linux-x64\native\HI1.MAP"
+        copy "HISPd\bin\x64\Linux\net7.0\linux-x64\e_sqlite3.dll" "HISPd\bin\x64\Linux\net7.0\linux-x64\native\e_sqlite3.dll"
+        del "HISPd\bin\x64\Linux\net7.0\linux-x64\native\HISPd.pdb"
+        del "HISPd\bin\x64\Linux\net7.0\linux-x64\native\HISPd.lib"
+        del "HISPd\bin\x64\Linux\net7.0\linux-x64\native\HISPd.exp"
+        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
+        cd ..
+        
     - name: Build linux-arm
       continue-on-error: false
       run: |
-        dotnet publish HISPd -p:PublishProfile=LinuxARM.pubxml
-    
+        cd HISPd
+        dotnet publish -p:PublishProfile=LinuxARM.pubxml
+        cd ..
     - name: Build linux-arm64
       continue-on-error: false
       run: |
-        dotnet publish HISPd -p:PublishProfile=LinuxARM64.pubxml
-
+        cd HISPd
+        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+        cd ..
+        
     - name: Build deb package
       continue-on-error: false
       run: |
