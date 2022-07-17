@@ -54,13 +54,22 @@ jobs:
         cd HISPd
         dotnet publish -p:PublishProfile=LinuxARM.pubxml
         cd ..
-        
+# nativeaot linux arm64
     - name: Build linux-arm64
       continue-on-error: false
       run: |
+        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
+        dotnet add HISPd package runtime.linux-x64.Microsoft.DotNet.ILCompiler --prerelease
         cd HISPd
-        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+        dotnet publish -r linux-arm64 -c Linux /p:Platform=ARM64 --self-contained
         cd ..
+        mkdir -p HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/gamedata
+        cp -r HISPd/bin/ARM64/Linux/net7.0/linux-arm64/gamedata/* HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/gamedata
+        cp HISPd/bin/ARM64/Linux/net7.0/linux-arm64/HI1.MAP HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/HI1.MAP
+        cp HISPd/bin/ARM64/Linux/net7.0/linux-arm64/publish/libe_sqlite3.so HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/libe_sqlite3.so
+        rm -f HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/HISPd.dbg
+        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
+        dotnet remove HISPd package runtime.linux-x64.Microsoft.DotNet.ILCompiler
         
     - name: Build deb package
       continue-on-error: false
@@ -184,24 +193,33 @@ jobs:
         del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.lib"
         del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.exp"
         dotnet remove HISPd package Microsoft.DotNet.ILCompiler
+        cd N00BS
         dotnet publish -p:PublishProfile=Win64.pubxml
-        
+        cd ..
     - name: Build win-x86
       continue-on-error: false
       run: |
+        cd HISPd
         dotnet publish -p:PublishProfile=Win32.pubxml
-        
+        cd ..
+        cd N00BS
+        dotnet publish -p:PublishProfile=Win32.pubxml
+        cd ..
     - name: Build win-arm
       continue-on-error: false
       run: |
+        cd HISPd
         dotnet publish -p:PublishProfile=WinARM.pubxml
+        cd ..
 #nativeaot arm64 build
     - name: Build win-arm64
       continue-on-error: false
       run: |
         dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
         dotnet add HISPd package runtime.win-x64.Microsoft.DotNet.ILCompiler --prerelease
+        cd HISPd
         dotnet publish -r win-arm64 -c Windows /p:Platform=ARM64  --self-contained
+        cd ..
         mkdir "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
         copy "..\HorseIsleData\gamedata\*" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
         copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HI1.MAP"
@@ -210,7 +228,7 @@ jobs:
         del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.lib"
         del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.exp"
         dotnet remove HISPd package Microsoft.DotNet.ILCompiler
-
+        dotnet remove HISPd package runtime.win-x64.Microsoft.DotNet.ILCompiler
 
 
 # Upload WINDOWS
