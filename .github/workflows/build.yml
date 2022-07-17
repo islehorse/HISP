@@ -26,6 +26,7 @@ jobs:
         
     - name: Restore dependencies
       run: |
+        which python3
         dotnet restore LibHISP
         dotnet restore HISPd
 
