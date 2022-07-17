@@ -33,7 +33,8 @@ jobs:
         wget https://raw.githubusercontent.com/dotnet/runtime/main/eng/common/cross/build-rootfs.sh -O build-rootfs.sh
         chmod +x build-rootfs.sh
         sudo mkdir /usr/armroot
-        sudo /usr/bin/env bash build-rootfs.sh BuildArch arm64 --rootfsdir=/usr/armroot
+        sudo /usr/bin/env bash build-rootfs.sh BuildArch arm64 --rootfsdir /usr/armroot
+        
     - name: Restore dependencies
       run: |
         dotnet restore LibHISP
