@@ -97,10 +97,10 @@ jobs:
         cp LibHISP/Resources/server.properties /tmp/debpkg/Debian64/etc/hisp/server.properties
         cp LibHISP/Resources/default_cross_domain.xml /tmp/debpkg/Debian64/etc/hisp/CrossDomainPolicy.xml
         cp -r HISPd/Resources/DEBIAN/* /tmp/debpkg/Debian64/DEBIAN
-        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata/* /tmp/debpkg/Debian64/etc/hisp/gamedata
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so /tmp/debpkg/Debian64/usr/lib/libe_sqlite3.so
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP /tmp/debpkg/Debian64/etc/hisp/HI1.MAP
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd /tmp/debpkg/Debian64/usr/bin/HISPd
+        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata/* /tmp/debpkg/Debian64/etc/hisp/gamedata
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so /tmp/debpkg/Debian64/usr/lib/libe_sqlite3.so
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP /tmp/debpkg/Debian64/etc/hisp/HI1.MAP
+        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd /tmp/debpkg/Debian64/usr/bin/HISPd
         cp HISPd/Resources/HISP.service /tmp/debpkg/Debian64/etc/systemd/system/HISP.service
         cat /tmp/debpkg/Debian64/DEBIAN/control
         dos2unix /tmp/debpkg/Debian64/DEBIAN/conffiles
@@ -147,7 +147,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Linux64
-        path: HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/native/
+        path: HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/
 
     - name: Upload linux-arm
       uses: actions/upload-artifact@v2
@@ -256,7 +256,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64
-        path: HorseIsleServer\HISPd\bin\x64\Windows\net7.0\win-x64\native\
+        path: HorseIsleServer\HISPd\bin\x64\Windows\net7.0\win-x64\publish\
     
     - name: Upload win-x86
       uses: actions/upload-artifact@v2
@@ -274,7 +274,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-WinARM64
-        path: HorseIsleServer\HISPd\bin\arm64\Windows\net7.0\win-arm64\native\
+        path: HorseIsleServer\HISPd\bin\arm64\Windows\net7.0\win-arm64\publish\
 
     - name: Upload win-x86-noobs
       uses: actions/upload-artifact@v2
