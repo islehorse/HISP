@@ -1,9 +1,11 @@
 #!/usr/bin/python3
+
 import os
 import subprocess
 import time
 import datetime
 import binascii
+os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
 # Updates version inside a AssemblyInfo.cs file
 def update_asm_info(assemblyinfofile):
