@@ -218,6 +218,6 @@
 
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="$(ProjectDir)/prebuild.py" />
+    <Exec Command="$(ProjectDir)prebuild.py" />
   </Target>
 </Project>
