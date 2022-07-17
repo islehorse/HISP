@@ -9,6 +9,7 @@ using HISP.Security;
 using System;
 using System.Diagnostics;
 using System.Threading;
+using System.IO;
 
 namespace HISP.Server
 {
@@ -64,11 +65,22 @@ namespace HISP.Server
         {
             Exception execpt = (Exception)e.ExceptionObject;
 
+
             Logger.ErrorPrint("HISP HAS CRASHED :(");
             Logger.ErrorPrint("Unhandled Exception: " + execpt.ToString());
             Logger.ErrorPrint(execpt.StackTrace);
-            
-            new EventWaitHandle(false, EventResetMode.ManualReset).WaitOne();
+
+            try
+            {
+                File.AppendAllText("crashlog.txt", "HISP HAS CRASHED :(\n");
+                File.AppendAllText("crashlog.txt", "Unhandled Exception: " + execpt.ToString() + "\n");
+                File.AppendAllText("crashlog.txt", execpt.StackTrace + "\n");
+            }
+            catch (Exception) { };
+
+            GameServer.ShutdownServer();
+            Thread.Sleep(5000);
+            Environment.Exit(1);
         }
     }
 }
