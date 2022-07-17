@@ -36,16 +36,21 @@ jobs:
     - name: Build linux-x64
       continue-on-error: false
       run: |
-        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
         cd HISPd
-        dotnet publish -r linux-x64 -c Linux /p:Platform=x64 --self-contained
+        dotnet publish -p:PublishProfile=LinuxARM.pubxml
         cd ..
-        mkdir -p HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata
-        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/gamedata/* HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/HI1.MAP HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so
-        rm -f HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.dbg
-        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
+# Currently broken ...
+
+#        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
+#        cd HISPd
+#        dotnet publish -r linux-x64 -c Linux /p:Platform=x64 --self-contained
+#        cd ..
+#        mkdir -p HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata
+#        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/gamedata/* HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata
+#        cp HISPd/bin/x64/Linux/net7.0/linux-x64/HI1.MAP HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP
+#        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so
+#        rm -f HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.dbg
+#        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
         
         
     - name: Build linux-arm
@@ -185,21 +190,24 @@ jobs:
     - name: Build win-x64
       continue-on-error: false
       run: |
-        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
         cd HISPd
-        dotnet publish -r win-x64 -c Windows /p:Platform=x64 --self-contained
-        cd ..
-        mkdir "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
-        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
-        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\x64\Windows\net7.0\win-x64\native\HI1.MAP"
-        copy "HISPd\bin\x64\Windows\net7.0\win-x64\publish\e_sqlite3.dll" "HISPd\bin\x64\Windows\net7.0\win-x64\native\e_sqlite3.dll"
-        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.pdb"
-        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.lib"
-        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.exp"
-        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
-        cd N00BS
         dotnet publish -p:PublishProfile=Win64.pubxml
         cd ..
+#        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
+#        cd HISPd
+#        dotnet publish -r win-x64 -c Windows /p:Platform=x64 --self-contained
+#        cd ..
+#        mkdir "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
+#        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
+#        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\x64\Windows\net7.0\win-x64\native\HI1.MAP"
+#        copy "HISPd\bin\x64\Windows\net7.0\win-x64\publish\e_sqlite3.dll" "HISPd\bin\x64\Windows\net7.0\win-x64\native\e_sqlite3.dll"
+#        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.pdb"
+#        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.lib"
+#        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.exp"
+#        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
+#        cd N00BS
+#        dotnet publish -p:PublishProfile=Win64.pubxml
+#        cd ..
     - name: Build win-x86
       continue-on-error: false
       run: |
@@ -219,20 +227,23 @@ jobs:
     - name: Build win-arm64
       continue-on-error: false
       run: |
-        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
-        dotnet add HISPd package runtime.win-x64.Microsoft.DotNet.ILCompiler --prerelease
         cd HISPd
-        dotnet publish -r win-arm64 -c Windows /p:Platform=ARM64  --self-contained
+        dotnet publish -p:PublishProfile=WinARM.pubxml
         cd ..
-        mkdir "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
-        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
-        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HI1.MAP"
-        copy "HISPd\bin\ARM64\Windows\net7.0\win-arm64\publish\e_sqlite3.dll" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\e_sqlite3.dll"
-        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.pdb"
-        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.lib"
-        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.exp"
-        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
-        dotnet remove HISPd package runtime.win-x64.Microsoft.DotNet.ILCompiler
+#        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
+#        dotnet add HISPd package runtime.win-x64.Microsoft.DotNet.ILCompiler --prerelease
+#        cd HISPd
+#        dotnet publish -r win-arm64 -c Windows /p:Platform=ARM64  --self-contained
+#        cd ..
+#        mkdir "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
+#        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
+#        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HI1.MAP"
+#        copy "HISPd\bin\ARM64\Windows\net7.0\win-arm64\publish\e_sqlite3.dll" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\e_sqlite3.dll"
+#        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.pdb"
+#        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.lib"
+#        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.exp"
+#        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
+#        dotnet remove HISPd package runtime.win-x64.Microsoft.DotNet.ILCompiler
 
 
 # Upload WINDOWS
