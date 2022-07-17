@@ -46,7 +46,7 @@
     <RepositoryUrl>https://github.com/islehorse/HISP</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <WarningLevel>3</WarningLevel>
-    <NoWarn>1701;1702;2026</NoWarn>
+    <NoWarn>1701;1702;2026;IL2026</NoWarn>
   </PropertyGroup>
     
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x86'">
