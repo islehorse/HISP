@@ -193,6 +193,10 @@ jobs:
         cd HISPd
         dotnet publish -p:PublishProfile=Win64.pubxml
         cd ..
+        cd N00BS
+        dotnet publish -p:PublishProfile=Win64.pubxml
+        cd ..
+
 #        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
 #        cd HISPd
 #        dotnet publish -r win-x64 -c Windows /p:Platform=x64 --self-contained
