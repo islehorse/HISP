@@ -28,7 +28,7 @@
     </ContentWithTargetPath>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite.Core" Version="6.0.7" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="6.0.7" />
     <PackageReference Include="MySqlConnector" Version="2.1.11" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
