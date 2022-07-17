@@ -5,6 +5,8 @@
     <LangVersion>10.0</LangVersion>
     <Platforms>x64;x86;ARM;ARM64;AnyCPU</Platforms>
     <Configurations>Debug;Windows;Linux;MacOS;Android;iOS</Configurations>
+    <IlcOptimizationPreference>Speed</IlcOptimizationPreference>
+    <StripSymbols>true</StripSymbols>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\LibHISP\LibHISP.csproj" />
