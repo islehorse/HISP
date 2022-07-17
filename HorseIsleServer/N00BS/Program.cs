@@ -109,7 +109,13 @@ namespace HISP.Noobs
                 ConfigReader.SqlLite = true;
                 ConfigReader.LogLevel = 0;
                 ConfigReader.CrossDomainPolicyFile = Path.Combine(BaseDir, "CrossDomainPolicy.xml");
-                ConfigReader.DatabaseName = Path.Combine(BaseDir, "game1.db");
+
+                // Compatibility patch
+                if (File.Exists(Path.Combine(BaseDir, "game1.db.db"))) { 
+                    File.Move(Path.Combine(BaseDir, "game1.db.db"), Path.Combine(BaseDir, "game1.db"));
+                }
+
+                ConfigReader.DatabaseName = Path.Combine(BaseDir, "game1");
 
 
                 IncrementProgress();
@@ -175,7 +181,7 @@ namespace HISP.Noobs
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show("Horse Isle server failed to start: " + e.Message, "Error starting web server", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Horse Isle server failed to start: " + e.Message, "Error starting hi1 server", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
                 IncrementProgress();
