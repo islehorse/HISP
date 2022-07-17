@@ -23,24 +23,29 @@ jobs:
       with:
         dotnet-version: 7.0.x
         include-prerelease: true
-    
+        
+    - name: Fix Dumb Dotnet Stuff
+      run: rm -rf N00BS
+        
     - name: Restore dependencies
-      run: dotnet restore
-            
+      run: |
+        dotnet restore LibHISP
+        dotnet restore HISPd
+
     - name: Build linux-x64
       continue-on-error: false
       run: |
-        dotnet publish -p:PublishProfile=Linux64.pubxml
+        dotnet publish HISPd -p:PublishProfile=Linux64.pubxml
       
     - name: Build linux-arm
       continue-on-error: false
       run: |
-        dotnet publish -p:PublishProfile=LinuxARM.pubxml
+        dotnet publish HISPd -p:PublishProfile=LinuxARM.pubxml
     
     - name: Build linux-arm64
       continue-on-error: false
       run: |
-        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+        dotnet publish HISPd -p:PublishProfile=LinuxARM64.pubxml
 
     - name: Build deb package
       continue-on-error: false
