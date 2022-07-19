@@ -43,8 +43,12 @@ namespace HISP.Server
 
         public static void OnShutdown()
         {
-            MySqlConnection.ClearAllPools();
-            SqliteConnection.ClearAllPools();
+
+            if(!ConfigReader.SqlLite)
+                MySqlConnection.ClearAllPools();
+            else
+                SqliteConnection.ClearAllPools();
+            
         }
 
         public static bool TryExecuteSqlQuery(string query)
@@ -134,7 +138,6 @@ namespace HISP.Server
 
                 if (ConfigReader.SqlLite)
                 {
-
                     try
                     {
                         DbCommand sqlCommand = db.CreateCommand();

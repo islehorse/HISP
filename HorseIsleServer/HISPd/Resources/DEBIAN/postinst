@@ -1,7 +1,10 @@
 #!/bin/sh
 
 useradd -r horseisle
+mkdir -p /etc/hisp
+mkdir -p /var/log/hisp
 chown -R horseisle:horseisle /etc/hisp
+chown -R horseisle:horseisle /var/log/hisp
 systemctl enable HISP.service
 systemctl start HISP
 

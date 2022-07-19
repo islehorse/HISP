@@ -164,7 +164,7 @@
             // 
             this.allUsersSubscribedToolStripMenuItem.CheckOnClick = true;
             this.allUsersSubscribedToolStripMenuItem.Name = "allUsersSubscribedToolStripMenuItem";
-            this.allUsersSubscribedToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.allUsersSubscribedToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.allUsersSubscribedToolStripMenuItem.Text = "All users subscribed";
             this.allUsersSubscribedToolStripMenuItem.CheckedChanged += new System.EventHandler(this.allUsersSubscribedToolStripMenuItem_CheckedChanged);
             // 
@@ -172,7 +172,7 @@
             // 
             this.fixOfficalBugsToolStripMenuItem.CheckOnClick = true;
             this.fixOfficalBugsToolStripMenuItem.Name = "fixOfficalBugsToolStripMenuItem";
-            this.fixOfficalBugsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.fixOfficalBugsToolStripMenuItem.Size = new System.Drawing.Size(178, 22);
             this.fixOfficalBugsToolStripMenuItem.Text = "Fix offical bugs";
             this.fixOfficalBugsToolStripMenuItem.CheckedChanged += new System.EventHandler(this.fixOfficalBugsToolStripMenuItem_CheckedChanged);
             // 
@@ -190,12 +190,14 @@
             this.editServerPropertiesToolStripMenuItem.Name = "editServerPropertiesToolStripMenuItem";
             this.editServerPropertiesToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.editServerPropertiesToolStripMenuItem.Text = "Edit server.properties";
+            this.editServerPropertiesToolStripMenuItem.Click += new System.EventHandler(this.editServerPropertiesToolStripMenuItem_Click);
             // 
             // openServerFolderToolStripMenuItem
             // 
             this.openServerFolderToolStripMenuItem.Name = "openServerFolderToolStripMenuItem";
             this.openServerFolderToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
             this.openServerFolderToolStripMenuItem.Text = "Open server folder";
+            this.openServerFolderToolStripMenuItem.Click += new System.EventHandler(this.openServerFolderToolStripMenuItem_Click);
             // 
             // SystemTrayIcon
             // 
