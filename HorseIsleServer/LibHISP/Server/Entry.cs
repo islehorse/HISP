@@ -8,8 +8,6 @@ using HISP.Security;
 
 using System;
 using System.Diagnostics;
-using System.Threading;
-using System.IO;
 
 namespace HISP.Server
 {
