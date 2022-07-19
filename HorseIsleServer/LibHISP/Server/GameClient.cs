@@ -103,8 +103,8 @@ namespace HISP.Server
                         }
 
                         client.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.GameUpdates).Count++;
+                        Logger.DebugPrint("Kicking: " + client.LoggedinUser.Username);
                     }
-
                     client.Kick("Server shutdown.");
 
                 }

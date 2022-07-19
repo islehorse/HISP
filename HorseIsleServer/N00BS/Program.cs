@@ -68,6 +68,12 @@ namespace HISP.Noobs
             return rand.Next(0, 255).ToString();
         }
 
+        public static void ShowCrash(bool error, string type, string text)
+        {
+            if (type == "CRASH")
+                MessageBox.Show(text, type, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
 
         public static void Main(string[] args)
         {
@@ -104,6 +110,9 @@ namespace HISP.Noobs
                 Task startForm = new Task(StartLRFrm);
                 startForm.Start();
 
+                Entry.RegisterCrashHandler();
+                Logger.SetCallback(ShowCrash);
+
                 ConfigReader.ConfigurationFileName = Path.Combine(BaseDir, "server.properties");
                 ConfigReader.OpenConfig();
                 ConfigReader.SqlLite = true;
@@ -117,7 +126,6 @@ namespace HISP.Noobs
 
                 ConfigReader.DatabaseName = Path.Combine(BaseDir, "game1");
 
-
                 IncrementProgress();
                 Database.OpenDatabase();
                 IncrementProgress();
@@ -130,6 +138,7 @@ namespace HISP.Noobs
                         GameServer.ShutdownServer();
 
                 }
+
 
                 // Start HI1 Server
                 IncrementProgress();

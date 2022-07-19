@@ -21,21 +21,24 @@ namespace HISP.Server
         {
             Process.GetCurrentProcess().Close();
         }
-        public static Action OnShutdown = defaultOnShutdownCallback;
 
+        public static Action OnShutdown = defaultOnShutdownCallback;
 
         public static void SetShutdownCallback(Action callback)
         {
             OnShutdown = callback;
         }
+        
+        public static void RegisterCrashHandler()
+        {
+#if (!DEBUG)
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(HispCrashHandler);
+#endif
+        }
 
         public static void Start()
         {
-
-#if (!DEBUG)
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
-#endif
-
+            RegisterCrashHandler();
             Console.Title = ServerVersion.GetBuildString();
             ConfigReader.OpenConfig();
             CrossDomainPolicy.GetPolicy();
@@ -61,25 +64,18 @@ namespace HISP.Server
             GameServer.StartServer();
         }
 
-        private static void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e)
+        private static void HispCrashHandler(object sender, UnhandledExceptionEventArgs e)
         {
             Exception execpt = (Exception)e.ExceptionObject;
 
 
-            Logger.ErrorPrint("HISP HAS CRASHED :(");
-            Logger.ErrorPrint("Unhandled Exception: " + execpt.ToString());
-            Logger.ErrorPrint(execpt.StackTrace);
+            string crashMsg = "HISP HAS CRASHED :(";
+            crashMsg += "Build: " + ServerVersion.GetBuildString();
+            crashMsg += "Unhandled Exception: " + execpt.Message;
+            crashMsg += execpt.StackTrace;
 
-            try
-            {
-                File.AppendAllText("crashlog.txt", "HISP HAS CRASHED :(\n");
-                File.AppendAllText("crashlog.txt", "Unhandled Exception: " + execpt.ToString() + "\n");
-                File.AppendAllText("crashlog.txt", execpt.StackTrace + "\n");
-            }
-            catch (Exception) { };
-
-            Thread.Sleep(5000);
-            Environment.Exit(1);
+            Logger.CrashPrint(crashMsg);
+            
         }
     }
 }
