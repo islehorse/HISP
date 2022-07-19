@@ -42,5 +42,9 @@ namespace HISP.Server
             if (ConfigReader.LogLevel >= 5)
                 logFunction(false, "DEBUG", text);
         }
+        public static void CrashPrint(string text)
+        {
+            logFunction(true, "CRASH", text);
+        }
     }
 }

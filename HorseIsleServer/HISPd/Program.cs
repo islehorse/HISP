@@ -48,14 +48,17 @@ namespace HISP.Cli
         }
         public static void LogToFile(bool error, string type,string text)
         {
-            sw.WriteLineAsync(text + sw.NewLine);
+            sw.WriteLineAsync(DateTime.Now.ToString("MM-dd-YYYY HH:mm:dd") + ": [" + type + "] " + text + sw.NewLine);
         }
         public static void LogStdout(bool error, string type, string text)
         {
+            if (type == "CRASH")
+                LogToFile(error, type, text);
+
             if (error)
-                Console.Error.WriteAsync("[" + type + "] " + text + Console.Error.NewLine);
+                Console.Error.WriteAsync(DateTime.Now.ToString("MM-dd-YYYY HH:mm:dd")+": [" + type + "] " + text + Console.Error.NewLine);
             else
-                Console.Out.WriteAsync("[" + type + "] " + text + Console.Out.NewLine);
+                Console.Out.WriteAsync(DateTime.Now.ToString("MM-dd-YYYY HH:mm:dd") + ": [" + type + "] " + text + Console.Out.NewLine);
             
         }
 
@@ -119,6 +122,10 @@ namespace HISP.Cli
             {
                 LogFile = HispLogVar;
                 Logger.SetCallback(LogToFile);
+            }
+            else
+            {
+                LogFile = Path.Combine(BaseDir, "crash.log");
             }
 
             if (HispBaseDir != null)

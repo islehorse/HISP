@@ -76,8 +76,8 @@ namespace HISP.Noobs
         private void editServerPropertiesToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process p = new Process();
-            p.StartInfo.FileName = "notepad.exe";
-            p.StartInfo.Arguments = Path.Combine(Program.BaseDir, "server.properties");
+            p.StartInfo.FileName = Path.Combine(Program.BaseDir, "server.properties");
+            p.StartInfo.UseShellExecute = true;
             p.Start();
            
         }
@@ -85,8 +85,8 @@ namespace HISP.Noobs
         private void openServerFolderToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process p = new Process();
-            p.StartInfo.FileName = "explorer.exe";
-            p.StartInfo.Arguments = Program.BaseDir;
+            p.StartInfo.FileName = Program.BaseDir;
+            p.StartInfo.UseShellExecute = true;
             p.Start();
         }
 
