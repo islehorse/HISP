@@ -1,0 +1,23 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="780" d:DesignHeight="100"
+        x:Class="MPN00BS.ServerSelection"
+        Title="Server Selection" 
+        Height="100" 
+        Width="780"
+        MaxWidth="780"
+        MaxHeight="100">
+    <Grid Height="100" Width="780">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Label Name="serverIpLabel" Content="Server IP:" HorizontalAlignment="Left" Margin="20,20,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.707,2.242" Grid.Row="0"/>
+        <TextBox Name="serverIp" HorizontalAlignment="Left" Margin="90,15,0,0" TextWrapping="Wrap" Text="game.islehorse.com" VerticalAlignment="Top" Width="440" Grid.Row="0"/>
+        <Label Name="serverPortLabel" Content="Server PORT:" HorizontalAlignment="Left" Margin="535,20,0,0" VerticalAlignment="Top"/>
+        <NumericUpDown Name="serverPort" HorizontalAlignment="Left" Margin="630,15,0,0" Value="12321" Minimum="0" Maximum="65535" VerticalAlignment="Top" Width="130"/>
+        <Button Name="joinServer" Content="Join Server" HorizontalAlignment="Left" Margin="20,0,0,0" Grid.Row="1" VerticalAlignment="Center" Width="740" Click="joinServer_Click" />
+    </Grid>
+</Window>

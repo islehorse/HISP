@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="550" d:DesignHeight="90"
+        x:Class="MPN00BS.MpOrSp"
+        Title="Select Mode"
+        Height="90"
+        Width="550"
+        MaxWidth="550"
+        MaxHeight="90">
+    <Grid Height="70" Width="550" HorizontalAlignment="Center" VerticalAlignment="Center" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+      <Button Name="playSingleplayer" Content="Play Singleplayer" HorizontalAlignment="Center" VerticalAlignment="Center" Width="515" Click="playSingleplayer_Click" Grid.Row="0"/>
+      <Button Name="playMultiplayer" Content="Play Multiplayer" HorizontalAlignment="Center" VerticalAlignment="Center" Width="515" Click="playMultiplayer_Click" Grid.Row="1"/>
+    </Grid>
+
+</Window>

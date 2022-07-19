@@ -1,0 +1,19 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="200"
+        x:Class="MPN00BS.LoadingWindow"
+        Title="Starting Server ..." Height="200" Width="820"
+        MaxHeight="200" MaxWidth="820">
+  <Grid Height="200" Width="820">
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="1*" />
+      <ColumnDefinition Width="5*" />
+    </Grid.ColumnDefinitions>
+    <Image Name="hispLogo" HorizontalAlignment="Left" Height="128" Margin="20,0,0,0" VerticalAlignment="Center" Width="128" Source="/HispLogo.gif" Grid.Column="0"/>
+    <Label Name="startingServer" Content="Starting Server ..." HorizontalAlignment="Left" Margin="20,52,0,0" VerticalAlignment="Top" Grid.Column="1" />
+    <ProgressBar Name="startupProgress"  HorizontalAlignment="Left" Maximum="18" Height="27" Margin="20,83,0,0" VerticalAlignment="Top" Width="637" Grid.Column="1"/>
+  </Grid>
+</Window>
+
