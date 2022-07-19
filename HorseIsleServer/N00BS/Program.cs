@@ -21,7 +21,6 @@ namespace HISP.Noobs
 {
     public static class Program
     {
-        public static Random rand = new Random(Guid.NewGuid().GetHashCode());
         private static LoadingForm lfrm;
         public static string BaseDir;
         private static ContentServer cs;
@@ -62,10 +61,6 @@ namespace HISP.Noobs
             {
                 lfrm.StartProgress.Increment(1);
             }
-        }
-        public static string GetOctlet()
-        {
-            return rand.Next(0, 255).ToString();
         }
 
         public static void ShowCrash(bool error, string type, string text)
