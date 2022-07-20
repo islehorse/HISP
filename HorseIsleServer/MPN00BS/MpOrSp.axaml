@@ -14,8 +14,8 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-      <Button Name="playSingleplayer" Content="Play Singleplayer" HorizontalAlignment="Center" VerticalAlignment="Center" Width="515" Click="playSingleplayer_Click" Grid.Row="0"/>
-      <Button Name="playMultiplayer" Content="Play Multiplayer" HorizontalAlignment="Center" VerticalAlignment="Center" Width="515" Click="playMultiplayer_Click" Grid.Row="1"/>
+      <Button Name="playSingleplayer" Content="Play Singleplayer" HorizontalAlignment="Center" VerticalAlignment="Center" Width="515" Click="playSingleplayerClick" Grid.Row="0"/>
+      <Button Name="playMultiplayer" Content="Play Multiplayer" HorizontalAlignment="Center" VerticalAlignment="Center" Width="515" Click="playMultiplayerClick" Grid.Row="1"/>
     </Grid>
 
 </Window>

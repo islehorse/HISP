@@ -16,6 +16,17 @@ namespace MPN00BS
                 this.Close();
             });
         }
+        public void OnServerStarted()
+        {
+            ServerStarter.StartHorseIsleClient(OnClientExit, "127.0.0.1", 12321);
+        }
+        public void OnNoUsersFound()
+        {
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                new RegisterWindow().Show();
+            });
+        }
 
         public void ProgressUpdate()
         {
@@ -25,7 +36,6 @@ namespace MPN00BS
                 if (startupProgress.Value >= startupProgress.Maximum)
                 {
                     this.Hide();
-                    ServerStarter.StartHorseIsleClient(OnClientExit, "127.0.0.1", 12321);
                 }
             });
         }
@@ -37,7 +47,7 @@ namespace MPN00BS
 #endif
 
             ServerStarter.StartHttpServer();
-            new Task( () => ServerStarter.StartHispServer(ProgressUpdate) ).Start();
+            new Task( () => ServerStarter.StartHispServer(ProgressUpdate, OnNoUsersFound, OnServerStarted)).Start();
         }
 
         private void InitializeComponent()

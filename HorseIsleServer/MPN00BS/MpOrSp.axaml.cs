@@ -13,13 +13,13 @@ namespace MPN00BS
             this.AttachDevTools();
 #endif
         }
-        private void playSingleplayer_Click(object sender, RoutedEventArgs e)
+        private void playSingleplayerClick(object sender, RoutedEventArgs e)
         {
             new LoadingWindow().Show();
             this.Close();
         }
 
-        private void playMultiplayer_Click(object sender, RoutedEventArgs e)
+        private void playMultiplayerClick(object sender, RoutedEventArgs e)
         {
             new ServerSelection().Show();
             this.Close();
