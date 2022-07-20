@@ -41,7 +41,7 @@ namespace MPN00BS
             if (type == "CRASH")
                 MessageBox.Show(null, text, type, MessageBoxButtons.Ok);
         }
-        private static void HorseIsleClientExited(object? sender, EventArgs e)
+        private static void HorseIsleClientExited(object sender, EventArgs e)
         {
             HorseIsleClientExitCallback();
         }
@@ -63,7 +63,7 @@ namespace MPN00BS
             clientProcess.WaitForExit();
         }
 
-        public static void StartHispServer(Action ProgressCallback)
+        public static void StartHispServer(Action ProgressCallback, Action UserCreationCallback, Action ServerStartedCallback)
         {
 
             Entry.RegisterCrashHandler();
@@ -90,10 +90,7 @@ namespace MPN00BS
 
             if (Database.GetUsers().Length <= 0)
             {
-            //    RegisterForm rfrm = new RegisterForm();
-            //    if (rfrm.ShowDialog() == DialogResult.Cancel)
-            //        GameServer.ShutdownServer();
-
+                UserCreationCallback();
             }
 
 
@@ -151,10 +148,12 @@ namespace MPN00BS
                 return;
             }
             ProgressCallback();
+
+            ServerStartedCallback();
         }
         public static void StartHttpServer()
         {
-            string? hispFolder = Environment.GetEnvironmentVariable("APPDATA");
+            string hispFolder = Environment.GetEnvironmentVariable("APPDATA");
             if (hispFolder == null)
                 return;
 
