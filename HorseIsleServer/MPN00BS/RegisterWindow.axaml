@@ -1,0 +1,40 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="MPN00BS.RegisterWindow"
+        Title="Create Account" MaxHeight="450" MaxWidth="800"
+        MinWidth="800" MinHeight="450" Height="450" Width="800">
+    <Grid Height="450" Width="800">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="5*" />
+        </Grid.RowDefinitions>
+        <TextBox Name="usernameBox" KeyUp="usernameChanged" Watermark="Username" HorizontalAlignment="Center" Height="26" Grid.Row="0" TextWrapping="Wrap"  VerticalAlignment="Center" Width="780"/>
+        <TextBox Name="passwordBox" KeyUp="passwordChanged" PasswordChar="*" Watermark="Password" HorizontalAlignment="Center" Height="26" Grid.Row="1" TextWrapping="Wrap"  VerticalAlignment="Center" Width="780"/>
+        <Label Name="usernameValidationFailReason" Content="- Username must be more than 3 characters." HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Center" Foreground="Red"/>
+        <Label Name="passwordValidationFailReason" Content="- Password must be more than 6 characters." HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Center" Foreground="Red"/>
+        <Grid HorizontalAlignment="Center" Height="180" Grid.Row="4" VerticalAlignment="Top" Width="800" Margin="0,10,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+            <Label Name="genderLabel" Content="Gender:" HorizontalAlignment="Left" Margin="10,20,0,0" VerticalAlignment="Top" Grid.Column="0"/>
+            <ComboBox Name="genderSelectionBox" SelectedIndex="0" HorizontalAlignment="Center" VerticalAlignment="Top" Width="380" Margin="0,51,0,0">
+                <ComboBoxItem Content="FEMALE"/>
+                <ComboBoxItem Content="MALE"/>
+                <ComboBoxItem Content="NON-BINARY"/>
+            </ComboBox>
+            <Label Name="pronounsNotice" Content="- Determines if your called &quot;He&quot;, &quot;She&quot; or &quot;They&quot; in game" HorizontalAlignment="Left" Margin="36,110,0,0" VerticalAlignment="Top" Grid.Column="0"/>
+            <!--<Label Name="enbiesNotice" Content="- Enbies, simply type whatever you want into the box." HorizontalAlignment="Left" Margin="36,141,0,0" VerticalAlignment="Top"/>-->
+            <Label Name="privledgesLabel" Grid.Column="1" Content="Privledges:" HorizontalAlignment="Right" Margin="0,55,55,0" VerticalAlignment="Top"/>
+            <CheckBox Name="adminCheckbox" Grid.Column="1" Checked="adminChecked" Content="Administrator" HorizontalAlignment="Right" Margin="0,95,9,0" VerticalAlignment="Top" IsChecked="True"/>
+            <CheckBox Name="modCheckbox" Grid.Column="1" Unchecked="modUnchecked" Content="Moderator" HorizontalAlignment="Right" Margin="0,120,29,0" VerticalAlignment="Top" IsChecked="True"/>
+        </Grid>
+        <Button Name="createAccountButton" Click="CreateAccount" IsEnabled="False" Content="Create Account" HorizontalAlignment="Center" Margin="0,200,0,0" Grid.Row="4" VerticalAlignment="Center" Width="780"/>
+    </Grid>
+</Window>
