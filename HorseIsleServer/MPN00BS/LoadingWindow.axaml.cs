@@ -9,16 +9,15 @@ namespace MPN00BS
     public partial class LoadingWindow : Window
     {
 
-        private void OnClientExit()
+
+        public void OnServerStarted()
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
+                this.Hide();
+                new SystemTrayIcon().Show();
                 this.Close();
             });
-        }
-        public void OnServerStarted()
-        {
-            ServerStarter.StartHorseIsleClient(OnClientExit, "127.0.0.1", 12321);
         }
         public void OnNoUsersFound()
         {
@@ -33,10 +32,6 @@ namespace MPN00BS
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 startupProgress.Value++;
-                if (startupProgress.Value >= startupProgress.Maximum)
-                {
-                    this.Hide();
-                }
             });
         }
         public LoadingWindow()
