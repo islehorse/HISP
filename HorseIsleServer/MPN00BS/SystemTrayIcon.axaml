@@ -1,0 +1,15 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1" d:DesignHeight="0"
+        x:Class="MPN00BS.SystemTrayIcon"
+        Title="System Tray Icon"
+        Height="0"
+        Width="0"
+        MaxWidth="0"
+        MaxHeight="0"
+        Icon="/icon.ico"
+        IsVisible="False">
+  
+</Window>

@@ -8,7 +8,8 @@
         Height="90"
         Width="550"
         MaxWidth="550"
-        MaxHeight="90">
+        MaxHeight="90"
+        Icon="/icon.ico">
     <Grid Height="70" Width="550" HorizontalAlignment="Center" VerticalAlignment="Center" >
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
