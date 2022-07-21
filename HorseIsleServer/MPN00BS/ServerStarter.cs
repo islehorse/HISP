@@ -60,7 +60,6 @@ namespace MPN00BS
             clientProcess.EnableRaisingEvents = true;
             clientProcess.Exited += HorseIsleClientExited;
             clientProcess.Start();
-            clientProcess.WaitForExit();
         }
 
         public static void StartHispServer(Action ProgressCallback, Action UserCreationCallback, Action ServerStartedCallback)

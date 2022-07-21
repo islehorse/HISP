@@ -8,7 +8,8 @@
         Height="100" 
         Width="780"
         MaxWidth="780"
-        MaxHeight="100">
+        MaxHeight="100"
+        Icon="/icon.ico">
     <Grid Height="100" Width="780">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />

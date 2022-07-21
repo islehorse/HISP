@@ -5,7 +5,7 @@
         mc:Ignorable="d" d:DesignWidth="820" d:DesignHeight="200"
         x:Class="MPN00BS.LoadingWindow"
         Title="Starting Server ..." Height="200" Width="820"
-        MaxHeight="200" MaxWidth="820">
+        MaxHeight="200" MaxWidth="820" Icon="/icon.ico">
   <Grid Height="200" Width="820">
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="1*" />

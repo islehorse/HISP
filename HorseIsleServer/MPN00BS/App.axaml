@@ -1,7 +1,51 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Name="Horse Isle"
              x:Class="MPN00BS.App">
     <Application.Styles>
         <FluentTheme Mode="Light"/>
     </Application.Styles>
+    
+  
+  <TrayIcon.Icons>
+    <TrayIcons>
+      <TrayIcon Icon="/icon.ico" ToolTipText="HI1 Server">
+        <TrayIcon.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="Users">
+              <NativeMenu>
+                <NativeMenuItem Header="Create New User" />
+                <NativeMenuItem Header="Reset Passsword" />
+              </NativeMenu>
+            </NativeMenuItem>
+            <NativeMenuItem Header="Server">
+              <NativeMenu>
+                <NativeMenuItem Header="Shutdown Server" />
+                <NativeMenuItem Header="Chat">
+                  <NativeMenu>
+                    <NativeMenuItem Header="Disable Swear Filter" ToggleType="CheckBox" IsChecked="True"/>
+                    <NativeMenuItem Header="Disable Corrections" ToggleType="CheckBox" IsChecked="True"/>
+                    <NativeMenuItem Header="Disable Non-Vio Checks" ToggleType="CheckBox" IsChecked="True"/>
+                    <NativeMenuItem Header="Disable Spam Filter" ToggleType="CheckBox" IsChecked="True"/>
+                  </NativeMenu>
+                </NativeMenuItem>
+                <NativeMenuItem Header="Game">
+                  <NativeMenu>
+                    <NativeMenuItem Header="All Users Subscribed" ToggleType="CheckBox" IsChecked="True"/>
+                    <NativeMenuItem Header="Fix Offical Bugs" ToggleType="CheckBox" IsChecked="True"/>
+                  </NativeMenu>
+                </NativeMenuItem>
+                <NativeMenuItem Header="Advanced">
+                  <NativeMenu>
+                    <NativeMenuItem Header="Edit &quot;server.properties&quot;" />
+                    <NativeMenuItem Header="Open Server Folder" />
+                  </NativeMenu>
+                </NativeMenuItem>
+              </NativeMenu>
+            </NativeMenuItem>
+          </NativeMenu>
+        </TrayIcon.Menu>
+      </TrayIcon>
+    </TrayIcons>
+  </TrayIcon.Icons>
 </Application>
