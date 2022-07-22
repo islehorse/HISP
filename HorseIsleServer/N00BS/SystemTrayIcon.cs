@@ -13,9 +13,9 @@ namespace HISP.Noobs
         public SystemTrayIcon()
         {
             InitializeComponent();
-            disableSwearFilterToolStripMenuItem.Checked = !ConfigReader.BadWords;
-            disableCorrectionsToolStripMenuItem.Checked = !ConfigReader.DoCorrections;
-            disableNonvioChecksToolStripMenuItem.Checked = !ConfigReader.DoNonViolations;
+            disableSwearFilterToolStripMenuItem.Checked = !ConfigReader.EnableSwearFilter;
+            disableCorrectionsToolStripMenuItem.Checked = !ConfigReader.EnableCorrections;
+            disableNonvioChecksToolStripMenuItem.Checked = !ConfigReader.EnableNonViolations;
             disableSpamFilterToolStripMenuItem.Checked = !ConfigReader.EnableSpamFilter;
 
             allUsersSubscribedToolStripMenuItem.Checked = ConfigReader.AllUsersSubbed;
@@ -132,21 +132,21 @@ namespace HISP.Noobs
         {
             bool enab = !disableSwearFilterToolStripMenuItem.Checked;
             ModifyConfig("enable_word_filter", enab.ToString().ToLowerInvariant());
-            ConfigReader.BadWords = enab;
+            ConfigReader.EnableSwearFilter = enab;
         }
 
         private void disableCorrectionsToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             bool enab = !disableCorrectionsToolStripMenuItem.Checked;
             ModifyConfig("enable_corrections", enab.ToString().ToLowerInvariant());
-            ConfigReader.DoCorrections = enab;
+            ConfigReader.EnableCorrections = enab;
         }
 
         private void disableNonvioChecksToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             bool enab = !disableNonvioChecksToolStripMenuItem.Checked;
             ModifyConfig("enable_non_violation_check", enab.ToString().ToLowerInvariant());
-            ConfigReader.DoNonViolations = enab;
+            ConfigReader.EnableNonViolations = enab;
         }
 
         private void disableSpamFilterToolStripMenuItem_CheckedChanged(object sender, EventArgs e)

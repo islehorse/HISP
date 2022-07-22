@@ -67,10 +67,10 @@ namespace HISP.Server
             Exception execpt = (Exception)e.ExceptionObject;
 
 
-            string crashMsg = "HISP HAS CRASHED :(";
-            crashMsg += "Build: " + ServerVersion.GetBuildString();
-            crashMsg += "Unhandled Exception: " + execpt.Message;
-            crashMsg += execpt.StackTrace;
+            string crashMsg = "HISP HAS CRASHED :(" + "\n";
+            crashMsg += "Build: " + ServerVersion.GetBuildString() + "\n";
+            crashMsg += "Unhandled Exception: " + execpt.Message + "\n";
+            crashMsg += execpt.StackTrace + "\n";
 
             Logger.CrashPrint(crashMsg);
             
