@@ -9,7 +9,7 @@ defaults:
 
 jobs:
   build-linux:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
@@ -168,7 +168,7 @@ jobs:
         path: HorseIsleServer/debpackage
         
   build-win:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
       with:
