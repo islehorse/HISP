@@ -28,9 +28,9 @@ namespace HISP.Server
         public static bool EnableSpamFilter = true;
         public static bool AllUsersSubbed = false;
         public static bool FixOfficalBugs = false;
-        public static bool BadWords = true;
-        public static bool DoCorrections = true;
-        public static bool DoNonViolations = true;
+        public static bool EnableSwearFilter = true;
+        public static bool EnableCorrections = true;
+        public static bool EnableNonViolations = true;
 
         public static string ConfigurationFileName = "server.properties";
         public static void OpenConfig()
@@ -102,13 +102,13 @@ namespace HISP.Server
                         AllUsersSubbed = data == "true";
                         break;
                     case "enable_corrections":
-                        DoCorrections = data == "true";
+                        EnableCorrections = data == "true";
                         break;
                     case "sql_lite":
                         SqlLite = data == "true";
                         break;
                     case "enable_non_violation_check":
-                        DoNonViolations = data == "true";
+                        EnableNonViolations = data == "true";
                         break;
                     case "enable_spam_filter":
                         EnableSpamFilter = data == "true";
@@ -117,7 +117,7 @@ namespace HISP.Server
                         FixOfficalBugs = data == "true";
                         break;
                     case "enable_word_filter":
-                        BadWords = data == "true";
+                        EnableSwearFilter = data == "true";
                         break;
                     case "mods_folder":
                         ModsFolder = data;

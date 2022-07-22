@@ -110,7 +110,7 @@ namespace HISP.Game.Chat
         }
         public static Object FilterMessage(string message) // Handles chat filtering and violation stuffs
         {
-            if (!ConfigReader.BadWords) // Freedom of Speech Mode
+            if (!ConfigReader.EnableSwearFilter) // Freedom of Speech Mode
                 return null;
 
 
@@ -359,7 +359,7 @@ namespace HISP.Game.Chat
 
         public static string DoCorrections(string message)
         {
-            if (!ConfigReader.DoCorrections)
+            if (!ConfigReader.EnableCorrections)
                 return message;
 
             foreach(Correction correct in CorrectedWords)
@@ -466,7 +466,7 @@ namespace HISP.Game.Chat
 
         public static string NonViolationChecks(User user, string message)
         {
-            if(!ConfigReader.DoNonViolations)
+            if(!ConfigReader.EnableNonViolations)
                 return null;
 
             // Check if contains password.

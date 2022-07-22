@@ -11,12 +11,14 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using static MPN00BS.MessageBox;
-using System.Threading.Tasks;
 
 namespace MPN00BS
 {
+    
     public class ServerStarter
     {
+        public static bool HasServerStarted = false;
+        private static Process clientProcess = new Process();
         private static Action HorseIsleClientExitCallback;
         public static string BaseDir = "";
         private static ContentServer cs = null;
@@ -30,27 +32,30 @@ namespace MPN00BS
 
         }
 
-        public static void OnShutdown()
-        {
-            if (!Process.GetCurrentProcess().CloseMainWindow())
-                Process.GetCurrentProcess().Close();
-        }
 
         public static void ShowCrash(bool error, string type, string text)
         {
             if (type == "CRASH")
+            {
+                File.AppendAllText(Path.Combine(BaseDir, "crash.log"), text);
                 MessageBox.Show(null, text, type, MessageBoxButtons.Ok);
+            }
         }
+
         private static void HorseIsleClientExited(object sender, EventArgs e)
         {
             HorseIsleClientExitCallback();
         }
 
+        public static void CloseHorseIsleClient()
+        {
+            clientProcess.Kill();
+        }
         public static void StartHorseIsleClient(Action callback, string serverIp, int serverPort)
         {
             HorseIsleClientExitCallback = callback;
 
-            Process clientProcess = new Process();
+            clientProcess = new Process();
             clientProcess.StartInfo.FileName = "flash.dll";
             clientProcess.StartInfo.Arguments = "http://127.0.0.1/horseisle.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
 
@@ -62,17 +67,15 @@ namespace MPN00BS
             clientProcess.Start();
         }
 
-        public static void StartHispServer(Action ProgressCallback, Action UserCreationCallback, Action ServerStartedCallback)
+        public static void ReadServerProperties()
         {
-
-            Entry.RegisterCrashHandler();
-            Logger.SetCallback(ShowCrash);
-
+            SetBaseDir();
             ConfigReader.ConfigurationFileName = Path.Combine(BaseDir, "server.properties");
             ConfigReader.OpenConfig();
             ConfigReader.SqlLite = true;
             ConfigReader.LogLevel = 0;
-            ConfigReader.CrossDomainPolicyFile = Path.Combine(BaseDir, "CrossDomainPolicy.xml");
+            ConfigReader.CrossDomainPolicyFile = Path.Combine(BaseDir, ConfigReader.CrossDomainPolicyFile);
+
 
             // Compatibility patch
             if (File.Exists(Path.Combine(BaseDir, "game1.db.db")))
@@ -80,7 +83,15 @@ namespace MPN00BS
                 File.Move(Path.Combine(BaseDir, "game1.db.db"), Path.Combine(BaseDir, "game1.db"));
             }
 
-            ConfigReader.DatabaseName = Path.Combine(BaseDir, "game1");
+            ConfigReader.DatabaseName = Path.Combine(BaseDir, ConfigReader.DatabaseName);
+        }
+        public static void StartHispServer(Action ProgressCallback, Action UserCreationCallback, Action ServerStartedCallback, Action OnShutdown)
+        {
+
+            Entry.RegisterCrashHandler();
+            Logger.SetCallback(ShowCrash);
+            ReadServerProperties();
+
 
             ProgressCallback();
             Database.OpenDatabase();
@@ -147,19 +158,50 @@ namespace MPN00BS
                 return;
             }
             ProgressCallback();
-
+            HasServerStarted = true;
             ServerStartedCallback();
         }
-        public static void StartHttpServer()
+
+        public static void ModifyConfig(string okey, string value)
         {
+            string[] configFile = File.ReadAllLines(ConfigReader.ConfigurationFileName);
+            for (int i = 0; i < configFile.Length; i++)
+            {
+                string setting = configFile[i];
+
+                if (setting.Length < 1)
+                    continue;
+                if (setting[0] == '#')
+                    continue;
+                if (!setting.Contains("="))
+                    continue;
+
+                string[] dataPair = setting.Split('=');
+
+                string key = dataPair[0];
+
+                if (key == okey)
+                {
+                    dataPair[1] = value;
+                    configFile[i] = string.Join('=', dataPair);
+                }
+            }
+            File.WriteAllLines(ConfigReader.ConfigurationFileName, configFile);
+        }
+
+        public static void SetBaseDir()
+        {
+
             string hispFolder = Environment.GetEnvironmentVariable("APPDATA");
             if (hispFolder == null)
                 return;
 
             BaseDir = Path.Combine(hispFolder, "HISP", "N00BS");
             Directory.CreateDirectory(BaseDir);
-
-
+        }
+        public static void StartHttpServer()
+        {
+            SetBaseDir();
             try
             {
                 cs = new ContentServer("127.0.0.1");
