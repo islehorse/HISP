@@ -193,7 +193,7 @@ jobs:
         cd HISPd
         dotnet publish -p:PublishProfile=Win64.pubxml
         cd ..
-        cd N00BS
+        cd MPN00BS
         dotnet publish -p:PublishProfile=Win64.pubxml
         cd ..
 
@@ -218,7 +218,7 @@ jobs:
         cd HISPd
         dotnet publish -p:PublishProfile=Win32.pubxml
         cd ..
-        cd N00BS
+        cd MPN00BS
         dotnet publish -p:PublishProfile=Win32.pubxml
         cd ..
     - name: Build win-arm
@@ -280,13 +280,13 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win32-Noobs
-        path: HorseIsleServer\N00BS\bin\x86\Windows\net7.0\win-x86\publish\
+        path: HorseIsleServer\MPN00BS\bin\x86\Windows\net7.0\win-x86\publish\
 
     - name: Upload win-x64-noobs
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64-Noobs
-        path: HorseIsleServer\N00BS\bin\x64\Windows\net7.0\win-x64\publish\
+        path: HorseIsleServer\MPN00BS\bin\x64\Windows\net7.0\win-x64\publish\
 
 
 
