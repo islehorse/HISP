@@ -64,7 +64,7 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -r linux-arm64 -c Linux /p:Platform=ARM64 --self-contained
+        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
         cd ..
 
 #        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
@@ -168,7 +168,7 @@ jobs:
         path: HorseIsleServer/debpackage
         
   build-win:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
@@ -256,40 +256,37 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64
-        path: HorseIsleServer\HISPd\bin\x64\Windows\net7.0\win-x64\publish\
+        path: HorseIsleServer/HISPd/bin/x64/Windows/net7.0/win-x64/publish/
     
     - name: Upload win-x86
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win32
-        path: HorseIsleServer\HISPd\bin\x86\Windows\net7.0\win-x86\publish\
+        path: HorseIsleServer/HISPd/bin/x86/Windows/net7.0/win-x86/publish/
         
     - name: Upload win-arm
       uses: actions/upload-artifact@v2
       with:
         name: HISP-WinARM
-        path: HorseIsleServer\HISPd\bin\arm\Windows\net7.0\win-arm\publish\
+        path: HorseIsleServer/HISPd/bin/arm/Windows/net7.0/win-arm/publish/
 
     - name: Upload win-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-WinARM64
-        path: HorseIsleServer\HISPd\bin\arm64\Windows\net7.0\win-arm64\publish\
+        path: HorseIsleServer/HISPd/bin/arm64/Windows/net7.0/win-arm64/publish/
 
     - name: Upload win-x86-noobs
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win32-Noobs
-        path: HorseIsleServer\MPN00BS\bin\x86\Windows\net7.0\win-x86\publish\
+        path: HorseIsleServer/MPN00BS/bin/x86/Windows/net7.0/win-x86/publish/
 
     - name: Upload win-x64-noobs
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64-Noobs
-        path: HorseIsleServer\MPN00BS\bin\x64\Windows\net7.0\win-x64\publish\
-
-
-
+        path: HorseIsleServer/MPN00BS/bin/x64/Windows/net7.0/win-x64/publish/
 
   build-mac:
     runs-on: ubuntu-latest
