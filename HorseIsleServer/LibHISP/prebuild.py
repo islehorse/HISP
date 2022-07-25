@@ -66,7 +66,7 @@ assembly_version = ".".join(points)
 
 # Update AssemblyInfo.cs files
 update_asm_info(os.path.join("LibHISP", "Properties", "AssemblyInfo.cs"))
-update_asm_info(os.path.join("N00BS"  , "Properties", "AssemblyInfo.cs"))
+update_asm_info(os.path.join("MPN00BS", "Properties", "AssemblyInfo.cs"))
 update_asm_info(os.path.join("HISPd"  , "Properties", "AssemblyInfo.cs"))
 
 # Update control file in dpkg
