@@ -56,7 +56,7 @@ namespace MPN00BS
             HorseIsleClientExitCallback = callback;
 
             clientProcess = new Process();
-            clientProcess.StartInfo.FileName = "flash.dll";
+            clientProcess.StartInfo.FileName = Path.Combine("flashplayer", "WINDOWS", "flash.exe");
             clientProcess.StartInfo.Arguments = "http://127.0.0.1/horseisle.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
 
             clientProcess.StartInfo.RedirectStandardOutput = true;

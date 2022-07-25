@@ -228,7 +228,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="flash.dll">
+    <None Update="flashplayer\flash.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
