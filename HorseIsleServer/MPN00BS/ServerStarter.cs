@@ -10,7 +10,6 @@ using HTTP;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Runtime.InteropServices;
 using static MPN00BS.MessageBox;
 
 namespace MPN00BS
@@ -19,10 +18,6 @@ namespace MPN00BS
     public class ServerStarter
     {
 
-#if OS_LINUX
-        [DllImport("libc", SetLastError = true)]
-        private static extern int chmod(string pathname, int mode);
-#endif
         public static bool HasServerStarted = false;
         private static Process clientProcess = new Process();
         private static Action HorseIsleClientExitCallback;
@@ -37,9 +32,9 @@ namespace MPN00BS
             cs.Contents.Add(ci);
 
         }
-	public static void ShutdownHTTPServer(){
-		cs.Shutdown();
-	}
+	    public static void ShutdownHTTPServer(){
+		    cs.Shutdown();
+	    }
 
         public static void ShowCrash(bool error, string type, string text)
         {
@@ -63,16 +58,22 @@ namespace MPN00BS
         {
             HorseIsleClientExitCallback = callback;
 
+            
             clientProcess = new Process();
 #if OS_WINDOWS
-            clientProcess.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
+            string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
 #elif OS_LINUX
-            clientProcess.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf");
-            chmod(clientProcess.StartInfo.FileName, 777);
+            string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf");
 #else
-	    MessageBox.Show(null,"ERROR: No path for flash projector specified on this platform", "Porting error", MessageBoxButtons.Ok);
+    	    MessageBox.Show(null,"ERROR: No path for flash projector specified on this platform", "Porting error", MessageBoxButtons.Ok);
 #endif
 
+            if (!File.Exists(executable))
+            {
+                MessageBox.Show(null, "ERROR: Cannot find file: \"" + executable + "\"", "File not Found error", MessageBoxButtons.Ok);
+            }
+
+            clientProcess.StartInfo.FileName = executable;
 
 #if OS_LINUX
             clientProcess.StartInfo.Arguments = "http://"+cs.ipaddr+":"+cs.portnum+"/horseisle_mapfix.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
@@ -81,10 +82,11 @@ namespace MPN00BS
 #endif
             clientProcess.StartInfo.RedirectStandardOutput = true;
             clientProcess.StartInfo.RedirectStandardError = true;
-
             clientProcess.EnableRaisingEvents = true;
             clientProcess.Exited += HorseIsleClientExited;
             clientProcess.Start();
+            
+            
         }
 
         public static void ReadServerProperties()
