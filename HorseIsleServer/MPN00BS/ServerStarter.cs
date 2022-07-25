@@ -17,6 +17,11 @@ namespace MPN00BS
     
     public class ServerStarter
     {
+
+#if OS_LINUX
+    [DllImport("libc", SetLastError = true)]
+    private static extern int chmod(string pathname, int mode);
+#endif
         public static bool HasServerStarted = false;
         private static Process clientProcess = new Process();
         private static Action HorseIsleClientExitCallback;
@@ -62,11 +67,13 @@ namespace MPN00BS
             clientProcess.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
 #elif OS_LINUX
             clientProcess.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf");
+            chmod(clientProcess.StartInfo.FileName, 777);
+
 #else
 	    MessageBox.Show(null,"ERROR: No path for flash projector specified on this platform", "Porting error", MessageBoxButtons.Ok);
 #endif
-            
-            
+
+
 #if OS_LINUX
             clientProcess.StartInfo.Arguments = "http://"+cs.ipaddr+":"+cs.portnum+"/horseisle_mapfix.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
 #else
@@ -227,7 +234,7 @@ namespace MPN00BS
             {
 
 #if OS_LINUX
-		cs = new ContentServer("127.0.0.1", 12322);
+                cs = new ContentServer("127.0.0.1", 12322);
 #else
                 cs = new ContentServer("127.0.0.1", 80);
 #endif
