@@ -23,7 +23,7 @@ namespace MPN00BS
         {
             AvaloniaXamlLoader.Load(this);
 #if OS_LINUX
-            chmod(Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf"), 777);
+            chmod(Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf"), 511);
 #endif
         }
 
