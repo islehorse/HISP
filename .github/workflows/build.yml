@@ -39,6 +39,10 @@ jobs:
         cd HISPd
         dotnet publish -p:PublishProfile=Linux64.pubxml
         cd ..
+        cd MPN00BS
+        dotnet publish -p:PublishProfile=Linux64.pubxml
+        cd ..
+        
 # Currently broken ...
 
 #        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
@@ -148,6 +152,12 @@ jobs:
       with:
         name: HISP-Linux64
         path: HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/
+
+    - name: Upload linux-x64-noobs
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Linux64-Noobs
+        path: HorseIsleServer/MPN00BS/bin/x64/Linux/net7.0/linux-x64/publish/
 
     - name: Upload linux-arm
       uses: actions/upload-artifact@v2

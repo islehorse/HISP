@@ -34,7 +34,6 @@ namespace HTTP
         {
             clientSock = ClientSocket;
             baseServ = Server;
-            baseServ.WriteDebugOutput("Client Connected @ " + clientSock.RemoteEndPoint.ToString());
             ProcessRequests();
             clientSock.Close();
             
@@ -107,7 +106,6 @@ namespace HTTP
 
         private void RespondGet(string name)
         {
-            baseServ.WriteDebugOutput("GET " + name);
          
             if (ContentItemExists(name))
             {
@@ -156,7 +154,6 @@ namespace HTTP
         private void RespondHead(string path)
         {
             string name = Path.GetFileName(path);
-            baseServ.WriteDebugOutput("HEAD " + path);
 
             if (ContentItemExists(name))
             {
@@ -262,26 +259,37 @@ namespace HTTP
     {
         public List<ContentItem> Contents = new List<ContentItem>();
         public Socket ServerSocket;
-        public void WriteDebugOutput(string txt)
-        {
-            Console.WriteLine("[HTTP] " + txt);
-        }
+
 
         public void CreateClient(object sender, SocketAsyncEventArgs e)
         {
             do
             {
+                if(shutdownServer)
+                   return;
+                   
                 Socket eSocket = e.AcceptSocket;
                 if (eSocket != null)
                     new ContentClient(this, eSocket);
                 e.AcceptSocket = null;
             } while (!ServerSocket.AcceptAsync(e));
         }
-        public ContentServer(string ip)
+        
+        public void Shutdown() {
+            shutdownServer = true;
+            ServerSocket.Dispose();
+            ServerSocket = null;
+        }
+        private bool shutdownServer = false;
+        public string ipaddr;
+        public short portnum;
+        
+        public ContentServer(string ip, short port)
         {
-
-            WriteDebugOutput("Listening for connections on port 80.");
-            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(ip), 80);
+	    ipaddr = ip;
+	    portnum = port;
+	    
+            IPEndPoint ep = new IPEndPoint(IPAddress.Parse(ip), port);
             ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             ServerSocket.Bind(ep);
             ServerSocket.Listen(0x7fffffff);

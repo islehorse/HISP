@@ -38,6 +38,7 @@ namespace MPN00BS
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 ServerStarter.CloseHorseIsleClient();
+            	ServerStarter.ShutdownHTTPServer();
                 this.Close();
             });
         }
@@ -52,9 +53,6 @@ namespace MPN00BS
         public LoadingWindow()
         {
             InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
             ServerStarter.StartHttpServer();
             new Task( () => ServerStarter.StartHispServer(ProgressUpdate, OnNoUsersFound, OnServerStarted, OnShutdown)).Start();
         }

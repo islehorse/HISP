@@ -15,9 +15,6 @@ namespace MPN00BS
         public RegisterWindow()
         {
             InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
 
