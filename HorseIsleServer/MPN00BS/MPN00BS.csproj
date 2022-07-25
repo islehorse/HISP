@@ -98,7 +98,12 @@
     <DefineConstants>OS_LINUX;ARCH_ARM64</DefineConstants>
     <DebugType>none</DebugType>
   </PropertyGroup>
-
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|AnyCPU'">
+    <Optimize>true</Optimize>
+    <DefineConstants>OS_LINUX;ARCH_ANYCPU</DefineConstants>
+    <DebugType>none</DebugType>
+  </PropertyGroup>
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacOS|x64'">
     <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
     <Optimize>true</Optimize>
@@ -218,8 +223,6 @@
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="0.10.17" />
     <PackageReference Include="Avalonia.Desktop" Version="0.10.17" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.17" />
     <PackageReference Include="XamlNameReferenceGenerator" Version="1.3.4" />
   </ItemGroup>
 
@@ -228,8 +231,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="flashplayer\WINDOWS\flash.exe">
+    <ContentWithTargetPath Include="flashplayer/LINUX/flash.elf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+      <TargetPath>flashplayer/LINUX/flash.elf</TargetPath>
+    </ContentWithTargetPath>
   </ItemGroup>
+  
+  <ItemGroup>
+    <ContentWithTargetPath Include="flashplayer\WINDOWS\flash.exe">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>flashplayer\WINDOWS\flash.exe</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+
 </Project>

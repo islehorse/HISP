@@ -113,13 +113,18 @@ namespace HISP.Server
         }
         public static void CreateClient(object sender, SocketAsyncEventArgs e)
         {
-            do
-            {
-                Socket eSocket = e.AcceptSocket;
-                if(eSocket != null)
-                    new GameClient(eSocket);
-                e.AcceptSocket = null;
-            } while (!GameServer.ServerSocket.AcceptAsync(e));
+            try{
+		do
+		{
+		    Socket eSocket = e.AcceptSocket;
+		    if(eSocket != null)
+			new GameClient(eSocket);
+		    e.AcceptSocket = null;
+		    
+		    if(GameServer.ServerSocket == null)
+		    	return;
+		} while (!GameServer.ServerSocket.AcceptAsync(e));
+            }catch(ObjectDisposedException) {} // server shutdown
         }
         private void timeoutTimerTick(object state)
         {

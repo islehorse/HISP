@@ -2,6 +2,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Threading;
+
 using System;
 
 namespace MPN00BS
@@ -11,9 +13,6 @@ namespace MPN00BS
         public ServerSelection()
         {
             InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         private void InitializeComponent()
@@ -31,7 +30,11 @@ namespace MPN00BS
 
         private void OnClientExit()
         {
-            this.Close();
+            Dispatcher.UIThread.InvokeAsync(() =>
+            {
+            	ServerStarter.ShutdownHTTPServer();
+            	this.Close();
+            });
         }
     }
 }
