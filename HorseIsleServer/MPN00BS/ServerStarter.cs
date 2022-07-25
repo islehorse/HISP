@@ -10,6 +10,7 @@ using HTTP;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using static MPN00BS.MessageBox;
 
 namespace MPN00BS
@@ -19,8 +20,8 @@ namespace MPN00BS
     {
 
 #if OS_LINUX
-    [DllImport("libc", SetLastError = true)]
-    private static extern int chmod(string pathname, int mode);
+        [DllImport("libc", SetLastError = true)]
+        private static extern int chmod(string pathname, int mode);
 #endif
         public static bool HasServerStarted = false;
         private static Process clientProcess = new Process();
@@ -68,7 +69,6 @@ namespace MPN00BS
 #elif OS_LINUX
             clientProcess.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf");
             chmod(clientProcess.StartInfo.FileName, 777);
-
 #else
 	    MessageBox.Show(null,"ERROR: No path for flash projector specified on this platform", "Porting error", MessageBoxButtons.Ok);
 #endif
