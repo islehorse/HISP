@@ -31,7 +31,9 @@ namespace MPN00BS
             cs.Contents.Add(ci);
 
         }
-
+	public static void ShutdownHTTPServer(){
+		cs.Shutdown();
+	}
 
         public static void ShowCrash(bool error, string type, string text)
         {
@@ -56,9 +58,20 @@ namespace MPN00BS
             HorseIsleClientExitCallback = callback;
 
             clientProcess = new Process();
+#if OS_WINDOWS
             clientProcess.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
-            clientProcess.StartInfo.Arguments = "http://127.0.0.1/horseisle.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
-
+#elif OS_LINUX
+            clientProcess.StartInfo.FileName = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf");
+#else
+	    MessageBox.Show(null,"ERROR: No path for flash projector specified on this platform", "Porting error", MessageBoxButtons.Ok);
+#endif
+            
+            
+#if OS_LINUX
+            clientProcess.StartInfo.Arguments = "http://"+cs.ipaddr+":"+cs.portnum+"/horseisle_mapfix.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
+#else
+            clientProcess.StartInfo.Arguments = "http://"+cs.ipaddr+":"+cs.portnum+"/horseisle.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
+#endif
             clientProcess.StartInfo.RedirectStandardOutput = true;
             clientProcess.StartInfo.RedirectStandardError = true;
 
@@ -191,27 +204,41 @@ namespace MPN00BS
 
         public static void SetBaseDir()
         {
-
+#if OS_WINDOWS
             string hispFolder = Environment.GetEnvironmentVariable("APPDATA");
             if (hispFolder == null)
                 return;
 
             BaseDir = Path.Combine(hispFolder, "HISP", "N00BS");
             Directory.CreateDirectory(BaseDir);
+#elif OS_LINUX
+            string hispFolder = Environment.GetEnvironmentVariable("HOME");
+            if (hispFolder == null)
+                return;
+
+            BaseDir = Path.Combine(hispFolder, ".HISP", "N00BS");
+#endif
         }
         public static void StartHttpServer()
         {
             SetBaseDir();
             try
             {
-                cs = new ContentServer("127.0.0.1");
-                string[] fileList = Directory.GetFiles(Path.Combine(Directory.GetCurrentDirectory(), "client"), "*", SearchOption.AllDirectories);
-                foreach (string file in fileList)
+
+#if OS_LINUX
+		cs = new ContentServer("127.0.0.1", 12322);
+#else
+                cs = new ContentServer("127.0.0.1", 80);
+#endif
+                string clientFolder = Path.Combine(Directory.GetCurrentDirectory(), "client");
+                string[] fileList = Directory.GetFiles(clientFolder, "*", SearchOption.AllDirectories);
+                foreach (string file in fileList){
                     addToList(file);
+                }
             }
             catch (Exception e)
             {
-                MessageBox.Show(null, "Web server failed to start: " + e.Message, "Error starting web server", MessageBoxButtons.Ok);
+                MessageBox.Show(null, "Web server failed to start: "+ e.GetType().Name + " " + e.Message, "Error starting web server", MessageBoxButtons.Ok);
                 return;
             }
 

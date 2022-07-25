@@ -9,9 +9,6 @@ namespace MPN00BS
         public MpOrSp()
         {
             InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
         private void playSingleplayerClick(object sender, RoutedEventArgs e)
         {

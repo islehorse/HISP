@@ -14,9 +14,6 @@ namespace MPN00BS
         public ResetWindow()
         {
             InitializeComponent();
-#if DEBUG
-            this.AttachDevTools();
-#endif
         }
 
         private void ValidateInput()
