@@ -24,20 +24,20 @@
             <NativeMenuItem Header="Server">
               <NativeMenu>
                 <NativeMenuItem Header="Shutdown Server" Command="{Binding shutdownServerCommand}"/>
-                <!-- <NativeMenuItem Header="Chat">
+                 <NativeMenuItem Header="Chat">
                   <NativeMenu>
                     <NativeMenuItem Header="{Binding swearFilterHeader}" Command="{Binding toggleSwearFilter}"/>
-                    <NativeMenuItem Header="Disable Corrections"/>
-                    <NativeMenuItem Header="Disable Non-Vio Checks"/>
-                    <NativeMenuItem Header="Disable Spam Filter"/>
+                    <NativeMenuItem Header="{Binding correctionsHeader}" Command="{Binding toggleCorrections}"/>
+                    <NativeMenuItem Header="{Binding vioChecksHeader}" Command="{Binding toggleNonVioChecks}"/>
+                    <NativeMenuItem Header="{Binding spamFilterHeader}" Command="{Binding toggleSpamFilter}"/>
                   </NativeMenu>
                 </NativeMenuItem>
                 <NativeMenuItem Header="Game">
                   <NativeMenu>
-                    <NativeMenuItem Header="Disable All Users Subscribed"/>
-                    <NativeMenuItem Header="Disable Fix Offical Bugs"/>
+                    <NativeMenuItem Header="{Binding allUsersSubbedHeader}" Command="{Binding toggleAllUsersSubbed}"/>
+                    <NativeMenuItem Header="{Binding fixOfficalBugsHeader}" Command="{Binding toggleFixOfficalBugs}"/>
                   </NativeMenu>
-                </NativeMenuItem> -->
+                </NativeMenuItem> 
                 <NativeMenuItem Header="Advanced">
                   <NativeMenu>
                     <NativeMenuItem Header="Edit &quot;server.properties&quot;" Command="{Binding editServerPropertiesCommand}"/>
