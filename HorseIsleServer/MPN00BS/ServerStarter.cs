@@ -217,6 +217,7 @@ namespace MPN00BS
                 return;
 
             BaseDir = Path.Combine(hispFolder, ".HISP", "N00BS");
+            Directory.CreateDirectory(BaseDir);
 #endif
         }
         public static void StartHttpServer()
