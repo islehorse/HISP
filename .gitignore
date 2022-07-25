@@ -3,7 +3,7 @@
 */.vs/*
 *.log
 *.suo
-
+*.csproj.user
 
 HorseIsleServer/N00BS/obj/*
 HorseIsleServer/N00BS/bin/*
