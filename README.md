@@ -109,7 +109,7 @@ and start the server using ``systemctl start hisp``
  ex:        
  ``dotnet publish -p:PublishProfile=Linux64.pubxml`` to to build it standalone.
  
- NOTE: At this current time, building projects targeting .NET Core 7.0 requires Visual Studio 2022 PREVIEW and does not work in the stable build
+ NOTE: At this current time, building projects targeting .NET Core 7.0 inside Visual Studio requires Visual Studio 2022 PREVIEW and does not work in the stable build
  
 # Web Server
  Theres a bunch of saved files from the Horse Isle 1.0 website, as well as some basic functionality to make it work
