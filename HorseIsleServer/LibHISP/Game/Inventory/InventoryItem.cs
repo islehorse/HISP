@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using HISP.Game.Items;
+﻿using HISP.Game.Items;
+using HISP.Server;
 
 namespace HISP.Game.Inventory
 {
@@ -8,14 +7,14 @@ namespace HISP.Game.Inventory
     {
         public InventoryItem()
         {
-            itemInstances = new List<ItemInstance>();
+            itemInstances = new ThreadSafeList<ItemInstance>();
             Infinite = false;
             ItemId = 0;
         }
 
         public int ItemId;
         public bool Infinite;
-        private List<ItemInstance> itemInstances;
+        private ThreadSafeList<ItemInstance> itemInstances;
         public void RemoveItem(ItemInstance itm)
         {
             itemInstances.Remove(itm);

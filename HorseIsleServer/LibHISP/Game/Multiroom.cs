@@ -8,7 +8,7 @@ namespace HISP.Game
     public class Multiroom
     {
         private static List<Multiroom> multirooms = new List<Multiroom>();
-        private List<User> joinedUsers = new List<User>();
+        private ThreadSafeList<User> joinedUsers = new ThreadSafeList<User>();
 
         public int x;
         public int y;

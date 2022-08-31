@@ -17,7 +17,7 @@ namespace HISP.Game.SwfModules
         public class DressupRoom
         {
             public int RoomId;
-            private List<DressupPeice> dressupPeices;
+            private ThreadSafeList<DressupPeice> dressupPeices;
             public DressupPeice[] DressupPeices
             {
                 get
@@ -28,7 +28,7 @@ namespace HISP.Game.SwfModules
             public DressupRoom(int roomId)
             {
                 RoomId = roomId;
-                dressupPeices = new List<DressupPeice>();
+                dressupPeices = new ThreadSafeList<DressupPeice>();
 
                 DressupPeice[] peices = Database.LoadDressupRoom(this);
                 foreach (DressupPeice peice in peices)

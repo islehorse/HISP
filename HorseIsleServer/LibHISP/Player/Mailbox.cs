@@ -9,7 +9,7 @@ namespace HISP.Player
     public class Mailbox
     {
         private User baseUser;
-        private List<Mail> mails = new List<Mail>();
+        private ThreadSafeList<Mail> mails = new ThreadSafeList<Mail>();
         public int MailCount 
         {
             get

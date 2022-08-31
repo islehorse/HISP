@@ -8,7 +8,7 @@ namespace HISP.Game.Services
 {
     public class Auction
     {
-        private static List<Auction> auctionRooms = new List<Auction>();
+        private static ThreadSafeList<Auction> auctionRooms = new ThreadSafeList<Auction>();
         public static Auction[] AuctionRooms
         {
             get
@@ -20,7 +20,7 @@ namespace HISP.Game.Services
         public Auction(int id)
         {
             RoomId = id;
-            auctionEntries = new List<AuctionEntry>();
+            auctionEntries = new ThreadSafeList<AuctionEntry>();
             Database.LoadAuctionRoom(this, RoomId);
         }
 
@@ -122,7 +122,7 @@ namespace HISP.Game.Services
 
             public HorseInstance Horse;
             public int OwnerId;
-            private List<AuctionBid> bidders = new List<AuctionBid>();
+            private ThreadSafeList<AuctionBid> bidders = new ThreadSafeList<AuctionBid>();
             public AuctionBid[] Bidders
             {
                 get
@@ -297,7 +297,7 @@ namespace HISP.Game.Services
             auctionEntries.Add(entry);
         }
 
-        private List<AuctionEntry> auctionEntries;
+        private ThreadSafeList<AuctionEntry> auctionEntries;
         public int RoomId;
 
         public AuctionEntry[] AuctionEntries
