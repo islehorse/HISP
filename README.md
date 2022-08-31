@@ -114,3 +114,5 @@ and start the server using ``systemctl start hisp``
 # Web Server
  Theres a bunch of saved files from the Horse Isle 1.0 website, as well as some basic functionality to make it work
  like the original site, the files are in the "HorseIsleWeb" folder, it requires PHP 8.0, with the modules "intl" and "mysqli"
+ 
+ - Li
