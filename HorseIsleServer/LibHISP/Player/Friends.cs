@@ -7,7 +7,7 @@ namespace HISP.Player
     public class Friends
     {
         private User baseUser;
-        private List<int> list;
+        private ThreadSafeList<int> list;
         public int[] List
         {
             get
@@ -36,7 +36,7 @@ namespace HISP.Player
         public Friends(User user)
         {
             baseUser = user;
-            list = new List<int>();
+            list = new ThreadSafeList<int>();
 
             int[] friends = Database.GetBuddyList(user.Id);
             foreach(int friendId in friends)

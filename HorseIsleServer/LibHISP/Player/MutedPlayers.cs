@@ -6,10 +6,10 @@ namespace HISP.Player
     public class MutedPlayers
     {
         private User baseUser;
-        private List<int> userIds;
+        private ThreadSafeList<int> userIds;
         public MutedPlayers(User BaseUser)
         {
-            userIds = new List<int>();
+            userIds = new ThreadSafeList<int>();
             baseUser = BaseUser;
             int[] userids = Database.GetMutedPlayers(BaseUser.Id);
             

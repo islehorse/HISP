@@ -14,7 +14,7 @@ namespace HISP.Game
     {
 
         private static List<Arena> arenas = new List<Arena>();
-        private List<ArenaEntry> entries;
+        private ThreadSafeList<ArenaEntry> entries;
         private Timer arenaTimeout;
         public static int[] ExpRewards;
         public int Id;
@@ -59,7 +59,7 @@ namespace HISP.Game
             Slots = slots;
             Timeout = timeOut;
             arenas.Add(this);
-            entries = new List<ArenaEntry>();
+            entries = new ThreadSafeList<ArenaEntry>();
         }
 
         public bool HaveAllPlayersCompleted()

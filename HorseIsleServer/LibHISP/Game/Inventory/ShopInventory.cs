@@ -10,7 +10,7 @@ namespace HISP.Game.Inventory
     public class ShopInventory : IInventory
     {
         private Shop baseShop;
-        private List<InventoryItem> inventoryItems;
+        private ThreadSafeList<InventoryItem> inventoryItems;
         public int Count
         {
             get
@@ -21,7 +21,7 @@ namespace HISP.Game.Inventory
         public ShopInventory(Shop shopkeeper)
         {
             baseShop = shopkeeper;
-            inventoryItems = new List<InventoryItem>();
+            inventoryItems = new ThreadSafeList<InventoryItem>();
         }
 
         private void addItem(ItemInstance item, bool addToDatabase)
