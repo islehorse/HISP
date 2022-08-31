@@ -50,7 +50,6 @@ namespace HISP.Server
         private Timer minuteTimer;
 
         private bool isDisconnecting = false;
-
         private int timeoutInterval = 95 * 1000;
 
         private int totalMinutesElapsed = 0;
