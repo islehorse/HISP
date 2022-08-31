@@ -12,7 +12,7 @@ namespace HISP.Server
 {
     public class GameClient
     {
-        private static List<GameClient> connectedClients = new List<GameClient>();
+        private static ThreadSafeList<GameClient> connectedClients = new ThreadSafeList<GameClient>();
         public static GameClient[] ConnectedClients // Done to prevent Enumerator Changed errors.
         {
             get

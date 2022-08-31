@@ -5,7 +5,7 @@ namespace HISP.Player
 {
     public class PlayerQuests
     {
-        private List<TrackedQuest> trackedQuests = new List<TrackedQuest>();
+        private ThreadSafeList<TrackedQuest> trackedQuests = new ThreadSafeList<TrackedQuest>();
         public User BaseUser;
         public TrackedQuest[] QuestList
         {

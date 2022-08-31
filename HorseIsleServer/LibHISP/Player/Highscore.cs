@@ -24,7 +24,7 @@ namespace HISP.Player
         }
 
         private User baseUser;
-        private List<HighscoreTableEntry> highScoreList = new List<HighscoreTableEntry>();
+        private ThreadSafeList<HighscoreTableEntry> highScoreList = new ThreadSafeList<HighscoreTableEntry>();
 
         public Highscore(User user)
         {

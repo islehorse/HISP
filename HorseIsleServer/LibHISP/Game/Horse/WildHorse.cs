@@ -181,7 +181,7 @@ namespace HISP.Game.Horse
             Despawn(this);
         }
 
-        private static List<WildHorse> wildHorses = new List<WildHorse>();
+        private static ThreadSafeList<WildHorse> wildHorses = new ThreadSafeList<WildHorse>();
         public static WildHorse[] WildHorses
         {
             get

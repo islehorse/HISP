@@ -13,10 +13,10 @@ namespace HISP.Game.Inventory
         
 
         public User BaseUser;
-        private List<InventoryItem> inventoryItems;
+        private ThreadSafeList<InventoryItem> inventoryItems;
         public PlayerInventory(User forUser)
         {
-            inventoryItems = new List<InventoryItem>();
+            inventoryItems = new ThreadSafeList<InventoryItem>();
 
             BaseUser = forUser;
             ItemInstance[] instances = Database.GetPlayerInventory(BaseUser.Id).ToArray();

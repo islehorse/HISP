@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using HISP.Server;
+using System.Collections.Generic;
 namespace HISP.Game
 {
     public class AbuseReport

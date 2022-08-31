@@ -13,7 +13,7 @@ namespace HISP.Game.Events
             public ThrowTracker(User thrower)
             {
                 Thrower = thrower;
-                thrownAt = new List<User>();   
+                thrownAt = new ThreadSafeList<User>();   
             }
 
             public void AddThrownAt(User user)
@@ -21,7 +21,7 @@ namespace HISP.Game.Events
                 thrownAt.Add(user);
             }
             public User Thrower;
-            private List<User> thrownAt;
+            private ThreadSafeList<User> thrownAt;
             public User[] ThrownAt
             {
                 get
@@ -33,7 +33,7 @@ namespace HISP.Game.Events
 
         public bool Active = false;
         public const int REVENGE_TIMEOUT = 10;
-        private List<ThrowTracker> trackedThrows;
+        private ThreadSafeList<ThrowTracker> trackedThrows;
         private Timer revengeTimeout;
         public ThrowTracker[] TrackedThrows
         {
@@ -45,7 +45,7 @@ namespace HISP.Game.Events
 
         public ModsRevenge()
         {
-            trackedThrows = new List<ThrowTracker>();
+            trackedThrows = new ThreadSafeList<ThrowTracker>();
             Active = false;
         }
 

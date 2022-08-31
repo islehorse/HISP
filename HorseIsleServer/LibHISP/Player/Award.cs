@@ -41,7 +41,7 @@ namespace HISP.Player
         }
 
 
-        private List<AwardEntry> awardsEarned;
+        private ThreadSafeList<AwardEntry> awardsEarned;
         private User baseUser;
         public AwardEntry[] AwardsEarned
         {
@@ -84,7 +84,7 @@ namespace HISP.Player
         {
             baseUser = user;
             int[] awards = Database.GetAwards(user.Id);
-            awardsEarned = new List<AwardEntry>();
+            awardsEarned = new ThreadSafeList<AwardEntry>();
 
             foreach (int awardid in awards)
             {

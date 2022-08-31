@@ -57,7 +57,7 @@ namespace HISP.Game
             private int count;
             private User baseUser;
         }
-        private List<TrackedItem> trackingItems = new List<TrackedItem>();
+        private ThreadSafeList<TrackedItem> trackingItems = new ThreadSafeList<TrackedItem>();
         private User baseUser;
         public TrackedItem[] TrackingItems
         {

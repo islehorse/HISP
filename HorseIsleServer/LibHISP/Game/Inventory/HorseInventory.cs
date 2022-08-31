@@ -8,7 +8,7 @@ namespace HISP.Game.Inventory
     public class HorseInventory
     {
         private User baseUser;
-        private List<HorseInstance> horsesList = new List<HorseInstance>();
+        private ThreadSafeList<HorseInstance> horsesList = new ThreadSafeList<HorseInstance>();
         public HorseInstance[] HorseList
         {
             get

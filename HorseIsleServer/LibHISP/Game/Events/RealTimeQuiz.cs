@@ -97,11 +97,11 @@ namespace HISP.Game.Events
                 return participents.ToArray();
             }
         }
-        private List<Participent> participents;
+        private ThreadSafeList<Participent> participents;
 
         public RealTimeQuiz()
         {
-            participents = new List<Participent>();
+            participents = new ThreadSafeList<Participent>();
             Questions = new QuizQuestion[8];
             for(int i = 0; i < 8; i++)
             {
