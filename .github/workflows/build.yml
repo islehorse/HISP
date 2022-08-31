@@ -37,10 +37,10 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Linux64.pubxml
+        dotnet publish -p:PublishProfile=Linux64.pubxml -v diag
         cd ..
         cd MPN00BS
-        dotnet publish -p:PublishProfile=Linux64.pubxml
+        dotnet publish -p:PublishProfile=Linux64.pubxml -v diag
         cd ..
         
 # Currently broken ...
@@ -61,14 +61,14 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=LinuxARM.pubxml
+        dotnet publish -p:PublishProfile=LinuxARM.pubxml -v diag
         cd ..
 # nativeaot linux arm64
     - name: Build linux-arm64
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+        dotnet publish -p:PublishProfile=LinuxARM64.pubxml -v diag
         cd ..
 
 #        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
@@ -201,10 +201,10 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Win64.pubxml
+        dotnet publish -p:PublishProfile=Win64.pubxml -v diag
         cd ..
         cd MPN00BS
-        dotnet publish -p:PublishProfile=Win64.pubxml
+        dotnet publish -p:PublishProfile=Win64.pubxml -v diag
         cd ..
 
 #        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
@@ -226,23 +226,23 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Win32.pubxml
+        dotnet publish -p:PublishProfile=Win32.pubxml -v diag
         cd ..
         cd MPN00BS
-        dotnet publish -p:PublishProfile=Win32.pubxml
+        dotnet publish -p:PublishProfile=Win32.pubxml -v diag
         cd ..
     - name: Build win-arm
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=WinARM.pubxml
+        dotnet publish -p:PublishProfile=WinARM.pubxml -v diag
         cd ..
 #nativeaot arm64 build
     - name: Build win-arm64
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=WinARM64.pubxml
+        dotnet publish -p:PublishProfile=WinARM64.pubxml -v diag
         cd ..
 #        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
 #        dotnet add HISPd package runtime.win-x64.Microsoft.DotNet.ILCompiler --prerelease
@@ -323,13 +323,13 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Osx64.pubxml
+        dotnet publish -p:PublishProfile=Osx64.pubxml -v diag
         cd ..
     - name: Build mac-arm64
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=OsxARM64.pubxml
+        dotnet publish -p:PublishProfile=OsxARM64.pubxml -v diag
         cd ..
     - name: Upload mac-x64
       uses: actions/upload-artifact@v2
