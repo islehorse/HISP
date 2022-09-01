@@ -21,7 +21,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 7.0.100-preview.5.22307.18
         include-prerelease: true
     - name: Install utils
       run: |
@@ -191,7 +191,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 7.0.100-preview.5.22307.18
         include-prerelease: true
     
     - name: Install utils
@@ -315,7 +315,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 7.0.100-preview.5.22307.18
         include-prerelease: true
         
     - name: Install utils
