@@ -272,6 +272,6 @@
 
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="dotnet script $(ProjectDir)prebuild.csx" />
+    <Exec Command="dotnet script &quot;$(ProjectDir)prebuild.csx&quot;" />
   </Target>
 </Project>
