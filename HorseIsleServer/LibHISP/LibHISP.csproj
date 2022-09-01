@@ -272,6 +272,6 @@
 
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="python3 $(ProjectDir)prebuild.py" />
+    <Exec Command="csi $(ProjectDir)prebuild.csx" />
   </Target>
 </Project>
