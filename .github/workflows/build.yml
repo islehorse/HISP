@@ -27,7 +27,8 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y clang zlib1g-dev dos2unix
-
+        dotnet tool install -g dotnet-script
+        
     - name: Restore dependencies
       run: |
         dotnet restore LibHISP
@@ -37,10 +38,10 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Linux64.pubxml -v diag
+        dotnet publish -p:PublishProfile=Linux64.pubxml
         cd ..
         cd MPN00BS
-        dotnet publish -p:PublishProfile=Linux64.pubxml -v diag
+        dotnet publish -p:PublishProfile=Linux64.pubxml
         cd ..
         
 # Currently broken ...
@@ -61,14 +62,14 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=LinuxARM.pubxml -v diag
+        dotnet publish -p:PublishProfile=LinuxARM.pubxml
         cd ..
 # nativeaot linux arm64
     - name: Build linux-arm64
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=LinuxARM64.pubxml -v diag
+        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
         cd ..
 
 #        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
@@ -193,6 +194,9 @@ jobs:
         dotnet-version: 7.0.x
         include-prerelease: true
     
+    - name: Install utils
+      run: dotnet tool install -g dotnet-script
+        
     - name: Restore dependencies
       run: dotnet restore
 
@@ -201,10 +205,10 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Win64.pubxml -v diag
+        dotnet publish -p:PublishProfile=Win64.pubxml
         cd ..
         cd MPN00BS
-        dotnet publish -p:PublishProfile=Win64.pubxml -v diag
+        dotnet publish -p:PublishProfile=Win64.pubxml
         cd ..
 
 #        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
@@ -226,23 +230,23 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Win32.pubxml -v diag
+        dotnet publish -p:PublishProfile=Win32.pubxml
         cd ..
         cd MPN00BS
-        dotnet publish -p:PublishProfile=Win32.pubxml -v diag
+        dotnet publish -p:PublishProfile=Win32.pubxml
         cd ..
     - name: Build win-arm
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=WinARM.pubxml -v diag
+        dotnet publish -p:PublishProfile=WinARM.pubxml
         cd ..
 #nativeaot arm64 build
     - name: Build win-arm64
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=WinARM64.pubxml -v diag
+        dotnet publish -p:PublishProfile=WinARM64.pubxml
         cd ..
 #        dotnet add HISPd package Microsoft.DotNet.ILCompiler --prerelease
 #        dotnet add HISPd package runtime.win-x64.Microsoft.DotNet.ILCompiler --prerelease
@@ -313,6 +317,9 @@ jobs:
       with:
         dotnet-version: 7.0.x
         include-prerelease: true
+        
+    - name: Install utils
+      run: dotnet tool install -g dotnet-script
 
     - name: Restore dependencies
       run: |
@@ -323,13 +330,13 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Osx64.pubxml -v diag
+        dotnet publish -p:PublishProfile=Osx64.pubxml
         cd ..
     - name: Build mac-arm64
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=OsxARM64.pubxml -v diag
+        dotnet publish -p:PublishProfile=OsxARM64.pubxml
         cd ..
     - name: Upload mac-x64
       uses: actions/upload-artifact@v2
