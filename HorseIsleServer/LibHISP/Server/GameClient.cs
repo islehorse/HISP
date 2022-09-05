@@ -117,8 +117,12 @@ namespace HISP.Server
 		        do
 		        {
 		            Socket eSocket = e.AcceptSocket;
-		            if(eSocket != null)
-			        new GameClient(eSocket);
+                    if (eSocket == null)
+                        return;
+                    if (eSocket.RemoteEndPoint == null)
+                        return;
+			        
+                    new GameClient(eSocket);
 		            e.AcceptSocket = null;
 		    
 		            if(GameServer.ServerSocket == null)
