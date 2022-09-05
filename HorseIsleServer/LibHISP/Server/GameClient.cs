@@ -67,13 +67,20 @@ namespace HISP.Server
             clientSocket.ReceiveTimeout = 10 * 1000; // 10sec
 
             ClientSocket = clientSocket;
-            RemoteIp = clientSocket.RemoteEndPoint.ToString();
+            if(clientSocket.RemoteEndPoint != null)
+            {
 
-            if (RemoteIp.Contains(":"))
-                RemoteIp = RemoteIp.Substring(0, RemoteIp.IndexOf(":"));
+                RemoteIp = clientSocket.RemoteEndPoint.ToString();
 
-            Logger.DebugPrint("Client connected @ " + RemoteIp);
+                if (RemoteIp.Contains(":"))
+                    RemoteIp = RemoteIp.Substring(0, RemoteIp.IndexOf(":"));
 
+                Logger.DebugPrint("Client connected @ " + RemoteIp);
+            }
+            else
+            {
+                Logger.DebugPrint("Client connected @ (IP UNKNOWN) // How is this possible?");
+            }
             kickTimer = new Timer(new TimerCallback(kickTimerTick), null, kickInterval, kickInterval);
             warnTimer = new Timer(new TimerCallback(warnTimerTick), null, warnInterval, warnInterval);
             minuteTimer = new Timer(new TimerCallback(minuteTimerTick), null, oneMinute, oneMinute);
@@ -118,10 +125,9 @@ namespace HISP.Server
 		        {
 		            Socket eSocket = e.AcceptSocket;
                     if (eSocket == null)
-                        return;
+                        continue;
                     if (eSocket.RemoteEndPoint == null)
-                        return;
-			        
+                        continue;
                     new GameClient(eSocket);
 		            e.AcceptSocket = null;
 		    
@@ -395,10 +401,6 @@ namespace HISP.Server
                 if (totalMinutesElapsed % 15 == 0)
                     LoggedinUser.Tiredness--;
             }
-
-
-
-
             if (!isDisconnecting)
                minuteTimer.Change(oneMinute, oneMinute);
 
