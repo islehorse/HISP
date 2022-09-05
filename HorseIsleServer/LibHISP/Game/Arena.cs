@@ -2,7 +2,7 @@
 using HISP.Player;
 using HISP.Security;
 using HISP.Server;
-
+using HISP.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -201,7 +201,7 @@ namespace HISP.Game
                         break;
                 }
                 byte[] startingUpEventPacket = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(swf, PacketBuilder.PACKET_SWF_CUTSCENE);
+                byte[] swfModulePacket = PacketBuilder.CreateSwfModule(swf, PacketBuilder.PACKET_SWF_CUTSCENE);
                 Logger.DebugPrint(entry.EnteredUser.Username + " Loading swf: " + swf);
                 entry.EnteredUser.LoggedinClient.SendPacket(swfModulePacket);
                 entry.EnteredUser.LoggedinClient.SendPacket(startingUpEventPacket);

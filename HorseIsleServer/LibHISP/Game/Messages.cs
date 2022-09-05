@@ -1,8 +1,10 @@
-﻿using HISP.Security;
-using HISP.Server;
-using System;
+﻿using System;
 using System.Drawing;
 using System.Globalization;
+
+using HISP.Security;
+using HISP.Server;
+using HISP.Util;
 
 namespace HISP.Game
 {
@@ -17,7 +19,7 @@ namespace HISP.Game
         public static string PlaytimeMessageFormat;
         public static string[] RngMessages;
 
-        // Prision Isle
+        // Prison Isle
         public static string PrisonIsleSentMessage;
         public static string PrisonIsleCommandMessageFormat;
 
@@ -1462,7 +1464,7 @@ namespace HISP.Game
         }
         public static string FormatSocialMenuType(string type)
         {
-            return SocialTypeFormat.Replace("%TYPE%", Util.CapitalizeFirstLetter(type.ToLower()));
+            return SocialTypeFormat.Replace("%TYPE%", Helper.CapitalizeFirstLetter(type.ToLower()));
         }
 
         // Trading

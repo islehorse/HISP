@@ -8,6 +8,7 @@ using HISP.Player.Equips;
 using HISP.Game.Services;
 using HISP.Game.Inventory;
 using HISP.Game.Horse;
+using HISP.Util;
 
 
 namespace HISP.Player
@@ -247,7 +248,7 @@ namespace HISP.Player
         {
             get
             {
-                return Util.UnixTimeStampToDateTime(subscribedUntil);
+                return Helper.UnixTimeStampToDateTime(subscribedUntil);
             }
         }
         public int FreeMinutes

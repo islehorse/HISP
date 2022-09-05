@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 
 using HISP.Server;
+using HISP.Util;
 
 namespace HISP.Game.Items
 {
@@ -122,13 +123,13 @@ namespace HISP.Game.Items
 
                     try
                     {
-                        TackSet set = GetSetByName(Util.CapitalizeFirstLetter(itemInfo.EmbedSwf));
+                        TackSet set = GetSetByName(Helper.CapitalizeFirstLetter(itemInfo.EmbedSwf));
                         set.Add(itemInfo);
                     }
                     catch(KeyNotFoundException)
                     {                   
                         TackSet tackSet = new TackSet();
-                        tackSet.SetName = Util.CapitalizeFirstLetter(itemInfo.EmbedSwf);
+                        tackSet.SetName = Helper.CapitalizeFirstLetter(itemInfo.EmbedSwf);
                         tackSet.Add(itemInfo);
                         tackSets.Add(tackSet);
                     }

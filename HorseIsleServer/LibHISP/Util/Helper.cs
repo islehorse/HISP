@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace HISP.Server
+namespace HISP.Util
 {
-    public class Util
+    public class Helper
     {
         // Thanks Stackoverflow (https://stackoverflow.com/questions/321370/how-can-i-convert-a-hex-string-to-a-byte-array)
         private static int getHexVal(char hex)
