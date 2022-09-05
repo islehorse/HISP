@@ -40,7 +40,7 @@ namespace HISP.Server
 #elif OS_MACOS
             return "MACOS";
 #else
-            return "UNK_PLATFORM";
+            return "UNKNWON";
 #endif
 
         }
