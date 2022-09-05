@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 
-namespace HISP.Server
+namespace HISP.Util
 {
     public class ThreadSafeList<T> : List<T>
     {

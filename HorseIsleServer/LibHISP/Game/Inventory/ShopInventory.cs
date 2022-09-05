@@ -4,6 +4,7 @@ using HISP.Game.Items;
 
 using System.Collections.Generic;
 using System.Linq;
+using HISP.Util;
 
 namespace HISP.Game.Inventory
 {

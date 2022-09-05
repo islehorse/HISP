@@ -7,6 +7,7 @@ using HISP.Game;
 using HISP.Game.Horse;
 using HISP.Game.Events;
 using HISP.Game.Items;
+using HISP.Util;
 
 namespace HISP.Server
 {
@@ -113,16 +114,16 @@ namespace HISP.Server
         public static void CreateClient(object sender, SocketAsyncEventArgs e)
         {
             try{
-		do
-		{
-		    Socket eSocket = e.AcceptSocket;
-		    if(eSocket != null)
-			new GameClient(eSocket);
-		    e.AcceptSocket = null;
+		        do
+		        {
+		            Socket eSocket = e.AcceptSocket;
+		            if(eSocket != null)
+			        new GameClient(eSocket);
+		            e.AcceptSocket = null;
 		    
-		    if(GameServer.ServerSocket == null)
-		    	return;
-		} while (!GameServer.ServerSocket.AcceptAsync(e));
+		            if(GameServer.ServerSocket == null)
+		    	        return;
+		        } while (!GameServer.ServerSocket.AcceptAsync(e));
             }catch(ObjectDisposedException) {} // server shutdown
         }
         private void timeoutTimerTick(object state)
@@ -481,6 +482,7 @@ namespace HISP.Server
                     warnTimer.Change(warnInterval, warnInterval);
                 else
                     return;
+
             }
             catch (ObjectDisposedException) 
             {
@@ -493,8 +495,10 @@ namespace HISP.Server
              *  this prevents the entire server from crashing
              *  if theres an error in handling a particular packet.
              */
+#if (!DEBUG)
             try
             {
+#endif
                 if (!LoggedIn) // Must be either login or policy-file-request
                 {
                     switch (identifier)
@@ -585,14 +589,14 @@ namespace HISP.Server
                             break;
                     }
                 }
-
+#if (!DEBUG)
             }
             catch(Exception e)
             {
                 Logger.ErrorPrint("Unhandled Exception: " + e.ToString() + "\n" + e.Message + "\n" + e.StackTrace);
-
                 Kick("Unhandled Exception: " + e.ToString());
             }
+#endif
         }
 
         public void Kick(string Reason)

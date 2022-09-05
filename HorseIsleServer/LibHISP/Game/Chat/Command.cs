@@ -264,7 +264,7 @@ namespace HISP.Game.Chat
                 if (args.Length <= 2)
                     swfUser = args[1];
 
-                byte[] packetBytes = PacketBuilder.CreateSwfModulePacket(swfName, PacketBuilder.PACKET_SWF_MODULE_FORCE);
+                byte[] packetBytes = PacketBuilder.CreateSwfModule(swfName, PacketBuilder.PACKET_SWF_MODULE_FORCE);
                 if (swfUser.ToUpper() == "ALL")
                 {
                     foreach (GameClient client in GameClient.ConnectedClients)
@@ -766,7 +766,7 @@ namespace HISP.Game.Chat
             }                
 
             playSwf:;
-            byte[] swfPacket = PacketBuilder.CreateSwfModulePacket("warpcutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
+            byte[] swfPacket = PacketBuilder.CreateSwfModule("warpcutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
             user.LoggedinClient.SendPacket(swfPacket);
 
 
