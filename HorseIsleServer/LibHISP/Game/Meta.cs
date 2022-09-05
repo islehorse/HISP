@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Drawing;
+using HISP.Util;
 
 namespace HISP.Game
 {
@@ -1240,7 +1241,7 @@ namespace HISP.Game
                     continue;
 
                 string username = Database.GetUsername(id);
-                int minutes = Convert.ToInt32(Math.Round(DateTime.UtcNow.Subtract(Util.UnixTimeStampToDateTime(Database.GetPlayerLastLogin(id))).TotalMinutes));
+                int minutes = Convert.ToInt32(Math.Round(DateTime.UtcNow.Subtract(Helper.UnixTimeStampToDateTime(Database.GetPlayerLastLogin(id))).TotalMinutes));
 
                 message += Messages.FormatOfflineBuddyEntry(username, id, minutes);
             }
@@ -1733,7 +1734,7 @@ namespace HISP.Game
             bool mine = (ranch.OwnerId == user.Id);
             string swfModule = ranch.GetSwf(mine);
 
-            byte[] moduleSwf = PacketBuilder.CreateSwfModulePacket(swfModule, PacketBuilder.PACKET_SWF_MODULE_FORCE);
+            byte[] moduleSwf = PacketBuilder.CreateSwfModule(swfModule, PacketBuilder.PACKET_SWF_MODULE_FORCE);
             user.LoggedinClient.SendPacket(moduleSwf);
 
             if (mine) // This is My DS.
@@ -2104,7 +2105,7 @@ namespace HISP.Game
         }
         public static string BuildMailLetter(Mailbox.Mail mailMessage, int itemRandomId)
         {
-            DateTime time = Util.UnixTimeStampToDateTime(mailMessage.Timestamp);
+            DateTime time = Helper.UnixTimeStampToDateTime(mailMessage.Timestamp);
             string amOrPm = "am";
             string[] months = new string[] { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
             string minutes = time.Minute.ToString();
@@ -2580,7 +2581,7 @@ namespace HISP.Game
         {
             string message = Messages.FormatPawneerOrderSelectGender(color, breed.Name);
             foreach (string gender in breed.GenderTypes())
-                message += Messages.FormatPawneerOrderGenderEntry(Util.CapitalizeFirstLetter(gender), gender);
+                message += Messages.FormatPawneerOrderGenderEntry(Helper.CapitalizeFirstLetter(gender), gender);
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;

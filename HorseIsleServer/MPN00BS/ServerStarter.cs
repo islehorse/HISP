@@ -65,7 +65,8 @@ namespace MPN00BS
 #elif OS_LINUX
             string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf");
 #else
-    	    MessageBox.Show(null,"ERROR: No path for flash projector specified on this platform", "Porting error", MessageBoxButtons.Ok);
+            MessageBox.Show(null,"ERROR: No path for flash projector specified on this platform", "Porting error", MessageBoxButtons.Ok);
+            string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
 #endif
 
             if (!File.Exists(executable))
@@ -113,7 +114,6 @@ namespace MPN00BS
             Entry.RegisterCrashHandler();
             Logger.SetCallback(ShowCrash);
             ReadServerProperties();
-
 
             ProgressCallback();
             Database.OpenDatabase();

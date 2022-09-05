@@ -1,5 +1,6 @@
 ﻿using HISP.Player;
 using HISP.Server;
+using HISP.Util;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -46,7 +47,7 @@ namespace HISP.Game.Events
                 if (this.Quit)
                     return;
 
-                byte[] realTimeQuizQuestion = PacketBuilder.CreateMetaPacket(Meta.BuildRealTimeQuiz(this));
+                byte[] realTimeQuizQuestion = PacketBuilder.CreateMeta(Meta.BuildRealTimeQuiz(this));
                 this.UserInstance.LoggedinClient.SendPacket(realTimeQuizQuestion);
             }
 

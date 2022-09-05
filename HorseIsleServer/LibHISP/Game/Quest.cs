@@ -264,7 +264,7 @@ namespace HISP.Game
             // Is cloud isles quest?
             if (quest.Id == CloudIslesQuest)
             {
-                byte[] swfLoadPacket = PacketBuilder.CreateSwfModulePacket("ballooncutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
+                byte[] swfLoadPacket = PacketBuilder.CreateSwfModule("ballooncutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
                 user.LoggedinClient.SendPacket(swfLoadPacket);
             }
 

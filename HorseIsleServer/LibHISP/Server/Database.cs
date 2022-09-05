@@ -14,6 +14,7 @@ using HISP.Game.SwfModules;
 using MySqlConnector;
 using Microsoft.Data.Sqlite;
 using SQLitePCL;
+using HISP.Util;
 
 namespace HISP.Server
 {
@@ -3502,7 +3503,7 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     string expectedHash = sqlCommand.ExecuteScalar().ToString();
                     
-                    return Util.StringToByteArray(expectedHash);
+                    return Helper.StringToByteArray(expectedHash);
                 }
                 else
                 {
@@ -6281,7 +6282,7 @@ namespace HISP.Server
                     string expectedHash = sqlCommand.ExecuteScalar().ToString();
 
                     
-                    return Util.StringToByteArray(expectedHash);
+                    return Helper.StringToByteArray(expectedHash);
                 }
                 else
                 {

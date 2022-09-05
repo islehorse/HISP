@@ -185,8 +185,8 @@ namespace HISP.Game
                 Invitee.LoggedinClient.SendPacket(startingUpGameInvitee);
                 Inviting.LoggedinClient.SendPacket(startingUpGameInvited);
 
-                byte[] loadSwfInvitee = PacketBuilder.CreateSwfModulePacket(buildSwf(2), PacketBuilder.PACKET_SWF_MODULE_FORCE);
-                byte[] loadSwfInvited = PacketBuilder.CreateSwfModulePacket(buildSwf(1), PacketBuilder.PACKET_SWF_MODULE_FORCE);
+                byte[] loadSwfInvitee = PacketBuilder.CreateSwfModule(buildSwf(2), PacketBuilder.PACKET_SWF_MODULE_FORCE);
+                byte[] loadSwfInvited = PacketBuilder.CreateSwfModule(buildSwf(1), PacketBuilder.PACKET_SWF_MODULE_FORCE);
 
                 Invitee.LoggedinClient.SendPacket(loadSwfInvitee);
                 Inviting.LoggedinClient.SendPacket(loadSwfInvited);

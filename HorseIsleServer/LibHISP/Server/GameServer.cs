@@ -18,6 +18,7 @@ using HISP.Game.SwfModules;
 using HISP.Game.Horse;
 using HISP.Game.Events;
 using HISP.Game.Items;
+using HISP.Util;
 
 namespace HISP.Server
 {
@@ -208,7 +209,7 @@ namespace HISP.Server
                     if (!client.LoggedinUser.MajorPriority)
                         if(!client.LoggedinUser.MinorPriority)
                             UpdateArea(client);
-                    byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(client.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), client.LoggedinUser.MailBox.UnreadMailCount);
+                    byte[] BaseStatsPacketData = PacketBuilder.CreateMoneyPlayerCountAndMail(client.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), client.LoggedinUser.MailBox.UnreadMailCount);
                     client.SendPacket(BaseStatsPacketData);
 
                     UpdateWorld(client);
@@ -303,7 +304,7 @@ namespace HISP.Server
                         User user = GetUserById(playerId);
                         sender.LoggedinUser.MajorPriority = true;
 
-                        byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildStatsMenu(user, true));
+                        byte[] metaTag = PacketBuilder.CreateMeta(Meta.BuildStatsMenu(user, true));
                         sender.SendPacket(metaTag);
                     }
                     break;
@@ -331,7 +332,7 @@ namespace HISP.Server
                         sender.SendPacket(nowMuting);
 
                         sender.LoggedinUser.MajorPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListMenu(sender.LoggedinUser));
+                        byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildPlayerListMenu(sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                     }
                     break;
@@ -359,7 +360,7 @@ namespace HISP.Server
                         sender.SendPacket(stoppedMuting);
 
                         sender.LoggedinUser.MajorPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListMenu(sender.LoggedinUser));
+                        byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildPlayerListMenu(sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                     }
                     break;
@@ -386,7 +387,7 @@ namespace HISP.Server
                         sender.SendPacket(friendRemoved);
 
                         sender.LoggedinUser.MajorPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListMenu(sender.LoggedinUser));
+                        byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildPlayerListMenu(sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                     }
 
@@ -471,7 +472,7 @@ namespace HISP.Server
 
                             sender.LoggedinUser.TradeMenuPriority = true;
                             sender.LoggedinUser.AttemptingToOfferItem = -1;
-                            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAddMoney(sender.LoggedinUser.TradingWith.MoneyOffered));
+                            byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildTradeAddMoney(sender.LoggedinUser.TradingWith.MoneyOffered));
                             sender.SendPacket(metaPacket);
 
                             break;
@@ -519,7 +520,7 @@ namespace HISP.Server
                             sender.LoggedinUser.TradeMenuPriority = true;
                             sender.LoggedinUser.AttemptingToOfferItem = itemId;
                             InventoryItem item = sender.LoggedinUser.Inventory.GetItemByItemId(itemId);
-                            byte[] addItemPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAddItem(item.ItemInstances.Length));
+                            byte[] addItemPacket = PacketBuilder.CreateMeta(Meta.BuildTradeAddItem(item.ItemInstances.Length));
                             sender.SendPacket(addItemPacket);
                             break;
 
@@ -600,7 +601,7 @@ namespace HISP.Server
                         
                         sender.LoggedinUser.SocializingWith.AddSocailizedWith(sender.LoggedinUser);
                         sender.LoggedinUser.MajorPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildSocialMenu(sender.LoggedinUser.CurrentlyRidingHorse != null));
+                        byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildSocialMenu(sender.LoggedinUser.CurrentlyRidingHorse != null));
                         sender.SendPacket(metaPacket);
                     }
                     else
@@ -818,7 +819,7 @@ namespace HISP.Server
             {
                 case PacketBuilder.HORSE_LIST:
                     sender.LoggedinUser.MajorPriority = true;
-                    byte[] metaTags = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInventory(sender.LoggedinUser));
+                    byte[] metaTags = PacketBuilder.CreateMeta(Meta.BuildHorseInventory(sender.LoggedinUser));
                     sender.SendPacket(metaTags);
                     break;
                 case PacketBuilder.HORSE_PROFILE:
@@ -828,7 +829,7 @@ namespace HISP.Server
                         if (sender.LoggedinUser.LastViewedHorse != null)
                         {
                             sender.LoggedinUser.MajorPriority = true;
-                            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseDescriptionEditMeta(sender.LoggedinUser.LastViewedHorse));
+                            byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildHorseDescriptionEditMeta(sender.LoggedinUser.LastViewedHorse));
                             sender.SendPacket(metaPacket);
                         }
                         else
@@ -861,7 +862,7 @@ namespace HISP.Server
 
                         sender.LoggedinUser.LastViewedHorse = horseFeedInst;
                         sender.LoggedinUser.MajorPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseFeedMenu(horseFeedInst, sender.LoggedinUser));
+                        byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildHorseFeedMenu(horseFeedInst, sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                         break;
                     }
@@ -1611,7 +1612,7 @@ namespace HISP.Server
                         }
 
                         sender.LoggedinUser.MajorPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseFeedMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
+                        byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildHorseFeedMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                             
                         
@@ -1757,7 +1758,7 @@ namespace HISP.Server
                         
                         sender.LoggedinUser.LastViewedHorse = horseReleaseInst;
                         sender.LoggedinUser.MajorPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseReleased());
+                        byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildHorseReleased());
                         sender.SendPacket(metaPacket);
                         break;
                     }
@@ -1786,7 +1787,7 @@ namespace HISP.Server
                         
                         sender.LoggedinUser.LastViewedHorse = horseTackInst;
                         sender.LoggedinUser.MajorPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackMenu(horseTackInst, sender.LoggedinUser));
+                        byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildTackMenu(horseTackInst, sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                         break;
                     }
@@ -1914,7 +1915,7 @@ namespace HISP.Server
                                     sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances[0]); // Remove item from inventory.
 
                                     sender.LoggedinUser.MajorPriority = true;
-                                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
+                                    byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildTackMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
                                     sender.SendPacket(metaPacket);
 
                                     byte[] equipMsgPacket = PacketBuilder.CreateChat(Messages.FormatEquipTackMessage(itemInfo.Name, sender.LoggedinUser.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -1931,7 +1932,7 @@ namespace HISP.Server
                                     sender.LoggedinUser.Inventory.Remove(sender.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances[0]); // Remove item from inventory.
 
                                     sender.LoggedinUser.MajorPriority = true;
-                                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseCompanionEquipMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
+                                    byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildHorseCompanionEquipMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
                                     sender.SendPacket(metaPacket);
 
                                     byte[] equipMsgPacket = PacketBuilder.CreateChat(Messages.FormatHorseCompanionEquipMessage(sender.LoggedinUser.LastViewedHorse.Name, itemInfo.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -2010,7 +2011,7 @@ namespace HISP.Server
                         }
 
                         sender.LoggedinUser.MajorPriority = true;
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
+                        byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildTackMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                         break;
                     companionRemove:;
@@ -2018,7 +2019,7 @@ namespace HISP.Server
                         sender.SendPacket(itemUnequipedMessage);
 
                         sender.LoggedinUser.MajorPriority = true;
-                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseCompanionEquipMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
+                        metaPacket = PacketBuilder.CreateMeta(Meta.BuildHorseCompanionEquipMenu(sender.LoggedinUser.LastViewedHorse, sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                         break;
 
@@ -2149,7 +2150,7 @@ namespace HISP.Server
                         }
                     }
                     sender.LoggedinUser.MajorPriority = true;
-                    byte[] hoseEscaped = PacketBuilder.CreateMetaPacket(Meta.BuildHorseEscapedMessage());
+                    byte[] hoseEscaped = PacketBuilder.CreateMeta(Meta.BuildHorseEscapedMessage());
                     sender.SendPacket(hoseEscaped);
                     break;
                 case PacketBuilder.HORSE_CAUGHT:
@@ -2181,14 +2182,14 @@ namespace HISP.Server
                             Logger.InfoPrint(sender.LoggedinUser.Username + " Captured a: " + capturing.Instance.Breed.Name);
 
                             sender.LoggedinUser.MajorPriority = true;
-                            byte[] horseCaught = PacketBuilder.CreateMetaPacket(Meta.BuildHorseCaughtMessage());
+                            byte[] horseCaught = PacketBuilder.CreateMeta(Meta.BuildHorseCaughtMessage());
                             sender.SendPacket(horseCaught);
 
                             break;
                         }
                     }
                     sender.LoggedinUser.MajorPriority = true;
-                    byte[] horseAllreadyCaught = PacketBuilder.CreateMetaPacket(Meta.BuildHorseEscapedAnyway());
+                    byte[] horseAllreadyCaught = PacketBuilder.CreateMeta(Meta.BuildHorseEscapedAnyway());
                     sender.SendPacket(horseAllreadyCaught);
                     break;
                 case PacketBuilder.HORSE_TRY_CAPTURE:
@@ -2221,7 +2222,7 @@ namespace HISP.Server
                     sender.LoggedinUser.CapturingHorseId = randomId;
                     byte[] chatPacket = PacketBuilder.CreateChat(Messages.HorseCaptureTimer, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(chatPacket);
-                    byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket("catchhorse", PacketBuilder.PACKET_SWF_MODULE_FORCE);
+                    byte[] swfModulePacket = PacketBuilder.CreateSwfModule("catchhorse", PacketBuilder.PACKET_SWF_MODULE_FORCE);
                     sender.SendPacket(swfModulePacket);
 
                     break;
@@ -2351,7 +2352,7 @@ namespace HISP.Server
                                             User user = GetUserById(playerId);
                                             user.MailBox.AddMail(mailMessage);
 
-                                            byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(user.Money, GameServer.GetNumberOfPlayers(), user.MailBox.UnreadMailCount);
+                                            byte[] BaseStatsPacketData = PacketBuilder.CreateMoneyPlayerCountAndMail(user.Money, GameServer.GetNumberOfPlayers(), user.MailBox.UnreadMailCount);
                                             user.LoggedinClient.SendPacket(BaseStatsPacketData);
                                         }
                                         else
@@ -2549,7 +2550,7 @@ namespace HISP.Server
                             {
                                 sender.LoggedinUser.MajorPriority = true;
                                 string metaWindow = Meta.BuildNpcSearch(dynamicInput[1]);
-                                byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaWindow);
+                                byte[] metaPacket = PacketBuilder.CreateMeta(metaWindow);
                                 sender.SendPacket(metaPacket);
                                 break;
                             }
@@ -2711,7 +2712,7 @@ namespace HISP.Server
                             {
                                 string searchQuery = dynamicInput[1];
                                 sender.LoggedinUser.MajorPriority = true;
-                                byte[] serachResponse = PacketBuilder.CreateMetaPacket(Meta.BuildRanchSearchResults(searchQuery));
+                                byte[] serachResponse = PacketBuilder.CreateMeta(Meta.BuildRanchSearchResults(searchQuery));
                                 sender.SendPacket(serachResponse);
                                 break;
                             }
@@ -2829,7 +2830,7 @@ namespace HISP.Server
             {
                 case PacketBuilder.PLAYERINFO_PLAYER_LIST:
                     sender.LoggedinUser.MajorPriority = true;
-                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListMenu(sender.LoggedinUser));
+                    byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildPlayerListMenu(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
             }
@@ -2855,17 +2856,17 @@ namespace HISP.Server
                         break;
                     }
                     sender.LoggedinUser.MajorPriority = true;
-                    byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildComposeMailMenu());
+                    byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildComposeMailMenu());
                     sender.SendPacket(metaPacket);
                     break;
                 case "3": // Quest Log
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildQuestLog(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildQuestLog(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "4": // View Horse Breeds
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseBreedListLibary());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildHorseBreedListLibary());
                     sender.SendPacket(metaPacket);
                     break;
                 case "5": // Back to horse
@@ -2877,7 +2878,7 @@ namespace HISP.Server
                     {
                         sender.LoggedinUser.MajorPriority = true;
                         HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
-                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseCompanionEquipMenu(horseInstance,sender.LoggedinUser));
+                        metaPacket = PacketBuilder.CreateMeta(Meta.BuildHorseCompanionEquipMenu(horseInstance,sender.LoggedinUser));
                         sender.SendPacket(metaPacket);
                     }
                     break;
@@ -2897,7 +2898,7 @@ namespace HISP.Server
 
                                 if(Transport.GetTransportLocation(tpPoint.Locations[0]).Type == "WAGON") // is wagon?
                                 {
-                                    double distance = Util.PointsToDistance(ranchX, ranchY, tpPoint.X, tpPoint.Y);
+                                    double distance = Helper.PointsToDistance(ranchX, ranchY, tpPoint.X, tpPoint.Y);
                                     if(distance < smallestDistance)
                                     {
                                         smallestDistance = distance;
@@ -2930,18 +2931,18 @@ namespace HISP.Server
                     {
                         sender.LoggedinUser.MajorPriority = true;
                         HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
-                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseReleaseConfirmationMessage(horseInstance));
+                        metaPacket = PacketBuilder.CreateMeta(Meta.BuildHorseReleaseConfirmationMessage(horseInstance));
                         sender.SendPacket(metaPacket);
                     }
                     break;
                 case "9": // View Tack (Libary)
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTackLibary());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildTackLibary());
                     sender.SendPacket(metaPacket);
                     break;
                 case "10": // View Companions (Libary)
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildCompanionLibary());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildCompanionLibary());
                     sender.SendPacket(metaPacket);
                     break;
                 case "11": // Randomize horse name
@@ -2950,13 +2951,13 @@ namespace HISP.Server
                         sender.LoggedinUser.MajorPriority = true;
                         HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
                         horseInstance.ChangeNameWithoutUpdatingDatabase(HorseInfo.GenerateHorseName());
-                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseDescriptionEditMeta(horseInstance));
+                        metaPacket = PacketBuilder.CreateMeta(Meta.BuildHorseDescriptionEditMeta(horseInstance));
                         sender.SendPacket(metaPacket);
                     }
                     break;
                 case "12": // View Minigames (Libary)
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigamesLibary());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildMinigamesLibary());
                     sender.SendPacket(metaPacket);
                     break;
                 case "13": // Train All (Ranch)
@@ -2965,59 +2966,59 @@ namespace HISP.Server
                         if(sender.LoggedinUser.OwnedRanch.GetBuildingCount(6) > 0) // Training Pen
                         {
                             sender.LoggedinUser.MajorPriority = true;
-                            metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRanchTraining(sender.LoggedinUser));
+                            metaPacket = PacketBuilder.CreateMeta(Meta.BuildRanchTraining(sender.LoggedinUser));
                             sender.SendPacket(metaPacket);
                         }
                     }
                     break;
                 case "14": // Most Valued Ranches
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMostValuedRanches());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildMostValuedRanches());
                     sender.SendPacket(metaPacket);
                     break;
                 case "15": // Most Richest Players
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRichestPlayers());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildRichestPlayers());
                     sender.SendPacket(metaPacket);
                     break;
                 case "16": // Most Adventurous Players
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAdventurousPlayers());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildAdventurousPlayers());
                     sender.SendPacket(metaPacket);
                     break;
                 case "17": // Most Experienced Players
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildExperiencedPlayers());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildExperiencedPlayers());
                     sender.SendPacket(metaPacket);
                     break;
                 case "18": // Best Minigame Players
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigamePlayers());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildMinigamePlayers());
                     sender.SendPacket(metaPacket);
                     break;
                 case "19": // Most Experienced Horses
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMostExperienedHoses());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildMostExperienedHoses());
                     sender.SendPacket(metaPacket);
                     break;
                 case "20": // Minigame Rankings
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMinigameRankingsForUser(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildMinigameRankingsForUser(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "21": // Private Notes
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPrivateNotes(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildPrivateNotes(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "22": // View Locations (Libary)
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildLocationsLibary());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildLocationsLibary());
                     sender.SendPacket(metaPacket);
                     break;
                 case "23": // View Awards (Libary)
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAwardsLibary());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildAwardsLibary());
                     sender.SendPacket(metaPacket);
                     break;
                 case "26": // Buy Horse (Auto Sell)
@@ -3112,50 +3113,50 @@ namespace HISP.Server
                     break;
                 case "24": // Award List
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAwardList(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildAwardList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "27": // Ranch Edit
                     if(sender.LoggedinUser.OwnedRanch != null)
                     {
                         sender.LoggedinUser.MajorPriority = true;
-                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRanchEdit(sender.LoggedinUser.OwnedRanch));
+                        metaPacket = PacketBuilder.CreateMeta(Meta.BuildRanchEdit(sender.LoggedinUser.OwnedRanch));
                         sender.SendPacket(metaPacket);
                     }
                     break;
                 case "29": // Auto Sell Horses
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTopAutoSellHorses());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildTopAutoSellHorses());
                     sender.SendPacket(metaPacket);
                     break;
                 case "31":
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRanchSearchLibary());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildRanchSearchLibary());
                     sender.SendPacket(metaPacket);
                     break;
                 case "35": // Buddy List
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBuddyList(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildBuddyList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "36": // Nearby list
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildNearbyList(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildNearbyList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "37": // All Players List
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerList(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildPlayerList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "40": // All Players Alphabetical
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPlayerListAlphabetical(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildPlayerListAlphabetical(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "30": // Find NPC
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildFindNpcMenu());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildFindNpcMenu());
                     sender.SendPacket(metaPacket);
                     break;
                 case "25": // Set auto sell price
@@ -3163,45 +3164,45 @@ namespace HISP.Server
                     {
                         sender.LoggedinUser.MajorPriority = true;
                         HorseInstance horseInstance = sender.LoggedinUser.LastViewedHorse;
-                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAutoSellMenu(horseInstance));
+                        metaPacket = PacketBuilder.CreateMeta(Meta.BuildAutoSellMenu(horseInstance));
                         sender.SendPacket(metaPacket);
                     }
                     break;
                 case "33": // View All stats (Horse)
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAllBasicStats(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildAllBasicStats(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "34": // View Basic stats (Horse)
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAllStats(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildAllStats(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "38": // Read Books
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBooksLibary());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildBooksLibary());
                     sender.SendPacket(metaPacket);
                     break;
                 case "41": // Put horse into auction
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAuctionHorseList(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildAuctionHorseList(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "47":
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPawneerOrderBreedList());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildPawneerOrderBreedList());
                     sender.SendPacket(metaPacket);
                     break;
                 case "53": // Misc Stats / Tracked Items
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMiscStats(sender.LoggedinUser));
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildMiscStats(sender.LoggedinUser));
                     sender.SendPacket(metaPacket);
                     break;
                 case "58": // Add new item to trade
                     if(sender.LoggedinUser.TradingWith != null)
                     {
                         sender.LoggedinUser.TradeMenuPriority = true;
-                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildTradeAdd(sender.LoggedinUser.TradingWith));
+                        metaPacket = PacketBuilder.CreateMeta(Meta.BuildTradeAdd(sender.LoggedinUser.TradingWith));
                         sender.SendPacket(metaPacket);
                     }
                     break;
@@ -3219,17 +3220,17 @@ namespace HISP.Server
                     break;
                 case "60": // Ranch Sell
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildRanchSellConfirmation());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildRanchSellConfirmation());
                     sender.SendPacket(metaPacket);
                     break;
                 case "61": // Most Spoiled Horse
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildMostSpoiledHorses());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildMostSpoiledHorses());
                     sender.SendPacket(metaPacket);
                     break;
                 case "28c1": // Abuse Report
                     sender.LoggedinUser.MajorPriority = true;
-                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildAbuseReportPage());
+                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildAbuseReportPage());
                     sender.SendPacket(metaPacket);
                     break;
                 case "52c1": // Horse set to KEEPER
@@ -3275,7 +3276,7 @@ namespace HISP.Server
                         {
                             Book book = Book.GetBookById(bookId);
                             sender.LoggedinUser.MajorPriority = true;
-                            metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildBookReadLibary(book));
+                            metaPacket = PacketBuilder.CreateMeta(Meta.BuildBookReadLibary(book));
                             sender.SendPacket(metaPacket);
                         }
                         else
@@ -3327,7 +3328,7 @@ namespace HISP.Server
                         byte[] pricingMessage = PacketBuilder.CreateChat(Messages.FormatWhispererPrice(cost), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(pricingMessage);
 
-                        byte[] serachResultMeta = PacketBuilder.CreateMetaPacket(Meta.BuildWhisperSearchResults(horsesFound.ToArray()));
+                        byte[] serachResultMeta = PacketBuilder.CreateMeta(Meta.BuildWhisperSearchResults(horsesFound.ToArray()));
                         sender.SendPacket(serachResultMeta);
 
                         sender.LoggedinUser.TakeMoney(cost);
@@ -3350,11 +3351,11 @@ namespace HISP.Server
                         };
                         sender.LoggedinUser.MajorPriority = true;
                         string metaTag = Meta.BuildBreedViewerLibary(horseBreed);
-                        metaPacket = PacketBuilder.CreateMetaPacket(metaTag);
+                        metaPacket = PacketBuilder.CreateMeta(metaTag);
                         sender.SendPacket(metaPacket);
 
                         string swf = "breedviewer.swf?terrain=book&breed=" + horseBreed.Swf + "&j=";
-                        byte[] loadSwf = PacketBuilder.CreateSwfModulePacket(swf, PacketBuilder.PACKET_SWF_MODULE_FORCE);
+                        byte[] loadSwf = PacketBuilder.CreateSwfModule(swf, PacketBuilder.PACKET_SWF_MODULE_FORCE);
                         sender.SendPacket(loadSwf);
 
                         break;
@@ -3380,7 +3381,7 @@ namespace HISP.Server
                                     sender.LoggedinUser.HorseInventory.AddHorse(horseInstance, true, true);
 
                                     sender.LoggedinUser.MajorPriority = true;
-                                    metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPawneerOrderFound(horseInstance));
+                                    metaPacket = PacketBuilder.CreateMeta(Meta.BuildPawneerOrderFound(horseInstance));
                                     sender.SendPacket(metaPacket);
                                     break;
                                 }
@@ -3399,7 +3400,7 @@ namespace HISP.Server
                                 sender.LoggedinUser.PawneerOrderColor = color;
 
                                 sender.LoggedinUser.MajorPriority = true;
-                                metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPawneerOrderGenderList(sender.LoggedinUser.PawneerOrderBreed, color));
+                                metaPacket = PacketBuilder.CreateMeta(Meta.BuildPawneerOrderGenderList(sender.LoggedinUser.PawneerOrderBreed, color));
                                 sender.SendPacket(metaPacket);
                                 break;
                             }
@@ -3425,7 +3426,7 @@ namespace HISP.Server
                         sender.LoggedinUser.PawneerOrderBreed = breed;
 
                         sender.LoggedinUser.MajorPriority = true;
-                        metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildPawneerOrderColorList(breed));
+                        metaPacket = PacketBuilder.CreateMeta(Meta.BuildPawneerOrderColorList(breed));
                         sender.SendPacket(metaPacket);
                         break;
                     }
@@ -3494,7 +3495,7 @@ namespace HISP.Server
                             HorseInstance inst = sender.LoggedinUser.HorseInventory.GetHorseById(horseId);
 
                             sender.LoggedinUser.MajorPriority = true;
-                            byte[] confirmScreen = PacketBuilder.CreateMetaPacket(Meta.BuildPawneerConfimation(inst));
+                            byte[] confirmScreen = PacketBuilder.CreateMeta(Meta.BuildPawneerConfimation(inst));
                             sender.SendPacket(confirmScreen);
                             break;
                         }
@@ -3603,7 +3604,7 @@ namespace HISP.Server
 
                                 sender.LoggedinUser.HorseInventory.AddHorse(leaseHorse);
 
-                                byte[] addedHorseMeta = PacketBuilder.CreateMetaPacket(Meta.BuildLeaserOnLeaseInfo(horseLeaser));
+                                byte[] addedHorseMeta = PacketBuilder.CreateMeta(Meta.BuildLeaserOnLeaseInfo(horseLeaser));
                                 sender.SendPacket(addedHorseMeta);
 
                                 byte[] addedNewTempHorseMessage = PacketBuilder.CreateChat(Messages.HorseLeaserTemporaryHorseAdded, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -3623,7 +3624,7 @@ namespace HISP.Server
                     if(AbuseReport.DoesReasonExist(buttonIdStr))
                     {
                         sender.LoggedinUser.MajorPriority = true;
-                        metaPacket = PacketBuilder.CreateMetaPacket(AbuseReport.GetReasonById(buttonIdStr).Meta);
+                        metaPacket = PacketBuilder.CreateMeta(AbuseReport.GetReasonById(buttonIdStr).Meta);
                         sender.SendPacket(metaPacket);
                         break;
                     }
@@ -3697,11 +3698,11 @@ namespace HISP.Server
             sender.SendPacket(MovementPacket);
 
             // Send "Welcome to the Secret Land of Horses" message.
-            byte[] WelcomeMessage = PacketBuilder.CreateWelcomeMessage(user.Username);
+            byte[] WelcomeMessage = PacketBuilder.CreateChat(Messages.FormatWelcomeMessage(user.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
             sender.SendPacket(WelcomeMessage);
 
             // Send weather effects, and current server time.
-            byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, sender.LoggedinUser.GetWeatherSeen());
+            byte[] WorldData = PacketBuilder.CreateTimeAndWeatherUpdate(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, sender.LoggedinUser.GetWeatherSeen());
             sender.SendPacket(WorldData);
 
             // if the player is logging in for the first time, send Welcome newest rider of Horse Isle message.
@@ -3716,7 +3717,7 @@ namespace HISP.Server
             sender.SendPacket(SecCodePacket);
 
             // Send player money count, total players and total unread mail.
-            byte[] BaseStatsPacketData = PacketBuilder.CreatePlayerData(user.Money, GameServer.GetNumberOfPlayers(), user.MailBox.UnreadMailCount);
+            byte[] BaseStatsPacketData = PacketBuilder.CreateMoneyPlayerCountAndMail(user.Money, GameServer.GetNumberOfPlayers(), user.MailBox.UnreadMailCount);
             sender.SendPacket(BaseStatsPacketData);
 
             // Sends Meta Window information (Nearby, current tile, etc)
@@ -3769,7 +3770,7 @@ namespace HISP.Server
             sender.SendPacket(TileFlags);
 
             // Send Todays Note:
-            byte[] MotdData = PacketBuilder.CreateMotd();
+            byte[] MotdData = PacketBuilder.CreateAnnouncement(Messages.FormatMOTD());
             sender.SendPacket(MotdData);
 
             // Send riddle annoucement
@@ -4205,7 +4206,7 @@ namespace HISP.Server
 
                         if (room.DressupPeices.Length > 0)
                         {
-                            byte[] allDressupsResponse = PacketBuilder.CreateDressupRoomPeiceResponse(room.DressupPeices.ToArray());
+                            byte[] allDressupsResponse = PacketBuilder.CreateDressupRoomPeiceLoad(room.DressupPeices.ToArray());
                             sender.SendPacket(allDressupsResponse);
                         }
 
@@ -4477,7 +4478,7 @@ namespace HISP.Server
             {
                 sender.LoggedinUser.MajorPriority = true;
                 string profilePage = sender.LoggedinUser.ProfilePage;
-                byte[] profilePacket = PacketBuilder.CreateProfilePacket(profilePage);
+                byte[] profilePacket = PacketBuilder.CreateProfilePage(profilePage);
                 sender.SendPacket(profilePacket);
             }
             else if (method == PacketBuilder.SAVE_PROFILE)
@@ -4912,7 +4913,7 @@ namespace HISP.Server
                 sender.LoggedinUser.MajorPriority = true;
                 string packetStr = Encoding.UTF8.GetString(packet);
                 string gameName = packetStr.Substring(2, packetStr.Length - 4);
-                byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildTopHighscores(gameName));
+                byte[] metaTag = PacketBuilder.CreateMeta(Meta.BuildTopHighscores(gameName));
                 sender.SendPacket(metaTag);
             }
             else if (method == PacketBuilder.PROFILE_BESTTIMES_LIST)
@@ -4920,7 +4921,7 @@ namespace HISP.Server
                 sender.LoggedinUser.MajorPriority = true;
                 string packetStr = Encoding.UTF8.GetString(packet);
                 string gameName = packetStr.Substring(2, packetStr.Length - 4);
-                byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildTopTimes(gameName));
+                byte[] metaTag = PacketBuilder.CreateMeta(Meta.BuildTopTimes(gameName));
                 sender.SendPacket(metaTag);
             }
             else if (method == PacketBuilder.PROFILE_WINLOOSE_LIST)
@@ -4928,7 +4929,7 @@ namespace HISP.Server
                 sender.LoggedinUser.MajorPriority = true;
                 string packetStr = Encoding.UTF8.GetString(packet);
                 string gameName = packetStr.Substring(2, packetStr.Length - 4);
-                byte[] metaTag = PacketBuilder.CreateMetaPacket(Meta.BuildTopWinners(gameName));
+                byte[] metaTag = PacketBuilder.CreateMeta(Meta.BuildTopWinners(gameName));
                 sender.SendPacket(metaTag);
             }
             else
@@ -5285,7 +5286,7 @@ namespace HISP.Server
                 Npc.NpcChat startingChatpoint = Npc.GetNpcChatpoint(entry, defaultChatpointId);
 
                 string metaInfo = Meta.BuildNpcChatpoint(sender.LoggedinUser, entry, startingChatpoint);
-                byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
+                byte[] metaPacket = PacketBuilder.CreateMeta(metaInfo);
                 sender.SendPacket(metaPacket);
 
                 sender.LoggedinUser.LastTalkedToNpc = entry;
@@ -5324,7 +5325,7 @@ namespace HISP.Server
                 }
                 sender.LoggedinUser.MajorPriority = true;
                 string metaInfo = Meta.BuildNpcChatpoint(sender.LoggedinUser, lastNpc, Npc.GetNpcChatpoint(lastNpc, reply.GotoChatpoint));
-                byte[] metaPacket = PacketBuilder.CreateMetaPacket(metaInfo);
+                byte[] metaPacket = PacketBuilder.CreateMeta(metaInfo);
                 sender.SendPacket(metaPacket);
                 return;
             }
@@ -5395,7 +5396,7 @@ namespace HISP.Server
 
                     if (transportLocation.Type != "ROWBOAT")
                     {
-                        byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(swfToLoad, PacketBuilder.PACKET_SWF_CUTSCENE);
+                        byte[] swfModulePacket = PacketBuilder.CreateSwfModule(swfToLoad, PacketBuilder.PACKET_SWF_CUTSCENE);
                         sender.SendPacket(swfModulePacket);
                     }
 
@@ -5725,13 +5726,13 @@ namespace HISP.Server
 
                                 if (buildSlot == 0)
                                 {
-                                    byte[] buildingsAvalible = PacketBuilder.CreateMetaPacket(Meta.BuildRanchUpgrade(ranch));
+                                    byte[] buildingsAvalible = PacketBuilder.CreateMeta(Meta.BuildRanchUpgrade(ranch));
                                     sender.SendPacket(buildingsAvalible);
 
                                 }
                                 else
                                 {
-                                    byte[] buildingsAvalible = PacketBuilder.CreateMetaPacket(Meta.BuildRanchBuildingsAvalible(ranch, buildSlot));
+                                    byte[] buildingsAvalible = PacketBuilder.CreateMeta(Meta.BuildRanchBuildingsAvalible(ranch, buildSlot));
                                     sender.SendPacket(buildingsAvalible);
                                 }
 
@@ -5754,12 +5755,12 @@ namespace HISP.Server
 
                         if (buildSlot == 0) // Main Building
                         {
-                            byte[] upgradeDescription = PacketBuilder.CreateMetaPacket(Meta.BuildRanchBuilding(ranch, ranch.GetRanchUpgrade()));
+                            byte[] upgradeDescription = PacketBuilder.CreateMeta(Meta.BuildRanchBuilding(ranch, ranch.GetRanchUpgrade()));
                             sender.SendPacket(upgradeDescription);
                         }
                         else // Other Building
                         {
-                            byte[] buildingDescription = PacketBuilder.CreateMetaPacket(Meta.BuildRanchBuilding(ranch, ranch.GetBuilding(buildSlot - 1)));
+                            byte[] buildingDescription = PacketBuilder.CreateMeta(Meta.BuildRanchBuilding(ranch, ranch.GetBuilding(buildSlot - 1)));
                             sender.SendPacket(buildingDescription);
                         }
                         return;
@@ -6125,7 +6126,7 @@ namespace HISP.Server
                     returnedMsg = Messages.FormatPlayerHereMessage(usernameStr);
                 }
 
-                byte[] tileInfoPacket = PacketBuilder.CreateClickTileInfoPacket(returnedMsg);
+                byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo(returnedMsg);
                 sender.SendPacket(tileInfoPacket);
             }
         }
@@ -7221,7 +7222,7 @@ namespace HISP.Server
                             }
 
                             sender.LoggedinUser.MajorPriority = true;
-                            byte[] mailList = PacketBuilder.CreateMetaPacket(Meta.BuildMailList(sender.LoggedinUser, sender.LoggedinUser.Inventory.GetItemByItemId(Item.MailMessage)));
+                            byte[] mailList = PacketBuilder.CreateMeta(Meta.BuildMailList(sender.LoggedinUser, sender.LoggedinUser.Inventory.GetItemByItemId(Item.MailMessage)));
                             sender.SendPacket(mailList);
                             break;
                         }
@@ -7256,7 +7257,7 @@ namespace HISP.Server
                                     continue;
 
                                 sender.LoggedinUser.MajorPriority = true;
-                                byte[] readMail = PacketBuilder.CreateMetaPacket(Meta.BuildMailLetter(sender.LoggedinUser.MailBox.GetMessageByRandomId(item.Data), randomId));
+                                byte[] readMail = PacketBuilder.CreateMeta(Meta.BuildMailLetter(sender.LoggedinUser.MailBox.GetMessageByRandomId(item.Data), randomId));
                                 sender.SendPacket(readMail);
                                 break;
                             }
@@ -7296,7 +7297,7 @@ namespace HISP.Server
                         sender.LoggedinUser.MajorPriority = true;
                         Item.ItemInformation info = Item.GetItemById(itemId);
                         string infoMessage = Meta.BuildItemInfo(info);
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(infoMessage);
+                        byte[] metaPacket = PacketBuilder.CreateMeta(infoMessage);
                         sender.SendPacket(metaPacket);
                     }
                     if (packet[2] == PacketBuilder.ITEM_INFORMATON_ID)
@@ -7310,7 +7311,7 @@ namespace HISP.Server
 
                         Item.ItemInformation info = Item.GetItemById(value);
                         string infoMessage = Meta.BuildItemInfo(info);
-                        byte[] metaPacket = PacketBuilder.CreateMetaPacket(infoMessage);
+                        byte[] metaPacket = PacketBuilder.CreateMeta(infoMessage);
                         sender.SendPacket(metaPacket);
                     }
                     else if(packet[2] == PacketBuilder.NPC_INFORMATION)
@@ -7320,7 +7321,7 @@ namespace HISP.Server
                             sender.LoggedinUser.MajorPriority = true;
                             Npc.NpcEntry npc = Npc.GetNpcById(value);
                             string infoMessage = Meta.BuildNpcInfo(npc);
-                            byte[] metaPacket = PacketBuilder.CreateMetaPacket(infoMessage);
+                            byte[] metaPacket = PacketBuilder.CreateMeta(infoMessage);
                             sender.SendPacket(metaPacket);
                         }
                         else
@@ -7847,11 +7848,11 @@ namespace HISP.Server
             else
                 forClient.LoggedinUser.LastViewedHorseOther = horseInst;
 
-            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildHorseInformation(horseInst, forClient.LoggedinUser));
+            byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildHorseInformation(horseInst, forClient.LoggedinUser));
             forClient.SendPacket(metaPacket);
 
             string loadSwf = HorseInfo.BreedViewerSwf(horseInst, type);
-            byte[] swfPacket = PacketBuilder.CreateSwfModulePacket(loadSwf, PacketBuilder.PACKET_SWF_MODULE_FORCE);
+            byte[] swfPacket = PacketBuilder.CreateSwfModule(loadSwf, PacketBuilder.PACKET_SWF_MODULE_FORCE);
             forClient.SendPacket(swfPacket);
         }
         public static void UpdateInventory(GameClient forClient)
@@ -7859,7 +7860,7 @@ namespace HISP.Server
             if (!forClient.LoggedIn)
                 return;
             forClient.LoggedinUser.MajorPriority = true;
-            byte[] metaPacket = PacketBuilder.CreateMetaPacket(Meta.BuildInventoryInfo(forClient.LoggedinUser.Inventory));
+            byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildInventoryInfo(forClient.LoggedinUser.Inventory));
             forClient.SendPacket(metaPacket);
         }
 
@@ -7887,7 +7888,7 @@ namespace HISP.Server
                 return;
             }
 
-            byte[] WorldData = PacketBuilder.CreateWorldData(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, forClient.LoggedinUser.GetWeatherSeen());
+            byte[] WorldData = PacketBuilder.CreateTimeAndWeatherUpdate(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, forClient.LoggedinUser.GetWeatherSeen());
             forClient.SendPacket(WorldData);
         }
         public static void UpdatePlayer(GameClient forClient)
@@ -7897,7 +7898,7 @@ namespace HISP.Server
                 Logger.ErrorPrint(forClient.RemoteIp + "tried to update player information when not logged in.");
                 return;
             }
-            byte[] PlayerData = PacketBuilder.CreatePlayerData(forClient.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), forClient.LoggedinUser.MailBox.UnreadMailCount);
+            byte[] PlayerData = PacketBuilder.CreateMoneyPlayerCountAndMail(forClient.LoggedinUser.Money, GameServer.GetNumberOfPlayers(), forClient.LoggedinUser.MailBox.UnreadMailCount);
             forClient.SendPacket(PlayerData);
         }
 
@@ -7951,7 +7952,7 @@ namespace HISP.Server
 
                 forClient.LoggedinUser.MajorPriority = true;
                 forClient.LoggedinUser.TradeMenuPriority = false;
-                byte[] tradeMeta = PacketBuilder.CreateMetaPacket(Meta.BuildTrade(forClient.LoggedinUser.TradingWith));
+                byte[] tradeMeta = PacketBuilder.CreateMeta(Meta.BuildTrade(forClient.LoggedinUser.TradingWith));
                 forClient.SendPacket(tradeMeta);
                 return;
             }
@@ -7973,7 +7974,7 @@ namespace HISP.Server
                 World.SpecialTile specialTile = World.GetSpecialTile(tileX, tileY);
                 if (specialTile.AutoplaySwf != null && specialTile.AutoplaySwf != "")
                 {
-                    byte[] swfModulePacket = PacketBuilder.CreateSwfModulePacket(specialTile.AutoplaySwf,PacketBuilder.PACKET_SWF_MODULE_GENTLE);
+                    byte[] swfModulePacket = PacketBuilder.CreateSwfModule(specialTile.AutoplaySwf,PacketBuilder.PACKET_SWF_MODULE_GENTLE);
                     forClient.SendPacket(swfModulePacket);
                 }
 
@@ -7990,7 +7991,7 @@ namespace HISP.Server
             }
 
 
-            byte[] AreaMessage = PacketBuilder.CreateMetaPacket(LocationStr);
+            byte[] AreaMessage = PacketBuilder.CreateMeta(LocationStr);
             forClient.SendPacket(AreaMessage);
 
         }
@@ -8001,7 +8002,7 @@ namespace HISP.Server
 
             client.LoggedinUser.MajorPriority = true;
             string metaWind = Meta.BuildStatsMenu(client.LoggedinUser);
-            byte[] statsPacket = PacketBuilder.CreateMetaPacket(metaWind);
+            byte[] statsPacket = PacketBuilder.CreateMeta(metaWind);
             client.SendPacket(statsPacket);
 
         }
@@ -8221,7 +8222,7 @@ namespace HISP.Server
                                 int overlay = Map.GetTileId(tile.X, tile.Y, true);
                                 if (tileset == 6 && overlay == 249) // warp point
                                 {
-                                    byte[] swfPacket = PacketBuilder.CreateSwfModulePacket("warpcutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
+                                    byte[] swfPacket = PacketBuilder.CreateSwfModule("warpcutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
                                     forClient.SendPacket(swfPacket);
                                 }
                             }
