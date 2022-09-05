@@ -1,33 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Text;
+
 using HISP.Game;
 using HISP.Game.SwfModules;
+using HISP.Util;
 
 namespace HISP.Server
 {
     public class PacketBuilder
     {
-
         public const byte PACKET_TERMINATOR = 0x00;
         public const byte PACKET_CLIENT_TERMINATOR = 0x0A;
-
         public const byte PACKET_FLASH_XML_CROSSDOMAIN = 0x3C;
 
         public const byte PACKET_LOGIN = 0x7F;
         public const byte PACKET_CHAT = 0x14;
         public const byte PACKET_MOVE = 0x15;
         public const byte PACKET_CLICK = 0x77;
-        public const byte PACKET_USERINFO = 0x81;
+        public const byte PACKET_SEC_CODE = 0x81;
         public const byte PACKET_WORLD = 0x7A;
         public const byte PACKET_BASE_STATS = 0x7B;
         public const byte PACKET_RANCH = 0x23;
         public const byte PACKET_SWF_CUTSCENE = 0x29;
         public const byte PACKET_SWF_MODULE_FORCE = 0x28;
         public const byte PACKET_SWF_MODULE_GENTLE = 0x2A;
-        public const byte PACKET_PLACE_INFO = 0x1E;
+        public const byte PACKET_META = 0x1E;
         public const byte PACKET_BIRDMAP = 0x76;
         public const byte PACKET_HORSE = 0x19;
         public const byte PACKET_AREA_DEFS = 0x79;
@@ -227,6 +226,27 @@ namespace HISP.Server
         public const byte DIRECTION_TELEPORT = 4;
         public const byte DIRECTION_NONE = 10;
 
+        // Helper function for packets that return map data, (eg CreateMovementPacket or CreateBirdMap)
+        // To encode tile data and add it to a given packet represented as a List<Byte>. 
+        private static void encodeTileDataAndAddToPacket(List<byte> packet, int tileId, int otileId)
+        {
+            if (tileId >= 190)
+            {
+                packet.Add((byte)190);
+                tileId -= 100;
+            }
+            packet.Add((byte)tileId);
+
+            if (otileId >= 190)
+            {
+                packet.Add((byte)190);
+                otileId -= 100;
+            }
+            packet.Add((byte)otileId);
+        }
+
+        // Creates a byte array of a packet to inform the client that Player 2 in the current 2Player game
+        // has actually left / quit the game.
         public static byte[] Create2PlayerClose()
         {
             byte[] packet = new byte[3];
@@ -236,105 +256,100 @@ namespace HISP.Server
 
             return packet;
         }
+
+        // Creates a byte array of a packet to inform the client that a peice in a dressup room
+        // was moved to another location.
         public static byte[] CreateDressupRoomPeiceMove(int peiceId, double x, double y, bool active)
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_SWFMODULE);
-            string packetStr = "";
-            packetStr += peiceId.ToString() + "|";
+            string peiceMoveStr = "";
+            peiceMoveStr += peiceId.ToString() + "|";
             if (active)
             {
-                packetStr += x.ToString() + "|";
-                packetStr += y.ToString() + "|";
+                peiceMoveStr += x.ToString() + "|";
+                peiceMoveStr += y.ToString() + "|";
             }
             else
             {
-                packetStr += "D|D|";
+                peiceMoveStr += "D|D|";
             }
-            packetStr += "^";
+            peiceMoveStr += "^";
+            byte[] peiceMoveBytes = Encoding.UTF8.GetBytes(peiceMoveStr);
 
-            byte[] packetBytes = Encoding.UTF8.GetBytes(packetStr);
-            ms.Write(packetBytes, 0x00, packetBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] response = ms.ToArray();
-            ms.Dispose();
-            return response;
+            byte[] packet = new byte[(1 * 2) + peiceMoveBytes.Length];
+
+            packet[0] = PACKET_SWFMODULE;
+            Array.Copy(peiceMoveBytes, 0, packet, 1, peiceMoveBytes.Length);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
+            
+            return packet;
         }
-        public static byte[] CreateDressupRoomPeiceResponse(Dressup.DressupPeice[] dressupPeices)
+        // Creates a byte array of a packet to inform the client of all the peices
+        // in a given dressup room.
+        public static byte[] CreateDressupRoomPeiceLoad(Dressup.DressupPeice[] dressupPeices)
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_SWFMODULE);
-            string packetStr = "";
+            string peiceLoadStr = "";
             foreach(Dressup.DressupPeice peice in dressupPeices)
             {
                 if (!peice.Active)
                     continue;
 
-                packetStr += peice.PeiceId.ToString() + "|";
-                packetStr += peice.X.ToString() + "|";
-                packetStr += peice.Y.ToString() + "|";
-                packetStr += "^";
+                peiceLoadStr += peice.PeiceId.ToString() + "|";
+                peiceLoadStr += peice.X.ToString() + "|";
+                peiceLoadStr += peice.Y.ToString() + "|";
+                peiceLoadStr += "^";
             }
 
-            byte[] packetBytes = Encoding.UTF8.GetBytes(packetStr);
-            ms.Write(packetBytes, 0x00, packetBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] response = ms.ToArray();
-            ms.Dispose();
-            return response;
-        }
+            byte[] peiceLoadBytes = Encoding.UTF8.GetBytes(peiceLoadStr);
+            byte[] packet = new byte[(1 * 2) + peiceLoadBytes.Length];
 
+            packet[0] = PACKET_SWFMODULE;
+            Array.Copy(peiceLoadBytes, 0, packet, 1, peiceLoadBytes.Length);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
+
+            return packet;
+        }
+        // Creates a byte array that contains the contents of a request byte array
+        // as the response, it basically just forwards it onwards
+        // this is used for *most* SwfModule
         public static byte[] CreateForwardedSwfRequest(byte[] request)
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_SWFMODULE);
-            ms.Write(request, 0x2, request.Length - 0x4);
-            ms.WriteByte(PACKET_TERMINATOR);
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] response = ms.ToArray();
-            ms.Dispose();
-            return response;
+            byte[] packet = new byte[(1 * 2) + request.Length];
+            packet[0] = PACKET_SWFMODULE;
+            Array.Copy(request, 0, packet, 1, request.Length);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
+            return packet;
         }
-
-        public static byte[] CreateBirdMap(int playerX, int playerY)
+        // Creates a byte array that contains "Bird Map" data
+        // From a given X/Y Position, this is primarily used to handle
+        // using the telescope item in game 
+        public static byte[] CreateBirdMap(int X, int Y)
         {
-            MemoryStream ms = new MemoryStream();
+            // The size is always fixed in this case, but i still have to use a List<byte> because
+            // encodeTileDataAndAddToPacket expects packet as a List<byte>.
+            List<byte> packet = new List<byte>();
 
-            int xstart = playerX - 24;
-            int ystart = playerY - 15;
+            // Calculate top left corner of BirdMap viewport
+            // from given X/Y position.
+            int startX = X - 24;
+            int startY = Y - 15;
 
-            ms.WriteByte(PACKET_BIRDMAP);
+            packet.Add(PACKET_BIRDMAP);
 
             for (int rely = 0; rely <= 30; rely++)
             {
                 for (int relx = 0; relx <= 48; relx++)
                 {
-                    int tileId = Map.GetTileId(xstart + relx, ystart + rely, false);
-                    int otileId = Map.GetTileId(xstart + relx, ystart + rely, true);
-
-                    if (tileId >= 190)
-                    {
-                        ms.WriteByte((byte)190);
-                        tileId -= 100;
-                    }
-                    ms.WriteByte((byte)tileId);
-
-                    if (otileId >= 190)
-                    {
-                        ms.WriteByte((byte)190);
-                        otileId -= 100;
-                    }
-                    ms.WriteByte((byte)otileId);
-
+                    int tileId = Map.GetTileId(startX + relx, startY + rely, false);
+                    int otileId = Map.GetTileId(startX + relx, startY + rely, true);
+                    encodeTileDataAndAddToPacket(packet, tileId, otileId);
                 }
             }
 
-            ms.WriteByte(PACKET_TERMINATOR);
-            ms.Seek(0x00, SeekOrigin.Begin);
-            return ms.ToArray();
+            packet.Add(PACKET_TERMINATOR);
+
+            return packet.ToArray();
         }
+        // Creates a byte array for a packet to inform the client that the image in a drawing room has changed.
         public static byte[] CreateDrawingUpdatePacket(string Drawing)
         {
             byte[] drawingBytes = Encoding.UTF8.GetBytes(Drawing);
@@ -346,15 +361,16 @@ namespace HISP.Server
 
             return packet;
         }
+        // Creates a byte array for a packet to inform the client that a poetry peice in a brick poet room has moved.
         public static byte[] CreateBrickPoetMovePacket(Brickpoet.PoetryPeice peice)
         {
-            string packetStr = "|";
-            packetStr += peice.Id + "|";
-            packetStr += peice.X + "|";
-            packetStr += peice.Y + "|";
-            packetStr += "^";
+            string peiceUpdateStr = "|";
+            peiceUpdateStr += peice.Id + "|";
+            peiceUpdateStr += peice.X + "|";
+            peiceUpdateStr += peice.Y + "|";
+            peiceUpdateStr += "^";
 
-            byte[] infoBytes = Encoding.UTF8.GetBytes(packetStr);
+            byte[] infoBytes = Encoding.UTF8.GetBytes(peiceUpdateStr);
             byte[] packet = new byte[(1 * 3) + infoBytes.Length];
 
             packet[0] = PACKET_SWFMODULE;
@@ -366,32 +382,36 @@ namespace HISP.Server
 
             return packet;
         }
+        // Creates a byte array for a packet to inform the client of all all Poetry Peices in a Brick Poet room
         public static byte[] CreateBrickPoetListPacket(Brickpoet.PoetryPeice[] room)
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_SWFMODULE);
-            string packetStr = "";
+            string peicesStr = "";
             foreach(Brickpoet.PoetryPeice peice in room)
             {
-                packetStr += "A";
-                packetStr += "|";
-                packetStr += peice.Id;
-                packetStr += "|";
-                packetStr += peice.Word.ToUpper();
-                packetStr += "|";
-                packetStr += peice.X;
-                packetStr += "|";
-                packetStr += peice.Y;
-                packetStr += "|";
-                packetStr += "^";
+                peicesStr += "A";
+                peicesStr += "|";
+                peicesStr += peice.Id;
+                peicesStr += "|";
+                peicesStr += peice.Word.ToUpper();
+                peicesStr += "|";
+                peicesStr += peice.X;
+                peicesStr += "|";
+                peicesStr += peice.Y;
+                peicesStr += "|";
+                peicesStr += "^";
             }
-            byte[] packetBytes = Encoding.UTF8.GetBytes(packetStr);
-            ms.Write(packetBytes, 0x00, packetBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
+            byte[] peicesBytes = Encoding.UTF8.GetBytes(peicesStr);
+            byte[] packet = new byte[(1 * 2) + peicesBytes.Length];
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            return ms.ToArray();
+            packet[0] = PACKET_SWFMODULE;
+
+            Array.Copy(peicesBytes, 0, packet, 1, peicesBytes.Length);
+            
+            packet[packet.Length - 1] = PACKET_TERMINATOR; 
+
+            return packet;
         }
+        // Creates a byte array of a packet requesting the client to play a sound effect.
         public static byte[] CreatePlaysoundPacket(string sound)
         {
             byte[] soundBytes = Encoding.UTF8.GetBytes(sound);
@@ -405,6 +425,8 @@ namespace HISP.Server
 
             return packet;
         }
+        // Creates a byte array of a packet informing the client that a given user has left the game
+        // So they can be removed from the chat list
         public static byte[] CreatePlayerLeavePacket(string username)
         {
             byte[] userBytes = Encoding.UTF8.GetBytes(username);
@@ -419,6 +441,8 @@ namespace HISP.Server
 
             return packet;
         }
+        // Creates a byte array of a packet informing the client that a given player has changed position,
+        // changed direction, or changed character sprites
         public static byte[] CreatePlayerInfoUpdateOrCreate(int x, int y, int facing, int charId, string username)
         {
             byte[] userBytes = Encoding.UTF8.GetBytes(username);
@@ -444,14 +468,15 @@ namespace HISP.Server
 
             return packet;
         }
-
-        public static byte[] CreateLoginPacket(bool Success, string message="")
+        // Creates a byte array of a packet to inform the client
+        // if a given Login Attempt was successful or not
+        public static byte[] CreateLoginPacket(bool Success, string ErrorMessage="")
         {
-            byte[] loginFailMessage = Encoding.UTF8.GetBytes(message);
+            byte[] loginFailMessage = Encoding.UTF8.GetBytes(ErrorMessage);
             byte[] packet = new byte[(1 * 3) + loginFailMessage.Length];
 
             packet[0] = PACKET_LOGIN;
-            if (message != "")
+            if (ErrorMessage != "")
                 packet[1] = LOGIN_CUSTOM_MESSAGE;
             else if (Success)
                 packet[1] = LOGIN_SUCCESS;
@@ -464,8 +489,10 @@ namespace HISP.Server
 
             return packet;
         }
-
-        public static byte[] CreateProfilePacket(string userProfile)
+        // Creates a byte array of a packet to inform the client of
+        // the users current profile page, or "about me"
+        // This is for the the "Profile" button 
+        public static byte[] CreateProfilePage(string userProfile)
         {
             byte[] profileBytes = Encoding.UTF8.GetBytes(userProfile);
             byte[] packet = new byte[(1 * 2) + profileBytes.Length];
@@ -476,205 +503,138 @@ namespace HISP.Server
 
             return packet;
         }
-
+        // Creates a byte array of a packet to inform the client of the players
+        // new X/Y position, there character id, facing direction, and Tile Data for their position in the map.
         public static byte[] CreateMovementPacket(int x, int y, int charId, int facing, int direction, bool walk)
         {
-            // Header information
+
+            /* Packet HEADER */
+
+            // Packet size varries too much and so using a dynamically sized list of bytes instead of a byte[]
             List<byte> packet = new List<byte>();
 
-            packet.Add(PACKET_MOVE);
+            packet.Add(PACKET_MOVE); // 0x0
 
-            packet.Add((byte)(((x-4) / 64) + 20)); //1
-            packet.Add((byte)(((x-4) % 64) + 20)); //2
+            packet.Add((byte)(((x-4) / 64) + 20)); //0x1
+            packet.Add((byte)(((x-4) % 64) + 20)); //0x2
 
-            packet.Add((byte)(((y-1) / 64) + 20)); //3
-            packet.Add((byte)(((y-1) % 64) + 20)); //4
+            packet.Add((byte)(((y-1) / 64) + 20)); //0x3
+            packet.Add((byte)(((y-1) % 64) + 20)); //0x4
 
-            packet.Add((byte)(facing + 20)); //5
+            packet.Add((byte)(facing + 20)); //0x5
 
-            packet.Add((byte)((charId / 64) + 20)); //6
-            packet.Add((byte)((charId % 64) + 20)); //7
-            packet.Add((byte)(direction + 20)); //8
-            packet.Add((byte)(Convert.ToInt32(walk) + 20)); //9
+            packet.Add((byte)((charId / 64) + 20)); //0x6
+            packet.Add((byte)((charId % 64) + 20)); //0x7
+            packet.Add((byte)(direction + 20)); //0x8
+            packet.Add((byte)(Convert.ToInt32(walk) + 20)); //0x9
 
-
-            // Map Data
+            /* Packet PAYLOAD */
             bool moveTwo = false;
-            if(direction >= 20)
+            if(direction >= 20) // is the player riding a horse?
             {
                 direction -= 20;
                 moveTwo = true;
             }
             
-            int ystart = y - 4;
-            int xstart = x - 6;
-            int xend = xstart + 12;
-            int yend = ystart + 9;
 
+            // Calculate start of the client's viewport start offset from top-left origin
+            int startY = y - 4;
+            int startX = x - 6;
+            int endX = startX + 12;
+            int endY = startY + 9;
+
+            // This giant if case logic essentially
+            // Pulls the missing tile data portion from map file
+            // And encodes it into packet data
             if (direction == DIRECTION_UP)
             {
                 int totalY = 0;
                 if (moveTwo)
                 {
-                    ystart++;
+                    startY++;
                     totalY = 1;
                 }
-
-                for (int yy = ystart; yy >= ystart - totalY; yy--)
+                
+                for (int curY = startY; curY >= startY - totalY; curY--)
                 {
-                    for (int xx = xstart; xx <= xend; xx++)
+                    for (int curX = startX; curX <= endX; curX++)
                     {
-                        int tileId = Map.GetTileId(xx, yy, false);
-                        int otileId = Map.GetTileId(xx, yy, true);
-
-                        if (tileId >= 190)
-                        {
-                            packet.Add((byte)190);
-                            tileId -= 100;
-                        }
-                        packet.Add((byte)tileId);
-
-                        if (otileId >= 190)
-                        {
-                            packet.Add((byte)190);
-                            otileId -= 100;
-                        }
-                        packet.Add((byte)otileId);
+                        int tileId = Map.GetTileId(curX, curY, false);
+                        int otileId = Map.GetTileId(curX, curY, true);
+                        encodeTileDataAndAddToPacket(packet, tileId, otileId);
                     }
                 }
             }
-
-            if (direction == DIRECTION_LEFT)
+            else if (direction == DIRECTION_LEFT)
             {
                 int totalX = 0;
                 if (moveTwo)
                 {
-                    xstart++;
+                    startX++;
                     totalX = 1;
                 }
 
-                for (int xx = xstart; xx >= xstart - totalX; xx--)
+                for (int curX = startX; curX >= startX - totalX; curX--)
                 {
-                    for (int yy = ystart; yy <= yend; yy++)
+                    for (int curY = startY; curY <= endY; curY++)
                     {
-                        int tileId = Map.GetTileId(xx, yy, false);
-                        int otileId = Map.GetTileId(xx, yy, true);
-
-
-
-                        if (tileId >= 190)
-                        {
-                            packet.Add((byte)190);
-                            tileId -= 100;
-                        }
-                        packet.Add((byte)tileId);
-
-                        if (otileId >= 190)
-                        {
-                            packet.Add((byte)190);
-                            otileId -= 100;
-                        }
-                        packet.Add((byte)otileId);
+                        int tileId = Map.GetTileId(curX, curY, false);
+                        int otileId = Map.GetTileId(curX, curY, true);
+                        encodeTileDataAndAddToPacket(packet, tileId, otileId);
                     }
                 }
             }
-
-
-            if (direction == DIRECTION_RIGHT)
+            else if (direction == DIRECTION_RIGHT)
             {
                 int totalX = 0;
                 if (moveTwo)
                 {
-                    xend--;
+                    endX--;
                     totalX = 1;
                 }
 
-                for (int xx = xend; xx <= xend + totalX; xx++)
+                for (int curX = endX; curX <= endX + totalX; curX++)
                 {
 
-                    for (int yy = ystart; yy <= yend; yy++)
+                    for (int curY = startY; curY <= endY; curY++)
                     {
-                        int tileId = Map.GetTileId(xx, yy, false);
-                        int otileId = Map.GetTileId(xx, yy, true);
-
-
-                        if (tileId >= 190)
-                        {
-                            packet.Add((byte)190);
-                            tileId -= 100;
-                        }
-                        packet.Add((byte)tileId);
-
-                        if (otileId >= 190)
-                        {
-                            packet.Add((byte)190);
-                            otileId -= 100;
-                        }
-                        packet.Add((byte)otileId);
+                        int tileId = Map.GetTileId(curX, curY, false);
+                        int otileId = Map.GetTileId(curX, curY, true);
+                        encodeTileDataAndAddToPacket(packet, tileId, otileId);
 
                     }
                 }
             }
-
-            if (direction == DIRECTION_DOWN)
+            else if (direction == DIRECTION_DOWN)
             {
                 int totalY = 0;
                 if (moveTwo)
                 {
-                    yend--;
+                    endY--;
                     totalY = 1;
                 }
 
-                for (int yy = yend; yy <= yend + totalY; yy++)
+                for (int curY = endY; curY <= endY + totalY; curY++)
                 {
 
-                    for (int xx = xstart; xx <= xend; xx++)
+                    for (int curX = startX; curX <= endX; curX++)
                     {
-                        int tileId = Map.GetTileId(xx, yy, false);
-                        int otileId = Map.GetTileId(xx, yy, true);
-
-
-                        if (tileId >= 190)
-                        {
-                            packet.Add((byte)190);
-                            tileId -= 100;
-                        }
-                        packet.Add((byte)tileId);
-
-                        if (otileId >= 190)
-                        {
-                            packet.Add((byte)190);
-                            otileId -= 100;
-                        }
-                        packet.Add((byte)otileId);
-
+                        int tileId = Map.GetTileId(curX, curY, false);
+                        int otileId = Map.GetTileId(curX, curY, true);
+                        encodeTileDataAndAddToPacket(packet, tileId, otileId);
                     }
                 }
 
             }
-            if (direction == DIRECTION_TELEPORT)
+            else if (direction == DIRECTION_TELEPORT)
             {
                 for(int rely = 0; rely <= 9; rely++)
                 {
                     for (int relx = 0; relx <= 12; relx++)
                     {
-                        int tileId = Map.GetTileId(xstart + relx, ystart + rely, false);
-                        int otileId = Map.GetTileId(xstart + relx, ystart + rely, true);
-
-                        if(tileId >= 190)
-                        {
-                            packet.Add((byte)190);
-                            tileId -= 100;
-                        }
-                        packet.Add((byte)tileId);
-
-                        if (otileId >= 190)
-                        {
-                            packet.Add((byte)190);
-                            otileId -= 100;
-                        }
-                        packet.Add((byte)otileId);
-
+                        int tileId = Map.GetTileId(startX + relx, startY + rely, false);
+                        int otileId = Map.GetTileId(startX + relx, startY + rely, true);
+                        encodeTileDataAndAddToPacket(packet, tileId, otileId);
                     }
                 }
 
@@ -683,322 +643,276 @@ namespace HISP.Server
 
             return packet.ToArray();
         }
-
-        public static byte[] CreateClickTileInfoPacket(string text)
+        // Creates a byte array of a packet containing Information about a specific tile
+        // used when you click on a tile in the client, it gives you some extra info about it.
+        public static byte[] CreateTileClickInfo(string text)
         {
             byte[] strBytes = Encoding.UTF8.GetBytes(text);
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_CLICK);
-            ms.Write(strBytes, 0x00, strBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
-
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            byte[] packet = new byte[(1 * 2) + strBytes.Length];
+            packet[0] = PACKET_CLICK;
+            Array.Copy(strBytes, 0, packet, 1, strBytes.Length);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
+            return packet;
         }
 
-        public static byte[] CreateMetaPacket(string formattedText)
+        // Creates a byte array of a packet containing information to be displayed in the "Meta" window
+        // (Thats the one on the top-right corner of the screent hat contains buttons and other widgets)
+        public static byte[] CreateMeta(string formattedText)
         {
-            byte[] strBytes = Encoding.UTF8.GetBytes(formattedText);
+            byte[] formattedBytes = Encoding.UTF8.GetBytes(formattedText);
+            byte[] packet = new byte[(1 * 2) + formattedBytes.Length];
 
-            MemoryStream ms = new MemoryStream();
+            packet[0] = PACKET_META;
+            Array.Copy(formattedBytes, 0, packet, 1, formattedBytes.Length);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
-            ms.WriteByte(PACKET_PLACE_INFO);
-            ms.Write(strBytes, 0x00, strBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
-
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            return packet;
         }
+        // Creates a byte array of a packet informing the client to display a chat message
+        // And which of the two chat windows to include it in.
         public static byte[] CreateChat(string formattedText, byte chatWindow)
         {
-            byte[] strBytes = Encoding.UTF8.GetBytes(formattedText);
-
-            MemoryStream ms = new MemoryStream();
-
-            ms.WriteByte(PACKET_CHAT);
-            ms.WriteByte(chatWindow);
-
-            ms.Write(strBytes, 0x00, strBytes.Length);
-
-            ms.WriteByte(PACKET_TERMINATOR);
-
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            byte[] formattedBytes = Encoding.UTF8.GetBytes(formattedText);
+            byte[] packet = new byte[(1 * 3) + formattedBytes.Length];
+            packet[0] = PACKET_CHAT;
+            packet[1] = chatWindow;
+            Array.Copy(formattedBytes, 0, packet, 2, formattedBytes.Length);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
+            return packet;
         }
 
+        // Creates a byte array of a packet informing the client to change the current Weather Effect.
         public static byte[] CreateWeatherUpdatePacket(string newWeather)
         {
-            byte[] strBytes = Encoding.UTF8.GetBytes(newWeather);
-
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_WORLD);
-            ms.WriteByte(WEATHER_UPDATE);
-            ms.Write(strBytes, 0x00, strBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
-
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            byte[] weatherBytes = Encoding.UTF8.GetBytes(newWeather);
+            byte[] packet = new byte[(1 * 3) + weatherBytes.Length];
+            packet[0] = PACKET_WORLD;
+            packet[1] = WEATHER_UPDATE;
+            Array.Copy(weatherBytes, 0, packet, 2, weatherBytes.Length);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
+            return packet;
         }
-
-        public static byte[] CreateWorldData(int gameTime, int gameDay, int gameYear, string weather)
+        // Creates a byte array of a packet informing the client of the current game time, and weather effect.
+        public static byte[] CreateTimeAndWeatherUpdate(int gameTime, int gameDay, int gameYear, string weather)
         {
-            byte[] strBytes = Encoding.UTF8.GetBytes(weather);
+            byte[] weatherBytes = Encoding.UTF8.GetBytes(weather);
 
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_WORLD);
+            byte[] packet = new byte[(1 * 7) + weatherBytes.Length];
+
+            packet[0] = PACKET_WORLD;
+            // Encode current time
+            packet[1] = (byte)((gameTime / 64) + 20);
+            packet[2] = (byte)((gameTime % 64) + 20);
+            // Encode current day
+            packet[3] = (byte)((gameDay / 64) + 20);
+            packet[4] = (byte)((gameDay % 64) + 20);
+            // Encode current year
+            packet[5] = (byte)((gameYear / 64) + 20);
+            packet[6] = (byte)((gameYear % 64) + 20);
+
+            // Copy weather information to packet
+            Array.Copy(weatherBytes, 0, packet, 7, weatherBytes.Length);
             
-            ms.WriteByte((byte)((gameTime / 64) + 20)); 
-            ms.WriteByte((byte)((gameTime % 64) + 20)); 
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
-            ms.WriteByte((byte)((gameDay / 64) + 20)); 
-            ms.WriteByte((byte)((gameDay % 64) + 20)); 
-
-            ms.WriteByte((byte)((gameYear / 64) + 20)); 
-            ms.WriteByte((byte)((gameYear % 64) + 20));
-
-            ms.Write(strBytes,0x00, strBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
-
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            return packet;
         }
-
+        // Creates a byte array of a "keep alive" packet, to check if the client is still connected
+        // and to inform the client the server is still here too and has not crashed / disconnected the client.
         public static byte[] CreateKeepAlive()
         {
-            MemoryStream ms = new MemoryStream();
-
-            ms.WriteByte(PACKET_KEEP_ALIVE);
-            ms.WriteByte(PACKET_TERMINATOR);
-
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            byte[] packet = new byte[2];
+            packet[0] = PACKET_KEEP_ALIVE;
+            packet[1] = PACKET_TERMINATOR;
+            return packet;
         }
+        // Creates a byte array of a packet to inform the client of all "Places" that exist in the world
+        // (as defined by gamedata json) This is used in the map view when you hover over certain areas
         public static byte[] CreatePlaceData(World.Isle[] isles, World.Town[] towns, World.Area[] areas)
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_AREA_DEFS);
+            // As this information is defined by gamedata.json file
+            // the size of it can vary alot, so im using a List<byte> instead of a byte[] here.
+            List<byte> packet = new List<byte>();
+            packet.Add(PACKET_AREA_DEFS);
 
-            // Write Towns
+            // Encode Towns
 
             foreach (World.Town town in towns)
             {
-                byte[] strBytes = Encoding.UTF8.GetBytes(town.Name);
+                byte[] townBytes = Encoding.UTF8.GetBytes(town.Name);
 
-                ms.WriteByte(AREA_SEPERATOR);
-                ms.WriteByte(AREA_TOWN);
+                packet.Add(AREA_SEPERATOR);
+                packet.Add(AREA_TOWN);
+                
+                packet.Add((byte)(((town.StartX - 4) / 64) + 20));
+                packet.Add((byte)(((town.StartX - 4) % 64) + 20));
+                
+                packet.Add((byte)(((town.EndX - 4) / 64) + 20));
+                packet.Add((byte)(((town.EndX - 4) % 64) + 20));
+                
+                packet.Add((byte)(((town.StartY - 1) / 64) + 20));
+                packet.Add((byte)(((town.StartY - 1) % 64) + 20));
+                
+                packet.Add((byte)(((town.EndY - 1) / 64) + 20));
+                packet.Add((byte)(((town.EndY - 1) % 64) + 20));
 
-                ms.WriteByte((byte)(((town.StartX - 4) / 64) + 20));
-                ms.WriteByte((byte)(((town.StartX - 4) % 64) + 20));
 
-                ms.WriteByte((byte)(((town.EndX - 4) / 64) + 20));
-                ms.WriteByte((byte)(((town.EndX - 4) % 64) + 20));
-
-                ms.WriteByte((byte)(((town.StartY - 1) / 64) + 20));
-                ms.WriteByte((byte)(((town.StartY - 1) % 64) + 20));
-
-                ms.WriteByte((byte)(((town.EndY - 1) / 64) + 20));
-                ms.WriteByte((byte)(((town.EndY - 1) % 64) + 20));
-
-
-                ms.Write(strBytes, 0x00, strBytes.Length);
+                Helper.ByteArrayToByteList(townBytes, packet);
             }
 
-            // Write Areas
+            // Encode Areas
 
             foreach (World.Area area in areas)
             {
-                byte[] strBytes = Encoding.UTF8.GetBytes(area.Name);
+                byte[] areaBytes = Encoding.UTF8.GetBytes(area.Name);
 
-                ms.WriteByte(AREA_SEPERATOR);
-                ms.WriteByte(AREA_AREA);
+                packet.Add(AREA_SEPERATOR);
+                packet.Add(AREA_AREA);
 
-                ms.WriteByte((byte)(((area.StartX - 4) / 64) + 20));
-                ms.WriteByte((byte)(((area.StartX - 4) % 64) + 20));
+                packet.Add((byte)(((area.StartX - 4) / 64) + 20));
+                packet.Add((byte)(((area.StartX - 4) % 64) + 20));
 
-                ms.WriteByte((byte)(((area.EndX - 4) / 64) + 20));
-                ms.WriteByte((byte)(((area.EndX - 4) % 64) + 20));
+                packet.Add((byte)(((area.EndX - 4) / 64) + 20));
+                packet.Add((byte)(((area.EndX - 4) % 64) + 20));
+                
+                packet.Add((byte)(((area.StartY - 1) / 64) + 20));
+                packet.Add((byte)(((area.StartY - 1) % 64) + 20));
+                
+                packet.Add((byte)(((area.EndY - 1) / 64) + 20));
+                packet.Add((byte)(((area.EndY - 1) % 64) + 20));
 
-                ms.WriteByte((byte)(((area.StartY - 1) / 64) + 20));
-                ms.WriteByte((byte)(((area.StartY - 1) % 64) + 20));
 
-                ms.WriteByte((byte)(((area.EndY - 1) / 64) + 20));
-                ms.WriteByte((byte)(((area.EndY - 1) % 64) + 20));
-
-
-                ms.Write(strBytes, 0x00, strBytes.Length);
+                Helper.ByteArrayToByteList(areaBytes, packet);
             }
 
-            // Write Isles
+            // Encode Isles
 
             foreach (World.Isle isle in isles)
             {
-                byte[] strBytes = Encoding.UTF8.GetBytes(isle.Name);
+                byte[] isleBytes = Encoding.UTF8.GetBytes(isle.Name);
 
-                ms.WriteByte(AREA_SEPERATOR);
-                ms.WriteByte(AREA_ISLE);
+                packet.Add(AREA_SEPERATOR);
+                packet.Add(AREA_ISLE);
 
-                ms.WriteByte((byte)(((isle.StartX - 4) / 64) + 20));
-                ms.WriteByte((byte)(((isle.StartX - 4) % 64) + 20));
+                packet.Add((byte)(((isle.StartX - 4) / 64) + 20));
+                packet.Add((byte)(((isle.StartX - 4) % 64) + 20));
 
-                ms.WriteByte((byte)(((isle.EndX - 4) / 64) + 20));
-                ms.WriteByte((byte)(((isle.EndX - 4) % 64) + 20));
+                packet.Add((byte)(((isle.EndX - 4) / 64) + 20));
+                packet.Add((byte)(((isle.EndX - 4) % 64) + 20));
 
-                ms.WriteByte((byte)(((isle.StartY - 1) / 64) + 20));
-                ms.WriteByte((byte)(((isle.StartY - 1) % 64) + 20));
+                packet.Add((byte)(((isle.StartY - 1) / 64) + 20));
+                packet.Add((byte)(((isle.StartY - 1) % 64) + 20));
 
-                ms.WriteByte((byte)(((isle.EndY - 1) / 64) + 20));
-                ms.WriteByte((byte)(((isle.EndY - 1) % 64) + 20));
+                packet.Add((byte)(((isle.EndY - 1) / 64) + 20));
+                packet.Add((byte)(((isle.EndY - 1) % 64) + 20));
 
-                ms.WriteByte((byte)isle.Tileset.ToString()[0]);
-
-                ms.Write(strBytes, 0x00, strBytes.Length);
+                packet.Add((byte)isle.Tileset.ToString()[0]);
+                
+                Helper.ByteArrayToByteList(isleBytes, packet);
             }
-            ms.WriteByte(PACKET_TERMINATOR);
+            packet.Add(PACKET_TERMINATOR);
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            return packet.ToArray();
         }
-
-        public static byte[] CreatePlayerData(int money, int playerCount, int mail)
+        // Creates a byte array of a packet informing the client of the players money, total player count and,
+        // how many mail messages they have.
+        public static byte[] CreateMoneyPlayerCountAndMail(int money, int playerCount, int mail)
         {
-            byte[] moneyStrBytes = Encoding.UTF8.GetBytes(money.ToString("N0", CultureInfo.InvariantCulture));
-            byte[] playerStrBytes = Encoding.UTF8.GetBytes(playerCount.ToString("N0", CultureInfo.InvariantCulture));
-            byte[] mailStrBytes = Encoding.UTF8.GetBytes(mail.ToString("N0", CultureInfo.InvariantCulture));
+            byte[] playerDataBytes = Encoding.UTF8.GetBytes(money.ToString("N0", CultureInfo.InvariantCulture) + "|" + 
+                                                       playerCount.ToString("N0", CultureInfo.InvariantCulture) + "|" + 
+                                                       mail.ToString("N0", CultureInfo.InvariantCulture) + "|");
 
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_BASE_STATS);
-            ms.Write(moneyStrBytes, 0x00, moneyStrBytes.Length);
-            ms.WriteByte((byte)'|');
-            ms.Write(playerStrBytes, 0x00, playerStrBytes.Length);
-            ms.WriteByte((byte)'|');
-            ms.Write(mailStrBytes, 0x00, mailStrBytes.Length);
-            ms.WriteByte((byte)'|');
-            ms.WriteByte(PACKET_TERMINATOR);
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            byte[] packet = new byte[(1*2) + playerDataBytes.Length];
+            packet[0] = PACKET_BASE_STATS;
+            Array.Copy(playerDataBytes, 0, packet, 1, playerDataBytes.Length);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
+            return packet;
         }
-
+        // Creates a byte array of a packet informing the client of Tile Overlay flags
+        // these tell the client what tiles are and are not passable, which ones the player
+        // should appear ontop of or under, and stuff like that.
         public static byte[] CreateTileOverlayFlags(int[] tileDepthFlags)
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_TILE_FLAGS);
+            byte[] packet = new byte[(1 * 2) + tileDepthFlags.Length];
+            packet[0] = PACKET_TILE_FLAGS;
 
-            foreach(int tileDepthFlag in tileDepthFlags)
-            {
-                ms.WriteByte((byte)tileDepthFlag.ToString()[0]);
-            }
+            for(int i = 0; i < tileDepthFlags.Length; i++)
+                packet[1 + i] = (byte)(tileDepthFlags[i].ToString()[0]);
 
-            ms.WriteByte(PACKET_TERMINATOR);
-
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-
-            return Packet;
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
+            return packet;
         }
-
+        // Creates a byte array of a packet informing the client of its current Sec Code seed and Inc values,
+        // Some client packets (eg minigame rewards) require this special Message Authentication Code to validate them
+        // Its not at all secure, you can easily just forge these packets by just implementing sec codes, but i didnt make it --
         public static byte[] CreateSecCode(byte[] SecCodeSeed, int SecCodeInc, bool Admin, bool Moderator)
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_USERINFO);
-
-            ms.WriteByte((byte)(SecCodeSeed[0] + 33));
-            ms.WriteByte((byte)(SecCodeSeed[1] + 33));
-            ms.WriteByte((byte)(SecCodeSeed[2] + 33));
-            ms.WriteByte((byte)(SecCodeInc + 33));
 
             char userType = 'N'; // Normal?
+            
             if (Moderator)
-                userType = 'M';
+                userType = 'M'; // Moderator
+
             if (Admin)
-                userType = 'A';
+                userType = 'A'; // Admin
 
-            ms.WriteByte((byte)userType);
-            ms.WriteByte(PACKET_TERMINATOR);
+            byte[] packet = new byte[7];
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
+            packet[0] = PACKET_SEC_CODE;
 
-            return Packet;
+            packet[1] = (byte)(SecCodeSeed[0] + 33);
+            packet[2] = (byte)(SecCodeSeed[1] + 33);
+            packet[3] = (byte)(SecCodeSeed[2] + 33);
+            packet[4] = (byte)(SecCodeInc + 33);
+
+
+            packet[5] = (byte)userType;
+            packet[6] = PACKET_TERMINATOR;
+
+            return packet;
         }
-        public static byte[] CreateSwfModulePacket(string swf,byte type)
+        // Creates a byte array of a packet to tell the client to please GET
+        // a certain SWF in the mod/ directory on web, and then load it as a MovieClip
+        // into the actual game client.
+        public static byte[] CreateSwfModule(string swf,byte headerByte)
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(type);
-            byte[] strBytes = Encoding.UTF8.GetBytes(swf);
-            ms.Write(strBytes, 0x00, strBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
+            byte[] swfBytes = Encoding.UTF8.GetBytes(swf);
+            byte[] packet = new byte[(1 * 2) + swfBytes.Length];
+            
+            packet[0] = headerByte;
+            Array.Copy(swfBytes, 0, packet, 1, swfBytes.Length);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
-            return Packet;
+            return packet;
         }
+        // Creates a byte array of a packet to show the client an "Annoucement" message
+        // This has the exact same effect as CreateChat with CHAT_BOTTOM_RIGHT but for some reason
+        // the header byte is different,
+        // This is basically only used for MOTD.
         public static byte[] CreateAnnouncement(string announcement)
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_ANNOUNCEMENT);
-            byte[] strBytes = Encoding.UTF8.GetBytes(announcement);
-            ms.Write(strBytes, 0x00, strBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
+            byte[] annouceBytes = Encoding.UTF8.GetBytes(announcement);
+            byte[] packet = new byte[(1 * 2) + annouceBytes.Length];
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
+            packet[0] = PACKET_ANNOUNCEMENT;
+            Array.Copy(annouceBytes, 0, packet, 1, annouceBytes.Length);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
-            return Packet;
+            return packet;
         }
-
+        // Creates a byte array of a packet informing the clent that they have been kicked from the server
+        // and includes a reason for them being kicked,
         public static byte[] CreateKickMessage(string reason)
         {
-            MemoryStream ms = new MemoryStream();
-            ms.WriteByte(PACKET_KICK);
-            byte[] strBytes = Encoding.UTF8.GetBytes(reason);
-            ms.Write(strBytes, 0x00, strBytes.Length);
-            ms.WriteByte(PACKET_TERMINATOR);
+            byte[] kickMsgBytes = Encoding.UTF8.GetBytes(reason);
+            byte[] packet = new byte[(1 * 2) + kickMsgBytes.Length];
 
-            ms.Seek(0x00, SeekOrigin.Begin);
-            byte[] Packet = ms.ToArray();
-            ms.Dispose();
+            packet[0] = PACKET_KICK;
+            Array.Copy(kickMsgBytes, 0, packet, 1, kickMsgBytes.Length);
+            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
-            return Packet;
-        }
-
-        public static byte[] CreateMotd()
-        {
-            string formattedMotd = Messages.FormatMOTD();
-            return CreateAnnouncement(formattedMotd);
-        }
-        public static byte[] CreateWelcomeMessage(string username)
-        {
-            string formattedStr = Messages.FormatWelcomeMessage(username);
-            return CreateChat(formattedStr, CHAT_BOTTOM_RIGHT);
+            return packet;
         }
 
     }
