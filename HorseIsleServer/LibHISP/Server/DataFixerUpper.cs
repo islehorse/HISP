@@ -39,7 +39,6 @@ namespace HISP.Server
             Database.TryExecuteSqlQuery("UPDATE World SET LastLoadedInVersion=\"v1.7.20\";");
         }
 
-
         public static void FixUpDb()
         {
             string lastVersionStr = Database.GetLastLoadedVersion();
