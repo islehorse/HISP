@@ -65,7 +65,7 @@ namespace MPN00BS
 #elif OS_LINUX
             string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf");
 #elif OS_MACOS
-            string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", “MACOS”, "flash.app”, “Contents”, “MacOS”, “Flash Player”);
+            string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "MACOS", "flash.app", "Contents", "MacOS", "Flash Player");
 #else
             MessageBox.Show(null,"ERROR: No path for flash projector specified on this platform", "Porting error", MessageBoxButtons.Ok);
             string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
