@@ -78,7 +78,7 @@ namespace MPN00BS
 
             clientProcess.StartInfo.FileName = executable;
 
-#if defined(OS_LINUX) || defined(OS_MACOS)
+#if OS_LINUX || OS_MACOS 
             clientProcess.StartInfo.Arguments = "http://"+cs.ipaddr+":"+cs.portnum+"/horseisle_mapfix.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
 #else
             clientProcess.StartInfo.Arguments = "http://"+cs.ipaddr+":"+cs.portnum+"/horseisle.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
@@ -222,7 +222,7 @@ namespace MPN00BS
 
             BaseDir = Path.Combine(hispFolder, "HISP", "N00BS");
             Directory.CreateDirectory(BaseDir);
-#elif defined(OS_LINUX) || defined(OS_MACOS)
+#elif OS_LINUX || OS_MACOS
             string hispFolder = Environment.GetEnvironmentVariable("HOME");
             if (hispFolder == null)
                 return;
@@ -237,7 +237,7 @@ namespace MPN00BS
             try
             {
 
-#if defined(OS_LINUX) || defined(OS_MACOS)
+#if OS_LINUX || OS_MACOS
                 cs = new ContentServer("127.0.0.1", 12322);
 #else
                 cs = new ContentServer("127.0.0.1", 80);
