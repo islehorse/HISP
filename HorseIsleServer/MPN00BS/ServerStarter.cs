@@ -1,4 +1,4 @@
-﻿using HISP.Game.Chat;
+using HISP.Game.Chat;
 using HISP.Game.Horse;
 using HISP.Game.Items;
 using HISP.Game.Services;
@@ -64,6 +64,8 @@ namespace MPN00BS
             string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
 #elif OS_LINUX
             string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf");
+#elif OS_MACOS
+            string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", “MACOS”, "flash.app”, “Contents”, “MacOS”, “Flash Player”);
 #else
             MessageBox.Show(null,"ERROR: No path for flash projector specified on this platform", "Porting error", MessageBoxButtons.Ok);
             string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
@@ -77,6 +79,8 @@ namespace MPN00BS
             clientProcess.StartInfo.FileName = executable;
 
 #if OS_LINUX
+            clientProcess.StartInfo.Arguments = "http://"+cs.ipaddr+":"+cs.portnum+"/horseisle_mapfix.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
+#elif OS_MACOS
             clientProcess.StartInfo.Arguments = "http://"+cs.ipaddr+":"+cs.portnum+"/horseisle_mapfix.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
 #else
             clientProcess.StartInfo.Arguments = "http://"+cs.ipaddr+":"+cs.portnum+"/horseisle.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
