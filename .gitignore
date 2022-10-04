@@ -5,6 +5,8 @@
 *.suo
 *.csproj.user
 
+*.DS_Store
+
 HorseIsleServer/N00BS/obj/*
 HorseIsleServer/N00BS/bin/*
 
