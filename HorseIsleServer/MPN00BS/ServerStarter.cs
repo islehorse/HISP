@@ -60,7 +60,7 @@ namespace MPN00BS
 
             
             clientProcess = new Process();
-#if OS_WINDOWS
+#if OS_WINDOWS || DEBUG
             string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
 #elif OS_LINUX
             string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf");
@@ -215,7 +215,7 @@ namespace MPN00BS
 
         public static void SetBaseDir()
         {
-#if OS_WINDOWS
+#if OS_WINDOWS || DEBUG
             string hispFolder = Environment.GetEnvironmentVariable("APPDATA");
             if (hispFolder == null)
                 return;
