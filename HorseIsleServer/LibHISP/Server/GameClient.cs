@@ -129,7 +129,7 @@ namespace HISP.Server
                     if (GameServer.ServerSocket == null)
                         return;
                     if (eSocket == null)
-                        return;
+                        continue;
                     if (eSocket.RemoteEndPoint == null)
                         continue;
                     new GameClient(eSocket);
@@ -139,7 +139,7 @@ namespace HISP.Server
                         return;
                 } while (!GameServer.ServerSocket.AcceptAsync(e));
             }
-            catch (ObjectDisposedException) { } // server shutdown
+            catch (ObjectDisposedException ex) { Logger.CrashPrint("Server shutdown due to " + ex.Message); } // server shutdown
         }
         private void timeoutTimerTick(object state)
         {
