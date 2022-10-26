@@ -139,7 +139,7 @@ namespace HISP.Server
                         return;
                 } while (!GameServer.ServerSocket.AcceptAsync(e));
             }
-            catch (ObjectDisposedException ex) { Logger.CrashPrint("Server shutdown due to " + ex.Message); } // server shutdown
+            catch (ObjectDisposedException ex) { Logger.ErrorPrint("Server shutdown due to " + ex.Message); } // server shutdown
         }
         private void timeoutTimerTick(object state)
         {
