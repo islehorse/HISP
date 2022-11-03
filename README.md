@@ -14,8 +14,11 @@ well they essentailly run off "Server Emulators".
 # Installation:
 
 Understand that there are differnet verisons of the HISP package;
-HISPd - reimplementation of the Horse Isle 1.0 Server Software (deprecated)
-N00BS - a launcher for joining Multiplayer or running a local server for offline singleplayer play
+
+HISPd - reimplementation of the Horse Isle 1.0 Server Software 
+
+N00BS - a launcher for joining Multiplayer or running a local server for offline singleplayer play (deprecated)
+
 MPN00BS - Same as N00BS but multiplatform
 
 Game relies on a SQL Server, any should work, but i have only tested it with MariaDB, 
