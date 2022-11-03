@@ -66,7 +66,6 @@ https://server.islehorse.com/binaries/download/HISP-Web-Master.zip
 
 and the game-site:
 contains the actual game client .SWFs themselves
-you must edit config.php
 https://server.islehorse.com/binaries/download/HISP-Web-Game.zip
 
 # Commands     
