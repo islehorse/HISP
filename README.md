@@ -142,7 +142,9 @@ https://server.islehorse.com/binaries/download/HISP-Web-Game.zip
  
  # Credits
  
- Li (They/Them)
- Supertiger (He/Him)
- Olebeck (They/Them)
+Li (They/Them)
+
+Supertiger (He/Him)
+
+Olebeck (They/Them)
  
