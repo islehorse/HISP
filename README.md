@@ -1,7 +1,5 @@
 # HISP - HorseIsleServer Program
 
-
-
 [![Build](https://github.com/islehorse/HISP/workflows/build/badge.svg)](https://github.com/islehorse/HISP/actions?query=workflow%3Abuild)
 
 HISP is a "Server Emulator" for Horse Isle 1          
@@ -12,9 +10,15 @@ well they essentailly run off "Server Emulators".
 
 **tl;dr, think "Club Penguin Rewritten" but with Horse Isle.**
 
+
 # Installation:
 
-- Linux:
+Understand that there are differnet verisons of the HISP package;
+HISPd - reimplementation of the Horse Isle 1.0 Server Software
+N00BS - a launcher for joining Multiplayer or running a local server for offline singleplayer play
+MPN00BS - Same as N00BS but multiplatform
+
+- APT:
 
 Install on Ubuntu via APT:
 ```
@@ -34,6 +38,30 @@ sudo apt install hisp
 
 Then simply edit /etc/hisp/server.properties & change to correct database credentials
 and start the server using ``systemctl start hisp``
+
+- Manual Install:
+
+If you do not want to use APT, or are on Windows or MacOS, then you can simply download the latest HISPd binary:
+here https://islehorse.com/download/
+
+Run it and edit server.properties in the same folder as HISPd
+
+- Websites:
+
+Website is built in PHP 8.0 and based on the original Horse Isle Game Website
+requires the following PHP modules to be loaded; "intl", "mysqli" and "mysqlnd" on Ubuntu
+
+you must edit config.php and server.php to configure before it'll work properly.
+and is required to sign-up to the private server
+
+the master-site (equivilent to master.horseisle.com) can be found here:
+consists of sign up page, and server list, 
+https://server.islehorse.com/binaries/download/HISP-Web-Master.zip
+
+and the game-site:
+contains the actual game client .SWFs themselves
+you must edit config.php
+https://server.islehorse.com/binaries/download/HISP-Web-Game.zip
 
 # Commands     
 (legend: <> Required, [] Optional)
@@ -111,8 +139,10 @@ and start the server using ``systemctl start hisp``
  
  NOTE: At this current time, building projects targeting .NET Core 7.0 inside Visual Studio requires Visual Studio 2022 PREVIEW and does not work in the stable build
  
-# Web Server
- Theres a bunch of saved files from the Horse Isle 1.0 website, as well as some basic functionality to make it work
- like the original site, the files are in the "HorseIsleWeb" folder, it requires PHP 8.0, with the modules "intl" and "mysqli"
  
- - Li
+ # Credits
+ 
+ Li (They/Them)
+ Supertiger (He/Him)
+ Olebeck (They/Them)
+ 
