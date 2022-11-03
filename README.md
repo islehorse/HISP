@@ -14,9 +14,12 @@ well they essentailly run off "Server Emulators".
 # Installation:
 
 Understand that there are differnet verisons of the HISP package;
-HISPd - reimplementation of the Horse Isle 1.0 Server Software
+HISPd - reimplementation of the Horse Isle 1.0 Server Software (deprecated)
 N00BS - a launcher for joining Multiplayer or running a local server for offline singleplayer play
 MPN00BS - Same as N00BS but multiplatform
+
+Game relies on a SQL Server, any should work, but i have only tested it with MariaDB, 
+(and i guess SQLLite for the one used in the launcher version)
 
 - APT:
 
@@ -125,11 +128,6 @@ https://server.islehorse.com/binaries/download/HISP-Web-Game.zip
               <locationame>        
     !DANCE <udlr>       
 ```
-
-# Depends
- HISP Depends on a SQL Server, 
- its been tested and known to work specifically with MariaDB, https://mariadb.org/
- Set its information into server.properties or the server will just crash on first run /-/
  
 # Building
  Building the server from source requires Microsoft .NET Core SDK, targetting version 7.0 https://dotnet.microsoft.com/download/dotnet-core
