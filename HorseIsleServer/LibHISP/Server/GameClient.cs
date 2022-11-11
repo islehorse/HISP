@@ -122,7 +122,7 @@ namespace HISP.Server
         {
             try
             {
-                while (!GameServer.ServerSocket.AcceptAsync(e))
+                do
                 {
                     Socket eSocket = e.AcceptSocket;
 
@@ -137,7 +137,7 @@ namespace HISP.Server
 
                     if (GameServer.ServerSocket == null)
                         return;
-                }
+                } while (!GameServer.ServerSocket.AcceptAsync(e));
             }
             catch (ObjectDisposedException ex) { Logger.ErrorPrint("Server shutdown due to " + ex.Message); } // server shutdown
         }
