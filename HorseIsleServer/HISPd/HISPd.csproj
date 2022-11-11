@@ -50,7 +50,7 @@
 	<EnableTrimAnalyzer>false</EnableTrimAnalyzer>
 	<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
 	
-	<AutoreleasePoolSupport>false</AutoreleasePoolSupport>
+	<!-- <AutoreleasePoolSupport>false</AutoreleasePoolSupport>
 	<DebuggerSupport>false</DebuggerSupport>
 	<EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
 	<EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
@@ -65,7 +65,7 @@
 	<CustomResourceTypesSupport>false</CustomResourceTypesSupport>
 	<EnableCppCLIHostActivation>false</EnableCppCLIHostActivation>
 	<EnableUnsafeBinaryFormatterInDesigntimeLicenseContextSerialization>false</EnableUnsafeBinaryFormatterInDesigntimeLicenseContextSerialization>
-	<StartupHookSupport>false</StartupHookSupport>
+	<StartupHookSupport>false</StartupHookSupport> -->
 	
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x86'">
