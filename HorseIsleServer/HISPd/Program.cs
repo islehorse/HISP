@@ -1,5 +1,4 @@
-﻿using HISP.Cli.Properties;
-using HISP.Server;
+﻿using HISP.Server;
 using System;
 using System.IO;
 using System.Threading;
@@ -44,11 +43,22 @@ namespace HISP.Cli
 
         public static void OnShutdown()
         {
+            if(fs != null)
+            {
+                fs.Close();
+                fs.Dispose();
+            }
+            if(sw != null)
+            {
+                sw.Close();
+                sw.Dispose();
+            }
+
             shutdownHandle.Set();
         }
         public static void LogToFile(bool error, string type,string text)
         {
-            sw.WriteLineAsync(DateTime.Now.ToString("MM-dd-YYYY HH:mm:dd") + ": [" + type + "] " + text + sw.NewLine);
+            sw.WriteLine(DateTime.Now.ToString("MM-dd-yyyy HH:mm:dd") + ": [" + type + "] " + text + sw.NewLine);
         }
         public static void LogStdout(bool error, string type, string text)
         {
@@ -56,9 +66,9 @@ namespace HISP.Cli
                 LogToFile(error, type, text);
 
             if (error)
-                Console.Error.WriteAsync(DateTime.Now.ToString("MM-dd-YYYY HH:mm:dd")+": [" + type + "] " + text + Console.Error.NewLine);
+                Console.Error.WriteAsync(DateTime.Now.ToString("MM-dd-yyyy HH:mm:dd")+": [" + type + "] " + text + Console.Error.NewLine);
             else
-                Console.Out.WriteAsync(DateTime.Now.ToString("MM-dd-YYYY HH:mm:dd") + ": [" + type + "] " + text + Console.Out.NewLine);
+                Console.Out.WriteAsync(DateTime.Now.ToString("MM-dd-yyyy HH:mm:dd") + ": [" + type + "] " + text + Console.Out.NewLine);
             
         }
 
