@@ -62,23 +62,6 @@
 	<TrimMode>partial</TrimMode>
 	<EnableTrimAnalyzer>false</EnableTrimAnalyzer>
 	<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
-
-    <AutoreleasePoolSupport>false</AutoreleasePoolSupport>
-    <DebuggerSupport>false</DebuggerSupport>
-    <EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>
-    <EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>
-    <EventSourceSupport>false</EventSourceSupport>
-    <HttpActivityPropagationSupport>false</HttpActivityPropagationSupport>
-    <InvariantGlobalization>true</InvariantGlobalization>
-    <MetadataUpdaterSupport>false</MetadataUpdaterSupport>
-    <UseNativeHttpHandler>true</UseNativeHttpHandler>
-    <UseSystemResourceKeys>true</UseSystemResourceKeys>
-
-    <BuiltInComInteropSupport>false</BuiltInComInteropSupport>
-    <CustomResourceTypesSupport>false</CustomResourceTypesSupport>
-    <EnableCppCLIHostActivation>false</EnableCppCLIHostActivation>
-    <EnableUnsafeBinaryFormatterInDesigntimeLicenseContextSerialization>false</EnableUnsafeBinaryFormatterInDesigntimeLicenseContextSerialization>
-    <StartupHookSupport>false</StartupHookSupport>
 	
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x86'">
