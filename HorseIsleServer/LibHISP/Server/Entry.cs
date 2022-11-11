@@ -84,7 +84,14 @@ namespace HISP.Server
             crashMsg += execpt.StackTrace + "\r\n";
 
             Logger.CrashPrint(crashMsg);
-            
+
+            try
+            {
+                GameServer.ShutdownServer();
+            }
+            catch (Exception) { };
+
+
         }
     }
 }
