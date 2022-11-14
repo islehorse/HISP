@@ -30,10 +30,10 @@ namespace HISP.Game
             }
             public static RanchUpgrade GetRanchUpgradeById(int id)
             {
-                foreach (RanchUpgrade rachUpgrade in RanchUpgrades)
+                foreach (RanchUpgrade ranchUpgrade in RanchUpgrades)
                 {
-                    if (rachUpgrade.Id == id)
-                        return rachUpgrade;
+                    if (ranchUpgrade.Id == id)
+                        return ranchUpgrade;
                 }
                 throw new KeyNotFoundException("No ranch found.");
             }
@@ -168,7 +168,7 @@ namespace HISP.Game
                 }
                 else
                 {
-                    if(Database.IsRanchOwned(this.Id))
+                    if (Database.IsRanchOwned(this.Id))
                     {
                         Database.SetRanchOwner(this.Id, ownerId);
                         removeDorothyShoes(ownerId);
@@ -178,6 +178,17 @@ namespace HISP.Game
                         resetRanch();
                         Database.AddRanch(this.Id, value, "", "", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
                     }
+                }
+
+                if (GameServer.IsUserOnline(value))
+                {
+                    User user = GameServer.GetUserById(value);
+                    user.OwnedRanch = this;
+                    user.Inventory.AddIgnoringFull(new ItemInstance(Item.DorothyShoes));
+                }
+                else
+                {
+                    Database.AddItemToInventory(value, new ItemInstance(Item.DorothyShoes));
                 }
 
                 ownerId = value;

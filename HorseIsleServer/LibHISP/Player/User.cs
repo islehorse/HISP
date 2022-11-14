@@ -284,10 +284,10 @@ namespace HISP.Player
                 if (Administrator)
                     return true;
                 
-                int Timestamp = Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds());
-                if(Timestamp > subscribedUntil && subscribed) // sub expired.
+                int timestamp = Convert.ToInt32(new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds());
+                if(timestamp > subscribedUntil && subscribed) // sub expired.
                 {
-                    Logger.InfoPrint(Username + "'s Subscription expired. (timestamp now: " + Timestamp + " exp date: " + subscribedUntil+" )");
+                    Logger.InfoPrint(Username + "'s Subscription expired. (timestamp now: " + timestamp + " exp date: " + subscribedUntil+" )");
                     Database.SetUserSubscriptionStatus(this.Id, false);
                     subscribed = false;
                 }
