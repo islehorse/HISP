@@ -6125,7 +6125,7 @@ namespace HISP.Server
                 }
                 // TODO: REMEMBER TO CHANGE THIS BACK
                 //byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo(returnedMsg);
-                byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo("ground: " + Map.GetTileId(x, y, false) + ", overlay: " + Map.GetTileId(x, y, true));
+                byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo("ground: " + Map.GetTileId(x, y, false)-1 + ", overlay: " + Map.GetTileId(x, y, true)-1);
                 sender.SendPacket(tileInfoPacket);
             }
         }
