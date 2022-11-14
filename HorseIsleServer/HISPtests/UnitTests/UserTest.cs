@@ -1,4 +1,6 @@
 ﻿using HISP.Game;
+using HISP.Game.Horse;
+using HISP.Game.Items;
 using HISP.Player;
 using HISP.Security;
 using HISP.Server;
@@ -104,6 +106,17 @@ namespace HISP.Tests.UnitTests
                 user.Hunger = -8000;
                 results.Add(Test("HungerMinimumEnforcement", user.Hunger, 0));
 
+                user.Thirst = 8000;
+                results.Add(Test("ThirstMaximumEnforcement", user.Thirst, 1000));
+                user.Thirst = -8000;
+                results.Add(Test("ThirstMinimumEnforcement", user.Thirst, 0));
+
+                user.Tiredness = 8000;
+                results.Add(Test("TirednessMaximumEnforcement", user.Tiredness, 1000));
+                user.Tiredness = -8000;
+                results.Add(Test("TirednessMinimumEnforcement", user.Tiredness, 0));
+
+
                 user.BankMoney = 9999999999.9999;
                 user.BankMoney += 1000.0;
                 results.Add(Test("BankMoneyMaximumEnforcement", user.BankMoney, 9999999999.9999));
@@ -153,6 +166,72 @@ namespace HISP.Tests.UnitTests
                 byte[] gotSecCode = user.GenerateSecCode();
 
                 results.Add(Test("GenerateSecCode", gotSecCode.SequenceEqual(expectedSecCodeResult), true));
+
+                // Check max horses count
+                user.Subscribed = false;
+                results.Add(Test("UnsubbedMaxHorses", user.MaxHorses, 7));
+
+                user.Subscribed = true;
+                results.Add(Test("SubbedMaxHorses", user.MaxHorses, 11));
+
+
+                HorseInstance horse = new HorseInstance(HorseInfo.GetBreedById(170));
+                horse.BasicStats.Thirst = 0;
+                horse.BasicStats.Hunger = 0;
+                int horseId = horse.RandomId;
+
+                user.HorseInventory.AddHorse(horse);
+
+                /*
+                 * Test Ranches
+                 */
+
+                // Give player ranch id 10
+                Ranch.GetRanchById(37).OwnerId = user.Id;
+
+                // Check ranch is now owned by that player, and propagates to user object.
+                results.Add(Test("GiveRanchTest", user.OwnedRanch.Id, 37));
+                results.Add(Test("HaveDorothyShoes", user.Inventory.HasItemId(Item.DorothyShoes), true));
+
+                // Ranch upgrade test
+                foreach(Ranch.RanchUpgrade upgrade in Ranch.RanchUpgrade.RanchUpgrades)
+                {
+                    int id = upgrade.Id;
+
+                    results.Add(Test("RanchUpgradeLevel" + id, user.OwnedRanch.UpgradedLevel, id));
+                    user.OwnedRanch.UpgradedLevel = id;
+                }
+
+                // Test swf
+                results.Add(Test("RanchSwfMine", user.OwnedRanch.GetSwf(true), "ranchviewer.swf?H=10&B1=11&B2=&B3=&B4=&B5=&B6=&B7=&B8=&B9=&B10=&B11=&B12=&B13=&B14=&B15=&B16=&MINE=1"));
+                results.Add(Test("RanchSwf", user.OwnedRanch.GetSwf(false), "ranchviewer.swf?H=10&B1=11&B2=&B3=&B4=&B5=&B6=&B7=&B8=&B9=&B10=&B11=&B12=&B13=&B14=&B15=&B16="));
+
+                // Test Ranch Building Functionality
+
+                // Test Barn
+                user.OwnedRanch.SetBuilding(0, Ranch.RanchBuilding.GetRanchBuildingById(1)); // Barn
+                results.Add(Test("RanchBarnMaxHorses", user.MaxHorses, 11 + 4));
+
+                // Test Water Well
+                user.OwnedRanch.SetBuilding(0, Ranch.RanchBuilding.GetRanchBuildingById(2)); // Water Well
+                user.Teleport(user.OwnedRanch.X, user.OwnedRanch.Y);
+                results.Add(Test("RanchWaterWellWatering", user.HorseInventory.GetHorseById(horseId).BasicStats.Thirst, 1000));
+                
+                // Test Grain Silo
+                user.OwnedRanch.SetBuilding(0, Ranch.RanchBuilding.GetRanchBuildingById(3)); // Grain Silo
+                user.Teleport(user.OwnedRanch.X, user.OwnedRanch.Y);
+                results.Add(Test("RanchGrainSiloFeeding", user.HorseInventory.GetHorseById(horseId).BasicStats.Hunger, 1000));
+
+
+                // Set building id 0 to a big barn
+                user.OwnedRanch.SetBuilding(0, Ranch.RanchBuilding.GetRanchBuildingById(10)); // Big Barn
+                results.Add(Test("RanchBigBarnMaxHorses", user.MaxHorses, 11 + 8));
+
+                // Set building id 0 to a gold barn
+                user.OwnedRanch.SetBuilding(0, Ranch.RanchBuilding.GetRanchBuildingById(11)); // Gold Barn
+                results.Add(Test("RanchGoldBarnMaxHorses", user.MaxHorses, 11 + 12));
+
+
 
 
                 foreach (bool result in results)

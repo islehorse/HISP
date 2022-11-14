@@ -5680,8 +5680,6 @@ namespace HISP.Server
                             sender.LoggedinUser.TakeMoney(ranch.Value);
                             ranch.OwnerId = sender.LoggedinUser.Id;
                             ranch.InvestedMoney += ranch.Value;
-                            sender.LoggedinUser.OwnedRanch = ranch;
-                            sender.LoggedinUser.Inventory.AddIgnoringFull(new ItemInstance(Item.DorothyShoes));
                             UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
 
                         }
@@ -6124,9 +6122,10 @@ namespace HISP.Server
                     }
 
                     returnedMsg = Messages.FormatPlayerHereMessage(usernameStr);
-                }
-
-                byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo(returnedMsg);
+                } 
+                // TODO: REMEMBER TO CHANGE THIS BACK
+                //byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo(returnedMsg);
+                byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo("ground: "+Map.GetTileId(x, y, false)+ ", overlay: "+ Map.GetTileId(x, y, true))
                 sender.SendPacket(tileInfoPacket);
             }
         }
