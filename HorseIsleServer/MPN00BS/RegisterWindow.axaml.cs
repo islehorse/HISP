@@ -127,20 +127,19 @@ namespace MPN00BS
 
         private void CreateAccount(object sender, RoutedEventArgs e)
         {
-            int newUserId = Database.GetNextFreeUserId();
-
-            // Generate random salt
-            byte[] salt = new byte[64];
-            new Random(Guid.NewGuid().GetHashCode()).NextBytes(salt);
-
-            // Hash password
-            string saltText = BitConverter.ToString(salt).Replace("-", "");
-            string hashsalt = BitConverter.ToString(Authentication.HashAndSalt(passwordBox.Text, salt)).Replace("-", "");
-
+            
             // GENDer? I hardly knew THEM!
             string gender = ((ComboBoxItem)genderSelectionBox.SelectedItem).Content.ToString();
+            
+            // Permissions 
+            bool admin = (bool)adminCheckbox.IsChecked;
+            bool mod = (bool)modCheckbox.IsChecked;
+            
+            // Credentials
+            string password = passwordBox.Text;
+            string username = usernameBox.Text;
 
-            Database.CreateUser(newUserId, usernameBox.Text, hashsalt, saltText, gender, (bool)adminCheckbox.IsChecked, (bool)modCheckbox.IsChecked);
+            Authentication.CreateAccount(username, password, gender, admin, mod);
 
             this.Close();
         }

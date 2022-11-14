@@ -766,7 +766,7 @@ namespace HISP.Game.Chat
             }                
 
             playSwf:;
-            byte[] swfPacket = PacketBuilder.CreateSwfModule("warpcutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
+            byte[] swfPacket = PacketBuilder.CreateSwfModule("warpcutscene", PacketBuilder.PACKET_SWF_MODULE_CUTSCENE);
             user.LoggedinClient.SendPacket(swfPacket);
 
 

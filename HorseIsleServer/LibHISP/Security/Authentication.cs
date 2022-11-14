@@ -4,68 +4,96 @@ using System.Text;
 using System.Linq;
 
 using HISP.Server;
+using System;
+using HISP.Util;
 
 namespace HISP.Security
 {
     public class Authentication
     {
+
+        public const string ROTPOOL = "bl7Jgk61IZdnY mfDN5zjM2XLqTCty4WSEoKR3BFVQsaUhHOAx0rPwp9uc8iGve";
+        public const string POSPOOL = "DQc3uxiGsKZatMmOS5qYveN71zoPTk8yU0H2w9VjprBXWn l4FJd6IRbhgACfEL";
+
+        public static string EncryptLogin(string plainpass)
+        {
+            string encrypt = "";
+
+            int i = 0;
+            while (i < plainpass.Length)
+            {
+                int rotation = GameServer.RandomNumberGenerator.Next(0, ROTPOOL.Length);
+                int position = ROTPOOL.IndexOf(plainpass[i]);
+
+                position = position + (rotation + i);
+                while (position >= ROTPOOL.Length)
+                    position -= ROTPOOL.Length;
+                encrypt += ROTPOOL[rotation];
+                encrypt += POSPOOL[position];
+
+                i++;
+            }
+            return encrypt;
+
+        }
         public static string DecryptLogin(string encpass)
         {
             string decrypt = "";
-            string ROTPOOL = "bl7Jgk61IZdnY mfDN5zjM2XLqTCty4WSEoKR3BFVQsaUhHOAx0rPwp9uc8iGve";
-            string POSPOOL = "DQc3uxiGsKZatMmOS5qYveN71zoPTk8yU0H2w9VjprBXWn l4FJd6IRbhgACfEL";
-            string ROTPOOL2 = "evGi8cu9pwPr0xAOHhUasQVFB3RKoESW4ytCTqLX2Mjz5NDfm YndZI16kgJ7lb";
-
 
             int i = 0;
-            int ii = 0;
+            int rotationCycle = 0;
             while (i < encpass.Length)
             {
-                int ROT = ROTPOOL.IndexOf(encpass[i].ToString());
-                int POS = POSPOOL.IndexOf(encpass[i + 1].ToString());
-                POS -= (ROT + ii);
-                if (POS < 0)
+                int rotation = ROTPOOL.IndexOf(encpass[i].ToString());
+                int position = POSPOOL.IndexOf(encpass[i + 1].ToString());
+                position -= (rotation + rotationCycle);
+                if (position < 0)
                 {
-                    POS = (POS / -1) - 1;
+                    position = (position / -1) - 1;
 
-                    while (POS >= ROTPOOL.Length)
-                    {
-                        POS -= ROTPOOL.Length;
-                    }
+                    while (position >= ROTPOOL.Length)
+                        position -= ROTPOOL.Length;
 
-                    decrypt += ROTPOOL2[POS];
+                    decrypt += Helper.ReverseString(ROTPOOL)[position];
                 }
                 else
                 {
-                    while (POS >= ROTPOOL.Length)
-                    {
-                        POS -= ROTPOOL.Length;
-                    }
+                    while (position >= ROTPOOL.Length)
+                        position -= ROTPOOL.Length;
 
-                    decrypt += ROTPOOL[POS];
+                    decrypt += ROTPOOL[position];
                 }
 
                 i += 2;
-                ii += 1;
+                rotationCycle++;
             }
             return decrypt.Replace(" ", "");
         }
 
+        public static byte[] Sha512Digest(byte[] message)
+        {
+            using (SHA512 sha512 = SHA512.Create())
+                return sha512.ComputeHash(message);
+        }
 
+        public static byte[] XorBytes(byte[] plaintext, byte[] key)
+        {
+            int length = Math.Min(plaintext.Length, key.Length);
+
+            byte[] ciphertext = new byte[length];
+            for(int i = 0; i < length; i++)
+                ciphertext[i] = Convert.ToByte(plaintext[i] ^ key[i]);
+
+            return ciphertext;
+        }
 
         public static byte[] HashAndSalt(string plaintext, byte[] salt)
         {
             byte[] plaintextBytes = Encoding.UTF8.GetBytes(plaintext);
 
-            SHA512 sha512 = SHA512.Create();
-            byte[] hash = sha512.ComputeHash(plaintextBytes);
-
-            for (int i = 0; i < hash.Length; i++)
-            {
-                hash[i] ^= salt[i];
-            }
-
-            byte[] finalHash = sha512.ComputeHash(hash);
+            byte[] hash = Sha512Digest(plaintextBytes);
+            byte[] saltedHash = XorBytes(hash, salt);
+            byte[] finalHash = Sha512Digest(saltedHash);
 
             return finalHash;
         }
@@ -83,6 +111,24 @@ namespace HISP.Security
             }
             return false;
         }
+
+        public static int CreateAccount(string username, string password, string gender, bool admin, bool moderator)
+        {
+            // Get a free user id
+            int userId = Database.GetNextFreeUserId();
+
+            // Generate salt value
+            byte[] salt = new byte[64];
+            GameServer.RandomNumberGenerator.NextBytes(salt);
+            string saltText = BitConverter.ToString(salt).Replace("-", "");
+            string hashsalt = BitConverter.ToString(Authentication.HashAndSalt(password, salt)).Replace("-", "");
+
+            // Add user to database
+            Database.CreateUser(userId, username, hashsalt, saltText, gender, admin, moderator);
+
+            return userId;
+        }
+
 
     }
 }

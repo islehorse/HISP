@@ -3008,9 +3008,9 @@ namespace HISP.Game
             return LogoutMessageFormat.Replace("%USERNAME%", username);
         }
 
-        public static string FormatMOTD()
+        public static string FormatMotd(string Motd)
         {
-            return MotdFormat.Replace("%MOTD%", ConfigReader.Motd);
+            return MotdFormat.Replace("%MOTD%", Motd);
         }
         public static string FormatWelcomeMessage(string username)
         {

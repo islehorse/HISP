@@ -23,7 +23,7 @@ namespace HISP.Server
         public const byte PACKET_WORLD = 0x7A;
         public const byte PACKET_BASE_STATS = 0x7B;
         public const byte PACKET_RANCH = 0x23;
-        public const byte PACKET_SWF_CUTSCENE = 0x29;
+        public const byte PACKET_SWF_MODULE_CUTSCENE = 0x29;
         public const byte PACKET_SWF_MODULE_FORCE = 0x28;
         public const byte PACKET_SWF_MODULE_GENTLE = 0x2A;
         public const byte PACKET_META = 0x1E;
@@ -226,7 +226,7 @@ namespace HISP.Server
         public const byte DIRECTION_TELEPORT = 4;
         public const byte DIRECTION_NONE = 10;
 
-        // Helper function for packets that return map data, (eg CreateMovementPacket or CreateBirdMap)
+        // Helper function for packets that return map data, (eg CreateMovement or CreateBirdMap)
         // To encode tile data and add it to a given packet represented as a List<Byte>. 
         private static void encodeTileDataAndAddToPacket(List<byte> packet, int tileId, int otileId)
         {
@@ -311,7 +311,7 @@ namespace HISP.Server
         // Creates a byte array that contains the contents of a request byte array
         // as the response, it basically just forwards it onwards
         // this is used for *most* SwfModule
-        public static byte[] CreateForwardedSwfRequest(byte[] request)
+        public static byte[] CreateForwardedSwfModule(byte[] request)
         {
             byte[] packet = new byte[(1 * 2) + request.Length];
             packet[0] = PACKET_SWFMODULE;
@@ -350,7 +350,7 @@ namespace HISP.Server
             return packet.ToArray();
         }
         // Creates a byte array for a packet to inform the client that the image in a drawing room has changed.
-        public static byte[] CreateDrawingUpdatePacket(string Drawing)
+        public static byte[] CreateDrawingUpdate(string Drawing)
         {
             byte[] drawingBytes = Encoding.UTF8.GetBytes(Drawing);
             byte[] packet = new byte[(1 * 2) + drawingBytes.Length];
@@ -362,7 +362,7 @@ namespace HISP.Server
             return packet;
         }
         // Creates a byte array for a packet to inform the client that a poetry peice in a brick poet room has moved.
-        public static byte[] CreateBrickPoetMovePacket(Brickpoet.PoetryPeice peice)
+        public static byte[] CreateBrickPoetMove(Brickpoet.PoetryPeice peice)
         {
             string peiceUpdateStr = "|";
             peiceUpdateStr += peice.Id + "|";
@@ -383,7 +383,7 @@ namespace HISP.Server
             return packet;
         }
         // Creates a byte array for a packet to inform the client of all all Poetry Peices in a Brick Poet room
-        public static byte[] CreateBrickPoetListPacket(Brickpoet.PoetryPeice[] room)
+        public static byte[] CreateBrickPoetList(Brickpoet.PoetryPeice[] room)
         {
             string peicesStr = "";
             foreach(Brickpoet.PoetryPeice peice in room)
@@ -412,7 +412,7 @@ namespace HISP.Server
             return packet;
         }
         // Creates a byte array of a packet requesting the client to play a sound effect.
-        public static byte[] CreatePlaysoundPacket(string sound)
+        public static byte[] CreatePlaySound(string sound)
         {
             byte[] soundBytes = Encoding.UTF8.GetBytes(sound);
             byte[] packet = new byte[(1 * 2) + soundBytes.Length];
@@ -427,7 +427,7 @@ namespace HISP.Server
         }
         // Creates a byte array of a packet informing the client that a given user has left the game
         // So they can be removed from the chat list
-        public static byte[] CreatePlayerLeavePacket(string username)
+        public static byte[] CreatePlayerLeave(string username)
         {
             byte[] userBytes = Encoding.UTF8.GetBytes(username);
             byte[] packet = new byte[(1 * 3) + userBytes.Length];
@@ -470,7 +470,7 @@ namespace HISP.Server
         }
         // Creates a byte array of a packet to inform the client
         // if a given Login Attempt was successful or not
-        public static byte[] CreateLoginPacket(bool Success, string ErrorMessage="")
+        public static byte[] CreateLogin(bool Success, string ErrorMessage="")
         {
             byte[] loginFailMessage = Encoding.UTF8.GetBytes(ErrorMessage);
             byte[] packet = new byte[(1 * 3) + loginFailMessage.Length];
@@ -505,7 +505,7 @@ namespace HISP.Server
         }
         // Creates a byte array of a packet to inform the client of the players
         // new X/Y position, there character id, facing direction, and Tile Data for their position in the map.
-        public static byte[] CreateMovementPacket(int x, int y, int charId, int facing, int direction, bool walk)
+        public static byte[] CreateMovement(int x, int y, int charId, int facing, int direction, bool walk)
         {
 
             /* Packet HEADER */
@@ -682,7 +682,7 @@ namespace HISP.Server
         }
 
         // Creates a byte array of a packet informing the client to change the current Weather Effect.
-        public static byte[] CreateWeatherUpdatePacket(string newWeather)
+        public static byte[] CreateWeatherUpdate(string newWeather)
         {
             byte[] weatherBytes = Encoding.UTF8.GetBytes(newWeather);
             byte[] packet = new byte[(1 * 3) + weatherBytes.Length];
@@ -861,10 +861,10 @@ namespace HISP.Server
 
             packet[0] = PACKET_SEC_CODE;
 
-            packet[1] = (byte)(SecCodeSeed[0] + 33);
-            packet[2] = (byte)(SecCodeSeed[1] + 33);
-            packet[3] = (byte)(SecCodeSeed[2] + 33);
-            packet[4] = (byte)(SecCodeInc + 33);
+            packet[1] = (byte)(SecCodeSeed[0] + '!');
+            packet[2] = (byte)(SecCodeSeed[1] + '!');
+            packet[3] = (byte)(SecCodeSeed[2] + '!');
+            packet[4] = (byte)(SecCodeInc     + '!');
 
 
             packet[5] = (byte)userType;
@@ -890,7 +890,7 @@ namespace HISP.Server
         // This has the exact same effect as CreateChat with CHAT_BOTTOM_RIGHT but for some reason
         // the header byte is different,
         // This is basically only used for MOTD.
-        public static byte[] CreateAnnouncement(string announcement)
+        public static byte[] CreateMotd(string announcement)
         {
             byte[] annouceBytes = Encoding.UTF8.GetBytes(announcement);
             byte[] packet = new byte[(1 * 2) + annouceBytes.Length];
