@@ -155,7 +155,6 @@ namespace HISP.Tests.UnitTests
                 results.Add(Test("GenerateSecCode", gotSecCode.SequenceEqual(expectedSecCodeResult), true));
 
 
-
                 foreach (bool result in results)
                     if (!result)
                         return false;
