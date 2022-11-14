@@ -693,7 +693,7 @@ namespace HISP.Server
                             if (user.MuteAll || user.MuteSocials)
                                 continue;
 
-                            byte[] soundEffect = PacketBuilder.CreatePlaysoundPacket(social.SoundEffect);
+                            byte[] soundEffect = PacketBuilder.CreatePlaySound(social.SoundEffect);
                             user.LoggedinClient.SendPacket(soundEffect);
                         }
                     }
@@ -3694,7 +3694,7 @@ namespace HISP.Server
             User user = sender.LoggedinUser;
 
             // Send player current location & map data
-            byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+            byte[] MovementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
             sender.SendPacket(MovementPacket);
 
             // Send "Welcome to the Secret Land of Horses" message.
@@ -3770,7 +3770,7 @@ namespace HISP.Server
             sender.SendPacket(TileFlags);
 
             // Send Todays Note:
-            byte[] MotdData = PacketBuilder.CreateAnnouncement(Messages.FormatMOTD());
+            byte[] MotdData = PacketBuilder.CreateMotd(Messages.FormatMotd(ConfigReader.Motd));
             sender.SendPacket(MotdData);
 
             // Send riddle annoucement
@@ -3918,7 +3918,7 @@ namespace HISP.Server
 
                         if(room.Drawing != "")
                         {
-                            byte[] drawingPacket = PacketBuilder.CreateDrawingUpdatePacket(room.Drawing);
+                            byte[] drawingPacket = PacketBuilder.CreateDrawingUpdate(room.Drawing);
                             sender.SendPacket(drawingPacket);
                         }
 
@@ -4117,7 +4117,7 @@ namespace HISP.Server
                             break;
                         }
                         // Send list of peices
-                        byte[] poetPacket = PacketBuilder.CreateBrickPoetListPacket(room);
+                        byte[] poetPacket = PacketBuilder.CreateBrickPoetList(room);
                         sender.SendPacket(poetPacket);
 
                     }
@@ -4173,7 +4173,7 @@ namespace HISP.Server
                             if (user.Id == sender.LoggedinUser.Id)
                                 continue;
 
-                            byte[] updatePoetRoomPacket = PacketBuilder.CreateBrickPoetMovePacket(peice);
+                            byte[] updatePoetRoomPacket = PacketBuilder.CreateBrickPoetMove(peice);
                             user.LoggedinClient.SendPacket(updatePoetRoomPacket);
                             
                         }
@@ -4206,7 +4206,7 @@ namespace HISP.Server
 
                         if (room.DressupPeices.Length > 0)
                         {
-                            byte[] allDressupsResponse = PacketBuilder.CreateDressupRoomPeiceLoad(room.DressupPeices.ToArray());
+                            byte[] allDressupsResponse = PacketBuilder.CreateDressupRoomPeiceLoad(room.DressupPeices);
                             sender.SendPacket(allDressupsResponse);
                         }
 
@@ -4280,7 +4280,7 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.SWFMODULE_BANDHALL:
-                    byte[] response = PacketBuilder.CreateForwardedSwfRequest(packet);
+                    byte[] response = PacketBuilder.CreateForwardedSwfModule(packet);
                     foreach (User user in GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y))
                     {
                         if (user.Id == sender.LoggedinUser.Id)
@@ -4299,7 +4299,7 @@ namespace HISP.Server
                         else if (twoPlayerGame.Inviting.Id == sender.LoggedinUser.Id)
                             otherUser = twoPlayerGame.Invitee;
 
-                        response = PacketBuilder.CreateForwardedSwfRequest(packet);
+                        response = PacketBuilder.CreateForwardedSwfModule(packet);
                         otherUser.LoggedinClient.SendPacket(response);
                     }
                     break;
@@ -4326,7 +4326,7 @@ namespace HISP.Server
                     if (Arena.UserHasEnteredHorseInAnyArena(sender.LoggedinUser))
                     { 
                         Arena arena = Arena.GetArenaUserEnteredIn(sender.LoggedinUser);
-                        response = PacketBuilder.CreateForwardedSwfRequest(packet);
+                        response = PacketBuilder.CreateForwardedSwfModule(packet);
                         foreach (Arena.ArenaEntry entry in arena.Entries.ToArray())
                         {
                             if (entry.EnteredUser.Id == sender.LoggedinUser.Id)
@@ -5088,7 +5088,7 @@ namespace HISP.Server
 
                 loggedInUser.Facing = Direction + (onHorse * 5);
                 Logger.DebugPrint("Exiting player: " + loggedInUser.Username + " to: " + loggedInUser.X + "," + loggedInUser.Y);
-                byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, Direction, true);
+                byte[] moveResponse = PacketBuilder.CreateMovement(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, Direction, true);
                 sender.SendPacket(moveResponse);
                 goto Complete;               
             }
@@ -5177,12 +5177,12 @@ namespace HISP.Server
                     }
                 }
 
-                byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, direction, true);
+                byte[] moveResponse = PacketBuilder.CreateMovement(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, direction, true);
                 sender.SendPacket(moveResponse);
             }
             else
             {
-                byte[] moveResponse = PacketBuilder.CreateMovementPacket(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
+                byte[] moveResponse = PacketBuilder.CreateMovement(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
                 sender.SendPacket(moveResponse);
             }
             Complete:;
@@ -5396,7 +5396,7 @@ namespace HISP.Server
 
                     if (transportLocation.Type != "ROWBOAT")
                     {
-                        byte[] swfModulePacket = PacketBuilder.CreateSwfModule(swfToLoad, PacketBuilder.PACKET_SWF_CUTSCENE);
+                        byte[] swfModulePacket = PacketBuilder.CreateSwfModule(swfToLoad, PacketBuilder.PACKET_SWF_MODULE_CUTSCENE);
                         sender.SendPacket(swfModulePacket);
                     }
 
@@ -5491,7 +5491,7 @@ namespace HISP.Server
                     User[] users = GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true);
                     foreach (User user in users)
                     {
-                        byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+                        byte[] MovementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
                         user.LoggedinClient.SendPacket(MovementPacket);
                     }
                     UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
@@ -5531,7 +5531,7 @@ namespace HISP.Server
                             User[] users = GetUsersAt(sender.LoggedinUser.X, sender.LoggedinUser.Y, true, true);
                             foreach (User user in users)
                             {
-                                byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+                                byte[] MovementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
                                 user.LoggedinClient.SendPacket(MovementPacket);
                             }
                             UpdateAreaForAll(sender.LoggedinUser.X, sender.LoggedinUser.Y, true);
@@ -6017,7 +6017,7 @@ namespace HISP.Server
 
             byte[] chatPacketOthers = PacketBuilder.CreateChat(formattedMessage, chatSide);
             byte[] chatPacketSender = PacketBuilder.CreateChat(formattedMessageSender, chatSide);
-            byte[] playDmSound = PacketBuilder.CreatePlaysoundPacket(Chat.PrivateMessageSound);
+            byte[] playDmSound = PacketBuilder.CreatePlaySound(Chat.PrivateMessageSound);
 
             // Send to clients ...
             foreach (GameClient recipiant in recipiants)
@@ -7389,7 +7389,7 @@ namespace HISP.Server
                     if(Database.IsUserBanned(userId))
                     {
                         Logger.DebugPrint(sender.RemoteIp + " Tried to login to : " + username + " but, the account was banned.");
-                        byte[] userBannedPacket = PacketBuilder.CreateLoginPacket(false, Messages.LoginFailedReasonBanned);
+                        byte[] userBannedPacket = PacketBuilder.CreateLogin(false, Messages.LoginFailedReasonBanned);
                         sender.SendPacket(userBannedPacket);
                         return;
                     }
@@ -7397,18 +7397,15 @@ namespace HISP.Server
                     if(Database.IsIpBanned(sender.RemoteIp))
                     {
                         Logger.DebugPrint(sender.RemoteIp + " Tried to login to : " + username + " but, the IP was banned.");
-                        byte[] ipBannedPacket = PacketBuilder.CreateLoginPacket(false, Messages.FormatIpBannedMessage(sender.RemoteIp));
+                        byte[] ipBannedPacket = PacketBuilder.CreateLogin(false, Messages.FormatIpBannedMessage(sender.RemoteIp));
                         sender.SendPacket(ipBannedPacket);
                         return;
                     }
 
-
-
-
                     sender.Login(userId);
                     sender.LoggedinUser.Password = password;
 
-                    byte[] ResponsePacket = PacketBuilder.CreateLoginPacket(true);
+                    byte[] ResponsePacket = PacketBuilder.CreateLogin(true);
                     sender.SendPacket(ResponsePacket);
 
                     Logger.DebugPrint(sender.RemoteIp + " Logged into : " + sender.LoggedinUser.Username + " (ADMIN: " + sender.LoggedinUser.Administrator + " MOD: " + sender.LoggedinUser.Moderator + ")");
@@ -7417,7 +7414,7 @@ namespace HISP.Server
                 else
                 {
                     Logger.WarnPrint(sender.RemoteIp + " Attempted to login to: " + username + " with incorrect password ");
-                    byte[] ResponsePacket = PacketBuilder.CreateLoginPacket(false);
+                    byte[] ResponsePacket = PacketBuilder.CreateLogin(false);
                     sender.SendPacket(ResponsePacket);
                 }
             }
@@ -7467,7 +7464,7 @@ namespace HISP.Server
                                 client.SendPacket(logoutMessageBytes);
 
                 // Tell clients of diconnect (remove from chat)
-                byte[] playerRemovePacket = PacketBuilder.CreatePlayerLeavePacket(sender.LoggedinUser.Username);
+                byte[] playerRemovePacket = PacketBuilder.CreatePlayerLeave(sender.LoggedinUser.Username);
                 foreach (GameClient client in GameClient.ConnectedClients)
                     if (client.LoggedIn)
                         if (client.LoggedinUser.Id != sender.LoggedinUser.Id)
@@ -7755,7 +7752,7 @@ namespace HISP.Server
             if (user.MailBox.UnreadMailCount > 0)
             {
 
-                byte[] RipOffAOLSound = PacketBuilder.CreatePlaysoundPacket(Messages.MailSe);
+                byte[] RipOffAOLSound = PacketBuilder.CreatePlaySound(Messages.MailSe);
                 user.LoggedinClient.SendPacket(RipOffAOLSound);
 
                 byte[] mailReceivedText = PacketBuilder.CreateChat(Messages.MailReceivedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -7830,7 +7827,7 @@ namespace HISP.Server
                         if (user.Id == sender.LoggedinUser.Id)
                             continue;
 
-                    byte[] patchDrawing = PacketBuilder.CreateDrawingUpdatePacket(drawing);
+                    byte[] patchDrawing = PacketBuilder.CreateDrawingUpdate(drawing);
                     user.LoggedinClient.SendPacket(patchDrawing);
                 }
             }
@@ -7876,7 +7873,7 @@ namespace HISP.Server
             string weather = forClient.LoggedinUser.GetWeatherSeen();
             if (lastWeather != weather)
             {
-                byte[] WeatherUpdate = PacketBuilder.CreateWeatherUpdatePacket(weather);
+                byte[] WeatherUpdate = PacketBuilder.CreateWeatherUpdate(weather);
                 forClient.SendPacket(WeatherUpdate);
             }
         }
@@ -8159,7 +8156,7 @@ namespace HISP.Server
 
             UpdateUserFacingAndLocation(sender.LoggedinUser);
 
-            byte[] updatePlayer = PacketBuilder.CreateMovementPacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, PacketBuilder.DIRECTION_NONE, true);
+            byte[] updatePlayer = PacketBuilder.CreateMovement(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, PacketBuilder.DIRECTION_NONE, true);
             sender.SendPacket(updatePlayer);
 
             if (sender.LoggedinUser.HorseWindowOpen)
@@ -8188,7 +8185,7 @@ namespace HISP.Server
             sender.LoggedinUser.Facing %= 5;
             UpdateUserFacingAndLocation(sender.LoggedinUser);
 
-            byte[] updatePlayer = PacketBuilder.CreateMovementPacket(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, PacketBuilder.DIRECTION_NONE, true);
+            byte[] updatePlayer = PacketBuilder.CreateMovement(sender.LoggedinUser.X, sender.LoggedinUser.Y, sender.LoggedinUser.CharacterId, sender.LoggedinUser.Facing, PacketBuilder.DIRECTION_NONE, true);
             sender.SendPacket(updatePlayer);
 
             if (sender.LoggedinUser.HorseWindowOpen)
@@ -8222,7 +8219,7 @@ namespace HISP.Server
                                 int overlay = Map.GetTileId(tile.X, tile.Y, true);
                                 if (tileset == 6 && overlay == 249) // warp point
                                 {
-                                    byte[] swfPacket = PacketBuilder.CreateSwfModule("warpcutscene", PacketBuilder.PACKET_SWF_CUTSCENE);
+                                    byte[] swfPacket = PacketBuilder.CreateSwfModule("warpcutscene", PacketBuilder.PACKET_SWF_MODULE_CUTSCENE);
                                     forClient.SendPacket(swfPacket);
                                 }
                             }
@@ -8270,6 +8267,7 @@ namespace HISP.Server
 
             Entry.OnShutdown();
         }
+
 
         public static void StartServer()
         {

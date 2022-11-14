@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HISP.Server;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -36,10 +37,17 @@ namespace HISP.Util
             char firstChar = char.ToUpper(str[0]);
             return firstChar + str.Substring(1);
         }
+        public static int GetMonthsBetweenTwoDateTimes(DateTime from, DateTime to)
+        {
+            if (from > to) return GetMonthsBetweenTwoDateTimes(to, from);
+            int monthDiff = Math.Abs((to.Year * 12 + (to.Month)) - (from.Year * 12 + (from.Month)));
+            return monthDiff;
+
+        }
         public static DateTime UnixTimeStampToDateTime(double unixTimeStamp)
         {
             // Unix timestamp is seconds past epoch
-            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
             dtDateTime = dtDateTime.AddSeconds(unixTimeStamp).ToUniversalTime();
             return dtDateTime;
         }
@@ -47,6 +55,23 @@ namespace HISP.Util
         public static void ByteArrayToByteList(byte[] byteArray, List<byte> byteList)
         {
             byteList.AddRange(byteArray.ToList());
+        }
+        public static string RandomString(string allowedCharacters)
+        {
+            int length = GameServer.RandomNumberGenerator.Next(7, 16);
+            string str = "";
+            for (int i = 0; i < length; i++)
+                str += allowedCharacters[GameServer.RandomNumberGenerator.Next(0, allowedCharacters.Length - 1)];
+
+            return str;
+        }
+        public static string ReverseString(string str)
+        {
+            char[] charArray = str.ToCharArray();
+            Array.Reverse(charArray);
+            string newStr = new string(charArray);
+
+            return newStr;
         }
     }
 }
