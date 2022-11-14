@@ -16,10 +16,15 @@ HorseIsleServer/MPN00BS/bin/*
 HorseIsleServer/HISPd/obj/*
 HorseIsleServer/HISPd/bin/*
 
-HorseIsleServer/Installer/Windows/*
+HorseIsleServer/HISPtests/obj/*
+HorseIsleServer/HISPtests/bin/*
+
 
 HorseIsleServer/LibHISP/obj/*
 HorseIsleServer/LibHISP/bin/*
 HorseIsleServer/LibHISP/Resources/Versioning/*
+
+HorseIsleServer/Installer/Windows/*
+
 
 HorseIsleServer/.vs/*

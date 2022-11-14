@@ -79,6 +79,7 @@ namespace HISP.Cli
 
             string BaseDir = Directory.GetCurrentDirectory();
             Logger.SetCallback(LogStdout);
+            Entry.SetShutdownCallback(OnShutdown);
 
             string HispConfVar = Environment.GetEnvironmentVariable("HISP_CONF_FILE");
             string HispLogVar = Environment.GetEnvironmentVariable("HISP_LOG_FILE");
@@ -145,7 +146,6 @@ namespace HISP.Cli
                 Directory.SetCurrentDirectory(BaseDir);
             }
 
-            Entry.SetShutdownCallback(OnShutdown);
             Entry.Start();
 
             shutdownHandle = new EventWaitHandle(false, EventResetMode.ManualReset);

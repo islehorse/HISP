@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <RootNamespace>HISP.Cli</RootNamespace>
+    <RootNamespace>HISP.Tests</RootNamespace>
     <LangVersion>10.0</LangVersion>
     <Platforms>x64;x86;ARM;ARM64;AnyCPU</Platforms>
     <Configurations>Debug;Windows;Linux;MacOS;Android;iOS</Configurations>
@@ -11,15 +11,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
     </EmbeddedResource>
   </ItemGroup>
   <PropertyGroup>
@@ -31,7 +31,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoWin32Manifest>true</NoWin32Manifest>
     <ApplicationIcon>icon.ico</ApplicationIcon>
-    <StartupObject>HISP.Cli.Program</StartupObject>
+    <StartupObject>HISP.Tests.Program</StartupObject>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <DebugType>embedded</DebugType>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
@@ -45,19 +45,19 @@
     <NoWarn>1701;1702;2026;IL2026</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
-  	
-	<TrimMode>partial</TrimMode>
-	<EnableTrimAnalyzer>false</EnableTrimAnalyzer>
-	<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
-	
+
+    <TrimMode>partial</TrimMode>
+    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+    <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x86'">
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <Platforms>x86</Platforms>
     <PlatformTarget>x86</PlatformTarget>
-  	<DefineConstants>OS_WINDOWS;ARCH_X86</DefineConstants>
-  	<DebugType>none</DebugType>
+    <DefineConstants>OS_WINDOWS;ARCH_X86</DefineConstants>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x64'">
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
@@ -99,14 +99,14 @@
     <DefineConstants>OS_ANDROID;ARCH_ARM64</DefineConstants>
     <DebugType>none</DebugType>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|x64'">
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>OS_LINUX;ARCH_X86_64</DefineConstants>
     <DebugType>none</DebugType>
-  </PropertyGroup>  
+  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM'">
     <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
     <PlatformTarget>ARM</PlatformTarget>
@@ -121,7 +121,7 @@
     <DefineConstants>OS_LINUX;ARCH_ARM64</DefineConstants>
     <DebugType>none</DebugType>
   </PropertyGroup>
-  
+
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacOS|x64'">
     <RuntimeIdentifier>osx-x64</RuntimeIdentifier>
     <Optimize>true</Optimize>

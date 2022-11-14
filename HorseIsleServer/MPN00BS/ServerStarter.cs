@@ -122,11 +122,6 @@ namespace MPN00BS
             ProgressCallback();
 
 
-            if (Database.GetUsers().Length <= 0)
-            {
-                UserCreationCallback();
-            }
-
 
             // Start HI1 Server
             ProgressCallback();
@@ -184,6 +179,11 @@ namespace MPN00BS
             ProgressCallback();
             HasServerStarted = true;
             ServerStartedCallback();
+
+
+
+            if (Database.GetUsers().Length <= 0)
+                UserCreationCallback();
         }
 
         public static void ModifyConfig(string okey, string value)

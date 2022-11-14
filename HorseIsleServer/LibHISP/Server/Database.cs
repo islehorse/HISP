@@ -4128,6 +4128,23 @@ namespace HISP.Server
                 return subscribedUntil;
             }
         }
+
+        public static void SetUserSubscriptionStatus(int playerId, int subscribedUntil)
+        {
+            using (DbConnection db = connectDb())
+            {
+                db.Open();
+                DbCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "UPDATE UserExt SET SubscribedUntil=@subscribedUntil WHERE Id=@playerId";
+                addWithValue(sqlCommand, "@subscribedUntil", subscribedUntil);
+                addWithValue(sqlCommand, "@playerId", playerId);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+
+            }
+        }
+
         public static bool IsUserAdmin(int playerId)
         {
             using (DbConnection db = connectDb())

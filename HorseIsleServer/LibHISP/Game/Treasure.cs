@@ -139,7 +139,7 @@ namespace HISP.Game
             Database.DeleteTreasure(this.RandomId);
             GenerateTreasure();
 
-            byte[] MovementPacket = PacketBuilder.CreateMovementPacket(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+            byte[] MovementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
             user.LoggedinClient.SendPacket(MovementPacket);
 
             user.AddMoney(Value);

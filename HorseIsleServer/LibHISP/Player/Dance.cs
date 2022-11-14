@@ -62,7 +62,7 @@ namespace HISP.Player
 
             baseUser.Facing = direction + (onHorse * 5);
 
-            byte[] moveResponse = PacketBuilder.CreateMovementPacket(baseUser.X, baseUser.Y, baseUser.CharacterId, baseUser.Facing, PacketBuilder.DIRECTION_NONE, false);
+            byte[] moveResponse = PacketBuilder.CreateMovement(baseUser.X, baseUser.Y, baseUser.CharacterId, baseUser.Facing, PacketBuilder.DIRECTION_NONE, false);
             baseUser.LoggedinClient.SendPacket(moveResponse);
 
             GameServer.UpdateUserFacingAndLocation(baseUser);

@@ -173,7 +173,7 @@ namespace HISP.Player
                     return baseValue;
                 }
 
-                return 7; // will change when ranches are implemented.
+                return 7; 
             }
         }
         
@@ -182,6 +182,12 @@ namespace HISP.Player
             int money = Money;
             money -= amount;
             Database.SetPlayerMoney(money, Id);
+            GameServer.UpdatePlayer(LoggedinClient);
+        }
+
+        public void SetMoney(int amount)
+        {
+            Database.SetPlayerMoney(amount, Id);
             GameServer.UpdatePlayer(LoggedinClient);
         }
 
@@ -197,7 +203,7 @@ namespace HISP.Player
             }
             catch(OverflowException)
             {
-                money = 2147483647;
+                money = Int32.MaxValue;
             }
 
             Database.SetPlayerMoney(money, Id);
@@ -250,6 +256,11 @@ namespace HISP.Player
             {
                 return Helper.UnixTimeStampToDateTime(subscribedUntil);
             }
+            set
+            {
+                subscribedUntil = Convert.ToInt32(((DateTimeOffset)value).ToUnixTimeSeconds());
+                Database.SetUserSubscriptionStatus(Id, subscribedUntil);
+            }
         }
         public int FreeMinutes
         {
@@ -285,6 +296,7 @@ namespace HISP.Player
             }
             set
             {
+                subscribed = value;
                 Database.SetUserSubscriptionStatus(this.Id, value);
             }
         }
@@ -526,11 +538,12 @@ namespace HISP.Player
                 icon = Messages.NewUserIcon;
             if (Subscribed)
             {
-                int months = (SubscribedUntil.Month - DateTime.UtcNow.Month) + ((SubscribedUntil.Year - DateTime.UtcNow.Year) * 12);
-                if (months >= 3)
-                    icon = Messages.ThreeMonthSubscripitionIcon;
-                else if(months >= (12+3))
+                int months = Helper.GetMonthsBetweenTwoDateTimes(DateTime.UtcNow, SubscribedUntil);
+
+                if(months >= 12 + 3)
                     icon = Messages.YearSubscriptionIcon;
+                else if (months >= 3)
+                    icon = Messages.ThreeMonthSubscripitionIcon;
                 else
                     icon = Messages.MonthSubscriptionIcon;
             }
@@ -551,7 +564,7 @@ namespace HISP.Player
             X = newX;
             Y = newY;
 
-            byte[] MovementPacket = PacketBuilder.CreateMovementPacket(X, Y, CharacterId, Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+            byte[] MovementPacket = PacketBuilder.CreateMovement(X, Y, CharacterId, Facing, PacketBuilder.DIRECTION_TELEPORT, true);
             LoggedinClient.SendPacket(MovementPacket);
             GameServer.UpdateWeather(LoggedinClient);
 
@@ -597,19 +610,22 @@ namespace HISP.Player
 
         public byte[] GenerateSecCode()
         {
-            var i = 0;
-            SecCodeCount++;
-            SecCodeSeeds[SecCodeCount % 3] = (byte)(SecCodeSeeds[SecCodeCount % 3] + SecCodeInc);
-            SecCodeSeeds[SecCodeCount % 3] = (byte)(SecCodeSeeds[SecCodeCount % 3] % 92);
-            i = SecCodeSeeds[0] + SecCodeSeeds[1] * SecCodeSeeds[2] - SecCodeSeeds[1];
+            SecCodeCount = ((SecCodeCount + 1) % 3);
+            
+            SecCodeSeeds[SecCodeCount] = (byte)(SecCodeSeeds[SecCodeCount] + SecCodeInc);
+            SecCodeSeeds[SecCodeCount] = (byte)(SecCodeSeeds[SecCodeCount] % '\\');
+            
+            double i = SecCodeSeeds[0] + SecCodeSeeds[1] * SecCodeSeeds[2] - SecCodeSeeds[1];
             i = Math.Abs(i);
-            i = i % 92;
+            i %= '\\';
 
             byte[] SecCode = new byte[4];
-            SecCode[0] = (byte)(SecCodeSeeds[0] + 33);
-            SecCode[1] = (byte)(SecCodeSeeds[1] + 33);
-            SecCode[2] = (byte)(SecCodeSeeds[2] + 33);
-            SecCode[3] = (byte)(i + 33);
+
+            SecCode[0] = (byte)(SecCodeSeeds[0] + '!');
+            SecCode[1] = (byte)(SecCodeSeeds[1] + '!');
+            SecCode[2] = (byte)(SecCodeSeeds[2] + '!');
+            SecCode[3] = (byte)(i + '!');
+
             Logger.DebugPrint("Expecting "+Username+" To send Sec Code: "+BitConverter.ToString(SecCode).Replace("-", " "));
             return SecCode;
         }
@@ -644,7 +660,7 @@ namespace HISP.Player
 
             Facing = PacketBuilder.DIRECTION_DOWN;
             experience = Database.GetExperience(UserId);
-            //money = Database.GetPlayerMoney(UserId);
+            
             bankMoney = Database.GetPlayerBankMoney(UserId);
             questPoints = Database.GetPlayerQuestPoints(UserId);
             subscribed = Database.IsUserSubscribed(UserId);
@@ -656,9 +672,7 @@ namespace HISP.Player
             tired = Database.GetPlayerTiredness(UserId);
 
             if(Ranch.IsRanchOwned(this.Id))
-            {
                 OwnedRanch = Ranch.GetRanchOwnedBy(this.Id);
-            }    
 
             Gender = Database.GetGender(UserId);
             MailBox = new Mailbox(this);
@@ -671,10 +685,10 @@ namespace HISP.Player
             // Generate SecCodes
 
 
-            SecCodeSeeds[0] = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
-            SecCodeSeeds[1] = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
-            SecCodeSeeds[2] = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
-            SecCodeInc = (byte)GameServer.RandomNumberGenerator.Next(40, 60);
+            SecCodeSeeds[0] = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
+            SecCodeSeeds[1] = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
+            SecCodeSeeds[2] = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
+            SecCodeInc      = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
 
 
             Friends = new Friends(this);
