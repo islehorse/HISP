@@ -6122,10 +6122,10 @@ namespace HISP.Server
                     }
 
                     returnedMsg = Messages.FormatPlayerHereMessage(usernameStr);
-                } 
+                }
                 // TODO: REMEMBER TO CHANGE THIS BACK
                 //byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo(returnedMsg);
-                byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo("ground: "+Map.GetTileId(x, y, false)+ ", overlay: "+ Map.GetTileId(x, y, true))
+                byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo("ground: " + Map.GetTileId(x, y, false) + ", overlay: " + Map.GetTileId(x, y, true));
                 sender.SendPacket(tileInfoPacket);
             }
         }
