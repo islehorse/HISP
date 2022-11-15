@@ -129,7 +129,7 @@ namespace MPN00BS
             Entry.SetShutdownCallback(OnShutdown);
             ProgressCallback();
 
-            CrossDomainPolicy.GetPolicy();
+            CrossDomainPolicy.GetPolicyFile();
             ProgressCallback();
 
             GameDataJson.ReadGamedata();

@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 
 namespace HISP.Util
 {
@@ -52,10 +54,31 @@ namespace HISP.Util
             return dtDateTime;
         }
 
+        public static bool ByteArrayStartsWith(byte[] byteArray, byte[] searchValue)
+        {
+            if (byteArray.Length < searchValue.Length) return false;
+
+            byte[] buffer = new byte[searchValue.Length];
+            Array.ConstrainedCopy(byteArray, 0, buffer, 0, searchValue.Length);
+
+            return buffer.SequenceEqual(searchValue);
+        }
+
+        public static bool ByteArrayEndsWith(byte[] byteArray, byte[] searchValue)
+        {
+            if (searchValue.Length > byteArray.Length) return false;
+
+            byte[] buffer = new byte[searchValue.Length];
+            Array.ConstrainedCopy(byteArray, (byteArray.Length - searchValue.Length), buffer, 0, searchValue.Length);
+
+            return buffer.SequenceEqual(searchValue);
+        }
+
         public static void ByteArrayToByteList(byte[] byteArray, List<byte> byteList)
         {
             byteList.AddRange(byteArray.ToList());
         }
+
         public static string RandomString(string allowedCharacters)
         {
             int length = GameServer.RandomNumberGenerator.Next(7, 16);
@@ -72,6 +95,14 @@ namespace HISP.Util
             string newStr = new string(charArray);
 
             return newStr;
+        }
+
+        public static string GetIp(EndPoint ep)
+        {
+            string endPointIp = ep.ToString();
+            if (endPointIp.Contains(":"))
+                endPointIp = endPointIp.Substring(0, endPointIp.IndexOf(":"));
+            return endPointIp;
         }
     }
 }

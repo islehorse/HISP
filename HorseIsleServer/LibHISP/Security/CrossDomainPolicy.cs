@@ -5,7 +5,7 @@ namespace HISP.Security
 {
     public class CrossDomainPolicy
     {
-        public static byte[] GetPolicy()
+        public static byte[] GetPolicyFile()
         {
             if (!File.Exists(ConfigReader.CrossDomainPolicyFile)) {
                 Logger.InfoPrint("Cross-Domain-Policy file not found, using default");
