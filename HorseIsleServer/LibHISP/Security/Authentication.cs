@@ -70,6 +70,13 @@ namespace HISP.Security
             return decrypt.Replace(" ", "");
         }
 
+        public static byte[] Sha1Digest(byte[] message)
+        {
+            using (SHA1 sha1 = SHA1.Create())
+                return sha1.ComputeHash(message);
+        }
+
+
         public static byte[] Sha512Digest(byte[] message)
         {
             using (SHA512 sha512 = SHA512.Create())

@@ -255,17 +255,7 @@ namespace HISP.Server
          * eg: OnMovementPacket is whenever the server receies a movement request from the client.
          */
 
-
-        public static void OnCrossdomainPolicyRequest(GameClient sender, byte[] packet)
-        {
-            if (Encoding.UTF8.GetString(packet).StartsWith("<policy-file-request/>"))
-            {
-                Logger.DebugPrint("Cross-Domain-Policy request received from: " + sender.RemoteIp);
-                byte[] crossDomainPolicyResponse = CrossDomainPolicy.GetPolicy();
-                sender.SendPacket(crossDomainPolicyResponse);
-
-            }
-        }
+        // HI1 Protocol
 
         public static void OnPlayerInteration(GameClient sender, byte[] packet)
         {
@@ -7353,7 +7343,7 @@ namespace HISP.Server
 
             UpdateInventory(sender);
         }
-        public static void OnLoginRequest(GameClient sender, byte[] packet)
+        public static void OnUserLogin(GameClient sender, byte[] packet)
         {
             Logger.DebugPrint("Login request received from: " + sender.RemoteIp);
 

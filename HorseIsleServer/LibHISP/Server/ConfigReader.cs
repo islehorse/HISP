@@ -21,7 +21,6 @@ namespace HISP.Server
         public static string GameData = "gamedata.json";
         public static string CrossDomainPolicyFile = "CrossDomainPolicy.xml";
 
-        public static string ModsFolder = "mods";
         public static int LogLevel = 4;
 
         public static bool SqlLite = false;
@@ -31,6 +30,8 @@ namespace HISP.Server
         public static bool EnableSwearFilter = true;
         public static bool EnableCorrections = true;
         public static bool EnableNonViolations = true;
+
+        public static bool EnableWebSocket = true;
 
         public static string ConfigurationFileName = "server.properties";
         public static void OpenConfig()
@@ -99,28 +100,28 @@ namespace HISP.Server
                         CrossDomainPolicyFile = data;
                         break;
                     case "all_users_subscribed":
-                        AllUsersSubbed = data == "true";
+                        AllUsersSubbed = (data == "true");
                         break;
                     case "enable_corrections":
-                        EnableCorrections = data == "true";
+                        EnableCorrections = (data == "true");
                         break;
                     case "sql_lite":
-                        SqlLite = data == "true";
+                        SqlLite = (data == "true");
                         break;
                     case "enable_non_violation_check":
-                        EnableNonViolations = data == "true";
+                        EnableNonViolations = (data == "true");
                         break;
                     case "enable_spam_filter":
-                        EnableSpamFilter = data == "true";
+                        EnableSpamFilter = (data == "true");
+                        break;
+                    case "enable_websocket":
+                        EnableWebSocket = (data == "true");
                         break;
                     case "fix_offical_bugs":
-                        FixOfficalBugs = data == "true";
+                        FixOfficalBugs = (data == "true");
                         break;
                     case "enable_word_filter":
-                        EnableSwearFilter = data == "true";
-                        break;
-                    case "mods_folder":
-                        ModsFolder = data;
+                        EnableSwearFilter = (data == "true");
                         break;
                     case "intrest_rate":
                         IntrestRate = int.Parse(data);

@@ -48,11 +48,13 @@ namespace HISP.Cli
             {
                 fs.Close();
                 fs.Dispose();
+                fs = null;
             }
             if(sw != null)
             {
                 sw.Close();
                 sw.Dispose();
+                sw = null;
             }
 
             shutdownHandle.Set();

@@ -8,6 +8,8 @@ using HISP.Game.Horse;
 using HISP.Game.Events;
 using HISP.Game.Items;
 using HISP.Util;
+using HISP.Server.Network;
+using System.Net;
 
 namespace HISP.Server
 {
@@ -22,9 +24,17 @@ namespace HISP.Server
             }
         }
 
-        public Socket ClientSocket;
-        public string RemoteIp;
+        private Transport networkTransport;
+
         private bool loggedIn = false;
+
+        public string RemoteIp
+        {
+            get
+            {
+                return networkTransport.Ip;
+            }
+        }
         public bool LoggedIn 
         {
             get
@@ -50,7 +60,7 @@ namespace HISP.Server
         private Timer kickTimer;
         private Timer minuteTimer;
 
-        private bool isDisconnecting = false;
+
         private int timeoutInterval = 95 * 1000;
 
         private int totalMinutesElapsed = 0;
@@ -58,40 +68,19 @@ namespace HISP.Server
         private int warnInterval = GameServer.IdleWarning * 60 * 1000; // Time before showing a idle warning
         private int kickInterval = GameServer.IdleTimeout * 60 * 1000; // Time before kicking for inactivity
         
-        private List<byte> currentPacket = new List<byte>();
-        private byte[] workBuffer = new byte[0x8000];
 
         public GameClient(Socket clientSocket)
         {
-            clientSocket.SendTimeout = 10 * 1000; // 10sec
-            clientSocket.ReceiveTimeout = 10 * 1000; // 10sec
 
-            ClientSocket = clientSocket;
-            if(clientSocket.RemoteEndPoint != null)
-            {
-
-                RemoteIp = clientSocket.RemoteEndPoint.ToString();
-
-                if (RemoteIp.Contains(":"))
-                    RemoteIp = RemoteIp.Substring(0, RemoteIp.IndexOf(":"));
-
-                Logger.DebugPrint("Client connected @ " + RemoteIp);
-            }
-            else
-            {
-                Logger.DebugPrint("Client connected @ (IP UNKNOWN) // How is this possible?");
-            }
             kickTimer = new Timer(new TimerCallback(kickTimerTick), null, kickInterval, kickInterval);
             warnTimer = new Timer(new TimerCallback(warnTimerTick), null, warnInterval, warnInterval);
             minuteTimer = new Timer(new TimerCallback(minuteTimerTick), null, oneMinute, oneMinute);
 
-            connectedClients.Add(this);
+            networkTransport = new Hybrid();
+            networkTransport.Accept(clientSocket, parsePackets, disconnectHandler);
+            Logger.DebugPrint(networkTransport.Name + " : Client connected @ " + networkTransport.Ip);
 
-            SocketAsyncEventArgs evt = new SocketAsyncEventArgs();
-            evt.Completed += receivePackets;
-            evt.SetBuffer(workBuffer, 0, workBuffer.Length);
-            if (!clientSocket.ReceiveAsync(evt))
-                receivePackets(null, evt);
+
         }
 
         public static void OnShutdown()
@@ -120,26 +109,29 @@ namespace HISP.Server
         }
         public static void CreateClient(object sender, SocketAsyncEventArgs e)
         {
+#if !DEBUG
             try
             {
+#endif
                 do
                 {
-                    Socket eSocket = e.AcceptSocket;
+                    Socket clientSocket = e.AcceptSocket;
 
                     if (GameServer.ServerSocket == null)
                         return;
-                    if (eSocket == null)
+                    if (clientSocket == null)
                         continue;
-                    if (eSocket.RemoteEndPoint == null)
+                    if (clientSocket.RemoteEndPoint == null)
                         continue;
-                    new GameClient(eSocket);
+    
+                    connectedClients.Add(new GameClient(clientSocket));
                     e.AcceptSocket = null;
 
-                    if (GameServer.ServerSocket == null)
-                        return;
                 } while (!GameServer.ServerSocket.AcceptAsync(e));
+#if !DEBUG
             }
             catch (ObjectDisposedException ex) { Logger.ErrorPrint("Server shutdown due to " + ex.Message); } // server shutdown
+#endif
         }
         private void timeoutTimerTick(object state)
         {
@@ -149,20 +141,8 @@ namespace HISP.Server
             }
         }
 
-        public void Disconnect()
+        private void disconnectHandler()
         {
-            if (this.isDisconnecting)
-                return;
-            this.isDisconnecting = true;
-            
-            // Close Socket
-            if (ClientSocket != null)
-            {
-                ClientSocket.Disconnect(false);
-                ClientSocket.Dispose();
-                ClientSocket = null;
-            }
-
 
             // Stop Timers
             if (timeoutTimer != null)
@@ -187,54 +167,15 @@ namespace HISP.Server
             }
 
             // Call OnDisconnect
-            
+
             connectedClients.Remove(this);
             GameServer.OnDisconnect(this);
             LoggedIn = false;
-
         }
-
-
-        private void receivePackets(object sender, SocketAsyncEventArgs e)
+        public void Disconnect()
         {
-            do
-            {
-                // HI1 Packets are terminates by 0x00 so we have to read until we receive that terminator
-
-                if (isDisconnecting ||
-                    ClientSocket == null ||
-                    e.BytesTransferred <= 0 ||
-                    !ClientSocket.Connected || 
-                    e.SocketError != SocketError.Success)
-                {
-                    Disconnect();
-                    return;
-                }
-
-                int availble = e.BytesTransferred;
-                if (availble >= 1) // More than 1 byte transfered..
-                {
-
-                    for (int i = 0; i < availble; i++)
-                    {
-                        currentPacket.Add(e.Buffer[i]);
-                        if (e.Buffer[i] == PacketBuilder.PACKET_TERMINATOR) // Read until \0...
-                        {
-                            parsePackets(currentPacket.ToArray());
-                            currentPacket.Clear();
-                        }
-                    }
-                }
-
-                if (availble == 0)
-                    Disconnect();
-
-                if (isDisconnecting || ClientSocket == null)
-                    return;
-
-
-            } while (!ClientSocket.ReceiveAsync(e));
-
+            if(!networkTransport.Disconnected)
+                networkTransport.Disconnect();
         }
 
         private void keepAliveTick(object state)
@@ -242,8 +183,7 @@ namespace HISP.Server
             Logger.DebugPrint("Sending keep-alive packet to " + LoggedinUser.Username);
             byte[] updatePacket = PacketBuilder.CreateKeepAlive();
             SendPacket(updatePacket);
-            if(!isDisconnecting && keepAliveTimer != null) // wtf how is this still a problem?
-               keepAliveTimer.Change(oneMinute, oneMinute);
+            keepAliveTimer.Change(oneMinute, oneMinute);
         }
         private void minuteTimerTick(object state)
         {
@@ -406,9 +346,8 @@ namespace HISP.Server
                 if (totalMinutesElapsed % 15 == 0)
                     LoggedinUser.Tiredness--;
             }
-            if (!isDisconnecting)
-               minuteTimer.Change(oneMinute, oneMinute);
 
+            minuteTimer.Change(oneMinute, oneMinute);
         }
 
         private void warnTimerTick(object state)
@@ -450,13 +389,13 @@ namespace HISP.Server
             timeoutTimer = new Timer(new TimerCallback(timeoutTimerTick), null, timeoutInterval, timeoutInterval);
         }
 
-        private void parsePackets(byte[] Packet)
+        private void parsePackets(byte[] packet)
         {
-            if (Packet.Length < 1)
+            if (packet.Length < 1)
             {
-                Logger.ErrorPrint("Received an invalid packet (size: "+Packet.Length+")");
+                Logger.ErrorPrint("Received an invalid packet (size: "+packet.Length+")");
             }
-            byte identifier = Packet[0];
+            byte identifier = packet[0];
 
             /*
              *  Every time ive tried to fix this properly by just checking if its null or something
@@ -514,11 +453,8 @@ namespace HISP.Server
                 {
                     switch (identifier)
                     {
-                        case PacketBuilder.PACKET_FLASH_XML_CROSSDOMAIN:
-                            GameServer.OnCrossdomainPolicyRequest(this, Packet);
-                            break;
                         case PacketBuilder.PACKET_LOGIN:
-                            GameServer.OnLoginRequest(this, Packet);
+                            GameServer.OnUserLogin(this, packet);
                             break;
                     }
                 }
@@ -527,76 +463,76 @@ namespace HISP.Server
                     switch (identifier)
                     {
                         case PacketBuilder.PACKET_LOGIN:
-                            GameServer.OnUserInfoRequest(this, Packet);
+                            GameServer.OnUserInfoRequest(this, packet);
                             break;
                         case PacketBuilder.PACKET_MOVE:
-                            GameServer.OnMovementPacket(this, Packet);
+                            GameServer.OnMovementPacket(this, packet);
                             break;
                         case PacketBuilder.PACKET_PLAYERINFO:
-                            GameServer.OnPlayerInfoPacket(this, Packet);
+                            GameServer.OnPlayerInfoPacket(this, packet);
                             break;
                         case PacketBuilder.PACKET_PLAYER:
-                            GameServer.OnProfilePacket(this, Packet);
+                            GameServer.OnProfilePacket(this, packet);
                             break;
                         case PacketBuilder.PACKET_CHAT:
-                            GameServer.OnChatPacket(this, Packet);
+                            GameServer.OnChatPacket(this, packet);
                             break;
                         case PacketBuilder.PACKET_CLICK:
-                            GameServer.OnClickPacket(this, Packet);
+                            GameServer.OnClickPacket(this, packet);
                             break;
                         case PacketBuilder.PACKET_KEEP_ALIVE:
-                            GameServer.OnKeepAlive(this, Packet);
+                            GameServer.OnKeepAlive(this, packet);
                             break;
                         case PacketBuilder.PACKET_TRANSPORT:
-                            GameServer.OnTransportUsed(this, Packet);
+                            GameServer.OnTransportUsed(this, packet);
                             break;
                         case PacketBuilder.PACKET_INVENTORY:
-                            GameServer.OnInventoryRequested(this, Packet);
+                            GameServer.OnInventoryRequested(this, packet);
                             break;
                         case PacketBuilder.PACKET_DYNAMIC_BUTTON:
-                            GameServer.OnDynamicButtonPressed(this, Packet);
+                            GameServer.OnDynamicButtonPressed(this, packet);
                             break;
                         case PacketBuilder.PACKET_DYNAMIC_INPUT:
-                            GameServer.OnDynamicInputReceived(this, Packet);
+                            GameServer.OnDynamicInputReceived(this, packet);
                             break;
                         case PacketBuilder.PACKET_ITEM_INTERACTION:
-                            GameServer.OnItemInteraction(this, Packet);
+                            GameServer.OnItemInteraction(this, packet);
                             break;
                         case PacketBuilder.PACKET_ARENA_SCORE:
-                            GameServer.OnArenaScored(this, Packet);
+                            GameServer.OnArenaScored(this, packet);
                             break;
                         case PacketBuilder.PACKET_QUIT:
-                            GameServer.OnQuitPacket(this, Packet);
+                            GameServer.OnQuitPacket(this, packet);
                             break;
                         case PacketBuilder.PACKET_NPC:
-                            GameServer.OnNpcInteraction(this, Packet);
+                            GameServer.OnNpcInteraction(this, packet);
                             break;
                         case PacketBuilder.PACKET_BIRDMAP:
-                            GameServer.OnBirdMapRequested(this, Packet);
+                            GameServer.OnBirdMapRequested(this, packet);
                             break;
                         case PacketBuilder.PACKET_SWFMODULE:
-                            GameServer.OnSwfModuleCommunication(this, Packet);
+                            GameServer.OnSwfModuleCommunication(this, packet);
                             break;
                         case PacketBuilder.PACKET_HORSE:
-                            GameServer.OnHorseInteraction(this, Packet);
+                            GameServer.OnHorseInteraction(this, packet);
                             break;
                         case PacketBuilder.PACKET_WISH:
-                            GameServer.OnWish(this, Packet);
+                            GameServer.OnWish(this, packet);
                             break;
                         case PacketBuilder.PACKET_RANCH:
-                            GameServer.OnRanchPacket(this, Packet);
+                            GameServer.OnRanchPacket(this, packet);
                             break;
                         case PacketBuilder.PACKET_AUCTION:
-                            GameServer.OnAuctionPacket(this, Packet);
+                            GameServer.OnAuctionPacket(this, packet);
                             break;
                         case PacketBuilder.PACKET_PLAYER_INTERACTION:
-                            GameServer.OnPlayerInteration(this, Packet);
+                            GameServer.OnPlayerInteration(this, packet);
                             break;
                         case PacketBuilder.PACKET_SOCIALS:
-                            GameServer.OnSocialPacket(this, Packet);
+                            GameServer.OnSocialPacket(this, packet);
                             break;
                         default:
-                            Logger.ErrorPrint("Unimplemented Packet: " + BitConverter.ToString(Packet).Replace('-', ' '));
+                            Logger.ErrorPrint("Unimplemented packet: " + BitConverter.ToString(packet).Replace('-', ' '));
                             break;
                     }
                 }
@@ -619,16 +555,9 @@ namespace HISP.Server
             Logger.InfoPrint("CLIENT: "+RemoteIp+" KICKED for: "+Reason);
         }
 
-       public void SendPacket(byte[] PacketData)
+       public void SendPacket(byte[] packetData)
         {
-            try
-            {
-                ClientSocket.Send(PacketData);
-            }
-            catch (Exception)
-            {
-                Disconnect();
-            }
+            networkTransport.Send(packetData);
         }
 
     }
