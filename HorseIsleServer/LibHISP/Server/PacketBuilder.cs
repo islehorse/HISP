@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define WEBSOCKET_ENABLED
+
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -11,9 +13,9 @@ namespace HISP.Server
 {
     public class PacketBuilder
     {
+
         public const byte PACKET_TERMINATOR = 0x00;
         public const byte PACKET_CLIENT_TERMINATOR = 0x0A;
-        public const byte PACKET_FLASH_XML_CROSSDOMAIN = 0x3C;
 
         public const byte PACKET_LOGIN = 0x7F;
         public const byte PACKET_CHAT = 0x14;

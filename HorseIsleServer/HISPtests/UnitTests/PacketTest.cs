@@ -1,4 +1,6 @@
-﻿using HISP.Tests.Properties;
+﻿//#define GENERATE
+
+using HISP.Tests.Properties;
 using HISP.Game.SwfModules;
 using HISP.Game;
 using HISP.Server;
@@ -11,47 +13,44 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
+
 namespace HISP.Tests.UnitTests
 {
     public class PacketTest
     {
-        private const bool GENERATE = false;
-
+        
         private static Dictionary<string, string> knownGoodPackets = new Dictionary<string, string>();
 
         public static bool Test(string name, byte[] packet)
         {
+            #if GENERATE
+            knownGoodPackets.Add(name, Convert.ToBase64String(packet));
+            return true;
+            #else
+            string goodPacketStr = null;
+            knownGoodPackets.TryGetValue(name, out goodPacketStr);
+            byte[] goodPacket = Convert.FromBase64String(goodPacketStr);
 
-            if (GENERATE)
+
+            if(!goodPacket.SequenceEqual(packet))
             {
-                knownGoodPackets.Add(name, Convert.ToBase64String(packet));
+                ResultLogger.LogTestResult(false, "PACKET_TEST "+name, BitConverter.ToString(packet).Replace("-", ""), goodPacket.ToString().Replace("-", ""));
+                return false;
             }
             else
             {
-                string goodPacketStr = null;
-                knownGoodPackets.TryGetValue(name, out goodPacketStr);
-                byte[] goodPacket = Convert.FromBase64String(goodPacketStr);
-
-
-                if(!goodPacket.SequenceEqual(packet))
-                {
-                    ResultLogger.LogTestResult(false, "PACKET_TEST "+name, BitConverter.ToString(packet).Replace("-", ""), goodPacket.ToString().Replace("-", ""));
-                }
-                else
-                {
-                    ResultLogger.LogTestStatus(true, "PACKET_TEST " + name, "Success.");
-                }
+                ResultLogger.LogTestStatus(true, "PACKET_TEST " + name, "Success.");
+                return true;
             }
-            return true;
+            #endif
         }
 
         public static bool RunPacketTest()
         {
-            if (!GENERATE)
-            {
-                JObject jobj = JsonConvert.DeserializeObject(Resources.PacketTestDataSet) as JObject;
-                knownGoodPackets = jobj.ToObject<Dictionary<string, string>>();
-            }
+            #if GENERATE
+            JObject jobj = JsonConvert.DeserializeObject(Resources.PacketTestDataSet) as JObject;
+            knownGoodPackets = jobj.ToObject<Dictionary<string, string>>();
+            #endif
 
             List<bool> results = new List<bool>();
 
@@ -401,11 +400,10 @@ namespace HISP.Tests.UnitTests
             results.Add(Test("TimeAndWeatherUpdate", PacketBuilder.CreateTimeAndWeatherUpdate(10, 4, 541, "SUNNY")));
             results.Add(Test("WeatherUpdate", PacketBuilder.CreateWeatherUpdate("CLOUD")));
 
-            if (GENERATE)
-            {
-                string resultsStr = JsonConvert.SerializeObject(knownGoodPackets, Formatting.Indented);
-                File.WriteAllText("test.json", resultsStr);
-            }
+            #if GENERATE
+            string resultsStr = JsonConvert.SerializeObject(knownGoodPackets, Formatting.Indented);
+            File.WriteAllText("test.json", resultsStr);
+            #endif
 
             foreach(bool result in results)
             {

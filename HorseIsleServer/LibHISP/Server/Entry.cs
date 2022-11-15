@@ -39,7 +39,7 @@ namespace HISP.Server
             RegisterCrashHandler();
             Console.Title = ServerVersion.GetBuildString();
             ConfigReader.OpenConfig();
-            CrossDomainPolicy.GetPolicy();
+            CrossDomainPolicy.GetPolicyFile();
             Database.OpenDatabase();
             GameDataJson.ReadGamedata();
 
