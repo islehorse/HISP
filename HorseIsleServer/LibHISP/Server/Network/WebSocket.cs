@@ -1,5 +1,4 @@
-﻿#define WEBSOCKET_DEBUG
-
+﻿//#define WEBSOCKET_DEBUG
 using HISP.Security;
 using HISP.Util;
 using System;
@@ -16,13 +15,21 @@ namespace HISP.Server.Network
         private const byte WEBSOCKET_CONTINUE = 0x0;
         private const byte WEBSOCKET_TEXT = 0x1;
         private const byte WEBSOCKET_BINARY = 0x2;
+        private const byte WEBSOCKET_CLOSE = 0x8;
 
+        private const byte WEBSOCKET_PING = 0x9;
+        private const byte WEBSOCKET_PONG = 0xA;
+        
         private const byte WEBSOCKET_LENGTH_INT16 = 0x7E;
         private const byte WEBSOCKET_LENGTH_INT64 = 0x7F;
 
+        private const int WEBSOCKET_EXPECTED_SIZE_SET = 0;
+        private const int WEBSOCKET_EXPECTED_SIZE_UNSET = -1;
+
         private List<byte> currentMessage = new List<byte>();
 
-        private int lastOpcode;
+
+        private byte lastOpcode;
         private Int64 expectedLength = -1;
         private bool handshakeDone = false;
         private void webSocketLog(string msg)
@@ -102,6 +109,21 @@ namespace HISP.Server.Network
             return Helper.ByteArrayEndsWith(data, Encoding.UTF8.GetBytes("\r\n\r\n"));
         }
 
+        private bool isExpectedSizeSet()
+        {
+            return (this.expectedLength > WEBSOCKET_EXPECTED_SIZE_SET);
+        }
+        private void setUnknownExpectedLength()
+        {
+            this.expectedLength = WEBSOCKET_EXPECTED_SIZE_UNSET;
+        }
+
+        private bool isCurrentPacketLengthLessThanExpectedLength()
+        {
+            if (!isExpectedSizeSet()) return false;
+            return (currentPacket.LongCount() < this.expectedLength);
+        }
+
         public override void ProcessReceivedPackets(int available, byte[] buffer)
         {
             Int64 received = 0;
@@ -109,22 +131,13 @@ namespace HISP.Server.Network
             // if current packet is less than size of an expected incoming message
             // then keep receiving until full message received.
 
-            Int64 curPacketLength = currentPacket.LongCount();
             for (received = 0; received < available; received++)
-            {
                 currentPacket.Add(buffer[received]);
-                curPacketLength++;
 
-                // i use a <0 value to say there is no expected length
-                // check if entire packet received
-                if (expectedLength > 0 && (curPacketLength >= expectedLength)) 
-                    break;
-            }
-
-            if (expectedLength > 0 && (currentPacket.LongCount() < expectedLength))
+            if (isCurrentPacketLengthLessThanExpectedLength())
                 return;
             else
-                expectedLength = -1;
+                setUnknownExpectedLength();
 
             byte[] webSocketMsg = currentPacket.ToArray();
 
@@ -152,7 +165,7 @@ namespace HISP.Server.Network
                 bool rsv2 = (webSocketMsg[0] & 0b00100000) != 0;
                 bool rsv3 = (webSocketMsg[0] & 0b00010000) != 0;
 
-                int opcode = (webSocketMsg[0] & 0b00001111);
+                byte opcode = Convert.ToByte(webSocketMsg[0] & 0b00001111);
 
                 bool mask = (webSocketMsg[1] & 0b10000000) != 0;
                 Int64 messageLength = Convert.ToInt64(webSocketMsg[1] & 0b01111111);
@@ -205,7 +218,7 @@ namespace HISP.Server.Network
                 }
                 else
                 {
-                    expectedLength = -1;
+                    setUnknownExpectedLength();
                     currentPacket.Clear();
                 }
 
@@ -214,75 +227,64 @@ namespace HISP.Server.Network
 
                 webSocketLog("Finished: " + finished + "\nRsv1: " + rsv1 + "\nRsv2: " + rsv2 + "\nRsv3: " + rsv3 + "\nOpcode: " + opcode + "\nMask: " + mask + "\nMesssageLength: " + messageLength);
 
-                // websocket packet fully received, begin processing
-
-                // allow for continuing
-                if (opcode == WEBSOCKET_CONTINUE)
+                if (opcode != WEBSOCKET_CONTINUE)
                     lastOpcode = opcode;
-                else
-                    opcode = lastOpcode;
 
+                // do the thing the websocket frame says to do
                 switch (opcode)
                 {
-                    case WEBSOCKET_BINARY: // writing this almost killed me, because im non-binary :(
+                    case WEBSOCKET_CONTINUE:
+                    case WEBSOCKET_BINARY:
                     case WEBSOCKET_TEXT:
+                    case WEBSOCKET_PING:
                         for (Int64 i = 0; i < messageLength; i++) 
                             currentMessage.Add(mask ? Convert.ToByte(webSocketMsg[offset + i] ^ unmaskKey[i % unmaskKey.Length]) : Convert.ToByte(webSocketMsg[offset + i]));
                         break;
+                    case WEBSOCKET_CLOSE:
+                        this.Disconnect();
+                        return;
                 }
 
+                // handle end of websocket message.
                 if (finished)
                 {
-                    if(currentMessage.LongCount() > 0)
-                    {
-                        byte[] message = currentMessage.ToArray();
 
-                        if(opcode == WEBSOCKET_TEXT)
-                            webSocketLog(Encoding.UTF8.GetString(message));
+                    byte[] message = currentMessage.ToArray();
 
+                    if (lastOpcode != WEBSOCKET_PING && message.LongLength > 0)
                         onReceiveCallback(message);
-                        currentMessage.Clear();
-                    }
+                    else
+                        Send(message);
+
+                    currentMessage.Clear();
                 }
 
 
                 // is there another frame after this one?
+                // buffer remaining data back to ProcessReceivedPackets
                 if(actualLength > messageLength)
                 {
                     Int64 left = (actualLength - messageLength);
-                    Int64 totalSent = left;
 
                     Int64 loc = messageLength + offset;
+                    int total = buffer.Length;
 
-                    while(totalSent > 0)
+                    for (Int64 totalSent = left; totalSent > 0; totalSent -= total)
                     {
-                        int total = buffer.Length;
-                        if (totalSent < total)
+                        if (totalSent <= total)
                             total = Convert.ToInt32(totalSent);
 
                         for (int i = 0; i < total; i++)
                             buffer[i] = webSocketMsg[loc + i];
-                        
+
+                        webSocketLog("Found another frame at the end of this one, processing!");
                         ProcessReceivedPackets(total, buffer);
 
-                        totalSent -= total;
                         loc += total;
                     }
-                    
                 }
             }
 
-            // parse remaining data after end.
-
-            if (received < available)
-            {
-                int left = Convert.ToInt32(available - received);
-                byte[] leftData = new byte[left];
-                Array.ConstrainedCopy(buffer, available, leftData, 0, left);
-                Array.Copy(leftData, buffer, leftData.Length);
-
-                ProcessReceivedPackets(available, buffer);
-            }
 
         }
 
@@ -297,10 +299,91 @@ namespace HISP.Server.Network
         }
 
 
-        
+
+        // encode data into websocket frames and send over network
         public override void Send(byte[] data)
         {
-            throw new NotImplementedException();
+            if(this.Disconnected) return;
+            if (data == null) return;
+
+            // apparently you cant mask responses? chrome gets mad when i do it,
+            // so dont set this to true.
+            bool mask = false;
+
+            int maxLength = this.workBuffer.Length;
+            int toSend = maxLength;
+
+            byte opcode = ((lastOpcode == WEBSOCKET_PING) ? WEBSOCKET_PONG : WEBSOCKET_BINARY);
+
+            Int64 totalData = data.LongLength;
+ 
+            bool finish = false;
+
+            // despite its name, this has nothing to do with graphics
+            // rather this is for WebSocket frames
+            List<byte> frameBuffer = new List<byte>();
+
+            for (Int64 remain = totalData;  remain > 0; remain -= toSend)
+            {
+                // Is this the first frame?
+                // if so; send opcode binary
+                // otherwise, were continuing out last one
+                if (remain != totalData)
+                    opcode = WEBSOCKET_CONTINUE;
+
+                if(remain <= maxLength)
+                {
+                    toSend = Convert.ToInt32(remain);
+                    finish = true;
+                }
+
+                frameBuffer.Add(Convert.ToByte((0x00) | (finish ? 0b10000000 : 0b00000000) | opcode));
+
+                // do special length encoding
+                byte maskAndLength = Convert.ToByte((0x00) | (mask ? 0b10000000 : 0b00000000));
+                byte[] additionalLengthData = new byte[0];
+                if (toSend >= WEBSOCKET_LENGTH_INT16)
+                {
+                    if(toSend < UInt16.MaxValue)
+                    {
+                        maskAndLength |= WEBSOCKET_LENGTH_INT16;
+                        additionalLengthData = BitConverter.GetBytes(Convert.ToUInt16(toSend)).Reverse().ToArray();
+
+                    }
+                    else if(toSend < Int64.MaxValue)
+                    {
+                        maskAndLength |= WEBSOCKET_LENGTH_INT64;
+                        additionalLengthData = BitConverter.GetBytes(Convert.ToInt64(toSend)).Reverse().ToArray();
+                    }
+
+                }
+                else
+                {
+                    maskAndLength |= Convert.ToByte(toSend);
+                }
+
+                // Add to buffer
+                frameBuffer.Add(maskAndLength);
+                Helper.ByteArrayToByteList(additionalLengthData, frameBuffer);
+
+                // Generate masking key;
+                byte[] maskingKey = new byte[4];
+                GameServer.RandomNumberGenerator.NextBytes(maskingKey);
+
+                if (mask) 
+                    Helper.ByteArrayToByteList(maskingKey, frameBuffer);
+
+                // Mask data using key.
+                Int64 totalSent = (totalData - remain);
+                for (int i = 0; i < toSend; i++)
+                    frameBuffer.Add(mask ? Convert.ToByte(data[i + totalSent] ^ maskingKey[i % maskingKey.Length]) : Convert.ToByte(data[i + totalSent]));
+
+                // Finally send it over the network
+                base.Send(frameBuffer.ToArray());
+                if (this.Disconnected) return; // are we still here? 
+            }
+
+
         }
 
 
