@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
-
+using System.Threading;
 
 namespace HISP.Server.Network
 {
@@ -42,6 +42,8 @@ namespace HISP.Server.Network
                     ProcessReceivedPackets(e.BytesTransferred, e.Buffer);
                 else
                     break;
+
+                Thread.Sleep(1000 * 3);
 
             } while (!socket.ReceiveAsync(e));
 
