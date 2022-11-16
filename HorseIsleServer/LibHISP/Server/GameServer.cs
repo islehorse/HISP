@@ -8264,7 +8264,7 @@ namespace HISP.Server
             IPAddress hostIP = IPAddress.Parse(ConfigReader.BindIP);
             IPEndPoint ep = new IPEndPoint(hostIP, ConfigReader.Port);
             ServerSocket.Bind(ep);
-            ServerSocket.Listen(0x7fffffff);
+            ServerSocket.Listen(0xFFFF);
             gameTimer = new Timer(new TimerCallback(onGameTick), null, gameTickSpeed, gameTickSpeed);
             minuteTimer = new Timer(new TimerCallback(onMinuteTick), null, oneMinute, oneMinute);
             Logger.InfoPrint("Binding to ip: " + ConfigReader.BindIP + " On port: " + ConfigReader.Port.ToString());

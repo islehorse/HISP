@@ -109,29 +109,21 @@ namespace HISP.Server
         }
         public static void CreateClient(object sender, SocketAsyncEventArgs e)
         {
-#if !DEBUG
-            try
+            do
             {
-#endif
-                do
-                {
-                    Socket clientSocket = e.AcceptSocket;
+                Socket clientSocket = e.AcceptSocket;
 
-                    if (GameServer.ServerSocket == null)
-                        return;
-                    if (clientSocket == null)
-                        continue;
-                    if (clientSocket.RemoteEndPoint == null)
-                        continue;
+                if (GameServer.ServerSocket == null)
+                    return;
+                if (clientSocket == null)
+                    continue;
+                if (clientSocket.RemoteEndPoint == null)
+                    continue;
     
-                    connectedClients.Add(new GameClient(clientSocket));
-                    e.AcceptSocket = null;
+                connectedClients.Add(new GameClient(clientSocket));
+                e.AcceptSocket = null;
 
-                } while (!GameServer.ServerSocket.AcceptAsync(e));
-#if !DEBUG
-            }
-            catch (ObjectDisposedException ex) { Logger.ErrorPrint("Server shutdown due to " + ex.Message); } // server shutdown
-#endif
+            } while (!GameServer.ServerSocket.AcceptAsync(e));
         }
         private void timeoutTimerTick(object state)
         {
@@ -394,6 +386,7 @@ namespace HISP.Server
             if (packet.Length < 1)
             {
                 Logger.ErrorPrint("Received an invalid packet (size: "+packet.Length+")");
+                return;
             }
             byte identifier = packet[0];
 
