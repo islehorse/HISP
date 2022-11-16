@@ -43,7 +43,6 @@ namespace HISP.Server.Network
                 else
                     break;
 
-                Thread.Sleep(1000 * 3);
 
             } while (!socket.ReceiveAsync(e));
 
