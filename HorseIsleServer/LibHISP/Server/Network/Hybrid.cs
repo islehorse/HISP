@@ -88,8 +88,9 @@ namespace HISP.Server.Network
         {
             try
             {
-                if (!base.checkForError(e))
-                    ProcessReceivedPackets(e.BytesTransferred, e.Buffer);
+                if(base.checkForError(e)) return;
+                ProcessReceivedPackets(e.BytesTransferred, e.Buffer);
+                if (base.checkForError(e)) return;
             }
             catch (Exception ex)
             {
