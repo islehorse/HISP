@@ -86,8 +86,16 @@ namespace HISP.Server.Network
 
         internal override void receivePackets(object sender, SocketAsyncEventArgs e)
         {
-            if (!base.checkForError(e))
-                ProcessReceivedPackets(e.BytesTransferred, e.Buffer);
+            try
+            {
+                if (!base.checkForError(e))
+                    ProcessReceivedPackets(e.BytesTransferred, e.Buffer);
+            }
+            catch (Exception ex)
+            {
+                Logger.ErrorPrint(ex.StackTrace);
+                try { this.Disconnect(); } catch (Exception) { };
+            };
         }
 
         public override void Send(byte[] data)

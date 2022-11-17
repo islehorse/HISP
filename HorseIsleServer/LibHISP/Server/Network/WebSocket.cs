@@ -350,7 +350,7 @@ namespace HISP.Server.Network
                         additionalLengthData = BitConverter.GetBytes(Convert.ToUInt16(toSend)).Reverse().ToArray();
 
                     }
-                    else if(toSend < Int64.MaxValue)
+                    else if(Convert.ToInt64(toSend) < Int64.MaxValue)
                     {
                         maskAndLength |= WEBSOCKET_LENGTH_INT64;
                         additionalLengthData = BitConverter.GetBytes(Convert.ToInt64(toSend)).Reverse().ToArray();
