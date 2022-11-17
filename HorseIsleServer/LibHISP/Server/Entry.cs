@@ -85,11 +85,6 @@ namespace HISP.Server
 
             Logger.CrashPrint(crashMsg);
 
-            try
-            {
-                GameServer.ShutdownServer();
-            }
-            catch (Exception) { };
 
 
         }

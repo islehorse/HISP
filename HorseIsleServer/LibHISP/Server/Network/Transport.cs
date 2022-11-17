@@ -36,15 +36,20 @@ namespace HISP.Server.Network
         }
         internal virtual void receivePackets(object sender, SocketAsyncEventArgs e)
         {
-            do
+            try
             {
-                if (!checkForError(e))
+                do
+                {
+                    if (checkForError(e)) break;
                     ProcessReceivedPackets(e.BytesTransferred, e.Buffer);
-                else
-                    break;
+                    if (checkForError(e)) break;
 
-
-            } while (!socket.ReceiveAsync(e));
+                } while (!socket.ReceiveAsync(e));
+            }
+            catch (Exception ex) { 
+                Logger.ErrorPrint(ex.StackTrace); 
+                try { this.Disconnect(); } catch (Exception) { }; 
+            };
 
         }
 
@@ -102,8 +107,8 @@ namespace HISP.Server.Network
                     socket = null;
 
                 }
-                catch (SocketException e) { }
-                catch (ObjectDisposedException e) { };
+                catch (SocketException) { }
+                catch (ObjectDisposedException) { };
             }
 
             onDisconnectCallback();
