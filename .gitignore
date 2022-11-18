@@ -6,6 +6,7 @@
 *.csproj.user
 *.pubxml.user
 *.user
+*.idb
 
 *.DS_Store
 
