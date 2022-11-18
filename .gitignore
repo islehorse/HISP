@@ -4,6 +4,8 @@
 *.log
 *.suo
 *.csproj.user
+*.pubxml.user
+*.user
 
 *.DS_Store
 

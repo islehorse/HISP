@@ -156,7 +156,7 @@ namespace HISP.Game.SwfModules
 
             foreach(int room in rooms)
             {
-                Logger.InfoPrint("Loading poetry room: " + room.ToString());
+                Logger.InfoPrint("Loading Poetry room: " + room.ToString());
                 poetryRooms.Add(getPoetryRoom(room));
                 if (!Database.LastPlayerExist("P" + room))
                     Database.AddLastPlayer("P" + room, -1);
