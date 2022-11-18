@@ -1,4 +1,4 @@
-﻿//#define GENERATE
+﻿#define GENERATE
 
 using HISP.Tests.Properties;
 using HISP.Game.SwfModules;
@@ -47,7 +47,7 @@ namespace HISP.Tests.UnitTests
 
         public static bool RunPacketTest()
         {
-            #if GENERATE
+            #if !GENERATE
             JObject jobj = JsonConvert.DeserializeObject(Resources.PacketTestDataSet) as JObject;
             knownGoodPackets = jobj.ToObject<Dictionary<string, string>>();
             #endif

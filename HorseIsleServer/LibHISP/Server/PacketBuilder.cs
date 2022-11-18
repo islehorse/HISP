@@ -1,6 +1,4 @@
-﻿#define WEBSOCKET_ENABLED
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
@@ -13,8 +11,6 @@ namespace HISP.Server
 {
     public class PacketBuilder
     {
-
-        public const byte PACKET_TERMINATOR = 0x00;
         public const byte PACKET_CLIENT_TERMINATOR = 0x0A;
 
         public const byte PACKET_LOGIN = 0x7F;
@@ -251,10 +247,9 @@ namespace HISP.Server
         // has actually left / quit the game.
         public static byte[] Create2PlayerClose()
         {
-            byte[] packet = new byte[3];
+            byte[] packet = new byte[2];
             packet[0] = PACKET_SWFMODULE;
             packet[1] = SWFMODULE_2PLAYER_CLOSED;
-            packet[2] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -277,11 +272,10 @@ namespace HISP.Server
             peiceMoveStr += "^";
             byte[] peiceMoveBytes = Encoding.UTF8.GetBytes(peiceMoveStr);
 
-            byte[] packet = new byte[(1 * 2) + peiceMoveBytes.Length];
+            byte[] packet = new byte[1 + peiceMoveBytes.Length];
 
             packet[0] = PACKET_SWFMODULE;
             Array.Copy(peiceMoveBytes, 0, packet, 1, peiceMoveBytes.Length);
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
             
             return packet;
         }
@@ -302,11 +296,10 @@ namespace HISP.Server
             }
 
             byte[] peiceLoadBytes = Encoding.UTF8.GetBytes(peiceLoadStr);
-            byte[] packet = new byte[(1 * 2) + peiceLoadBytes.Length];
+            byte[] packet = new byte[1 + peiceLoadBytes.Length];
 
             packet[0] = PACKET_SWFMODULE;
             Array.Copy(peiceLoadBytes, 0, packet, 1, peiceLoadBytes.Length);
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -315,10 +308,9 @@ namespace HISP.Server
         // this is used for *most* SwfModule
         public static byte[] CreateForwardedSwfModule(byte[] request)
         {
-            byte[] packet = new byte[(1 * 2) + request.Length];
+            byte[] packet = new byte[1 + request.Length];
             packet[0] = PACKET_SWFMODULE;
             Array.Copy(request, 0, packet, 1, request.Length);
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
             return packet;
         }
         // Creates a byte array that contains "Bird Map" data
@@ -347,19 +339,16 @@ namespace HISP.Server
                 }
             }
 
-            packet.Add(PACKET_TERMINATOR);
-
             return packet.ToArray();
         }
         // Creates a byte array for a packet to inform the client that the image in a drawing room has changed.
         public static byte[] CreateDrawingUpdate(string Drawing)
         {
             byte[] drawingBytes = Encoding.UTF8.GetBytes(Drawing);
-            byte[] packet = new byte[(1 * 2) + drawingBytes.Length];
+            byte[] packet = new byte[1 + drawingBytes.Length];
 
             packet[0] = PACKET_SWFMODULE;
             Array.Copy(drawingBytes, 0, packet, 1, drawingBytes.Length);
-            packet[packet.Length-1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -373,14 +362,13 @@ namespace HISP.Server
             peiceUpdateStr += "^";
 
             byte[] infoBytes = Encoding.UTF8.GetBytes(peiceUpdateStr);
-            byte[] packet = new byte[(1 * 3) + infoBytes.Length];
+            byte[] packet = new byte[(1 * 2) + infoBytes.Length];
 
             packet[0] = PACKET_SWFMODULE;
             packet[1] = BRICKPOET_MOVE;
 
             Array.Copy(infoBytes, 0, packet, 2, infoBytes.Length);
 
-            packet[packet.Length-1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -403,13 +391,11 @@ namespace HISP.Server
                 peicesStr += "^";
             }
             byte[] peicesBytes = Encoding.UTF8.GetBytes(peicesStr);
-            byte[] packet = new byte[(1 * 2) + peicesBytes.Length];
+            byte[] packet = new byte[1 + peicesBytes.Length];
 
             packet[0] = PACKET_SWFMODULE;
 
             Array.Copy(peicesBytes, 0, packet, 1, peicesBytes.Length);
-            
-            packet[packet.Length - 1] = PACKET_TERMINATOR; 
 
             return packet;
         }
@@ -417,13 +403,12 @@ namespace HISP.Server
         public static byte[] CreatePlaySound(string sound)
         {
             byte[] soundBytes = Encoding.UTF8.GetBytes(sound);
-            byte[] packet = new byte[(1 * 2) + soundBytes.Length];
+            byte[] packet = new byte[1 + soundBytes.Length];
 
             packet[0] = PACKET_PLAYSOUND;
 
             Array.Copy(soundBytes, 0, packet, 1, soundBytes.Length);
 
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -432,14 +417,12 @@ namespace HISP.Server
         public static byte[] CreatePlayerLeave(string username)
         {
             byte[] userBytes = Encoding.UTF8.GetBytes(username);
-            byte[] packet = new byte[(1 * 3) + userBytes.Length];
+            byte[] packet = new byte[(1 * 2) + userBytes.Length];
 
             packet[0] = PACKET_PLAYERINFO;
             packet[1] = PLAYERINFO_LEAVE;
 
             Array.Copy(userBytes, 0, packet, 2, userBytes.Length);
-
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -448,7 +431,7 @@ namespace HISP.Server
         public static byte[] CreatePlayerInfoUpdateOrCreate(int x, int y, int facing, int charId, string username)
         {
             byte[] userBytes = Encoding.UTF8.GetBytes(username);
-            byte[] packet = new byte[(1 * 10) + userBytes.Length];
+            byte[] packet = new byte[(1 * 9) + userBytes.Length];
 
             packet[0] = PACKET_PLAYERINFO;
             packet[1] = PLAYERINFO_UPDATE_OR_CREATE;
@@ -466,7 +449,6 @@ namespace HISP.Server
 
             Array.Copy(userBytes, 0, packet, 9, userBytes.Length);
 
-            packet[packet.Length-1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -475,7 +457,7 @@ namespace HISP.Server
         public static byte[] CreateLogin(bool Success, string ErrorMessage="")
         {
             byte[] loginFailMessage = Encoding.UTF8.GetBytes(ErrorMessage);
-            byte[] packet = new byte[(1 * 3) + loginFailMessage.Length];
+            byte[] packet = new byte[(1 * 2) + loginFailMessage.Length];
 
             packet[0] = PACKET_LOGIN;
             if (ErrorMessage != "")
@@ -487,8 +469,6 @@ namespace HISP.Server
 
             Array.Copy(loginFailMessage, 0, packet, 2, loginFailMessage.Length);
 
-            packet[packet.Length-1] = PACKET_TERMINATOR;
-
             return packet;
         }
         // Creates a byte array of a packet to inform the client of
@@ -497,12 +477,11 @@ namespace HISP.Server
         public static byte[] CreateProfilePage(string userProfile)
         {
             byte[] profileBytes = Encoding.UTF8.GetBytes(userProfile);
-            byte[] packet = new byte[(1 * 2) + profileBytes.Length];
+            byte[] packet = new byte[1 + profileBytes.Length];
 
             packet[0] = PACKET_PLAYER;
             Array.Copy(profileBytes, 0, packet, 1, profileBytes.Length);
-            packet[packet.Length-1] = PACKET_TERMINATOR;
-
+            
             return packet;
         }
         // Creates a byte array of a packet to inform the client of the players
@@ -641,7 +620,6 @@ namespace HISP.Server
                 }
 
             }
-            packet.Add(PACKET_TERMINATOR);
 
             return packet.ToArray();
         }
@@ -650,10 +628,9 @@ namespace HISP.Server
         public static byte[] CreateTileClickInfo(string text)
         {
             byte[] strBytes = Encoding.UTF8.GetBytes(text);
-            byte[] packet = new byte[(1 * 2) + strBytes.Length];
+            byte[] packet = new byte[1 + strBytes.Length];
             packet[0] = PACKET_CLICK;
             Array.Copy(strBytes, 0, packet, 1, strBytes.Length);
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
             return packet;
         }
 
@@ -662,11 +639,10 @@ namespace HISP.Server
         public static byte[] CreateMeta(string formattedText)
         {
             byte[] formattedBytes = Encoding.UTF8.GetBytes(formattedText);
-            byte[] packet = new byte[(1 * 2) + formattedBytes.Length];
+            byte[] packet = new byte[1 + formattedBytes.Length];
 
             packet[0] = PACKET_META;
             Array.Copy(formattedBytes, 0, packet, 1, formattedBytes.Length);
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -675,11 +651,10 @@ namespace HISP.Server
         public static byte[] CreateChat(string formattedText, byte chatWindow)
         {
             byte[] formattedBytes = Encoding.UTF8.GetBytes(formattedText);
-            byte[] packet = new byte[(1 * 3) + formattedBytes.Length];
+            byte[] packet = new byte[(1 * 2) + formattedBytes.Length];
             packet[0] = PACKET_CHAT;
             packet[1] = chatWindow;
             Array.Copy(formattedBytes, 0, packet, 2, formattedBytes.Length);
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
             return packet;
         }
 
@@ -687,11 +662,10 @@ namespace HISP.Server
         public static byte[] CreateWeatherUpdate(string newWeather)
         {
             byte[] weatherBytes = Encoding.UTF8.GetBytes(newWeather);
-            byte[] packet = new byte[(1 * 3) + weatherBytes.Length];
+            byte[] packet = new byte[(1 * 2) + weatherBytes.Length];
             packet[0] = PACKET_WORLD;
             packet[1] = WEATHER_UPDATE;
             Array.Copy(weatherBytes, 0, packet, 2, weatherBytes.Length);
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
             return packet;
         }
         // Creates a byte array of a packet informing the client of the current game time, and weather effect.
@@ -715,17 +689,14 @@ namespace HISP.Server
             // Copy weather information to packet
             Array.Copy(weatherBytes, 0, packet, 7, weatherBytes.Length);
             
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
-
             return packet;
         }
         // Creates a byte array of a "keep alive" packet, to check if the client is still connected
         // and to inform the client the server is still here too and has not crashed / disconnected the client.
         public static byte[] CreateKeepAlive()
         {
-            byte[] packet = new byte[2];
+            byte[] packet = new byte[1];
             packet[0] = PACKET_KEEP_ALIVE;
-            packet[1] = PACKET_TERMINATOR;
             return packet;
         }
         // Creates a byte array of a packet to inform the client of all "Places" that exist in the world
@@ -812,7 +783,6 @@ namespace HISP.Server
                 
                 Helper.ByteArrayToByteList(isleBytes, packet);
             }
-            packet.Add(PACKET_TERMINATOR);
 
             return packet.ToArray();
         }
@@ -823,12 +793,9 @@ namespace HISP.Server
             byte[] playerDataBytes = Encoding.UTF8.GetBytes(money.ToString("N0", CultureInfo.InvariantCulture) + "|" + 
                                                        playerCount.ToString("N0", CultureInfo.InvariantCulture) + "|" + 
                                                        mail.ToString("N0", CultureInfo.InvariantCulture) + "|");
-
-
-            byte[] packet = new byte[(1*2) + playerDataBytes.Length];
+            byte[] packet = new byte[1 + playerDataBytes.Length];
             packet[0] = PACKET_BASE_STATS;
             Array.Copy(playerDataBytes, 0, packet, 1, playerDataBytes.Length);
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
             return packet;
         }
         // Creates a byte array of a packet informing the client of Tile Overlay flags
@@ -836,13 +803,12 @@ namespace HISP.Server
         // should appear ontop of or under, and stuff like that.
         public static byte[] CreateTileOverlayFlags(int[] tileDepthFlags)
         {
-            byte[] packet = new byte[(1 * 2) + tileDepthFlags.Length];
+            byte[] packet = new byte[1 + tileDepthFlags.Length];
             packet[0] = PACKET_TILE_FLAGS;
 
             for(int i = 0; i < tileDepthFlags.Length; i++)
                 packet[1 + i] = (byte)(tileDepthFlags[i].ToString()[0]);
 
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
             return packet;
         }
         // Creates a byte array of a packet informing the client of its current Sec Code seed and Inc values,
@@ -859,7 +825,7 @@ namespace HISP.Server
             if (Admin)
                 userType = 'A'; // Admin
 
-            byte[] packet = new byte[7];
+            byte[] packet = new byte[6];
 
             packet[0] = PACKET_SEC_CODE;
 
@@ -870,7 +836,6 @@ namespace HISP.Server
 
 
             packet[5] = (byte)userType;
-            packet[6] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -880,12 +845,11 @@ namespace HISP.Server
         public static byte[] CreateSwfModule(string swf,byte headerByte)
         {
             byte[] swfBytes = Encoding.UTF8.GetBytes(swf);
-            byte[] packet = new byte[(1 * 2) + swfBytes.Length];
+            byte[] packet = new byte[1 + swfBytes.Length];
             
             packet[0] = headerByte;
             Array.Copy(swfBytes, 0, packet, 1, swfBytes.Length);
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
-
+            
             return packet;
         }
         // Creates a byte array of a packet to show the client an "Annoucement" message
@@ -895,11 +859,10 @@ namespace HISP.Server
         public static byte[] CreateMotd(string announcement)
         {
             byte[] annouceBytes = Encoding.UTF8.GetBytes(announcement);
-            byte[] packet = new byte[(1 * 2) + annouceBytes.Length];
+            byte[] packet = new byte[1 + annouceBytes.Length];
 
             packet[0] = PACKET_ANNOUNCEMENT;
             Array.Copy(annouceBytes, 0, packet, 1, annouceBytes.Length);
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
             return packet;
         }
@@ -908,11 +871,10 @@ namespace HISP.Server
         public static byte[] CreateKickMessage(string reason)
         {
             byte[] kickMsgBytes = Encoding.UTF8.GetBytes(reason);
-            byte[] packet = new byte[(1 * 2) + kickMsgBytes.Length];
+            byte[] packet = new byte[1 + kickMsgBytes.Length];
 
             packet[0] = PACKET_KICK;
             Array.Copy(kickMsgBytes, 0, packet, 1, kickMsgBytes.Length);
-            packet[packet.Length - 1] = PACKET_TERMINATOR;
 
             return packet;
         }
