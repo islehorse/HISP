@@ -24,7 +24,7 @@ namespace HISP.Tests.UnitTests
             byte[] loginPacket = new byte[1 * 3 + loginInformation.Length];
             loginPacket[0] = PacketBuilder.PACKET_LOGIN;
             loginPacket[loginPacket.Length - 2] = PacketBuilder.PACKET_CLIENT_TERMINATOR;
-            loginPacket[loginPacket.Length - 1] = PacketBuilder.PACKET_TERMINATOR;
+            loginPacket[loginPacket.Length - 1] = 0;
 
             Array.ConstrainedCopy(loginInformation, 0, loginPacket, 1, loginInformation.Length);
 
@@ -33,7 +33,7 @@ namespace HISP.Tests.UnitTests
 
         private static byte[] createUserInfoPacket()
         {
-            byte[] packet = new byte[] { PacketBuilder.PACKET_LOGIN, PacketBuilder.PACKET_CLIENT_TERMINATOR, PacketBuilder.PACKET_TERMINATOR};
+            byte[] packet = new byte[] { PacketBuilder.PACKET_LOGIN, PacketBuilder.PACKET_CLIENT_TERMINATOR, 0};
             return packet;
         }
 
@@ -197,8 +197,6 @@ namespace HISP.Tests.UnitTests
                 foreach(Ranch.RanchUpgrade upgrade in Ranch.RanchUpgrade.RanchUpgrades)
                 {
                     int id = upgrade.Id;
-
-                    results.Add(Test("RanchUpgradeLevel" + id, user.OwnedRanch.UpgradedLevel, id));
                     user.OwnedRanch.UpgradedLevel = id;
                 }
 
