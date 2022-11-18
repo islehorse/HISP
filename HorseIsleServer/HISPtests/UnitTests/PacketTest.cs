@@ -1,4 +1,4 @@
-﻿#define GENERATE
+﻿//#define GENERATE
 
 using HISP.Tests.Properties;
 using HISP.Game.SwfModules;
