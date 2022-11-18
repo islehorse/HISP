@@ -5,7 +5,6 @@ namespace HISP.Server.Network
 {
     public class Hybrid : Transport
     {
-
         Transport actualTransport = null;
 
        
@@ -58,29 +57,24 @@ namespace HISP.Server.Network
 
         public override void ProcessReceivedPackets(int available, byte[] buffer)
         {
-            for (int i = 0; i < available; i++)
-                base.currentPacket.Add(buffer[i]);
 
-            if (currentPacket.Count >= 3)
+            if (ConfigReader.EnableWebSocket && WebSocket.IsStartOfHandshake(buffer))
             {
-                if (ConfigReader.EnableWebSocket && WebSocket.IsStartOfHandshake(currentPacket.ToArray()))
-                {
-                    Logger.InfoPrint(this.Ip + " Switching to WebSocket");
-                    actualTransport = new WebSocket();
+                Logger.InfoPrint(this.Ip + " Switching to WebSocket");
+                actualTransport = new WebSocket();
 
-                    actualTransport.passObjects(this.socket, this.onReceiveCallback, this.onDisconnectCallback);
-                    actualTransport.ProcessReceivedPackets(available, buffer);
-                    actualTransport.Accept(base.socket, base.onReceiveCallback, base.onDisconnectCallback);
-                }
-                else
-                {
-                    Logger.InfoPrint(this.Ip + " Switching to XmlSocket");
-                    actualTransport = new XmlSocket();
+                actualTransport.passObjects(this.socket, this.onReceiveCallback, this.onDisconnectCallback);
+                actualTransport.ProcessReceivedPackets(available, buffer);
+                actualTransport.Accept(base.socket, base.onReceiveCallback, base.onDisconnectCallback);
+            }
+            else
+            {
+                Logger.InfoPrint(this.Ip + " Switching to XmlSocket");
+                actualTransport = new XmlSocket();
 
-                    actualTransport.passObjects(this.socket, this.onReceiveCallback, this.onDisconnectCallback);
-                    actualTransport.ProcessReceivedPackets(available, buffer);
-                    actualTransport.Accept(base.socket, base.onReceiveCallback, base.onDisconnectCallback);
-                }
+                actualTransport.passObjects(this.socket, this.onReceiveCallback, this.onDisconnectCallback);
+                actualTransport.ProcessReceivedPackets(available, buffer);
+                actualTransport.Accept(base.socket, base.onReceiveCallback, base.onDisconnectCallback);
             }
         }
 
