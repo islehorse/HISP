@@ -13,7 +13,6 @@ namespace HISP.Server.Network
         internal Action<byte[]> onReceiveCallback;
         internal Action onDisconnectCallback;
 
-        internal List<byte> currentPacket = new List<byte>();
         internal byte[] workBuffer = new byte[0xFFFF];
 
         internal bool isDisconnecting = false;
