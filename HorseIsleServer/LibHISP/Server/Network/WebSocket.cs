@@ -1,4 +1,4 @@
-﻿//#define WEBSOCKET_DEBUG
+﻿#define WEBSOCKET_DEBUG
 using HISP.Security;
 using HISP.Util;
 using System;
@@ -26,8 +26,8 @@ namespace HISP.Server.Network
         private const int WEBSOCKET_EXPECTED_SIZE_SET = 0;
         private const int WEBSOCKET_EXPECTED_SIZE_UNSET = -1;
 
-        private List<byte> currentMessage = new List<byte>();
-
+        private byte[] currentMessage = new byte[0];
+        private byte[] currentPacket = new byte[0];
 
         private byte lastOpcode;
         private Int64 expectedLength = -1;
@@ -126,59 +126,58 @@ namespace HISP.Server.Network
 
         public override void ProcessReceivedPackets(int available, byte[] buffer)
         {
-            Int64 received = 0;
             // add to current packet
             // if current packet is less than size of an expected incoming message
             // then keep receiving until full message received.
-
-            for (received = 0; received < available; received++)
-                currentPacket.Add(buffer[received]);
+            int oldLength = currentPacket.Length;
+            Array.Resize(ref currentPacket, oldLength + available);
+            Array.ConstrainedCopy(buffer, 0, currentPacket, oldLength, available);
 
             if (isCurrentPacketLengthLessThanExpectedLength())
                 return;
             else
                 setUnknownExpectedLength();
 
-            byte[] webSocketMsg = currentPacket.ToArray();
+            //byte[] webSocketMsg = currentPacket.ToArray();
 
             if (!handshakeDone)
             {
 
-                if (IsStartOfHandshake(webSocketMsg) && IsEndOfHandshake(webSocketMsg))
+                if (IsStartOfHandshake(currentPacket) && IsEndOfHandshake(currentPacket))
                 {
-                    string httpHandshake = Encoding.UTF8.GetString(webSocketMsg);
+                    string httpHandshake = Encoding.UTF8.GetString(currentPacket);
                     byte[] handshakeResponse = parseHandshake(httpHandshake);
                     base.Send(handshakeResponse);
 
-                    currentPacket.Clear();
+                    Array.Resize(ref currentPacket, 0);
                     handshakeDone = true;
                 }
             }
-            else if(currentPacket.Count > 2) // else, begin parsing websocket message
+            else if(currentPacket.Length > 2) // else, begin parsing websocket message
             {
 
                 byte[] unmaskKey = new byte[4];
 
-                bool finished = (webSocketMsg[0] & 0b10000000) != 0;
+                bool finished = (currentPacket[0] & 0b10000000) != 0;
 
-                bool rsv1 = (webSocketMsg[0] & 0b01000000) != 0;
-                bool rsv2 = (webSocketMsg[0] & 0b00100000) != 0;
-                bool rsv3 = (webSocketMsg[0] & 0b00010000) != 0;
+                bool rsv1 = (currentPacket[0] & 0b01000000) != 0;
+                bool rsv2 = (currentPacket[0] & 0b00100000) != 0;
+                bool rsv3 = (currentPacket[0] & 0b00010000) != 0;
 
-                byte opcode = Convert.ToByte(webSocketMsg[0] & 0b00001111);
+                byte opcode = Convert.ToByte(currentPacket[0] & 0b00001111);
 
-                bool mask = (webSocketMsg[1] & 0b10000000) != 0;
-                Int64 messageLength = Convert.ToInt64(webSocketMsg[1] & 0b01111111);
+                bool mask = (currentPacket[1] & 0b10000000) != 0;
+                Int64 messageLength = Convert.ToInt64(currentPacket[1] & 0b01111111);
 
                 int offset = 2;
 
 
                 if (messageLength == WEBSOCKET_LENGTH_INT16)
                 {
-                    if (webSocketMsg.LongLength >= offset + 2)
+                    if (currentPacket.LongLength >= offset + 2)
                     {
                         byte[] uint16Bytes = new byte[2];
-                        Array.ConstrainedCopy(webSocketMsg, offset, uint16Bytes, 0, uint16Bytes.Length);
+                        Array.ConstrainedCopy(currentPacket, offset, uint16Bytes, 0, uint16Bytes.Length);
                         uint16Bytes = uint16Bytes.Reverse().ToArray();
                         messageLength = BitConverter.ToUInt16(uint16Bytes);
 
@@ -187,10 +186,10 @@ namespace HISP.Server.Network
                 }
                 else if (messageLength == WEBSOCKET_LENGTH_INT64)
                 {
-                    if (webSocketMsg.LongLength >= offset + 8)
+                    if (currentPacket.LongLength >= offset + 8)
                     {
                         byte[] int64Bytes = new byte[8];
-                        Array.ConstrainedCopy(webSocketMsg, offset, int64Bytes, 0, int64Bytes.Length);
+                        Array.ConstrainedCopy(currentPacket, offset, int64Bytes, 0, int64Bytes.Length);
                         int64Bytes = int64Bytes.Reverse().ToArray();
                         messageLength = BitConverter.ToInt64(int64Bytes);
 
@@ -200,13 +199,13 @@ namespace HISP.Server.Network
 
                 if (mask)
                 {
-                    Array.ConstrainedCopy(webSocketMsg, offset, unmaskKey, 0, unmaskKey.Length);
+                    Array.ConstrainedCopy(currentPacket, offset, unmaskKey, 0, unmaskKey.Length);
                     offset += unmaskKey.Length;
                 }
 
                 // Handle tcp fragmentation
                 
-                Int64 actualLength = (webSocketMsg.LongLength - offset);
+                Int64 actualLength = (currentPacket.LongLength - offset);
                 
                 // check if full message received, if not then set expected length
                 // and return, thus entering the loop at the beginning
@@ -216,11 +215,13 @@ namespace HISP.Server.Network
                     webSocketLog("Partial websocket frame received, expected size: " + messageLength + " got size: " + actualLength);
                     return;
                 }
-                else
-                {
-                    setUnknownExpectedLength();
-                    currentPacket.Clear();
-                }
+
+                // clone current packet array
+                byte[] currentPacketCopy = currentPacket.ToArray();
+
+                // set current packet array size back to 0
+                setUnknownExpectedLength();
+                Array.Resize(ref currentPacket, 0);
 
                 // dont care about extensions
                 if (rsv1 || rsv2 || rsv3) return;
@@ -237,8 +238,17 @@ namespace HISP.Server.Network
                     case WEBSOCKET_BINARY:
                     case WEBSOCKET_TEXT:
                     case WEBSOCKET_PING:
-                        for (Int64 i = 0; i < messageLength; i++) 
-                            currentMessage.Add(mask ? Convert.ToByte(webSocketMsg[offset + i] ^ unmaskKey[i % unmaskKey.Length]) : Convert.ToByte(webSocketMsg[offset + i]));
+                        oldLength = currentMessage.Length;
+                        Array.Resize(ref currentMessage, oldLength + Convert.ToInt32(messageLength));
+                        if (mask)
+                        {
+                            for (int i = 0; i < Convert.ToInt32(messageLength); i++)
+                                currentMessage[oldLength + i] = Convert.ToByte(currentPacketCopy[offset + i] ^ unmaskKey[i % unmaskKey.Length]);
+                        }
+                        else
+                        {
+                            Array.ConstrainedCopy(currentPacketCopy, offset, currentMessage, oldLength, Convert.ToInt32(messageLength));
+                        }
                         break;
                     case WEBSOCKET_CLOSE:
                         this.Disconnect();
@@ -249,14 +259,13 @@ namespace HISP.Server.Network
                 if (finished)
                 {
 
-                    byte[] message = currentMessage.ToArray();
-
-                    if (lastOpcode != WEBSOCKET_PING && message.LongLength > 0)
-                        onReceiveCallback(message);
+                    if (lastOpcode != WEBSOCKET_PING && currentMessage.LongLength > 0)
+                        onReceiveCallback(currentMessage);
                     else
-                        Send(message);
+                        Send(currentMessage);
 
-                    currentMessage.Clear();
+                    Array.Resize(ref currentMessage, 0);
+                    Array.Resize(ref currentPacket, 0);
                 }
 
 
@@ -274,22 +283,22 @@ namespace HISP.Server.Network
                         if (totalSent <= total)
                             total = Convert.ToInt32(totalSent);
 
-                        for (int i = 0; i < total; i++)
-                            buffer[i] = webSocketMsg[loc + i];
-
+                        
+                        Array.ConstrainedCopy(currentPacketCopy, Convert.ToInt32(loc), buffer, 0, total);
+                        
                         webSocketLog("Found another frame at the end of this one, processing!");
                         ProcessReceivedPackets(total, buffer);
 
                         loc += total;
                     }
                 }
+
             }
 
 
         }
 
-
-
+        // specify transport name is "WebSocket"
         public override string Name
         {
             get
@@ -321,7 +330,7 @@ namespace HISP.Server.Network
 
             // despite its name, this has nothing to do with graphics
             // rather this is for WebSocket frames
-            List<byte> frameBuffer = new List<byte>();
+            List<byte> frameHeader = new List<byte>();
 
             for (Int64 remain = totalData;  remain > 0; remain -= toSend)
             {
@@ -337,7 +346,7 @@ namespace HISP.Server.Network
                     finish = true;
                 }
 
-                frameBuffer.Add(Convert.ToByte((0x00) | (finish ? 0b10000000 : 0b00000000) | opcode));
+                frameHeader.Add(Convert.ToByte((0x00) | (finish ? 0b10000000 : 0b00000000) | opcode));
 
                 // do special length encoding
                 byte maskAndLength = Convert.ToByte((0x00) | (mask ? 0b10000000 : 0b00000000));
@@ -363,23 +372,40 @@ namespace HISP.Server.Network
                 }
 
                 // Add to buffer
-                frameBuffer.Add(maskAndLength);
-                Helper.ByteArrayToByteList(additionalLengthData, frameBuffer);
+                frameHeader.Add(maskAndLength);
+                Helper.ByteArrayToByteList(additionalLengthData, frameHeader);
 
                 // Generate masking key;
                 byte[] maskingKey = new byte[4];
-                GameServer.RandomNumberGenerator.NextBytes(maskingKey);
 
-                if (mask) 
-                    Helper.ByteArrayToByteList(maskingKey, frameBuffer);
+                if (mask)
+                {
+                    GameServer.RandomNumberGenerator.NextBytes(maskingKey);
+                    Helper.ByteArrayToByteList(maskingKey, frameHeader);
+                }
 
-                // Mask data using key.
+                int headerSize = frameHeader.Count;
+
+                byte[] frame = new byte[toSend + headerSize];
+                Array.Copy(frameHeader.ToArray(), frame, headerSize);
+                frameHeader.Clear();
+
                 Int64 totalSent = (totalData - remain);
-                for (int i = 0; i < toSend; i++)
-                    frameBuffer.Add(mask ? Convert.ToByte(data[i + totalSent] ^ maskingKey[i % maskingKey.Length]) : Convert.ToByte(data[i + totalSent]));
+                
+                if (mask) // are we masking this response? 
+                {
+                    // Mask data using key.
+                    for (int i = 0; i < toSend; i++)
+                        frame[i + headerSize] = Convert.ToByte(data[i + totalSent] ^ maskingKey[i % maskingKey.Length]);
+                }
+                else if(data.LongLength < Int32.MaxValue) // is out packet *really* bigger than 32 max int??
+                {
+                    Array.ConstrainedCopy(data, Convert.ToInt32(totalSent), frame, headerSize, toSend);
+                }
 
-                // Finally send it over the network
-                base.Send(frameBuffer.ToArray());
+                // Finally send complete frame over the network
+                base.Send(frame);
+
                 if (this.Disconnected) return; // are we still here? 
             }
 
