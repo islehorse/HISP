@@ -59,9 +59,23 @@ namespace HISP.Cli
 
             shutdownHandle.Set();
         }
+
+        private static string formatMessage(string type, string text)
+        {
+#if OS_WINDOWS
+            string newline = "\r\n";
+#else
+            string newline = "\n";
+#endif
+
+            return DateTime.Now.ToString("MM-dd-yyyy HH:mm:dd") + ": [" + type + "] " + text + newline;
+        }
+
         public static void LogToFile(bool error, string type,string text)
         {
-            sw.WriteLine(DateTime.Now.ToString("MM-dd-yyyy HH:mm:dd") + ": [" + type + "] " + text + sw.NewLine);
+            sw.WriteLine(formatMessage(type, text));
+            if (error)
+                sw.Flush();
         }
         public static void LogStdout(bool error, string type, string text)
         {
@@ -69,10 +83,10 @@ namespace HISP.Cli
                 LogToFile(error, type, text);
 
             if (error)
-                Console.Error.WriteAsync(DateTime.Now.ToString("MM-dd-yyyy HH:mm:dd")+": [" + type + "] " + text + Console.Error.NewLine);
+                Console.Error.WriteAsync(formatMessage(type, text));
             else
-                Console.Out.WriteAsync(DateTime.Now.ToString("MM-dd-yyyy HH:mm:dd") + ": [" + type + "] " + text + Console.Out.NewLine);
-            
+                Console.Out.WriteAsync(formatMessage(type, text));
+
         }
 
         public static void Main(string[] args)
@@ -92,12 +106,12 @@ namespace HISP.Cli
                 switch (arg)
                 {
                     case "--install-service":
-                        #if OS_LINUX
+#if OS_LINUX
                         File.WriteAllBytes("/etc/systemd/system/HISP.service", Resources.HISPService);
                         LogStdout(false, "INFO", "Crreated Service! enable it with \"sudo systemctl enable HISP\"");
-                        #else
+#else
                         LogStdout(true, "ERROR", "Installing as a service unsupported on this platform");
-                        #endif
+#endif
                         break;
                     default:
                         if (arg.Contains("="))
