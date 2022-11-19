@@ -20,10 +20,13 @@ namespace HISP.Server.Network
                 if (buffer[i] == XMLSOCKET_PACKET_TERMINATOR) // Read until \0...
                 {
                     byte[] packet = currentPacket.ToArray();
+                    
                     if (Helper.ByteArrayStartsWith(packet, XMLSOCKET_POLICY_FILE))
                         this.Send(CrossDomainPolicy.GetPolicyFile());
+                    else
+                        onReceiveCallback(packet);
                     
-                    onReceiveCallback(packet);
+                    
                     currentPacket.Clear();
                     continue;
                 }
