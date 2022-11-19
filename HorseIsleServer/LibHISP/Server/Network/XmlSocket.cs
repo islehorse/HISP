@@ -10,6 +10,7 @@ namespace HISP.Server.Network
     {
         private List<byte> currentPacket = new List<byte>();
         private const byte XMLSOCKET_PACKET_TERMINATOR = 0x00;
+        private static byte[] XMLSOCKET_POLICY_FILE = Encoding.UTF8.GetBytes("<policy-file-request/>");
         public override void ProcessReceivedPackets(int available, byte[] buffer)
         {
             // In XmlSocket Packets are terminates by 0x00 so we have to read until we receive that terminator
@@ -18,17 +19,17 @@ namespace HISP.Server.Network
             {
                 if (buffer[i] == XMLSOCKET_PACKET_TERMINATOR) // Read until \0...
                 {
-                    onReceiveCallback(currentPacket.ToArray());
+                    byte[] packet = currentPacket.ToArray();
+                    if (Helper.ByteArrayStartsWith(packet, XMLSOCKET_POLICY_FILE))
+                        this.Send(CrossDomainPolicy.GetPolicyFile());
+                    
+                    onReceiveCallback(packet);
                     currentPacket.Clear();
+                    continue;
                 }
                 currentPacket.Add(buffer[i]);
             }
 
-            // Handle XMLSocket Policy File
-            if (Helper.ByteArrayStartsWith(buffer, Encoding.UTF8.GetBytes("<policy-file-request/>")))
-            {
-                this.Send(CrossDomainPolicy.GetPolicyFile());
-            }
         }
 
         public override string Name
