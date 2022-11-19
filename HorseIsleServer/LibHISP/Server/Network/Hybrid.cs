@@ -13,7 +13,7 @@ namespace HISP.Server.Network
             get
             {
                 if(actualTransport == null)
-                    return "TransportDeterminer";
+                    return "Hybrid";
                 else
                     return actualTransport.Name;
             }
@@ -60,7 +60,7 @@ namespace HISP.Server.Network
 
             if (ConfigReader.EnableWebSocket && WebSocket.IsStartOfHandshake(buffer))
             {
-                Logger.InfoPrint(this.Ip + " Switching to WebSocket");
+                Logger.DebugPrint(this.Ip + " Switching to WebSocket");
                 actualTransport = new WebSocket();
 
                 actualTransport.passObjects(this.socket, this.onReceiveCallback, this.onDisconnectCallback);
@@ -69,7 +69,7 @@ namespace HISP.Server.Network
             }
             else
             {
-                Logger.InfoPrint(this.Ip + " Switching to XmlSocket");
+                Logger.DebugPrint(this.Ip + " Switching to XmlSocket");
                 actualTransport = new XmlSocket();
 
                 actualTransport.passObjects(this.socket, this.onReceiveCallback, this.onDisconnectCallback);
