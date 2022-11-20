@@ -532,9 +532,10 @@ namespace HISP.Server
             {
 #if OS_DEBUG
                 throw e;
-#endif
+#else
                 Logger.ErrorPrint("Unhandled Exception: " + e.Message + "\n" + e.StackTrace);
                 Kick("Unhandled Exception: " + e.Message + "\n" + e.StackTrace);
+#endif
             }
         }
 
