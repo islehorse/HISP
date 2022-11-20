@@ -24,7 +24,7 @@ namespace HISP.Game.Services
                 if (Item.ItemIdExist(stock))
                     this.Inventory.AddInfinity(Item.GetItemById(stock));
                 else
-                    Logger.WarnPrint("Item ID: " + stock + " Does not exist.");
+                    Logger.WarnPrint("Item ID: " + stock + " doesn't exist, but shop " + id + " stocks it");
             }
 
             ItemInstance[] instances = Database.GetShopInventory(this.Id);

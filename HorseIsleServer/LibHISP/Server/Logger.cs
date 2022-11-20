@@ -11,6 +11,14 @@ namespace HISP.Server
 
         private static Action<bool, string, string> logFunction = defaultCallbackFunc;
 
+        private void log(bool error, string type, string text)
+        {   
+            string[] msgs = text.Replace("\r", "").Split("\n");
+            foreach(string msg in msgs)
+            {
+                logFunction(error, type, msg);
+            }
+        }
 
         public static void SetCallback(Action<bool, string, string> callback)
         {
