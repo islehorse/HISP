@@ -46,12 +46,14 @@ namespace HISP.Cli
         {
             if(fs != null)
             {
+                fs.Flush();
                 fs.Close();
                 fs.Dispose();
                 fs = null;
             }
             if(sw != null)
             {
+                sw.Flush();
                 sw.Close();
                 sw.Dispose();
                 sw = null;
@@ -81,25 +83,27 @@ namespace HISP.Cli
         {
             if (type == "CRASH")
                 LogToFile(error, type, text);
-
-            if (error)
-                Console.Error.WriteAsync(formatMessage(type, text));
-            else
-                Console.Out.WriteAsync(formatMessage(type, text));
-
+            try
+            {
+                if (error)
+                    Console.Error.WriteAsync(formatMessage(type, text));
+                else
+                    Console.Out.WriteAsync(formatMessage(type, text));
+            }
+            catch (Exception) { };
         }
 
         public static void Main(string[] args)
         {
             AppDomain.CurrentDomain.ProcessExit += ProcessQuitHandler;
 
-            string BaseDir = Directory.GetCurrentDirectory();
+            string baseDir = Directory.GetCurrentDirectory();
             Logger.SetCallback(LogStdout);
             Entry.SetShutdownCallback(OnShutdown);
 
-            string HispConfVar = Environment.GetEnvironmentVariable("HISP_CONF_FILE");
-            string HispLogVar = Environment.GetEnvironmentVariable("HISP_LOG_FILE");
-            string HispBaseDir = Environment.GetEnvironmentVariable("HISP_BASE_DIR");
+            string hispConfVar = Environment.GetEnvironmentVariable("HISP_CONF_FILE");
+            string hispLogVar = Environment.GetEnvironmentVariable("HISP_LOG_FILE");
+            string hispBaseDir = Environment.GetEnvironmentVariable("HISP_BASE_DIR");
 
             foreach (string arg in args)
             {
@@ -129,8 +133,8 @@ namespace HISP.Cli
                                         Logger.SetCallback(LogToFile);
                                         break;
                                     case "--base-directory":
-                                        BaseDir = argu[1];
-                                        Directory.SetCurrentDirectory(BaseDir);
+                                        baseDir = argu[1];
+                                        Directory.SetCurrentDirectory(baseDir);
                                         break;
                                     default:
                                         continue;
@@ -141,25 +145,25 @@ namespace HISP.Cli
                 }
             }
 
-            if (HispConfVar != null)
+            if (hispConfVar != null)
             {
-                ConfigReader.ConfigurationFileName = HispConfVar;
+                ConfigReader.ConfigurationFileName = hispConfVar;
             }
             
-            if (HispLogVar != null)
+            if (hispLogVar != null)
             {
-                LogFile = HispLogVar;
+                LogFile = hispLogVar;
                 Logger.SetCallback(LogToFile);
             }
             else
             {
-                LogFile = Path.Combine(BaseDir, "crash.log");
+                LogFile = Path.Combine(baseDir, "crash.log");
             }
 
-            if (HispBaseDir != null)
+            if (hispBaseDir != null)
             {
-                BaseDir = HispBaseDir;
-                Directory.SetCurrentDirectory(BaseDir);
+                baseDir = hispBaseDir;
+                Directory.SetCurrentDirectory(baseDir);
             }
 
             Entry.Start();
@@ -170,7 +174,7 @@ namespace HISP.Cli
 
         private static void ProcessQuitHandler(object sender, EventArgs e)
         {
-            GameServer.ShutdownServer();
+            GameServer.ShutdownServer("HISPd process quitting.");
         }
     }
 }
