@@ -416,9 +416,8 @@ namespace HISP.Server
                 if (gameData.quest_list[i].chained_questid != null)
                     quest.ChainedQuestId = gameData.quest_list[i].chained_questid;
                 quest.Minigame = gameData.quest_list[i].minigame;
-    
-                if(quest.Title.Trim() != "")
-                    Logger.DebugPrint("Registered Quest: " + quest.Id + " - " + quest.Title);
+
+                Logger.DebugPrint("Registered Quest: " + quest.Id);
                 Quest.AddQuestEntry(quest);
             }
 
