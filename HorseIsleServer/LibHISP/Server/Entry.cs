@@ -29,7 +29,7 @@ namespace HISP.Server
         
         public static void RegisterCrashHandler()
         {
-#if (!DEBUG)
+#if (!OS_DEBUG)
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(HispCrashHandler);
 #endif
         }
@@ -77,15 +77,13 @@ namespace HISP.Server
             Exception execpt = (Exception)e.ExceptionObject;
 
 
-            string crashMsg = becauseRustWont[execpt.GetHashCode() % becauseRustWont.Length] + "\r\n";
-            crashMsg += "HISP HAS CRASHED" + "\r\n";
-            crashMsg += "Build: " + ServerVersion.GetBuildString() + "\r\n";
-            crashMsg += "Unhandled Exception: " + execpt.Message + "\r\n";
-            crashMsg += execpt.StackTrace + "\r\n";
+            string crashMsg = becauseRustWont[execpt.GetHashCode() % becauseRustWont.Length] + "\n";
+            crashMsg += "HISP HAS CRASHED" + "\n";
+            crashMsg += "Build: " + ServerVersion.GetBuildString() + "\n";
+            crashMsg += "Unhandled Exception: " + execpt.Message + "\n";
+            crashMsg += execpt.StackTrace + "\n";
 
             Logger.CrashPrint(crashMsg);
-
-
 
         }
     }
