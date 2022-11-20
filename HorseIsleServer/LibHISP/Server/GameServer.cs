@@ -24,8 +24,6 @@ namespace HISP.Server
 {
     public class GameServer
     {
-        private const int PACKET_FOOTER_LENGTH;
-
         public static Socket ServerSocket;
 
 
@@ -281,7 +279,7 @@ namespace HISP.Server
                         break;
                     case PacketBuilder.PLAYER_INTERACTION_PROFILE:
                         string packetStr = Encoding.UTF8.GetString(packet);
-                        string playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                        string playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                         int playerId = -1;
                         try
                         {
@@ -304,7 +302,7 @@ namespace HISP.Server
                         break;
                     case PacketBuilder.PLAYER_INTERACTION_MUTE:
                         packetStr = Encoding.UTF8.GetString(packet);
-                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                         playerId = -1;
                         try
                         {
@@ -332,7 +330,7 @@ namespace HISP.Server
                         break;
                     case PacketBuilder.PLAYER_INTERACTION_UNMUTE:
                         packetStr = Encoding.UTF8.GetString(packet);
-                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                         playerId = -1;
                         try
                         {
@@ -360,7 +358,7 @@ namespace HISP.Server
                         break;
                     case PacketBuilder.PLAYER_INTERACTION_REMOVE_BUDDY:
                         packetStr = Encoding.UTF8.GetString(packet);
-                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                         playerId = -1;
                         try
                         {
@@ -388,7 +386,7 @@ namespace HISP.Server
                         break;
                     case PacketBuilder.PLAYER_INTERACTION_TAG:
                         packetStr = Encoding.UTF8.GetString(packet);
-                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                         playerId = -1;
                         try
                         {
@@ -427,7 +425,7 @@ namespace HISP.Server
                         break;
                     case PacketBuilder.PLAYER_INTERACTION_ADD_BUDDY:
                         packetStr = Encoding.UTF8.GetString(packet);
-                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                         playerId = -1;
                         try
                         {
@@ -451,7 +449,7 @@ namespace HISP.Server
                             break;
 
                         packetStr = Encoding.UTF8.GetString(packet);
-                        string idStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                        string idStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                         char firstChar = idStr[0];
                         switch (firstChar)
                         {
@@ -522,7 +520,7 @@ namespace HISP.Server
                         break;
                     case PacketBuilder.PLAYER_INTERACTION_TRADE:
                         packetStr = Encoding.UTF8.GetString(packet);
-                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                        playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                         playerId = -1;
                         try
                         {
@@ -578,7 +576,7 @@ namespace HISP.Server
             {
                 case PacketBuilder.SOCIALS_MENU:
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    string playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     int playerId = -1;
                     try
                     {
@@ -767,7 +765,7 @@ namespace HISP.Server
                                 Auction auctionRoom = Auction.GetAuctionRoomById(int.Parse(tile.Code.Split('-')[1]));
                                 int auctionEntryId = -1;
                                 string packetStr = Encoding.UTF8.GetString(packet);
-                                string auctionEntryStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                                string auctionEntryStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                                 try
                                 {
                                     auctionEntryId = int.Parse(auctionEntryStr);
@@ -840,7 +838,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_FEED:
                     int randomId = 0;
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    string randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -869,7 +867,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_PET:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -959,7 +957,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_VET_SERVICE:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
                     if (randomIdStr == "NaN")
                         break;
@@ -1020,7 +1018,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_SHOE_IRON:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
                     if (randomIdStr == "NaN")
                         break;
@@ -1144,7 +1142,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_GROOM_SERVICE:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
                     if (randomIdStr == "NaN")
                         break;
@@ -1258,7 +1256,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_BARN_SERVICE:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
                     if (randomIdStr == "NaN")
                         break;
@@ -1374,7 +1372,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_TRAIN:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
                     if (randomIdStr == "NaN")
                         break;
@@ -1479,7 +1477,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_GIVE_FEED:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -1619,7 +1617,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_ENTER_ARENA:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -1709,7 +1707,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_RELEASE:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -1763,7 +1761,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_TACK:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -1802,7 +1800,7 @@ namespace HISP.Server
 
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -1856,7 +1854,7 @@ namespace HISP.Server
 
                     int itemId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    string itemIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    string itemIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
                         itemId = int.Parse(itemIdStr);
@@ -2025,7 +2023,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_DISMOUNT:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
                     if(randomIdStr == "") // F7 Shortcut
                     { 
@@ -2072,7 +2070,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_MOUNT:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -2096,7 +2094,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_LOOK:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     HorseInstance horseInst;
                     try
                     {
@@ -2188,7 +2186,7 @@ namespace HISP.Server
                 case PacketBuilder.HORSE_TRY_CAPTURE:
                     randomId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
                         randomId = int.Parse(randomIdStr);
@@ -2233,7 +2231,7 @@ namespace HISP.Server
                 return;
             }
             string packetStr = Encoding.UTF8.GetString(packet);
-            string dynamicInputStr = packetStr.Substring(1, (packetStr.Length - 1) - PACKET_FOOTER_LENGTH);
+            string dynamicInputStr = packetStr.Substring(1, (packetStr.Length - 1) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
             if(dynamicInputStr.Contains("|"))
             {
                 string[] dynamicInput = dynamicInputStr.Split('|');
@@ -2836,7 +2834,7 @@ namespace HISP.Server
                 return;
             }
             string packetStr = Encoding.UTF8.GetString(packet);
-            string buttonIdStr = packetStr.Substring(1, (packetStr.Length - 1) - PACKET_FOOTER_LENGTH);
+            string buttonIdStr = packetStr.Substring(1, (packetStr.Length - 1) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
             switch(buttonIdStr)
             {
@@ -3638,7 +3636,7 @@ namespace HISP.Server
                 return;
             }
             string packetStr = Encoding.UTF8.GetString(packet);
-            string scoreStr = packetStr.Substring(1, (packet.Length - 1) - PACKET_FOOTER_LENGTH);
+            string scoreStr = packetStr.Substring(1, (packet.Length - 1) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
             int score = -1;
             try
             {
@@ -3842,7 +3840,7 @@ namespace HISP.Server
                         break;
                     }
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    string playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     int playerId = -1;
                     try
                     {
@@ -3863,7 +3861,7 @@ namespace HISP.Server
                         break;
                     }
                     packetStr = Encoding.UTF8.GetString(packet);
-                    playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    playerIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     playerId = -1;
                     try
                     {
@@ -4059,7 +4057,7 @@ namespace HISP.Server
 
                         packetStr = Encoding.UTF8.GetString(packet);
                         
-                        string drawing = packetStr.Substring(3, (packetStr.Length - 3) - PACKET_FOOTER_LENGTH);
+                        string drawing = packetStr.Substring(3, (packetStr.Length - 3) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                         if (drawing.Contains("X!")) // Clear byte
                         {  
                             room.Drawing = "";
@@ -4218,7 +4216,7 @@ namespace HISP.Server
                         Dressup.DressupRoom room = Dressup.GetDressupRoom(roomId);
 
                         packetStr = Encoding.UTF8.GetString(packet);
-                        string moveStr = packetStr.Substring(3, (packetStr.Length - 3) - PACKET_FOOTER_LENGTH);
+                        string moveStr = packetStr.Substring(3, (packetStr.Length - 3) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
                         string[] moves = moveStr.Split('|');
 
@@ -4484,7 +4482,7 @@ namespace HISP.Server
                 int characterId = (packet[2] - 20) * 64 + (packet[3] - 20);
 
                 string profilePage = packetStr.Split('|')[1];
-                profilePage = profilePage.Substring(0, profilePage.Length - PACKET_FOOTER_LENGTH);
+                profilePage = profilePage.Substring(0, profilePage.Length - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 sender.LoggedinUser.CharacterId = characterId;
                 
                 if (profilePage.Length > 4000)
@@ -4528,7 +4526,7 @@ namespace HISP.Server
                     }
 
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string awardIdStr = packetStr.Substring(6, (packetStr.Length - 6) - PACKET_FOOTER_LENGTH);
+                    string awardIdStr = packetStr.Substring(6, (packetStr.Length - 6) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
                     int value = -1;
                     try
@@ -4571,7 +4569,7 @@ namespace HISP.Server
 
                     
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string gameInfoStr = packetStr.Substring(6, (packetStr.Length - 6) - PACKET_FOOTER_LENGTH);
+                    string gameInfoStr = packetStr.Substring(6, (packetStr.Length - 6) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     if (winloose)
                     {
                         string gameTitle = gameInfoStr.Substring(1);
@@ -4695,7 +4693,7 @@ namespace HISP.Server
                     }
 
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string gameInfoStr = packetStr.Substring(6, (packetStr.Length - 6) - PACKET_FOOTER_LENGTH);
+                    string gameInfoStr = packetStr.Substring(6, (packetStr.Length - 6) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     if (gameInfoStr.Contains("|"))
                     {
                         string[] moneyInfo = gameInfoStr.Split('|');
@@ -4749,7 +4747,7 @@ namespace HISP.Server
                         return;
                     }
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string intStr = packetStr.Substring(6, (packetStr.Length - 6) - PACKET_FOOTER_LENGTH);
+                    string intStr = packetStr.Substring(6, (packetStr.Length - 6) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     int value = -1;
                     try
                     {
@@ -4809,7 +4807,7 @@ namespace HISP.Server
                         return;
                     }
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string intStr = packetStr.Substring(6, (packetStr.Length - 6) - PACKET_FOOTER_LENGTH);
+                    string intStr = packetStr.Substring(6, (packetStr.Length - 6) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     int value = -1;
                     try
                     {
@@ -4862,7 +4860,7 @@ namespace HISP.Server
                         return;
                     }
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string intStr = packetStr.Substring(6, (packetStr.Length - 6) - PACKET_FOOTER_LENGTH);
+                    string intStr = packetStr.Substring(6, (packetStr.Length - 6) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     int value = -1;
                     try
                     {
@@ -4900,7 +4898,7 @@ namespace HISP.Server
             {
                 sender.LoggedinUser.MajorPriority = true;
                 string packetStr = Encoding.UTF8.GetString(packet);
-                string gameName = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                string gameName = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 byte[] metaTag = PacketBuilder.CreateMeta(Meta.BuildTopHighscores(gameName));
                 sender.SendPacket(metaTag);
             }
@@ -4908,7 +4906,7 @@ namespace HISP.Server
             {
                 sender.LoggedinUser.MajorPriority = true;
                 string packetStr = Encoding.UTF8.GetString(packet);
-                string gameName = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                string gameName = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 byte[] metaTag = PacketBuilder.CreateMeta(Meta.BuildTopTimes(gameName));
                 sender.SendPacket(metaTag);
             }
@@ -4916,7 +4914,7 @@ namespace HISP.Server
             {
                 sender.LoggedinUser.MajorPriority = true;
                 string packetStr = Encoding.UTF8.GetString(packet);
-                string gameName = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                string gameName = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 byte[] metaTag = PacketBuilder.CreateMeta(Meta.BuildTopWinners(gameName));
                 sender.SendPacket(metaTag);
             }
@@ -5244,7 +5242,7 @@ namespace HISP.Server
             {
 
                 string packetStr = Encoding.UTF8.GetString(packet);
-                string number = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                string number = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 int chatId = 0;
                 
                 try
@@ -5282,7 +5280,7 @@ namespace HISP.Server
             else if (action == PacketBuilder.NPC_CONTINUE_CHAT)
             {
                 string packetStr = Encoding.UTF8.GetString(packet);
-                string number = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                string number = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 int replyId = 0;
                 try
                 {
@@ -5333,7 +5331,7 @@ namespace HISP.Server
 
 
             string packetStr = Encoding.UTF8.GetString(packet);
-            string number = packetStr.Substring(1, (packetStr.Length - 1) - PACKET_FOOTER_LENGTH);
+            string number = packetStr.Substring(1, (packetStr.Length - 1) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
             int transportid;
             try
@@ -5433,7 +5431,7 @@ namespace HISP.Server
 
             if (method == PacketBuilder.RANCH_INFO)
             {
-                string buildingIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                string buildingIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 int buildingId = 0;
                 try
                 {
@@ -5461,7 +5459,7 @@ namespace HISP.Server
             }
             else if (method == PacketBuilder.RANCH_SELL)
             {
-                string NanSTR = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                string NanSTR = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 if (NanSTR == "NaN")
                 {
                     if (sender.LoggedinUser.OwnedRanch == null)
@@ -5492,7 +5490,7 @@ namespace HISP.Server
             }
             else if (method == PacketBuilder.RANCH_UPGRADE)
             {
-                string NanSTR = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                string NanSTR = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 if (NanSTR == "NaN")
                 {
                     if (sender.LoggedinUser.OwnedRanch != null)
@@ -5543,7 +5541,7 @@ namespace HISP.Server
             }
             else if (method == PacketBuilder.RANCH_REMOVE)
             {
-                string buildingIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                string buildingIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 int buildingId = 0;
                 try
                 {
@@ -5601,7 +5599,7 @@ namespace HISP.Server
             }
             else if (method == PacketBuilder.RANCH_BUILD)
             {
-                string buildingIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                string buildingIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 int buildingId = 0;
                 try
                 {
@@ -5655,7 +5653,7 @@ namespace HISP.Server
             }
             else if (method == PacketBuilder.RANCH_BUY)
             {
-                string nan = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                string nan = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 if (nan == "NaN")
                 {
                     if (Ranch.IsRanchHere(sender.LoggedinUser.X, sender.LoggedinUser.Y))
@@ -5780,7 +5778,7 @@ namespace HISP.Server
             string packetStr = Encoding.UTF8.GetString(packet);
 
             Chat.ChatChannel channel = (Chat.ChatChannel)packet[1];
-            string message = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+            string message = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
             Logger.DebugPrint(sender.LoggedinUser.Username + " Attempting to say '" + message + "' in channel: " + channel.ToString());
 
@@ -6055,7 +6053,7 @@ namespace HISP.Server
             string packetStr = Encoding.UTF8.GetString(packet);
             if(packetStr.Contains("|"))
             {
-                string packetContents = packetStr.Substring(1, (packetStr.Length - 1) - PACKET_FOOTER_LENGTH);
+                string packetContents = packetStr.Substring(1, (packetStr.Length - 1) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                 string[] xy = packetContents.Split('|');
                 int x = 0;
                 int y = 0;
@@ -6158,7 +6156,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_PICKUP:
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    string randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     int randomId = 0;
 
                     try
@@ -6323,7 +6321,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_THROW:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    string itemidStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    string itemidStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     int itemId = 0;
 
                     try
@@ -6389,7 +6387,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_WRAP:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     randomId = 0;
 
                     try
@@ -6425,7 +6423,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_OPEN:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packet.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packet.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     randomId = 0;
 
                     try
@@ -6471,7 +6469,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_USE:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
                     if(randomIdStr == "") // f12 ranch shortcut
                     {
@@ -6508,7 +6506,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_WEAR:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     randomId = 0;
 
                     try
@@ -6624,7 +6622,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_DRINK:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    string idStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    string idStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     if(idStr == "NaN") // Fountain
                     {
                         string msg = Messages.FountainDrankYourFull;
@@ -6649,7 +6647,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_CONSUME:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     randomId = 0;
 
                     try
@@ -6687,7 +6685,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_DROP:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     randomId = 0;
 
                     try
@@ -6761,7 +6759,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_CRAFT:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    string craftIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    string craftIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     int craftId = 0;
                     // Prevent crashing on non-int string.
                     try
@@ -6840,7 +6838,7 @@ namespace HISP.Server
                     int message = 1;
 
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     randomId = 0;
                     // Prevent crashing on non-int string.
                     try
@@ -6864,7 +6862,7 @@ namespace HISP.Server
                     goto doSell;
                 case PacketBuilder.ITEM_SELL_ALL:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    string itemIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    string itemIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     itemId = 0;
                     // Prevent crashing on non-int string.
                     try
@@ -6942,7 +6940,7 @@ namespace HISP.Server
 
                 case PacketBuilder.ITEM_BUY_AND_CONSUME:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    itemIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PACKET_FOOTER_LENGTH);
+                    itemIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     itemId = 0;
                     // Prevent crashing on non-int string.
                     try
@@ -7021,7 +7019,7 @@ namespace HISP.Server
                     count = 25;
                 doPurchase:;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    itemIdStr = packetStr.Substring(2, (packet.Length - 2) - PACKET_FOOTER_LENGTH);
+                    itemIdStr = packetStr.Substring(2, (packet.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     itemId = 0;
                     // Prevent crashing on non-int string.
                     try
@@ -7153,7 +7151,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_RIP:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packet.Length - 2) - PACKET_FOOTER_LENGTH);
+                    randomIdStr = packetStr.Substring(2, (packet.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     randomId = 0;
                     try
                     {
@@ -7188,7 +7186,7 @@ namespace HISP.Server
                     if (method == PacketBuilder.ITEM_LOOK)
                     {
                         packetStr = Encoding.UTF8.GetString(packet);
-                        itemIdStr = packetStr.Substring(3, (packetStr.Length - 3) - PACKET_FOOTER_LENGTH);
+                        itemIdStr = packetStr.Substring(3, (packetStr.Length - 3) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                         itemId = 0;
                         try
                         {
@@ -7217,7 +7215,7 @@ namespace HISP.Server
                     else if(method == PacketBuilder.ITEM_READ)
                     {
                         packetStr = Encoding.UTF8.GetString(packet);
-                        randomIdStr = packetStr.Substring(3, (packetStr.Length - 3) - PACKET_FOOTER_LENGTH);
+                        randomIdStr = packetStr.Substring(3, (packetStr.Length - 3) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                         randomId = 0;
                         try
                         {
@@ -7258,7 +7256,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.PACKET_INFORMATION:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    string valueStr = packetStr.Substring(3, (packetStr.Length - 3) - PACKET_FOOTER_LENGTH);
+                    string valueStr = packetStr.Substring(3, (packetStr.Length - 3) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     int value = 0;
                     try
                     {
