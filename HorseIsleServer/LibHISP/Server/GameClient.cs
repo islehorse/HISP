@@ -438,10 +438,8 @@ namespace HISP.Server
              *  this prevents the entire server from crashing
              *  if theres an error in handling a particular packet.
              */
-#if (!DEBUG)
             try
             {
-#endif
                 if (!LoggedIn) // Must be either login or policy-file-request
                 {
                     switch (identifier)
@@ -529,14 +527,15 @@ namespace HISP.Server
                             break;
                     }
                 }
-#if (!DEBUG)
             }
             catch(Exception e)
             {
-                Logger.ErrorPrint("Unhandled Exception: " + e.ToString() + "\n" + e.Message + "\n" + e.StackTrace);
-                Kick("Unhandled Exception: " + e.ToString());
-            }
+#if OS_DEBUG
+                throw e;
 #endif
+                Logger.ErrorPrint("Unhandled Exception: " + e.Message + "\n" + e.StackTrace);
+                Kick("Unhandled Exception: " + e.Message + "\n" + e.StackTrace);
+            }
         }
 
         public void Kick(string Reason)
