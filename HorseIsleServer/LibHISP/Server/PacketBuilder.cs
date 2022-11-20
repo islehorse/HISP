@@ -11,6 +11,7 @@ namespace HISP.Server
 {
     public class PacketBuilder
     {
+        public const int PACKET_CLIENT_TERMINATOR_LENGTH = 1;
         public const byte PACKET_CLIENT_TERMINATOR = 0x0A;
 
         public const byte PACKET_LOGIN = 0x7F;
