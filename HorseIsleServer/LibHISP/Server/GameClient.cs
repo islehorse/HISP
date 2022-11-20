@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
-using System.Collections.Generic;
 using HISP.Player;
 using HISP.Game;
 using HISP.Game.Horse;
@@ -9,7 +8,6 @@ using HISP.Game.Events;
 using HISP.Game.Items;
 using HISP.Util;
 using HISP.Server.Network;
-using System.Net;
 
 namespace HISP.Server
 {
@@ -83,7 +81,7 @@ namespace HISP.Server
 
         }
 
-        public static void OnShutdown()
+        public static void OnShutdown(string reason)
         {
             try
             {
@@ -101,8 +99,7 @@ namespace HISP.Server
                         client.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.GameUpdates).Count++;
                         Logger.DebugPrint("Kicking: " + client.LoggedinUser.Username);
                     }
-                    client.Kick("Server shutdown.");
-
+                    client.Kick("Server shutdown: "+reason);
                 }
             }
             catch (Exception) { };

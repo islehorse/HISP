@@ -8240,12 +8240,12 @@ namespace HISP.Server
             if (minuteTimer != null)
                 minuteTimer.Dispose();
         }
-        public static void ShutdownServer()
+        public static void ShutdownServer(string shutdownReason = "No reason provided.")
         {
-            Logger.InfoPrint("Server shutting down.");
+            Logger.InfoPrint("Server shutting down; " + shutdownReason);
             try
             {
-                GameClient.OnShutdown();
+                GameClient.OnShutdown(shutdownReason);
                 GameServer.OnShutdown();
                 Database.OnShutdown();
             }

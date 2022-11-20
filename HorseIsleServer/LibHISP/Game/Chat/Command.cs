@@ -92,7 +92,8 @@ namespace HISP.Game.Chat
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.LoggedinClient.SendPacket(chatPacket);
-            GameServer.ShutdownServer();
+
+            GameServer.ShutdownServer("Administrator initiated");
 
             return true;
         }
