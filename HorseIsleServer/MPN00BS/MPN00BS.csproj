@@ -250,4 +250,12 @@
     </ContentWithTargetPath>
   </ItemGroup>
 
+  <ItemGroup>
+    <ContentWithTargetPath Include="flashplayer\MACOS\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <TargetPath>flashplayer\MACOS\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+    </ContentWithTargetPath>
+  </ItemGroup>
+
+
 </Project>
