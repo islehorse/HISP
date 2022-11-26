@@ -74,7 +74,7 @@ namespace HISP.Cli
                 shutdownHandle.Set();
         }
 
-        private static string formatMessage(string type, string text)
+        private static string formatMessage(string type, string text, bool console)
         {
 #if OS_WINDOWS
             string newline = "\r\n";
@@ -82,9 +82,8 @@ namespace HISP.Cli
             string newline = "\n";
 #endif
 
-            string msg = DateTime.Now.ToString("MM dd yyyy HH:mm:dd") + ": [" + type + "] ";
-
-            if (text.Length > (Console.WindowWidth - msg.Length) - newline.Length)
+            string msg = DateTime.Now.ToString("MM-dd-yyyy HH:mm:ss") + ": [" + type + "] ";
+            if (console && text.Length > (Console.WindowWidth - msg.Length) - newline.Length)
                 text = text.Substring(0, (Console.WindowWidth - msg.Length) - newline.Length);
 
             return msg + text + newline;
@@ -92,7 +91,7 @@ namespace HISP.Cli
 
         public static void LogToFile(bool error, string type,string text)
         {
-            sw.WriteLine(formatMessage(type, text));
+            sw.WriteLine(formatMessage(type, text, false));
             if (error)
                 sw.Flush();
         }
@@ -103,9 +102,9 @@ namespace HISP.Cli
             try
             {
                 if (error)
-                    Console.Error.WriteAsync(formatMessage(type, text));
+                    Console.Error.WriteAsync(formatMessage(type, text, true));
                 else
-                    Console.Out.WriteAsync(formatMessage(type, text));
+                    Console.Out.WriteAsync(formatMessage(type, text, true));
                 
             }
             catch (Exception) { };
