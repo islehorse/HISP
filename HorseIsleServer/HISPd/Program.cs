@@ -11,7 +11,7 @@ namespace HISP.Cli
         private static StreamWriter sw = null;
         private static FileStream fs = null;
         private static string logFile;
-        private static EventWaitHandle shutdownHandle;
+        private static EventWaitHandle shutdownHandle = null;
 
         public static bool ShuttingDown = false;
         public static string BaseDir;
@@ -44,22 +44,34 @@ namespace HISP.Cli
 
         public static void OnShutdown()
         {
-            if(fs != null)
+            try
             {
-                fs.Flush();
-                fs.Close();
-                fs.Dispose();
-                fs = null;
-            }
-            if(sw != null)
-            {
-                sw.Flush();
-                sw.Close();
-                sw.Dispose();
-                sw = null;
-            }
+                if (sw != null)
+                {
+                    sw.Flush();
+                    sw.Close();
+                    sw.Dispose();
+                    sw = null;
+                }
 
-            shutdownHandle.Set();
+            }
+            catch (Exception) { };
+
+            try
+            {
+                if (fs != null)
+                {
+                    fs.Flush();
+                    fs.Close();
+                    fs.Dispose();
+                    fs = null;
+                }
+            }
+            catch (Exception) { };
+
+
+            if(shutdownHandle != null)
+                shutdownHandle.Set();
         }
 
         private static string formatMessage(string type, string text)
@@ -70,7 +82,12 @@ namespace HISP.Cli
             string newline = "\n";
 #endif
 
-            return DateTime.Now.ToString("MM-dd-yyyy HH:mm:dd") + ": [" + type + "] " + text + newline;
+            string msg = DateTime.Now.ToString("MM dd yyyy HH:mm:dd") + ": [" + type + "] ";
+
+            if (text.Length > (Console.WindowWidth - msg.Length) - newline.Length)
+                text = text.Substring(0, (Console.WindowWidth - msg.Length) - newline.Length);
+
+            return msg + text + newline;
         }
 
         public static void LogToFile(bool error, string type,string text)
@@ -89,6 +106,7 @@ namespace HISP.Cli
                     Console.Error.WriteAsync(formatMessage(type, text));
                 else
                     Console.Out.WriteAsync(formatMessage(type, text));
+                
             }
             catch (Exception) { };
         }
