@@ -238,7 +238,7 @@ namespace HISP.Game
             if (quest.SuccessMessage != null)
             {
                 byte[] ChatPacket = PacketBuilder.CreateChat(quest.SuccessMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                user.LoggedinClient.SendPacket(ChatPacket);
+                user.Client.SendPacket(ChatPacket);
             }
 
             if (quest.SuccessNpcChat != null)
@@ -246,7 +246,7 @@ namespace HISP.Game
                 if (!npcActivation)
                 {
                     byte[] ChatPacket = PacketBuilder.CreateChat(quest.SuccessNpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    user.LoggedinClient.SendPacket(ChatPacket);
+                    user.Client.SendPacket(ChatPacket);
                 }
             }
 
@@ -265,7 +265,7 @@ namespace HISP.Game
             if (quest.Id == CloudIslesQuest)
             {
                 byte[] swfLoadPacket = PacketBuilder.CreateSwfModule("ballooncutscene", PacketBuilder.PACKET_SWF_MODULE_CUTSCENE);
-                user.LoggedinClient.SendPacket(swfLoadPacket);
+                user.Client.SendPacket(swfLoadPacket);
             }
 
             return res;
@@ -290,7 +290,7 @@ namespace HISP.Game
                 if (!npcActivation)
                 {
                     byte[] ChatPacket = PacketBuilder.CreateChat(quest.FailNpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    user.LoggedinClient.SendPacket(ChatPacket);
+                    user.Client.SendPacket(ChatPacket);
                 }
                 else
                 {
@@ -371,7 +371,7 @@ namespace HISP.Game
                         if(result.NpcChat != null)
                         {
                             byte[] ChatPacket = PacketBuilder.CreateChat(result.NpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            user.LoggedinClient.SendPacket(ChatPacket);
+                            user.Client.SendPacket(ChatPacket);
                         }
                         return true;
                     }
@@ -383,7 +383,7 @@ namespace HISP.Game
                 if (result.NpcChat != null)
                 {
                     byte[] ChatPacket = PacketBuilder.CreateChat(result.NpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    user.LoggedinClient.SendPacket(ChatPacket);
+                    user.Client.SendPacket(ChatPacket);
                 }
                 return true;
             }

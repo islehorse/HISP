@@ -38,7 +38,7 @@ namespace HISP.Game.Services
                 if(BidUser.HorseInventory.HorseList.Length >= BidUser.MaxHorses)
                 {
                     byte[] tooManyHorses = PacketBuilder.CreateChat(Messages.AuctionYouHaveTooManyHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    BidUser.LoggedinClient.SendPacket(tooManyHorses);
+                    BidUser.Client.SendPacket(tooManyHorses);
                     return;
                 }
 
@@ -47,7 +47,7 @@ namespace HISP.Game.Services
                 if(BidAmount >= MAX_BID)
                 {
                     byte[] maxBidReached = PacketBuilder.CreateChat(Messages.AuctionBidMax, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    BidUser.LoggedinClient.SendPacket(maxBidReached);
+                    BidUser.Client.SendPacket(maxBidReached);
                     return;
                 }
 
@@ -56,7 +56,7 @@ namespace HISP.Game.Services
                 {
 
                     byte[] cantAffordBid = PacketBuilder.CreateChat(Messages.AuctionCantAffordBid, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    BidUser.LoggedinClient.SendPacket(cantAffordBid);
+                    BidUser.Client.SendPacket(cantAffordBid);
                     return;
                 }
 
@@ -78,7 +78,7 @@ namespace HISP.Game.Services
                             if(entry.RandomId != AuctionItem.RandomId && entry.HighestBidder == BidUser.Id)
                             {
                                 byte[] cantWinTooMuch = PacketBuilder.CreateChat(Messages.AuctionOnlyOneWinningBidAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                BidUser.LoggedinClient.SendPacket(cantWinTooMuch);
+                                BidUser.Client.SendPacket(cantWinTooMuch);
                                 return;
                             }
                         }
@@ -92,7 +92,7 @@ namespace HISP.Game.Services
                         {
                             User oldBidder = GameServer.GetUserById(AuctionItem.HighestBidder);
                             byte[] outbidMessage = PacketBuilder.CreateChat(Messages.FormatAuctionYourOutbidBy(BidUser.Username, AuctionItem.HighestBid), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            oldBidder.LoggedinClient.SendPacket(outbidMessage);
+                            oldBidder.Client.SendPacket(outbidMessage);
                         }
                     }
 
@@ -105,7 +105,7 @@ namespace HISP.Game.Services
                 }
 
                 byte[] bidPlacedMsg = PacketBuilder.CreateChat(yourBidRaisedTo, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                BidUser.LoggedinClient.SendPacket(bidPlacedMsg);
+                BidUser.Client.SendPacket(bidPlacedMsg);
 
             }
 
@@ -152,7 +152,7 @@ namespace HISP.Game.Services
                                 User auctionRunner = GameServer.GetUserById(highestBidder);
                                 auctionRunner.HorseInventory.UnHide(Horse.RandomId);
                                 byte[] notSold = PacketBuilder.CreateChat(Messages.AuctionNoHorseBrought, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                auctionRunner.LoggedinClient.SendPacket(notSold);
+                                auctionRunner.Client.SendPacket(notSold);
                             }
                             return;
                         }
@@ -162,7 +162,7 @@ namespace HISP.Game.Services
                         {
                             User userWon = GameServer.GetUserById(highestBidder);
                             byte[] wonAuction = PacketBuilder.CreateChat(Messages.FormatAuctionBroughtHorse(highestBid), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            userWon.LoggedinClient.SendPacket(wonAuction);
+                            userWon.Client.SendPacket(wonAuction);
                             userWon.TakeMoney(highestBid);
                             userWon.HorseInventory.AddHorse(Horse, false);
                         }
@@ -175,7 +175,7 @@ namespace HISP.Game.Services
                         {
                             User userSold = GameServer.GetUserById(OwnerId);
                             byte[] horseSold = PacketBuilder.CreateChat(Messages.FormatAuctionHorseSold(highestBid), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            userSold.LoggedinClient.SendPacket(horseSold);
+                            userSold.Client.SendPacket(horseSold);
                             userSold.AddMoney(highestBid);
                             userSold.HorseInventory.DeleteHorse(Horse, false);
                         }

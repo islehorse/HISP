@@ -150,7 +150,7 @@ namespace HISP.Game.Items
                         if (isle.Name == "Prison Isle")
                         {
                             byte[] dontWorkHere = PacketBuilder.CreateChat(Messages.RanchDorothyShoesPrisonIsleMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            user.LoggedinClient.SendPacket(dontWorkHere);
+                            user.Client.SendPacket(dontWorkHere);
                             return;
                         }
                     }
@@ -162,14 +162,14 @@ namespace HISP.Game.Items
                         return;
                     }
                     byte[] noPlaceLIke127001 = PacketBuilder.CreateChat(Messages.RanchDorothyShoesMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    user.LoggedinClient.SendPacket(noPlaceLIke127001);
+                    user.Client.SendPacket(noPlaceLIke127001);
 
                     user.Teleport(user.OwnedRanch.X, user.OwnedRanch.Y);
                 }
                 else if (itm.ItemId == Item.Telescope)
                 {
                     byte[] birdMap = PacketBuilder.CreateBirdMap(user.X, user.Y);
-                    user.LoggedinClient.SendPacket(birdMap);
+                    user.Client.SendPacket(birdMap);
                 }
                 else
                 {

@@ -77,19 +77,19 @@ namespace HISP.Player
             if(baseUser.MuteBuddy)
             {
                 byte[] cantFriend = PacketBuilder.CreateChat(Messages.CantSendBuddyRequestWhileMuted, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                baseUser.LoggedinClient.SendPacket(cantFriend);
+                baseUser.Client.SendPacket(cantFriend);
                 return;
             }
             else if(userToFriend.MuteBuddyRequests)
             {
                 byte[] cantFriend = PacketBuilder.CreateChat(Messages.PlayerIgnoringAllBuddyRequests, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                baseUser.LoggedinClient.SendPacket(cantFriend);
+                baseUser.Client.SendPacket(cantFriend);
                 return;
             }
             else if(userToFriend.MutePlayer.IsUserMuted(userToFriend))
             {
                 byte[] cantFriend = PacketBuilder.CreateChat(Messages.PlayerIgnoringYourBuddyRequests, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                baseUser.LoggedinClient.SendPacket(cantFriend);
+                baseUser.Client.SendPacket(cantFriend);
                 return;
             }
 
@@ -102,23 +102,23 @@ namespace HISP.Player
                 byte[] nowFriendsMsg = PacketBuilder.CreateChat(Messages.FormatAddBuddyConfirmed(userToFriend.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
                 byte[] nowFriendsOther = PacketBuilder.CreateChat(Messages.FormatAddBuddyConfirmed(baseUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
 
-                userToFriend.LoggedinClient.SendPacket(nowFriendsOther);
-                baseUser.LoggedinClient.SendPacket(nowFriendsMsg);
+                userToFriend.Client.SendPacket(nowFriendsOther);
+                baseUser.Client.SendPacket(nowFriendsMsg);
 
                 if(!baseUser.MajorPriority)
-                    GameServer.UpdateArea(baseUser.LoggedinClient);
+                    GameServer.UpdateArea(baseUser.Client);
 
                 if (!userToFriend.MajorPriority)
-                    GameServer.UpdateArea(userToFriend.LoggedinClient);
+                    GameServer.UpdateArea(userToFriend.Client);
             }
             else
             {
                 baseUser.PendingBuddyRequestTo = userToFriend;
                 byte[] pendingMsg = PacketBuilder.CreateChat(Messages.AddBuddyPending, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 byte[] pendingMsgOther = PacketBuilder.CreateChat(Messages.FormatAddBuddyPendingOther(baseUser.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                baseUser.LoggedinClient.SendPacket(pendingMsg);
+                baseUser.Client.SendPacket(pendingMsg);
                 if(!userToFriend.MuteBuddyRequests && !userToFriend.MuteAll)
-                    userToFriend.LoggedinClient.SendPacket(pendingMsgOther);
+                    userToFriend.Client.SendPacket(pendingMsgOther);
                 
             }
         }

@@ -84,7 +84,7 @@ namespace HISP.Game
                     if (joinedUser.Id != user.Id)
                         if(!TwoPlayer.IsPlayerInGame(joinedUser))
                             if(!joinedUser.MajorPriority)
-                                GameServer.UpdateArea(joinedUser.LoggedinClient);
+                                GameServer.UpdateArea(joinedUser.Client);
             }
             
         }
@@ -101,7 +101,7 @@ namespace HISP.Game
                 foreach (User joinedUser in JoinedUsers)
                     if (!TwoPlayer.IsPlayerInGame(joinedUser))
                         if (!joinedUser.MajorPriority)
-                            GameServer.UpdateArea(joinedUser.LoggedinClient);
+                            GameServer.UpdateArea(joinedUser.Client);
             }
 
         }

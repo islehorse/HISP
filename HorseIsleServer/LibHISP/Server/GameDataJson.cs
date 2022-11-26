@@ -19,9 +19,9 @@ namespace HISP.Server
 {
     public class GameDataJson
     {
+        private static dynamic gameData;
         public static void ReadGamedata()
         {
-            dynamic gameData;
             Logger.DebugPrint("Reading GAMEDATA");
             if (Directory.Exists(ConfigReader.GameData))
             {
@@ -158,10 +158,10 @@ namespace HISP.Server
             int totalReasons = gameData.messages.chat.reason_messages.Count;
             for (int i = 0; i < totalReasons; i++)
             {
-                Chat.Reason reason = new Chat.Reason();
+                ChatMsg.Reason reason = new ChatMsg.Reason();
                 reason.Name = gameData.messages.chat.reason_messages[i].name;
                 reason.Message = gameData.messages.chat.reason_messages[i].message;
-                Chat.AddReason(reason);
+                ChatMsg.AddReason(reason);
 
                 Logger.DebugPrint("Registered Chat Warning Reason: " + reason.Name + " (Message: " + reason.Message + ")");
             }
@@ -170,11 +170,11 @@ namespace HISP.Server
             int totalFilters = gameData.messages.chat.filter.Count;
             for (int i = 0; i < totalFilters; i++)
             {
-                Chat.Filter filter = new Chat.Filter();
+                ChatMsg.Filter filter = new ChatMsg.Filter();
                 filter.FilteredWord = gameData.messages.chat.filter[i].word;
                 filter.MatchAll = gameData.messages.chat.filter[i].match_all;
-                filter.Reason = Chat.GetReason((string)gameData.messages.chat.filter[i].reason_type);
-                Chat.AddFilter(filter);
+                filter.Reason = ChatMsg.GetReason((string)gameData.messages.chat.filter[i].reason_type);
+                ChatMsg.AddFilter(filter);
 
                 Logger.DebugPrint("Registered Filtered Word: " + filter.FilteredWord + " With reason: " + filter.Reason.Name + " (Matching all: " + filter.MatchAll + ")");
             }
@@ -183,10 +183,10 @@ namespace HISP.Server
             int totalCorrections = gameData.messages.chat.correct.Count;
             for (int i = 0; i < totalCorrections; i++)
             {
-                Chat.Correction correction = new Chat.Correction();
+                ChatMsg.Correction correction = new ChatMsg.Correction();
                 correction.FilteredWord = gameData.messages.chat.correct[i].word;
                 correction.ReplacedWord = gameData.messages.chat.correct[i].new_word;
-                Chat.AddCorrection(correction);
+                ChatMsg.AddCorrection(correction);
 
                 Logger.DebugPrint("Registered Word Correction: " + correction.FilteredWord + " to " + correction.ReplacedWord);
             }
@@ -468,10 +468,22 @@ namespace HISP.Server
                 Logger.DebugPrint("Registered Abuse Report Reason: " + reason.Name);
             }
 
-            // Map Data
+            /// Map Data
 
-            Map.OverlayTileDepth = gameData.tile_paramaters.overlay_tiles.tile_depth.ToObject<int[]>();
+            // Overlay tile depth;
+            List<Map.TileDepth> overlayTilesDepth = new List<Map.TileDepth>();
+            int totalOverlayTileDepth = gameData.tile_paramaters.overlay_tiles.Count;
+            for (int i = 0; i < totalOverlayTileDepth; i++)
+            {
+                Map.TileDepth tileDepth = new Map.TileDepth();
+                tileDepth.Passable = gameData.tile_paramaters.overlay_tiles[i].passable;
+                tileDepth.ShowPlayer = gameData.tile_paramaters.overlay_tiles[i].show_player;
+                Logger.DebugPrint("Registered Overlay Tile: " + i + " Depth; Passable: " + tileDepth.Passable + " ShowPlayer: " + tileDepth.ShowPlayer);
+                overlayTilesDepth.Add(tileDepth);
+            }
+            Map.OverlayTileDepth = overlayTilesDepth.ToArray();
 
+            // Terrain tile types and passable;
             List<Map.TerrainTile> terrainTiles = new List<Map.TerrainTile>();
             int totalTerrainTiles = gameData.tile_paramaters.terrain_tiles.Count;
             for (int i = 0; i < totalTerrainTiles; i++)
@@ -479,7 +491,7 @@ namespace HISP.Server
                 Map.TerrainTile tile = new Map.TerrainTile();
                 tile.Passable = gameData.tile_paramaters.terrain_tiles[i].passable;
                 tile.Type = gameData.tile_paramaters.terrain_tiles[i].tile_type;
-                Logger.DebugPrint("Registered Tile: " + i + " Passable: " + tile.Passable + " Type: " + tile.Type);
+                Logger.DebugPrint("Registered Tile Information: " + i + " Passable: " + tile.Passable + " Type: " + tile.Type);
                 terrainTiles.Add(tile);
             }
             Map.TerrainTiles = terrainTiles.ToArray();
@@ -939,13 +951,16 @@ namespace HISP.Server
             GameServer.IdleWarning = Convert.ToInt32(gameData.messages.disconnect.client_timeout.warn_after);
             GameServer.IdleTimeout = Convert.ToInt32(gameData.messages.disconnect.client_timeout.kick_after);
 
-            Chat.PrivateMessageSound = gameData.messages.chat.pm_sound;
+            ChatMsg.PrivateMessageSound = gameData.messages.chat.pm_sound;
 
             // New Users
 
             Messages.NewUserMessage = gameData.messages.new_user.starting_message;
             Map.NewUserStartX = gameData.messages.new_user.starting_x;
             Map.NewUserStartY = gameData.messages.new_user.starting_y;
+
+            // HISP Specific ...
+            Messages.HISPHelpCommandUsageFormat = gameData.hisp_specific.HISP_help_command_usage_format;
 
             // Timed Messages
 

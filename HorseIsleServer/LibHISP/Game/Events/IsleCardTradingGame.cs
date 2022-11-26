@@ -54,16 +54,16 @@ namespace HISP.Game.Events
                     int totalTypes = 0;
 
                     foreach (int itemId in Item.TradingCards)
-                        if (client.LoggedinUser.Inventory.HasItemId(itemId))
-                            totalCards += client.LoggedinUser.Inventory.GetItemByItemId(itemId).ItemInstances.Length;
+                        if (client.User.Inventory.HasItemId(itemId))
+                            totalCards += client.User.Inventory.GetItemByItemId(itemId).ItemInstances.Length;
 
-                    if (client.LoggedinUser.Inventory.HasItemId(Item.ColtTradingCard))
+                    if (client.User.Inventory.HasItemId(Item.ColtTradingCard))
                         totalTypes++;
-                    if (client.LoggedinUser.Inventory.HasItemId(Item.FillyTradingCard))
+                    if (client.User.Inventory.HasItemId(Item.FillyTradingCard))
                         totalTypes++;
-                    if (client.LoggedinUser.Inventory.HasItemId(Item.MareTradingCard))
+                    if (client.User.Inventory.HasItemId(Item.MareTradingCard))
                         totalTypes++;
-                    if (client.LoggedinUser.Inventory.HasItemId(Item.StallionTradingCard))
+                    if (client.User.Inventory.HasItemId(Item.StallionTradingCard))
                         totalTypes++;
 
                     if(totalCards > 4)
@@ -93,12 +93,12 @@ namespace HISP.Game.Events
                     }
                     else if (totalTypes == 4) 
                     {
-                        client.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.IsleCardsGameWin).Count++;
+                        client.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.IsleCardsGameWin).Count++;
 
                         byte[] wonIsleCardGame = PacketBuilder.CreateChat(Messages.EventWonIsleTradingGame, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         client.SendPacket(wonIsleCardGame);
 
-                        client.LoggedinUser.AddMoney(25000);
+                        client.User.AddMoney(25000);
 
                     }
 

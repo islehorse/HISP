@@ -203,8 +203,8 @@ namespace HISP.Game
                 byte[] startingUpEventPacket = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 byte[] swfModulePacket = PacketBuilder.CreateSwfModule(swf, PacketBuilder.PACKET_SWF_MODULE_CUTSCENE);
                 Logger.DebugPrint(entry.EnteredUser.Username + " Loading swf: " + swf);
-                entry.EnteredUser.LoggedinClient.SendPacket(swfModulePacket);
-                entry.EnteredUser.LoggedinClient.SendPacket(startingUpEventPacket);
+                entry.EnteredUser.Client.SendPacket(swfModulePacket);
+                entry.EnteredUser.Client.SendPacket(startingUpEventPacket);
             }
 
             arenaTimeout = new Timer(new TimerCallback(arenaTimedOut), null, Timeout * 60 * 1000, Timeout * 60 * 1000);
@@ -275,7 +275,7 @@ namespace HISP.Game
                     try
                     {
                         byte[] arenaResults = PacketBuilder.CreateChat(chatMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        entry.EnteredUser.LoggedinClient.SendPacket(arenaResults);
+                        entry.EnteredUser.Client.SendPacket(arenaResults);
 
                         int expReward = expRewards[place];
 
@@ -289,7 +289,7 @@ namespace HISP.Game
 
 
                             byte[] youWinMessage = PacketBuilder.CreateChat(Messages.FormatArenaYouWinMessage(prize, expReward), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            entry.EnteredUser.LoggedinClient.SendPacket(youWinMessage);
+                            entry.EnteredUser.Client.SendPacket(youWinMessage);
 
                             // Awards:
 
@@ -327,7 +327,7 @@ namespace HISP.Game
                                 entry.EnteredUser.Awards.AddAward(Award.GetAwardById(32)); // Perseverance
 
                             byte[] youDONTWinMessage = PacketBuilder.CreateChat(Messages.FormatArenaOnlyWinnerWinsMessage(expReward), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            entry.EnteredUser.LoggedinClient.SendPacket(youDONTWinMessage);
+                            entry.EnteredUser.Client.SendPacket(youDONTWinMessage);
                         }
                         place++;
                     }
@@ -361,8 +361,8 @@ namespace HISP.Game
                 if (Entries.Length + 1 > Slots)
                 {
                     byte[] enterFailed = PacketBuilder.CreateChat(Messages.ArenaFullErrorMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    user.LoggedinClient.SendPacket(enterFailed);
-                    GameServer.UpdateArea(user.LoggedinClient);
+                    user.Client.SendPacket(enterFailed);
+                    GameServer.UpdateArea(user.Client);
                     return;
                 }
             }
@@ -378,7 +378,7 @@ namespace HISP.Game
             user.TakeMoney(EntryCost);
 
             byte[] enteredIntoCompetition = PacketBuilder.CreateChat(Messages.ArenaEnteredInto, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            user.LoggedinClient.SendPacket(enteredIntoCompetition);
+            user.Client.SendPacket(enteredIntoCompetition);
             GameServer.UpdateAreaForAll(user.X, user.Y, true);
 
             return;

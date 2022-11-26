@@ -12,7 +12,14 @@ namespace HISP.Game
             public string Type;
         }
 
-        public static int[] OverlayTileDepth;
+        public struct TileDepth
+        {
+            public bool ShowPlayer;
+            public bool Passable;
+        }
+
+        public static TileDepth[] OverlayTileDepth;
+        public static TerrainTile[] TerrainTiles;
 
         public static int Width;
         public static int Height;
@@ -20,8 +27,6 @@ namespace HISP.Game
         public static byte[] MapData;
         public static byte[] oMapData;
 
-        public static TerrainTile[] TerrainTiles;
-        
 
         public static int NewUserStartX;
         public static int NewUserStartY;
@@ -76,18 +81,8 @@ namespace HISP.Game
                     tileset = World.GetIsle(x, y).Tileset;
                 otileId = otileId + 64 * tileset;
             }
-            
 
-            int tileDepth = OverlayTileDepth[otileId];
-            bool overlayPassable = false;
-            if (tileDepth == 0)
-                overlayPassable = false;
-            if (tileDepth == 1)
-                overlayPassable = false;
-            if (tileDepth == 2)
-                overlayPassable = true;
-            if (tileDepth == 3)
-                overlayPassable = true;
+            bool overlayPassable = OverlayTileDepth[otileId].Passable;
 
             if ((!terrainPassable && overlayPassable) && otileId == 0)
                 return false;

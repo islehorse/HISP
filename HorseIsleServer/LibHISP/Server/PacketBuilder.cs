@@ -6,7 +6,6 @@ using System.Text;
 using HISP.Game;
 using HISP.Game.SwfModules;
 using HISP.Util;
-
 namespace HISP.Server
 {
     public class PacketBuilder
@@ -14,6 +13,7 @@ namespace HISP.Server
         public const int PACKET_CLIENT_TERMINATOR_LENGTH = 1;
         public const byte PACKET_CLIENT_TERMINATOR = 0x0A;
 
+        // hi1 packets
         public const byte PACKET_LOGIN = 0x7F;
         public const byte PACKET_CHAT = 0x14;
         public const byte PACKET_MOVE = 0x15;
@@ -802,13 +802,28 @@ namespace HISP.Server
         // Creates a byte array of a packet informing the client of Tile Overlay flags
         // these tell the client what tiles are and are not passable, which ones the player
         // should appear ontop of or under, and stuff like that.
-        public static byte[] CreateTileOverlayFlags(int[] tileDepthFlags)
+        public static byte[] CreateTileOverlayFlags(Map.TileDepth[] tileDepthFlags)
         {
             byte[] packet = new byte[1 + tileDepthFlags.Length];
             packet[0] = PACKET_TILE_FLAGS;
 
             for(int i = 0; i < tileDepthFlags.Length; i++)
-                packet[1 + i] = (byte)(tileDepthFlags[i].ToString()[0]);
+            {
+                int flag;
+
+                if (!tileDepthFlags[i].ShowPlayer && !tileDepthFlags[i].Passable)
+                    flag = 0;
+                else if (tileDepthFlags[i].ShowPlayer && !tileDepthFlags[i].Passable)
+                    flag = 1;
+                else if (!tileDepthFlags[i].ShowPlayer && tileDepthFlags[i].Passable)
+                    flag = 2;
+                else if (tileDepthFlags[i].ShowPlayer && tileDepthFlags[i].Passable)
+                    flag = 3;
+                else
+                    throw new Exception("Somehow, showplayers was not true or false, and passable was not true or false, this should be impossible");
+
+                packet[1 + i] = Convert.ToByte(flag.ToString()[0]);
+            }
 
             return packet;
         }

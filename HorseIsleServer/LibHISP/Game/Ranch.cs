@@ -131,7 +131,7 @@ namespace HISP.Game
             {
                 if(ownerId != -1)
                 {
-                    if (ConfigReader.AllUsersSubbed || Database.IsUserAdmin(ownerId))
+                    if (ConfigReader.AllUsersSubbed || Database.GetUserAdmin(ownerId))
                         return ownerId;
 
                     int subExp = Database.GetUserSubscriptionExpireDate(ownerId);
@@ -474,7 +474,7 @@ namespace HISP.Game
             throw new KeyNotFoundException("No Ranch found at x" + x + " y" + y);
         }
 
-        public static bool IsRanchOwned(int playerId)
+        public static bool GetOwnedRanch(int playerId)
         {
             foreach (Ranch ranch in Ranches)
             {

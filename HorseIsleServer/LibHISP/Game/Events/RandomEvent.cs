@@ -59,7 +59,7 @@ namespace HISP.Game.Events
 
                 string msg = Messages.FormatRandomEvent(rngEvent.Text, moneyEarned, horseName);
                 byte[] chatPacket = PacketBuilder.CreateChat(Messages.RandomEventPrefix + msg, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                user.LoggedinClient.SendPacket(chatPacket);
+                user.Client.SendPacket(chatPacket);
 
                 return;
             }

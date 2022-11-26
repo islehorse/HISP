@@ -32,7 +32,7 @@ namespace HISP.Game
                 Database.CompleteRiddle(this.Id, user.Id);
 
             byte[] riddleAnswerCorrectPacket = PacketBuilder.CreateChat(Messages.FormatRiddlerAnswerCorrect(this.Reason), PacketBuilder.CHAT_BOTTOM_RIGHT);
-            user.LoggedinClient.SendPacket(riddleAnswerCorrectPacket);
+            user.Client.SendPacket(riddleAnswerCorrectPacket);
             user.AddMoney(10000);
 
             if(HasCompletedAllRiddles(user))
@@ -42,7 +42,7 @@ namespace HISP.Game
         public void AnswerFail(User user)
         {
             byte[] riddleIncorrect = PacketBuilder.CreateChat(Messages.RiddlerIncorrectAnswer, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            user.LoggedinClient.SendPacket(riddleIncorrect);
+            user.Client.SendPacket(riddleIncorrect);
         }
 
         public bool CheckAnswer(User user, string txt)

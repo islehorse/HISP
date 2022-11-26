@@ -3545,8 +3545,6 @@ namespace HISP.Server
             }
         }
 
-
-
         public static void SetJewelrySlot1(int playerId, int itemId)
         {
             using (DbConnection db = connectDb())
@@ -4145,7 +4143,24 @@ namespace HISP.Server
             }
         }
 
-        public static bool IsUserAdmin(int playerId)
+
+        public static bool GetUserModerator(int playerId)
+        {
+            using (DbConnection db = connectDb())
+            {
+                db.Open();
+                DbCommand sqlCommand = db.CreateCommand();
+
+                sqlCommand.CommandText = "SELECT Moderator FROM Users WHERE Id=@playerId";
+                addWithValue(sqlCommand, "@playerId", playerId);
+                sqlCommand.Prepare();
+                bool admin = sqlCommand.ExecuteScalar().ToString() == "YES";
+
+
+                return admin;
+            }
+        }
+        public static bool GetUserAdmin(int playerId)
         {
             using (DbConnection db = connectDb())
             {
@@ -4161,7 +4176,7 @@ namespace HISP.Server
                 return admin;
             }
         }
-        public static bool IsUserSubscribed(int playerId)
+        public static bool GetUserSubscribed(int playerId)
         {
             if (ConfigReader.AllUsersSubbed)
                 return true;
@@ -4456,6 +4471,38 @@ namespace HISP.Server
                 
             }
         }
+        public static void SetUserMod(int playerId, bool moderator)
+        {
+            using (DbConnection db = connectDb())
+            {
+                db.Open();
+                DbCommand sqlCommand = db.CreateCommand();
+                string yesno = (moderator ? "YES" : "NO");
+
+                sqlCommand.CommandText = "UPDATE Users SET Moderator=@moderator WHERE Id=@playerId";
+                addWithValue(sqlCommand, "@playerId", playerId);
+                addWithValue(sqlCommand, "@moderator", yesno);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+            }
+        }
+
+        public static void SetUserAdmin(int playerId, bool admin)
+        {
+            using (DbConnection db = connectDb())
+            {
+                db.Open();
+                DbCommand sqlCommand = db.CreateCommand();
+                string yesno = (admin ? "YES" : "NO");
+
+                sqlCommand.CommandText = "UPDATE Users SET Admin=@admin WHERE Id=@playerId";
+                addWithValue(sqlCommand, "@playerId", playerId);
+                addWithValue(sqlCommand, "@admin", yesno);
+                sqlCommand.Prepare();
+                sqlCommand.ExecuteNonQuery();
+            }
+        }
+
         public static void SetNpcX(int npcId, int x)
         {
             using (DbConnection db = connectDb())
@@ -4854,7 +4901,7 @@ namespace HISP.Server
         }
 
 
-        public static bool CheckUserIsModerator(string username)
+        public static bool CheckUsernameIsModerator(string username)
         {
             using (DbConnection db = connectDb())
             {
@@ -4878,7 +4925,7 @@ namespace HISP.Server
         }
 
 
-        public static bool CheckUserIsAdmin(string username)
+        public static bool CheckUsernameIsAdmin(string username)
         {
             using (DbConnection db = connectDb())
             {

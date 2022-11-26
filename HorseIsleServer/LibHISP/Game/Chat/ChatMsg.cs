@@ -8,7 +8,7 @@ using HISP.Server;
 
 namespace HISP.Game.Chat
 {
-    public class Chat
+    public class ChatMsg
     {
         public struct Correction
         {
@@ -102,7 +102,7 @@ namespace HISP.Game.Chat
                     if (parsedMessage.ToUpper(CultureInfo.InvariantCulture).StartsWith(cmd.CmdName))
                     {
                         string[] args = parsedMessage.Substring(cmd.CmdName.Length).Trim().Split(' ');
-                        return cmd.CmdCallback(messageToGive, args, user);
+                        return cmd.Execute(messageToGive, args, user);
                     }
                 }
             }
@@ -197,9 +197,9 @@ namespace HISP.Game.Chat
                 foreach (GameClient client in GameClient.ConnectedClients)
                 {
                     if (client.LoggedIn)
-                        if (!client.LoggedinUser.MuteGlobal && !client.LoggedinUser.MuteAll)
-                            if (client.LoggedinUser.Id != user.Id)
-                                if(!client.LoggedinUser.MutePlayer.IsUserMuted(user))
+                        if (!client.User.MuteGlobal && !client.User.MuteAll)
+                            if (client.User.Id != user.Id)
+                                if(!client.User.MutePlayer.IsUserMuted(user))
                                     recipiants.Add(client);
                 }
                 return recipiants.ToArray();
@@ -211,9 +211,9 @@ namespace HISP.Game.Chat
                 foreach (GameClient client in GameClient.ConnectedClients)
                 {
                     if (client.LoggedIn)
-                        if (!client.LoggedinUser.MuteAds && !client.LoggedinUser.MuteAll)
-                            if (client.LoggedinUser.Id != user.Id)
-                                if (!client.LoggedinUser.MutePlayer.IsUserMuted(user))
+                        if (!client.User.MuteAds && !client.User.MuteAll)
+                            if (client.User.Id != user.Id)
+                                if (!client.User.MutePlayer.IsUserMuted(user))
                                     recipiants.Add(client);
                 }
                 return recipiants.ToArray();
@@ -225,10 +225,10 @@ namespace HISP.Game.Chat
                 foreach (GameClient client in GameClient.ConnectedClients)
                 {
                     if (client.LoggedIn)
-                        if (!client.LoggedinUser.MuteBuddy && !client.LoggedinUser.MuteAll)
-                            if (client.LoggedinUser.Id != user.Id)
-                                if (client.LoggedinUser.Friends.List.Contains(user.Id))
-                                    if (!client.LoggedinUser.MutePlayer.IsUserMuted(user))
+                        if (!client.User.MuteBuddy && !client.User.MuteAll)
+                            if (client.User.Id != user.Id)
+                                if (client.User.Friends.List.Contains(user.Id))
+                                    if (!client.User.MutePlayer.IsUserMuted(user))
                                         recipiants.Add(client);
                 }
                 return recipiants.ToArray();
@@ -245,7 +245,7 @@ namespace HISP.Game.Chat
                         if (user.Id != userInIsle.Id)
                             if(!userInIsle.MuteAll && !userInIsle.MuteIsland)
                                 if(!userInIsle.MutePlayer.IsUserMuted(user))
-                                    recipiants.Add(userInIsle.LoggedinClient);
+                                    recipiants.Add(userInIsle.Client);
                     }
                     return recipiants.ToArray();
                 }
@@ -265,7 +265,7 @@ namespace HISP.Game.Chat
                     if (user.Id != userHere.Id)
                         if (!userHere.MuteAll && !userHere.MuteHere)
                             if (!userHere.MutePlayer.IsUserMuted(user))
-                                recipiants.Add(userHere.LoggedinClient);
+                                recipiants.Add(userHere.Client);
                 }
                 return recipiants.ToArray();
             }
@@ -279,7 +279,7 @@ namespace HISP.Game.Chat
                     if (user.Id != nearbyUser.Id)
                         if (!nearbyUser.MuteAll && !nearbyUser.MuteNear)
                             if (!nearbyUser.MutePlayer.IsUserMuted(user))
-                                recipiants.Add(nearbyUser.LoggedinClient);
+                                recipiants.Add(nearbyUser.Client);
                 }
                 return recipiants.ToArray();
             }
@@ -296,8 +296,8 @@ namespace HISP.Game.Chat
                 foreach (GameClient client in GameClient.ConnectedClients)
                 {
                     if (client.LoggedIn)
-                        if (client.LoggedinUser.Moderator)
-                            if (client.LoggedinUser.Id != user.Id)
+                        if (client.User.Moderator)
+                            if (client.User.Id != user.Id)
                                 recipiants.Add(client);
                 }
                 return recipiants.ToArray();
@@ -316,8 +316,8 @@ namespace HISP.Game.Chat
                 foreach (GameClient client in GameClient.ConnectedClients)
                 {
                     if (client.LoggedIn)
-                        if (client.LoggedinUser.Administrator)
-                            if (client.LoggedinUser.Id != user.Id)
+                        if (client.User.Administrator)
+                            if (client.User.Id != user.Id)
                                 recipiants.Add(client);
                 }
                 return recipiants.ToArray();
@@ -332,9 +332,9 @@ namespace HISP.Game.Chat
                     {
                         if (client.LoggedIn)
                         {
-                            if (!client.LoggedinUser.MutePrivateMessage && !client.LoggedinUser.MuteAll)
+                            if (!client.User.MutePrivateMessage && !client.User.MuteAll)
                             {
-                                if (client.LoggedinUser.Username.ToLower().StartsWith(to.ToLower()))
+                                if (client.User.Username.ToLower().StartsWith(to.ToLower()))
                                 {
                                     recipiants.Add(client);
                                     break;

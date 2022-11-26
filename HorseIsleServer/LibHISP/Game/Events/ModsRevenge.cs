@@ -148,8 +148,8 @@ namespace HISP.Game.Events
                 thrower.AddMoney(50);
                 throwAt.AddMoney(500);
 
-                thrower.LoggedinClient.SendPacket(youEarned);
-                throwAt.LoggedinClient.SendPacket(otherEarned);
+                thrower.Client.SendPacket(youEarned);
+                throwAt.Client.SendPacket(otherEarned);
 
                 throwCounter.AddThrownAt(throwAt);
             }
