@@ -8,6 +8,7 @@ using HISP.Game.Inventory;
 using System.Linq;
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json.Linq;
 
 namespace HISP.Game.Chat
 {
@@ -21,9 +22,9 @@ namespace HISP.Game.Chat
                     continue;
                 if (client.LoggedIn)
                 {
-                    if (client.LoggedinUser.Username.ToLower().StartsWith(name.ToLower()))
+                    if (client.User.Username.ToLower().StartsWith(name.ToLower()))
                     {
-                        return client.LoggedinUser;
+                        return client.User;
                     }
                 }
             }
@@ -33,41 +34,124 @@ namespace HISP.Game.Chat
         public static void RegisterCommands()
         {
             // Admin Commands
-            new CommandRegister('%', "GIVE", "OBJECT <itemid / RANDOM> [username / ALL]\nMONEY <amount> [username]\nHORSE <breedid> [username]\nQUEST <questid> [FORCE]\nAWARD <awardid> [username]", Command.Give);
-            new CommandRegister('%', "SWF", "<swf> [username / ALL]", Command.Swf);
-            new CommandRegister('%', "GOTO", "<x>,<y>\nPLAYER <playername>\nAREA <locationname>\nNPC <npcname>", Command.Goto);
-            new CommandRegister('%', "JUMP", "<username> HERE", Command.Jump);
-            new CommandRegister('%', "KICK" , "<username> [reason]", Command.Kick);
-            new CommandRegister('%', "NOCLIP", "", Command.NoClip);
-            new CommandRegister('%', "MODHORSE", "<slot id> <stat> <value>", Command.ModHorse);
-            new CommandRegister('%', "DELITEM", "<item id> [username]", Command.DelItem);
-            new CommandRegister('%', "SHUTDOWN", "", Command.Shutdown);
-            new CommandRegister('%', "CALL", "HORSE", Command.CallHorse);
-            new CommandRegister('%', "MESSAGE", "<message>", Command.Message);
+            new CommandRegister('%', "GIVE", "OBJECT <itemid / RANDOM> [username / ALL]\nMONEY <amount> [username]\nHORSE <breedid> [username]\nQUEST <questid> [FORCE]\nAWARD <awardid> [username]", Command.Give, true, false);
+            new CommandRegister('%', "SWF", "<swf> [username / ALL]", Command.Swf, true, false);
+            new CommandRegister('%', "GOTO", "<x>,<y>\nPLAYER <playername>\nAREA <locationname>\nNPC <npcname>", Command.Goto, true, false);
+            new CommandRegister('%', "JUMP", "<username> HERE", Command.Jump, true, false);
+            new CommandRegister('%', "NOCLIP", "", Command.NoClip, true, false);
+            new CommandRegister('%', "MODHORSE", "<slot id> <stat> <value>", Command.ModHorse, true, false);
+            new CommandRegister('%', "DELITEM", "<item id> [username]", Command.DelItem, true, false);
+            new CommandRegister('%', "SHUTDOWN", "", Command.Shutdown, true, false);
+            new CommandRegister('%', "CALL", "HORSE", Command.CallHorse, true, false);
+            new CommandRegister('%', "MESSAGE", "<message>", Command.Message, true, false);
+            new CommandRegister('%', "PERMISSION", "<username> <admin / moderator / normal>", Command.Permission, true, false);
 
             // Moderator commands
-            new CommandRegister('%', "RULES", "<username>", Command.Rules);
-            new CommandRegister('%', "PRISON", "<username>", Command.Prison);
-            new CommandRegister('%', "STEALTH", "", Command.Stealth);
-            new CommandRegister('%', "BAN", "<username> [reason]", Command.Ban);
-            new CommandRegister('%', "UNBAN", "<username>", Command.UnBan);
-            new CommandRegister('%', "ESCAPE", "", Command.Escape);
+            new CommandRegister('%', "RULES", "<username>", Command.Rules, false, true);
+            new CommandRegister('%', "PRISON", "<username>", Command.Prison, false, true);
+            new CommandRegister('%', "STEALTH", "", Command.Stealth, false, true);
+            new CommandRegister('%', "KICK", "<username> [reason]", Command.Kick, false, true);
+            new CommandRegister('%', "BAN", "<username> [reason]", Command.Ban, false, true);
+            new CommandRegister('%', "UNBAN", "<username>", Command.UnBan, false, true);
+            new CommandRegister('%', "ESCAPE", "", Command.Escape, false, true);
 
             // User commands
-            new CommandRegister('!', "MUTE", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS\nLOGINS", Command.Mute);
-            new CommandRegister('!', "UNMUTE", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS\nLOGINS", Command.UnMute);
-            new CommandRegister('!', "HEAR", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS\nLOGINS", Command.UnMute);
-            new CommandRegister('!', "AUTOREPLY", "[message]", Command.AutoReply);
-            new CommandRegister('!', "QUIZ", "", Command.Quiz);
-            new CommandRegister('!', "WARP", "<username / location>", Command.Warp);
-            new CommandRegister('!', "DANCE", "<udlr>", Command.Dance);
-            new CommandRegister('!', "VERSION", "", Command.Version);
+            new CommandRegister('%', "VERSION", "", Command.Version, false, false);
+            new CommandRegister('%', "HELP", "", Command.Help, false, false);
+
+            new CommandRegister('!', "MUTE", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS\nLOGINS", Command.Mute, false, false);
+            new CommandRegister('!', "UNMUTE", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS\nLOGINS", Command.UnMute, false, false);
+            new CommandRegister('!', "HEAR", "ALL\nGLOBAL\nISLAND\nNEAR\nHERE\nBUDDY\nPM\nBR\nSOCIALS\nLOGINS", Command.UnMute, false, false);
+            new CommandRegister('!', "AUTOREPLY", "[message]", Command.AutoReply, false, false);
+            new CommandRegister('!', "QUIZ", "", Command.Quiz, false, false);
+            new CommandRegister('!', "WARP", "<username / location>", Command.Warp, false, false);
+            new CommandRegister('!', "DANCE", "<udlr>", Command.Dance, false, false);
+        }
+
+        public static bool Help(string message, string[] args, User user)
+        {
+
+            foreach (CommandRegister cmd in CommandRegister.RegisteredCommands)
+            {
+                if (!cmd.HasPermission(user)) continue;
+                
+                user.Client.SendPacket(PacketBuilder.CreateChat(Messages.FormatHispHelpUsage(cmd.CmdLetter, cmd.CmdName, cmd.CmdUsage).Replace("\n", "<BR>\t"), PacketBuilder.CHAT_BOTTOM_LEFT));
+            }
+
+            user.Client.SendPacket(PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT));
+
+            return true;
+        }
+
+        public static bool Permission(string message, string[] args, User user)
+        {
+            if (args.Length < 2)
+                return false;
+            string username = args[0].Trim();
+            string privledgeLevel = args[1].ToUpper().Trim();
+
+            try
+            {
+                User modifyUser = findNamePartial(username);
+
+                if (privledgeLevel == "NORMAL")
+                {
+                    modifyUser.Administrator = false;
+                    modifyUser.Moderator = false;
+                }
+                else if (privledgeLevel == "ADMIN")
+                {
+                    modifyUser.Administrator = true;
+                    modifyUser.Moderator = true;
+                }
+                else if (privledgeLevel == "MOD" || privledgeLevel == "MODERATOR")
+                {
+                    modifyUser.Administrator = false;
+                    modifyUser.Moderator = true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (KeyNotFoundException) 
+            {
+                try
+                {
+                    int playerId = Database.GetUserid(username);
+
+                    if (privledgeLevel == "NORMAL")
+                    {
+                        Database.SetUserAdmin(playerId, false);
+                        Database.SetUserMod(playerId, false);
+                    }
+                    else if (privledgeLevel == "ADMIN")
+                    {
+                        Database.SetUserAdmin(playerId, true);
+                        Database.SetUserMod(playerId, true);
+                    }
+                    else if (privledgeLevel == "MOD" || privledgeLevel == "MODERATOR")
+                    {
+                        Database.SetUserAdmin(playerId, false);
+                        Database.SetUserMod(playerId, true);
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                catch (KeyNotFoundException) { return false; };
+            };
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.Client.SendPacket(chatPacket);
+            
+
+            return true;
         }
 
         public static bool Message(string message, string[] args, User user)
         {
-            if (!user.Administrator)
-                return false;
 
             string serverAnnoucement = String.Join(" ", args);
 
@@ -86,12 +170,10 @@ namespace HISP.Game.Chat
             return true;
         }
         public static bool Shutdown(string message, string[] args, User user)
-        {
-            if (!user.Administrator)
-                return false;         
+        {  
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
 
             GameServer.ShutdownServer("Administrator initiated");
 
@@ -100,8 +182,6 @@ namespace HISP.Game.Chat
         public static bool Give(string message, string[] args, User user)
         {
             if (args.Length <= 0)
-                return false;
-            if (!user.Administrator)
                 return false;
             if(args[0].ToUpper() == "OBJECT")
             {
@@ -137,7 +217,7 @@ namespace HISP.Game.Chat
                                     if (itemId == Item.Present)
                                         itmInstance.Data = Item.GetRandomItem().Id;
 
-                                    client.LoggedinUser.Inventory.AddIgnoringFull(itmInstance);
+                                    client.User.Inventory.AddIgnoringFull(itmInstance);
                                 }
                             }
                         }
@@ -246,7 +326,7 @@ namespace HISP.Game.Chat
             }
         msg:;
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
         }
 
@@ -255,8 +335,6 @@ namespace HISP.Game.Chat
             if (args.Length <= 0)
                 return false;
 
-            if (!user.Administrator && !user.Moderator)
-                return false;
 
             try
             {
@@ -277,7 +355,7 @@ namespace HISP.Game.Chat
                 else
                 {
                     User player = findNamePartial(swfUser);
-                    player.LoggedinClient.SendPacket(packetBytes);
+                    player.Client.SendPacket(packetBytes);
                 }
             }
             catch (Exception)
@@ -286,7 +364,7 @@ namespace HISP.Game.Chat
             }
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
 
             return true;
         }
@@ -294,8 +372,6 @@ namespace HISP.Game.Chat
         public static bool UnBan(string message, string[] args, User user)
         {
             if(args.Length <= 0)
-                return false;
-            if(!user.Administrator && !user.Moderator)
                 return false;
 
             try{
@@ -310,7 +386,7 @@ namespace HISP.Game.Chat
             }
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
 
             return true;
         }
@@ -319,18 +395,17 @@ namespace HISP.Game.Chat
         {
             // Get current version and send to client
             byte[] versionPacket = PacketBuilder.CreateChat(ServerVersion.GetBuildString(), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(versionPacket);
+            user.Client.SendPacket(versionPacket);
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatPlayerCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
         }
         public static bool Ban(string message, string[] args, User user)
         {
             if (args.Length <= 0)
                 return false;
-            if (!user.Administrator && !user.Moderator)
-                return false;
+
             try
             {
                 string userName = args[0];
@@ -350,53 +425,43 @@ namespace HISP.Game.Chat
             }
             try{
                 User bannedUser = GameServer.GetUserByName(args[0]);
-                bannedUser.LoggedinClient.Kick(Messages.KickReasonBanned);
+                bannedUser.Client.Kick(Messages.KickReasonBanned);
             }
             catch(KeyNotFoundException){};
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
 
             return true;
         }
         public static bool Escape(string message, string[] args, User user)
         {
-            if (!user.Administrator && !user.Moderator) 
-                return false;
 
             user.Teleport(Map.ModIsleX, Map.ModIsleY);
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message) + Messages.ModIsleMessage, PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
         }
 
         public static bool Stealth(string message, string[] args, User user)
         {
-            if (!user.Administrator && !user.Moderator)
-                return false;
 
             user.Stealth = !user.Stealth;
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
         }
         public static bool NoClip(string message, string[] args, User user)
         {
-            if (!user.Administrator)
-                return false;
-            
             user.NoClip = !user.NoClip;
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
         }
 
         public static bool Rules(string message, string[] args, User user)
         {
-            if (!user.Administrator && !user.Moderator)
-                return false;
-
             if (args.Length <= 0)
                 return false;
 
@@ -406,7 +471,7 @@ namespace HISP.Game.Chat
 
                 toSend.Teleport(Map.RulesIsleX, Map.RulesIsleY);
                 byte[] studyTheRulesMsg = PacketBuilder.CreateChat(Messages.RulesIsleSentMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                toSend.LoggedinClient.SendPacket(studyTheRulesMsg);
+                toSend.Client.SendPacket(studyTheRulesMsg);
             }
             catch (KeyNotFoundException)
             {
@@ -414,14 +479,12 @@ namespace HISP.Game.Chat
             }
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message)+Messages.FormatRulesCommandMessage(args[0]), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
         }
 
         public static bool Prison(string message, string[] args, User user)
         {
-            if (!user.Administrator && !user.Moderator)
-                return false;
             
             if (args.Length <= 0)
                 return false;
@@ -432,7 +495,7 @@ namespace HISP.Game.Chat
                 
                 toSend.Teleport(Map.PrisonIsleX, Map.PrisonIsleY);
                 byte[] dontDoTheTime = PacketBuilder.CreateChat(Messages.PrisonIsleSentMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                toSend.LoggedinClient.SendPacket(dontDoTheTime);
+                toSend.Client.SendPacket(dontDoTheTime);
             }
             catch (KeyNotFoundException)
             {
@@ -440,14 +503,12 @@ namespace HISP.Game.Chat
             }
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message) + Messages.FormatPrisonCommandMessage(args[0]), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
 
         }
         public static bool Kick(string message, string[] args, User user)
         {
-            if (!user.Administrator && !user.Moderator)
-                return false;
 
             if (args.Length <= 0)
                 return false;
@@ -459,11 +520,11 @@ namespace HISP.Game.Chat
                 if (args.Length >= 2)
                 {
                     string reason = string.Join(" ", args, 1, args.Length - 1);
-                    toKick.LoggedinClient.Kick(reason);
+                    toKick.Client.Kick(reason);
                 }
                 else
                 {
-                    toKick.LoggedinClient.Kick(Messages.KickReasonKicked);
+                    toKick.Client.Kick(Messages.KickReasonKicked);
                 }
             }
             catch (KeyNotFoundException)
@@ -472,15 +533,13 @@ namespace HISP.Game.Chat
             }
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
         }
 
         public static bool Jump(string message, string[] args, User user)
         {
-            if (args.Length <= 2)
-                return false;
-            if (!user.Administrator)
+            if (args.Length < 2)
                 return false;
 
 
@@ -496,15 +555,13 @@ namespace HISP.Game.Chat
             }
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
         }
 
         public static bool DelItem(string message, string[] args, User user)
         {
             if (args.Length <= 0)
-                return false;
-            if (!user.Administrator)
                 return false;
 
             int itemId = 0;
@@ -531,15 +588,13 @@ namespace HISP.Game.Chat
             }
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
 
             return true;
         }
         public static bool Goto(string message, string[] args, User user)
         {
             if (args.Length <= 0)
-                return false;
-            if (!user.Administrator)
                 return false;
             if(args[0].ToUpper() == "PLAYER")
             {
@@ -629,16 +684,13 @@ namespace HISP.Game.Chat
         
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             
             return true;
         }
 
         public static bool ModHorse(string message, string[] args, User user)
         {
-            if (!user.Administrator)
-                return false;
-
             if (args.Length < 3)
                 return false;
 
@@ -709,7 +761,7 @@ namespace HISP.Game.Chat
 
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
         }
 
@@ -768,20 +820,18 @@ namespace HISP.Game.Chat
 
             playSwf:;
             byte[] swfPacket = PacketBuilder.CreateSwfModule("warpcutscene", PacketBuilder.PACKET_SWF_MODULE_CUTSCENE);
-            user.LoggedinClient.SendPacket(swfPacket);
+            user.Client.SendPacket(swfPacket);
 
 
             sendText:;
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
 
             return true;
         }
 
         public static bool CallHorse(string message, string[] args, User user)
         {
-            if (!user.Administrator)
-                return false;
 
             if (args.Length <= 0)
                 return false;
@@ -806,7 +856,7 @@ namespace HISP.Game.Chat
             
 
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
 
         }
@@ -820,16 +870,16 @@ namespace HISP.Game.Chat
             if (replyMessage.Length > 1024)
             {
                 byte[] tooLong = PacketBuilder.CreateChat(Messages.AutoReplyTooLong, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                user.LoggedinClient.SendPacket(tooLong);
+                user.Client.SendPacket(tooLong);
 
                 return false;
             }
 
-            Object violationReason = Chat.FilterMessage(replyMessage);
+            Object violationReason = ChatMsg.FilterMessage(replyMessage);
             if (violationReason != null)
             {
                 byte[] hasVios = PacketBuilder.CreateChat(Messages.AutoReplyHasViolations, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                user.LoggedinClient.SendPacket(hasVios);
+                user.Client.SendPacket(hasVios);
 
                 return false;
             }
@@ -837,7 +887,7 @@ namespace HISP.Game.Chat
             user.AutoReplyText = replyMessage;
 
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
         }
         public static bool Dance(string message, string[] args, User user)
@@ -851,7 +901,7 @@ namespace HISP.Game.Chat
             user.ActiveDance = new Dance(user, moves);
 
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
             return true;
 
         }
@@ -862,7 +912,7 @@ namespace HISP.Game.Chat
             if(user.InRealTimeQuiz)
             {
                 byte[] cantEnterRealTimeQuiz = PacketBuilder.CreateChat(Messages.EventAlreadyEnteredRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                user.LoggedinClient.SendPacket(cantEnterRealTimeQuiz);
+                user.Client.SendPacket(cantEnterRealTimeQuiz);
                 return false;
             }
             if (quizActive)
@@ -874,24 +924,24 @@ namespace HISP.Game.Chat
                 if(participent.Quit)
                 {
                     byte[] quizQuit = PacketBuilder.CreateChat(Messages.EventQuitRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    user.LoggedinClient.SendPacket(quizQuit);
+                    user.Client.SendPacket(quizQuit);
 
                     return false;
                 }
                 
                 participent.UpdateParticipent();
                 byte[] enteredRealTimeQuiz = PacketBuilder.CreateChat(Messages.EventEnteredRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                user.LoggedinClient.SendPacket(enteredRealTimeQuiz);
+                user.Client.SendPacket(enteredRealTimeQuiz);
 
                 byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
-                user.LoggedinClient.SendPacket(chatPacket);
+                user.Client.SendPacket(chatPacket);
                 return true;
 
             } 
             else
             {
                 byte[] quizUnavailable = PacketBuilder.CreateChat(Messages.EventUnavailableRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                user.LoggedinClient.SendPacket(quizUnavailable);
+                user.Client.SendPacket(quizUnavailable);
                 return false;
             }
 
@@ -970,7 +1020,7 @@ namespace HISP.Game.Chat
             }
             
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
 
             return true;
         }
@@ -1048,7 +1098,7 @@ namespace HISP.Game.Chat
 
 
             byte[] chatPacket = PacketBuilder.CreateChat(formattedmessage, PacketBuilder.CHAT_BOTTOM_LEFT);
-            user.LoggedinClient.SendPacket(chatPacket);
+            user.Client.SendPacket(chatPacket);
 
             return true;
         }

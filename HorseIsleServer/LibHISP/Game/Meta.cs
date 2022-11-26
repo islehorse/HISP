@@ -1154,9 +1154,9 @@ namespace HISP.Game
             {
                 if (client.LoggedIn)
                 {
-                    if (client.LoggedinUser.Stealth)
+                    if (client.User.Stealth)
                         continue;
-                    onlineUsers.Add(client.LoggedinUser);
+                    onlineUsers.Add(client.User);
                 }
             }
 
@@ -1189,17 +1189,17 @@ namespace HISP.Game
             {
                 if (client.LoggedIn)
                 {
-                    if (client.LoggedinUser.Stealth)
+                    if (client.User.Stealth)
                         continue;
 
-                    bool isYou = (client.LoggedinUser.Id == currentUser.Id);
+                    bool isYou = (client.User.Id == currentUser.Id);
 
-                    int icon = client.LoggedinUser.GetPlayerListIcon();
+                    int icon = client.User.GetPlayerListIcon();
                     string iconFormat = "";
                     if (icon != -1)
                         iconFormat = Messages.FormatIconFormat(icon);
 
-                    message += Messages.FormatPlayerEntry(iconFormat, client.LoggedinUser.Username, client.LoggedinUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - client.LoggedinUser.LoginTime).TotalMinutes)), client.LoggedinUser.X, client.LoggedinUser.Y, client.LoggedinUser.Idle, currentUser.MutePlayer.IsUserMuted(client.LoggedinUser), isYou);
+                    message += Messages.FormatPlayerEntry(iconFormat, client.User.Username, client.User.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - client.User.LoginTime).TotalMinutes)), client.User.X, client.User.Y, client.User.Idle, currentUser.MutePlayer.IsUserMuted(client.User), isYou);
                 }
             }
 
@@ -1735,7 +1735,7 @@ namespace HISP.Game
             string swfModule = ranch.GetSwf(mine);
 
             byte[] moduleSwf = PacketBuilder.CreateSwfModule(swfModule, PacketBuilder.PACKET_SWF_MODULE_FORCE);
-            user.LoggedinClient.SendPacket(moduleSwf);
+            user.Client.SendPacket(moduleSwf);
 
             if (mine) // This is My DS.
             {

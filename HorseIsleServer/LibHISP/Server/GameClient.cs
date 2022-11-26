@@ -22,7 +22,7 @@ namespace HISP.Server
             }
         }
 
-        private Transport networkTransport;
+        private ITransport networkTransport;
 
         private bool loggedIn = false;
 
@@ -38,9 +38,9 @@ namespace HISP.Server
             get
             {
                 bool login = loggedIn;
-                if (LoggedinUser == null)
+                if (User == null)
                     return false;
-                if (LoggedinUser.LoggedinClient == null)
+                if (User.Client == null)
                     return false;
                 return login;
             }
@@ -49,7 +49,7 @@ namespace HISP.Server
                 loggedIn = value;
             }
         }
-        public User LoggedinUser;
+        public User User;
 
         private Timer keepAliveTimer;
         private Timer timeoutTimer;
@@ -93,11 +93,11 @@ namespace HISP.Server
                         for (int i = 0; i < 2; i++)
                         {
                             ItemInstance rubyItem = new ItemInstance(Item.Ruby);
-                            client.LoggedinUser.Inventory.AddIgnoringFull(rubyItem);
+                            client.User.Inventory.AddIgnoringFull(rubyItem);
                         }
 
-                        client.LoggedinUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.GameUpdates).Count++;
-                        Logger.DebugPrint("Kicking: " + client.LoggedinUser.Username);
+                        client.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.GameUpdates).Count++;
+                        Logger.DebugPrint("Kicking: " + client.User.Username);
                     }
                     client.Kick("Server shutdown: "+reason);
                 }
@@ -169,7 +169,7 @@ namespace HISP.Server
 
         private void keepAliveTick(object state)
         {
-            Logger.DebugPrint("Sending keep-alive packet to " + LoggedinUser.Username);
+            Logger.DebugPrint("Sending keep-alive packet to " + User.Username);
             byte[] updatePacket = PacketBuilder.CreateKeepAlive();
             SendPacket(updatePacket);
             keepAliveTimer.Change(oneMinute, oneMinute);
@@ -182,20 +182,20 @@ namespace HISP.Server
 
                 GameServer.UpdatePlayer(this);
 
-                LoggedinUser.CanUseAdsChat = true;
-                LoggedinUser.FreeMinutes -= 1;
+                User.CanUseAdsChat = true;
+                User.FreeMinutes -= 1;
 
                 GameServer.DoItemPurchases(this);
 
                 if (totalMinutesElapsed % 2 == 0)
                 {
-                    LoggedinUser.TotalGlobalChatMessages++;
+                    User.TotalGlobalChatMessages++;
                 }
 
-                if (LoggedinUser.FreeMinutes <= 0)
+                if (User.FreeMinutes <= 0)
                 {
-                    LoggedinUser.FreeMinutes = 0;
-                    if (!LoggedinUser.Subscribed && !LoggedinUser.Moderator && !LoggedinUser.Administrator)
+                    User.FreeMinutes = 0;
+                    if (!User.Subscribed && !User.Moderator && !User.Administrator)
                     {
                         Kick(Messages.KickReasonNoTime);
                         return;
@@ -214,11 +214,11 @@ namespace HISP.Server
 
                 if (GameServer.RandomNumberGenerator.Next(0, 100) == 59) // RANDOM EVENT HAS OCCURED!
                 {
-                    RandomEvent.ExecuteRandomEvent(LoggedinUser);
+                    RandomEvent.ExecuteRandomEvent(User);
                 }
 
                 bool gotoPrision = false;
-                foreach(HorseInstance horse in LoggedinUser.HorseInventory.HorseList)
+                foreach(HorseInstance horse in User.HorseInventory.HorseList)
                 {
                     if (totalMinutesElapsed % 2 == 0)
                     {
@@ -290,28 +290,28 @@ namespace HISP.Server
                             SendPacket(horseReturned);
 
                             if(tpX != 0 && tpY != 0)
-                                LoggedinUser.Teleport(tpX, tpY);
+                                User.Teleport(tpX, tpY);
 
 
-                            if (LoggedinUser.CurrentlyRidingHorse != null)
+                            if (User.CurrentlyRidingHorse != null)
                             {
-                                if(LoggedinUser.CurrentlyRidingHorse.RandomId == horse.RandomId)
+                                if(User.CurrentlyRidingHorse.RandomId == horse.RandomId)
                                 {
                                     GameServer.StopRidingHorse(this);
                                 }
                                 
                              }
 
-                            if(LoggedinUser.LastViewedHorse != null)
+                            if(User.LastViewedHorse != null)
                             {
-                                if(LoggedinUser.LastViewedHorse.RandomId == horse.RandomId)
+                                if(User.LastViewedHorse.RandomId == horse.RandomId)
                                 {
-                                    LoggedinUser.LastViewedHorse = null;
+                                    User.LastViewedHorse = null;
                                 }
                             }    
 
 
-                             LoggedinUser.HorseInventory.DeleteHorse(horse);
+                             User.HorseInventory.DeleteHorse(horse);
                         }
 
                         
@@ -322,18 +322,18 @@ namespace HISP.Server
                 {
                     byte[] sendToPrision = PacketBuilder.CreateChat(Messages.YouWereSentToPrisionIsle, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     SendPacket(sendToPrision);
-                    LoggedinUser.Teleport(45, 35);
+                    User.Teleport(45, 35);
                 }
 
 
                 if (totalMinutesElapsed % 5 == 0)
-                    LoggedinUser.Thirst--;
+                    User.Thirst--;
                 
                 if (totalMinutesElapsed % 15 == 0)
-                    LoggedinUser.Hunger--;
+                    User.Hunger--;
 
                 if (totalMinutesElapsed % 15 == 0)
-                    LoggedinUser.Tiredness--;
+                    User.Tiredness--;
             }
 
             minuteTimer.Change(oneMinute, oneMinute);
@@ -345,7 +345,7 @@ namespace HISP.Server
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatIdleWarningMessage(), PacketBuilder.CHAT_BOTTOM_RIGHT);
             SendPacket(chatPacket);
             if (LoggedIn)
-                LoggedinUser.Idle = true;
+                User.Idle = true;
         }
 
         private void kickTimerTick(object state)
@@ -363,12 +363,12 @@ namespace HISP.Server
             {
                 if (Client.LoggedIn)
                 {
-                    if (Client.LoggedinUser.Id == id)
+                    if (Client.User.Id == id)
                         Client.Kick(Messages.KickReasonDuplicateLogin);
                 }
             }
 
-            LoggedinUser = new User(this, id);
+            User = new User(this, id);
             LoggedIn = true;
 
             Database.SetIpAddress(id, RemoteIp);
@@ -404,7 +404,7 @@ namespace HISP.Server
                     if (keepAliveTimer != null && identifier != PacketBuilder.PACKET_KEEP_ALIVE)
                     {
                         if (LoggedIn)
-                            LoggedinUser.Idle = false;
+                            User.Idle = false;
                         keepAliveTimer.Change(oneMinute, oneMinute);
                     }
                     else
@@ -547,7 +547,8 @@ namespace HISP.Server
 
        public void SendPacket(byte[] packetData)
         {
-            networkTransport.Send(packetData);
+            if(!networkTransport.Disconnected)
+                networkTransport.Send(packetData);
         }
 
     }

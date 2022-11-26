@@ -34,6 +34,8 @@ namespace HISP.Player
         private int thirst;
         private int tired;
         private bool noClip = false;
+        private bool administrator = false;
+        private bool moderator = false;
 
         public bool NoClip
         {
@@ -60,6 +62,36 @@ namespace HISP.Player
                 noClip = true;
             }
         }
+
+
+        public bool Administrator
+        {
+            get
+            {
+                return administrator;
+            }
+            set
+            {
+                administrator = value;
+                Database.SetUserAdmin(Id, administrator);
+            }
+        }
+
+        public bool Moderator
+        {
+            get
+            {
+                if (administrator)
+                    return true;
+                return moderator;
+            }
+            set
+            {
+                moderator = value;
+                Database.SetUserMod(Id, moderator);
+            }
+        }
+
         public Trade TradingWith = null;
         public int AttemptingToOfferItem;
         public bool TradeMenuPriority = false;
@@ -68,10 +100,8 @@ namespace HISP.Player
         public int SecCodeCount = 0;
         public int Id;
         public string Username;
-        public bool Administrator = false;
-        public bool Moderator = false;
         public bool NewPlayer = false;
-        public GameClient LoggedinClient;
+        public GameClient Client;
         public CompetitionGear EquipedCompetitionGear;
         public Jewelry EquipedJewelry;
         public bool MuteAds = false;
@@ -182,13 +212,13 @@ namespace HISP.Player
             int money = Money;
             money -= amount;
             Database.SetPlayerMoney(money, Id);
-            GameServer.UpdatePlayer(LoggedinClient);
+            GameServer.UpdatePlayer(Client);
         }
 
         public void SetMoney(int amount)
         {
             Database.SetPlayerMoney(amount, Id);
-            GameServer.UpdatePlayer(LoggedinClient);
+            GameServer.UpdatePlayer(Client);
         }
 
         public void AddMoney(int amount)
@@ -207,7 +237,7 @@ namespace HISP.Player
             }
 
             Database.SetPlayerMoney(money, Id);
-            GameServer.UpdatePlayer(LoggedinClient);
+            GameServer.UpdatePlayer(Client);
         }
         public string GetWeatherSeen()
         {
@@ -565,8 +595,8 @@ namespace HISP.Player
             Y = newY;
 
             byte[] MovementPacket = PacketBuilder.CreateMovement(X, Y, CharacterId, Facing, PacketBuilder.DIRECTION_TELEPORT, true);
-            LoggedinClient.SendPacket(MovementPacket);
-            GameServer.UpdateWeather(LoggedinClient);
+            Client.SendPacket(MovementPacket);
+            GameServer.UpdateWeather(Client);
 
 
             User[] goneOffScreen = onScreenBefore.Except(onScreenNow).ToArray();
@@ -580,7 +610,7 @@ namespace HISP.Player
                     continue;
 
                 byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, this.Facing, this.CharacterId, this.Username);
-                offScreenUsers.LoggedinClient.SendPacket(playerInfoBytes);
+                offScreenUsers.Client.SendPacket(playerInfoBytes);
             }
 
             // Tell players now on screen there locations
@@ -590,11 +620,11 @@ namespace HISP.Player
                     continue;
 
                 byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenUsers.X, onScreenUsers.Y, onScreenUsers.Facing, onScreenUsers.CharacterId, onScreenUsers.Username);
-                LoggedinClient.SendPacket(playerInfoBytes);
+                Client.SendPacket(playerInfoBytes);
             }
 
 
-            GameServer.Update(LoggedinClient);
+            GameServer.Update(Client);
         }
 
         // Insert LGBT Patch here
@@ -640,9 +670,7 @@ namespace HISP.Player
             {
                 Database.CreateUserExt(UserId);
                 NewPlayer = true;
-
             }
-
 
             EquipedCompetitionGear = new CompetitionGear(UserId);
             EquipedJewelry = new Jewelry(UserId);
@@ -650,8 +678,8 @@ namespace HISP.Player
             Id = UserId;
             Username = Database.GetUsername(UserId);
             
-            Administrator = Database.CheckUserIsAdmin(Username);
-            Moderator = Database.CheckUserIsModerator(Username);
+            administrator = Database.GetUserModerator(Id);
+            moderator = Database.GetUserAdmin(Id);
 
             chatViolations = Database.GetChatViolations(UserId);
             x = Database.GetPlayerX(UserId);
@@ -663,7 +691,7 @@ namespace HISP.Player
             
             bankMoney = Database.GetPlayerBankMoney(UserId);
             questPoints = Database.GetPlayerQuestPoints(UserId);
-            subscribed = Database.IsUserSubscribed(UserId);
+            subscribed = Database.GetUserSubscribed(UserId);
             subscribedUntil = Database.GetUserSubscriptionExpireDate(UserId);
             profilePage = Database.GetPlayerProfile(UserId);
             privateNotes = Database.GetPlayerNotes(UserId);
@@ -671,7 +699,7 @@ namespace HISP.Player
             thirst = Database.GetPlayerThirst(UserId);
             tired = Database.GetPlayerTiredness(UserId);
 
-            if(Ranch.IsRanchOwned(this.Id))
+            if(Ranch.GetOwnedRanch(this.Id))
                 OwnedRanch = Ranch.GetRanchOwnedBy(this.Id);
 
             Gender = Database.GetGender(UserId);
@@ -693,7 +721,7 @@ namespace HISP.Player
 
             Friends = new Friends(this);
             LoginTime = DateTime.UtcNow;
-            LoggedinClient = baseClient;
+            Client = baseClient;
             Inventory = new PlayerInventory(this);
             Quests = new PlayerQuests(this);
 
