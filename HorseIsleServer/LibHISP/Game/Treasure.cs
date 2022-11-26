@@ -140,14 +140,14 @@ namespace HISP.Game
             GenerateTreasure();
 
             byte[] MovementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
-            user.LoggedinClient.SendPacket(MovementPacket);
+            user.Client.SendPacket(MovementPacket);
 
             user.AddMoney(Value);
 
             if(this.Type == "BURIED")
             {
                 byte[] treasureReceivedPacket = PacketBuilder.CreateChat(Messages.FormatPirateTreasure(this.Value), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                user.LoggedinClient.SendPacket(treasureReceivedPacket);
+                user.Client.SendPacket(treasureReceivedPacket);
                 user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PirateTreasure).Count++;
                 
                 if(user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PirateTreasure).Count >= 10)
@@ -159,7 +159,7 @@ namespace HISP.Game
             else if(this.Type == "RAINBOW")
             {
                 byte[] treasureReceivedPacket = PacketBuilder.CreateChat(Messages.FormatPotOfGold(this.Value), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                user.LoggedinClient.SendPacket(treasureReceivedPacket);
+                user.Client.SendPacket(treasureReceivedPacket);
                 
                 user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PotOfGold).Count++;
 

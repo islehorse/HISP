@@ -48,7 +48,7 @@ namespace HISP.Game.Events
                     return;
 
                 byte[] realTimeQuizQuestion = PacketBuilder.CreateMeta(Meta.BuildRealTimeQuiz(this));
-                this.UserInstance.LoggedinClient.SendPacket(realTimeQuizQuestion);
+                this.UserInstance.Client.SendPacket(realTimeQuizQuestion);
             }
 
             public void CheckAnswer(string answer)
@@ -160,7 +160,7 @@ namespace HISP.Game.Events
                 Participent partcipent = getParticipent(user.Id);
                 partcipent.Quit = true;
                 user.InRealTimeQuiz = false;
-                GameServer.UpdateArea(user.LoggedinClient);
+                GameServer.UpdateArea(user.Client);
             }
             catch (KeyNotFoundException) { };
         }
@@ -219,7 +219,7 @@ namespace HISP.Game.Events
 
 
                 participent.UserInstance.InRealTimeQuiz = false;
-                GameServer.UpdateArea(participent.UserInstance.LoggedinClient);
+                GameServer.UpdateArea(participent.UserInstance.Client);
 
                 int money = 0;
 
@@ -238,12 +238,12 @@ namespace HISP.Game.Events
                 if (participent.Won)
                 {
                     byte[] wonBonusMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeQuizWinBonus(money), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    participent.UserInstance.LoggedinClient.SendPacket(wonBonusMessage);
+                    participent.UserInstance.Client.SendPacket(wonBonusMessage);
                 }
                 else 
                 {
                     byte[] bonusMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeQuizBonus(money), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                    participent.UserInstance.LoggedinClient.SendPacket(bonusMessage);
+                    participent.UserInstance.Client.SendPacket(bonusMessage);
                 }
 
                 participent.UserInstance.AddMoney(money);

@@ -59,7 +59,7 @@ namespace HISP.Game.Events
             if (Database.HasPlayerCompletedRealTimeRiddle(RiddleId, winner.Id))
             {
                 byte[] alreadyWonRiddleMessage = PacketBuilder.CreateChat(Messages.EventAlreadySovledRealTimeRiddle, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                winner.LoggedinClient.SendPacket(alreadyWonRiddleMessage);
+                winner.Client.SendPacket(alreadyWonRiddleMessage);
                 return;
             }
 
@@ -81,7 +81,7 @@ namespace HISP.Game.Events
             foreach (GameClient client in GameClient.ConnectedClients)
             {
                 if (client.LoggedIn)
-                    if (client.LoggedinUser.Id != winner.Id)
+                    if (client.User.Id != winner.Id)
                         client.SendPacket(riddleWonMessage);
                     else
                         client.SendPacket(riddleYouWonMessage);

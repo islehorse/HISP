@@ -86,8 +86,8 @@ namespace HISP.Game
             byte[] youHaveInvited = PacketBuilder.CreateChat(Messages.Format2PlayerYouInvited(inviting.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
             byte[] yourInvited = PacketBuilder.CreateChat(Messages.Format2PlayerYourInvited(invitee.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
 
-            Invitee.LoggedinClient.SendPacket(youHaveInvited);
-            Inviting.LoggedinClient.SendPacket(yourInvited);
+            Invitee.Client.SendPacket(youHaveInvited);
+            Inviting.Client.SendPacket(yourInvited);
 
             deleteTimer = new Timer(new TimerCallback(deleteTwoPlayer), null, 2 * 60 * 1000, 2 * 60 * 1000);
 
@@ -119,15 +119,15 @@ namespace HISP.Game
 
         private void update()
         {
-            GameServer.UpdateArea(Invitee.LoggedinClient);
-            GameServer.UpdateArea(Inviting.LoggedinClient);
+            GameServer.UpdateArea(Invitee.Client);
+            GameServer.UpdateArea(Inviting.Client);
         }
         private void updateOthers()
         {
             foreach(User user in this.Multiroom.JoinedUsers)
                 if (IsPlayerInGame(user))
                     if(user.Id != Invitee.Id && user.Id != Inviting.Id)
-                        GameServer.UpdateArea(user.LoggedinClient);
+                        GameServer.UpdateArea(user.Client);
             
         }
         public void UpdateAll()
@@ -182,14 +182,14 @@ namespace HISP.Game
                 byte[] startingUpGameInvitee = PacketBuilder.CreateChat(Messages.Format2PlayerStartingGame(Inviting.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
                 byte[] startingUpGameInvited = PacketBuilder.CreateChat(Messages.Format2PlayerStartingGame(Invitee.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
 
-                Invitee.LoggedinClient.SendPacket(startingUpGameInvitee);
-                Inviting.LoggedinClient.SendPacket(startingUpGameInvited);
+                Invitee.Client.SendPacket(startingUpGameInvitee);
+                Inviting.Client.SendPacket(startingUpGameInvited);
 
                 byte[] loadSwfInvitee = PacketBuilder.CreateSwfModule(buildSwf(2), PacketBuilder.PACKET_SWF_MODULE_FORCE);
                 byte[] loadSwfInvited = PacketBuilder.CreateSwfModule(buildSwf(1), PacketBuilder.PACKET_SWF_MODULE_FORCE);
 
-                Invitee.LoggedinClient.SendPacket(loadSwfInvitee);
-                Inviting.LoggedinClient.SendPacket(loadSwfInvited);
+                Invitee.Client.SendPacket(loadSwfInvitee);
+                Inviting.Client.SendPacket(loadSwfInvited);
 
             }
         }
@@ -207,13 +207,13 @@ namespace HISP.Game
 
                     if (userWhoClosed.Id == Inviting.Id)
                     {
-                        Invitee.LoggedinClient.SendPacket(gameClosedByOther);
-                        Inviting.LoggedinClient.SendPacket(gameClosed);
+                        Invitee.Client.SendPacket(gameClosedByOther);
+                        Inviting.Client.SendPacket(gameClosed);
                     }
                     else if (userWhoClosed.Id == Invitee.Id)
                     {
-                        Invitee.LoggedinClient.SendPacket(gameClosed);
-                        Inviting.LoggedinClient.SendPacket(gameClosedByOther);
+                        Invitee.Client.SendPacket(gameClosed);
+                        Inviting.Client.SendPacket(gameClosedByOther);
                     }
                 }
 

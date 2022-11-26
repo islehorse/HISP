@@ -68,8 +68,8 @@ namespace HISP.Player
             OtherTrade.Trader.PendingTradeTo = 0;
             OtherTrade.Trader.TradingWith = null;
 
-            GameServer.UpdateArea(Trader.LoggedinClient);
-            GameServer.UpdateArea(OtherTrade.Trader.LoggedinClient);
+            GameServer.UpdateArea(Trader.Client);
+            GameServer.UpdateArea(OtherTrade.Trader.Client);
         }
 
         public bool Fail = false;
@@ -84,7 +84,7 @@ namespace HISP.Player
             if (MoneyOffered > 0 && OtherTrade.Trader.Money < 0)
             {
                 byte[] otherNegativeMoneyNotAllowed = PacketBuilder.CreateChat(Messages.TradeOtherPlayerHasNegativeMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(otherNegativeMoneyNotAllowed);
+                Trader.Client.SendPacket(otherNegativeMoneyNotAllowed);
                 Fail = true;
                 OtherTrade.Fail = true;
             }
@@ -93,7 +93,7 @@ namespace HISP.Player
             if (OtherTrade.MoneyOffered > 0 && Trader.Money < 0)
             {
                 byte[] negativeMoneyNotAllowed = PacketBuilder.CreateChat(Messages.TradeYouHaveNegativeMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(negativeMoneyNotAllowed);
+                Trader.Client.SendPacket(negativeMoneyNotAllowed);
                 Fail = true;
                 OtherTrade.Fail = true;
             }
@@ -102,7 +102,7 @@ namespace HISP.Player
             if (OtherTrade.Trader.Bids.Length > 0)
             {
                 byte[] tradeNotAllowedWhileOtherBidding = PacketBuilder.CreateChat(Messages.TradeNotAllowedWhileOtherBidding, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeNotAllowedWhileOtherBidding);
+                Trader.Client.SendPacket(tradeNotAllowedWhileOtherBidding);
                 Fail = true;
                 OtherTrade.Fail = true;
             }
@@ -111,7 +111,7 @@ namespace HISP.Player
             if (Trader.Bids.Length > 0)
             {
                 byte[] tradeNotAllowedWhileBidding = PacketBuilder.CreateChat(Messages.TradeNotAllowedWhileBidding, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeNotAllowedWhileBidding);
+                Trader.Client.SendPacket(tradeNotAllowedWhileBidding);
                 Fail = true;
                 OtherTrade.Fail = true;
             }
@@ -120,7 +120,7 @@ namespace HISP.Player
             if (MoneyOffered > 0 && OtherTrade.Trader.Money + MoneyOffered > 2100000000)
             {
                 byte[] tradeOtherHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveOtherTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeOtherHasTooMuchMoney);
+                Trader.Client.SendPacket(tradeOtherHasTooMuchMoney);
                 Fail = true;
                 OtherTrade.Fail = true;
             }
@@ -129,7 +129,7 @@ namespace HISP.Player
             if (OtherTrade.MoneyOffered > 0 && Trader.Money + OtherTrade.MoneyOffered > 2100000000)
             {
                 byte[] tradeYouHasTooMuchMoney = PacketBuilder.CreateChat(Messages.TradeWillGiveYouTooMuchMoney, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeYouHasTooMuchMoney);
+                Trader.Client.SendPacket(tradeYouHasTooMuchMoney);
                 Fail = true;
                 OtherTrade.Fail = true;
             }
@@ -143,7 +143,7 @@ namespace HISP.Player
             if (HorsesOffered.Length > 0 && OtherTrade.Trader.HorseInventory.HorseList.Length + HorsesOffered.Length > OtherTrade.Trader.MaxHorses)
             {
                 byte[] tradeYouHaveTooManyHorses = PacketBuilder.CreateChat(Messages.TradeYouCantHandleMoreHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeYouHaveTooManyHorses);
+                Trader.Client.SendPacket(tradeYouHaveTooManyHorses);
                 Fail = true;
                 OtherTrade.Fail = true;
             }
@@ -152,7 +152,7 @@ namespace HISP.Player
             if (OtherTrade.HorsesOffered.Length > 0 && Trader.HorseInventory.HorseList.Length + OtherTrade.HorsesOffered.Length > Trader.MaxHorses)
             {
                 byte[] tradeYouHaveTooManyHorses = PacketBuilder.CreateChat(Messages.TradeYouCantHandleMoreHorses, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeYouHaveTooManyHorses);
+                Trader.Client.SendPacket(tradeYouHaveTooManyHorses);
                 Fail = true;
                 OtherTrade.Fail = true;
             }
@@ -171,7 +171,7 @@ namespace HISP.Player
                         if (items.ItemInstances.Length + inst.Length > Item.MAX_STACK)
                         {
                             byte[] tradeTooManyItems = PacketBuilder.CreateChat(Messages.TradeYouCantCarryMoreItems, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            Trader.LoggedinClient.SendPacket(tradeTooManyItems);
+                            Trader.Client.SendPacket(tradeTooManyItems);
                             Fail = true;
                             OtherTrade.Fail = true;
                         }
@@ -189,7 +189,7 @@ namespace HISP.Player
                         if (items.ItemInstances.Length + inst.Length > Item.MAX_STACK)
                         {
                             byte[] tradeTooManyItems = PacketBuilder.CreateChat(Messages.TradeOtherCantCarryMoreItems, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            Trader.LoggedinClient.SendPacket(tradeTooManyItems);
+                            Trader.Client.SendPacket(tradeTooManyItems);
                             Fail = true;
                             OtherTrade.Fail = true;
                         }
@@ -206,7 +206,7 @@ namespace HISP.Player
             
             acceptTrade:;
             byte[] tradeAccepted = PacketBuilder.CreateChat(Messages.TradeAcceptedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            Trader.LoggedinClient.SendPacket(tradeAccepted);
+            Trader.Client.SendPacket(tradeAccepted);
 
             // Transfer Money
 
@@ -214,14 +214,14 @@ namespace HISP.Player
             {
                 Trader.TakeMoney(MoneyOffered);
                 byte[] tradeSpentMoney = PacketBuilder.CreateChat(Messages.FormatTradeYouSpent(MoneyOffered), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeSpentMoney);
+                Trader.Client.SendPacket(tradeSpentMoney);
             }
 
             if(OtherTrade.MoneyOffered > 0)
             {
                 Trader.AddMoney(OtherTrade.MoneyOffered);
                 byte[] tradeReceivedMoney = PacketBuilder.CreateChat(Messages.FormatTradeYouReceived(OtherTrade.MoneyOffered), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                Trader.LoggedinClient.SendPacket(tradeReceivedMoney);
+                Trader.Client.SendPacket(tradeReceivedMoney);
             }
 
             foreach (HorseInstance inst in HorsesOffered) // Transfer Horses
@@ -236,7 +236,7 @@ namespace HISP.Player
                         byte[] disMounted = PacketBuilder.CreateChat(Messages.TradeRiddenHorse, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         Trader.Facing %= 5;
                         Trader.CurrentlyRidingHorse = null;
-                        Trader.LoggedinClient.SendPacket(disMounted);
+                        Trader.Client.SendPacket(disMounted);
                     }
                 }
 
@@ -273,13 +273,13 @@ namespace HISP.Player
         public void InteruptTrade()
         {
             byte[] tradeCanceled = PacketBuilder.CreateChat(Messages.TradeCanceledInterupted, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            Trader.LoggedinClient.SendPacket(tradeCanceled);
+            Trader.Client.SendPacket(tradeCanceled);
             endTrade();
         }
         public void AcceptTrade()
         {
             byte[] waitingForAccept = PacketBuilder.CreateChat(Messages.TradeWaitingForOthersToAcceptMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            Trader.LoggedinClient.SendPacket(waitingForAccept);
+            Trader.Client.SendPacket(waitingForAccept);
 
             if (OtherTrade.Stage == "ACCEPTED")
             {
@@ -292,18 +292,18 @@ namespace HISP.Player
         public void CancelTrade()
         {
             byte[] tradeCanceled = PacketBuilder.CreateChat(Messages.TradeCanceledByYouMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            Trader.LoggedinClient.SendPacket(tradeCanceled);
+            Trader.Client.SendPacket(tradeCanceled);
 
             byte[] tradeCanceledOther = PacketBuilder.CreateChat(Messages.FormatTradeCanceledByPlayer(Trader.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-            OtherTrade.Trader.LoggedinClient.SendPacket(tradeCanceledOther);
+            OtherTrade.Trader.Client.SendPacket(tradeCanceledOther);
 
             endTrade();
         }
         public void CancelTradeMoved()
         {
             byte[] playerMoved = PacketBuilder.CreateChat(Messages.TradeCanceledBecuasePlayerMovedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            Trader.LoggedinClient.SendPacket(playerMoved);
-            OtherTrade.Trader.LoggedinClient.SendPacket(playerMoved);
+            Trader.Client.SendPacket(playerMoved);
+            OtherTrade.Trader.Client.SendPacket(playerMoved);
 
             endTrade();
         }

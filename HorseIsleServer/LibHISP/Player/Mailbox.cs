@@ -68,8 +68,8 @@ namespace HISP.Player
             }
 
             byte[] rippedUpMessage = PacketBuilder.CreateChat(Messages.MailRippedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            baseUser.LoggedinClient.SendPacket(rippedUpMessage);
-            GameServer.UpdateInventory(baseUser.LoggedinClient);
+            baseUser.Client.SendPacket(rippedUpMessage);
+            GameServer.UpdateInventory(baseUser.Client);
         }
 
         public void ReadAllMail()
@@ -87,7 +87,7 @@ namespace HISP.Player
                 mails[i].Read = true;
             }
 
-            GameServer.UpdatePlayer(baseUser.LoggedinClient);
+            GameServer.UpdatePlayer(baseUser.Client);
         }
         public void AddMail(Mail mailMessage)
         {

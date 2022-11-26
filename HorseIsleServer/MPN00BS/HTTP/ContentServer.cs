@@ -277,8 +277,11 @@ namespace HTTP
         
         public void Shutdown() {
             shutdownServer = true;
-            ServerSocket.Dispose();
-            ServerSocket = null;
+            if(ServerSocket != null)
+            {
+                ServerSocket.Dispose();
+                ServerSocket = null;
+            }
         }
         private bool shutdownServer = false;
         public string ipaddr;

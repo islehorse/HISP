@@ -5,11 +5,16 @@ using System.Globalization;
 using HISP.Security;
 using HISP.Server;
 using HISP.Util;
+using HISP.Game.Chat;
 
 namespace HISP.Game
 {
     public class Messages
     {
+        // HISP specific
+        public static string HISPHelpCommandUsageFormat;
+        
+        // extended config
         public static int RequiredChatViolations;
 
         // Message Queue
@@ -1220,6 +1225,12 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
+        // HISP Help Command
+        public static string FormatHispHelpUsage(char commandPrefix, string commandName, string commandUsage)
+        {
+            return HISPHelpCommandUsageFormat.Replace("%PREFIX%", commandPrefix.ToString()).Replace("%COMMANDNAME%", commandName).Replace("%USAGE%", ChatMsg.EscapeMessage(commandUsage));
+        }
+
         // Violations
         public static string FormatProfileSavedBlocked(string reasons)
         {
@@ -1344,6 +1355,7 @@ namespace HISP.Game
         {
             return PlayerIgnoringYourPrivateMessagesFormat.Replace("%USERNAME%", username);
         }
+
 
         // AUTO SELL
 
@@ -2798,7 +2810,7 @@ namespace HISP.Game
             return NpcStartChatFormat.Replace("%ICONID%", iconId.ToString()).Replace("%NAME%", name).Replace("%DESCRIPTION%", shortDescription).Replace("%ID%", npcId.ToString());
         }
 
-        public static string FormatGlobalChatViolationMessage(Chat.Chat.Reason violationReason)
+        public static string FormatGlobalChatViolationMessage(Chat.ChatMsg.Reason violationReason)
         {
             return ChatViolationMessageFormat.Replace("%AMOUNT%", RequiredChatViolations.ToString()).Replace("%REASON%", violationReason.Message);
         }
