@@ -104,23 +104,32 @@ namespace HISP.Server
             }
             catch (Exception) { };
         }
+
+        private static bool acceptConnections(SocketAsyncEventArgs e)
+        {
+            try
+            {
+                if (e == null) return false;
+                if (GameServer.ServerSocket == null) return false;
+                return !GameServer.ServerSocket.AcceptAsync(e);
+            }
+            catch (Exception) { return false; }
+        }
         public static void CreateClient(object sender, SocketAsyncEventArgs e)
         {
             do
             {
                 Socket clientSocket = e.AcceptSocket;
 
-                if (GameServer.ServerSocket == null)
-                    return;
                 if (clientSocket == null)
                     continue;
                 if (clientSocket.RemoteEndPoint == null)
                     continue;
-    
+
                 connectedClients.Add(new GameClient(clientSocket));
                 e.AcceptSocket = null;
 
-            } while (!GameServer.ServerSocket.AcceptAsync(e));
+            } while (acceptConnections(e));
         }
         private void timeoutTimerTick(object state)
         {
