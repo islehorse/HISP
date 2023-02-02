@@ -137,8 +137,6 @@ https://server.islehorse.com/binaries/download/HISP-Web-Game.zip
  ex:        
  ``dotnet publish -p:PublishProfile=Linux64.pubxml`` to to build it standalone.
  
- NOTE: At this current time, building projects targeting .NET Core 7.0 inside Visual Studio requires Visual Studio 2022 PREVIEW and does not work in the stable build
- 
  
  # Credits
  
