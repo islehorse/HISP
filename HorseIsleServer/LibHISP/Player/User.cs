@@ -55,11 +55,11 @@ namespace HISP.Player
                         }
                     }
                 }
-                return noClip;
+                return this.noClip;
             }
             set
             {
-                noClip = true;
+                this.noClip = true;
             }
         }
 
