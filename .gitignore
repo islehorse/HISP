@@ -8,6 +8,7 @@
 *.user
 *.idb
 
+*Thumbs.db
 *.DS_Store
 
 HorseIsleServer/N00BS/obj/*
