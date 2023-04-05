@@ -16,8 +16,8 @@ Type=simple
 ProtectSystem=full
 PrivateDevices=true
 
-StandardError=syslog+console
-StandardOutput=syslog+console
+StandardError=journal+console
+StandardOutput=journal+console
 
 User=horseisle
 Group=horseisle
