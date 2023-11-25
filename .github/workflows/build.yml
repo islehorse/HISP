@@ -235,12 +235,12 @@ jobs:
         cd MPN00BS
         dotnet publish -p:PublishProfile=Win32.pubxml
         cd ..
-    - name: Build win-arm
-      continue-on-error: false
-      run: |
-        cd HISPd
-        dotnet publish -p:PublishProfile=WinARM.pubxml
-        cd ..
+#    - name: Build win-arm
+#      continue-on-error: false
+#      run: |
+#        cd HISPd
+#        dotnet publish -p:PublishProfile=WinARM.pubxml
+#        cd ..
 #nativeaot arm64 build
     - name: Build win-arm64
       continue-on-error: false
@@ -278,12 +278,12 @@ jobs:
         name: HISP-Win32
         path: HorseIsleServer/HISPd/bin/x86/Windows/net8.0/win-x86/publish/
         
-    - name: Upload win-arm
-      uses: actions/upload-artifact@v2
-      with:
-        name: HISP-WinARM
-        path: HorseIsleServer/HISPd/bin/arm/Windows/net8.0/win-arm/publish/
-
+#    - name: Upload win-arm
+#      uses: actions/upload-artifact@v2
+#      with:
+#        name: HISP-WinARM
+#        path: HorseIsleServer/HISPd/bin/arm/Windows/net8.0/win-arm/publish/
+#
     - name: Upload win-arm64
       uses: actions/upload-artifact@v2
       with:
