@@ -21,7 +21,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 8.0.x
         include-prerelease: false
     - name: Install utils
       run: |
@@ -50,11 +50,11 @@ jobs:
 #        cd HISPd
 #        dotnet publish -r linux-x64 -c Linux /p:Platform=x64 --self-contained
 #        cd ..
-#        mkdir -p HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata
-#        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/gamedata/* HISPd/bin/x64/Linux/net7.0/linux-x64/native/gamedata
-#        cp HISPd/bin/x64/Linux/net7.0/linux-x64/HI1.MAP HISPd/bin/x64/Linux/net7.0/linux-x64/native/HI1.MAP
-#        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so HISPd/bin/x64/Linux/net7.0/linux-x64/native/libe_sqlite3.so
-#        rm -f HISPd/bin/x64/Linux/net7.0/linux-x64/native/HISPd.dbg
+#        mkdir -p HISPd/bin/x64/Linux/net8.0/linux-x64/native/gamedata
+#        cp -r HISPd/bin/x64/Linux/net8.0/linux-x64/gamedata/* HISPd/bin/x64/Linux/net8.0/linux-x64/native/gamedata
+#        cp HISPd/bin/x64/Linux/net8.0/linux-x64/HI1.MAP HISPd/bin/x64/Linux/net8.0/linux-x64/native/HI1.MAP
+#        cp HISPd/bin/x64/Linux/net8.0/linux-x64/publish/libe_sqlite3.so HISPd/bin/x64/Linux/net8.0/linux-x64/native/libe_sqlite3.so
+#        rm -f HISPd/bin/x64/Linux/net8.0/linux-x64/native/HISPd.dbg
 #        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
         
         
@@ -77,11 +77,11 @@ jobs:
 #        cd HISPd
 #        dotnet publish -r linux-arm64 -c Linux /p:Platform=ARM64 --self-contained
 #        cd ..
-#        mkdir -p HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/gamedata
-#        cp -r HISPd/bin/ARM64/Linux/net7.0/linux-arm64/gamedata/* HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/gamedata
-#        cp HISPd/bin/ARM64/Linux/net7.0/linux-arm64/HI1.MAP HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/HI1.MAP
-#        cp HISPd/bin/ARM64/Linux/net7.0/linux-arm64/publish/libe_sqlite3.so HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/libe_sqlite3.so
-#        rm -f HISPd/bin/ARM64/Linux/net7.0/linux-arm64/native/HISPd.dbg
+#        mkdir -p HISPd/bin/ARM64/Linux/net8.0/linux-arm64/native/gamedata
+#        cp -r HISPd/bin/ARM64/Linux/net8.0/linux-arm64/gamedata/* HISPd/bin/ARM64/Linux/net8.0/linux-arm64/native/gamedata
+#        cp HISPd/bin/ARM64/Linux/net8.0/linux-arm64/HI1.MAP HISPd/bin/ARM64/Linux/net8.0/linux-arm64/native/HI1.MAP
+#        cp HISPd/bin/ARM64/Linux/net8.0/linux-arm64/publish/libe_sqlite3.so HISPd/bin/ARM64/Linux/net8.0/linux-arm64/native/libe_sqlite3.so
+#        rm -f HISPd/bin/ARM64/Linux/net8.0/linux-arm64/native/HISPd.dbg
 #        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
 #        dotnet remove HISPd package runtime.linux-x64.Microsoft.DotNet.ILCompiler
         
@@ -102,10 +102,10 @@ jobs:
         cp LibHISP/Resources/server.properties /tmp/debpkg/Debian64/etc/hisp/server.properties
         cp LibHISP/Resources/default_cross_domain.xml /tmp/debpkg/Debian64/etc/hisp/CrossDomainPolicy.xml
         cp -r HISPd/Resources/DEBIAN/* /tmp/debpkg/Debian64/DEBIAN
-        cp -r HISPd/bin/x64/Linux/net7.0/linux-x64/publish/gamedata/* /tmp/debpkg/Debian64/etc/hisp/gamedata
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/libe_sqlite3.so /tmp/debpkg/Debian64/usr/lib/libe_sqlite3.so
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HI1.MAP /tmp/debpkg/Debian64/etc/hisp/HI1.MAP
-        cp HISPd/bin/x64/Linux/net7.0/linux-x64/publish/HISPd /tmp/debpkg/Debian64/usr/bin/HISPd
+        cp -r HISPd/bin/x64/Linux/net8.0/linux-x64/publish/gamedata/* /tmp/debpkg/Debian64/etc/hisp/gamedata
+        cp HISPd/bin/x64/Linux/net8.0/linux-x64/publish/libe_sqlite3.so /tmp/debpkg/Debian64/usr/lib/libe_sqlite3.so
+        cp HISPd/bin/x64/Linux/net8.0/linux-x64/publish/HI1.MAP /tmp/debpkg/Debian64/etc/hisp/HI1.MAP
+        cp HISPd/bin/x64/Linux/net8.0/linux-x64/publish/HISPd /tmp/debpkg/Debian64/usr/bin/HISPd
         cp HISPd/Resources/HISP.service /tmp/debpkg/Debian64/etc/systemd/system/HISP.service
         cat /tmp/debpkg/Debian64/DEBIAN/control
         dos2unix /tmp/debpkg/Debian64/DEBIAN/conffiles
@@ -138,13 +138,13 @@ jobs:
 #      uses: actions/upload-artifact@v2
 #      with:
 #        name: HISP-AndroidARM
-#        path: HorseIsleServer/HISPd/bin/arm/Android/net7.0/android-arm/publish/
+#        path: HorseIsleServer/HISPd/bin/arm/Android/net8.0/android-arm/publish/
 
 #    - name: Upload android-arm64
 #      uses: actions/upload-artifact@v2
 #      with:
 #        name: HISP-AndroidARM64
-#        path: HorseIsleServer/HISPd/bin/arm64/Android/net7.0/android-arm64/publish/
+#        path: HorseIsleServer/HISPd/bin/arm64/Android/net8.0/android-arm64/publish/
 
 
 # Upload LINUX
@@ -152,25 +152,25 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Linux64
-        path: HorseIsleServer/HISPd/bin/x64/Linux/net7.0/linux-x64/publish/
+        path: HorseIsleServer/HISPd/bin/x64/Linux/net8.0/linux-x64/publish/
 
     - name: Upload linux-x64-noobs
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Linux64-Noobs
-        path: HorseIsleServer/MPN00BS/bin/x64/Linux/net7.0/linux-x64/publish/
+        path: HorseIsleServer/MPN00BS/bin/x64/Linux/net8.0/linux-x64/publish/
 
     - name: Upload linux-arm
       uses: actions/upload-artifact@v2
       with:
         name: HISP-LinuxARM
-        path: HorseIsleServer/HISPd/bin/ARM/Linux/net7.0/linux-arm/publish/
+        path: HorseIsleServer/HISPd/bin/ARM/Linux/net8.0/linux-arm/publish/
     
     - name: Upload linux-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-LinuxARM64
-        path: HorseIsleServer/HISPd/bin/ARM64/Linux/net7.0/linux-arm64/publish/
+        path: HorseIsleServer/HISPd/bin/ARM64/Linux/net8.0/linux-arm64/publish/
 
     - name: Upload deb package
       uses: actions/upload-artifact@v2
@@ -191,7 +191,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 8.0.x
         include-prerelease: false
     
     - name: Install utils
@@ -215,13 +215,13 @@ jobs:
 #        cd HISPd
 #        dotnet publish -r win-x64 -c Windows /p:Platform=x64 --self-contained
 #        cd ..
-#        mkdir "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
-#        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x64\Windows\net7.0\win-x64\native\gamedata"
-#        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\x64\Windows\net7.0\win-x64\native\HI1.MAP"
-#        copy "HISPd\bin\x64\Windows\net7.0\win-x64\publish\e_sqlite3.dll" "HISPd\bin\x64\Windows\net7.0\win-x64\native\e_sqlite3.dll"
-#        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.pdb"
-#        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.lib"
-#        del "HISPd\bin\x64\Windows\net7.0\win-x64\native\HISPd.exp"
+#        mkdir "HISPd\bin\x64\Windows\net8.0\win-x64\native\gamedata"
+#        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\x64\Windows\net8.0\win-x64\native\gamedata"
+#        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\x64\Windows\net8.0\win-x64\native\HI1.MAP"
+#        copy "HISPd\bin\x64\Windows\net8.0\win-x64\publish\e_sqlite3.dll" "HISPd\bin\x64\Windows\net8.0\win-x64\native\e_sqlite3.dll"
+#        del "HISPd\bin\x64\Windows\net8.0\win-x64\native\HISPd.pdb"
+#        del "HISPd\bin\x64\Windows\net8.0\win-x64\native\HISPd.lib"
+#        del "HISPd\bin\x64\Windows\net8.0\win-x64\native\HISPd.exp"
 #        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
 #        cd N00BS
 #        dotnet publish -p:PublishProfile=Win64.pubxml
@@ -253,13 +253,13 @@ jobs:
 #        cd HISPd
 #        dotnet publish -r win-arm64 -c Windows /p:Platform=ARM64  --self-contained
 #        cd ..
-#        mkdir "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
-#        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\gamedata"
-#        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HI1.MAP"
-#        copy "HISPd\bin\ARM64\Windows\net7.0\win-arm64\publish\e_sqlite3.dll" "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\e_sqlite3.dll"
-#        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.pdb"
-#        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.lib"
-#        del "HISPd\bin\ARM64\Windows\net7.0\win-arm64\native\HISPd.exp"
+#        mkdir "HISPd\bin\ARM64\Windows\net8.0\win-arm64\native\gamedata"
+#        copy "..\HorseIsleData\gamedata\*" "HISPd\bin\ARM64\Windows\net8.0\win-arm64\native\gamedata"
+#        copy "..\HorseIsleData\HI1.MAP" "HISPd\bin\ARM64\Windows\net8.0\win-arm64\native\HI1.MAP"
+#        copy "HISPd\bin\ARM64\Windows\net8.0\win-arm64\publish\e_sqlite3.dll" "HISPd\bin\ARM64\Windows\net8.0\win-arm64\native\e_sqlite3.dll"
+#        del "HISPd\bin\ARM64\Windows\net8.0\win-arm64\native\HISPd.pdb"
+#        del "HISPd\bin\ARM64\Windows\net8.0\win-arm64\native\HISPd.lib"
+#        del "HISPd\bin\ARM64\Windows\net8.0\win-arm64\native\HISPd.exp"
 #        dotnet remove HISPd package Microsoft.DotNet.ILCompiler
 #        dotnet remove HISPd package runtime.win-x64.Microsoft.DotNet.ILCompiler
 
@@ -270,37 +270,37 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64
-        path: HorseIsleServer/HISPd/bin/x64/Windows/net7.0/win-x64/publish/
+        path: HorseIsleServer/HISPd/bin/x64/Windows/net8.0/win-x64/publish/
     
     - name: Upload win-x86
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win32
-        path: HorseIsleServer/HISPd/bin/x86/Windows/net7.0/win-x86/publish/
+        path: HorseIsleServer/HISPd/bin/x86/Windows/net8.0/win-x86/publish/
         
     - name: Upload win-arm
       uses: actions/upload-artifact@v2
       with:
         name: HISP-WinARM
-        path: HorseIsleServer/HISPd/bin/arm/Windows/net7.0/win-arm/publish/
+        path: HorseIsleServer/HISPd/bin/arm/Windows/net8.0/win-arm/publish/
 
     - name: Upload win-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-WinARM64
-        path: HorseIsleServer/HISPd/bin/arm64/Windows/net7.0/win-arm64/publish/
+        path: HorseIsleServer/HISPd/bin/arm64/Windows/net8.0/win-arm64/publish/
 
     - name: Upload win-x86-noobs
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win32-Noobs
-        path: HorseIsleServer/MPN00BS/bin/x86/Windows/net7.0/win-x86/publish/
+        path: HorseIsleServer/MPN00BS/bin/x86/Windows/net8.0/win-x86/publish/
 
     - name: Upload win-x64-noobs
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Win64-Noobs
-        path: HorseIsleServer/MPN00BS/bin/x64/Windows/net7.0/win-x64/publish/
+        path: HorseIsleServer/MPN00BS/bin/x64/Windows/net8.0/win-x64/publish/
 
   build-mac:
     runs-on: ubuntu-latest
@@ -315,7 +315,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 7.0.x
+        dotnet-version: 8.0.x
         include-prerelease: false
         
     - name: Install utils
@@ -345,19 +345,19 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Mac64
-        path: HorseIsleServer/HISPd/bin/x64/MacOS/net7.0/osx-x64/publish/
+        path: HorseIsleServer/HISPd/bin/x64/MacOS/net8.0/osx-x64/publish/
 
     - name: Upload mac-arm64
       uses: actions/upload-artifact@v2
       with:
         name: HISP-MacARM64
-        path: HorseIsleServer/HISPd/bin/arm64/MacOS/net7.0/osx-arm64/publish/
+        path: HorseIsleServer/HISPd/bin/arm64/MacOS/net8.0/osx-arm64/publish/
         
     - name: Upload mac-x64-noobs
       uses: actions/upload-artifact@v2
       with:
         name: HISP-Mac-Noobs
-        path: HorseIsleServer/MPN00BS/bin/x64/MacOS/net7.0/osx-x64/publish/
+        path: HorseIsleServer/MPN00BS/bin/x64/MacOS/net8.0/osx-x64/publish/
 
   build-web:
     runs-on: ubuntu-latest
