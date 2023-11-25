@@ -15,8 +15,8 @@ namespace HISP.Player
 {
     public class User
     {
-        private List<Auction.AuctionBid> bids = new List<Auction.AuctionBid>();
-        private List<User> beingSocializedBy = new List<User>();
+        private ThreadSafeList<Auction.AuctionBid> bids = new ThreadSafeList<Auction.AuctionBid>();
+        private ThreadSafeList<User> beingSocializedBy = new ThreadSafeList<User>();
 
         private int chatViolations;
         private int charId;
@@ -59,7 +59,7 @@ namespace HISP.Player
             }
             set
             {
-                this.noClip = true;
+                this.noClip = value;
             }
         }
 
@@ -68,12 +68,12 @@ namespace HISP.Player
         {
             get
             {
-                return administrator;
+                return this.administrator;
             }
             set
             {
-                administrator = value;
-                Database.SetUserAdmin(Id, administrator);
+                this.administrator = value;
+                Database.SetUserAdmin(Id, this.administrator);
             }
         }
 
@@ -129,7 +129,10 @@ namespace HISP.Player
         public int PendingTradeTo;
         public Mailbox MailBox;
         public Friends Friends;
-        public string Password; // For chat filter.
+        
+        // For chat filter.
+        public string Password; 
+
         public PlayerInventory Inventory;
         public Npc.NpcEntry LastTalkedToNpc;
         public Shop LastShoppedAt;
@@ -179,7 +182,7 @@ namespace HISP.Player
                 {
                     if (OwnedRanch != null)
                     {
-                        baseValue += 20 * OwnedRanch.GetBuildingCount(4); // Shed
+                        baseValue += (20 * OwnedRanch.GetBuildingCount(4)); // Shed
                         if (baseValue > 80) // 2 sheds max!
                             baseValue = 80;
                     }
