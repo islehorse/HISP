@@ -132,7 +132,7 @@ https://server.islehorse.com/binaries/download/HISP-Web-Game.zip
 ```
  
 # Building
- Building the server from source requires Microsoft .NET Core SDK, targetting version 7.0 https://dotnet.microsoft.com/download/dotnet-core
+ Building the server from source requires Microsoft .NET Core SDK, targetting version 8.0 https://dotnet.microsoft.com/download/dotnet-core
  use ``dotnet build`` to build a debug build, (requires .NET Core Runtime) quickly or one of our publishing XML's
  ex:        
  ``dotnet publish -p:PublishProfile=Linux64.pubxml`` to to build it standalone.
