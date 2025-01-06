@@ -1,0 +1,291 @@
+name: build
+
+on:
+  push:
+    branches: [ master ]
+defaults:
+  run:
+    working-directory: ./HorseIsleServer
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Git Submodule update
+      run: git submodule update --init --recursive
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 8.0.x
+        include-prerelease: false
+    - name: Install utils
+      run: |
+        sudo apt update
+        sudo apt install -y clang zlib1g-dev dos2unix
+        dotnet tool install -g dotnet-script
+        
+    - name: Restore dependencies
+      run: |
+        dotnet restore LibHISP
+        dotnet restore HISPd
+# linux x64
+    - name: Build linux-x64
+      continue-on-error: false
+      run: |
+        cd HISPd
+        dotnet publish -p:PublishProfile=Linux64.pubxml
+        cd ..
+        cd MPN00BS
+        dotnet publish -p:PublishProfile=Linux64.pubxml
+        cd ..
+        
+# linux arm
+    - name: Build linux-arm
+      continue-on-error: false
+      run: |
+        cd HISPd
+        dotnet publish -p:PublishProfile=LinuxARM.pubxml
+        cd ..
+# linux arm64
+    - name: Build linux-arm64
+      continue-on-error: false
+      run: |
+        cd HISPd
+        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+        cd ..
+
+        
+    - name: Build deb package
+      continue-on-error: false
+      run: |
+        mkdir /tmp/debpkg
+        mkdir /tmp/debpkg/Debian64
+        mkdir /tmp/debpkg/Debian64/etc
+        mkdir /tmp/debpkg/Debian64/usr
+        mkdir /tmp/debpkg/Debian64/etc/hisp
+        mkdir /tmp/debpkg/Debian64/etc/hisp/gamedata
+        mkdir /tmp/debpkg/Debian64/etc/systemd
+        mkdir /tmp/debpkg/Debian64/etc/systemd/system
+        mkdir /tmp/debpkg/Debian64/usr/bin
+        mkdir /tmp/debpkg/Debian64/usr/lib
+        mkdir /tmp/debpkg/Debian64/DEBIAN
+        cp LibHISP/Resources/server.properties /tmp/debpkg/Debian64/etc/hisp/server.properties
+        cp LibHISP/Resources/default_cross_domain.xml /tmp/debpkg/Debian64/etc/hisp/CrossDomainPolicy.xml
+        cp -r HISPd/Resources/DEBIAN/* /tmp/debpkg/Debian64/DEBIAN
+        cp -r HISPd/bin/x64/Linux/net8.0/linux-x64/publish/gamedata/* /tmp/debpkg/Debian64/etc/hisp/gamedata
+        cp HISPd/bin/x64/Linux/net8.0/linux-x64/publish/libe_sqlite3.so /tmp/debpkg/Debian64/usr/lib/libe_sqlite3.so
+        cp HISPd/bin/x64/Linux/net8.0/linux-x64/publish/HI1.MAP /tmp/debpkg/Debian64/etc/hisp/HI1.MAP
+        cp HISPd/bin/x64/Linux/net8.0/linux-x64/publish/HISPd /tmp/debpkg/Debian64/usr/bin/HISPd
+        cp HISPd/Resources/HISP.service /tmp/debpkg/Debian64/etc/systemd/system/HISP.service
+        cat /tmp/debpkg/Debian64/DEBIAN/control
+        dos2unix /tmp/debpkg/Debian64/DEBIAN/conffiles
+        dos2unix /tmp/debpkg/Debian64/DEBIAN/control
+        dos2unix /tmp/debpkg/Debian64/DEBIAN/postinst
+        dos2unix /tmp/debpkg/Debian64/DEBIAN/postrm
+        dos2unix /tmp/debpkg/Debian64/DEBIAN/prerm
+        dos2unix /tmp/debpkg/Debian64/etc/systemd/system/HISP.service
+        chmod 755 -R /tmp/debpkg/Debian64
+        chmod +x /tmp/debpkg/Debian64/usr/bin/HISPd
+        mkdir debpackage
+        dpkg-deb --build /tmp/debpkg/Debian64
+        mv /tmp/debpkg/Debian64.deb debpackage/HISP-Debian-AMD64.deb
+        
+# Upload LINUX
+    - name: Upload linux-x64
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Linux64
+        path: HorseIsleServer/HISPd/bin/x64/Linux/net8.0/linux-x64/publish/
+
+    - name: Upload linux-x64-noobs
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Linux64-Noobs
+        path: HorseIsleServer/MPN00BS/bin/x64/Linux/net8.0/linux-x64/publish/
+
+    - name: Upload linux-arm
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-LinuxARM
+        path: HorseIsleServer/HISPd/bin/ARM/Linux/net8.0/linux-arm/publish/
+    
+    - name: Upload linux-arm64
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-LinuxARM64
+        path: HorseIsleServer/HISPd/bin/ARM64/Linux/net8.0/linux-arm64/publish/
+
+    - name: Upload deb package
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-DebianPackage
+        path: HorseIsleServer/debpackage
+        
+  build-win:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Git Submodule update
+      run: git submodule update --init --recursive
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 8.0.x
+        include-prerelease: false
+    
+    - name: Install utils
+      run: dotnet tool install -g dotnet-script
+        
+    - name: Restore dependencies
+      run: dotnet restore
+
+# x64 build
+    - name: Build win-x64
+      continue-on-error: false
+      run: |
+        cd HISPd
+        dotnet publish -p:PublishProfile=Win64.pubxml
+        cd ..
+        cd MPN00BS
+        dotnet publish -p:PublishProfile=Win64.pubxml
+        cd ..
+
+    - name: Build win-x86
+      continue-on-error: false
+      run: |
+        cd HISPd
+        dotnet publish -p:PublishProfile=Win32.pubxml
+        cd ..
+        cd MPN00BS
+        dotnet publish -p:PublishProfile=Win32.pubxml
+        cd ..
+
+# arm64 build
+    - name: Build win-arm64
+      continue-on-error: false
+      run: |
+        cd HISPd
+        dotnet publish -p:PublishProfile=WinARM64.pubxml
+        cd ..
+
+# Upload WINDOWS
+
+    - name: Upload win-x64
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Win64
+        path: HorseIsleServer/HISPd/bin/x64/Windows/net8.0/win-x64/publish/
+    
+    - name: Upload win-x86
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Win32
+        path: HorseIsleServer/HISPd/bin/x86/Windows/net8.0/win-x86/publish/
+        
+    - name: Upload win-arm64
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-WinARM64
+        path: HorseIsleServer/HISPd/bin/arm64/Windows/net8.0/win-arm64/publish/
+
+    - name: Upload win-x86-noobs
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Win32-Noobs
+        path: HorseIsleServer/MPN00BS/bin/x86/Windows/net8.0/win-x86/publish/
+
+    - name: Upload win-x64-noobs
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Win64-Noobs
+        path: HorseIsleServer/MPN00BS/bin/x64/Windows/net8.0/win-x64/publish/
+
+  build-mac:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Git Submodule update
+      run: git submodule update --init --recursive
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 8.0.x
+        include-prerelease: false
+        
+    - name: Install utils
+      run: dotnet tool install -g dotnet-script
+
+    - name: Restore dependencies
+      run: |
+        dotnet restore LibHISP
+        dotnet restore HISPd
+
+    - name: Build mac-x64
+      continue-on-error: false
+      run: |
+        cd HISPd
+        dotnet publish -p:PublishProfile=Osx64.pubxml
+        cd ..
+        cd MPN00BS
+        dotnet publish -p:PublishProfile=Osx64.pubxml
+        cd ..
+    - name: Build mac-arm64
+      continue-on-error: false
+      run: |
+        cd HISPd
+        dotnet publish -p:PublishProfile=OsxARM64.pubxml
+        cd ..
+    - name: Upload mac-x64
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Mac64
+        path: HorseIsleServer/HISPd/bin/x64/MacOS/net8.0/osx-x64/publish/
+
+    - name: Upload mac-arm64
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-MacARM64
+        path: HorseIsleServer/HISPd/bin/arm64/MacOS/net8.0/osx-arm64/publish/
+        
+    - name: Upload mac-x64-noobs
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Mac-Noobs
+        path: HorseIsleServer/MPN00BS/bin/x64/MacOS/net8.0/osx-x64/publish/
+
+  build-web:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    
+    - name: Git Submodule update
+      run: git submodule update --init --recursive
+
+    # UPLOAD WEB
+
+    - name: Upload Website (master)
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Web-Master
+        path: HorseIsleWeb/master-site
+        
+    - name: Upload Website (game)
+      uses: actions/upload-artifact@v2
+      with:
+        name: HISP-Web-Game
+        path: HorseIsleWeb/game-site
