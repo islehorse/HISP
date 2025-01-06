@@ -309,9 +309,9 @@ namespace HISP.Server
         // this is used for *most* SwfModule
         public static byte[] CreateForwardedSwfModule(byte[] request)
         {
-            byte[] packet = new byte[1 + (request.Length-1)];
+            byte[] packet = new byte[1 + (request.Length-3)];
             packet[0] = PACKET_SWFMODULE;
-            Array.Copy(request, 0, packet, 1, (request.Length-2));
+            Array.Copy(request, 2, packet, 1, (request.Length-3));
             return packet;
         }
         // Creates a byte array that contains "Bird Map" data
