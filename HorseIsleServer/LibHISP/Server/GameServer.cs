@@ -4267,7 +4267,7 @@ namespace HISP.Server
                         }
                     }
                     break;
-                case PacketBuilder.SWFMODULE_BANDHALL:
+                case PacketBuilder.SWFMODULE_BROADCAST:
                     byte[] response = PacketBuilder.CreateForwardedSwfModule(packet);
                     foreach (User user in GetUsersAt(sender.User.X, sender.User.Y))
                     {
@@ -4276,7 +4276,7 @@ namespace HISP.Server
                         user.Client.SendPacket(response);
                     }
                     break;
-                case PacketBuilder.SWFMODULE_2PLAYER: 
+                case PacketBuilder.SWFMODULE_OPPONENT: 
                     if(TwoPlayer.IsPlayerInGame(sender.User))
                     {
                         TwoPlayer twoPlayerGame = TwoPlayer.GetTwoPlayerGameInProgress(sender.User);
