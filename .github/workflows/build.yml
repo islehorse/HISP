@@ -97,31 +97,31 @@ jobs:
         
 # Upload LINUX
     - name: Upload linux-x64
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-Linux64
         path: HorseIsleServer/HISPd/bin/x64/Linux/net8.0/linux-x64/publish/
 
     - name: Upload linux-x64-noobs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-Linux64-Noobs
         path: HorseIsleServer/MPN00BS/bin/x64/Linux/net8.0/linux-x64/publish/
 
     - name: Upload linux-arm
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-LinuxARM
         path: HorseIsleServer/HISPd/bin/ARM/Linux/net8.0/linux-arm/publish/
     
     - name: Upload linux-arm64
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-LinuxARM64
         path: HorseIsleServer/HISPd/bin/ARM64/Linux/net8.0/linux-arm64/publish/
 
     - name: Upload deb package
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-DebianPackage
         path: HorseIsleServer/debpackage
@@ -180,31 +180,31 @@ jobs:
 # Upload WINDOWS
 
     - name: Upload win-x64
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-Win64
         path: HorseIsleServer/HISPd/bin/x64/Windows/net8.0/win-x64/publish/
     
     - name: Upload win-x86
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-Win32
         path: HorseIsleServer/HISPd/bin/x86/Windows/net8.0/win-x86/publish/
         
     - name: Upload win-arm64
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-WinARM64
         path: HorseIsleServer/HISPd/bin/arm64/Windows/net8.0/win-arm64/publish/
 
     - name: Upload win-x86-noobs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-Win32-Noobs
         path: HorseIsleServer/MPN00BS/bin/x86/Windows/net8.0/win-x86/publish/
 
     - name: Upload win-x64-noobs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-Win64-Noobs
         path: HorseIsleServer/MPN00BS/bin/x64/Windows/net8.0/win-x64/publish/
@@ -249,19 +249,19 @@ jobs:
         dotnet publish -p:PublishProfile=OsxARM64.pubxml
         cd ..
     - name: Upload mac-x64
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-Mac64
         path: HorseIsleServer/HISPd/bin/x64/MacOS/net8.0/osx-x64/publish/
 
     - name: Upload mac-arm64
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-MacARM64
         path: HorseIsleServer/HISPd/bin/arm64/MacOS/net8.0/osx-arm64/publish/
         
     - name: Upload mac-x64-noobs
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-Mac-Noobs
         path: HorseIsleServer/MPN00BS/bin/x64/MacOS/net8.0/osx-x64/publish/
@@ -279,13 +279,13 @@ jobs:
     # UPLOAD WEB
 
     - name: Upload Website (master)
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-Web-Master
         path: HorseIsleWeb/master-site
         
     - name: Upload Website (game)
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: HISP-Web-Game
         path: HorseIsleWeb/game-site
