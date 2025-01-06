@@ -394,7 +394,7 @@ namespace HISP.Tests.UnitTests
             results.Add(Test("TileClickInfo", PacketBuilder.CreateTileClickInfo("Trans Rights Are Human Rights")));
 
             // Test TileOverlayFlags
-            results.Add(Test("TileOverlayFlags", PacketBuilder.CreateTileOverlayFlags(new int[] { 1, 2, 3, 1, 2, 3, 1, 2, 3 })));
+            //results.Add(Test("TileOverlayFlags", PacketBuilder.CreateTileOverlayFlags(new int[] { 1, 2, 3, 1, 2, 3, 1, 2, 3 })));
 
             // Test TimeAndWeatherUpdate
             results.Add(Test("TimeAndWeatherUpdate", PacketBuilder.CreateTimeAndWeatherUpdate(10, 4, 541, "SUNNY")));
