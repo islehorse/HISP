@@ -118,12 +118,12 @@ namespace HISP.Server
         public const byte SWFMODULE_CLOSE = 0x16;
 
         public const byte SWFMODULE_2PLAYER_CLOSED = 0x58;
-        public const byte SWFMODULE_2PLAYER = 0x50;
+        public const byte SWFMODULE_OPPONENT = 0x50;
         public const byte SWFMODULE_ARENA = 0x52;
         public const byte SWFMODULE_BRICKPOET = 0x5A;
         public const byte SWFMODULE_DRAWINGROOM = 0x5B;
         public const byte SWFMODULE_DRESSUPROOM = 0x5C;
-        public const byte SWFMODULE_BANDHALL = 0x51;
+        public const byte SWFMODULE_BROADCAST = 0x51;
 
         public const byte DRAWINGROOM_GET_DRAWING = 0x14;
         public const byte DRAWINGROOM_SAVE = 0x15;
@@ -309,9 +309,9 @@ namespace HISP.Server
         // this is used for *most* SwfModule
         public static byte[] CreateForwardedSwfModule(byte[] request)
         {
-            byte[] packet = new byte[1 + request.Length];
+            byte[] packet = new byte[1 + (request.Length-1)];
             packet[0] = PACKET_SWFMODULE;
-            Array.Copy(request, 0, packet, 1, request.Length);
+            Array.Copy(request, 0, packet, 1, (request.Length-2));
             return packet;
         }
         // Creates a byte array that contains "Bird Map" data
