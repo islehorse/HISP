@@ -276,7 +276,7 @@ jobs:
     - name: Git Submodule update
       run: git submodule update --init --recursive
 
-    # UPLOAD WEB
+    # UPLOAD WEBSERVER
 
     - name: Upload Website (master)
       uses: actions/upload-artifact@v4
