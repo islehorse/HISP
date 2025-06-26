@@ -26,20 +26,11 @@ Game relies on a SQL Server, any should work, but i have only tested it with Mar
 
 - APT:
 
-Install on Ubuntu via APT:
+Install on Ubuntu or Debian via APT:
 ```
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 34F644BC70C746CE48139C595129317F33AE659C
-sudo add-apt-repository 'deb http://deb.silica.codes debian main'
+sudo curl https://silica.codes/api/packages/islehorse/debian/repository.key -o /etc/apt/keyrings/forgejo-islehorse.asc
+echo "deb [signed-by=/etc/apt/keyrings/forgejo-islehorse.asc] https://silica.codes/api/packages/islehorse/debian debian main" | sudo tee -a /etc/apt/sources.list.d/hisp.list
 sudo apt update
-sudo apt install hisp
-```
-
-Install on Debian via APT:
-```
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 34F644BC70C746CE48139C595129317F33AE659C
-sudo  bash -c 'echo "deb http://deb.silica.codes debian main">>/etc/apt/sources.list'
-sudo apt update
-sudo apt install hisp
 ```
 
 Then simply edit /etc/hisp/server.properties & change to correct database credentials

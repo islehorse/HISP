@@ -10,6 +10,8 @@ defaults:
 jobs:
   build-linux:
     runs-on: ubuntu-latest
+    env:
+        AUTHENTICATION_TOKEN: ${{ secrets.SILICA_CODES_AUTH }}
     steps:
     - uses: actions/checkout@v2
       with:
@@ -94,6 +96,7 @@ jobs:
         mkdir debpackage
         dpkg-deb --build /tmp/debpkg/Debian64
         mv /tmp/debpkg/Debian64.deb debpackage/HISP-Debian-AMD64.deb
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage/HISP-Debian-AMD64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/main/upload
         
 # Upload LINUX
     - name: Upload linux-x64
