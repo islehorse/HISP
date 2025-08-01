@@ -52,7 +52,8 @@ namespace MPN00BS
 
         public static void CloseHorseIsleClient()
         {
-            clientProcess.Kill();
+            if(!clientProcess.HasExited)
+                clientProcess.Kill();
         }
         public static void StartHorseIsleClient(Action callback, string serverIp, int serverPort)
         {

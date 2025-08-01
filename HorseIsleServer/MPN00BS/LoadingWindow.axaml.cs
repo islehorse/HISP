@@ -12,10 +12,11 @@ namespace MPN00BS
     {
         private void OnClientExit()
         {
+            Logger.InfoPrint("Client closed, shutting down server.");
             try
             {
                 GameServer.ShutdownServer();
-            }catch(Exception) { }
+            }catch(Exception) { Environment.Exit(-1); }
         }
         public void OnServerStarted()
         {
@@ -40,6 +41,7 @@ namespace MPN00BS
                 ServerStarter.CloseHorseIsleClient();
             	ServerStarter.ShutdownHTTPServer();
                 this.Close();
+                Environment.Exit(0);
             });
         }
 
