@@ -163,7 +163,7 @@ namespace HISP.Server
                 {
                     DbCommand sqlCommand = db.CreateCommand();
                     sqlCommand.CommandText = "INSERT INTO World VALUES(0,0,0,@startDate,@version)";
-                    addWithValue(sqlCommand, "@startDate", (UInt32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
+                    addWithValue(sqlCommand, "@startDate", Convert.ToInt32((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds));
                     addWithValue(sqlCommand, "@version", ServerVersion.GetVersionString());
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
