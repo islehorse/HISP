@@ -76,11 +76,8 @@ namespace HISP.Cli
 
         private static string formatMessage(string type, string text, bool console)
         {
-#if OS_WINDOWS
-            string newline = "\r\n";
-#else
-            string newline = "\n";
-#endif
+
+            string newline = Environment.NewLine;
 
             string msg = DateTime.Now.ToString("MM-dd-yyyy HH:mm:ss") + ": [" + type + "] ";
             if (console && text.Length > (Console.WindowWidth - msg.Length) - newline.Length)

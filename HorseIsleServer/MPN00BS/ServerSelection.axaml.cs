@@ -34,6 +34,7 @@ namespace MPN00BS
             {
             	ServerStarter.ShutdownHTTPServer();
             	this.Close();
+                Environment.Exit(0);
             });
         }
     }
