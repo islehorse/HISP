@@ -75,7 +75,7 @@ namespace HISP.Server
             }
             catch (Exception e)
             {
-                Logger.WarnPrint(e.Message);
+                Logger.WarnPrint("Failed to run command: "+query+"\n"+e.Message);
                 return false;
             }
         }
@@ -118,15 +118,15 @@ namespace HISP.Server
                     Environment.Exit(1);
                 }
 
-                if (ConfigReader.SqlBackend == Database.SQL_BACKEND_SQLITE) TryExecuteSqlQuery(db, "PRAGMA journal_mode=WAL;");
+                if (ConfigReader.SqlBackend == Database.SQL_BACKEND_SQLITE) TryExecuteSqlQuery(db, "PRAGMA journal_mode=WAL");
 
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16), PassHash TEXT(128), Salt TEXT(128), Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(4000),IpAddress TEXT(1028),PrivateNotes Text(65535), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT, TotalLogins INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(100), Message Text(65535), TimeSent INT, BeenRead TEXT(3))");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT, PassHash TEXT, Salt TEXT, Gender TEXT, Admin TEXT, Moderator TEXT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE PRECISION, BankInterest DOUBLE PRECISION PRECISION, ProfilePage Text(4000),IpAddress TEXT,PrivateNotes Text(65535), CharId INT, ChatViolations INT,Subscriber TEXT, SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT, TotalLogins INT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT, Message Text(65535), TimeSent INT, BeenRead TEXT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS BuddyList(Id INT, IdFriend INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS MessageQueue(Id INT, Message TEXT(1028))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS World(Time INT, Day INT, Year INT, StartTime INT, LastLoadedInVersion TEXT(64))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Weather(Area TEXT(1028), Weather TEXT(64))");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS MessageQueue(Id INT, Message TEXT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS World(Time INT, Day INT, Year INT, StartTime INT, LastLoadedInVersion TEXT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Weather(Area TEXT, Weather TEXT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, RandomID INT, ItemID INT, Data INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT, Data INT)");
@@ -134,30 +134,30 @@ namespace HISP.Server
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Awards(playerId INT, awardId INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Jewelry(playerId INT, slot1 INT, slot2 INT, slot3 INT, slot4 INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS AbuseReports(ReportCreator TEXT(1028), Reporting TEXT(1028), ReportReason TEXT(1028))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS AbuseReports(ReportCreator TEXT, Reporting TEXT, ReportReason TEXT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Leaderboards(playerId INT, minigame TEXT, wins INT, looses INT, timesplayed INT, score INT, type TEXT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS NpcStartPoint(playerId INT, npcId INT, chatpointId INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS NpcPos(npcId INT, X INT, Y INT, UdlrPointer INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS PoetryRooms(poetId INT, X INT, Y INT, roomId INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS SavedDrawings(playerId INT, Drawing1 TEXT(65535), Drawing2 TEXT(65535), Drawing3 TEXT(65535))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DrawingRooms(roomId INT, Drawing TEXT(65535))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DressupRooms(roomId INT, peiceId INT, active TEXT(3), x INT, y INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Horses(randomId INT, ownerId INT, leaseTime INT, leaser INT, breed INT, name TEXT(128), description TEXT(4000), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT, hidden TEXT(3))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(4000), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS LastPlayer(roomId TEXT(1028), playerId INT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS SavedDrawings(playerId INT, Drawing1 TEXT, Drawing2 TEXT, Drawing3 TEXT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DrawingRooms(roomId INT, Drawing TEXT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DressupRooms(roomId INT, peiceId INT, active TEXT, x INT, y INT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Horses(randomId INT, ownerId INT, leaseTime INT, leaser INT, breed INT, name TEXT, description TEXT, sex TEXT, color TEXT, health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT, spoiled INT, magicUsed INT, hidden TEXT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT, description TEXT, sex TEXT, color TEXT, health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT, spoiled INT, magicUsed INT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS LastPlayer(roomId TEXT, playerId INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Tracking(playerId INT, what TEXT(128), count INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Treasure(randomId INT, x INT, y INT, value INT, type TEXT(128))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Ranches(ranchId INT, playerId INT, title TEXT(50), description TEXT(250), upgradeLevel INT, building1 INT, building2 INT, building3 INT, building4 INT, building5 INT, building6 INT, building7 INT, building8 INT, building9 INT, building10 INT, building11 INT, building12 INT, building13 INT, building14 INT, building15 INT, building16 INT, investedMoney INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS RiddlesComplete(playerId INT, riddleId INT, solved TEXT(1028))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Auctions(roomId INT, randomId INT, horseRandomId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT, Done TEXT(3))");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Tracking(playerId INT, what TEXT, count INT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Treasure(randomId INT, x INT, y INT, value INT, type TEXT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Ranches(ranchId INT, playerId INT, title TEXT, description TEXT, upgradeLevel INT, building1 INT, building2 INT, building3 INT, building4 INT, building5 INT, building6 INT, building7 INT, building8 INT, building9 INT, building10 INT, building11 INT, building12 INT, building13 INT, building14 INT, building15 INT, building16 INT, investedMoney INT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS BannedPlayers(playerId INT, ipAddress TEXT, reason TEXT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS RiddlesComplete(playerId INT, riddleId INT, solved TEXT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Auctions(roomId INT, randomId INT, horseRandomId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT, Done TEXT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS MutedPlayers(playerId INT, mutePlayerId INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS ItemPurchaseQueue(playerId INT, itemId INT, count INT)");
 
                 TryExecuteSqlQuery(db, "DROP TABLE OnlineUsers");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3), New TEXT(3))");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS OnlineUsers(playerId INT, Admin TEXT, Moderator TEXT, Subscribed TEXT, New TEXT)");
 
                 try
                 {
