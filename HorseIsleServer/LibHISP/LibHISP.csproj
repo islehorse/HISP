@@ -278,6 +278,6 @@
 
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command='python3 "$(ProjectDir)prebuild.py"' IgnoreExitCode="true" WorkingDirectory="$(SolutionDir)"/>
+    <Exec Command='python3 "$(ProjectDir)prebuild.py"' IgnoreExitCode="true"/>
   </Target>
 </Project>
