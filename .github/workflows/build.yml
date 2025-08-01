@@ -40,10 +40,10 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Linux64.pubxml
+        dotnet publish -p:PublishProfile=Linux64
         cd ..
         cd MPN00BS
-        dotnet publish -p:PublishProfile=Linux64.pubxml
+        dotnet publish -p:PublishProfile=Linux64
         cd ..
         
 # linux arm
@@ -51,14 +51,14 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=LinuxARM.pubxml
+        dotnet publish -p:PublishProfile=LinuxARM
         cd ..
 # linux arm64
     - name: Build linux-arm64
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=LinuxARM64.pubxml
+        dotnet publish -p:PublishProfile=LinuxARM64
         cd ..
 
         
@@ -156,20 +156,20 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Win64.pubxml
+        dotnet publish -p:PublishProfile=Win64
         cd ..
         cd MPN00BS
-        dotnet publish -p:PublishProfile=Win64.pubxml
+        dotnet publish -p:PublishProfile=Win64
         cd ..
 
     - name: Build win-x86
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Win32.pubxml
+        dotnet publish -p:PublishProfile=Win32
         cd ..
         cd MPN00BS
-        dotnet publish -p:PublishProfile=Win32.pubxml
+        dotnet publish -p:PublishProfile=Win32
         cd ..
 
 # arm64 build
@@ -177,7 +177,7 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=WinARM64.pubxml
+        dotnet publish -p:PublishProfile=WinARM64
         cd ..
 
 # Upload WINDOWS
@@ -240,16 +240,16 @@ jobs:
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Osx64.pubxml
+        dotnet publish -p:PublishProfile=Osx64
         cd ..
         cd MPN00BS
-        dotnet publish -p:PublishProfile=Osx64.pubxml
+        dotnet publish -p:PublishProfile=Osx64
         cd ..
     - name: Build mac-arm64
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=OsxARM64.pubxml
+        dotnet publish -p:PublishProfile=OsxARM64
         cd ..
     - name: Upload mac-x64
       uses: actions/upload-artifact@v4
