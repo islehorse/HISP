@@ -1,4 +1,5 @@
-﻿using HISP.Server;
+﻿using HISP.Cli.Properties;
+using HISP.Server;
 using System;
 using System.IO;
 using System.Threading;

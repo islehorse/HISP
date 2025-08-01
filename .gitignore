@@ -11,19 +11,27 @@
 *Thumbs.db
 *.DS_Store
 
+*build*
+*/build/*
+
+HorseIsleServer/N00BS/build/*
 HorseIsleServer/N00BS/obj/*
 HorseIsleServer/N00BS/bin/*
 
+HorseIsleServer/MPN00BS/build/*
 HorseIsleServer/MPN00BS/obj/*
 HorseIsleServer/MPN00BS/bin/*
 
+HorseIsleServer/HISPd/build/*
 HorseIsleServer/HISPd/obj/*
 HorseIsleServer/HISPd/bin/*
 
+HorseIsleServer/HISPtests/build/*
 HorseIsleServer/HISPtests/obj/*
 HorseIsleServer/HISPtests/bin/*
 
 
+HorseIsleServer/LibHISP/build/*
 HorseIsleServer/LibHISP/obj/*
 HorseIsleServer/LibHISP/bin/*
 HorseIsleServer/LibHISP/Resources/Versioning/*
