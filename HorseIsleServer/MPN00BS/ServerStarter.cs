@@ -97,7 +97,7 @@ namespace MPN00BS
             SetBaseDir();
             ConfigReader.ConfigurationFileName = Path.Combine(BaseDir, "server.properties");
             ConfigReader.OpenConfig();
-            ConfigReader.SqlLite = true;
+            ConfigReader.SqlBackend = Database.SQL_BACKEND_SQLITE;
             ConfigReader.LogLevel = 0;
             ConfigReader.CrossDomainPolicyFile = Path.Combine(BaseDir, ConfigReader.CrossDomainPolicyFile);
 
