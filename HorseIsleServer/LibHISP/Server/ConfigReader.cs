@@ -20,10 +20,10 @@ namespace HISP.Server
         public static string MapFile = "HI1.MAP";
         public static string GameData = "gamedata.json";
         public static string CrossDomainPolicyFile = "CrossDomainPolicy.xml";
+        public static string SqlBackend = "mariadb";
 
         public static int LogLevel = 4;
 
-        public static bool SqlLite = false;
         public static bool EnableSpamFilter = true;
         public static bool AllUsersSubbed = false;
         public static bool FixOfficalBugs = false;
@@ -105,8 +105,8 @@ namespace HISP.Server
                     case "enable_corrections":
                         EnableCorrections = (data == "true");
                         break;
-                    case "sql_lite":
-                        SqlLite = (data == "true");
+                    case "sql_backend":
+                        SqlBackend = data;
                         break;
                     case "enable_non_violation_check":
                         EnableNonViolations = (data == "true");
@@ -131,12 +131,7 @@ namespace HISP.Server
                         break;
                 }
 
-
-
             }
-
-
         }
-
     }
 }
