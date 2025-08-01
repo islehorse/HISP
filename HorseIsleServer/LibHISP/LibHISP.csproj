@@ -28,8 +28,8 @@
     </ContentWithTargetPath>
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="7.0.4" />
-    <PackageReference Include="MySqlConnector" Version="2.2.5" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.7" />
+    <PackageReference Include="MySqlConnector" Version="2.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
@@ -278,6 +278,6 @@
 
   
   <Target Name="PreBuild" BeforeTargets="PreBuildEvent">
-    <Exec Command="python3 $(ProjectDir)prebuild.py" />
+    <Exec Command='python3 "$(ProjectDir)prebuild.py"' IgnoreExitCode="true" WorkingDirectory="$(SolutionDir)"/>
   </Target>
 </Project>
