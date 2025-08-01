@@ -39,27 +39,20 @@ jobs:
     - name: Build linux-x64
       continue-on-error: false
       run: |
-        cd HISPd
-        dotnet publish -p:PublishProfile=Linux64
-        cd ..
-        cd MPN00BS
-        dotnet publish -p:PublishProfile=Linux64
-        cd ..
+        dotnet publish -c Linux -p:PublishProfile=Linux64 HISPd
+        dotnet publish -c Linux -p:PublishProfile=Linux64 MPN00BS
         
 # linux arm
     - name: Build linux-arm
       continue-on-error: false
       run: |
-        cd HISPd
-        dotnet publish -p:PublishProfile=LinuxARM
-        cd ..
+        dotnet publish -c Linux -p:PublishProfile=LinuxARM HISPd
+        
 # linux arm64
     - name: Build linux-arm64
       continue-on-error: false
       run: |
-        cd HISPd
-        dotnet publish -p:PublishProfile=LinuxARM64
-        cd ..
+        dotnet publish -c Linux -p:PublishProfile=LinuxARM64 HISPd
 
         
     - name: Build deb package
@@ -157,31 +150,22 @@ jobs:
     - name: Build win-x64
       continue-on-error: false
       run: |
-        cd HISPd
-        dotnet publish -p:PublishProfile=Win64
-        cd ..
-        cd MPN00BS
-        dotnet publish -p:PublishProfile=Win64
-        cd ..
+        dotnet publish -c Windows -p:PublishProfile=Win64 HISPd
+        dotnet publish -c Windows -p:PublishProfile=Win64 MPN00BS
 
     - name: Build win-x86
       continue-on-error: false
       run: |
         cd HISPd
-        dotnet publish -p:PublishProfile=Win32
-        cd ..
-        cd MPN00BS
-        dotnet publish -p:PublishProfile=Win32
-        cd ..
+        dotnet publish -c Windows -p:PublishProfile=Win32 HISPd
+        dotnet publish -c Windows -p:PublishProfile=Win32 MPN00BS
 
 # arm64 build
     - name: Build win-arm64
       continue-on-error: false
       run: |
-        cd HISPd
-        dotnet publish -p:PublishProfile=WinARM64
-        cd ..
-
+        dotnet publish -c Windows -p:PublishProfile=WinARM64 HISPd
+        
 # Upload WINDOWS
 
     - name: Upload win-x64
@@ -241,12 +225,8 @@ jobs:
     - name: Build mac-x64
       continue-on-error: false
       run: |
-        cd HISPd
-        dotnet publish -p:PublishProfile=Osx64
-        cd ..
-        cd MPN00BS
-        dotnet publish -p:PublishProfile=Osx64
-        cd ..
+        dotnet publish -c MacOS -p:PublishProfile=Osx64 HISPd
+        dotnet publish -c MacOS -p:PublishProfile=Osx64 MPN00BS
     - name: Build mac-arm64
       continue-on-error: false
       run: |
