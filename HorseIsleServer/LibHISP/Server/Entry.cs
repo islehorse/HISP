@@ -38,6 +38,8 @@ namespace HISP.Server
         {
             RegisterCrashHandler();
             Console.Title = ServerVersion.GetBuildString();
+            Logger.InfoPrint("Starting " + ServerVersion.GetBuildString());
+
             ConfigReader.OpenConfig();
             CrossDomainPolicy.GetPolicyFile();
             Database.OpenDatabase();
