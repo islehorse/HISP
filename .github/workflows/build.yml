@@ -156,7 +156,6 @@ jobs:
     - name: Build win-x86
       continue-on-error: false
       run: |
-        cd HISPd
         dotnet publish -c Windows -p:PublishProfile=Win32 HISPd
         dotnet publish -c Windows -p:PublishProfile=Win32 MPN00BS
 
