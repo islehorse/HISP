@@ -11,18 +11,18 @@ namespace HISP.Server
             Database.TryExecuteSqlQuery("UPDATE UserExt SET TotalLogins=0;");
 
             // Add New column to OnlineUsers.
-            Database.TryExecuteSqlQuery("ALTER TABLE OnlineUsers ADD COLUMN New TEXT(3);");
+            Database.TryExecuteSqlQuery("ALTER TABLE OnlineUsers ADD COLUMN New VARCHAR(3);");
             Database.TryExecuteSqlQuery("UPDATE OnlineUsers SET New=\"NO\";");
 
             // Alter sizes
-            Database.TryExecuteSqlQuery("ALTER TABLE UserExt CHANGE COLUMN ProfilePage ProfilePage TEXT(4000);");
-            Database.TryExecuteSqlQuery("ALTER TABLE UserExt CHANGE COLUMN PrivateNotes PrivateNotes TEXT(65535);");
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox CHANGE COLUMN Subject Subject TEXT(100);");
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox CHANGE COLUMN Message Message TEXT(65535);");
-            Database.TryExecuteSqlQuery("ALTER TABLE Horses CHANGE COLUMN description description TEXT(4000);");
-            Database.TryExecuteSqlQuery("ALTER TABLE WildHorse CHANGE COLUMN description description TEXT(4000);");
-            Database.TryExecuteSqlQuery("ALTER TABLE Ranches CHANGE COLUMN title title TEXT(50);");
-            Database.TryExecuteSqlQuery("ALTER TABLE Ranches CHANGE COLUMN description description TEXT(250);");
+            Database.TryExecuteSqlQuery("ALTER TABLE UserExt CHANGE COLUMN ProfilePage ProfilePage VARCHAR(4000);");
+            Database.TryExecuteSqlQuery("ALTER TABLE UserExt CHANGE COLUMN PrivateNotes PrivateNotes VARCHAR(65535);");
+            Database.TryExecuteSqlQuery("ALTER TABLE MailBox CHANGE COLUMN Subject Subject VARCHAR(100);");
+            Database.TryExecuteSqlQuery("ALTER TABLE MailBox CHANGE COLUMN Message Message VARCHAR(65535);");
+            Database.TryExecuteSqlQuery("ALTER TABLE Horses CHANGE COLUMN description description VARCHAR(4000);");
+            Database.TryExecuteSqlQuery("ALTER TABLE WildHorse CHANGE COLUMN description description VARCHAR(4000);");
+            Database.TryExecuteSqlQuery("ALTER TABLE Ranches CHANGE COLUMN title title VARCHAR(50);");
+            Database.TryExecuteSqlQuery("ALTER TABLE Ranches CHANGE COLUMN description description VARCHAR(250);");
         }
 
         private static void fixupVersion1_1()
@@ -35,7 +35,7 @@ namespace HISP.Server
         private static void fixupVersion1_7_20()
         {
             // Add LastLoadedInVersion column to World.
-            Database.TryExecuteSqlQuery("ALTER TABLE World ADD COLUMN LastLoadedInVersion TEXT(64)");
+            Database.TryExecuteSqlQuery("ALTER TABLE World ADD COLUMN LastLoadedInVersion VARCHAR(64)");
             Database.TryExecuteSqlQuery("UPDATE World SET LastLoadedInVersion=\"v1.7.20\";");
         }
 
