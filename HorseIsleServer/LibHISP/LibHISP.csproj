@@ -155,17 +155,6 @@
     <DebugType>none</DebugType>
   </PropertyGroup>
 
-
-
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'">
-    <PlatformTarget>ARM</PlatformTarget>
-    <Optimize>False</Optimize>
-    <DefineConstants>DEBUG;TRACE;OS_DEBUG;ARCH_ARM</DefineConstants>
-    <DebugType>full</DebugType>
-  </PropertyGroup>
-
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
     <PlatformTarget>ARM64</PlatformTarget>
     <Optimize>False</Optimize>
