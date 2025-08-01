@@ -25,7 +25,6 @@ namespace HISP.Server
         public const string SQL_BACKEND_SQLITE = "sqllite";
         public const string SQL_BACKEND_POSTGRES = "postgres";
 
-
         public static string ConnectionString = "";
         private static int addWithValue(DbCommand cmd, string param, object value)
         {
@@ -49,7 +48,8 @@ namespace HISP.Server
             else if (ConfigReader.SqlBackend == Database.SQL_BACKEND_POSTGRES)
                 return new NpgsqlConnection(ConnectionString);
 
-            new Exception("Invalid sql backend: " + ConfigReader.SqlBackend);
+            Logger.ErrorPrint("SqlBackend has invalid value: " + ConfigReader.SqlBackend);
+            Environment.Exit(1);
             return null;
         }
 
@@ -61,24 +61,31 @@ namespace HISP.Server
                 SqliteConnection.ClearAllPools();
         }
 
+        public static bool TryExecuteSqlQuery(DbConnection db, string query)
+        {
+
+            DbCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = query;
+            try
+            {
+                sqlCommand.ExecuteNonQuery();
+                return true;
+            }
+            catch (Exception e)
+            {
+                Logger.WarnPrint(e.Message);
+                return false;
+            }
+        }
         public static bool TryExecuteSqlQuery(string query)
         {
             using (DbConnection db = connectDb())
             {
                 db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = query;
-                try
-                {
-                    sqlCommand.ExecuteNonQuery();
-                    return true;
-                }
-                catch (Exception)
-                {
-                    return false;
-                };
+                return TryExecuteSqlQuery(db, query);
             }
         }
+
         public static void OpenDatabase()
         {
             if (ConfigReader.SqlBackend == Database.SQL_BACKEND_MARIADB)
@@ -97,592 +104,74 @@ namespace HISP.Server
 
 
             using (DbConnection db = connectDb())
+            {
+
+                try
                 {
-
-                    try
-                    {
-                        db.Open();
-                    }
-                    catch (DbException e)
-                    {
-                        Logger.ErrorPrint("Failed to connect to Database: " + e.Message);
-                        Environment.Exit(1);
-                    }
-
-                    string SqlPragma = "PRAGMA journal_mode=WAL;";
-
-                    string UserTable = "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16), PassHash TEXT(128), Salt TEXT(128), Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
-                    string ExtTable = "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(4000),IpAddress TEXT(1028),PrivateNotes Text(65535), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT, TotalLogins INT)";
-                    string MailTable = "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(100), Message Text(65535), TimeSent INT, BeenRead TEXT(3))";
-                    string BuddyTable = "CREATE TABLE IF NOT EXISTS BuddyList(Id INT, IdFriend INT)";
-                    string MessageQueue = "CREATE TABLE IF NOT EXISTS MessageQueue(Id INT, Message TEXT(1028))";
-                    string WorldTable = "CREATE TABLE IF NOT EXISTS World(Time INT, Day INT, Year INT, StartTime INT, LastLoadedInVersion TEXT(64))";
-                    string WeatherTable = "CREATE TABLE IF NOT EXISTS Weather(Area TEXT(1028), Weather TEXT(64))";
-                    string InventoryTable = "CREATE TABLE IF NOT EXISTS Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)";
-                    string ShopInventory = "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, RandomID INT, ItemID INT, Data INT)";
-                    string DroppedItems = "CREATE TABLE IF NOT EXISTS DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT, Data INT)";
-                    string TrackedQuest = "CREATE TABLE IF NOT EXISTS TrackedQuest(playerId INT, questId INT, timesCompleted INT)";
-                    string CompetitionGear = "CREATE TABLE IF NOT EXISTS CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)";
-                    string Awards = "CREATE TABLE IF NOT EXISTS Awards(playerId INT, awardId INT)";
-                    string Jewelry = "CREATE TABLE IF NOT EXISTS Jewelry(playerId INT, slot1 INT, slot2 INT, slot3 INT, slot4 INT)";
-                    string AbuseReorts = "CREATE TABLE IF NOT EXISTS AbuseReports(ReportCreator TEXT(1028), Reporting TEXT(1028), ReportReason TEXT(1028))";
-                    string Leaderboards = "CREATE TABLE IF NOT EXISTS Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
-                    string NpcStartPoint = "CREATE TABLE IF NOT EXISTS NpcStartPoint(playerId INT, npcId INT, chatpointId INT)";
-                    string NpcPos = "CREATE TABLE IF NOT EXISTS NpcPos(npcId INT, X INT, Y INT, UdlrPointer INT)";
-                    string PoetryRooms = "CREATE TABLE IF NOT EXISTS PoetryRooms(poetId INT, X INT, Y INT, roomId INT)";
-                    string SavedDrawings = "CREATE TABLE IF NOT EXISTS SavedDrawings(playerId INT, Drawing1 TEXT(65535), Drawing2 TEXT(65535), Drawing3 TEXT(65535))";
-                    string DrawingRooms = "CREATE TABLE IF NOT EXISTS DrawingRooms(roomId INT, Drawing TEXT(65535))";
-                    string DressupRooms = "CREATE TABLE IF NOT EXISTS DressupRooms(roomId INT, peiceId INT, active TEXT(3), x INT, y INT)";
-                    string Horses = "CREATE TABLE IF NOT EXISTS Horses(randomId INT, ownerId INT, leaseTime INT, leaser INT, breed INT, name TEXT(128), description TEXT(4000), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT, hidden TEXT(3))";
-                    string WildHorse = "CREATE TABLE IF NOT EXISTS WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(4000), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
-                    string LastPlayer = "CREATE TABLE IF NOT EXISTS LastPlayer(roomId TEXT(1028), playerId INT)";
-                    string SolvedRealTimeRiddles = "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)";
-                    string TrackingStats = "CREATE TABLE IF NOT EXISTS Tracking(playerId INT, what TEXT(128), count INT)";
-                    string Treasure = "CREATE TABLE IF NOT EXISTS Treasure(randomId INT, x INT, y INT, value INT, type TEXT(128))";
-                    string Ranches = "CREATE TABLE IF NOT EXISTS Ranches(ranchId INT, playerId INT, title TEXT(50), description TEXT(250), upgradeLevel INT, building1 INT, building2 INT, building3 INT, building4 INT, building5 INT, building6 INT, building7 INT, building8 INT, building9 INT, building10 INT, building11 INT, building12 INT, building13 INT, building14 INT, building15 INT, building16 INT, investedMoney INT)";
-                    string BannedPlayers = "CREATE TABLE IF NOT EXISTS BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))";
-                    string RiddlesComplete = "CREATE TABLE IF NOT EXISTS RiddlesComplete(playerId INT, riddleId INT, solved TEXT(1028))";
-                    string AuctionTable = "CREATE TABLE IF NOT EXISTS Auctions(roomId INT, randomId INT, horseRandomId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT, Done TEXT(3))";
-                    string SolvedRealTimeRiddle = "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)";
-                    string MutedPlayers = "CREATE TABLE IF NOT EXISTS MutedPlayers(playerId INT, mutePlayerId INT)";
-                    string ItemQueue = "CREATE TABLE IF NOT EXISTS ItemPurchaseQueue(playerId INT, itemId INT, count INT)";
-                    string DeleteOnlineUsers = "DROP TABLE OnlineUsers";
-                    string OnlineUsers = "CREATE TABLE IF NOT EXISTS OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3), New TEXT(3))";
-
-                    if (ConfigReader.SqlBackend == Database.SQL_BACKEND_SQLITE)
-                    {
-                        try
-                        {
-                            DbCommand sqlCommand = db.CreateCommand();
-                            sqlCommand.CommandText = SqlPragma;
-                            sqlCommand.ExecuteNonQuery();
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.WarnPrint(e.Message);
-                        }
-                    }
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = ItemQueue;
-                        sqlCommand.ExecuteNonQuery();
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = SolvedRealTimeRiddles;
-                        sqlCommand.ExecuteNonQuery();
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = MutedPlayers;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = MessageQueue;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = SolvedRealTimeRiddle;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = DressupRooms;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = AuctionTable;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = NpcPos;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = RiddlesComplete;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = Ranches;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = Treasure;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = SavedDrawings;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = DrawingRooms;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = TrackingStats;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = Horses;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = UserTable;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = AbuseReorts;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = ExtTable;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = MailTable;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = BuddyTable;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = Jewelry;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = WeatherTable;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = Awards;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = DroppedItems;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = InventoryTable;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = ShopInventory;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = TrackedQuest;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = PoetryRooms;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = BannedPlayers;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = CompetitionGear;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = NpcStartPoint;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = LastPlayer;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = WildHorse;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = WorldTable;
-                        sqlCommand.ExecuteNonQuery();
-
-                        sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = "INSERT INTO World VALUES(0,0,0,@startDate,@version)";
-                        addWithValue(sqlCommand, "@startDate", (UInt32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
-                        addWithValue(sqlCommand, "@version", ServerVersion.GetVersionString());
-                        sqlCommand.Prepare();
-                        sqlCommand.ExecuteNonQuery();
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = Leaderboards;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = DeleteOnlineUsers;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
-
-                    try
-                    {
-                        DbCommand sqlCommand = db.CreateCommand();
-                        sqlCommand.CommandText = OnlineUsers;
-                        sqlCommand.ExecuteNonQuery();
-
-                    }
-                    catch (Exception e)
-                    {
-                        Logger.WarnPrint(e.Message);
-                    }
-                    ;
+                    db.Open();
                 }
+                catch (DbException e)
+                {
+                    Logger.ErrorPrint("Failed to connect to Database: " + e.Message);
+                    Environment.Exit(1);
+                }
+
+                if (ConfigReader.SqlBackend == Database.SQL_BACKEND_SQLITE) TryExecuteSqlQuery(db, "PRAGMA journal_mode=WAL;";
+
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16), PassHash TEXT(128), Salt TEXT(128), Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE, BankInterest DOUBLE, ProfilePage Text(4000),IpAddress TEXT(1028),PrivateNotes Text(65535), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT, TotalLogins INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(100), Message Text(65535), TimeSent INT, BeenRead TEXT(3))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS BuddyList(Id INT, IdFriend INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS MessageQueue(Id INT, Message TEXT(1028))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS World(Time INT, Day INT, Year INT, StartTime INT, LastLoadedInVersion TEXT(64))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Weather(Area TEXT(1028), Weather TEXT(64))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, RandomID INT, ItemID INT, Data INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT, Data INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS TrackedQuest(playerId INT, questId INT, timesCompleted INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Awards(playerId INT, awardId INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Jewelry(playerId INT, slot1 INT, slot2 INT, slot3 INT, slot4 INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS AbuseReports(ReportCreator TEXT(1028), Reporting TEXT(1028), ReportReason TEXT(1028))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Leaderboards(playerId INT, minigame TEXT(128), wins INT, looses INT, timesplayed INT, score INT, type TEXT(128))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS NpcStartPoint(playerId INT, npcId INT, chatpointId INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS NpcPos(npcId INT, X INT, Y INT, UdlrPointer INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS PoetryRooms(poetId INT, X INT, Y INT, roomId INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS SavedDrawings(playerId INT, Drawing1 TEXT(65535), Drawing2 TEXT(65535), Drawing3 TEXT(65535))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DrawingRooms(roomId INT, Drawing TEXT(65535))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DressupRooms(roomId INT, peiceId INT, active TEXT(3), x INT, y INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Horses(randomId INT, ownerId INT, leaseTime INT, leaser INT, breed INT, name TEXT(128), description TEXT(4000), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT, hidden TEXT(3))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(4000), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS LastPlayer(roomId TEXT(1028), playerId INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Tracking(playerId INT, what TEXT(128), count INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Treasure(randomId INT, x INT, y INT, value INT, type TEXT(128))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Ranches(ranchId INT, playerId INT, title TEXT(50), description TEXT(250), upgradeLevel INT, building1 INT, building2 INT, building3 INT, building4 INT, building5 INT, building6 INT, building7 INT, building8 INT, building9 INT, building10 INT, building11 INT, building12 INT, building13 INT, building14 INT, building15 INT, building16 INT, investedMoney INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS RiddlesComplete(playerId INT, riddleId INT, solved TEXT(1028))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Auctions(roomId INT, randomId INT, horseRandomId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT, Done TEXT(3))";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS MutedPlayers(playerId INT, mutePlayerId INT)";
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS ItemPurchaseQueue(playerId INT, itemId INT, count INT)";
+
+                TryExecuteSqlQuery(db, "DROP TABLE OnlineUsers");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3), New TEXT(3))";
+
+                try
+                {
+                    DbCommand sqlCommand = db.CreateCommand();
+                    sqlCommand.CommandText = "INSERT INTO World VALUES(0,0,0,@startDate,@version)";
+                    addWithValue(sqlCommand, "@startDate", (UInt32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
+                    addWithValue(sqlCommand, "@version", ServerVersion.GetVersionString());
+                    sqlCommand.Prepare();
+                    sqlCommand.ExecuteNonQuery();
+                }
+                catch (Exception e)
+                {
+                    Logger.WarnPrint(e.Message);
+                };
+
+            }
 
             DataFixerUpper.FixUpDb();
         }
