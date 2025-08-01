@@ -122,7 +122,7 @@ namespace HISP.Server
 
 
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Users(Id INT, Username VARCHAR(16), PassHash VARCHAR(128), Salt VARCHAR(128), Gender VARCHAR(16), Admin VARCHAR(3), Moderator VARCHAR(3))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE PRECISION, BankInterest DOUBLE PRECISION, ProfilePage Text(4000),IpAddress VARCHAR(1028),PrivateNotes Text(65535), CharId INT, ChatViolations INT,Subscriber VARCHAR(3), SubscribedUntil INT,  Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT, TotalLogins INT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE PRECISION, BankInterest DOUBLE PRECISION, ProfilePage VARCHAR(4000),IpAddress VARCHAR(1028),PrivateNotes VARCHAR(65535), CharId INT, ChatViolations INT,Subscriber VARCHAR(3), SubscribedUntil INT, Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT, TotalLogins INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject VARCHAR(100), Message VARCHAR(65535), TimeSent INT, BeenRead VARCHAR(3))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS BuddyList(Id INT, IdFriend INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS MessageQueue(Id INT, Message VARCHAR(1028))");
