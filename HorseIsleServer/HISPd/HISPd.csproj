@@ -37,7 +37,7 @@
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
     <AnalysisLevel>none</AnalysisLevel>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
-    <Copyright>Public Domain, 2022</Copyright>
+    <Copyright>Public Domain, 2025</Copyright>
     <PackageProjectUrl>https://islehorse.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/islehorse/HISP</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
