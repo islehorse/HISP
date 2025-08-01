@@ -59,6 +59,8 @@ namespace HISP.Server
                 MySqlConnection.ClearAllPools();
             else if (ConfigReader.SqlBackend == Database.SQL_BACKEND_SQLITE)
                 SqliteConnection.ClearAllPools();
+            else if(ConfigReader.SqlBackend == Database.SQL_BACKEND_POSTGRES)
+                NpgsqlConnection.ClearAllPools();
         }
 
         public static bool TryExecuteSqlQuery(DbConnection db, string query)
