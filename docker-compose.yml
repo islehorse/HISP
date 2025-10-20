@@ -1,0 +1,12 @@
+services:
+  hispd:
+    build: .
+    container_name: hispd
+    environment:
+      - HISP_CONF_FILE=/etc/hisp/server.properties
+      - HISP_BASE_DIR=/Build
+    volumes:
+      - /etc/hisp:/etc/hisp
+    ports:
+      - 12321:12321
+    restart: unless-stopped
