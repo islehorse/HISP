@@ -1,15 +1,16 @@
+using HISP.Game;
 using HISP.Game.Chat;
 using HISP.Game.Horse;
 using HISP.Game.Items;
 using HISP.Game.Services;
 using HISP.Game.SwfModules;
-using HISP.Game;
 using HISP.Security;
 using HISP.Server;
 using HTTP;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using static MPN00BS.MessageBox;
 
 namespace MPN00BS
@@ -113,6 +114,9 @@ namespace MPN00BS
         }
         public static void StartHispServer(Action ProgressCallback, Action UserCreationCallback, Action ServerStartedCallback, Action OnShutdown)
         {
+            AppDomain.CurrentDomain.ProcessExit += HorseIsleClientExited;
+            PosixSignalRegistration.Create(PosixSignal.SIGTERM, (_) => { GameServer.ShutdownServer("Server process received SIGTERM."); });
+            PosixSignalRegistration.Create(PosixSignal.SIGQUIT, (_) => { GameServer.ShutdownServer("Server process received SIGQUIT."); });
 
             Entry.RegisterCrashHandler();
             Logger.SetCallback(ShowCrash);
@@ -238,11 +242,8 @@ namespace MPN00BS
             try
             {
 
-#if OS_LINUX || OS_MACOS
                 cs = new ContentServer("127.0.0.1", 12322);
-#else
-                cs = new ContentServer("127.0.0.1", 80);
-#endif
+
                 string clientFolder = Path.Combine(Directory.GetCurrentDirectory(), "client");
                 string[] fileList = Directory.GetFiles(clientFolder, "*", SearchOption.AllDirectories);
                 foreach (string file in fileList){

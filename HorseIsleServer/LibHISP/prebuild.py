@@ -14,7 +14,7 @@ def update_asm_info(assemblyinfofile):
     global commit_tag
     global commit_branch
     global assembly_version
-    print("Updating Verson inside: "+assemblyinfofile)
+    print("Updating Version inside: "+assemblyinfofile)
     lines = open(assemblyinfofile, "rb").readlines()
     for i in range(0,len(lines)):
         if lines[i].startswith(b"[assembly: AssemblyVersion(\""):
@@ -46,6 +46,12 @@ try:
     commit_branch   =  subprocess.run(['git', 'branch', '--show-current'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
 except FileNotFoundError:
     pass
+
+if commit_hash == "":
+    print("Commit hash is empty, using sane defaults")
+    commit_hash    = "0"*40
+    commit_tag     = "v0.0.0"
+    commit_branch  = "master"
 
 # Get current time and date of this build
 commit_date = datetime.datetime.now().strftime("%d/%m/%Y")

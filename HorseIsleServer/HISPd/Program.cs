@@ -2,6 +2,7 @@
 using HISP.Server;
 using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 
 namespace HISP.Cli
@@ -110,6 +111,8 @@ namespace HISP.Cli
         public static void Main(string[] args)
         {
             AppDomain.CurrentDomain.ProcessExit += ProcessQuitHandler;
+            PosixSignalRegistration.Create(PosixSignal.SIGTERM, (_) => { GameServer.ShutdownServer("Server process received SIGTERM."); });
+            PosixSignalRegistration.Create(PosixSignal.SIGQUIT, (_) => { GameServer.ShutdownServer("Server process received SIGQUIT."); });
 
             string baseDir = Directory.GetCurrentDirectory();
             Logger.SetCallback(LogStdout);
@@ -126,7 +129,7 @@ namespace HISP.Cli
                     case "--install-service":
 #if OS_LINUX
                         File.WriteAllBytes("/etc/systemd/system/HISP.service", Resources.HISPService);
-                        LogStdout(false, "INFO", "Crreated Service! enable it with \"sudo systemctl enable HISP\"");
+                        LogStdout(false, "INFO", "Created Service! enable it with \"sudo systemctl enable HISP\"");
 #else
                         LogStdout(true, "ERROR", "Installing as a service unsupported on this platform");
 #endif
@@ -159,12 +162,12 @@ namespace HISP.Cli
                 }
             }
 
-            if (hispConfVar != null)
+            if (hispConfVar != null && hispConfVar != "")
             {
                 ConfigReader.ConfigurationFileName = hispConfVar;
             }
             
-            if (hispLogVar != null)
+            if (hispLogVar != null && hispLogVar != "")
             {
                 LogFile = hispLogVar;
                 Logger.SetCallback(LogToFile);
@@ -174,7 +177,7 @@ namespace HISP.Cli
                 LogFile = Path.Combine(baseDir, "crash.log");
             }
 
-            if (hispBaseDir != null)
+            if (hispBaseDir != null && hispBaseDir != "")
             {
                 baseDir = hispBaseDir;
                 Directory.SetCurrentDirectory(baseDir);
