@@ -113,8 +113,12 @@ namespace HISP.Security
                 byte[] salt = Database.GetPasswordSalt(username);
                 byte[] hashedPassword = HashAndSalt(password, salt);
 
-                if (Enumerable.SequenceEqual(expectedPassword, hashedPassword))
-                    return true;
+                if (Enumerable.SequenceEqual(expectedPassword, hashedPassword)) return true;
+            }
+            else if(ConfigReader.SigninAsSignup)
+            {
+                CreateAccount(username, password, "FEMALE", false, false);
+                return true;
             }
             return false;
         }
