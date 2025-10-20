@@ -5,6 +5,7 @@ services:
     environment:
       - HISP_CONF_FILE=/etc/hisp/server.properties
       - HISP_BASE_DIR=/Build
+      - HISP_LOG_FILE=stdout
     volumes:
       - /etc/hisp:/etc/hisp
     ports:

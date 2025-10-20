@@ -172,6 +172,11 @@ namespace HISP.Cli
                 LogFile = hispLogVar;
                 Logger.SetCallback(LogToFile);
             }
+            else if(hispLogVar == "stdout")
+            {
+                LogFile = Path.Combine(baseDir, "crash.log");
+                Logger.SetCallback(LogStdout);
+            }
             else
             {
                 LogFile = Path.Combine(baseDir, "crash.log");
