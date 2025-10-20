@@ -1,5 +1,8 @@
 ﻿using HISP.Properties;
+using System;
+using System.Collections;
 using System.IO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HISP.Server
 {
@@ -91,6 +94,80 @@ namespace HISP.Server
                 configFilename = value; 
             }
         }
+
+        private static void readConfigKey(string key, string value)
+        {
+            switch (key.ToLowerInvariant())
+            {
+                case "port":
+                    Port = int.Parse(value);
+                    break;
+                case "ip":
+                    BindIP = value;
+                    break;
+                case "db_ip":
+                    DatabaseIP = value;
+                    break;
+                case "db_username":
+                    DatabaseUsername = value;
+                    break;
+                case "db_password":
+                    DatabasePassword = value;
+                    break;
+                case "db_name":
+                    DatabaseName = value;
+                    break;
+                case "db_port":
+                    DatabasePort = int.Parse(value);
+                    break;
+                case "map":
+                    MapFile = value;
+                    break;
+                case "motd":
+                    Motd = value;
+                    break;
+                case "gamedata":
+                    GameData = value;
+                    break;
+                case "crossdomain":
+                    CrossDomainPolicyFile = value;
+                    break;
+                case "all_users_subscribed":
+                    AllUsersSubbed = (value == "true");
+                    break;
+                case "enable_corrections":
+                    EnableCorrections = (value == "true");
+                    break;
+                case "sql_backend":
+                    SqlBackend = value;
+                    break;
+                case "enable_non_violation_check":
+                    EnableNonViolations = (value == "true");
+                    break;
+                case "enable_spam_filter":
+                    EnableSpamFilter = (value == "true");
+                    break;
+                case "enable_websocket":
+                    EnableWebSocket = (value == "true");
+                    break;
+                case "signin_as_signup":
+                    SigninAsSignup = (value == "true");
+                    break;
+                case "fix_offical_bugs":
+                    FixOfficalBugs = (value == "true");
+                    break;
+                case "enable_word_filter":
+                    EnableSwearFilter = (value == "true");
+                    break;
+                case "intrest_rate":
+                    IntrestRate = int.Parse(value);
+                    break;
+                case "log_level":
+                    LogLevel = int.Parse(value);
+                    break;
+            }
+        }
+
         public static void OpenConfig()
         {
             if (!File.Exists(ConfigurationFileName))
@@ -117,80 +194,23 @@ namespace HISP.Server
 
                 string key = dataPair[0];
                 string data = dataPair[1];
+
                 /*
                  *  Parse configuration file
                  */
 
-                switch (key)
-                {
-                    case "port":
-                        Port = int.Parse(data);
-                        break;
-                    case "ip":
-                        BindIP = data;
-                        break;
-                    case "db_ip":
-                        DatabaseIP = data;
-                        break;
-                    case "db_username":
-                        DatabaseUsername = data;
-                        break;
-                    case "db_password":
-                        DatabasePassword = data;
-                        break;
-                    case "db_name":
-                        DatabaseName = data;
-                        break;
-                    case "db_port":
-                        DatabasePort = int.Parse(data);
-                        break;
-                    case "map":
-                        MapFile = data;
-                        break;
-                    case "motd":
-                        Motd = data;
-                        break;
-                    case "gamedata":
-                        GameData = data;
-                        break;
-                    case "crossdomain":
-                        CrossDomainPolicyFile = data;
-                        break;
-                    case "all_users_subscribed":
-                        AllUsersSubbed = (data == "true");
-                        break;
-                    case "enable_corrections":
-                        EnableCorrections = (data == "true");
-                        break;
-                    case "sql_backend":
-                        SqlBackend = data;
-                        break;
-                    case "enable_non_violation_check":
-                        EnableNonViolations = (data == "true");
-                        break;
-                    case "enable_spam_filter":
-                        EnableSpamFilter = (data == "true");
-                        break;
-                    case "enable_websocket":
-                        EnableWebSocket = (data == "true");
-                        break;
-                    case "signin_as_signup":
-                        SigninAsSignup = (data == "true");
-                        break;
-                    case "fix_offical_bugs":
-                        FixOfficalBugs = (data == "true");
-                        break;
-                    case "enable_word_filter":
-                        EnableSwearFilter = (data == "true");
-                        break;
-                    case "intrest_rate":
-                        IntrestRate = int.Parse(data);
-                        break;
-                    case "log_level":
-                        LogLevel = int.Parse(data);
-                        break;
-                }
+                readConfigKey(key, data);
 
+            }
+            foreach (DictionaryEntry entry in Environment.GetEnvironmentVariables())
+            {
+                const string prefix = "HISP_";
+                if (entry.Key is null) continue;
+                string eKey = (entry.Key as string).ToUpperInvariant();
+                string eValue = (entry.Value as string);
+
+                if (eKey.StartsWith(prefix))
+                    readConfigKey(eKey.Substring(prefix.Length), eValue);
             }
         }
     }
