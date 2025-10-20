@@ -3,11 +3,33 @@ services:
     build: .
     container_name: hispd
     environment:
-      - HISP_CONFIG_DIR=/etc/hisp
-      - HISP_ASSETS_DIR=/usr/bin/hisp
-      - HISP_LOG_FILE=stdout
+      HISP_DB_IP: mariadb
+      HISP_DB_NAME: game1
+      HISP_DB_USERNAME: horseisle
+      HISP_DB_PASSWORD: test123
+      HISP_SQL_BACKEND: mariadb
     volumes:
       - /etc/hisp:/etc/hisp
     ports:
       - 12321:12321
     restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+  mariadb:
+    image: mariadb:latest
+    container_name: hisp-db
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: change_me
+      MARIADB_DATABASE: game1
+      MARIADB_USER: horseisle
+      MARIADB_PASSWORD: test123
+    volumes:
+      - /var/lib/hisp/:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3

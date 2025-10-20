@@ -14,5 +14,9 @@ RUN dotnet publish -c Linux -p:PublishProfile=Linux64 HISPd
 FROM mcr.microsoft.com/dotnet/runtime:9.0-noble AS build-release
 COPY --from=build /Build/HorseIsleServer/HISPd/build/Linux-x64 /usr/bin/hisp
 
+ENV HISP_CONFIG_DIR /etc/hisp
+ENV HISP_ASSETS_DIR /usr/bin/hisp
+ENV HISP_LOG_FILE stdout
+
 WORKDIR /usr/bin/hisp
 ENTRYPOINT ["/usr/bin/hisp/HISPd"]
