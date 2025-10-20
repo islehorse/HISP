@@ -8,13 +8,13 @@ using HISP.Security;
 
 using System;
 using System.Diagnostics;
+using System.IO;
 
 namespace HISP.Server
 {
     public static class Entry
     {
         // "Entry Point"
-
         private static void defaultOnShutdownCallback()
         {
             Process.GetCurrentProcess().Close();
@@ -38,6 +38,8 @@ namespace HISP.Server
         {
             RegisterCrashHandler();
             Console.Title = ServerVersion.GetBuildString();
+            Directory.SetCurrentDirectory(ConfigReader.ConfigDirectory);
+
             Logger.InfoPrint("Starting " + ServerVersion.GetBuildString());
 
             ConfigReader.OpenConfig();
