@@ -4637,8 +4637,6 @@ namespace HISP.Server
                 addWithValue(sqlCommand, "@moderator", moderator ? "YES" : "NO");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-
-
             }
         }
 
@@ -4648,8 +4646,8 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
                 db.Open();
-                if (CheckUserExtExists(id)) // user allready exists!
-                    throw new Exception("Userid " + id + " Allready in UserExt.");
+                if (CheckUserExtExists(id)) // user already exists!
+                    throw new Exception("Userid " + id + " Already in UserExt.");
 
                 DbCommand sqlCommand = db.CreateCommand();
                 sqlCommand.CommandText = "INSERT INTO UserExt VALUES(@id,@x,@y,@timestamp,0,0,0,0,'','','',0,0,'NO',0,0,1000,1000,1000, 180,1)";

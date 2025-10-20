@@ -34,7 +34,8 @@ namespace HISP.Server
         public static bool EnableNonViolations = true;
 
         public static bool EnableWebSocket = true;
-        
+        public static bool SigninAsSignup = true;
+
         public static string ConfigDirectory = Directory.GetCurrentDirectory();
         public static string AssetsDirectory = Directory.GetCurrentDirectory();
 
@@ -172,6 +173,9 @@ namespace HISP.Server
                         break;
                     case "enable_websocket":
                         EnableWebSocket = (data == "true");
+                        break;
+                    case "signin_as_signup":
+                        SigninAsSignup = (data == "true");
                         break;
                     case "fix_offical_bugs":
                         FixOfficalBugs = (data == "true");
