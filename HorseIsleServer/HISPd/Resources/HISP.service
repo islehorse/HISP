@@ -25,7 +25,7 @@ Group=horseisle
 WorkingDirectory=/etc/hisp
 ExecStart=/usr/bin/HISPd
 
-Environment=USER=horseisle HOME=/etc/hisp HISP_BASE_DIR=/etc/hisp HISP_CONF_FILE=/etc/hisp/server.properties HISP_LOG_FILE=/var/log/hisp/hisp.log
+Environment=USER=horseisle HOME=/etc/hisp HISP_CONFIG_DIR=/etc/hisp HISP_ASSETS_DIR=/etc/hisp HISP_LOG_FILE=/var/log/hisp/hisp.log
 
 [Install]
 WantedBy=multi-user.target

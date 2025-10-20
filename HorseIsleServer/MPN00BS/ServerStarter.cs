@@ -22,7 +22,6 @@ namespace MPN00BS
         public static bool HasServerStarted = false;
         private static Process clientProcess = new Process();
         private static Action HorseIsleClientExitCallback;
-        public static string BaseDir = "";
         private static ContentServer cs = null;
         private static void addToList(string path)
         {
@@ -41,7 +40,7 @@ namespace MPN00BS
         {
             if (type == "CRASH")
             {
-                File.AppendAllText(Path.Combine(BaseDir, "crash.log"), text);
+                File.AppendAllText(Path.Combine(ConfigReader.ConfigDirectory, "crash.log"), text);
                 MessageBox.Show(null, text, type, MessageBoxButtons.Ok);
             }
         }
@@ -90,27 +89,20 @@ namespace MPN00BS
             clientProcess.EnableRaisingEvents = true;
             clientProcess.Exited += HorseIsleClientExited;
             clientProcess.Start();
-            
-            
         }
 
         public static void ReadServerProperties()
         {
-            SetBaseDir();
-            ConfigReader.ConfigurationFileName = Path.Combine(BaseDir, "server.properties");
+            SetConfigDir();
             ConfigReader.OpenConfig();
             ConfigReader.SqlBackend = Database.SQL_BACKEND_SQLITE;
             ConfigReader.LogLevel = 0;
-            ConfigReader.CrossDomainPolicyFile = Path.Combine(BaseDir, ConfigReader.CrossDomainPolicyFile);
-
 
             // Compatibility patch
-            if (File.Exists(Path.Combine(BaseDir, "game1.db.db")))
+            if (File.Exists(Path.Combine(ConfigReader.ConfigDirectory, "game1.db.db")))
             {
-                File.Move(Path.Combine(BaseDir, "game1.db.db"), Path.Combine(BaseDir, "game1.db"));
+                File.Move(Path.Combine(ConfigReader.ConfigDirectory, "game1.db.db"), Path.Combine(ConfigReader.ConfigDirectory, "game1.db"));
             }
-
-            ConfigReader.DatabaseName = Path.Combine(BaseDir, ConfigReader.DatabaseName);
         }
         public static void StartHispServer(Action ProgressCallback, Action UserCreationCallback, Action ServerStartedCallback, Action OnShutdown)
         {
@@ -125,8 +117,6 @@ namespace MPN00BS
             ProgressCallback();
             Database.OpenDatabase();
             ProgressCallback();
-
-
 
             // Start HI1 Server
             ProgressCallback();
@@ -218,27 +208,27 @@ namespace MPN00BS
             File.WriteAllLines(ConfigReader.ConfigurationFileName, configFile);
         }
 
-        public static void SetBaseDir()
+        public static void SetConfigDir()
         {
 #if OS_WINDOWS || DEBUG
             string hispFolder = Environment.GetEnvironmentVariable("APPDATA");
             if (hispFolder == null)
                 return;
 
-            BaseDir = Path.Combine(hispFolder, "HISP", "N00BS");
-            Directory.CreateDirectory(BaseDir);
+            ConfigReader.ConfigDirectory = Path.Combine(hispFolder, "HISP", "N00BS");
+            Directory.CreateDirectory(ConfigReader.ConfigDirectory);
 #elif OS_LINUX || OS_MACOS
             string hispFolder = Environment.GetEnvironmentVariable("HOME");
             if (hispFolder == null)
                 return;
 
-            BaseDir = Path.Combine(hispFolder, ".HISP", "N00BS");
-            Directory.CreateDirectory(BaseDir);
+            ConfigReader.ConfigDirectory = Path.Combine(hispFolder, ".HISP", "N00BS");
+            Directory.CreateDirectory(ConfigReader.ConfigDirectory);
 #endif
         }
         public static void StartHttpServer()
         {
-            SetBaseDir();
+            SetConfigDir();
             try
             {
 

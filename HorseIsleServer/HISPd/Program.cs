@@ -77,14 +77,13 @@ namespace HISP.Cli
 
         private static string formatMessage(string type, string text, bool console)
         {
-
-            string newline = Environment.NewLine;
-
             string msg = DateTime.Now.ToString("MM-dd-yyyy HH:mm:ss") + ": [" + type + "] ";
-            if (console && text.Length > (Console.WindowWidth - msg.Length) - newline.Length)
-                text = text.Substring(0, (Console.WindowWidth - msg.Length) - newline.Length);
+            bool openInTerminal = (!(Console.WindowWidth < 0 || Console.WindowHeight < 0 || Console.WindowLeft < 0 || Console.WindowTop < 0) && !(Console.IsInputRedirected || Console.IsOutputRedirected || Console.IsErrorRedirected));
 
-            return msg + text + newline;
+            if (openInTerminal && console && text.Length > (Console.WindowWidth - msg.Length))
+                text = text.Substring(0, (Console.WindowWidth - msg.Length));
+
+            return msg + text;
         }
 
         public static void LogToFile(bool error, string type,string text)
@@ -95,17 +94,17 @@ namespace HISP.Cli
         }
         public static void LogStdout(bool error, string type, string text)
         {
-            if (type == "CRASH")
-                LogToFile(error, type, text);
             try
             {
+                if (type == "CRASH") LogToFile(error, type, text);
                 if (error)
-                    Console.Error.WriteAsync(formatMessage(type, text, true));
+                    Console.Error.WriteLineAsync(formatMessage(type, text, true));
                 else
-                    Console.Out.WriteAsync(formatMessage(type, text, true));
-                
+                    Console.Out.WriteLineAsync(formatMessage(type, text, true));
             }
-            catch (Exception) { };
+            catch { };
+
+
         }
 
         public static void Main(string[] args)
@@ -114,13 +113,17 @@ namespace HISP.Cli
             PosixSignalRegistration.Create(PosixSignal.SIGTERM, (_) => { GameServer.ShutdownServer("Server process received SIGTERM."); });
             PosixSignalRegistration.Create(PosixSignal.SIGQUIT, (_) => { GameServer.ShutdownServer("Server process received SIGQUIT."); });
 
-            string baseDir = Directory.GetCurrentDirectory();
             Logger.SetCallback(LogStdout);
             Entry.SetShutdownCallback(OnShutdown);
 
-            string hispConfVar = Environment.GetEnvironmentVariable("HISP_CONF_FILE");
+            ConfigReader.ConfigurationFileName = Environment.GetEnvironmentVariable("HISP_CONFIG_FILE");
             string hispLogVar = Environment.GetEnvironmentVariable("HISP_LOG_FILE");
-            string hispBaseDir = Environment.GetEnvironmentVariable("HISP_BASE_DIR");
+
+            ConfigReader.ConfigDirectory = Environment.GetEnvironmentVariable("HISP_CONFIG_DIR");
+            ConfigReader.AssetsDirectory = Environment.GetEnvironmentVariable("HISP_ASSETS_DIR");
+
+            LogStdout(false, "INFO", "Config Directory: " + ConfigReader.ConfigDirectory);
+            LogStdout(false, "INFO", "Assets Directory: " + ConfigReader.AssetsDirectory);
 
             foreach (string arg in args)
             {
@@ -149,9 +152,11 @@ namespace HISP.Cli
                                         LogFile = argu[1];
                                         Logger.SetCallback(LogToFile);
                                         break;
-                                    case "--base-directory":
-                                        baseDir = argu[1];
-                                        Directory.SetCurrentDirectory(baseDir);
+                                    case "--config-directory":
+                                        ConfigReader.ConfigDirectory = argu[1];
+                                        break;
+                                    case "--assets-directory":
+                                        ConfigReader.AssetsDirectory = argu[1];
                                         break;
                                     default:
                                         continue;
@@ -161,32 +166,18 @@ namespace HISP.Cli
                         break;
                 }
             }
-
-            if (hispConfVar != null && hispConfVar != "")
-            {
-                ConfigReader.ConfigurationFileName = hispConfVar;
-            }
             
-            if (hispLogVar != null && hispLogVar != "")
+            
+            if(hispLogVar == "stdout")
+            {
+                Logger.SetCallback(LogStdout);
+            }
+            else if (hispLogVar != null && hispLogVar != "")
             {
                 LogFile = hispLogVar;
                 Logger.SetCallback(LogToFile);
             }
-            else if(hispLogVar == "stdout")
-            {
-                LogFile = Path.Combine(baseDir, "crash.log");
-                Logger.SetCallback(LogStdout);
-            }
-            else
-            {
-                LogFile = Path.Combine(baseDir, "crash.log");
-            }
-
-            if (hispBaseDir != null && hispBaseDir != "")
-            {
-                baseDir = hispBaseDir;
-                Directory.SetCurrentDirectory(baseDir);
-            }
+            if(LogFile == null || LogFile == "") LogFile = Path.Combine(ConfigReader.ConfigDirectory, "crash.log");
 
             Entry.Start();
 

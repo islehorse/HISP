@@ -124,7 +124,6 @@ namespace HISP.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to 03b55d148a1a109b501162095b1d04101c103cc3
-        ///.
         /// </summary>
         public static string GitCommit {
             get {
@@ -134,7 +133,6 @@ namespace HISP.Properties {
         
         /// <summary>
         ///   Looks up a localized string similar to v1.3
-        ///.
         /// </summary>
         public static string GitTag {
             get {

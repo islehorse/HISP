@@ -6,6 +6,11 @@ namespace HISP.Server
 
     public class ConfigReader
     {
+        private static string configFilename = "server.properties";
+        private static string mapFileName = "HI1.MAP";
+        private static string gamedataDirname = "gamedata";
+        private static string crossDomainPolicyFileName = "CrossDomainPolicy.xml";
+
         public static int Port = 12321;
         public static string BindIP = "0.0.0.0";
 
@@ -17,9 +22,6 @@ namespace HISP.Server
         public static int DatabasePort = 3306;
         public static int IntrestRate = 3333;
         public static string Motd = "April 11, 2020. New breed, Camarillo White Horse. Two new quests.";
-        public static string MapFile = "HI1.MAP";
-        public static string GameData = "gamedata.json";
-        public static string CrossDomainPolicyFile = "CrossDomainPolicy.xml";
         public static string SqlBackend = "mariadb";
 
         public static int LogLevel = 4;
@@ -32,8 +34,62 @@ namespace HISP.Server
         public static bool EnableNonViolations = true;
 
         public static bool EnableWebSocket = true;
+        
+        public static string ConfigDirectory = Directory.GetCurrentDirectory();
+        public static string AssetsDirectory = Directory.GetCurrentDirectory();
 
-        public static string ConfigurationFileName = "server.properties";
+        public static string MapFile
+        {
+            get
+            {
+                return Path.GetFullPath(mapFileName, AssetsDirectory);
+            }
+            set
+            {
+                if (value == null || value == "")
+                    return;
+                mapFileName = value;
+            }
+        }
+        public static string GameData
+        {
+            get
+            {
+                return Path.GetFullPath(gamedataDirname, AssetsDirectory);
+            }
+            set
+            {
+                if (value == null || value == "")
+                    return;
+                gamedataDirname = value;
+            }
+        }
+        public static string CrossDomainPolicyFile
+        {
+            get
+            {
+                return Path.GetFullPath(crossDomainPolicyFileName, ConfigDirectory);
+            }
+            set
+            {
+                if (value == null || value == "")
+                    return;
+                crossDomainPolicyFileName = value;
+            }
+        }
+        public static string ConfigurationFileName
+        {
+            get 
+            {
+                return Path.GetFullPath(configFilename, ConfigDirectory);
+            }
+            set 
+            {
+                if (value == null || value == "")
+                    return;
+                configFilename = value; 
+            }
+        }
         public static void OpenConfig()
         {
             if (!File.Exists(ConfigurationFileName))
