@@ -1,14 +1,14 @@
 ﻿using HISP.Game;
+using HISP.Game.Chat;
 using HISP.Game.Horse;
 using HISP.Game.Items;
 using HISP.Game.Services;
 using HISP.Game.SwfModules;
-using HISP.Game.Chat;
 using HISP.Security;
-
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace HISP.Server
 {
@@ -36,11 +36,16 @@ namespace HISP.Server
 
         public static void Start()
         {
+            PosixSignalRegistration.Create(PosixSignal.SIGTERM, (_) => { GameServer.ShutdownServer("Server process received SIGTERM."); });
+            PosixSignalRegistration.Create(PosixSignal.SIGQUIT, (_) => { GameServer.ShutdownServer("Server process received SIGQUIT."); });
+
             RegisterCrashHandler();
-            Console.Title = ServerVersion.GetBuildString();
             Directory.SetCurrentDirectory(ConfigReader.ConfigDirectory);
+            Console.Title = ServerVersion.GetBuildString();
 
             Logger.InfoPrint("Starting " + ServerVersion.GetBuildString());
+            Logger.InfoPrint("Config Directory: "+ ConfigReader.ConfigDirectory);
+            Logger.InfoPrint("Assets Directory: " + ConfigReader.AssetsDirectory);
 
             ConfigReader.OpenConfig();
             CrossDomainPolicy.GetPolicyFile();

@@ -110,9 +110,7 @@ namespace HISP.Cli
         public static void Main(string[] args)
         {
             AppDomain.CurrentDomain.ProcessExit += ProcessQuitHandler;
-            PosixSignalRegistration.Create(PosixSignal.SIGTERM, (_) => { GameServer.ShutdownServer("Server process received SIGTERM."); });
-            PosixSignalRegistration.Create(PosixSignal.SIGQUIT, (_) => { GameServer.ShutdownServer("Server process received SIGQUIT."); });
-
+            
             Logger.SetCallback(LogStdout);
             Entry.SetShutdownCallback(OnShutdown);
 
@@ -121,9 +119,6 @@ namespace HISP.Cli
 
             ConfigReader.ConfigDirectory = Environment.GetEnvironmentVariable("HISP_CONFIG_DIR");
             ConfigReader.AssetsDirectory = Environment.GetEnvironmentVariable("HISP_ASSETS_DIR");
-
-            LogStdout(false, "INFO", "Config Directory: " + ConfigReader.ConfigDirectory);
-            LogStdout(false, "INFO", "Assets Directory: " + ConfigReader.AssetsDirectory);
 
             foreach (string arg in args)
             {

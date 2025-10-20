@@ -1674,8 +1674,6 @@ namespace HISP.Server
                                             break;
                                         }
 
-
-
                                         if (sender.User.Money >= arena.EntryCost)
                                         {
                                             arena.AddEntry(sender.User, horseInstance);
@@ -7390,8 +7388,8 @@ namespace HISP.Server
                     sender.Login(userId);
                     sender.User.Password = password;
 
-                    byte[] ResponsePacket = PacketBuilder.CreateLogin(true);
-                    sender.SendPacket(ResponsePacket);
+                    byte[] responsePacket = PacketBuilder.CreateLogin(true);
+                    sender.SendPacket(responsePacket);
 
                     Logger.DebugPrint(sender.RemoteIp + " Logged into : " + sender.User.Username + " (ADMIN: " + sender.User.Administrator + " MOD: " + sender.User.Moderator + ")");
 
