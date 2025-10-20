@@ -1,5 +1,5 @@
 Package: hisp
-Version: 1.9.30
+Version: 1.9.34
 Depends: libgcc-s1,libstdc++6,libc6,coreutils,systemd,zlib1g-dev,libicu-dev,libkrb5-dev
 Maintainer: Li
 Homepage: https://islehorse.com

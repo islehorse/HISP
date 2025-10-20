@@ -16,6 +16,7 @@ using Microsoft.Data.Sqlite;
 using SQLitePCL;
 using HISP.Util;
 using Npgsql;
+using System.IO;
 
 namespace HISP.Server
 {
@@ -96,7 +97,7 @@ namespace HISP.Server
             }
             else if(ConfigReader.SqlBackend == Database.SQL_BACKEND_SQLITE)
             {
-                ConnectionString = "Data Source=\"" + ConfigReader.DatabaseName + ".db\";";
+                ConnectionString = "Data Source=\"" + Path.GetFullPath(ConfigReader.DatabaseName + ".db", ConfigReader.ConfigDirectory) + "\";";
                 Batteries.Init();
             }
             else if(ConfigReader.SqlBackend == Database.SQL_BACKEND_POSTGRES)
