@@ -4662,7 +4662,7 @@ namespace HISP.Server
             }
         }
 
-        public static int GetUserid(string username)
+        public static int GetUserId(string username)
         {
             using (DbConnection db = connectDb())
             {

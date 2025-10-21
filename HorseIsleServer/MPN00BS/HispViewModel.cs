@@ -56,7 +56,7 @@ namespace MPN00BS.ViewModels
                 if (CheckServerRunningAndShowMessage()) return;
 
                 Process p = new Process();
-                p.StartInfo.FileName = Path.Combine(ServerStarter.BaseDir, "server.properties");
+                p.StartInfo.FileName = ConfigReader.ConfigurationFileName;
                 p.StartInfo.UseShellExecute = true;
                 p.Start();
 
@@ -67,7 +67,7 @@ namespace MPN00BS.ViewModels
                 if (CheckServerRunningAndShowMessage()) return;
 
                 Process p = new Process();
-                p.StartInfo.FileName = ServerStarter.BaseDir;
+                p.StartInfo.FileName = ConfigReader.ConfigDirectory;
                 p.StartInfo.UseShellExecute = true;
                 p.Start();
             });

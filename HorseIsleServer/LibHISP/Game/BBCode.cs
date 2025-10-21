@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace HISP.Security
+namespace HISP.Game
 {
     public class BBCode
     {
         public BBCode(string tag, string meta)
         {
-            this.Tag = tag;
-            this.MetaTranslation = meta;
+            Tag = tag;
+            MetaTranslation = meta;
             bbcodeTranslations.Add(this);
         }
         private static List<BBCode> bbcodeTranslations = new List<BBCode>();

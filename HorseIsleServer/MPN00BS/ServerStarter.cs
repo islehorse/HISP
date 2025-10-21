@@ -15,7 +15,7 @@ using static MPN00BS.MessageBox;
 
 namespace MPN00BS
 {
-    
+
     public class ServerStarter
     {
 
@@ -32,9 +32,10 @@ namespace MPN00BS
             cs.Contents.Add(ci);
 
         }
-	    public static void ShutdownHTTPServer(){
-		    cs.Shutdown();
-	    }
+        public static void ShutdownHTTPServer()
+        {
+            cs.Shutdown();
+        }
 
         public static void ShowCrash(bool error, string type, string text)
         {
@@ -52,14 +53,14 @@ namespace MPN00BS
 
         public static void CloseHorseIsleClient()
         {
-            if(!clientProcess.HasExited)
+            if (!clientProcess.HasExited)
                 clientProcess.Kill();
         }
         public static void StartHorseIsleClient(Action callback, string serverIp, int serverPort)
         {
             HorseIsleClientExitCallback = callback;
 
-            
+
             clientProcess = new Process();
 #if OS_WINDOWS || DEBUG
             string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
@@ -82,7 +83,7 @@ namespace MPN00BS
 #if OS_LINUX || OS_MACOS 
             clientProcess.StartInfo.Arguments = "http://"+cs.ipaddr+":"+cs.portnum+"/horseisle_mapfix.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
 #else
-            clientProcess.StartInfo.Arguments = "http://"+cs.ipaddr+":"+cs.portnum+"/horseisle.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
+            clientProcess.StartInfo.Arguments = "http://" + cs.ipaddr + ":" + cs.portnum + "/horseisle.swf?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
 #endif
             clientProcess.StartInfo.RedirectStandardOutput = true;
             clientProcess.StartInfo.RedirectStandardError = true;
@@ -236,13 +237,14 @@ namespace MPN00BS
 
                 string clientFolder = Path.Combine(Directory.GetCurrentDirectory(), "client");
                 string[] fileList = Directory.GetFiles(clientFolder, "*", SearchOption.AllDirectories);
-                foreach (string file in fileList){
+                foreach (string file in fileList)
+                {
                     addToList(file);
                 }
             }
             catch (Exception e)
             {
-                MessageBox.Show(null, "Web server failed to start: "+ e.GetType().Name + " " + e.Message, "Error starting web server", MessageBoxButtons.Ok);
+                MessageBox.Show(null, "Web server failed to start: " + e.GetType().Name + " " + e.Message, "Error starting web server", MessageBoxButtons.Ok);
                 return;
             }
 

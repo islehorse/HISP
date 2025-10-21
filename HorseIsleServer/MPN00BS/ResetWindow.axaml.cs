@@ -128,14 +128,7 @@ namespace MPN00BS
 
         private void ResetPassword(object sender, RoutedEventArgs e)
         {
-            // Get salt
-            byte[] salt = Database.GetPasswordSalt(usernameBox.Text);
-
-            // Hash password
-            string hashsalt = BitConverter.ToString(Authentication.HashAndSalt(passwordBox.Text, salt)).Replace("-", "");
-
-            Database.SetPasswordHash(usernameBox.Text, hashsalt);
-
+            Authentication.ChangePassword(usernameBox.Text, passwordBox.Text);
             this.Close();
         }
 

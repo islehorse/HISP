@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Drawing;
 using System.Globalization;
-
-using HISP.Security;
 using HISP.Server;
 using HISP.Util;
 using HISP.Game.Chat;
