@@ -13,6 +13,8 @@ namespace HISP.Server
         private static string mapFileName = "HI1.MAP";
         private static string gamedataDirname = "gamedata";
         private static string crossDomainPolicyFileName = "CrossDomainPolicy.xml";
+        private static string configPath = Directory.GetCurrentDirectory();
+        private static string assetsPath = Directory.GetCurrentDirectory();
 
         public static int Port = 12321;
         public static string BindIP = "0.0.0.0";
@@ -39,8 +41,32 @@ namespace HISP.Server
         public static bool EnableWebSocket = true;
         public static bool SigninAsSignup = true;
 
-        public static string ConfigDirectory = Directory.GetCurrentDirectory();
-        public static string AssetsDirectory = Directory.GetCurrentDirectory();
+        public static string ConfigDirectory
+        {
+            get
+            {
+                return configPath;
+            }
+            set
+            {
+                if (value == null || value == "")
+                    return;
+                configPath = value;
+            }
+        }
+        public static string AssetsDirectory
+        {
+            get
+            {
+                return assetsPath;
+            }
+            set
+            {
+                if (value == null || value == "")
+                    return;
+                assetsPath = value;
+            }
+        }
         public static string MapFile
         {
             get
