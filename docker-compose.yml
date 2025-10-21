@@ -33,22 +33,3 @@ services:
       interval: 10s
       timeout: 5s
       retries: 3
-#  master_web:
-#    build: ./HorseIsleWeb/master-site
-#    container_name: hisp_master_web
-#    environment:
-#      HISP_WEB_DB: master
-#      HISP_WEB_USER: horseisle
-#      HISP_WEB_PASS: test123
-#      HISP_WEB_HOST: mariadb
-#      
-#      HISP_MAIN_FROM_EMAIL: support@horseisle.com
-#      HISP_MAIN_EMAIL_ACTIVATION: false
-#      
-#      HISP_WEB_HMAC: !!NOTSET!!
-#    ports:
-#      - 6969:80
-#    restart: unless-stopped
-#    depends_on:
-#      mariadb:
-#        condition: service_healthy
