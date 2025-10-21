@@ -260,8 +260,8 @@ jobs:
     - name: Git Submodule update
       run: |
            git submodule update --init --recursive
-           rm HorseIsleWeb/game-site/Dockerfile
-           rm HorseIsleWeb/master-site/Dockerfile
+           rm ../HorseIsleWeb/game-site/Dockerfile
+           rm ../HorseIsleWeb/master-site/Dockerfile
 
     # UPLOAD WEBSERVER
 
