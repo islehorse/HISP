@@ -32,7 +32,6 @@ namespace MPN00BS
         {
             Dispatcher.UIThread.InvokeAsync(() =>
             {
-            	ServerStarter.ShutdownHTTPServer();
             	this.Close();
                 Environment.Exit(0);
             });

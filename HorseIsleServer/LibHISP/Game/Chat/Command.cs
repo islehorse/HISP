@@ -118,7 +118,7 @@ namespace HISP.Game.Chat
             {
                 try
                 {
-                    int playerId = Database.GetUserid(username);
+                    int playerId = Database.GetUserId(username);
 
                     if (privledgeLevel == "NORMAL")
                     {
@@ -376,7 +376,7 @@ namespace HISP.Game.Chat
 
             try{
                 string userName = args[0];
-                int id = Database.GetUserid(userName);
+                int id = Database.GetUserId(userName);
                 Database.UnBanUser(id);
             }
             catch(Exception e)
@@ -409,7 +409,7 @@ namespace HISP.Game.Chat
             try
             {
                 string userName = args[0];
-                int id = Database.GetUserid(userName);
+                int id = Database.GetUserId(userName);
                 string ip = Database.GetIpAddress(id);
                 string reason = "NONE SPECIFIED";
                 if (args.Length >= 2)

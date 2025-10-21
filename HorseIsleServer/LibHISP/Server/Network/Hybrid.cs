@@ -6,8 +6,6 @@ namespace HISP.Server.Network
     public class Hybrid : Transport
     {
         Transport actualTransport = null;
-
-       
         public override string Name
         {
             get

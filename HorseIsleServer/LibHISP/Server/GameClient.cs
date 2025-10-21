@@ -8,6 +8,7 @@ using HISP.Game.Events;
 using HISP.Game.Items;
 using HISP.Util;
 using HISP.Server.Network;
+using HISP.Ipc;
 
 namespace HISP.Server
 {
@@ -446,12 +447,15 @@ namespace HISP.Server
              */
             try
             {
-                if (!LoggedIn) // Must be either login or policy-file-request
+                if (!LoggedIn)
                 {
                     switch (identifier)
                     {
                         case PacketBuilder.PACKET_LOGIN:
                             GameServer.OnUserLogin(this, packet);
+                            break;
+                        case IpcPacket.PACKET_IPC:
+                            IpcPacket.OnIpcReceived(this, packet);
                             break;
                     }
                 }

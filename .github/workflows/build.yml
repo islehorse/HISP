@@ -258,7 +258,10 @@ jobs:
         fetch-depth: 0
     
     - name: Git Submodule update
-      run: git submodule update --init --recursive
+      run: |
+           git submodule update --init --recursive
+           rm HorseIsleWeb/game-site/Dockerfile
+           rm HorseIsleWeb/master-site/Dockerfile
 
     # UPLOAD WEBSERVER
 

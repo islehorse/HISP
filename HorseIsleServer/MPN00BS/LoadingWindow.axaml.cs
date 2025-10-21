@@ -39,7 +39,6 @@ namespace MPN00BS
             Dispatcher.UIThread.InvokeAsync(() =>
             {
                 ServerStarter.CloseHorseIsleClient();
-            	ServerStarter.ShutdownHTTPServer();
                 this.Close();
                 Environment.Exit(0);
             });

@@ -15,6 +15,7 @@ namespace HISP.Security
         public const string ROTPOOL = "bl7Jgk61IZdnY mfDN5zjM2XLqTCty4WSEoKR3BFVQsaUhHOAx0rPwp9uc8iGve";
         public const string POSPOOL = "DQc3uxiGsKZatMmOS5qYveN71zoPTk8yU0H2w9VjprBXWn l4FJd6IRbhgACfEL";
 
+
         public static string EncryptLogin(string plainpass)
         {
             string encrypt = "";
@@ -123,6 +124,17 @@ namespace HISP.Security
             return false;
         }
 
+        public static bool ChangePassword(string username, string newPassword)
+        {
+            if(Database.CheckUserExist(username))
+            {
+                byte[] salt = Database.GetPasswordSalt(username);
+                byte[] hashsalt = Authentication.HashAndSalt(newPassword, salt);
+                Database.SetPasswordHash(username, BitConverter.ToString(hashsalt).Replace("-", ""));
+                return true;
+            }
+            return false;
+        }
         public static int CreateAccount(string username, string password, string gender, bool admin, bool moderator)
         {
             // Get a free user id
