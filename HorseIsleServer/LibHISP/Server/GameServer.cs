@@ -2323,7 +2323,7 @@ namespace HISP.Server
                                 {
                                     if(Database.CheckUserExist(to))
                                     {
-                                        int playerId = Database.GetUserid(to);
+                                        int playerId = Database.GetUserId(to);
 
                                         sender.User.TakeMoney(3);
                                         Mailbox.Mail mailMessage = new Mailbox.Mail();
@@ -7367,7 +7367,7 @@ namespace HISP.Server
                 if (Authentication.CheckPassword(username, password))
                 {
                     // Obtain user information
-                    int userId = Database.GetUserid(username);
+                    int userId = Database.GetUserId(username);
 
                     if(Database.IsUserBanned(userId))
                     {
@@ -7560,7 +7560,6 @@ namespace HISP.Server
             }
             throw new KeyNotFoundException("User was not found.");
         }
-
         public static User GetUserByName(string username)
         {
             foreach(GameClient client in GameClient.ConnectedClients)

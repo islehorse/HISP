@@ -174,7 +174,7 @@ namespace HISP.Cli
             }
             if(LogFile == null || LogFile == "") LogFile = Path.Combine(ConfigReader.ConfigDirectory, "crash.log");
 
-            Entry.Start();
+            //Entry.Start();
 
             shutdownHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
             shutdownHandle.WaitOne();

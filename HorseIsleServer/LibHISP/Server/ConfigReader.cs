@@ -41,7 +41,6 @@ namespace HISP.Server
 
         public static string ConfigDirectory = Directory.GetCurrentDirectory();
         public static string AssetsDirectory = Directory.GetCurrentDirectory();
-
         public static string MapFile
         {
             get

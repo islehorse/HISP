@@ -28,6 +28,9 @@
     </ContentWithTargetPath>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Security\PacketSigning.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="9.0.7" />
     <PackageReference Include="MySqlConnector" Version="2.4.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
