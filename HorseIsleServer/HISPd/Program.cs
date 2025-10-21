@@ -78,11 +78,7 @@ namespace HISP.Cli
         private static string formatMessage(string type, string text, bool console)
         {
             string msg = DateTime.Now.ToString("MM-dd-yyyy HH:mm:ss") + ": [" + type + "] ";
-            bool openInTerminal = (!(Console.WindowWidth < 0 || Console.WindowHeight < 0 || Console.WindowLeft < 0 || Console.WindowTop < 0) && !(Console.IsInputRedirected || Console.IsOutputRedirected || Console.IsErrorRedirected));
-
-            if (openInTerminal && console && text.Length > (Console.WindowWidth - msg.Length))
-                text = text.Substring(0, (Console.WindowWidth - msg.Length));
-
+            
             return msg + text;
         }
 
@@ -174,7 +170,7 @@ namespace HISP.Cli
             }
             if(LogFile == null || LogFile == "") LogFile = Path.Combine(ConfigReader.ConfigDirectory, "crash.log");
 
-            //Entry.Start();
+            Entry.Start();
 
             shutdownHandle = new EventWaitHandle(false, EventResetMode.ManualReset);
             shutdownHandle.WaitOne();
