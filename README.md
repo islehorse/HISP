@@ -26,19 +26,30 @@ Game relies on a SQL Server, any should work, but i have only tested it with Mar
 
 - Docker
 
+download: https://github.com/islehorse/HISP/blob/master/docker/docker-compose-production.yml
+name it "docker-compose.yml"
+
+create a file named ".env" and include the following
 ```
-git clone https://github.com/islehorse/HISP.git --recursive
-cd HISP/docker
+DB_GAME1=game1
+DB_WEB=web
+DB_USER=horseisle
+DB_PASS=test123
+```
+
+after that; just run 
+```
 docker compose up -d
 ```
-default docker compose will give you: 
+
+should give you the following services: 
 
 master-site: localhost:12323
 game-site: localhost:12322
 game-server: localhost:12321
 
 configuration files at /etc/hisp 
-after that you may need to change certain domains at:
+after that you may need to change certain domains located at:
 
 ```
 /etc/hisp/web.cfg 
