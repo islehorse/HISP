@@ -42,10 +42,11 @@ docker compose up -d
 
 should give you the following services: 
 
+```
 master-site: localhost:12323
 game-site: localhost:12322
-
 hispd: localhost:12321
+```
 
 setup either nginx, apache, or whatever else to reverse-proxy both 12323 & 12322
 then continue to the `Configuring HISP` section.
