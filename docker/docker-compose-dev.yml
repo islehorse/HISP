@@ -1,7 +1,7 @@
 services:
 #gameserver
   hispd:
-    build: .
+    build: ..
     container_name: hispd
     environment:
       HISP_DB_IP: gamedb
@@ -35,7 +35,7 @@ services:
       timeout: 5s
       retries: 3
   gameweb:
-    build: ./HorseIsleWeb/game-site
+    build: ../HorseIsleWeb/game-site
     container_name: gameweb
     environment:
       WEB_DB_IP: gamedb
@@ -72,7 +72,7 @@ services:
       timeout: 5s
       retries: 3
   masterweb:
-    build: ./HorseIsleWeb/master-site
+    build: ../HorseIsleWeb/master-site
     container_name: masterweb
     environment:
       WEB_DB_IP: webdb
