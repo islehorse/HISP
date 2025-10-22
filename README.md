@@ -1,4 +1,4 @@
-# HISP - HorseIsleServer Program
+# HISP - Horse Isle Server Protocol
 
 [![Build](https://github.com/islehorse/HISP/workflows/build/badge.svg)](https://github.com/islehorse/HISP/actions?query=workflow%3Abuild)
 
@@ -11,23 +11,21 @@ well they essentailly run off "Server Emulators".
 **tl;dr, think "Club Penguin Rewritten" but with Horse Isle.**
 
 
-# Installation:
+## Running a Server
 
-Understand that there are differnet verisons of the HISP package;
+Note: if you just want to play HI1 as a single player thing to mess around with;
+it is probably preferable to download the HISP-N00BS version; its basically one-click for this
 
-HISPd - reimplementation of the Horse Isle 1.0 Server Software 
+these loose instructions assume somewhat\* knowing how to get around a linux system;
+and also assume your using linux, it is possible to setup on other platforms (such as windows)
+however this is not documented at the moment
 
-N00BS - a launcher for joining Multiplayer or running a local server for offline singleplayer play (deprecated)
 
-MPN00BS - Same as N00BS but multiplatform
-
-Game relies on a SQL Server, any should work, but i have only tested it with MariaDB, 
-(and i guess SQLLite for the one used in the launcher version)
-
-- Docker
+### Setup with Docker
 
 download: https://github.com/islehorse/HISP/blob/master/docker/docker-compose-production.yml
-name it "docker-compose.yml"
+
+& name it "docker-compose.yml"
 
 create a file named ".env" and include the following
 ```
@@ -46,18 +44,43 @@ should give you the following services:
 
 master-site: localhost:12323
 game-site: localhost:12322
-game-server: localhost:12321
 
-configuration files at /etc/hisp 
-after that you may need to change certain domains located at:
+hispd: localhost:12321
 
+setup either nginx, apache, or whatever else to reverse-proxy both 12323 & 12322
+then continue to the `Configuring HISP` section.
+
+### Manual Download
+
+For the absolute latest, you can grab the [latest build artifact](https://github.com/islehorse/HISP/actions/workflows/build.yml)
+otherwise use the [latest release](https://github.com/islehorse/HISP/releases)
+
+if your on a systemd based system, you can run ``./hispd --install-service` 
+to create a service file otherwise. simply run the hispd binary in the background;
+
+by default hispd will load configuration and assets from the working directory;
+and to log to stdout;
+
+this can be changed via environment variables:
 ```
-/etc/hisp/web.cfg 
-/etc/hisp/game1.cfg 
-/etc/hisp/servers.json
+HISP_ASSETS_DIR
+HISP_CONFIG_DIR
+HISP_LOG_FILE
+HISP_CONFIG_FILE
 ```
 
-- APT:
+or the command line arguments:
+```
+--config-file
+--log-to-file
+--config-directory
+--assets-directory
+```
+
+any value in the server.properties file, can be overridden by creating an environment variable, prefixed with HISP_ and then the configuration name
+(eg; `HISP_FIX_OFFICIAL_BUGS=true`)
+
+### Debian APT:
 
 Install on Ubuntu or Debian via APT:
 ```
@@ -67,27 +90,37 @@ sudo apt update
 ```
 
 Then simply edit /etc/hisp/server.properties & change to correct database credentials
-and start the server using ``systemctl start hisp``
+and start the server using `systemctl start hisp`
 
-- Manual Install:
+continue to the `Configuring HISP` section.
 
-If you do not want to use APT, or are on Windows or MacOS, then you can simply download the latest HISPd binary:
-here https://github.com/islehorse/HISP/actions/
-
-Run it and edit server.properties in the same folder as HISPd
-
-- Websites:
+### PHP Websites:
 
 Website is built in PHP 8.0 and based on the original Horse Isle Game Website
 requires the following PHP modules to be loaded; "intl", "mysqli" and "mysqlnd" on Ubuntu
 
-you must edit config.php and server.php to configure before it'll work properly.
-and is required to sign-up to the private server
+it can be configured at ``/etc/hisp/web.cfg`` & ``/etc/hisp/game1.cfg`` respectively;
+you may need to ensure both these folders are writable by ``www-data`` user;
+or whatever your web server is running on.
 
-the master-site (equivilent to master.horseisle.com) can be found here:
-consists of sign up page, and server list, 
+### Configuring HISP
+configuration can be found at ``/etc/hisp` 
 
-https://github.com/islehorse/HISP/actions/
+(note: configuration file variables can be overridden via environment variables;
+prefixed with HISP_ or WEB_ respectively, if your using the default Docker Compose, 
+any changes to the database settings will not apply .)
+
+you may need to change certain things (such as domains or ports) in there
+
+
+`/etc/hisp/web.cfg` - main website config (eg, hi1.horseisle.com)
+`/etc/hisp/servers.json` - server list (after logging in)
+`/etc/hisp/game1.cfg` - game website config (eg, pinto.horseisle.com)
+`/etc/hisp/server.properties` - Game server config
+`/etc/hisp/CrossDomainPolicy.xml` - [Adobe Flash XMLSocket Policy](https://clients.sisrv.net/knowledgebase/80/How-to-setup-Flash-Socket-Policy-File.html)
+
+(note: certain configs might not appear right away, and may require acessing a given service once for them to be generated.)
+
 
 # Commands     
 (legend: <> Required, [] Optional)
@@ -154,9 +187,9 @@ https://github.com/islehorse/HISP/actions/
  
 # Building
  Building the server from source requires Microsoft .NET Core SDK, targetting version 9.0 https://dotnet.microsoft.com/download/dotnet-core
- use ``dotnet build`` to build a debug build, (requires .NET Core Runtime) quickly or one of our publishing XML's
+ use `dotnet build` to build a debug build, (requires .NET Core Runtime) quickly or one of our publishing XML's
  ex:
- ``dotnet publish -c Linux -p:PublishProfile=Linux64`` to to build it standalone.
+ `dotnet publish -c Linux -p:PublishProfile=Linux64` to to build it standalone.
  
  
  # Credits
