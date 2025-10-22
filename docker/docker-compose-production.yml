@@ -72,7 +72,7 @@ services:
       timeout: 5s
       retries: 3
   masterweb:
-    build: ghcr.io/islehorse/hisp:master-site-master
+    image: ghcr.io/islehorse/hisp:master-site-master
     container_name: masterweb
     environment:
       WEB_DB_IP: webdb
