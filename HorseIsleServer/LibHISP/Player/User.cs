@@ -681,8 +681,8 @@ namespace HISP.Player
             Id = UserId;
             Username = Database.GetUsername(UserId);
             
-            administrator = Database.GetUserModerator(Id);
-            moderator = Database.GetUserAdmin(Id);
+            administrator = Database.GetUserAdmin(Id);
+            moderator = Database.GetUserModerator(Id);
 
             chatViolations = Database.GetChatViolations(UserId);
             x = Database.GetPlayerX(UserId);
