@@ -69,6 +69,9 @@ namespace HISP.Server
             Command.RegisterCommands();
 
             GameServer.StartServer();
+
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         private static void HispCrashHandler(object sender, UnhandledExceptionEventArgs e)
