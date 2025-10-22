@@ -445,7 +445,7 @@ namespace HISP.Server
                     case PacketBuilder.PLAYER_INTERACTION_ADD_ITEM:
                         if (sender.User.TradingWith == null)
                             break;
-                        if (packet.Length < 5)
+                        if (packet.Length < 4)
                             break;
 
                         packetStr = Encoding.UTF8.GetString(packet);
@@ -515,7 +515,9 @@ namespace HISP.Server
                                 byte[] addItemPacket = PacketBuilder.CreateMeta(Meta.BuildTradeAddItem(item.ItemInstances.Length));
                                 sender.SendPacket(addItemPacket);
                                 break;
-
+                            default:
+                                Logger.WarnPrint(sender.User.Username + " used unknown trade action: " + firstChar);
+                                break;
                         }
                         break;
                     case PacketBuilder.PLAYER_INTERACTION_TRADE:
