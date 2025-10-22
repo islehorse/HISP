@@ -14,6 +14,8 @@
 *build*
 */build/*
 
+docker/.env
+
 HorseIsleServer/N00BS/build/*
 HorseIsleServer/N00BS/obj/*
 HorseIsleServer/N00BS/bin/*

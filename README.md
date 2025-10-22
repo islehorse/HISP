@@ -28,7 +28,7 @@ Game relies on a SQL Server, any should work, but i have only tested it with Mar
 
 ```
 git clone https://github.com/islehorse/HISP.git --recursive
-cd HISP
+cd HISP/docker
 docker compose up -d
 ```
 default docker compose will give you: 
