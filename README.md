@@ -24,6 +24,28 @@ MPN00BS - Same as N00BS but multiplatform
 Game relies on a SQL Server, any should work, but i have only tested it with MariaDB, 
 (and i guess SQLLite for the one used in the launcher version)
 
+- Docker
+
+```
+git clone https://github.com/islehorse/HISP.git --recursive
+cd HISP
+docker compose up -d
+```
+default docker compose will give you: 
+
+master-site: localhost:12323
+game-site: localhost:12322
+game-server: localhost:12321
+
+configuration files at /etc/hisp 
+after that you may need to change certain domains at:
+
+```
+/etc/hisp/web.cfg 
+/etc/hisp/game1.cfg 
+/etc/hisp/servers.json
+```
+
 - APT:
 
 Install on Ubuntu or Debian via APT:
@@ -39,7 +61,7 @@ and start the server using ``systemctl start hisp``
 - Manual Install:
 
 If you do not want to use APT, or are on Windows or MacOS, then you can simply download the latest HISPd binary:
-here https://islehorse.com/download/
+here https://github.com/islehorse/HISP/actions/
 
 Run it and edit server.properties in the same folder as HISPd
 
@@ -53,11 +75,8 @@ and is required to sign-up to the private server
 
 the master-site (equivilent to master.horseisle.com) can be found here:
 consists of sign up page, and server list, 
-https://server.islehorse.com/binaries/download/HISP-Web-Master.zip
 
-and the game-site:
-contains the actual game client .SWFs themselves
-https://server.islehorse.com/binaries/download/HISP-Web-Game.zip
+https://github.com/islehorse/HISP/actions/
 
 # Commands     
 (legend: <> Required, [] Optional)
@@ -125,8 +144,8 @@ https://server.islehorse.com/binaries/download/HISP-Web-Game.zip
 # Building
  Building the server from source requires Microsoft .NET Core SDK, targetting version 9.0 https://dotnet.microsoft.com/download/dotnet-core
  use ``dotnet build`` to build a debug build, (requires .NET Core Runtime) quickly or one of our publishing XML's
- ex:        
- ``dotnet publish -p:PublishProfile=Linux64.pubxml`` to to build it standalone.
+ ex:
+ ``dotnet publish -c Linux -p:PublishProfile=Linux64`` to to build it standalone.
  
  
  # Credits
