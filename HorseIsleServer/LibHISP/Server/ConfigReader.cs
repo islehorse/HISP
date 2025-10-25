@@ -242,8 +242,9 @@ namespace HISP.Server
 
                 if (eKey.StartsWith(prefix))
                 {
-                    Logger.WarnPrint("Ignoring setting: " + prefix.ToLowerInvariant() + " because environment variable " + eKey + " is set.");
-                    readConfigKey(eKey.Substring(prefix.Length), eValue);
+                    string gotKey = eKey.Substring(prefix.Length);
+                    Logger.WarnPrint("Ignoring setting: " + gotKey.ToLowerInvariant() + " because environment variable " + eKey + " is set.");
+                    readConfigKey(gotKey, eValue);
                 }
             }
         }
