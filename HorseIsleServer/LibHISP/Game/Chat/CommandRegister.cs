@@ -1,13 +1,13 @@
 ﻿using HISP.Player;
+using HISP.Util;
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 
 namespace HISP.Game.Chat
 {
     public class CommandRegister
     {
-        private static List<CommandRegister> registeredComamnds = new List<CommandRegister>();
+        private static ThreadSafeList<CommandRegister> registeredComamnds = new ThreadSafeList<CommandRegister>();
         public static CommandRegister[] RegisteredCommands
         {
             get

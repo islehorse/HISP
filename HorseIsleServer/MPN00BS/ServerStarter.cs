@@ -125,7 +125,7 @@ namespace MPN00BS
             Entry.SetShutdownCallback(OnShutdown);
             ProgressCallback();
 
-            CrossDomainPolicy.GetPolicyFile();
+            SocketDomainPolicy.GetPolicyFile();
             ProgressCallback();
 
             GameDataJson.ReadGamedata();

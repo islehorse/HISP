@@ -1,3 +1,3 @@
 <cross-domain-policy>
-	<allow-access-from domain="*" to-ports="12321" secure="false"/>
+	<allow-access-from domain="%DOMAIN%" to-ports="%PORT%" secure="false"/>
 </cross-domain-policy>
