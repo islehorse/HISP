@@ -21,8 +21,8 @@ namespace HISP.Server.Network
                 {
                     byte[] packet = currentPacket.ToArray();
                     
-                    if (Helper.ByteArrayStartsWith(packet, XMLSOCKET_POLICY_FILE))
-                        this.Send(CrossDomainPolicy.GetPolicyFile());
+                    if (Helper.ByteArrayStartsWith(packet, XMLSOCKET_POLICY_FILE) && ConfigReader.EnableSocketPolicyServer)
+                        this.Send(SocketDomainPolicy.GetPolicyFile());
                     else
                         onReceiveCallback(packet);
                     

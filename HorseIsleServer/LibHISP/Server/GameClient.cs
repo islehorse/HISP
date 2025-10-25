@@ -434,7 +434,7 @@ namespace HISP.Server
                     return;
 
             }
-            catch (ObjectDisposedException) 
+            catch (ObjectDisposedException e) 
             {
                 return;
             }
@@ -445,8 +445,10 @@ namespace HISP.Server
              *  this prevents the entire server from crashing
              *  if theres an error in handling a particular packet.
              */
+#if !OS_DEBUG
             try
             {
+#endif
                 if (!LoggedIn)
                 {
                     switch (identifier)
@@ -454,9 +456,11 @@ namespace HISP.Server
                         case PacketBuilder.PACKET_LOGIN:
                             GameServer.OnUserLogin(this, packet);
                             break;
+#if ENABLE_IPC
                         case IpcPacket.PACKET_IPC:
                             IpcPacket.OnIpcReceived(this, packet);
                             break;
+#endif
                     }
                 }
                 else
@@ -537,16 +541,14 @@ namespace HISP.Server
                             break;
                     }
                 }
+#if !OS_DEBUG
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-#if OS_DEBUG
-                throw e;
-#else
                 Logger.ErrorPrint("Unhandled Exception: " + e.Message + "\n" + e.StackTrace);
                 Kick("Unhandled Exception: " + e.Message + "\n" + e.StackTrace);
-#endif
             }
+#endif
         }
 
         public void Kick(string Reason)
