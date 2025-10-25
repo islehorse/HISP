@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.IO;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HISP.Server
 {
@@ -243,7 +242,7 @@ namespace HISP.Server
 
                 if (eKey.StartsWith(prefix))
                 {
-                    Logger.WarnPrint("Ignoring setting: " + (entry.Key as string) + " because environment variable " + eKey + " is set.");
+                    Logger.WarnPrint("Ignoring setting: " + prefix.ToLowerInvariant() + " because environment variable " + eKey + " is set.");
                     readConfigKey(eKey.Substring(prefix.Length), eValue);
                 }
             }
