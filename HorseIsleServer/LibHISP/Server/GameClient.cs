@@ -436,6 +436,7 @@ namespace HISP.Server
             }
             catch (ObjectDisposedException e) 
             {
+                Logger.DebugPrint("Unhandled exception: " + e.Message);
                 return;
             }
 
