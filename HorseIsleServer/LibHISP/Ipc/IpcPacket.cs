@@ -15,6 +15,7 @@ namespace HISP.Ipc
         const byte IPC_MAKE_ADMIN = 0xFC;
         const byte IPC_MAKE_MOD = 0xFB;
 
+
         public static void OnIpcReceived(GameClient sender, byte[] packet)
         {
             if (packet.Length < 1) return;
@@ -46,7 +47,7 @@ namespace HISP.Ipc
                     if (!Database.CheckUserExist(args[0])) return;
 
                     int userId = Database.GetUserId(args[0]);
-                    bool isAdmin = args[1] == "true";
+                    bool isAdmin = args[1] == "YES";
                     Database.SetUserAdmin(userId, isAdmin);
 
                     if (GameServer.IsUserOnline(userId)) GameServer.GetUserById(userId).Administrator = isAdmin;
@@ -57,7 +58,7 @@ namespace HISP.Ipc
                     if (!Database.CheckUserExist(args[0])) return;
 
                     userId = Database.GetUserId(args[0]);
-                    bool isMod = args[1] == "true";
+                    bool isMod = args[1] == "YES";
                     Database.SetUserMod(userId, isMod);
 
                     if (GameServer.IsUserOnline(userId)) GameServer.GetUserById(userId).Moderator = isMod;

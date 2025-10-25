@@ -12,11 +12,11 @@ namespace HISP.Server
         private static string configFilename = "server.properties";
         private static string mapFileName = "HI1.MAP";
         private static string gamedataDirname = "gamedata";
-        private static string crossDomainPolicyFileName = "CrossDomainPolicy.xml";
+        private static string socketPolicyFileName = "internal";
         private static string configPath = Directory.GetCurrentDirectory();
         private static string assetsPath = Directory.GetCurrentDirectory();
 
-        public static int Port = 12321;
+        public static short Port = 12321;
         public static string BindIP = "0.0.0.0";
 
         public static string DatabaseIP = "127.0.0.1";
@@ -37,6 +37,8 @@ namespace HISP.Server
         public static bool EnableSwearFilter = true;
         public static bool EnableCorrections = true;
         public static bool EnableNonViolations = true;
+
+        public static bool EnableSocketPolicyServer = false;
 
         public static bool EnableWebSocket = true;
         public static bool SigninAsSignup = true;
@@ -93,17 +95,19 @@ namespace HISP.Server
                 gamedataDirname = value;
             }
         }
-        public static string CrossDomainPolicyFile
+        public static string SocketPolicyFile
         {
             get
             {
-                return Path.GetFullPath(crossDomainPolicyFileName, ConfigDirectory);
+                if (socketPolicyFileName != "internal")
+                    return Path.GetFullPath(socketPolicyFileName, ConfigDirectory);
+                return socketPolicyFileName;
             }
             set
             {
                 if (value == null || value == "")
                     return;
-                crossDomainPolicyFileName = value;
+                socketPolicyFileName = value;
             }
         }
         public static string ConfigurationFileName
@@ -125,7 +129,7 @@ namespace HISP.Server
             switch (key.ToLowerInvariant())
             {
                 case "port":
-                    Port = int.Parse(value);
+                    Port = short.Parse(value);
                     break;
                 case "ip":
                     BindIP = value;
@@ -154,8 +158,8 @@ namespace HISP.Server
                 case "gamedata":
                     GameData = value;
                     break;
-                case "crossdomain":
-                    CrossDomainPolicyFile = value;
+                case "socket_policy_file":
+                    SocketPolicyFile = value;
                     break;
                 case "all_users_subscribed":
                     AllUsersSubbed = (value == "true");
@@ -165,6 +169,9 @@ namespace HISP.Server
                     break;
                 case "sql_backend":
                     SqlBackend = value;
+                    break;
+                case "enable_policy_server":
+                    EnableSocketPolicyServer = (value == "true");
                     break;
                 case "enable_non_violation_check":
                     EnableNonViolations = (value == "true");
@@ -235,7 +242,10 @@ namespace HISP.Server
                 string eValue = (entry.Value as string);
 
                 if (eKey.StartsWith(prefix))
+                {
+                    Logger.WarnPrint("Ignoring setting: " + (entry.Key as string) + " because environment variable " + eKey + " is set.");
                     readConfigKey(eKey.Substring(prefix.Length), eValue);
+                }
             }
         }
     }

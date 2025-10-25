@@ -48,7 +48,6 @@ namespace HISP.Server
             Logger.InfoPrint("Assets Directory: " + ConfigReader.AssetsDirectory);
 
             ConfigReader.OpenConfig();
-            CrossDomainPolicy.GetPolicyFile();
             Database.OpenDatabase();
             GameDataJson.ReadGamedata();
 
@@ -68,10 +67,13 @@ namespace HISP.Server
             Item.DoSpecialCases();
             Command.RegisterCommands();
 
+            PacketSigning.GenerateHmacKey();
+
             GameServer.StartServer();
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
+
         }
 
         private static void HispCrashHandler(object sender, UnhandledExceptionEventArgs e)

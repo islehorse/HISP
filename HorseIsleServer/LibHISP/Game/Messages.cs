@@ -1,9 +1,10 @@
-﻿using System;
-using System.Drawing;
-using System.Globalization;
+﻿using HISP.Game.Chat;
+using HISP.Properties;
 using HISP.Server;
 using HISP.Util;
-using HISP.Game.Chat;
+using System;
+using System.Drawing;
+using System.Globalization;
 
 namespace HISP.Game
 {
@@ -3044,6 +3045,9 @@ namespace HISP.Game
         {
             return KickReasonIdleFormat.Replace("%KICK%", GameServer.IdleTimeout.ToString());
         }
- 
+        public static string FormatCrossDomainPolicy(string domain, short port)
+        {
+            return Resources.DefaultCrossDomain.Replace("%DOMAIN%", domain).Replace("%PORT%", port.ToString());
+        }
     }
 }
