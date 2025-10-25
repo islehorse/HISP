@@ -21,11 +21,12 @@ namespace HISP.Server.Network
                 {
                     byte[] packet = currentPacket.ToArray();
                     
-                    if (Helper.ByteArrayStartsWith(packet, XMLSOCKET_POLICY_FILE) && ConfigReader.EnableSocketPolicyServer)
+                    if (Helper.ByteArrayStartsWith(packet, XMLSOCKET_POLICY_FILE) && ConfigReader.EnableSocketPolicyServer) {
                         this.Send(SocketDomainPolicy.GetPolicyFile());
-                    else
+                    }
+                    else {
                         onReceiveCallback(packet);
-                    
+                    }
                     
                     currentPacket.Clear();
                     continue;
