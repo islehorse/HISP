@@ -1,58 +1,58 @@
 services:
 #gameserver
-  hispd:
-    build: ..
-    container_name: hispd
-    environment:
-      HISP_DB_IP: gamedb
-      HISP_DB_NAME: ${DB_GAME1}
-      HISP_DB_USERNAME: ${DB_USER}
-      HISP_DB_PASSWORD: ${DB_PASS}
-      HISP_SQL_BACKEND: mariadb
-    volumes:
-      - /etc/hisp:/etc/hisp
-    ports:
-      - 12321:12321
-    restart: unless-stopped
-    depends_on:
-      gamedb:
-        condition: service_healthy
-  gamedb:
-    image: mariadb:latest
-    container_name: gamedb
-    restart: always
-    environment:
-      MARIADB_RANDOM_ROOT_PASSWORD: true
-      MARIADB_DATABASE: ${DB_GAME1}
-      MARIADB_USER: ${DB_USER}
-      MARIADB_PASSWORD: ${DB_PASS}
-    volumes:
-      - /var/lib/hisp/gamedb:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
-      start_period: 10s
-      interval: 10s
-      timeout: 5s
-      retries: 3
-  gameweb:
-    build: ../HorseIsleWeb/game-site
-    container_name: gameweb
-    environment:
-      WEB_DB_IP: gamedb
-      WEB_DB_NAME: ${DB_GAME1}
-      WEB_DB_USERNAME: ${DB_USER}
-      WEB_DB_PASSWORD: ${DB_PASS}
-      WEB_DB_BACKEND: mariadb
-    volumes:
-      - /etc/hisp:/etc/hisp
-    ports:
-      - 12322:80
-    restart: unless-stopped
-    depends_on:
-     gamedb:
-        condition: service_healthy
-     hispd:
-        condition: service_started
+  #hispd:
+  #  build: ..
+  #  container_name: hispd
+  #  environment:
+  #    HISP_DB_IP: gamedb
+  #    HISP_DB_NAME: ${DB_GAME1}
+  #    HISP_DB_USERNAME: ${DB_USER}
+  #    HISP_DB_PASSWORD: ${DB_PASS}
+  #    HISP_SQL_BACKEND: mariadb
+  #  volumes:
+  #    - /etc/hisp:/etc/hisp
+  #  ports:
+  #    - 12321:12321
+  #  restart: unless-stopped
+  #  depends_on:
+  #    gamedb:
+  #      condition: service_healthy
+  #gamedb:
+  #  image: mariadb:latest
+  #  container_name: gamedb
+  #  restart: always
+  #  environment:
+  #    MARIADB_RANDOM_ROOT_PASSWORD: true
+  #    MARIADB_DATABASE: ${DB_GAME1}
+  #    MARIADB_USER: ${DB_USER}
+  #    MARIADB_PASSWORD: ${DB_PASS}
+  #  volumes:
+  #    - /var/lib/hisp/gamedb:/var/lib/mysql
+  #  healthcheck:
+  #    test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+  #    start_period: 10s
+  #    interval: 10s
+  #    timeout: 5s
+  #    retries: 3
+  #gameweb:
+  #  build: ../HorseIsleWeb/game-site
+  #  container_name: gameweb
+  #  environment:
+  #    WEB_DB_IP: gamedb
+  #    WEB_DB_NAME: ${DB_GAME1}
+  #    WEB_DB_USERNAME: ${DB_USER}
+  #    WEB_DB_PASSWORD: ${DB_PASS}
+  #    WEB_DB_BACKEND: mariadb
+  #  volumes:
+  #    - /etc/hisp:/etc/hisp
+  #  ports:
+  #    - 12322:80
+  #  restart: unless-stopped
+  #  depends_on:
+  #   gamedb:
+  #      condition: service_healthy
+  #   hispd:
+  #      condition: service_started
 # webserver       
   webdb:
     image: mariadb:latest
