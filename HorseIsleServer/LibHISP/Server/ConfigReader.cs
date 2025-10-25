@@ -37,7 +37,7 @@ namespace HISP.Server
         public static bool EnableCorrections = true;
         public static bool EnableNonViolations = true;
 
-        public static bool EnableSocketPolicyServer = false;
+        public static bool EnableSocketPolicyServer = true;
 
         public static bool EnableWebSocket = true;
         public static bool SigninAsSignup = true;
