@@ -102,9 +102,12 @@ namespace HISP.Game.Inventory
                 return 0;
 
             Int64 bias = Item.Items.Length;
-            Int64 sortBy = (Item.GetItemById(item.ItemId).SortBy * bias) + item.ItemId;
+            Int64 sortBy = (Item.GetItemById(item.ItemId).SortBy * bias) - item.ItemId;
+
+            // flip sign for infinite items
+            // thus placing them right at the top
             if (item.Infinite)
-                sortBy *= (bias*-1);
+                sortBy *= -1;
 
             Logger.DebugPrint("Sort position of: " + Item.GetItemById(item.ItemId).Name + " is: " + sortBy);
 
