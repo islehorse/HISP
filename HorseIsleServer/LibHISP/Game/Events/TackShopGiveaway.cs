@@ -121,7 +121,7 @@ namespace HISP.Game.Events
             Active = false;
             GameServer.TackShopGiveawayEvent = null;
 
-            User[] usersHere = GameServer.GetUsersAt(Location.X, Location.Y, false, true);
+            User[] usersHere = User.GetUsersAt(Location.X, Location.Y, false, true);
 
             if(usersHere.Length > 0)
             {
@@ -132,17 +132,15 @@ namespace HISP.Game.Events
                 winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.TackShopGiveaway).Count++;
 
                 byte[] horseWonMessage = PacketBuilder.CreateChat(Messages.FormatEventTackShopGiveawayWon(winner.Username, HorseGiveaway.Breed.Name, ShopName, Town.Name, usersHere.Length), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                foreach (GameClient client in GameClient.ConnectedClients)
-                    if (client.LoggedIn)
-                        client.SendPacket(horseWonMessage);
+                foreach (User user in User.OnlineUsers)
+                    user.Client.SendPacket(horseWonMessage);
 
             }
             else
             {
                 byte[] eventEndedMessage = PacketBuilder.CreateChat(Messages.FormatEventTackShopGiveawayEnd(ShopName, Town.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                foreach (GameClient client in GameClient.ConnectedClients)
-                    if (client.LoggedIn)
-                        client.SendPacket(eventEndedMessage);
+                foreach (User user in User.OnlineUsers)
+                    user.Client.SendPacket(eventEndedMessage);
             }
         }
 

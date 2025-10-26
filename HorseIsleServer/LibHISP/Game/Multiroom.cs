@@ -8,7 +8,7 @@ namespace HISP.Game
 {
     public class Multiroom
     {
-        private static List<Multiroom> multirooms = new List<Multiroom>();
+        private static ThreadSafeList<Multiroom> multirooms = new ThreadSafeList<Multiroom>();
         private ThreadSafeList<User> joinedUsers = new ThreadSafeList<User>();
 
         public int x;
@@ -29,19 +29,11 @@ namespace HISP.Game
         }
         public static Multiroom GetMultiroom(int x, int y)
         {
-            foreach (Multiroom multiroom in Multirooms)
-                if(multiroom.x == x && multiroom.y == y)
-                   return multiroom;
-
-            throw new KeyNotFoundException();
+            return Multirooms.First(o => (o.x == x && o.y == y));
         }
         public static bool IsMultiRoomAt(int x, int y)
         {
-            foreach (Multiroom multiroom in Multirooms)
-                if (multiroom.x == x && multiroom.y == y)
-                    return true;
-
-            return false;
+            return Multirooms.Any(o => (o.x == x && o.y == y));
         }
 
         public static void LeaveAllMultirooms(User user)

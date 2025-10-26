@@ -42,7 +42,7 @@ namespace HISP.Game
         private static string buildPlayersHere(User fromUser, int x, int y)
         {
             string playersHere = "";
-            User[] playersAt = GameServer.GetUsersAt(x, y, true, true);
+            User[] playersAt = User.GetUsersAt(x, y, true, true);
             if(playersAt.Length > 1)
             {
                 playersHere += Messages.PlayersHere;
@@ -86,7 +86,7 @@ namespace HISP.Game
         {
             string playersNearby = "";
 
-            User[] nearbyUsers = GameServer.GetNearbyUsers(x, y, true, true);
+            User[] nearbyUsers = User.GetNearbyUsers(x, y, true, true);
             int count = 0;
             if (nearbyUsers.Length > 1)
             {
@@ -146,7 +146,7 @@ namespace HISP.Game
         private static string buildShopInfo(Shop shop, IInventory shopperInventory)
         {
             string message = "";
-            InventoryItem[] itemList = shop.Inventory.GetItemList();
+            InventoryItem[] itemList = shop.Inventory.Items;
 
             // Get shops stock
             message += Messages.ThingsIAmSelling;
@@ -175,7 +175,7 @@ namespace HISP.Game
 
             // Check whats avalilble to be sold
             message += Messages.R1 + Messages.ThingsYouSellMe;
-            InventoryItem[] shopperItemList = shopperInventory.GetItemList();
+            InventoryItem[] shopperItemList = shopperInventory.Items;
 
             foreach (InventoryItem shopperitem in shopperItemList)
             {
@@ -230,7 +230,7 @@ namespace HISP.Game
             user.HorseWindowOpen = false;
             string message = "";
             message += buildPlayersHere(user, x, y);
-            bool playersHere = (GameServer.GetUsersAt(x, y, true, true).Length >= 1);
+            bool playersHere = (User.GetUsersAt(x, y, true, true).Length >= 1);
             message += buildNearbyString(x, y, playersHere);
 
             // Dropped Items
@@ -520,7 +520,7 @@ namespace HISP.Game
             else
             {
                 message += Messages.TradeOfferItem;
-                foreach(InventoryItem item in trade.Trader.Inventory.GetItemList())
+                foreach(InventoryItem item in trade.Trader.Inventory.Items)
                 {
                     Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
                     if (itemInfo.Type == "QUEST" || itemInfo.Type == "TEXT" || itemInfo.Id == Item.DorothyShoes)
@@ -668,9 +668,9 @@ namespace HISP.Game
                 // Write all peices
                 try
                 {
-                    message += buildTackPeiceLibary(set.GetSaddle());
-                    message += buildTackPeiceLibary(set.GetSaddlePad());
-                    message += buildTackPeiceLibary(set.GetBridle());
+                    message += buildTackPeiceLibary(set.Saddle);
+                    message += buildTackPeiceLibary(set.SaddlePad);
+                    message += buildTackPeiceLibary(set.Bridle);
                 }
                 catch (Exception e)
                 {
@@ -982,7 +982,7 @@ namespace HISP.Game
             for (int i = 0; i < transportPoint.Locations.Length; i++)
             {
                 int transportLocationId = transportPoint.Locations[i];
-                Transport.TransportLocation transportLocation = Transport.GetTransportLocation(transportLocationId);
+                Transport.TransportLocation transportLocation = Transport.GetTransportLocationById(transportLocationId);
                 string costFormat = Messages.FormatTransportCost(transportLocation.Cost);
                 if(transportLocation.Type == "WAGON")
                 {
@@ -1117,7 +1117,7 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.NearbyPlayersListHeader;
-            User[] nearbyUsers = GameServer.GetNearbyUsers(currentUser.X, currentUser.Y, false, true);
+            User[] nearbyUsers = User.GetNearbyUsers(currentUser.X, currentUser.Y, false, true);
             foreach (User nearbyUser in nearbyUsers)
             {
                 if (nearbyUser.Stealth)
@@ -1217,7 +1217,7 @@ namespace HISP.Game
             {
                 try
                 {
-                    User friend = GameServer.GetUserById(id);
+                    User friend = User.GetUserById(id);
                     if (friend.Stealth)
                         continue;
 
@@ -1229,7 +1229,7 @@ namespace HISP.Game
                     message += Messages.FormatOnlineBuddyEntry(iconFormat, friend.Username, friend.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - friend.LoginTime).TotalMinutes)), friend.X, friend.Y);
 
                 }
-                catch (KeyNotFoundException) { }
+                catch (InvalidOperationException) { }
 
             }
             message += Messages.BuddyListOfflineBuddys;
@@ -1237,7 +1237,7 @@ namespace HISP.Game
 
             foreach (int id in user.Friends.List.ToArray())
             {
-                if (GameServer.IsUserOnline(id))
+                if (User.IsUserOnline(id))
                     continue;
 
                 string username = Database.GetUsername(id);
@@ -2079,14 +2079,8 @@ namespace HISP.Game
         public static string BuildPlayerListMenu(User user)
         {
             string message = "";
-
-            int friendsOnline = 0;
-            foreach(int friendId in user.Friends.List)
-            {
-                if (GameServer.IsUserOnline(friendId))
-                    friendsOnline++;
-            }
-
+            int friendsOnline = user.GetNumberOfBuddiesOnline();
+            
             message += Messages.PlayerListHeader;
             message += Messages.PlayerListSelectFromFollowing;
             message += Messages.FormatPlayerBuddyList(friendsOnline);
@@ -2146,7 +2140,7 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.FormatPlayerInventoryHeaderMeta(inv.Count, inv.BaseUser.MaxItems);
-            InventoryItem[] items = inv.GetItemList();
+            InventoryItem[] items = inv.Items;
             foreach(InventoryItem item in items)
             {
                 Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
@@ -2193,9 +2187,9 @@ namespace HISP.Game
             message += Messages.FormatHorseCurrentStatus(horse.Name);
             message += Messages.FormatHorseBasicStat(horse.BasicStats.Health, horse.BasicStats.Hunger, horse.BasicStats.Thirst, horse.BasicStats.Mood, horse.BasicStats.Tiredness, horse.BasicStats.Groom, horse.BasicStats.Shoes);
             message += Messages.HorseHoldingHorseFeed;
-            foreach(InventoryItem item in user.Inventory.GetItemList())
+            foreach(InventoryItem item in user.Inventory.Items)
             {
-                Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
+                Item.ItemInformation itemInfo = item.ItemInstances.First().GetItemInfo();
                 bool isHorseFood = false;
                 if (itemInfo.Effects.Length >= 2)
                     isHorseFood = (itemInfo.Effects[1].EffectsWhat == "MOOD" && itemInfo.Effects[0].EffectsWhat == "HUNGER");
@@ -2233,9 +2227,9 @@ namespace HISP.Game
             if (horse.Equipment.Companion != null)
                 message += Messages.FormatHorseCompanionSelected(horse.Equipment.Companion.IconId, horse.Equipment.Companion.Name);
             message += Messages.HorseCompanionMenuCurrentlyAvalibleCompanions;
-            foreach (InventoryItem item in user.Inventory.GetItemList())
+            foreach (InventoryItem item in user.Inventory.Items)
             {
-                Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
+                Item.ItemInformation itemInfo = item.ItemInstances.First().GetItemInfo();
                 if(itemInfo.Type == "COMPANION")
                 {
                     message += Messages.FormatHorseCompanionOption(itemInfo.IconId, item.ItemInstances.Length, itemInfo.Name, item.ItemId);
@@ -2462,7 +2456,7 @@ namespace HISP.Game
                 {
                     message += Messages.FormatMiscStatsEntry(Tracking.GetTrackedItemsStatsMenuName(trackedItem.What), trackedItem.Count);
                 }
-                catch(KeyNotFoundException)
+                catch(InvalidOperationException)
                 {
                     Logger.ErrorPrint(user.Username + " Has tracked items in db that dont have a value associated.");
                     continue;
@@ -2490,7 +2484,7 @@ namespace HISP.Game
             else
                 message += Messages.HorseTackInInventory;
 
-            foreach(InventoryItem item in user.Inventory.GetItemList())
+            foreach(InventoryItem item in user.Inventory.Items)
             {
                 Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
                 if (itemInfo.Type == "TACK")
@@ -2623,7 +2617,7 @@ namespace HISP.Game
         private static string buildSanta(User user)
         {
             string message = Messages.SantaHiddenText;
-            InventoryItem[] items = user.Inventory.GetItemList();
+            InventoryItem[] items = user.Inventory.Items;
             foreach (InventoryItem item in items)
             {
                 Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
@@ -2895,24 +2889,23 @@ namespace HISP.Game
                     TileArg = TileCode.Split('-')[1];
                     TileCode = TileCode.Split('-')[0];
                 }
-                if (TileCode == "EXITABLE")
+                else if (TileCode == "EXITABLE")
+                {
                     message += Messages.ExitThisPlace;
-
-                if (TileCode == "TRANSPORT")
+                }
+                else if (TileCode == "TRANSPORT")
                 {
                     Transport.TransportPoint point = Transport.GetTransportPoint(specialTile.X, specialTile.Y);
                     message += Meta.BuildTransportInfo(user, point);
                 }
-
-                if (TileCode == "STRAWPILE")
+                else if (TileCode == "STRAWPILE")
                 {
                     if (user.Inventory.HasItemId(Item.Pitchfork))
                         message += Messages.HasPitchforkMeta + Messages.ExitThisPlace + Messages.MetaTerminator;
                     else
                         message += Messages.NoPitchforkMeta + Messages.ExitThisPlace + Messages.MetaTerminator;
                 }
-
-                if (TileCode == "STORE")
+                else if (TileCode == "STORE")
                 {
                     int ShopID = int.Parse(TileArg);
                     Shop shop = Shop.GetShopById(ShopID);
@@ -2920,75 +2913,75 @@ namespace HISP.Game
                     message += buildShopInfo(shop, user.Inventory);
 
                 }
-                if(TileCode == "TOWNHALL")
+                else if (TileCode == "TOWNHALL")
                 {
                     message += buildTownHall(user);
                 }
-                if (TileCode == "VET")
+                else if (TileCode == "VET")
                 {
                     message += buildVet(user, Vet.GetVetById(int.Parse(TileArg)));
                 }
-                if(TileCode == "GROOMER")
+                else if (TileCode == "GROOMER")
                 {
                     message += buildGroomer(user, Groomer.GetGroomerById(int.Parse(TileArg)));
                 }
-                if (TileCode == "FARRIER")
+                else if (TileCode == "FARRIER")
                 {
                     message += buildFarrier(user, Farrier.GetFarrierById(int.Parse(TileArg)));
                 }
-                if(TileCode == "BARN")
+                else if (TileCode == "BARN")
                 {
                     message += buildBarn(user, Barn.GetBarnById(int.Parse(TileArg)));
                 }
-                if (TileCode == "BANK")
+                else if (TileCode == "BANK")
                 {
                     message += buildBank(user);
                 }
-                if (TileCode == "WISHINGWELL")
+                else if (TileCode == "WISHINGWELL")
                 {
                     message += buildWishingWell(user);
                 }
-                if(TileCode == "HORSEPAWNEER")
+                else if (TileCode == "HORSEPAWNEER")
                 {
                     message += buildPawneer(user);
                 }
-                if (TileCode == "VENUSFLYTRAP")
+                else if (TileCode == "VENUSFLYTRAP")
                 {
                     message += buildVenusFlyTrap(user);
                 }
-                if (TileCode == "RIDDLER")
+                else if (TileCode == "RIDDLER")
                 {
                     message += buildRiddlerRiddle(user);
                 }
-                if(TileCode == "ARENA")
+                else if (TileCode == "ARENA")
                 {
                     message += buildArena(user, Arena.GetAreaById(int.Parse(TileArg)));
                 }
-                if(TileCode == "AUCTION")
+                else if (TileCode == "AUCTION")
                 {
                     message += buildAuction(user, Auction.GetAuctionRoomById(int.Parse(TileArg)));
                 }
-                if(TileCode == "TRAINER")
+                else if (TileCode == "TRAINER")
                 {
                     message += buildTrainer(user, Trainer.GetTrainerById(int.Parse(TileArg)));
                 }
-                if(TileCode == "HORSELEASER")
+                else if (TileCode == "HORSELEASER")
                 {
                     message += buildLeaser(user, Leaser.GetLeasersById(int.Parse(TileArg)));
                 }
-                if (TileCode == "LIBRARY")
+                else if (TileCode == "LIBRARY")
                 {
                     message += buildLibary();
                 }
-                if(TileCode == "MULTIHORSES")
+                else if (TileCode == "MULTIHORSES")
                 {
                     message += buildMultiHorses(user, TileArg);
                 }
-                if (TileCode == "POND")
+                else if (TileCode == "POND")
                 {
                     message += buildPond(user);
                 }
-                if(TileCode == "2PLAYER")
+                else if (TileCode == "2PLAYER")
                 {
                     string msg = build2PlayerGame(user, TileArg);
                     if (!overwrite)
@@ -2998,57 +2991,53 @@ namespace HISP.Game
 
                     overwrite = false;
                 }
-                if(TileCode == "HORSES")
+                else if (TileCode == "HORSES")
                 {
                     message += buildHorseGame(user, TileArg);
                 }
-                if (TileCode == "WORKSHOP")
+                else if (TileCode == "WORKSHOP")
                 {
                     message += buildWorkshop(user);
                 }
-                if (TileCode == "MUDHOLE")
+                else if (TileCode == "MUDHOLE")
                 {
                     message += buildMudHole(user);
                 }
-                if (TileCode == "RANCH")
+                else if (TileCode == "RANCH")
                 {
                     message += buildRanch(user, int.Parse(TileArg));
                 }
-                if(TileCode == "SANTA")
+                else if (TileCode == "SANTA")
                 {
                     message += buildSanta(user);
                 }
-                if (TileCode == "MULTIROOM")
+                else if (TileCode == "MULTIROOM")
                 {
                     message += buildMultiroom(TileArg != "" ? TileArg : null, user);   
                 }
-                if (TileCode == "PASSWORD")
+                else if (TileCode == "PASSWORD")
                 {
                     message += buildPassword();
                 }
-                if (TileCode == "HORSEWHISPERER")
+                else if (TileCode == "HORSEWHISPERER")
                 {
                     message += buildHorseWhisperer();
                 }
-                if (TileCode == "INN")
+                else if (TileCode == "INN")
                 {
                     int InnID = int.Parse(TileArg);
                     Inn inn = Inn.GetInnById(InnID);
                     user.LastVisitedInn = inn;
                     message += buildInn(inn);
                 }
-                if (TileCode == "FOUNTAIN")
+                else if (TileCode == "FOUNTAIN")
                 {
                     message += buildFountain();
-
                 }
             }
 
-
-
             return message;
         }
-
 
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
-
-using System.Text;
+using System.Linq;
 
 using HISP.Server;
 using HISP.Util;
@@ -16,59 +15,52 @@ namespace HISP.Game.Items
             {
                 tackItems = new List<Item.ItemInformation>();
             }
-            
+
             public int IconId
             {
                 get
                 {
-                    return GetSaddle().IconId;
+                    return Saddle.IconId;
                 }
             }
             public string SetName;
             private List<Item.ItemInformation> tackItems;
             public void Add(Item.ItemInformation item)
             {
-                Logger.DebugPrint("Added "+item.Name+" To Tack Set: "+this.SetName);
+                Logger.DebugPrint("Added " + item.Name + " To Tack Set: " + this.SetName);
                 tackItems.Add(item);
             }
 
-            public Item.ItemInformation GetSaddle()
+            public Item.ItemInformation Saddle 
             {
-                foreach(Item.ItemInformation tackItem in TackItems)
+                get 
                 {
-                    if(tackItem.GetMiscFlag(0) == 1) // Saddle
-                        return tackItem;
+                    return TackItems.First(o => o.GetMiscFlag(0) == 1); // Saddle
                 }
-                throw new KeyNotFoundException("Saddle not found.");
             }
 
-
-            public Item.ItemInformation GetSaddlePad()
+            public Item.ItemInformation SaddlePad
             {
-                foreach(Item.ItemInformation tackItem in TackItems)
+                get
                 {
-                    if(tackItem.GetMiscFlag(0) == 2) // SaddlePad
-                        return tackItem;
+                    return TackItems.First(o => o.GetMiscFlag(0) == 2); // SaddlePad
                 }
-                throw new KeyNotFoundException("SaddlePad not found.");
             }
 
-            public Item.ItemInformation GetBridle()
+            public Item.ItemInformation Bridle
             {
-                foreach(Item.ItemInformation tackItem in TackItems)
+                get
                 {
-                    if(tackItem.GetMiscFlag(0) == 3) // Bridle
-                        return tackItem;
+                    return TackItems.First(o => o.GetMiscFlag(0) == 3); // Bridle
                 }
-                throw new KeyNotFoundException("GetBridle not found.");
             }
 
             public string[] GetSwfNames()
             {
                 string[] swfs = new string[3];
-                swfs[0] = GetSaddle().EmbedSwf;
-                swfs[1] = GetSaddlePad().EmbedSwf;
-                swfs[2] = GetBridle().EmbedSwf;
+                swfs[0] = Saddle.EmbedSwf;
+                swfs[1] = SaddlePad.EmbedSwf;
+                swfs[2] = Bridle.EmbedSwf;
 
                 return swfs;
             }
@@ -104,14 +96,7 @@ namespace HISP.Game.Items
         }
         public static TackSet GetSetByName(string name)
         {
-            foreach(TackSet set in tackSets)
-            {
-                if(set.SetName == name)
-                {
-                    return set;
-                }
-            }
-            throw new KeyNotFoundException("No TackSet with name: "+name+" was found.");
+            return TackSets.First(o => o.SetName == name);
         }
 
         public static void GenerateTackSets()
@@ -126,7 +111,7 @@ namespace HISP.Game.Items
                         TackSet set = GetSetByName(Helper.CapitalizeFirstLetter(itemInfo.EmbedSwf));
                         set.Add(itemInfo);
                     }
-                    catch(KeyNotFoundException)
+                    catch(InvalidOperationException)
                     {                   
                         TackSet tackSet = new TackSet();
                         tackSet.SetName = Helper.CapitalizeFirstLetter(itemInfo.EmbedSwf);

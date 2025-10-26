@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game.Services
 {
@@ -68,39 +65,16 @@ namespace HISP.Game.Services
         }
         public static Workshop GetWorkshopAt(int x, int y)
         {
-            foreach(Workshop wkShop in Workshops)
-            {
-                if(wkShop.X == x && wkShop.Y == y)
-                {
-                    return wkShop;
-                }
-            }
-            throw new KeyNotFoundException("No workshop found.");
+            return Workshops.First(o => o.X == x && o.Y == y);
         }
 
         public static bool CraftIdExists(int id)
         {
-            try
-            {
-                GetCraftId(id);
-                return true;
-            }
-            catch(KeyNotFoundException)
-            {
-                return false;
-            }
+            return Workshops.SelectMany(o => o.CraftableItems).Any(o => o.Id == id);
         }
         public static CraftableItem GetCraftId(int id)
         {
-            foreach(Workshop wkShop in Workshops)
-            {
-                foreach(CraftableItem crftItem in wkShop.CraftableItems)
-                {
-                    if (crftItem.Id == id)
-                        return crftItem;
-                }
-            }
-            throw new KeyNotFoundException("No craft id " + id + " was found.");
+            return Workshops.SelectMany(o => o.CraftableItems).First(o => o.Id == id);
         }
 
     }

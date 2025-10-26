@@ -64,8 +64,8 @@ namespace HISP.Game.Events
                 {
                     ItemInstance itm = new ItemInstance(Item.ModSplatterball);
 
-                    if (GameServer.IsUserOnline(userid))
-                        GameServer.GetUserById(userid).Inventory.AddWithoutDatabase(itm);
+                    if (User.IsUserOnline(userid))
+                        User.GetUserById(userid).Inventory.AddWithoutDatabase(itm);
 
                     Database.AddItemToInventory(userid, itm);
                 }

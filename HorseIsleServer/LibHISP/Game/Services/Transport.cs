@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game.Services
 {
@@ -27,26 +28,12 @@ namespace HISP.Game.Services
 
         public static TransportPoint GetTransportPoint(int x, int y)
         {
-            foreach(TransportPoint transportPoint in TransportPoints)
-            {
-                if (transportPoint.X == x && transportPoint.Y == y)
-                {
-                    return transportPoint;
-                }
-            }
-            throw new KeyNotFoundException("Cannot find transport point at x:" + x + "y:" + y);
+            return TransportPoints.First(o => (o.X == x && o.Y == y));
         }
 
-        public static TransportLocation GetTransportLocation(int id)
+        public static TransportLocation GetTransportLocationById(int id)
         {
-            foreach (TransportLocation transportLocation in TransportLocations)
-            {
-                if (transportLocation.Id == id)
-                {
-                    return transportLocation;
-                }
-            }
-            throw new KeyNotFoundException("Cannot find transport location at Id:" + id);
+            return TransportLocations.First(o => (o.Id == id));
         }
 
     }

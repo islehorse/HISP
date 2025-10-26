@@ -386,17 +386,11 @@ namespace HISP.Game
 
         public static Arena GetArenaUserEnteredIn(User user)
         {
-            foreach (Arena arena in Arenas)
-                if (arena.UserHasHorseEntered(user))
-                    return arena;
-            throw new KeyNotFoundException("user was not entered in any arena.");
+            return Arenas.First(o => o.UserHasHorseEntered(user));
         }
         public bool UserHasHorseEntered(User user)
         {
-            foreach (ArenaEntry entry in Entries.ToArray())
-                if (entry.EnteredUser.Id == user.Id)
-                    return true;
-            return false;
+            return Entries.Any(o => o.EnteredUser.Id == user.Id);
         }
 
         public static void StartArenas(int Minutes)
@@ -415,17 +409,11 @@ namespace HISP.Game
         }
         public static bool UserHasEnteredHorseInAnyArena(User user)
         {
-            foreach (Arena arena in Arenas)
-                if (arena.UserHasHorseEntered(user))
-                    return true;
-            return false;
+            return Arenas.Any(o => o.UserHasHorseEntered(user));
         }
         public static Arena GetAreaById(int id)
         {
-            foreach (Arena arena in Arenas)
-                if (arena.Id == id)
-                    return arena;
-            throw new KeyNotFoundException("Arena with id " + id + " NOT FOUND!");
+            return Arenas.First(o => o.Id == id);
         }
     }
 }

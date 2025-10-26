@@ -1,4 +1,5 @@
-﻿using HISP.Security;
+﻿using HISP.Player;
+using HISP.Security;
 using HISP.Server;
 using System;
 using System.Linq;
@@ -50,7 +51,7 @@ namespace HISP.Ipc
                     bool isAdmin = args[1] == "YES";
                     Database.SetUserAdmin(userId, isAdmin);
 
-                    if (GameServer.IsUserOnline(userId)) GameServer.GetUserById(userId).Administrator = isAdmin;
+                    if (User.IsUserOnline(userId)) User.GetUserById(userId).Administrator = isAdmin;
 
                     break;
                 case IPC_MAKE_MOD:
@@ -61,7 +62,7 @@ namespace HISP.Ipc
                     bool isMod = args[1] == "YES";
                     Database.SetUserMod(userId, isMod);
 
-                    if (GameServer.IsUserOnline(userId)) GameServer.GetUserById(userId).Moderator = isMod;
+                    if (User.IsUserOnline(userId)) User.GetUserById(userId).Moderator = isMod;
 
                     break;
             }

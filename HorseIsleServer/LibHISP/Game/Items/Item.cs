@@ -12,6 +12,30 @@ namespace HISP.Game.Items
 
         public const int MAX_STACK = 50;
 
+        private static List<ItemInformation> items = new List<ItemInformation>();
+        private static List<ThrowableItem> throwableItems = new List<ThrowableItem>();
+
+        public static int Present;
+        public static int MailMessage;
+        public static int DorothyShoes;
+        public static int PawneerOrder;
+        public static int Telescope;
+        public static int Pitchfork;
+        public static int WishingCoin;
+        public static int ModSplatterball;
+        public static int WaterBalloon;
+        public static int FishingPole;
+        public static int Earthworm;
+        public static int BirthdayToken;
+        public static int MagicBean;
+        public static int MagicDroplet;
+        public static int Ruby;
+
+        public static int StallionTradingCard;
+        public static int MareTradingCard;
+        public static int ColtTradingCard;
+        public static int FillyTradingCard;
+
         public struct Effects
         {
             public string EffectsWhat;
@@ -65,8 +89,6 @@ namespace HISP.Game.Items
             public string HitYourselfMessage;
         }
 
-        private static List<ItemInformation> items = new List<ItemInformation>();
-        private static List<ThrowableItem> throwableItems = new List<ThrowableItem>();
         public static void AddItemInfo(ItemInformation itm)
         {
             items.Add(itm);
@@ -91,26 +113,6 @@ namespace HISP.Game.Items
         }
 
 
-        public static int Present;
-        public static int MailMessage;
-        public static int DorothyShoes;
-        public static int PawneerOrder;
-        public static int Telescope;
-        public static int Pitchfork;
-        public static int WishingCoin;
-        public static int ModSplatterball;
-        public static int WaterBalloon;
-        public static int FishingPole;
-        public static int Earthworm;
-        public static int BirthdayToken;
-        public static int MagicBean;
-        public static int MagicDroplet;
-        public static int Ruby;
-
-        public static int StallionTradingCard;
-        public static int MareTradingCard;
-        public static int ColtTradingCard;
-        public static int FillyTradingCard;
 
         public static int[] TradingCards
         {
@@ -224,31 +226,17 @@ namespace HISP.Game.Items
         }
         public static bool IsThrowable(int id)
         {
-            foreach(ThrowableItem itm in ThrowableItems)
-            {
-                if(itm.Id == id)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return ThrowableItems.Any(o => o.Id == id);
         }
 
         public static ThrowableItem GetThrowableItem(int id)
         {
-            foreach (ThrowableItem itm in ThrowableItems)
-            {
-                if (itm.Id == id)
-                {
-                    return itm;
-                }
-            }
-            throw new KeyNotFoundException("id: " + id + " is not a throwable item.");
+            return ThrowableItems.First(o => o.Id == id);
         }
 
         public static bool ItemIdExist(int id)
         {
-            return Items.Where(o => o.Id == id).Count() > 0;
+            return Items.Any(o => o.Id == id);
         }
         public static void DoSpecialCases()
         {
@@ -256,10 +244,7 @@ namespace HISP.Game.Items
         }
         public static ItemInformation GetItemById(int id)
         {
-            IEnumerable<ItemInformation> items = Items.Where(o => o.Id == id);
-            if(items.Count() <= 0)
-                throw new KeyNotFoundException("Item id " + id + " Not found!");
-            return items.First();
+            return Items.First(o => o.Id == id);
         }
     }
 }

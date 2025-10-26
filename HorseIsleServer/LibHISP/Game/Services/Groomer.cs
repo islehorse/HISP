@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game.Services
 {
@@ -33,12 +34,7 @@ namespace HISP.Game.Services
 
         public static Groomer GetGroomerById(int id)
         {
-            foreach (Groomer groomer in Groomers)
-            {
-                if (id == groomer.Id)
-                    return groomer;
-            }
-            throw new KeyNotFoundException("Groomer with id: " + id + " Not found.");
+            return Groomers.First(o => o.Id == id);
         }
     }
 }

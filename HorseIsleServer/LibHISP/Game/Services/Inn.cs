@@ -6,6 +6,7 @@ using System.Collections.Generic;
 
 using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace HISP.Game.Services
 {
@@ -30,21 +31,15 @@ namespace HISP.Game.Services
 
         public Item.ItemInformation GetStockedItem(int itemId)
         {
+
+            // Check if inn stock.
+            if (RestsOffered.Any(o => o.Id == itemId))
+                return RestsOffered.First(o => o.Id == itemId);
             
-            // Check if inn stock.. 
-            foreach(Item.ItemInformation offering in RestsOffered)
-            {
-                if (offering.Id == itemId)
-                    return offering;
-            }
+            if (MealsOffered.Any(o => o.Id == itemId))
+                return MealsOffered.First(o => o.Id == itemId);
 
-            foreach (Item.ItemInformation offering in MealsOffered)
-            {
-                if (offering.Id == itemId)
-                    return offering;
-            }
-
-            throw new KeyNotFoundException("Item is not stocked by this inn.");
+            throw new InvalidOperationException("Item is not stocked by this inn.");
         }
 
 
@@ -76,11 +71,7 @@ namespace HISP.Game.Services
 
         public static Inn GetInnById(int id)
         {
-            foreach (Inn inn in Inns)
-                if (inn.Id == id)
-                    return inn;
-            throw new KeyNotFoundException("Inn " + id + " doesnt exist.");
-
+            return Inns.First(o => o.Id == id);
         }
     }
 }

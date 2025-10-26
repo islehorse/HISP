@@ -1,23 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using HISP.Player;
+﻿using HISP.Player;
 using HISP.Server;
+using HISP.Util;
+using System;
+using System.Linq;
 
 namespace HISP.Game
 {
 
     public class World
     {
-        private static Waypoint getWaypoint(string find)
+        public static bool IsPointOnScreen(int screenX, int screenY, int pointX, int pointY)
         {
-            foreach(Waypoint waypoint in Waypoints)
-            {
-                if(waypoint.Name == find)
-                    return waypoint;
-            }
-            
-            throw new KeyNotFoundException("Waypoint with name "+find+" not found.");
-        
+            int startX = screenX - 9;
+            int endX = screenX + 9;
+            int startY = screenY - 8;
+            int endY = screenY + 9;
+            if (startX <= pointX && endX >= pointX && startY <= pointY && endY >= pointY)
+                return true;
+            else
+                return false;
+        }
+        public static Waypoint GetWaypoint(string find)
+        {
+            return Waypoints.First(o => o.Name.Equals(find, StringComparison.InvariantCultureIgnoreCase));        
+        }
+        public static Waypoint GetWaypointStartsWith(string find)
+        {
+            return Waypoints.Where(o => o.Name.StartsWith(find, StringComparison.InvariantCultureIgnoreCase)).First();
         }
 
         public struct Waypoint
@@ -28,6 +37,7 @@ namespace HISP.Game
             public string Type;
             public string Description;
             public string[] WeatherTypesAvalible;
+
         }
         public class Isle 
         {
@@ -43,9 +53,9 @@ namespace HISP.Game
                 Waypoint point;
                 try
                 {
-                    point = GetWaypoint();
+                    point = this.Waypoint;
                 }
-                catch (KeyNotFoundException)
+                catch (InvalidOperationException)
                 {
                     return "SUNNY";
                 }
@@ -72,20 +82,23 @@ namespace HISP.Game
                 set
                 {
                     Database.SetWeather(Name, value);
-                    foreach(User user in GameServer.GetUsersInIsle(this,true,true))
+                    foreach(User user in User.GetUsersInIsle(this,true,true))
                     {
                         GameServer.UpdateWorld(user.Client);
                     }
                 }
             }
             
-            public Waypoint GetWaypoint()
+            public Waypoint Waypoint
             {
-                return getWaypoint(this.Name);
+                get
+                {
+                    return GetWaypoint(this.Name);
+                }
             }
 
         }
-        public class Town 
+        public class Town
         {
             public int StartX;
             public int EndX;
@@ -97,9 +110,9 @@ namespace HISP.Game
                 Waypoint point;
                 try
                 {
-                    point = GetWaypoint();
+                    point = this.Waypoint;
                 }
-                catch (KeyNotFoundException)
+                catch (InvalidOperationException)
                 {
                     return "SUNNY";
                 }
@@ -125,18 +138,21 @@ namespace HISP.Game
                 set
                 {
                     Database.SetWeather(Name, value);
-                    foreach (User user in GameServer.GetUsersInTown(this, true, true))
+                    foreach (User user in User.GetUsersInTown(this, true, true))
                     {
                         GameServer.UpdateArea(user.Client);
                     }
                 }
 
             }
-            public Waypoint GetWaypoint()
+            public Waypoint Waypoint
             {
-                return getWaypoint(this.Name);
+                get
+                {
+                    return GetWaypoint(this.Name);
+                }
             }
-        }
+         }
         public struct Area
         {
             public int StartX;
@@ -181,13 +197,13 @@ namespace HISP.Game
         public static Time ServerTime = new Time();
         public static int StartDate;
 
-        public static List<Waypoint> Waypoints = new List<Waypoint>();
-        public static List<Isle> Isles = new List<Isle>();
-        public static List<Town> Towns = new List<Town>();
-        public static List<Area> Areas = new List<Area>();
-        public static List<Zone> Zones = new List<Zone>();
+        public static ThreadSafeList<Waypoint> Waypoints = new ThreadSafeList<Waypoint>();
+        public static ThreadSafeList<Isle> Isles = new ThreadSafeList<Isle>();
+        public static ThreadSafeList<Town> Towns = new ThreadSafeList<Town>();
+        public static ThreadSafeList<Area> Areas = new ThreadSafeList<Area>();
+        public static ThreadSafeList<Zone> Zones = new ThreadSafeList<Zone>();
 
-        public static List<SpecialTile> SpecialTiles = new List<SpecialTile>();
+        public static ThreadSafeList<SpecialTile> SpecialTiles = new ThreadSafeList<SpecialTile>();
 
         public static void TickWorldClock() 
         {
@@ -222,158 +238,60 @@ namespace HISP.Game
 
         public static bool InZone(int x, int y)
         {
-            try
-            {
-                GetZone(x, y);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
+            return Zones.Any(o => (o.StartX <= x && o.EndX >= x && o.StartY <= y && o.EndY >= y));
         }
         public static bool InArea(int x, int y)
         {
-            try
-            {
-                GetArea(x, y);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
+            return Areas.Any(o => (o.StartX <= x && o.EndX >= x && o.StartY <= y && o.EndY >= y));
         }
 
         public static bool InTown(int x, int y)
         {
-            try
-            {
-                GetTown(x, y);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
+            return Towns.Any(o => (o.StartX <= x && o.EndX >= x && o.StartY <= y && o.EndY >= y));
         }
 
         public static bool InSpecialTile(int x, int y)
         {
-            foreach (SpecialTile specialTile in SpecialTiles)
-            {
-                if (specialTile.X == x && specialTile.Y == y)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return SpecialTiles.Any(o => (o.X == x && o.Y == y));
         }
 
         public static bool InIsle(int x, int y)
         {
-            foreach (Isle isle in Isles)
-            {
-                if (isle.StartX <= x && isle.EndX >= x && isle.StartY <= y && isle.EndY >= y)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return Isles.Any(o => (o.StartX <= x && o.EndX >= x && o.StartY <= y && o.EndY >= y));
         }
         public static Zone GetZoneByName(string name)
         {
-            foreach(Zone zone in Zones)
-            {
-                if (zone.Name == name)
-                    return zone;
-            }
-            throw new KeyNotFoundException("Zone not found.");
+            return Zones.First(o => o.Name == name);
         }
         public static SpecialTile[] GetSpecialTilesByCode(string code)
         {
-            List<SpecialTile> tiles = new List<SpecialTile>();
-            foreach (SpecialTile tile in SpecialTiles)
-            {
-                if (tile.Code == code)
-                {
-                    tiles.Add(tile);
-                }
-            }
-            return tiles.ToArray();
+            return SpecialTiles.Where(o => o.Code == code).ToArray();
         }
         public static SpecialTile[] GetSpecialTilesByName(string name)
         {
-            List<SpecialTile> tiles = new List<SpecialTile>();
-            foreach(SpecialTile tile in SpecialTiles)
-            {
-                if(tile.Title == name)
-                {
-                    tiles.Add(tile);
-                }
-            }
-            return tiles.ToArray();
+            return SpecialTiles.Where(o => o.Title == name).ToArray();
         }
         public static SpecialTile GetSpecialTile(int x, int y)
         {
-            foreach(SpecialTile specialTile in SpecialTiles)
-            {
-                if(specialTile.X == x && specialTile.Y == y)
-                {
-                    return specialTile;
-                }
-            }
-            throw new KeyNotFoundException("x,y not in a special tile!");
+            return SpecialTiles.First(o => (o.X == x && o.Y == y));
         }
         public static Isle GetIsle(int x, int y)
         {
-            foreach(Isle isle in Isles)
-            {
-
-                if (isle.StartX <= x && isle.EndX >= x && isle.StartY <= y && isle.EndY >= y)
-                {
-                    return isle;
-                }
-            }
-            throw new KeyNotFoundException("x,y not in an isle!");
+            return Isles.First(o => (o.StartX <= x && o.EndX >= x && o.StartY <= y && o.EndY >= y));
         }
 
         public static Zone GetZone(int x, int y)
         {
-            foreach (Zone zone in Zones)
-            {
-
-                if (zone.StartX <= x && zone.EndX >= x && zone.StartY <= y && zone.EndY >= y)
-                {
-                    return zone;
-                }
-            }
-            throw new KeyNotFoundException("x,y not in an zone!");
+            return Zones.First(o => (o.StartX <= x && o.EndX >= x && o.StartY <= y && o.EndY >= y));
         }
         public static Area GetArea(int x, int y)
         {
-            foreach (Area area in Areas)
-            {
-
-                if (area.StartX <= x && area.EndX >= x && area.StartY <= y && area.EndY >= y)
-                {
-                    return area;
-                }
-            }
-            throw new KeyNotFoundException("x,y not in an area!");
+            return Areas.First(o => (o.StartX <= x && o.EndX >= x && o.StartY <= y && o.EndY >= y));
         }
 
         public static Town GetTown(int x, int y)
         {
-            foreach (Town town in Towns)
-            {
-
-                if (town.StartX <= x && town.EndX >= x && town.StartY <= y && town.EndY >= y)
-                {
-                    return town;
-                }
-            }
-            throw new KeyNotFoundException("x,y not in a town!");
+            return Towns.First(o => (o.StartX <= x && o.EndX >= x && o.StartY <= y && o.EndY >= y));
         }
 
         public static bool CanDropItems(int x, int y)

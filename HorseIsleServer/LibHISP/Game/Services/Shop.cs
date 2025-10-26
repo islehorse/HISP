@@ -3,6 +3,7 @@ using HISP.Server;
 using HISP.Game.Items;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game.Services
 {
@@ -47,25 +48,13 @@ namespace HISP.Game.Services
 
         public bool CanSell(Item.ItemInformation item)
         {
-            foreach(string ItemType in BuysItemTypes)
-            {
-                if(ItemType == item.Type)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return BuysItemTypes.Any(o => o == item.Type);
         }
         // Static Functions 
         public static List<Shop> ShopList = new List<Shop>();
         public static Shop GetShopById(int id)
         {
-            foreach(Shop shop in ShopList)
-            {
-                if (shop.Id == id)
-                    return shop;
-            }
-            throw new KeyNotFoundException("no shop with id: " + id + " found.");
+            return ShopList.First(o => o.Id == id);
         }
 
     }

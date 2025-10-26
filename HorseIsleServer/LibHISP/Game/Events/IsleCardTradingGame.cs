@@ -1,4 +1,5 @@
 ﻿using HISP.Game.Items;
+using HISP.Player;
 using HISP.Server;
 using System.Threading;
 
@@ -32,8 +33,8 @@ namespace HISP.Game.Events
                 {
                     ItemInstance itm = new ItemInstance(tradingCardId);
 
-                    if (GameServer.IsUserOnline(userid))
-                        GameServer.GetUserById(userid).Inventory.AddWithoutDatabase(itm);
+                    if (User.IsUserOnline(userid))
+                        User.GetUserById(userid).Inventory.AddWithoutDatabase(itm);
 
                     Database.AddItemToInventory(userid, itm);
                 }

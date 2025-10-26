@@ -2440,7 +2440,7 @@ namespace HISP.Server
                 
                 
                 if (instance == null)
-                    throw new KeyNotFoundException();
+                    throw new InvalidOperationException();
                 return instance;
             }
         }
@@ -3049,7 +3049,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Username " + username + " not found in database.");
+                    throw new InvalidOperationException("Username " + username + " not found in database.");
                 }
             }
         }
@@ -4461,7 +4461,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Username " + username + " not found in database.");
+                    throw new InvalidOperationException("Username " + username + " not found in database.");
                 }
             }
         }
@@ -4485,7 +4485,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Username " + username + " not found in database.");
+                    throw new InvalidOperationException("Username " + username + " not found in database.");
                 }
             }
         }
@@ -4680,7 +4680,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Username " + username + " not found in database.");
+                    throw new InvalidOperationException("Username " + username + " not found in database.");
                 }
             }
         }
@@ -4703,7 +4703,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -4726,7 +4726,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -4750,7 +4750,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -4773,7 +4773,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -4796,7 +4796,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -4819,7 +4819,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -4842,7 +4842,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -4865,7 +4865,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -4889,7 +4889,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -4911,7 +4911,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -4934,7 +4934,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -4956,7 +4956,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -4980,7 +4980,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -5481,7 +5481,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -5504,7 +5504,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -5527,7 +5527,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -5552,7 +5552,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -5575,7 +5575,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -5598,7 +5598,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -5621,7 +5621,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -5644,7 +5644,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -5667,7 +5667,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -5690,7 +5690,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -5713,7 +5713,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -5756,7 +5756,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -5778,7 +5778,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -5801,7 +5801,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -5824,7 +5824,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + id + " not found in database.");
+                    throw new InvalidOperationException("Id " + id + " not found in database.");
                 }
             }
         }
@@ -5848,7 +5848,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Id " + userId + " not found in database.");
+                    throw new InvalidOperationException("Id " + userId + " not found in database.");
                 }
             }
         }
@@ -5868,7 +5868,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Username " + username + " not found in database.");
+                    throw new InvalidOperationException("Username " + username + " not found in database.");
                 }
             }
         }
@@ -5890,7 +5890,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    throw new KeyNotFoundException("Username " + username + " not found in database.");
+                    throw new InvalidOperationException("Username " + username + " not found in database.");
                 }
             }
         }

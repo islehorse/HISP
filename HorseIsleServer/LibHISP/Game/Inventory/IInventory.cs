@@ -13,7 +13,9 @@ namespace HISP.Game.Inventory
             get;
         }
 
-        InventoryItem[] GetItemList();
+        InventoryItem[] Items {
+            get;
+        }
 
         bool HasItem(int randomId);
         bool HasItemId(int itemId);

@@ -4,6 +4,7 @@ using HISP.Game.Items;
 using System.Collections.Generic;
 using System.Globalization;
 using HISP.Player;
+using System.Linq;
 
 namespace HISP.Game.Horse
 {
@@ -648,12 +649,7 @@ namespace HISP.Game.Horse
         }
         public static Breed GetBreedById(int id)
         {
-            foreach(Breed breed in Breeds)
-            {
-                if (breed.Id == id)
-                    return breed;
-            }
-            throw new KeyNotFoundException("No horse breed with id " + id);
+            return Breeds.First(o => o.Id == id);
         }
     }
 }

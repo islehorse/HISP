@@ -1,7 +1,9 @@
 ﻿using HISP.Player;
 using HISP.Server;
 using HISP.Util;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace HISP.Game.Events
@@ -116,14 +118,7 @@ namespace HISP.Game.Events
         
         private Participent getParticipent(int id)
         {
-            foreach (Participent participent in Participents)
-            {
-                if (participent.UserInstance.Id == id)
-                {
-                    return participent;
-                }
-            }
-            throw new KeyNotFoundException("No participent found.");
+            return Participents.First(o => o.UserInstance.Id == id);
         }
         public Participent JoinEvent(User user)
         {
@@ -131,14 +126,15 @@ namespace HISP.Game.Events
             {
                 return getParticipent(user.Id);
             }
-            catch (KeyNotFoundException) { };
+            catch (InvalidOperationException) {
+                Participent newParticipent = new Participent(user, this);
+                user.InRealTimeQuiz = true;
+                participents.Add(newParticipent);
 
-            Participent newParticipent = new Participent(user, this);
-            user.InRealTimeQuiz = true;
-            participents.Add(newParticipent);
 
-
-            return newParticipent;
+                return newParticipent;
+            }
+            
         }
 
         public void LeaveEvent(User user)
@@ -150,7 +146,7 @@ namespace HISP.Game.Events
                 participents.Remove(partcipent);
                 partcipent = null;
             }
-            catch (KeyNotFoundException) { };
+            catch (InvalidOperationException) { };
         }
 
         public void QuitEvent(User user)
@@ -162,7 +158,7 @@ namespace HISP.Game.Events
                 user.InRealTimeQuiz = false;
                 GameServer.UpdateArea(user.Client);
             }
-            catch (KeyNotFoundException) { };
+            catch (InvalidOperationException) { };
         }
 
         public void StartEvent()
