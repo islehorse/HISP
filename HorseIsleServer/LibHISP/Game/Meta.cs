@@ -2881,109 +2881,109 @@ namespace HISP.Game
 
                 user.MinorPriority = true;
                 
-                string TileCode = specialTile.Code;
-
-                string TileArg = "";
-                if (TileCode.Contains("-"))
+                string tileCode = specialTile.Code;
+                string tileArg = "";
+                if (tileCode.Contains("-"))
                 {
-                    TileArg = TileCode.Split('-')[1];
-                    TileCode = TileCode.Split('-')[0];
+                    tileArg = tileCode.Split('-')[1];
+                    tileCode = tileCode.Split('-')[0];
                 }
-                else if (TileCode == "EXITABLE")
+                
+                if (tileCode == "EXITABLE")
                 {
                     message += Messages.ExitThisPlace;
                 }
-                else if (TileCode == "TRANSPORT")
+                else if (tileCode == "TRANSPORT")
                 {
                     Transport.TransportPoint point = Transport.GetTransportPoint(specialTile.X, specialTile.Y);
                     message += Meta.BuildTransportInfo(user, point);
                 }
-                else if (TileCode == "STRAWPILE")
+                else if (tileCode == "STRAWPILE")
                 {
                     if (user.Inventory.HasItemId(Item.Pitchfork))
                         message += Messages.HasPitchforkMeta + Messages.ExitThisPlace + Messages.MetaTerminator;
                     else
                         message += Messages.NoPitchforkMeta + Messages.ExitThisPlace + Messages.MetaTerminator;
                 }
-                else if (TileCode == "STORE")
+                else if (tileCode == "STORE")
                 {
-                    int ShopID = int.Parse(TileArg);
-                    Shop shop = Shop.GetShopById(ShopID);
+                    int shopId = int.Parse(tileArg);
+                    Shop shop = Shop.GetShopById(shopId);
                     user.LastShoppedAt = shop;
                     message += buildShopInfo(shop, user.Inventory);
 
                 }
-                else if (TileCode == "TOWNHALL")
+                else if (tileCode == "TOWNHALL")
                 {
                     message += buildTownHall(user);
                 }
-                else if (TileCode == "VET")
+                else if (tileCode == "VET")
                 {
-                    message += buildVet(user, Vet.GetVetById(int.Parse(TileArg)));
+                    message += buildVet(user, Vet.GetVetById(int.Parse(tileArg)));
                 }
-                else if (TileCode == "GROOMER")
+                else if (tileCode == "GROOMER")
                 {
-                    message += buildGroomer(user, Groomer.GetGroomerById(int.Parse(TileArg)));
+                    message += buildGroomer(user, Groomer.GetGroomerById(int.Parse(tileArg)));
                 }
-                else if (TileCode == "FARRIER")
+                else if (tileCode == "FARRIER")
                 {
-                    message += buildFarrier(user, Farrier.GetFarrierById(int.Parse(TileArg)));
+                    message += buildFarrier(user, Farrier.GetFarrierById(int.Parse(tileArg)));
                 }
-                else if (TileCode == "BARN")
+                else if (tileCode == "BARN")
                 {
-                    message += buildBarn(user, Barn.GetBarnById(int.Parse(TileArg)));
+                    message += buildBarn(user, Barn.GetBarnById(int.Parse(tileArg)));
                 }
-                else if (TileCode == "BANK")
+                else if (tileCode == "BANK")
                 {
                     message += buildBank(user);
                 }
-                else if (TileCode == "WISHINGWELL")
+                else if (tileCode == "WISHINGWELL")
                 {
                     message += buildWishingWell(user);
                 }
-                else if (TileCode == "HORSEPAWNEER")
+                else if (tileCode == "HORSEPAWNEER")
                 {
                     message += buildPawneer(user);
                 }
-                else if (TileCode == "VENUSFLYTRAP")
+                else if (tileCode == "VENUSFLYTRAP")
                 {
                     message += buildVenusFlyTrap(user);
                 }
-                else if (TileCode == "RIDDLER")
+                else if (tileCode == "RIDDLER")
                 {
                     message += buildRiddlerRiddle(user);
                 }
-                else if (TileCode == "ARENA")
+                else if (tileCode == "ARENA")
                 {
-                    message += buildArena(user, Arena.GetAreaById(int.Parse(TileArg)));
+                    message += buildArena(user, Arena.GetAreaById(int.Parse(tileArg)));
                 }
-                else if (TileCode == "AUCTION")
+                else if (tileCode == "AUCTION")
                 {
-                    message += buildAuction(user, Auction.GetAuctionRoomById(int.Parse(TileArg)));
+                    message += buildAuction(user, Auction.GetAuctionRoomById(int.Parse(tileArg)));
                 }
-                else if (TileCode == "TRAINER")
+                else if (tileCode == "TRAINER")
                 {
-                    message += buildTrainer(user, Trainer.GetTrainerById(int.Parse(TileArg)));
+                    message += buildTrainer(user, Trainer.GetTrainerById(int.Parse(tileArg)));
                 }
-                else if (TileCode == "HORSELEASER")
+                else if (tileCode == "HORSELEASER")
                 {
-                    message += buildLeaser(user, Leaser.GetLeasersById(int.Parse(TileArg)));
+                    message += buildLeaser(user, Leaser.GetLeasersById(int.Parse(tileArg)));
                 }
-                else if (TileCode == "LIBRARY")
+                else if (tileCode == "LIBRARY")
                 {
                     message += buildLibary();
                 }
-                else if (TileCode == "MULTIHORSES")
+                else if (tileCode == "MULTIHORSES")
                 {
-                    message += buildMultiHorses(user, TileArg);
+                    message += buildMultiHorses(user, tileArg);
                 }
-                else if (TileCode == "POND")
+                else if (tileCode == "POND")
                 {
                     message += buildPond(user);
                 }
-                else if (TileCode == "2PLAYER")
+                else if (tileCode == "2PLAYER")
                 {
-                    string msg = build2PlayerGame(user, TileArg);
+                    string msg = build2PlayerGame(user, tileArg);
                     if (!overwrite)
                         message += msg;
                     else
@@ -2991,46 +2991,46 @@ namespace HISP.Game
 
                     overwrite = false;
                 }
-                else if (TileCode == "HORSES")
+                else if (tileCode == "HORSES")
                 {
-                    message += buildHorseGame(user, TileArg);
+                    message += buildHorseGame(user, tileArg);
                 }
-                else if (TileCode == "WORKSHOP")
+                else if (tileCode == "WORKSHOP")
                 {
                     message += buildWorkshop(user);
                 }
-                else if (TileCode == "MUDHOLE")
+                else if (tileCode == "MUDHOLE")
                 {
                     message += buildMudHole(user);
                 }
-                else if (TileCode == "RANCH")
+                else if (tileCode == "RANCH")
                 {
-                    message += buildRanch(user, int.Parse(TileArg));
+                    message += buildRanch(user, int.Parse(tileArg));
                 }
-                else if (TileCode == "SANTA")
+                else if (tileCode == "SANTA")
                 {
                     message += buildSanta(user);
                 }
-                else if (TileCode == "MULTIROOM")
+                else if (tileCode == "MULTIROOM")
                 {
-                    message += buildMultiroom(TileArg != "" ? TileArg : null, user);   
+                    message += buildMultiroom(tileArg != "" ? tileArg : null, user);   
                 }
-                else if (TileCode == "PASSWORD")
+                else if (tileCode == "PASSWORD")
                 {
                     message += buildPassword();
                 }
-                else if (TileCode == "HORSEWHISPERER")
+                else if (tileCode == "HORSEWHISPERER")
                 {
                     message += buildHorseWhisperer();
                 }
-                else if (TileCode == "INN")
+                else if (tileCode == "INN")
                 {
-                    int InnID = int.Parse(TileArg);
+                    int InnID = int.Parse(tileArg);
                     Inn inn = Inn.GetInnById(InnID);
                     user.LastVisitedInn = inn;
                     message += buildInn(inn);
                 }
-                else if (TileCode == "FOUNTAIN")
+                else if (tileCode == "FOUNTAIN")
                 {
                     message += buildFountain();
                 }
