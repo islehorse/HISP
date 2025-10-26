@@ -3,6 +3,7 @@ using HISP.Server;
 using HISP.Game;
 using System.Collections.Generic;
 using HISP.Game.Inventory;
+using System.Linq;
 
 namespace HISP.Game.Items
 {
@@ -247,15 +248,7 @@ namespace HISP.Game.Items
 
         public static bool ItemIdExist(int id)
         {
-            try
-            {
-                GetItemById(id);
-                return true;
-            }
-            catch(KeyNotFoundException)
-            {
-                return false;
-            }
+            return Items.Where(o => o.Id == id).Count() > 0;
         }
         public static void DoSpecialCases()
         {
@@ -263,14 +256,10 @@ namespace HISP.Game.Items
         }
         public static ItemInformation GetItemById(int id)
         {
-            foreach(ItemInformation item in Items)
-            {
-                if(item.Id == id)
-                {
-                    return item;
-                }
-            }
-            throw new KeyNotFoundException("Item id " + id + " Not found!");
+            IEnumerable<ItemInformation> items = Items.Where(o => o.Id == id);
+            if(items.Count() <= 0)
+                throw new KeyNotFoundException("Item id " + id + " Not found!");
+            return items.First();
         }
     }
 }
