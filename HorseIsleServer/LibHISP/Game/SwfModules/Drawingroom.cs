@@ -1,9 +1,6 @@
 ﻿using HISP.Server;
-using System;
 using System.Collections.Generic;
-
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace HISP.Game.SwfModules
 {
@@ -72,12 +69,7 @@ namespace HISP.Game.SwfModules
         }
         public static Drawingroom GetDrawingRoomById(int id)
         {
-            foreach(Drawingroom room in DrawingRooms)
-            {
-                if (room.Id == id)
-                    return room;
-            }
-            throw new KeyNotFoundException("Room with id: " + id + " not found.");
+            return DrawingRooms.First(o => o.Id == id);
         }
 
     }

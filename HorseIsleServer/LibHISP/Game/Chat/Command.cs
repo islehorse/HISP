@@ -4,32 +4,13 @@ using HISP.Game.Items;
 using HISP.Game.Events;
 using HISP.Game.Horse;
 using HISP.Game.Inventory;
-
 using System.Linq;
 using System;
-using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
 
 namespace HISP.Game.Chat
 {
     public class Command
     {
-        private static User findNamePartial(string name)
-        {
-            foreach (GameClient client in GameClient.ConnectedClients)
-            {
-                if (client == null)
-                    continue;
-                if (client.LoggedIn)
-                {
-                    if (client.User.Username.ToLower().StartsWith(name.ToLower()))
-                    {
-                        return client.User;
-                    }
-                }
-            }
-            throw new KeyNotFoundException("name not found");
-        }
 
         public static void RegisterCommands()
         {
@@ -92,7 +73,7 @@ namespace HISP.Game.Chat
 
             try
             {
-                User modifyUser = findNamePartial(username);
+                User modifyUser = User.GetUserByNameStartswith(username);
 
                 if (privledgeLevel == "NORMAL")
                 {
@@ -114,7 +95,7 @@ namespace HISP.Game.Chat
                     return false;
                 }
             }
-            catch (KeyNotFoundException) 
+            catch (InvalidOperationException) 
             {
                 try
                 {
@@ -140,7 +121,7 @@ namespace HISP.Game.Chat
                         return false;
                     }
                 }
-                catch (KeyNotFoundException) { return false; };
+                catch (InvalidOperationException) { return false; };
             };
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
@@ -223,7 +204,7 @@ namespace HISP.Game.Chat
                         }
                         else
                         {
-                            findNamePartial(args[2]).Inventory.AddIgnoringFull(newItemInstance);
+                            User.GetUserByNameStartswith(args[2]).Inventory.AddIgnoringFull(newItemInstance);
                         }
                     }
                     else
@@ -246,7 +227,7 @@ namespace HISP.Game.Chat
 
                     if (args.Length >= 3)
                     {
-                        findNamePartial(args[2]).HorseInventory.AddHorse(horse);
+                        User.GetUserByNameStartswith(args[2]).HorseInventory.AddHorse(horse);
                     }
                     else
                     {
@@ -266,7 +247,7 @@ namespace HISP.Game.Chat
                     awardId = int.Parse(args[1]);
                     if (args.Length >= 3)
                     {
-                        findNamePartial(args[2]).Awards.AddAward(Award.GetAwardById(awardId));
+                        User.GetUserByNameStartswith(args[2]).Awards.AddAward(Award.GetAwardById(awardId));
                     }
                     else
                     {
@@ -287,7 +268,7 @@ namespace HISP.Game.Chat
                     money = int.Parse(args[1]);
                     if (args.Length >= 3)
                     {
-                        findNamePartial(args[2]).AddMoney(money);
+                        User.GetUserByNameStartswith(args[2]).AddMoney(money);
                     }
                     else
                     {
@@ -354,7 +335,7 @@ namespace HISP.Game.Chat
                 }
                 else
                 {
-                    User player = findNamePartial(swfUser);
+                    User player = User.GetUserByNameStartswith(swfUser);
                     player.Client.SendPacket(packetBytes);
                 }
             }
@@ -423,11 +404,11 @@ namespace HISP.Game.Chat
             {
                 return false;
             }
-            try{
-                User bannedUser = GameServer.GetUserByName(args[0]);
+            try {
+                User bannedUser = User.GetUserByName(args[0]);
                 bannedUser.Client.Kick(Messages.KickReasonBanned);
             }
-            catch(KeyNotFoundException){};
+            catch(InvalidOperationException){};
 
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.Client.SendPacket(chatPacket);
@@ -467,13 +448,13 @@ namespace HISP.Game.Chat
 
             try
             {
-                User toSend = GameServer.GetUserByName(args[0]);
+                User toSend = User.GetUserByName(args[0]);
 
                 toSend.Teleport(Map.RulesIsleX, Map.RulesIsleY);
                 byte[] studyTheRulesMsg = PacketBuilder.CreateChat(Messages.RulesIsleSentMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 toSend.Client.SendPacket(studyTheRulesMsg);
             }
-            catch (KeyNotFoundException)
+            catch (InvalidOperationException)
             {
                 return false;
             }
@@ -491,13 +472,13 @@ namespace HISP.Game.Chat
 
             try
             {
-                User toSend = GameServer.GetUserByName(args[0]);
+                User toSend = User.GetUserByName(args[0]);
                 
                 toSend.Teleport(Map.PrisonIsleX, Map.PrisonIsleY);
                 byte[] dontDoTheTime = PacketBuilder.CreateChat(Messages.PrisonIsleSentMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 toSend.Client.SendPacket(dontDoTheTime);
             }
-            catch (KeyNotFoundException)
+            catch (InvalidOperationException)
             {
                 return false;
             }
@@ -515,7 +496,7 @@ namespace HISP.Game.Chat
 
             try
             {
-                User toKick = GameServer.GetUserByName(args[0]);
+                User toKick = User.GetUserByName(args[0]);
 
                 if (args.Length >= 2)
                 {
@@ -527,7 +508,7 @@ namespace HISP.Game.Chat
                     toKick.Client.Kick(Messages.KickReasonKicked);
                 }
             }
-            catch (KeyNotFoundException)
+            catch (InvalidOperationException)
             {
                 return false;
             }
@@ -545,11 +526,11 @@ namespace HISP.Game.Chat
 
             try
             {
-                User tp = findNamePartial(args[0]);
+                User tp = User.GetUserByNameStartswith(args[0]);
                 if (args[1].ToUpper() == "HERE")
                     tp.Teleport(user.X, user.Y);
             }
-            catch (KeyNotFoundException)
+            catch (InvalidOperationException)
             {
                 return false;
             }
@@ -570,7 +551,7 @@ namespace HISP.Game.Chat
                 itemId = int.Parse(args[0]);
                 User target = user;
                 if (args.Length > 1)
-                    target = findNamePartial(args[1]);
+                    target = User.GetUserByNameStartswith(args[1]);
 
                 if (target.Inventory.HasItemId(itemId))
                 {
@@ -602,10 +583,10 @@ namespace HISP.Game.Chat
                     return false;
                 try
                 {
-                    User tpTo = findNamePartial(args[1]);
+                    User tpTo = User.GetUserByNameStartswith(args[1]);
                     user.Teleport(tpTo.X, tpTo.Y);
                 }
-                catch (KeyNotFoundException)
+                catch (InvalidOperationException)
                 {
                     return false;
                 }
@@ -796,23 +777,21 @@ namespace HISP.Game.Chat
                 areaName = "horse isle";
             try
             {
-                User tp = GameServer.GetUserByName(areaName);
+                User tp = User.GetUserByName(areaName);
 
                 user.Teleport(tp.X, tp.Y);
                 formattedmessage += Messages.SuccessfullyWarpedToPlayer;
                 goto playSwf;
 
             }
-            catch (KeyNotFoundException)
+            catch (InvalidOperationException)
             {
-                foreach (World.Waypoint waypoint in World.Waypoints)
+
+                foreach (World.Waypoint waypoint in World.Waypoints.Where(o => o.Name.StartsWith(areaName, StringComparison.InvariantCultureIgnoreCase)))
                 {
-                    if (waypoint.Name.ToLower().StartsWith(areaName))
-                    {
-                        user.Teleport(waypoint.PosX, waypoint.PosY);
-                        formattedmessage += Messages.SuccessfullyWarpedToLocation;
-                        goto playSwf;
-                    }
+                    user.Teleport(waypoint.PosX, waypoint.PosY);
+                    formattedmessage += Messages.SuccessfullyWarpedToLocation;
+                    goto playSwf;
                 }
 
                 goto cantUnderstandCommand;

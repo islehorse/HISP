@@ -1,7 +1,7 @@
 ﻿using HISP.Player;
 using HISP.Server;
 using HISP.Util;
-using System.Collections.Generic;
+using System.Linq;
 namespace HISP.Game.Horse
 {
 
@@ -110,7 +110,7 @@ namespace HISP.Game.Horse
 
         public void RandomWander()
         {
-            if (GameServer.GetUsersAt(this.X, this.Y, true, true).Length > 0)
+            if (User.GetUsersAt(this.X, this.Y, true, true).Length > 0)
                 return;
 
             int tries = 0;
@@ -217,32 +217,16 @@ namespace HISP.Game.Horse
 
         public static WildHorse[] GetHorsesAt(int x, int y)
         {
-            List<WildHorse> horses = new List<WildHorse>();
-            foreach (WildHorse wildHorse in WildHorses)
-            {
-                if (wildHorse.X == x && wildHorse.Y == y)
-                    horses.Add(wildHorse);
-            }
-            return horses.ToArray();
+            return WildHorses.Where(o => o.X == x && o.Y == y).ToArray();
         }
         
         public static bool DoesHorseExist(int randomId)
         {
-            foreach (WildHorse wildHorse in WildHorses)
-            {
-                if (wildHorse.Instance.RandomId == randomId)
-                    return true;
-            }
-            return false;
+            return WildHorses.Any(o => o.Instance.RandomId == randomId);
         }
         public static WildHorse GetHorseById(int randomId)
         {
-            foreach(WildHorse wildHorse in WildHorses)
-            {
-                if (wildHorse.Instance.RandomId == randomId)
-                    return wildHorse;
-            }
-            throw new KeyNotFoundException("No horse with id: " + randomId + " was found.");
+            return WildHorses.First(o => o.Instance.RandomId == randomId);
         }
 
         public static void Despawn(WildHorse horse)
@@ -258,7 +242,7 @@ namespace HISP.Game.Horse
             {
                 wildHorse.Timeout -= 1;
 
-                if (GameServer.GetUsersAt(wildHorse.X, wildHorse.Y, true, true).Length > 0)
+                if (User.GetUsersAt(wildHorse.X, wildHorse.Y, true, true).Length > 0)
                     continue;
 
                 if (wildHorse.Timeout <= 0)

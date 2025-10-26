@@ -1,6 +1,8 @@
 ﻿using HISP.Server;
 using HISP.Util;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Player
 {
@@ -36,25 +38,11 @@ namespace HISP.Player
         }
         public HighscoreTableEntry GetHighscore(string gameTitle)
         {
-            foreach (HighscoreTableEntry highscore in HighscoreList)
-            {
-                if (highscore.GameName == gameTitle)
-                {
-                    return highscore;
-                }
-            }
-            throw new KeyNotFoundException("Highscore for " + gameTitle + " Not found.");
+            return HighscoreList.First(o => o.GameName.Equals(gameTitle, StringComparison.InvariantCultureIgnoreCase));
         }
         public bool HasHighscore(string gameTitle)
         {
-            foreach(HighscoreTableEntry highscore in HighscoreList)
-            {
-                if(highscore.GameName == gameTitle)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return HighscoreList.Any(o => o.GameName.Equals(gameTitle, StringComparison.InvariantCultureIgnoreCase));
         }
 
     public bool Loose(string gameTitle)

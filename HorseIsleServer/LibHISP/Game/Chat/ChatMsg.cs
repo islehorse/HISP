@@ -239,8 +239,8 @@ namespace HISP.Game.Chat
                 List<GameClient> recipiants = new List<GameClient>();
                 if(World.InIsle(user.X,user.Y))
                 {
-                    User[] usersInSile = GameServer.GetUsersInIsle(World.GetIsle(user.X, user.Y), true, false);
-                    foreach (User userInIsle in usersInSile)
+                    User[] usersInIsle = User.GetUsersInIsle(World.GetIsle(user.X, user.Y), true, false);
+                    foreach (User userInIsle in usersInIsle)
                     {
                         if (user.Id != userInIsle.Id)
                             if(!userInIsle.MuteAll && !userInIsle.MuteIsland)
@@ -259,7 +259,7 @@ namespace HISP.Game.Chat
             if (channel == ChatChannel.Here)
             {
                 List<GameClient> recipiants = new List<GameClient>();
-                User[] usersHere = GameServer.GetUsersAt(user.X, user.Y, true, false);
+                User[] usersHere = User.GetUsersAt(user.X, user.Y, true, false);
                 foreach (User userHere in usersHere)
                 {
                     if (user.Id != userHere.Id)
@@ -273,7 +273,7 @@ namespace HISP.Game.Chat
             if (channel == ChatChannel.Near)
             {
                 List<GameClient> recipiants = new List<GameClient>();
-                User[] nearbyUsers = GameServer.GetNearbyUsers(user.X, user.Y, true, false);
+                User[] nearbyUsers = User.GetNearbyUsers(user.X, user.Y, true, false);
                 foreach (User nearbyUser in nearbyUsers)
                 {
                     if (user.Id != nearbyUser.Id)
@@ -374,7 +374,6 @@ namespace HISP.Game.Chat
 
         public static string FormatChatForOthers(User user, ChatChannel channel, string message, bool autoReply=false)
         {
-
             switch (channel)
             {
                 case ChatChannel.All:
@@ -417,7 +416,7 @@ namespace HISP.Game.Chat
                     }
                 default:
                     Logger.ErrorPrint(user.Username + " is trying to end a message in unknown channel " + channel.ToString("X"));
-                    return "not implemented yet :(";
+                    return "This channel is either invalid or is not implemented yet :(";
             }
         }
         public static string FormatChatForSender(User user, ChatChannel channel, string message, string dmRecipiant=null, bool autoReply=false)
@@ -430,26 +429,26 @@ namespace HISP.Game.Chat
                     else
                         return Messages.FormatGlobalChatMessage(user.Username, message);
                 case ChatChannel.Ads:
-                    int numbListening = GameServer.GetNumberOfPlayersListeningToAdsChat(); // vry specific function ik
+                    int numbListening = User.AdsListening;
                     return Messages.FormatAdsChatForSender(numbListening-1, user.Username, message);
                 case ChatChannel.Buddies:
-                    return Messages.FormatBuddyChatMessageForSender(GameServer.GetNumberOfBuddiesOnline(user), user.Username, message);
+                    return Messages.FormatBuddyChatMessageForSender(user.GetNumberOfBuddiesOnline(), user.Username, message);
                 case ChatChannel.Isle:
                     int inIsle = 0;
                     if (World.InIsle(user.X, user.Y))
-                        inIsle = GameServer.GetUsersInIsle(World.GetIsle(user.X, user.Y), false, false).Length -1;
+                        inIsle = User.GetUsersInIsle(World.GetIsle(user.X, user.Y), false, false).Length -1;
                     return Messages.FormatIsleChatMessageForSender(inIsle, user.Username, message);
                 case ChatChannel.Here:
-                    int usersHere = GameServer.GetUsersAt(user.X, user.Y, false, false).Length -1;
+                    int usersHere = User.GetUsersAt(user.X, user.Y, false, false).Length -1;
                     return Messages.FormatHereChatMessageForSender(usersHere, user.Username, message);
                 case ChatChannel.Near:
-                    int nearbyUsers = GameServer.GetNearbyUsers(user.X, user.Y, false, false).Length -1;
+                    int nearbyUsers = User.GetNearbyUsers(user.X, user.Y, false, false).Length -1;
                     return Messages.FormatNearChatMessageForSender(nearbyUsers, user.Username, message);
                 case ChatChannel.Mod:
-                    int modsOnline = GameServer.GetNumberOfModsOnline() - 1;
+                    int modsOnline = User.ModsOnline - 1;
                     return Messages.FormatModChatForSender(modsOnline, user.Username, message);
                 case ChatChannel.Admin:
-                    int adminsOnline = GameServer.GetNumberOfAdminsOnline() - 1;
+                    int adminsOnline = User.AdminsOnline - 1;
                     return Messages.FormatAdminChatForSender(adminsOnline, user.Username, message);
                 case ChatChannel.Dm:
                     string badge = "";
@@ -460,7 +459,7 @@ namespace HISP.Game.Chat
                     return Messages.FormatDirectChatMessageForSender(user.Username, dmRecipiant, message, badge);
                 default:
                     Logger.ErrorPrint(user.Username + " is trying to end a message in unknown channel " + channel.ToString("X"));
-                    return "not implemented yet :(";
+                    return "This channel is either invalid or is not implemented yet :(";
             }
         }
 
@@ -491,18 +490,16 @@ namespace HISP.Game.Chat
                     }
                 }
                 if (lettersOnly.ToUpper() == lettersOnly && lettersOnly.Length >= 5)
+                {
                     return Messages.CapsNotice;
+                }
             }
 
             return null;
         }
         public static Reason GetReason(string name)
         {
-            foreach (Reason reason in Reasons)
-                if (reason.Name == name)
-                    return reason;
-
-            throw new KeyNotFoundException("Reason " + name + " not found.");
+            return Reasons.First(o => o.Name.Equals(name, StringComparison.InvariantCultureIgnoreCase));
         }
 
     }

@@ -92,7 +92,7 @@ namespace HISP.Tests.UnitTests
 
 
                 // While were here; lets do a bunch of tests on HISPs "User" object.
-                User user = GameServer.GetUserById(userId);
+                User user = User.GetUserById(userId);
 
 
                 // Test Maximums

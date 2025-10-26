@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
-using System.Text;
-using System.Threading.Tasks;
+using System.Linq;
 
 namespace HISP.Game.Services
 {
@@ -28,12 +26,7 @@ namespace HISP.Game.Services
         
         public static Vet GetVetById(int id)
         {
-            foreach(Vet vet in Vets)
-            {
-                if (id == vet.Id)
-                    return vet;
-            }
-            throw new KeyNotFoundException("Vet with id: " + id + " Not found.");
+            return Vets.First(o => o.Id == id);
         }
     }
 }

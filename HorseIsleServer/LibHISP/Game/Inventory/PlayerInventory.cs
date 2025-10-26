@@ -12,7 +12,6 @@ namespace HISP.Game.Inventory
     public class PlayerInventory : IInventory
     {
         
-
         public User BaseUser;
         private ThreadSafeList<InventoryItem> inventoryItems;
         public PlayerInventory(User forUser)
@@ -58,9 +57,12 @@ namespace HISP.Game.Inventory
 
 
 
-        public InventoryItem[] GetItemList()
+        public InventoryItem[] Items
         {
-            return inventoryItems.OrderBy(o => Item.GetItemById(o.ItemId).SortBy).ToArray();
+            get
+            {
+                return inventoryItems.OrderBy(o => Item.GetItemById(o.ItemId).SortBy).ToArray();
+            }
         }
 
 
@@ -94,59 +96,23 @@ namespace HISP.Game.Inventory
 
         public bool HasItem(int randomId)
         {
-            InventoryItem[] items = GetItemList();
-            foreach(InventoryItem item in items)
-            {
-                ItemInstance[] instances = item.ItemInstances.ToArray();
-                foreach(ItemInstance instance in instances)
-                {
-                    if (instance.RandomId == randomId)
-                        return true;
-                }
-            }
-            return false;
+            return Items.SelectMany(o => o.ItemInstances).Any(o => o.RandomId == randomId);
         }
 
         public bool HasItemId(int itemId)
         {
-            InventoryItem[] items = GetItemList();
-            foreach (InventoryItem item in items)
-            {
-                if (item.ItemId == itemId)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return Items.Any(o => o.ItemId == itemId);
         }
     
 
         public InventoryItem GetItemByItemId(int itemId)
         {
-            InventoryItem[] items = GetItemList();
-            foreach (InventoryItem item in items)
-            {
-                if (item.ItemId == itemId)
-                {
-                    return item;
-                }
-            }
-            throw new KeyNotFoundException("id: " + itemId + " not found in inventory");
+            return Items.First(o => o.ItemId == itemId);
         }
 
         public InventoryItem GetItemByRandomid(int randomId)
         {
-            InventoryItem[] items = GetItemList();
-            foreach (InventoryItem item in items)
-            {
-                ItemInstance[] instances = item.ItemInstances.ToArray();
-                foreach (ItemInstance instance in instances)
-                {
-                    if (instance.RandomId == randomId)
-                        return item;
-                }
-            }
-            throw new KeyNotFoundException("random id: " + randomId + " not found in inventory");
+            return Items.First(o => o.ItemInstances.Any(o => o.RandomId == randomId));
         }
         public void AddWithoutDatabase(ItemInstance item)
         {

@@ -3,6 +3,7 @@ using HISP.Player;
 using HISP.Server;
 using HISP.Util;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game.Inventory
 {
@@ -74,24 +75,11 @@ namespace HISP.Game.Inventory
         
         public bool HorseIdExist(int randomId)
         {
-            try
-            {
-                GetHorseById(randomId);
-                return true;
-            }
-            catch(KeyNotFoundException)
-            {
-                return false;
-            }
+            return HorseList.Any(o => o.RandomId == randomId);
         }
         public HorseInstance GetHorseById(int randomId)
         {
-            foreach(HorseInstance inst in HorseList)
-            {
-                if (inst.RandomId == randomId)
-                    return inst;
-            }
-            throw new KeyNotFoundException();
+            return HorseList.First(o => o.RandomId == randomId);
         }
 
         public HorseInstance[] GetHorsesInCategory(HorseInfo.Category category)

@@ -37,6 +37,177 @@ namespace HISP.Player
         private bool administrator = false;
         private bool moderator = false;
 
+        public static User[] OnlineUsers
+        {
+            get
+            {
+                return GameClient.ConnectedClients.Where(o => o.LoggedIn).Select(o => o.User).ToArray();
+            }
+        }
+
+        public static int ModsOnline
+        {
+            get
+            {
+                return OnlineUsers.Count(o => o.Moderator);
+            }
+        }
+        public static int AdminsOnline
+        {
+            get
+            {
+                return OnlineUsers.Count(o => o.Administrator);
+            }
+        }
+        public static int AdsListening
+        {
+            get
+            {
+                return OnlineUsers.Count(o => o.MuteAds);
+            }
+        }
+        public static bool IsUserOnline(int id)
+        {
+            return OnlineUsers.Any(o => o.Id == id);
+        }
+
+        public static User[] GetUsersInTown(World.Town town, bool includeStealth = false, bool includeMuted = false)
+        {
+            List<User> usersInTown = new List<User>();
+            foreach (User user in OnlineUsers)
+            {
+                if (!includeStealth && user.Stealth)
+                    continue;
+                if (!includeMuted && user.MuteIsland)
+                    continue;
+                if (World.InTown(user.X, user.Y))
+                    if (World.GetIsle(user.X, user.Y).Name == town.Name)
+                        usersInTown.Add(user);
+            }
+
+            return usersInTown.ToArray();
+        }
+        public static User[] GetUsersInIsle(World.Isle isle, bool includeStealth = false, bool includeMuted = false)
+        {
+            List<User> usersInIsle = new List<User>();
+            foreach (User user in OnlineUsers)
+            {
+                    if (!includeStealth && user.Stealth)
+                        continue;
+                    
+                    if (!includeMuted && user.MuteIsland)
+                        continue;
+
+                    if (World.InIsle(user.X, user.Y))
+                        if (World.GetIsle(user.X, user.Y).Name == isle.Name)
+                            usersInIsle.Add(user);
+            }
+
+            return usersInIsle.ToArray();
+        }
+
+        public static User[] GetUsersOnSpecialTileCode(string code)
+        {
+            List<User> userList = new List<User>();
+
+            foreach (User user in OnlineUsers)
+            {
+                if (World.InSpecialTile(user.X, user.Y))
+                {
+                    World.SpecialTile tile = World.GetSpecialTile(user.X, user.Y);
+
+                    if (tile.Code == code)
+                        userList.Add(user);
+                }
+            }
+            return userList.ToArray();
+        }
+        public static User[] GetUsersAt(int x, int y, bool includeStealth = false, bool includeMuted = false)
+        {
+            List<User> usersHere = new List<User>();
+            foreach (User user in OnlineUsers)
+            {
+                if (!includeStealth && user.Stealth)
+                    continue;
+
+                if (!includeMuted && user.MuteNear)
+                    continue;
+
+                if (user.X == x && user.Y == y)
+                    usersHere.Add(user);
+            }
+            return usersHere.ToArray();
+        }
+        public static User GetUserByNameStartswith(string username)
+        {
+            return OnlineUsers.Where(o => o.Username.StartsWith(username, StringComparison.InvariantCultureIgnoreCase)).First();
+        }
+        public static User GetUserByName(string username)
+        {
+            return OnlineUsers.First(o => o.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase));
+        }
+
+        public static User GetUserById(int id)
+        {
+            return OnlineUsers.First(o => o.Id == id);
+        }
+
+        public static User[] GetReallyNearbyUsers(int x, int y)
+        {
+            int startX = x - 3;
+            int endX = x + 3;
+            int startY = y - 3;
+            int endY = y + 3;
+            List<User> usersNearby = new List<User>();
+
+            foreach (User user in OnlineUsers)
+            {
+                if (startX <= user.X && endX >= user.X && startY <= user.Y && endY >= user.Y)
+                    usersNearby.Add(user);
+            }
+
+            return usersNearby.ToArray();
+        }
+
+        public static User[] GetOnScreenUsers(int x, int y, bool includeStealth = false, bool includeMuted = false)
+        {
+
+            List<User> usersOnScreen = new List<User>();
+
+            foreach (User user in OnlineUsers)
+            {
+                if (!includeStealth && user.Stealth)
+                    continue;
+                if (!includeMuted && user.MuteNear)
+                    continue;
+                if (World.IsPointOnScreen(x, y, user.X, user.Y))
+                    usersOnScreen.Add(user);
+            }
+
+
+            return usersOnScreen.ToArray();
+        }
+
+        public static User[] GetNearbyUsers(int x, int y, bool includeStealth = false, bool includeMuted = false)
+        {
+            int startX = x - 15;
+            int endX = x + 15;
+            int startY = y - 19;
+            int endY = y + 19;
+            List<User> usersNearby = new List<User>();
+
+            foreach (User user in OnlineUsers)
+            {
+                if (!includeStealth && user.Stealth)
+                    continue;
+                if (!includeMuted && user.MuteNear)
+                    continue;
+                if (startX <= user.X && endX >= user.X && startY <= user.Y && endY >= user.Y)
+                    usersNearby.Add(user);
+            }
+
+            return usersNearby.ToArray();
+        }
         public bool NoClip
         {
             get
@@ -209,7 +380,12 @@ namespace HISP.Player
                 return 7; 
             }
         }
-        
+
+        public int GetNumberOfBuddiesOnline()
+        {
+            return this.Friends.List.Count(o => User.IsUserOnline(o));
+        }
+
         public void TakeMoney(int amount)
         {
             int money = Money;
@@ -591,8 +767,8 @@ namespace HISP.Player
         {
             Logger.DebugPrint("Teleporting: " + Username + " to: " + newX.ToString() + "," + newY.ToString());
 
-            User[] onScreenBefore = GameServer.GetOnScreenUsers(X, Y, true, true);
-            User[] onScreenNow = GameServer.GetOnScreenUsers(newX, newY, true, true);
+            User[] onScreenBefore = GetOnScreenUsers(X, Y, true, true);
+            User[] onScreenNow = GetOnScreenUsers(newX, newY, true, true);
 
             X = newX;
             Y = newY;
@@ -667,7 +843,7 @@ namespace HISP.Player
         public User(GameClient baseClient, int UserId)
         {
             if (!Database.CheckUserExist(UserId))
-                throw new KeyNotFoundException("User " + UserId + " not found in database!");
+                throw new InvalidOperationException("User " + UserId + " not found in database!");
 
             if (!Database.CheckUserExtExists(UserId))
             {

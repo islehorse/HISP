@@ -5,6 +5,7 @@ using HISP.Server;
 using HISP.Util;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game
 {
@@ -21,21 +22,11 @@ namespace HISP.Game
 
             public static bool RanchUpgradeExists(int id)
             {
-                foreach (RanchUpgrade rachUpgrade in RanchUpgrades)
-                {
-                    if (rachUpgrade.Id == id)
-                        return true;
-                }
-                return false;
+                return RanchUpgrades.Any(o =>  o.Id == id);
             }
             public static RanchUpgrade GetRanchUpgradeById(int id)
             {
-                foreach (RanchUpgrade ranchUpgrade in RanchUpgrades)
-                {
-                    if (ranchUpgrade.Id == id)
-                        return ranchUpgrade;
-                }
-                throw new KeyNotFoundException("No ranch found.");
+                return RanchUpgrades.First(o => o.Id == id);
             }
         }
         public class RanchBuilding
@@ -48,21 +39,11 @@ namespace HISP.Game
 
             public static bool RanchBuildingExists(int id)
             {
-                foreach (RanchBuilding ranchBuilding in RanchBuildings)
-                {
-                    if (ranchBuilding.Id == id)
-                        return true;
-                }
-                return false;
+                return RanchBuildings.Any(o => o.Id == id);
             }
             public static RanchBuilding GetRanchBuildingById(int id)
             {
-                foreach(RanchBuilding ranchBuilding in RanchBuildings)
-                {
-                    if (ranchBuilding.Id == id)
-                        return ranchBuilding;
-                }
-                throw new KeyNotFoundException("No ranch found.");
+                return RanchBuildings.First(o => o.Id == id);
             }
 
             public int GetTeardownPrice()
@@ -92,9 +73,9 @@ namespace HISP.Game
             if (Id == -1)
                 return;
             
-            if(GameServer.IsUserOnline(Id))
+            if(User.IsUserOnline(Id))
             {
-                User user = GameServer.GetUserById(Id);
+                User user = User.GetUserById(Id);
                 user.OwnedRanch = null;
                 InventoryItem items = user.Inventory.GetItemByItemId(Item.DorothyShoes);
                 foreach (ItemInstance itm in items.ItemInstances)
@@ -180,9 +161,9 @@ namespace HISP.Game
                     }
                 }
 
-                if (GameServer.IsUserOnline(value))
+                if (User.IsUserOnline(value))
                 {
-                    User user = GameServer.GetUserById(value);
+                    User user = User.GetUserById(value);
                     user.OwnedRanch = this;
                     user.Inventory.AddIgnoringFull(new ItemInstance(Item.DorothyShoes));
                 }
@@ -439,62 +420,28 @@ namespace HISP.Game
         }
         public static bool IsRanchHere(int x, int y)
         {
-            foreach (Ranch ranch in Ranches)
-            {
-                if (ranch.X == x && ranch.Y == y)
-                    return true;
-            }
-            return false;
+            return Ranches.Any(o => o.X == x && o.Y == y);
         }
         public static bool RanchExists(int ranchId)
         {
-            foreach (Ranch ranch in Ranches)
-            {
-                if (ranch.Id == ranchId)
-                    return true;
-            }
-            return false;
+            return Ranches.Any(o => o.Id == ranchId);
         }
         public static Ranch GetRanchById(int ranchId)
         {
-            foreach (Ranch ranch in Ranches)
-            {
-                if (ranch.Id == ranchId)
-                    return ranch;
-            }
-            throw new KeyNotFoundException("No Ranch with id " + ranchId);
+            return Ranches.First(o => o.Id == ranchId);
         }
         public static Ranch GetRanchAt(int x, int y)
         {
-            foreach(Ranch ranch in Ranches)
-            {
-                if (ranch.X == x && ranch.Y == y)
-                    return ranch;
-            }
-            throw new KeyNotFoundException("No Ranch found at x" + x + " y" + y);
+            return Ranches.First(o => o.X == x && o.Y == y);
         }
 
         public static bool GetOwnedRanch(int playerId)
         {
-            foreach (Ranch ranch in Ranches)
-            {
-                if (ranch.OwnerId == playerId)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return Ranches.Any(o => o.OwnerId == playerId);
         }
         public static Ranch GetRanchOwnedBy(int playerId)
         {
-            foreach(Ranch ranch in Ranches)
-            {
-                if(ranch.OwnerId == playerId)
-                {
-                    return ranch;
-                }
-            }
-            throw new KeyNotFoundException("Player " + playerId + " does not own a ranch.");
+            return Ranches.First(o => o.OwnerId == playerId);
         }
     }
 }

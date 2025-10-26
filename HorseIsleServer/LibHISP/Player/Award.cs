@@ -1,7 +1,6 @@
 ﻿using HISP.Server;
 using HISP.Util;
-using System;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Player
 {
@@ -22,23 +21,7 @@ namespace HISP.Player
 
         public static AwardEntry GetAwardById(int id)
         {
-            //99% fo the time this will work
-            try
-            {
-                AwardEntry award = GlobalAwardList[id - 1];
-                if (award.Id == id)
-                    return award;
-            }
-            catch (Exception) { };
-
-            // Incase it doesnt...
-            foreach(AwardEntry award in GlobalAwardList)
-            {
-                if (award.Id == id)
-                    return award;
-            }
-
-            throw new KeyNotFoundException("Award ID " + id + " Does not exist.");
+            return GlobalAwardList.First(o => o.Id == id);
         }
 
 
@@ -54,12 +37,7 @@ namespace HISP.Player
 
         public bool HasAward(AwardEntry award)
         {
-            foreach(AwardEntry awardEntry in AwardsEarned)
-            {
-                if (awardEntry.Id == award.Id)
-                    return true;
-            }
-            return false;
+            return AwardsEarned.Any(o => o.Id == award.Id);
         }
 
         public void AddAward(AwardEntry award,bool addToDatabase=true)

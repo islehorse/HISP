@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game.Chat
 {
@@ -45,18 +46,11 @@ namespace HISP.Game.Chat
 
         public static Social GetSocial(int socialId)
         {
-            foreach (SocialType sType in SocialTypes)
-                foreach (Social social in sType.Socials)
-                    if (social.Id == socialId)
-                        return social;
-            throw new KeyNotFoundException("Social " + socialId.ToString() + " not found!");
+            return SocialTypes.SelectMany(o => o.Socials).First(o => o.Id == socialId);
         }
         public static SocialType GetSocialType(string type)
         {
-            foreach (SocialType stype in SocialTypes)
-                if (stype.Type == type)
-                    return stype;
-            throw new KeyNotFoundException("SocialType " + type + " NOT FOUND!");
+            return SocialTypes.First(o => o.Type.Equals(type, System.StringComparison.InvariantCultureIgnoreCase));
         }
         public static void AddNewSocial(string type, Social social)
         {

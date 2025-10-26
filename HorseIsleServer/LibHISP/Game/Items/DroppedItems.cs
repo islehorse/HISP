@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-
+﻿using HISP.Player;
 using HISP.Server;
+using HISP.Util;
+using System;
+using System.Linq;
 
 namespace HISP.Game.Items
 {
@@ -21,40 +22,22 @@ namespace HISP.Game.Items
             public ItemInstance Instance;
             public int Data;
         }
-        private static List<DroppedItem> droppedItemsList = new List<DroppedItem>();
+        private static ThreadSafeList<DroppedItem> droppedItemsList = new ThreadSafeList<DroppedItem>();
+        public static DroppedItem[] Items
+        {
+            get
+            {
+                return droppedItemsList.ToArray();
+            }
+        }
         public static int GetCountOfItem(Item.ItemInformation item)
         {
-
-            DroppedItem[] droppedItems = droppedItemsList.ToArray();
-            int count = 0;
-            for(int i = 0; i < droppedItems.Length; i++)
-            {
-                if (droppedItems[i] == null) // Item removed in another thread.
-                    continue;
-
-                if(droppedItems[i].Instance.ItemId == item.Id)
-                {
-                    count++;
-                }
-            }
-            return count;
+            return Items.Count(o => o.Instance.ItemId == item.Id);
         }
 
         public static DroppedItem[] GetItemsAt(int x, int y)
         {
-            DroppedItem[] droppedItems = droppedItemsList.ToArray();
-            List<DroppedItem> items = new List<DroppedItem>();
-            for(int i = 0; i < droppedItems.Length; i++)
-            {
-                if (droppedItems[i] == null) // Item removed in another thread.
-                    continue;
-
-                if (droppedItems[i].X == x && droppedItems[i].Y == y)
-                {
-                    items.Add(droppedItems[i]);
-                }
-            }
-            return items.ToArray();
+            return Items.Where(o => (o.X == x && o.Y == y)).ToArray();
         }
         public static void ReadFromDatabase()
         {
@@ -72,35 +55,11 @@ namespace HISP.Game.Items
 
         public static bool IsDroppedItemExist(int randomId)
         {
-            try
-            {
-                GetDroppedItemById(randomId);
-                return true;
-
-            }
-            catch(KeyNotFoundException)
-            {
-                return false;
-            }
+            return Items.Any(o => o.Instance.RandomId == randomId);
         }
         public static DroppedItem GetDroppedItemById(int randomId)
         {
-
-            DroppedItem[] droppedItems = droppedItemsList.ToArray();
-
-            for(int i = 0; i < droppedItems.Length; i++)
-            {
-                if (droppedItems[i] == null) // Item removed in another thread.
-                    continue;
-
-                if (droppedItems[i].Instance.RandomId == randomId)
-                {
-                    return droppedItems[i];
-                }
-            }
-
-            throw new KeyNotFoundException("Random id: " + randomId.ToString() + " not found");
-            
+            return Items.First(o => o.Instance.RandomId == randomId);
         }
         public static void DespawnItems()
         {
@@ -115,7 +74,7 @@ namespace HISP.Game.Items
 
                 if(droppedItemsList[i].DespawnTimer <= 0)
                 {
-                    if (GameServer.GetUsersAt(droppedItemsList[i].X, droppedItemsList[i].Y, true, true).Length > 0) // Dont despawn items players are standing on
+                    if (User.GetUsersAt(droppedItemsList[i].X, droppedItemsList[i].Y, true, true).Length > 0) // Dont despawn items players are standing on
                         continue;
 
                     Logger.DebugPrint("Despawned Item at " + droppedItemsList[i].X + ", " + droppedItemsList[i].Y);
@@ -142,8 +101,10 @@ namespace HISP.Game.Items
             foreach (Item.ItemInformation item in Item.Items)
             {
                 int count = GetCountOfItem(item);
-                //do
-                //{
+#if !OS_DEBUG
+                do
+                {
+#endif
                     if (count < item.SpawnParamaters.SpawnCap)
                     {
 
@@ -318,9 +279,9 @@ namespace HISP.Game.Items
                             }
                         }
                     }
-
-                //} while (count < item.SpawnParamaters.SpawnCap);
-
+#if !OS_DEBUG
+                } while (count < item.SpawnParamaters.SpawnCap);
+#endif
 
             }
 
