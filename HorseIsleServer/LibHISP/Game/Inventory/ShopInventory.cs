@@ -119,10 +119,12 @@ namespace HISP.Game.Inventory
             if (item == null)
                 return 0;
 
-            int bias = 1000;
-            int sortBy = Item.GetItemById(item.ItemId).SortBy;
+            int bias = 10000;
+            int sortBy = Item.GetItemById(item.ItemId).SortBy * bias + item.ItemId;
+
             if (item.Infinite)
                 sortBy -= bias;
+            
             return sortBy;
         }
         public InventoryItem[] GetItemList()
