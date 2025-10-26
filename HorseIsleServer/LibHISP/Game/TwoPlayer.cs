@@ -2,6 +2,7 @@
 using HISP.Security;
 using HISP.Server;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace HISP.Game
@@ -39,38 +40,17 @@ namespace HISP.Game
         }
         public static TwoPlayer GetGameInvitingPlayer(User sender, User checkInvites)
         {
-            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames)
-            {
-                if ((twoPlayerGame.Invitee.Id == sender.Id && twoPlayerGame.Inviting.Id == checkInvites.Id) && !twoPlayerGame.Accepted)
-                {
-                    return twoPlayerGame;
-                }
-            }
-            throw new KeyNotFoundException("not found.");
+            return TwoPlayerGames.First(o => (o.Invitee.Id == sender.Id && o.Inviting.Id == checkInvites.Id) && !o.Accepted);
         }
 
         public static bool IsPlayerInGame(User user)
         {
-            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames)
-            {
-                if ((twoPlayerGame.Invitee.Id == user.Id || twoPlayerGame.Inviting.Id == user.Id) && twoPlayerGame.Accepted)
-                {
-                    return true;
-                }
-            }
-            return false;
+            return TwoPlayerGames.Any(o => (o.Invitee.Id == user.Id || o.Inviting.Id == user.Id) && o.Accepted);
         }
 
         public static TwoPlayer GetTwoPlayerGameInProgress(User user)
         {
-            foreach (TwoPlayer twoPlayerGame in TwoPlayerGames)
-            {
-                if ((twoPlayerGame.Invitee.Id == user.Id || twoPlayerGame.Inviting.Id == user.Id) && twoPlayerGame.Accepted)
-                {
-                    return twoPlayerGame;
-                }
-            }
-            throw new KeyNotFoundException("No game found");
+            return TwoPlayerGames.First(o => (o.Invitee.Id == user.Id || o.Inviting.Id == user.Id) && o.Accepted);
         }
 
         public TwoPlayer(User inviting, User invitee, bool accepted, int randomId=-1)

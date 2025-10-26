@@ -72,8 +72,8 @@ namespace HISP.Server
                     if (ranchOwner != -1)
                     {
                         int moneyToAdd = 5000 * ranch.GetBuildingCount(8); // Windmill
-                        if (GameServer.IsUserOnline(ranchOwner))
-                            GameServer.GetUserById(ranchOwner).AddMoney(moneyToAdd);
+                        if (User.IsUserOnline(ranchOwner))
+                            User.GetUserById(ranchOwner).AddMoney(moneyToAdd);
                         else
                         {
                             try
@@ -291,9 +291,9 @@ namespace HISP.Server
                             break;
                         }
 
-                        if (IsUserOnline(playerId))
+                        if (User.IsUserOnline(playerId))
                         {
-                            User user = GetUserById(playerId);
+                            User user = User.GetUserById(playerId);
                             sender.User.MajorPriority = true;
 
                             byte[] metaTag = PacketBuilder.CreateMeta(Meta.BuildStatsMenu(user, true));
@@ -314,9 +314,9 @@ namespace HISP.Server
                             break;
                         }
 
-                        if (IsUserOnline(playerId))
+                        if (User.IsUserOnline(playerId))
                         {
-                            User user = GetUserById(playerId);
+                            User user = User.GetUserById(playerId);
                             if (!sender.User.MutePlayer.IsUserMuted(user))
                                 sender.User.MutePlayer.MuteUser(user);
 
@@ -342,9 +342,9 @@ namespace HISP.Server
                             break;
                         }
 
-                        if (IsUserOnline(playerId))
+                        if (User.IsUserOnline(playerId))
                         {
-                            User user = GetUserById(playerId);
+                            User user = User.GetUserById(playerId);
                             if (sender.User.MutePlayer.IsUserMuted(user))
                                 sender.User.MutePlayer.UnmuteUser(user);
 
@@ -398,9 +398,9 @@ namespace HISP.Server
                             break;
                         }
 
-                        if (IsUserOnline(playerId))
+                        if (User.IsUserOnline(playerId))
                         {
-                            User user = GetUserById(playerId); ;
+                            User user = User.GetUserById(playerId); ;
                             string TAGYourIT = Messages.FormatTagYourIt(user.Username, sender.User.Username);
                             int totalBuds = 0;
                             foreach (int friendId in sender.User.Friends.List)
@@ -408,9 +408,9 @@ namespace HISP.Server
                                 if (friendId == sender.User.Id)
                                     continue;
 
-                                if (IsUserOnline(friendId))
+                                if (User.IsUserOnline(friendId))
                                 {
-                                    User buddy = GetUserById(friendId);
+                                    User buddy = User.GetUserById(friendId);
                                     byte[] tagYourItPacket = PacketBuilder.CreateChat(TAGYourIT, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     buddy.Client.SendPacket(tagYourItPacket);
                                     totalBuds++;
@@ -436,9 +436,9 @@ namespace HISP.Server
                             Logger.ErrorPrint(sender.User.Username + " tried to add friend with User ID NaN.");
                             break;
                         }
-                        if (IsUserOnline(playerId))
+                        if (User.IsUserOnline(playerId))
                         {
-                            User userToAdd = GetUserById(playerId);
+                            User userToAdd = User.GetUserById(playerId);
                             sender.User.Friends.AddFriend(userToAdd);
                         }
                         break;
@@ -533,9 +533,9 @@ namespace HISP.Server
                             Logger.ErrorPrint(sender.User.Username + " tried to trade with User ID NaN.");
                             break;
                         }
-                        if (IsUserOnline(playerId))
+                        if (User.IsUserOnline(playerId))
                         {
-                            User user = GetUserById(playerId);
+                            User user = User.GetUserById(playerId);
                             byte[] tradeMsg = PacketBuilder.CreateChat(Messages.TradeRequiresBothPlayersMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(tradeMsg);
 
@@ -590,9 +590,9 @@ namespace HISP.Server
                         break;
                     }
 
-                    if(IsUserOnline(playerId))
+                    if(User.IsUserOnline(playerId))
                     {
-                        sender.User.SocializingWith = GetUserById(playerId);
+                        sender.User.SocializingWith = User.GetUserById(playerId);
                         
                         sender.User.SocializingWith.AddSocailizedWith(sender.User);
                         sender.User.MajorPriority = true;
@@ -638,7 +638,7 @@ namespace HISP.Server
 
                     if(social.ForEveryone != null)
                     {
-                        foreach (User user in GetUsersAt(sender.User.X, sender.User.Y, true, true))
+                        foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true, true))
                         {
                             if (social.BaseSocialType.Type != "GROUP")
                                 if (user.Id == sender.User.SocializingWith.Id)
@@ -682,7 +682,7 @@ namespace HISP.Server
 
                     if (social.SoundEffect != null)
                     {
-                        foreach (User user in GetUsersAt(sender.User.X, sender.User.Y, true, true))
+                        foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true, true))
                         {
 
                             if (user.MuteAll || user.MuteSocials)
@@ -2337,9 +2337,9 @@ namespace HISP.Server
                                         mailMessage.Subject = subject;
                                         mailMessage.Message = message;
 
-                                        if(IsUserOnline(playerId))
+                                        if(User.IsUserOnline(playerId))
                                         {
-                                            User user = GetUserById(playerId);
+                                            User user = User.GetUserById(playerId);
                                             user.MailBox.AddMail(mailMessage);
 
                                             byte[] BaseStatsPacketData = PacketBuilder.CreateMoneyPlayerCountAndMail(user.Money, GameServer.GetNumberOfPlayers(), user.MailBox.UnreadMailCount);
@@ -2886,7 +2886,7 @@ namespace HISP.Server
                             {
                                 Transport.TransportPoint tpPoint = Transport.TransportPoints[i];
 
-                                if(Transport.GetTransportLocation(tpPoint.Locations[0]).Type == "WAGON") // is wagon?
+                                if(Transport.GetTransportLocationById(tpPoint.Locations[0]).Type == "WAGON") // is wagon?
                                 {
                                     double distance = Helper.PointsToDistance(ranchX, ranchY, tpPoint.X, tpPoint.Y);
                                     if(distance < smallestDistance)
@@ -3026,9 +3026,9 @@ namespace HISP.Server
                             }
 
                         }
-                        if(GameServer.IsUserOnline(horseToSell.Owner))
+                        if(User.IsUserOnline(horseToSell.Owner))
                         {
-                            User user = GameServer.GetUserById(horseToSell.Owner);
+                            User user = User.GetUserById(horseToSell.Owner);
                             if (user.X == sender.User.X && user.Y == sender.User.Y)
                             {
                                 isOnPlayer = true;
@@ -3051,9 +3051,9 @@ namespace HISP.Server
 
                                 sender.User.TakeMoney(horseToSell.AutoSell);
 
-                                if (IsUserOnline(horseToSell.Owner))
+                                if (User.IsUserOnline(horseToSell.Owner))
                                 {
-                                    User seller = GetUserById(horseToSell.Owner);
+                                    User seller = User.GetUserById(horseToSell.Owner);
                                     seller.HorseInventory.DeleteHorse(horseToSell, false);
                                     seller.AddMoney(horseToSell.AutoSell);
 
@@ -3522,7 +3522,7 @@ namespace HISP.Server
                                     return;
                                 }
                                 Auction auctionRoom = Auction.GetAuctionRoomById(int.Parse(tile.Code.Split('-')[1]));
-                                if(auctionRoom.HasUserPlacedAuctionAllready(sender.User))
+                                if(auctionRoom.HasUserPlacedAuctionAlready(sender.User))
                                 {
                                     byte[] cantPlaceAuction = PacketBuilder.CreateChat(Messages.AuctionOneHorsePerPlayer, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(cantPlaceAuction);
@@ -3723,7 +3723,7 @@ namespace HISP.Server
                 {
                     if (client.User.Id != user.Id)
                     {
-                        if(IsOnScreen(client.User.X, client.User.Y, sender.User.X, sender.User.Y))
+                        if(World.IsPointOnScreen(client.User.X, client.User.Y, sender.User.X, sender.User.Y))
                         {
                             byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(client.User.X, client.User.Y, client.User.Facing, client.User.CharacterId, client.User.Username);
                             sender.SendPacket(PlayerInfo);
@@ -3741,7 +3741,7 @@ namespace HISP.Server
              *  Update all nearby users 
              *  that the new player logged in.
              */
-            foreach (User nearbyUser in GameServer.GetNearbyUsers(sender.User.X, sender.User.Y, false, false))
+            foreach (User nearbyUser in User.GetNearbyUsers(sender.User.X, sender.User.Y, false, false))
                 if (nearbyUser.Id != sender.User.Id)
                     if(!nearbyUser.MajorPriority)
                         if(!nearbyUser.MinorPriority)
@@ -3806,7 +3806,7 @@ namespace HISP.Server
                 {
                     if (client.User.Id != sender.User.Id)
                     {
-                        if (IsOnScreen(client.User.X, client.User.Y, sender.User.X, sender.User.Y))
+                        if (World.IsPointOnScreen(client.User.X, client.User.Y, sender.User.X, sender.User.Y))
                             client.SendPacket(yourPlayerInfo);
                         else
                             client.SendPacket(yourPlayerInfoOffscreen);
@@ -3848,9 +3848,9 @@ namespace HISP.Server
                     }
                     catch (Exception) { };
 
-                    if(IsUserOnline(playerId))
+                    if(User.IsUserOnline(playerId))
                     {
-                        User toInvite = GetUserById(playerId);
+                        User toInvite = User.GetUserById(playerId);
                         TwoPlayer twoPlayerGame = new TwoPlayer(toInvite, sender.User, false);
                     }
                     break;
@@ -3869,9 +3869,9 @@ namespace HISP.Server
                     }
                     catch (Exception) { };
 
-                    if (IsUserOnline(playerId))
+                    if (User.IsUserOnline(playerId))
                     {
-                        User toAccept = GetUserById(playerId);
+                        User toAccept = User.GetUserById(playerId);
                         if(TwoPlayer.IsPlayerInvitingPlayer(toAccept, sender.User))
                         {
                             TwoPlayer twoPlayerGame = TwoPlayer.GetGameInvitingPlayer(toAccept, sender.User);
@@ -3898,7 +3898,7 @@ namespace HISP.Server
                         {
                            room = Drawingroom.GetDrawingRoomById(roomId);
                         }
-                        catch(KeyNotFoundException)
+                        catch(InvalidOperationException)
                         {
                             Logger.ErrorPrint(sender.User.Username + " tried to load an invalid drawing room: " + roomId);
                             break;   
@@ -3931,7 +3931,7 @@ namespace HISP.Server
                         {
                             room = Drawingroom.GetDrawingRoomById(roomId);
                         }
-                        catch (KeyNotFoundException)
+                        catch (InvalidOperationException)
                         {
                             Logger.ErrorPrint(sender.User.Username + " tried to load an invalid drawing room: " + roomId);
                             break;
@@ -3983,7 +3983,7 @@ namespace HISP.Server
                         try{
                             room = Drawingroom.GetDrawingRoomById(roomId);
                         }
-                        catch (KeyNotFoundException){
+                        catch (InvalidOperationException){
                             Logger.ErrorPrint(sender.User.Username + " tried to load an invalid drawing room: " + roomId);
                             break;
                         }
@@ -4049,7 +4049,7 @@ namespace HISP.Server
                         {
                             room = Drawingroom.GetDrawingRoomById(roomId);
                         }
-                        catch (KeyNotFoundException)
+                        catch (InvalidOperationException)
                         {
                             Logger.ErrorPrint(sender.User.Username + " tried to load an invalid drawing room: " + roomId);
                             break;
@@ -4099,7 +4099,7 @@ namespace HISP.Server
                         {
                             room = Brickpoet.GetPoetryRoom(roomId);
                         }
-                        catch(KeyNotFoundException)
+                        catch(InvalidOperationException)
                         {
                             Logger.ErrorPrint(sender.User.Username + " tried to load an invalid brickpoet room: " + roomId);
                             break;
@@ -4156,7 +4156,7 @@ namespace HISP.Server
                         peice.X = x;
                         peice.Y = y;
 
-                        foreach(User user in GetUsersOnSpecialTileCode("MULTIROOM-" + "P" + roomId.ToString())) // Send to each user!
+                        foreach(User user in User.GetUsersOnSpecialTileCode("MULTIROOM-" + "P" + roomId.ToString())) // Send to each user!
                         {
                             if (user.Id == sender.User.Id)
                                 continue;
@@ -4259,7 +4259,7 @@ namespace HISP.Server
 
                         // Forward to other users
                         byte[] movePeicePacket = PacketBuilder.CreateDressupRoomPeiceMove(peice.PeiceId, moveToX, moveToY, peice.Active);
-                        User[] users = GetUsersAt(sender.User.X, sender.User.Y, true, true);
+                        User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true, true);
                         foreach(User user in users)
                         {
                             if (user.Id != sender.User.Id)
@@ -4269,7 +4269,7 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.SWFMODULE_BROADCAST:
                     byte[] response = PacketBuilder.CreateForwardedSwfModule(packet);
-                    foreach (User user in GetUsersAt(sender.User.X, sender.User.Y))
+                    foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y))
                     {
                         if (user.Id == sender.User.Id)
                             continue;
@@ -4939,7 +4939,7 @@ namespace HISP.Server
              */
 
             // Store this for later... do it now to avoid TOCTOU.
-            User[] onScreenBefore = GetOnScreenUsers(loggedInUser.X, loggedInUser.Y, true, true);
+            User[] onScreenBefore = User.GetOnScreenUsers(loggedInUser.X, loggedInUser.Y, true, true);
 
             // Leave Multirooms 
             Multiroom.LeaveAllMultirooms(loggedInUser);
@@ -5189,7 +5189,7 @@ namespace HISP.Server
                 loggedInUser.Teleport(loggedInUser.X, Map.Height - 2);
 
 
-            User[] onScreenNow = GetOnScreenUsers(loggedInUser.X, loggedInUser.Y, true, true);
+            User[] onScreenNow = User.GetOnScreenUsers(loggedInUser.X, loggedInUser.Y, true, true);
 
             User[] goneOffScreen = onScreenBefore.Except(onScreenNow).ToArray();
             User[] goneOnScreen = onScreenNow.Except(onScreenBefore).ToArray();
@@ -5298,7 +5298,7 @@ namespace HISP.Server
                 {
                     reply = Npc.GetNpcReply(lastNpc, replyId);
                 }
-                catch(KeyNotFoundException)
+                catch(InvalidOperationException)
                 {
                     Logger.ErrorPrint(sender.User.Username + " Tried to reply with replyid that does not exist.");
                     return;
@@ -5352,7 +5352,7 @@ namespace HISP.Server
                     return;
                 }
 
-                Transport.TransportLocation transportLocation = Transport.GetTransportLocation(transportid);
+                Transport.TransportLocation transportLocation = Transport.GetTransportLocationById(transportid);
                 int cost = transportLocation.Cost;
 
                 if (transportLocation.Type == "WAGON")
@@ -5407,7 +5407,7 @@ namespace HISP.Server
                     sender.SendPacket(cantAfford);
                 }
             }
-            catch (KeyNotFoundException)
+            catch (InvalidOperationException)
             {
                 Logger.HackerPrint(sender.User.Username + " Tried to use transport id: " + transportid.ToString() + " while not on a transport point!");
             }
@@ -5474,7 +5474,7 @@ namespace HISP.Server
                     sender.SendPacket(sellPacket);
 
                     // Change map sprite.
-                    User[] users = GetUsersAt(sender.User.X, sender.User.Y, true, true);
+                    User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true, true);
                     foreach (User user in users)
                     {
                         byte[] MovementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
@@ -5514,7 +5514,7 @@ namespace HISP.Server
                             sender.SendPacket(upgraded);
 
                             // Change map sprite.
-                            User[] users = GetUsersAt(sender.User.X, sender.User.Y, true, true);
+                            User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true, true);
                             foreach (User user in users)
                             {
                                 byte[] MovementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
@@ -5969,7 +5969,7 @@ namespace HISP.Server
             {
                 try
                 {
-                    User userTo = GetUserByNameStartswith(nameTo);
+                    User userTo = User.GetUserByNameStartswith(nameTo);
                     if (sender.User.MutePlayer.IsUserMuted(userTo))
                     {
                         byte[] dmWasBlocked = PacketBuilder.CreateChat(Messages.FormatCantSendYourIgnoringPlayer(userTo.Username), PacketBuilder.CHAT_DM_RIGHT);
@@ -5989,7 +5989,7 @@ namespace HISP.Server
                         return;
                     }
                 }
-                catch (KeyNotFoundException)
+                catch (InvalidOperationException)
                 {
                     return;
                 }
@@ -6095,7 +6095,7 @@ namespace HISP.Server
                         returnedMsg = Messages.FormatRanchClickMessage(Database.GetUsername(ranch.OwnerId), title);
                     }
                 }
-                User[] users = GetUsersAt(x, y, false, true);
+                User[] users = User.GetUsersAt(x, y, false, true);
                 if (users.Length > 0) // Player here?
                 {
                     string usernameStr = "";
@@ -6191,7 +6191,7 @@ namespace HISP.Server
                         chatMessage = PacketBuilder.CreateChat(Messages.GrabbedItemMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(chatMessage);
                     }
-                    catch(KeyNotFoundException)
+                    catch(InvalidOperationException)
                     {
                         byte[] pickedUp = PacketBuilder.CreateChat(Messages.DroppedItemCouldntPickup, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(pickedUp);
@@ -6342,7 +6342,7 @@ namespace HISP.Server
                         }
 
                         ItemInstance curItem = sender.User.Inventory.GetItemByItemId(itemId).ItemInstances[0];
-                        User[] userAt = GetReallyNearbyUsers(sender.User.X, sender.User.Y);
+                        User[] userAt = User.GetReallyNearbyUsers(sender.User.X, sender.User.Y);
 
                         while (true)
                         {
@@ -6995,7 +6995,7 @@ namespace HISP.Server
                                 sender.SendPacket(cantAffordMessage);
                             }
                         }
-                        catch(KeyNotFoundException)
+                        catch(InvalidOperationException)
                         {
                             Logger.HackerPrint(sender.User.Username + " Tried to buy and consume an item not stocked by the inn there standing on.");
                         }
@@ -7463,204 +7463,7 @@ namespace HISP.Server
          */
 
 
-        public static bool IsUserOnline(int id)
-        {
-            try
-            {
-                GetUserById(id);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
-        }
-
-        public static User[] GetUsersInTown(World.Town town, bool includeStealth = false, bool includeMuted = false)
-        {
-            List<User> usersInTown = new List<User>();
-            foreach (GameClient client in GameClient.ConnectedClients)
-                if (client.LoggedIn)
-                {
-                    if (!includeStealth && client.User.Stealth)
-                        continue;
-                    if (!includeMuted && client.User.MuteIsland)
-                        continue;
-                    if (World.InTown(client.User.X, client.User.Y))
-                        if (World.GetIsle(client.User.X, client.User.Y).Name == town.Name)
-                            usersInTown.Add(client.User);
-                }
-
-            return usersInTown.ToArray();
-        }
-        public static User[] GetUsersInIsle(World.Isle isle, bool includeStealth = false, bool includeMuted = false)
-        {
-            List<User> usersInIsle = new List<User>();
-            foreach (GameClient client in GameClient.ConnectedClients)
-                if (client.LoggedIn)
-                {
-                    if (!includeStealth && client.User.Stealth)
-                        continue;
-                    if (!includeMuted && client.User.MuteIsland)
-                        continue;
-                    if (World.InIsle(client.User.X, client.User.Y))
-                        if (World.GetIsle(client.User.X, client.User.Y).Name == isle.Name)
-                            usersInIsle.Add(client.User);
-                }
-
-            return usersInIsle.ToArray();
-        }
-
-        public static User[] GetUsersOnSpecialTileCode(string code)
-        {
-            List<User> userList = new List<User>();
-
-            foreach (GameClient client in GameClient.ConnectedClients)
-            {
-                if (client.LoggedIn)
-                {
-
-                    if (World.InSpecialTile(client.User.X, client.User.Y))
-                    {
-                        World.SpecialTile tile = World.GetSpecialTile(client.User.X, client.User.Y);
-
-                        if (tile.Code == code)
-                        {
-                            userList.Add(client.User);
-                        }
-                    }
-                }
-            }
-            return userList.ToArray();
-        }
-        public static User[] GetUsersAt(int x, int y, bool includeStealth = false, bool includeMuted = false)
-        {
-            List<User> usersHere = new List<User>();
-            foreach(GameClient client in GameClient.ConnectedClients)
-            {
-                if(client.LoggedIn)
-                {
-                    if (!includeStealth && client.User.Stealth)
-                        continue;
-                    if (!includeMuted && client.User.MuteNear)
-                        continue;
-                    if (client.User.X == x && client.User.Y == y)
-                        usersHere.Add(client.User);
-                }
-            }
-            return usersHere.ToArray();
-        }
-        public static User GetUserByNameStartswith(string username)
-        {
-            foreach (GameClient client in GameClient.ConnectedClients)
-            {
-                if (client.LoggedIn)
-                {
-                    if (client.User.Username.ToLower().StartsWith(username.ToLower()))
-                        return client.User;
-                }
-            }
-            throw new KeyNotFoundException("User was not found.");
-        }
-        public static User GetUserByName(string username)
-        {
-            foreach(GameClient client in GameClient.ConnectedClients)
-            {
-                if(client.LoggedIn)
-                {
-                    if (client.User.Username.ToLower() == username.ToLower())
-                        return client.User;
-                }
-            }
-            throw new KeyNotFoundException("User was not found.");
-        }
-
-        public static User GetUserById(int id)
-        {
-            foreach(GameClient client in GameClient.ConnectedClients)
-            {
-                if (client.LoggedIn)
-                    if (client.User.Id == id)
-                        return client.User;
-            }
-
-            throw new KeyNotFoundException("User not found (not online?)");
-        }
-
-        public static User[] GetReallyNearbyUsers(int x, int y)
-        {
-            int startX = x - 3;
-            int endX = x + 3;
-            int startY = y - 3;
-            int endY = y + 3;
-            List<User> usersNearby = new List<User>();
-
-            foreach (GameClient client in GameClient.ConnectedClients)
-            {
-                if (client.LoggedIn)
-                {
-                    if (startX <= client.User.X && endX >= client.User.X && startY <= client.User.Y && endY >= client.User.Y)
-                        usersNearby.Add(client.User);
-                }
-            }
-
-            return usersNearby.ToArray();
-        }
-
-
-        public static bool IsOnScreen(int screenX, int screenY, int playerX, int playerY)
-        {
-            int startX = screenX - 9;
-            int endX = screenX + 9;
-            int startY = screenY - 8;
-            int endY = screenY + 9;
-            if (startX <= playerX && endX >= playerX && startY <= playerY && endY >= playerY)
-                return true;
-            else
-                return false;
-        }
-        public static User[] GetOnScreenUsers(int x, int y, bool includeStealth = false, bool includeMuted = false)
-        {
-
-            List<User> usersOnScreen = new List<User>();
-
-            foreach (GameClient client in GameClient.ConnectedClients)
-                if (client.LoggedIn)
-                {
-                    if (!includeStealth && client.User.Stealth)
-                        continue;
-                    if (!includeMuted && client.User.MuteNear)
-                        continue;
-                    if (IsOnScreen(x,y,client.User.X, client.User.Y))
-                        usersOnScreen.Add(client.User);
-                }
-
-            return usersOnScreen.ToArray();
-        }
-
-        public static User[] GetNearbyUsers(int x, int y, bool includeStealth=false, bool includeMuted=false)
-        {
-            int startX = x - 15;
-            int endX = x + 15;
-            int startY = y - 19;
-            int endY = y + 19;
-            List<User> usersNearby = new List<User>();
-
-            foreach (GameClient client in GameClient.ConnectedClients)
-            {
-                if (client.LoggedIn)
-                {
-                    if (!includeStealth && client.User.Stealth)
-                        continue;
-                    if (!includeMuted && client.User.MuteNear)
-                        continue;
-                    if (startX <= client.User.X && endX >= client.User.X && startY <= client.User.Y && endY >= client.User.Y)
-                        usersNearby.Add(client.User);
-                }
-            }
-
-            return usersNearby.ToArray();
-        }
+        
         public static int GetNumberOfPlayers(bool includeStealth=false)
         {
             int count = 0;
@@ -7719,18 +7522,6 @@ namespace HISP.Server
             }
             return allLocations.ToArray();
         }
-        public static int GetNumberOfPlayersListeningToAdsChat()
-        {
-            int count = 0;
-            foreach (GameClient client in GameClient.ConnectedClients)
-            {
-                if (client.LoggedIn)
-                    if (!client.User.MuteAds)
-                        count++;
-            }
-            return count;
-        }
-
         public static void CheckMail(User user)
         {
             if (user.MailBox.UnreadMailCount > 0)
@@ -7745,42 +7536,6 @@ namespace HISP.Server
                 user.MailBox.ReadAllMail();
             }
         }
-        public static int GetNumberOfModsOnline()
-        {
-            int count = 0;
-            foreach (GameClient client in GameClient.ConnectedClients)
-            {
-                if (client.LoggedIn)
-                    if(client.User.Moderator)
-                        count++;
-            }
-            return count;
-        }
-
-        public static int GetNumberOfBuddiesOnline(User user)
-        {
-            int total = 0;
-            foreach(int bud in user.Friends.List.ToArray())
-            {
-                if (IsUserOnline(bud))
-                {
-                    total++;
-                }
-            }
-            return total;
-        }
-
-        public static int GetNumberOfAdminsOnline()
-        {
-            int count = 0;
-            foreach (GameClient client in GameClient.ConnectedClients)
-            {
-                if (client.LoggedIn)
-                    if (client.User.Administrator)
-                        count++;
-            }
-            return count;
-        }
 
         /*
          *  Update game state functions.
@@ -7789,7 +7544,7 @@ namespace HISP.Server
         public static void Update(GameClient client)
         {
             UpdateArea(client);
-            foreach (User nearbyUser in GameServer.GetNearbyUsers(client.User.X, client.User.Y, false, false))
+            foreach (User nearbyUser in User.GetNearbyUsers(client.User.X, client.User.Y, false, false))
                 if (nearbyUser.Id != client.User.Id)
                     if(!nearbyUser.MajorPriority)
                         if(!nearbyUser.MinorPriority)
@@ -7804,7 +7559,7 @@ namespace HISP.Server
             foreach (World.SpecialTile tile in tiles)
             {
                 UpdateAreaForAll(tile.X, tile.Y, true, null);
-                User[] usersHere = GameServer.GetUsersAt(tile.X, tile.Y, true, true);
+                User[] usersHere = User.GetUsersAt(tile.X, tile.Y, true, true);
                 foreach (User user in usersHere)
                 {
                     if (!includingSender)
@@ -7887,7 +7642,7 @@ namespace HISP.Server
         {
             byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
 
-            foreach (User onScreenUser in GetOnScreenUsers(user.X, user.Y, true, true))
+            foreach (User onScreenUser in User.GetOnScreenUsers(user.X, user.Y, true, true))
                 if (onScreenUser.Id != user.Id)
                     onScreenUser.Client.SendPacket(playerInfoBytes);
         }
@@ -8002,8 +7757,8 @@ namespace HISP.Server
                 {
                     ItemInstance itm = new ItemInstance(itemId);
 
-                    if (GameServer.IsUserOnline(userid))
-                        GameServer.GetUserById(userid).Inventory.AddWithoutDatabase(itm);
+                    if (User.IsUserOnline(userid))
+                        User.GetUserById(userid).Inventory.AddWithoutDatabase(itm);
 
                     Database.AddItemToInventory(userid, itm);
                 }

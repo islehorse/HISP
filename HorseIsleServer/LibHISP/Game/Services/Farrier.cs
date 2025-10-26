@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game.Services
 {
@@ -31,10 +32,7 @@ namespace HISP.Game.Services
 
         public static Farrier GetFarrierById(int id)
         {
-            foreach (Farrier farrier in Farriers)
-                if (farrier.Id == id)
-                    return farrier;
-            throw new KeyNotFoundException("No farrier with id: " + id + " found.");
+            return Farriers.First(o => o.Id == id);
         }
 
 

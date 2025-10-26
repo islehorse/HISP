@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game.Services
 {
@@ -32,24 +29,11 @@ namespace HISP.Game.Services
 
         public static bool BookExists(int id)
         {
-            try
-            {
-                GetBookById(id);
-                return true;
-            }
-            catch(KeyNotFoundException)
-            {
-                return false;
-            }
+            return LibaryBooks.Any(o => o.Id == id);
         }
         public static Book GetBookById(int id)
         {
-            foreach(Book libaryBook in LibaryBooks)
-            {
-                if (libaryBook.Id == id)
-                    return libaryBook;
-            }
-            throw new KeyNotFoundException("no book with id: " + id.ToString() + " found.");
+            return LibaryBooks.First(o => o.Id == id);
         }
     }
 }

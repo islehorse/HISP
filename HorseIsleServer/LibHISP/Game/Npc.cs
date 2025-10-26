@@ -1,6 +1,7 @@
 ﻿using HISP.Player;
 using HISP.Server;
 using System.Collections.Generic;
+using System.Linq;
 
 
 namespace HISP.Game
@@ -144,7 +145,7 @@ namespace HISP.Game
                 {
                     if(UDLRStartX == 0 && UDLRStartY == 0) // not scripted.
                     {
-                        if (GameServer.GetUsersAt(this.X, this.Y, true, true).Length > 0)
+                        if (User.GetUsersAt(this.X, this.Y, true, true).Length > 0)
                             return;
 
                         int tries = 0;
@@ -187,7 +188,7 @@ namespace HISP.Game
                     }
                     else // Is Scripted.
                     {
-                        if (GameServer.GetUsersAt(this.X, this.Y, true, true).Length > 0)
+                        if (User.GetUsersAt(this.X, this.Y, true, true).Length > 0)
                             return;
 
                         if (UdlrScriptPos >= UDLRScript.Length)
@@ -241,26 +242,12 @@ namespace HISP.Game
         }
         public static NpcReply GetNpcReply(NpcEntry npc, int id)
         {
-
-            foreach (NpcChat chatpoint in npc.Chatpoints)
-            {
-                foreach (NpcReply reply in chatpoint.Replies)
-                {
-                    if (reply.Id == id)
-                        return reply;
-                }
-            }
-            throw new KeyNotFoundException("Npc reply with " + id + " not found!");
+            return npc.Chatpoints.SelectMany(o => o.Replies).First(o => o.Id == id);
         }
 
         public static NpcReply GetNpcReply(NpcChat chatpoint, int id)
         {
-            foreach(NpcReply reply in chatpoint.Replies)
-            {
-                if (reply.Id == id)
-                    return reply;
-            }
-            throw new KeyNotFoundException("Npc reply with " + id + " not found!");
+            return chatpoint.Replies.First(o => o.Id == id);
         }
         public static NpcChat GetNpcChatpoint(NpcEntry npc, int chatpointId)
         {
@@ -294,24 +281,11 @@ namespace HISP.Game
 
         public static bool NpcExists(int id)
         {
-            try
-            {
-                GetNpcById(id);
-                return true;
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
+            return NpcList.Any(o => o.Id == id);
         }
         public static NpcEntry GetNpcById(int id)
         {
-            foreach(NpcEntry npc in NpcList)
-            {
-                if (npc.Id == id)
-                    return npc;
-            }
-            throw new KeyNotFoundException("Npc id: " + id + " not found!");
+            return NpcList.First(o => o.Id == id);
         }
 
         public static void WanderNpcs()

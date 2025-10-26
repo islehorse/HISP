@@ -160,7 +160,7 @@ namespace HISP.Game
             foreach (QuestItemInfo itemInfo in quest.ItemsRequired)
             {
                 bool hasThisItem = false;
-                InventoryItem[] items = user.Inventory.GetItemList();
+                InventoryItem[] items = user.Inventory.Items;
                 foreach (InventoryItem item in items)
                 {
                     if (item.ItemId == itemInfo.ItemId && item.ItemInstances.Length >= itemInfo.Quantity)
@@ -323,26 +323,11 @@ namespace HISP.Game
         }
         public static bool DoesQuestExist(int id)
         {
-            try
-            {
-                GetQuestById(id);
-                return true;
-            }
-            catch(KeyNotFoundException)
-            {
-                return false;
-            }
+            return QuestList.Any(o => o.Id == id);
         }
         public static QuestEntry GetQuestById(int id)
         {
-            foreach(QuestEntry quest in QuestList)
-            {
-                if(quest.Id == id)
-                {
-                    return quest;
-                }
-            }
-            throw new KeyNotFoundException("Quest Id: " + id + " Dont exist.");
+            return QuestList.First(o => o.Id == id);
         }
         public static bool UseTool(User user, string tool, int x, int y)
         {

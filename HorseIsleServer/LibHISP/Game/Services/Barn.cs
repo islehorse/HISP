@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -38,10 +38,7 @@ namespace HISP.Game.Services
         }
         public static Barn GetBarnById(int id)
         {
-            foreach (Barn barn in Barns)
-                if (barn.Id == id)
-                    return barn;
-            throw new KeyNotFoundException("Barn id: " + id.ToString() + " Not found!");
+            return Barns.First(o => o.Id == id);
         }
 
     }

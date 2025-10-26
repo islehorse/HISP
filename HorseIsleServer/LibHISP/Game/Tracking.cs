@@ -2,6 +2,7 @@
 using HISP.Server;
 using HISP.Util;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game
 {
@@ -105,13 +106,7 @@ namespace HISP.Game
         public static List<TrackedItemStatsMenu> TrackedItemsStatsMenu = new List<TrackedItemStatsMenu>();
         public static string GetTrackedItemsStatsMenuName(TrackableItem item)
         {
-            foreach(TrackedItemStatsMenu trackedItem in TrackedItemsStatsMenu)
-            {
-                if (trackedItem.What == item.ToString())
-                    return trackedItem.Value;
-            }
-
-            throw new KeyNotFoundException("no such tracked item found.");
+            return TrackedItemsStatsMenu.First(o => o.What.Equals(item.ToString(), System.StringComparison.InvariantCultureIgnoreCase)).Value;
         }
 
     }

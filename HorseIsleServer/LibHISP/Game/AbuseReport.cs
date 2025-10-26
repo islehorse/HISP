@@ -1,5 +1,5 @@
-﻿using HISP.Server;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.Linq;
 namespace HISP.Game
 {
     public class AbuseReport
@@ -21,24 +21,11 @@ namespace HISP.Game
         }
         public static bool DoesReasonExist(string id)
         {
-            try
-            {
-                GetReasonById(id);
-                return true;
-            }
-            catch(KeyNotFoundException)
-            {
-                return false;
-            }
+            return ReportReasons.Any(o => o.Id == id);
         }
         public static ReportReason GetReasonById(string id)
         {
-            foreach(ReportReason reason in ReportReasons)
-            {
-                if (reason.Id == id)
-                    return reason;
-            }
-            throw new KeyNotFoundException("No reason of: " + id + " Found.");
+            return ReportReasons.First(o => o.Id == id);
         }
         public static void AddReason(ReportReason reason)
         {

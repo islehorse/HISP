@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game.Services
 {
@@ -17,11 +18,7 @@ namespace HISP.Game.Services
 
         public static Trainer GetTrainerById(int id)
         {
-            foreach (Trainer trainer in Trainers)
-                if (trainer.Id == id)
-                    return trainer;
-
-            throw new KeyNotFoundException("Trainer " + id + " not found");
+            return Trainers.First(o => o.Id == id);
         }
     }
 }

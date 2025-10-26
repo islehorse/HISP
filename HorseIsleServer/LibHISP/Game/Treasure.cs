@@ -1,6 +1,7 @@
 ﻿using HISP.Player;
 using HISP.Server;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game
 {
@@ -57,72 +58,33 @@ namespace HISP.Game
             Type = type;
         }
 
-        public static int NumberOfPirates()
+        public static int NumberOfBuriedTreasure()
         {
-            int count = 0;
-            foreach (Treasure treasure in Treasures)
-            {
-                if (treasure.Type == "BURIED")
-                    count++;
-            }
-            return count;
+            return Treasures.Count(o => o.Type == "BURIED");
         }
 
         public static int NumberOfRainbows()
         {
-            int count = 0;
-            foreach(Treasure treasure in Treasures)
-            {
-                if (treasure.Type == "RAINBOW")
-                    count++;
-            }
-            return count;
+            return Treasures.Count(o => o.Type == "RAINBOW");
         }
 
         public static bool IsTileTreasure(int x, int y)
         {
-            foreach (Treasure treasure in Treasures)
-            {
-                if (treasure.X == x && treasure.Y == y)
-                    return true;
-                
-            }
-            return false;
+            return Treasures.Any(o => (o.X == x && o.Y == y));
         }
         public static bool IsTileBuiredTreasure(int x, int y)
         {
-            foreach (Treasure treasure in Treasures)
-            {
-                if (treasure.Type == "BURIED")
-                {
-                    if (treasure.X == x && treasure.Y == y)
-                        return true;
-                }
-            }
-            return false;
+            return Treasures.Where(o => o.Type == "BURIED").Any(o => (o.X == x && o.Y == y));
         }
 
         public static bool IsTilePotOfGold(int x, int y)
         {
-            foreach(Treasure treasure in Treasures)
-            {
-                if(treasure.Type == "RAINBOW")
-                {
-                    if (treasure.X == x && treasure.Y == y)
-                        return true;
-                }
-            }
-            return false;
+            return Treasures.Where(o => o.Type == "RAINBOW").Any(o => (o.X == x && o.Y == y));
         }
 
         public static Treasure GetTreasureAt(int x, int y)
         {
-            foreach (Treasure treasure in Treasures)
-            {
-                if (treasure.X == x && treasure.Y == y)
-                    return treasure;
-            }
-            throw new KeyNotFoundException("NO Treasure at " + x + "," + y);
+            return Treasures.First(o => (o.X == x && o.Y == y));
         }
 
         public static void AddValue()
@@ -174,7 +136,7 @@ namespace HISP.Game
 
         public static void GenerateTreasure()
         {
-            while(NumberOfPirates() < 5)
+            while(NumberOfBuriedTreasure() < 5)
             {
                 // Pick x/y
                 int tryX = GameServer.RandomNumberGenerator.Next(0, Map.Width);

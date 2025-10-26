@@ -1,5 +1,6 @@
 ﻿using HISP.Game.Items;
 using System.Collections.Generic;
+using System.Linq;
 
 
 namespace HISP.Game.Horse
@@ -87,42 +88,19 @@ namespace HISP.Game.Horse
             return instance;
         }
 
-        public static bool LeaserButtonIdExists(string bid)
+        public static bool LeaserButtonIdExists(string buttonId)
         {
-            foreach (Leaser leaser in HorseLeasers)
-            {
-                if (leaser.ButtonId == bid)
-                {
-                    return true;
-                }
-            }
-            return false; 
+            return HorseLeasers.Any(o => o.ButtonId == buttonId);
         }
 
-        public static Leaser GetLeaserByButtonId(string bid)
+        public static Leaser GetLeaserByButtonId(string buttonId)
         {
-            foreach(Leaser leaser in HorseLeasers)
-            {
-                if(leaser.ButtonId == bid)
-                {
-                    return leaser;
-                }
-            }
-            throw new KeyNotFoundException("No leaser with button id: " + bid + " found.");
+            return HorseLeasers.First(o => o.ButtonId == buttonId);
         }
 
         public static Leaser[] GetLeasersById(int id)
         {
-            List<Leaser> leasers = new List<Leaser>();
-
-            foreach (Leaser leaser in HorseLeasers)
-            {
-                if (leaser.LeaseId == id)
-                {
-                    leasers.Add(leaser);
-                }
-            }
-            return leasers.ToArray();
+            return HorseLeasers.Where(o => o.LeaseId == id).ToArray();
         }
 
     }

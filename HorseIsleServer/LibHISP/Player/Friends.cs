@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using HISP.Game;
 using HISP.Server;
 using HISP.Util;
@@ -63,11 +64,11 @@ namespace HISP.Player
             try
             {
 
-                User removeFrom = GameServer.GetUserById(userid);
+                User removeFrom = User.GetUserById(userid);
                 removeFrom.Friends.RemoveFromLocalList(baseUser.Id);
 
             }
-            catch (KeyNotFoundException) { /* User is offline, remove from database is sufficent */ };
+            catch (InvalidOperationException) { /* User is offline, remove from database is sufficent */ };
  
 
             baseUser.Friends.RemoveFromLocalList(userid);

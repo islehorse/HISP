@@ -1,5 +1,6 @@
 ﻿using HISP.Server;
 using System.Collections.Generic;
+using System.Linq;
 
 
 namespace HISP.Game.SwfModules
@@ -129,21 +130,11 @@ namespace HISP.Game.SwfModules
 
         public static PoetryPeice[] GetPoetryRoom(int roomId)
         {
-            foreach(PoetryPeice[] peices in PoetryRooms)
-            {
-                if (peices[0].RoomId == roomId)
-                    return peices;
-            }
-            throw new KeyNotFoundException("No poetry room of id: " + roomId + " exists.");
+            return PoetryRooms.First(o => o.Any(o => o.RoomId == roomId));
         }
         public static PoetryPeice GetPoetryPeice(PoetryPeice[] room, int id)
         {
-            foreach(PoetryPeice peice in room)
-            {
-                if (peice.Id == id)
-                    return peice;
-            }
-            throw new KeyNotFoundException("Peice with id: " + id + " not found in room.");
+            return room.First(o => o.Id == id);
         }
         public static void LoadPoetryRooms()
         {

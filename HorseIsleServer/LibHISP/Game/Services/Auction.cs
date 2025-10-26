@@ -3,7 +3,8 @@ using HISP.Player;
 using HISP.Security;
 using HISP.Server;
 using HISP.Util;
-using System.Collections.Generic;
+using System;
+using System.Linq;
 
 namespace HISP.Game.Services
 {
@@ -88,9 +89,9 @@ namespace HISP.Game.Services
                     AuctionItem.HighestBid = BidAmount;
                     if(AuctionItem.HighestBidder != BidUser.Id && oldBid > 0)
                     {
-                        if (GameServer.IsUserOnline(AuctionItem.HighestBidder))
+                        if (User.IsUserOnline(AuctionItem.HighestBidder))
                         {
-                            User oldBidder = GameServer.GetUserById(AuctionItem.HighestBidder);
+                            User oldBidder = User.GetUserById(AuctionItem.HighestBidder);
                             byte[] outbidMessage = PacketBuilder.CreateChat(Messages.FormatAuctionYourOutbidBy(BidUser.Username, AuctionItem.HighestBid), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             oldBidder.Client.SendPacket(outbidMessage);
                         }
@@ -147,9 +148,9 @@ namespace HISP.Game.Services
 
                         if(OwnerId == highestBidder)
                         {
-                            if(GameServer.IsUserOnline(OwnerId))
+                            if(User.IsUserOnline(OwnerId))
                             {
-                                User auctionRunner = GameServer.GetUserById(highestBidder);
+                                User auctionRunner = User.GetUserById(highestBidder);
                                 auctionRunner.HorseInventory.UnHide(Horse.RandomId);
                                 byte[] notSold = PacketBuilder.CreateChat(Messages.AuctionNoHorseBrought, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 auctionRunner.Client.SendPacket(notSold);
@@ -158,9 +159,9 @@ namespace HISP.Game.Services
                         }
 
 
-                        if(GameServer.IsUserOnline(highestBidder))
+                        if(User.IsUserOnline(highestBidder))
                         {
-                            User userWon = GameServer.GetUserById(highestBidder);
+                            User userWon = User.GetUserById(highestBidder);
                             byte[] wonAuction = PacketBuilder.CreateChat(Messages.FormatAuctionBroughtHorse(highestBid), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             userWon.Client.SendPacket(wonAuction);
                             userWon.TakeMoney(highestBid);
@@ -171,9 +172,9 @@ namespace HISP.Game.Services
                             Database.SetPlayerMoney(Database.GetPlayerMoney(highestBidder) - highestBid, highestBidder);
                         }
 
-                        if(GameServer.IsUserOnline(OwnerId))
+                        if(User.IsUserOnline(OwnerId))
                         {
-                            User userSold = GameServer.GetUserById(OwnerId);
+                            User userSold = User.GetUserById(OwnerId);
                             byte[] horseSold = PacketBuilder.CreateChat(Messages.FormatAuctionHorseSold(highestBid), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             userSold.Client.SendPacket(horseSold);
                             userSold.AddMoney(highestBid);
@@ -321,35 +322,16 @@ namespace HISP.Game.Services
         }
         public AuctionEntry GetAuctionEntry(int randomId)
         {
-            foreach(AuctionEntry entry in AuctionEntries)
-            {
-                if(entry.RandomId == randomId)
-                {
-                    return entry;
-                }
-            }
-            throw new KeyNotFoundException("Auction Entry with RandomID: " + randomId + " NOT FOUND");
+            return AuctionEntries.First(o => o.RandomId == randomId);
         }
 
-        public bool HasUserPlacedAuctionAllready(User user)
+        public bool HasUserPlacedAuctionAlready(User user)
         {
-            foreach(AuctionEntry entry in AuctionEntries)
-            {
-                if (entry.OwnerId == user.Id)
-                    return true; 
-            }
-            return false;
+            return AuctionEntries.Any(o => o.OwnerId == user.Id);
         }
         public static Auction GetAuctionRoomById(int roomId)
         {
-            foreach(Auction auction in AuctionRooms)
-            {
-                if(auction.RoomId == roomId)
-                {
-                    return auction;
-                }
-            }
-            throw new KeyNotFoundException("Auction with roomID " + roomId + " NOT FOUND!");
+            return AuctionRooms.First(o => o.RoomId == roomId);
         }
 
         public static void LoadAllAuctionRooms()

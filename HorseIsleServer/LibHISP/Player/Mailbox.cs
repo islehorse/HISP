@@ -4,6 +4,7 @@ using HISP.Game.Items;
 using HISP.Server;
 using HISP.Util;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Player
 {
@@ -96,21 +97,11 @@ namespace HISP.Player
         }
         public bool MessageExists(int randomId)
         {
-            foreach (Mail mail in MailMessages)
-            {
-                if (mail.RandomId == randomId)
-                    return true;
-            }
-            return false;
+			return MailMessages.Any(o => o.RandomId == randomId);
         }
         public Mail GetMessageByRandomId(int randomId)
         {
-            foreach(Mail mail in MailMessages)
-            {
-                if (mail.RandomId == randomId)
-                    return mail;
-            }
-            throw new KeyNotFoundException("Mail w id " + randomId + " NOT FOUND.");
+            return MailMessages.First(o => o.RandomId == randomId);
         }
         public Mailbox(User user)
         {
