@@ -5,6 +5,7 @@ using HISP.Game.Items;
 using System.Collections.Generic;
 using System.Linq;
 using HISP.Util;
+using System;
 
 namespace HISP.Game.Inventory
 {
@@ -114,17 +115,18 @@ namespace HISP.Game.Inventory
             }
             throw new KeyNotFoundException("random id: " + randomId + " not found in shop inventory");
         }
-        public int GetSortPos(InventoryItem item)
+        public Int64 GetSortPos(InventoryItem item)
         {
             if (item == null)
                 return 0;
 
-            int bias = 10000;
-            int sortBy = Item.GetItemById(item.ItemId).SortBy * bias + item.ItemId;
-
+            Int64 bias = Item.Items.Length;
+            Int64 sortBy = (Item.GetItemById(item.ItemId).SortBy * bias) + item.ItemId;
             if (item.Infinite)
-                sortBy -= bias;
-            
+                sortBy *= (bias*-1);
+
+            Logger.DebugPrint("Sort position of: " + Item.GetItemById(item.ItemId).Name + " is: " + sortBy);
+
             return sortBy;
         }
         public InventoryItem[] GetItemList()
