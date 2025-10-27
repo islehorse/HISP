@@ -14,6 +14,7 @@ namespace HISP.Tests
             AuthenticationTest.RunAuthenticationTest();
             await UserTest.RunUserTest();
             PacketTest.RunPacketTest();
+            NpcTest.RunNpcTest();
         }
     }
 

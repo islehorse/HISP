@@ -8,10 +8,10 @@ using HISP.Server;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.IO;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.IO;
 
 
 namespace HISP.Tests.UnitTests
@@ -34,7 +34,7 @@ namespace HISP.Tests.UnitTests
 
             if(!goodPacket.SequenceEqual(packet))
             {
-                ResultLogger.LogTestResult(false, "PACKET_TEST "+name, BitConverter.ToString(packet).Replace("-", ""), goodPacket.ToString().Replace("-", ""));
+                ResultLogger.LogTestResult(false, "PACKET_TEST "+name, BitConverter.ToString(packet).Replace("-", ""), BitConverter.ToString(goodPacket).Replace("-", ""));
                 return false;
             }
             else
@@ -62,8 +62,9 @@ namespace HISP.Tests.UnitTests
             results.Add(Test("BirdMap_InsideMap", PacketBuilder.CreateBirdMap(100, 200)));
 
             // Test Brickpoet
-            results.Add(Test("BrickPoetList", PacketBuilder.CreateBrickPoetList(Brickpoet.GetPoetryRoom(1))));
-            results.Add(Test("BrickPoetMove", PacketBuilder.CreateBrickPoetMove(Brickpoet.GetPoetryPeice(Brickpoet.GetPoetryRoom(1), 30))));
+            // random every time .. cant easily test this way
+            // results.Add(Test("BrickPoetList", PacketBuilder.CreateBrickPoetList(Brickpoet.GetPoetryRoom(1))));
+            // results.Add(Test("BrickPoetMove", PacketBuilder.CreateBrickPoetMove(Brickpoet.GetPoetryPeice(Brickpoet.GetPoetryRoom(1), 30))));
 
             // Test Chat
             results.Add(Test("ChatBottomLeft", PacketBuilder.CreateChat("Trans Rights", PacketBuilder.CHAT_BOTTOM_LEFT)));

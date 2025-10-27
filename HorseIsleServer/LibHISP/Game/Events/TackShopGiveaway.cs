@@ -55,7 +55,7 @@ namespace HISP.Game.Events
 
                         if (shopData.BuysItemTypes.Contains("TACK"))
                         {
-                            Npc.NpcEntry[] npcShop = Npc.GetNpcByXAndY(sTile.X, sTile.Y);
+                            Npc.NpcEntry[] npcShop = Npc.GetNpcsByXAndY(sTile.X, sTile.Y);
                             if (npcShop.Length > 0)
                             {
                                 specialTiles.Add(sTile);
@@ -70,7 +70,7 @@ namespace HISP.Game.Events
 
             int shpIdx = GameServer.RandomNumberGenerator.Next(0, specialTiles.Count);
             Location = specialTiles[shpIdx];
-            Npc.NpcEntry[] npcShops = Npc.GetNpcByXAndY(Location.X, Location.Y);
+            Npc.NpcEntry[] npcShops = Npc.GetNpcsByXAndY(Location.X, Location.Y);
 
             npcName = npcShops[0].Name.Split(" ")[0];
             if (npcShops[0].ShortDescription.ToLower().Contains("tack"))

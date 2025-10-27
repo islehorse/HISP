@@ -427,7 +427,7 @@ namespace HISP.Game
         private static string buildNpc(User user, int x, int y)
         {
             string message = "";
-            Npc.NpcEntry[] entries = Npc.GetNpcByXAndY(x, y);
+            Npc.NpcEntry[] entries = Npc.GetNpcsByXAndY(x, y);
             foreach (Npc.NpcEntry ent in entries)
             {
                 if (ent.AdminOnly && !user.Administrator)
