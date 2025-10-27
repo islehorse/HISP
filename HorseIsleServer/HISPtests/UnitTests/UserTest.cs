@@ -36,17 +36,17 @@ namespace HISP.Tests.UnitTests
             byte[] packet = new byte[] { PacketBuilder.PACKET_LOGIN, PacketBuilder.PACKET_CLIENT_TERMINATOR, 0};
             return packet;
         }
-
         public static bool Test(string testName, object value, object valueComp)
         {
             bool result = value.Equals(valueComp);
             if (result)
-                ResultLogger.LogTestStatus(true, "USER_TEST "+testName, "Success.");
+                ResultLogger.LogTestStatus(true, "USER_TEST " + testName, "Success.");
             else
                 ResultLogger.LogTestResult(false, "USER_TEST " + testName, value.ToString(), valueComp.ToString());
 
             return result;
         }
+
 
         private static async Task<byte[]> receiveAsync(Socket s)
         {
@@ -186,7 +186,10 @@ namespace HISP.Tests.UnitTests
                  * Test Ranches
                  */
 
-                // Give player ranch id 10
+                // delete this ranch
+                Ranch.GetRanchById(37).OwnerId = -1;
+
+                // Give player ranch id 37
                 Ranch.GetRanchById(37).OwnerId = user.Id;
 
                 // Check ranch is now owned by that player, and propagates to user object.
@@ -194,15 +197,11 @@ namespace HISP.Tests.UnitTests
                 results.Add(Test("HaveDorothyShoes", user.Inventory.HasItemId(Item.DorothyShoes), true));
 
                 // Ranch upgrade test
-                foreach(Ranch.RanchUpgrade upgrade in Ranch.RanchUpgrade.RanchUpgrades)
-                {
-                    int id = upgrade.Id;
-                    user.OwnedRanch.UpgradedLevel = id;
-                }
+                user.OwnedRanch.UpgradedLevel = Ranch.RanchUpgrade.RanchUpgrades.Max(o => o.Id);
 
                 // Test swf
-                results.Add(Test("RanchSwfMine", user.OwnedRanch.GetSwf(true), "ranchviewer.swf?H=10&B1=11&B2=&B3=&B4=&B5=&B6=&B7=&B8=&B9=&B10=&B11=&B12=&B13=&B14=&B15=&B16=&MINE=1"));
-                results.Add(Test("RanchSwf", user.OwnedRanch.GetSwf(false), "ranchviewer.swf?H=10&B1=11&B2=&B3=&B4=&B5=&B6=&B7=&B8=&B9=&B10=&B11=&B12=&B13=&B14=&B15=&B16="));
+                results.Add(Test("RanchSwfMine", user.OwnedRanch.GetSwf(true), "ranchviewer.swf?H=10&B1=&B2=&B3=&B4=&B5=&B6=&B7=&B8=&B9=&B10=&B11=&B12=&B13=&B14=&B15=&B16=&MINE=1"));
+                results.Add(Test("RanchSwf", user.OwnedRanch.GetSwf(false), "ranchviewer.swf?H=10&B1=&B2=&B3=&B4=&B5=&B6=&B7=&B8=&B9=&B10=&B11=&B12=&B13=&B14=&B15=&B16="));
 
                 // Test Ranch Building Functionality
 
