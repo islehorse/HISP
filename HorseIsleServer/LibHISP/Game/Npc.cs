@@ -251,15 +251,7 @@ namespace HISP.Game
         }
         public static NpcChat GetNpcChatpoint(NpcEntry npc, int chatpointId)
         {
-            foreach(Npc.NpcChat chatpoint in npc.Chatpoints)
-            {
-                if(chatpoint.Id == chatpointId)
-                {
-                    return chatpoint;
-                }
-            }
-
-            return npc.Chatpoints[0];
+            return npc.Chatpoints.First(o => o.Id == chatpointId);
         }
 
         public static int GetDefaultChatpoint(User user, NpcEntry npc)
@@ -297,16 +289,9 @@ namespace HISP.Game
             }
         }
 
-        public static NpcEntry[] GetNpcByXAndY(int x, int y)
+        public static NpcEntry[] GetNpcsByXAndY(int x, int y)
         {
-            List<NpcEntry> npcs = new List<NpcEntry>();
-
-            foreach(NpcEntry npc in NpcList)
-            {
-                if (npc.X == x && npc.Y == y)
-                    npcs.Add(npc);
-            }
-            return npcs.ToArray();
+            return NpcList.Where(o => o.X == x && o.Y == y).ToArray();
         }
 
     }
