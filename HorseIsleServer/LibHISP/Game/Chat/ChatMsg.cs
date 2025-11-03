@@ -194,13 +194,17 @@ namespace HISP.Game.Chat
             if (channel == ChatChannel.All)
             {
                 List<GameClient> recipiants = new List<GameClient>();
-                foreach (GameClient client in GameClient.ConnectedClients)
+                //recipiants.AddRange(User.OnlineUsers.Where(o => (o.MuteGlobal && !o.MuteAll) && 
+                //                                                (o.Id != user.Id) && 
+                //                                                (o.MutePlayer.IsUserMuted(user)))
+                //    .Select(o => o.Client));
+
+                foreach (User onlineUser in User.OnlineUsers)
                 {
-                    if (client.LoggedIn)
-                        if (!client.User.MuteGlobal && !client.User.MuteAll)
-                            if (client.User.Id != user.Id)
-                                if(!client.User.MutePlayer.IsUserMuted(user))
-                                    recipiants.Add(client);
+                    if (!onlineUser.MuteGlobal && !onlineUser.MuteAll)
+                        if (onlineUser.Id != user.Id)
+                            if(!onlineUser.MutePlayer.IsUserMuted(user))
+                                recipiants.Add(user.Client);
                 }
                 return recipiants.ToArray();
             }
@@ -208,13 +212,12 @@ namespace HISP.Game.Chat
             if(channel == ChatChannel.Ads)
             { 
                 List<GameClient> recipiants = new List<GameClient>();
-                foreach (GameClient client in GameClient.ConnectedClients)
+                foreach (User onlineUser in User.OnlineUsers)
                 {
-                    if (client.LoggedIn)
-                        if (!client.User.MuteAds && !client.User.MuteAll)
-                            if (client.User.Id != user.Id)
-                                if (!client.User.MutePlayer.IsUserMuted(user))
-                                    recipiants.Add(client);
+                    if (!onlineUser.MuteAds && !onlineUser.MuteAll)
+                        if (onlineUser.Id != user.Id)
+                            if (!onlineUser.MutePlayer.IsUserMuted(user))
+                                recipiants.Add(onlineUser.Client);
                 }
                 return recipiants.ToArray();
             }
@@ -222,14 +225,13 @@ namespace HISP.Game.Chat
             if(channel == ChatChannel.Buddies)
             {
                 List<GameClient> recipiants = new List<GameClient>();
-                foreach (GameClient client in GameClient.ConnectedClients)
+                foreach (User onlineUser in User.OnlineUsers)
                 {
-                    if (client.LoggedIn)
-                        if (!client.User.MuteBuddy && !client.User.MuteAll)
-                            if (client.User.Id != user.Id)
-                                if (client.User.Friends.List.Contains(user.Id))
-                                    if (!client.User.MutePlayer.IsUserMuted(user))
-                                        recipiants.Add(client);
+                    if (!onlineUser.MuteBuddy && !onlineUser.MuteAll)
+                        if (onlineUser.Id != user.Id)
+                            if (onlineUser.Friends.List.Contains(user.Id))
+                                if (!onlineUser.MutePlayer.IsUserMuted(user))
+                                    recipiants.Add(onlineUser.Client);
                 }
                 return recipiants.ToArray();
             }
