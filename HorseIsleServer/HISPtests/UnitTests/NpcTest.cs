@@ -25,6 +25,7 @@ namespace HISP.Tests.UnitTests
         {
             List<bool> results = new List<bool>();
 
+
             Npc.NpcEntry wanderingNpc = Npc.NpcList.First(o => o.Moves);
             int oldX = wanderingNpc.X;
 

@@ -2594,12 +2594,14 @@ namespace HISP.Game
         public static string BuildPawneerOrderBreedList()
         {
             string message = Messages.PawneerOrderSelectBreed;
-            foreach (HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name).ToList())
+            foreach (HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name))
             {
                 if (breed.Swf == "")
                     continue;
-                if (breed.SpawnInArea == "none")
+
+                if (!ConfigReader.EnableEolFeatures && breed.SpawnInArea == "none")
                     continue;
+
                 message += Messages.FormatPawneerOrderBreedEntry(breed.Name, breed.Id);
             }
             message += Messages.BackToMap;
