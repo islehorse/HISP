@@ -569,7 +569,7 @@ namespace HISP.Server
         {
             if (!sender.LoggedIn)
             {
-                Logger.ErrorPrint(sender.RemoteIp + " Tried to be socialable, but has no account and therefor no friends.");
+                Logger.ErrorPrint(sender.RemoteIp + " Tried to be socialable, but has no account and therefor no friends :(.");
                 return;
             }
             byte method = packet[1];

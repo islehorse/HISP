@@ -244,7 +244,6 @@ namespace HISP.Game
         {
             return npc.Chatpoints.SelectMany(o => o.Replies).First(o => o.Id == id);
         }
-
         public static NpcReply GetNpcReply(NpcChat chatpoint, int id)
         {
             return chatpoint.Replies.First(o => o.Id == id);

@@ -1,4 +1,4 @@
-﻿//#define GENERATE
+﻿#define GENERATE
 
 using HISP.Tests.Properties;
 using HISP.Game.SwfModules;
@@ -80,8 +80,7 @@ namespace HISP.Tests.UnitTests
             results.Add(Test("DressupRoomPeiceMove", PacketBuilder.CreateDressupRoomPeiceMove(11, 14.4, 2.4, true)));
 
             // Test SwfModule Forwarding
-            results.Add(Test("ForwardedSwfModule_516152", PacketBuilder.CreateForwardedSwfModule(new byte[] { 0x51, 0x61, 0x52 })));
-            results.Add(Test("ForwardedSwfModule_AF8D91C8", PacketBuilder.CreateForwardedSwfModule(new byte[] { 0xAF, 0x8D, 0x91, 0xC8 })));
+            results.Add(Test("ForwardedSwfModule", PacketBuilder.CreateForwardedSwfModule(new byte[] { 0x51, 0x61, 0x52, 0x44, 0x33, 0x55})));
 
             // Test KeepAlive
             results.Add(Test("KeepAlive", PacketBuilder.CreateKeepAlive()));

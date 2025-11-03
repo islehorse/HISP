@@ -36,10 +36,10 @@ namespace HISP.Server
         public static bool EnableSwearFilter = true;
         public static bool EnableCorrections = true;
         public static bool EnableNonViolations = true;
-
         public static bool EnableSocketPolicyServer = true;
-
         public static bool EnableWebSocket = true;
+        public static bool EnableEolFeatures = true;
+
         public static bool SigninAsSignup = true;
 
         public static string ConfigDirectory
@@ -189,6 +189,9 @@ namespace HISP.Server
                     break;
                 case "enable_word_filter":
                     EnableSwearFilter = (value == "true");
+                    break;
+                case "enable_eol_features":
+                    EnableEolFeatures = (value == "true");
                     break;
                 case "intrest_rate":
                     IntrestRate = int.Parse(value);
