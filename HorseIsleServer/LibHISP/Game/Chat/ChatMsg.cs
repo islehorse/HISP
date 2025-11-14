@@ -193,20 +193,18 @@ namespace HISP.Game.Chat
         {
             if (channel == ChatChannel.All)
             {
-                List<GameClient> recipiants = new List<GameClient>();
-                //recipiants.AddRange(User.OnlineUsers.Where(o => (o.MuteGlobal && !o.MuteAll) && 
-                //                                                (o.Id != user.Id) && 
-                //                                                (o.MutePlayer.IsUserMuted(user)))
-                //    .Select(o => o.Client));
+                return User.OnlineUsers.Where(o => (!o.MuteGlobal && !o.MuteAll) &&
+                                                    (o.Id != user.Id) &&
+                                                    (!o.MutePlayer.IsUserMuted(user)))
+                                                    .Select(o => o.Client).ToArray();
 
-                foreach (User onlineUser in User.OnlineUsers)
-                {
-                    if (!onlineUser.MuteGlobal && !onlineUser.MuteAll)
-                        if (onlineUser.Id != user.Id)
-                            if(!onlineUser.MutePlayer.IsUserMuted(user))
-                                recipiants.Add(user.Client);
-                }
-                return recipiants.ToArray();
+                //foreach (User onlineUser in User.OnlineUsers)
+                //{
+                //    if (!onlineUser.MuteGlobal && !onlineUser.MuteAll)
+                //        if (onlineUser.Id != user.Id)
+                //            if(!onlineUser.MutePlayer.IsUserMuted(user))
+                //                recipiants.Add(user.Client);
+                //}
             }
             
             if(channel == ChatChannel.Ads)
