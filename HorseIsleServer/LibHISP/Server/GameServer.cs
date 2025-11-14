@@ -756,7 +756,7 @@ namespace HISP.Server
                     goto doBids;
                 case PacketBuilder.AUCITON_BID_100M:
                     bidAmount = 100000000;
-                    doBids:;
+                    doBids:
                     if(World.InSpecialTile(sender.User.X, sender.User.Y))
                     {
                         World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
@@ -779,7 +779,7 @@ namespace HISP.Server
                                 }
                                 if (!auctionRoom.HasAuctionEntry(auctionEntryId))
                                     break;
-                              
+
                                 Auction.AuctionEntry entry = auctionRoom.GetAuctionEntry(auctionEntryId);
                                 entry.Bid(sender.User, bidAmount);
 
@@ -2005,7 +2005,7 @@ namespace HISP.Server
                         byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildTackMenu(sender.User.LastViewedHorse, sender.User));
                         sender.SendPacket(metaPacket);
                         break;
-                    companionRemove:;
+                    companionRemove:
                         itemUnequipedMessage = PacketBuilder.CreateChat(Messages.FormatHorseCompanionRemoveMessage(sender.User.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(itemUnequipedMessage);
 
@@ -3235,7 +3235,7 @@ namespace HISP.Server
                 case "52c4": // Horse set to RETIRED
                     category = "RETIRED";
                     goto setCategory;
-                setCategory:;
+                setCategory:
                     if (sender.User.LastViewedHorse != null)
                     {
                         sender.User.LastViewedHorse.Category = category;
@@ -4061,7 +4061,7 @@ namespace HISP.Server
                         if (drawing.Contains("X!")) // Clear byte
                         {  
                             room.Drawing = "";
-                            goto update;
+                            goto updateDrawing;
                         }
 
                         try { 
@@ -4073,7 +4073,7 @@ namespace HISP.Server
                             sender.SendPacket(roomFullMessage);
                             break;
                         }
-                    update:;
+                    updateDrawing:
                         Database.SetLastPlayer("D" + room.Id.ToString(), sender.User.Id);
                         UpdateDrawingForAll("D" + room.Id, sender, drawing, false);
                     }
@@ -5076,7 +5076,7 @@ namespace HISP.Server
                 Logger.DebugPrint("Exiting player: " + loggedInUser.Username + " to: " + loggedInUser.X + "," + loggedInUser.Y);
                 byte[] moveResponse = PacketBuilder.CreateMovement(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, Direction, true);
                 sender.SendPacket(moveResponse);
-                goto Complete;               
+                goto movementComplete;               
             }
 
             if (movementDirection == PacketBuilder.MOVE_UP)
@@ -5159,7 +5159,7 @@ namespace HISP.Server
                     if (treasure.Type == "RAINBOW")
                     {
                         treasure.CollectTreasure(loggedInUser);
-                        goto Complete;
+                        goto movementComplete;
                     }
                 }
 
@@ -5171,7 +5171,7 @@ namespace HISP.Server
                 byte[] moveResponse = PacketBuilder.CreateMovement(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
                 sender.SendPacket(moveResponse);
             }
-            Complete:;
+            movementComplete:
 
             // Cancel Trades
             if (loggedInUser.TradingWith != null)
@@ -6779,10 +6779,8 @@ namespace HISP.Server
                             foreach(Workshop.RequiredItem reqItem in itm.RequiredItems)
                             {
                                 if (sender.User.Inventory.HasItemId(reqItem.RequiredItemId))
-                                {
                                     if (sender.User.Inventory.GetItemByItemId(reqItem.RequiredItemId).ItemInstances.Length < reqItem.RequiredItemCount)
                                         goto failMissingItem;
-                                }
                                 else
                                     goto failMissingItem;
                             }
@@ -6885,7 +6883,7 @@ namespace HISP.Server
                     totalSold = invItem.ItemInstances.Length;
                     message = 2;
                     goto doSell;
-                doSell:;
+                doSell:
 
                     Item.ItemInformation itemInfo = Item.GetItemById(itemId);
                     Shop shop = sender.User.LastShoppedAt;
@@ -7017,7 +7015,7 @@ namespace HISP.Server
                 case PacketBuilder.ITEM_BUY_25:
                     message = 3;
                     count = 25;
-                doPurchase:;
+                doPurchase:
                     packetStr = Encoding.UTF8.GetString(packet);
                     itemIdStr = packetStr.Substring(2, (packet.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     itemId = 0;
