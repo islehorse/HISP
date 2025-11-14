@@ -193,157 +193,101 @@ namespace HISP.Game.Chat
         {
             if (channel == ChatChannel.All)
             {
-                return User.OnlineUsers.Where(o => (!o.MuteGlobal && !o.MuteAll) &&
-                                                    (o.Id != user.Id) &&
-                                                    (!o.MutePlayer.IsUserMuted(user)))
-                                                    .Select(o => o.Client).ToArray();
+                return User.OnlineUsers.Where(o => 
+                        (!o.MuteGlobal && !o.MuteAll) &&
+                        (o.Id != user.Id) &&
+                        (!o.MutePlayer.IsUserMuted(user)))
+                        .Select(o => o.Client).ToArray();
 
-                //foreach (User onlineUser in User.OnlineUsers)
-                //{
-                //    if (!onlineUser.MuteGlobal && !onlineUser.MuteAll)
-                //        if (onlineUser.Id != user.Id)
-                //            if(!onlineUser.MutePlayer.IsUserMuted(user))
-                //                recipiants.Add(user.Client);
-                //}
             }
-            
-            if(channel == ChatChannel.Ads)
+            else if(channel == ChatChannel.Ads)
             { 
-                List<GameClient> recipiants = new List<GameClient>();
-                foreach (User onlineUser in User.OnlineUsers)
-                {
-                    if (!onlineUser.MuteAds && !onlineUser.MuteAll)
-                        if (onlineUser.Id != user.Id)
-                            if (!onlineUser.MutePlayer.IsUserMuted(user))
-                                recipiants.Add(onlineUser.Client);
-                }
-                return recipiants.ToArray();
+                return User.OnlineUsers.Where(o => 
+                        (!o.MuteAds && !o.MuteAll) &&
+                        (o.Id != user.Id) &&
+                        (!o.MutePlayer.IsUserMuted(user)))
+                        .Select(o => o.Client).ToArray();
             }
-
-            if(channel == ChatChannel.Buddies)
+            else if(channel == ChatChannel.Buddies)
             {
-                List<GameClient> recipiants = new List<GameClient>();
-                foreach (User onlineUser in User.OnlineUsers)
-                {
-                    if (!onlineUser.MuteBuddy && !onlineUser.MuteAll)
-                        if (onlineUser.Id != user.Id)
-                            if (onlineUser.Friends.List.Contains(user.Id))
-                                if (!onlineUser.MutePlayer.IsUserMuted(user))
-                                    recipiants.Add(onlineUser.Client);
-                }
-                return recipiants.ToArray();
+                return User.OnlineUsers.Where(o => 
+                        (!o.MuteBuddy && !o.MuteAll) &&
+                        (o.Id != user.Id) &&
+                        (o.Friends.List.Contains(user.Id)) &&
+                        (!o.MutePlayer.IsUserMuted(user)))
+                        .Select(o => o.Client).ToArray();
+
             }
-
-            if (channel == ChatChannel.Isle)
+            else if (channel == ChatChannel.Isle)
             {
-                List<GameClient> recipiants = new List<GameClient>();
                 if(World.InIsle(user.X,user.Y))
                 {
-                    User[] usersInIsle = User.GetUsersInIsle(World.GetIsle(user.X, user.Y), true, false);
-                    foreach (User userInIsle in usersInIsle)
-                    {
-                        if (user.Id != userInIsle.Id)
-                            if(!userInIsle.MuteAll && !userInIsle.MuteIsland)
-                                if(!userInIsle.MutePlayer.IsUserMuted(user))
-                                    recipiants.Add(userInIsle.Client);
-                    }
-                    return recipiants.ToArray();
-                }
-                else
-                {
-                    return new GameClient[0];
+                    return User.GetUsersInIsle(World.GetIsle(user.X, user.Y), true, false).Where(o => 
+                        (!o.MuteIsland && !o.MuteAll) &&
+                        (o.Id != user.Id) &&
+                        (!o.MutePlayer.IsUserMuted(user)))
+                        .Select(o => o.Client).ToArray();                    
                 }
 
             }
-
-            if (channel == ChatChannel.Here)
+            else if (channel == ChatChannel.Here)
             {
-                List<GameClient> recipiants = new List<GameClient>();
-                User[] usersHere = User.GetUsersAt(user.X, user.Y, true, false);
-                foreach (User userHere in usersHere)
-                {
-                    if (user.Id != userHere.Id)
-                        if (!userHere.MuteAll && !userHere.MuteHere)
-                            if (!userHere.MutePlayer.IsUserMuted(user))
-                                recipiants.Add(userHere.Client);
-                }
-                return recipiants.ToArray();
+                return User.GetUsersAt(user.X, user.Y, true, false).Where(o => 
+                        (!o.MuteHere && !o.MuteAll) &&
+                        (o.Id != user.Id) &&
+                        (!o.MutePlayer.IsUserMuted(user)))
+                        .Select(o => o.Client).ToArray();
             }
-
-            if (channel == ChatChannel.Near)
+            else if (channel == ChatChannel.Near)
             {
-                List<GameClient> recipiants = new List<GameClient>();
-                User[] nearbyUsers = User.GetNearbyUsers(user.X, user.Y, true, false);
-                foreach (User nearbyUser in nearbyUsers)
-                {
-                    if (user.Id != nearbyUser.Id)
-                        if (!nearbyUser.MuteAll && !nearbyUser.MuteNear)
-                            if (!nearbyUser.MutePlayer.IsUserMuted(user))
-                                recipiants.Add(nearbyUser.Client);
-                }
-                return recipiants.ToArray();
+                return User.GetNearbyUsers(user.X, user.Y, true, false).Where(o =>
+                        (!o.MuteNear && !o.MuteAll) &&
+                        (o.Id != user.Id) &&
+                        (!o.MutePlayer.IsUserMuted(user)))
+                        .Select(o => o.Client).ToArray();
             }
-
-            if (channel == ChatChannel.Mod)
+            else if (channel == ChatChannel.Mod)
             {
                 if (!user.Moderator && !user.Administrator) // No mod chat for non-mods!
                 {
-                    Logger.WarnPrint(user.Username + " attempted to send in MOD chat, without being a MOD.");
+                    Logger.HackerPrint(user.Username + " attempted to send in MOD chat, without being a MOD.");
                     return new GameClient[0];
                 }
 
-                List<GameClient> recipiants = new List<GameClient>();
-                foreach (GameClient client in GameClient.ConnectedClients)
-                {
-                    if (client.LoggedIn)
-                        if (client.User.Moderator)
-                            if (client.User.Id != user.Id)
-                                recipiants.Add(client);
-                }
-                return recipiants.ToArray();
-            }
+                return User.OnlineUsers.Where(o =>
+                        (!o.MuteAll) &&
+                        (o.Id != user.Id) &&
+                        (!o.MutePlayer.IsUserMuted(user)) &&
+                        (o.Moderator))
+                        .Select(o => o.Client).ToArray();
 
-            if(channel == ChatChannel.Admin)
+            }
+            else if(channel == ChatChannel.Admin)
             {
                 if (!user.Administrator) // No admin chat for non-admins!
                 {
-                    Logger.WarnPrint(user.Username + " attempted to send in ADMIN chat, without being an ADMIN.");
+                    Logger.HackerPrint(user.Username + " attempted to send in ADMIN chat, without being an ADMIN.");
                     return new GameClient[0];
                 }
-                    
 
-                List<GameClient> recipiants = new List<GameClient>();
-                foreach (GameClient client in GameClient.ConnectedClients)
-                {
-                    if (client.LoggedIn)
-                        if (client.User.Administrator)
-                            if (client.User.Id != user.Id)
-                                recipiants.Add(client);
-                }
-                return recipiants.ToArray();
+
+                return User.OnlineUsers.Where(o =>
+                    (!o.MuteAll) &&
+                    (o.Id != user.Id) &&
+                    (!o.MutePlayer.IsUserMuted(user)) &&
+                    (o.Administrator))
+                    .Select(o => o.Client).ToArray();
             }
-
-            if(channel == ChatChannel.Dm)
+            else if(channel == ChatChannel.Dm)
             {
                 if (to != null && to != "")
                 {
-                    List<GameClient> recipiants = new List<GameClient>();
-                    foreach (GameClient client in GameClient.ConnectedClients)
-                    {
-                        if (client.LoggedIn)
-                        {
-                            if (!client.User.MutePrivateMessage && !client.User.MuteAll)
-                            {
-                                if (client.User.Username.ToLower().StartsWith(to.ToLower()))
-                                {
-                                    recipiants.Add(client);
-                                    break;
-                                }
-
-                            }
-                        }
-                    }
-                    return recipiants.ToArray();
+                    return User.OnlineUsers.Where(o =>
+                        (!o.MutePrivateMessage && !o.MuteAll) &&
+                        (o.Id != user.Id) &&
+                        o.Username.StartsWith(to, StringComparison.InvariantCultureIgnoreCase) &&
+                        (!o.MutePlayer.IsUserMuted(user)))
+                        .Select(o => o.Client).ToArray();
                 }
                 else
                 {
