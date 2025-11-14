@@ -176,8 +176,6 @@ namespace MPN00BS
             HasServerStarted = true;
             ServerStartedCallback();
 
-
-
             if (Database.GetUsers().Length <= 0)
                 UserCreationCallback();
         }

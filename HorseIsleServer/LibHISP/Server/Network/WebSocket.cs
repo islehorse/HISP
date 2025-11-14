@@ -258,7 +258,6 @@ namespace HISP.Server.Network
                 // handle end of websocket message.
                 if (finished)
                 {
-
                     if (lastOpcode != WEBSOCKET_PING && currentMessage.LongLength > 0)
                         onReceiveCallback(currentMessage);
                     else
@@ -312,6 +311,8 @@ namespace HISP.Server.Network
         // encode data into websocket frames and send over network
         public override void Send(byte[] data)
         {
+            Array.Resize(ref data, data.Length + 1);
+
             if(this.Disconnected) return;
             if (data == null) return;
 
