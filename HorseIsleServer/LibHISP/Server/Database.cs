@@ -15,7 +15,6 @@ using MySqlConnector;
 using Microsoft.Data.Sqlite;
 using SQLitePCL;
 using HISP.Util;
-using Npgsql;
 using System.IO;
 
 namespace HISP.Server
@@ -24,7 +23,6 @@ namespace HISP.Server
     {
         public const string SQL_BACKEND_MARIADB = "mariadb";
         public const string SQL_BACKEND_SQLITE = "sqllite";
-        public const string SQL_BACKEND_POSTGRES = "postgres";
 
         public static string ConnectionString = "";
         private static int addWithValue(DbCommand cmd, string param, object value)
@@ -46,9 +44,7 @@ namespace HISP.Server
                 return new MySqlConnection(ConnectionString);
             else if (ConfigReader.SqlBackend.Equals(Database.SQL_BACKEND_SQLITE, StringComparison.InvariantCultureIgnoreCase))
                 return new SqliteConnection(ConnectionString);
-            else if (ConfigReader.SqlBackend.Equals(Database.SQL_BACKEND_POSTGRES, StringComparison.InvariantCultureIgnoreCase))
-                return new NpgsqlConnection(ConnectionString);
-
+            
             Logger.ErrorPrint("SqlBackend has invalid value: " + ConfigReader.SqlBackend);
             Environment.Exit(1);
             return null;
@@ -60,8 +56,7 @@ namespace HISP.Server
                 MySqlConnection.ClearAllPools();
             else if (ConfigReader.SqlBackend == Database.SQL_BACKEND_SQLITE)
                 SqliteConnection.ClearAllPools();
-            else if(ConfigReader.SqlBackend == Database.SQL_BACKEND_POSTGRES)
-                NpgsqlConnection.ClearAllPools();
+            
         }
 
         public static bool TryExecuteSqlQuery(DbConnection db, string query)
@@ -99,10 +94,6 @@ namespace HISP.Server
             {
                 ConnectionString = "Data Source=\"" + Path.GetFullPath(ConfigReader.DatabaseName + ".db", ConfigReader.ConfigDirectory) + "\";";
                 Batteries.Init();
-            }
-            else if(ConfigReader.SqlBackend == Database.SQL_BACKEND_POSTGRES)
-            {
-                ConnectionString = "Host=" + ConfigReader.DatabaseIP + ";Username=" + ConfigReader.DatabaseUsername + ";Password=" + ConfigReader.DatabasePassword + ";Database=" + ConfigReader.DatabaseName;
             }
 
 

@@ -30,7 +30,6 @@
                 <ComboBoxItem Content="NON-BINARY"/>
             </ComboBox>
             <Label Name="pronounsNotice" Content="- Determines if your called &quot;He&quot;, &quot;She&quot; or &quot;They&quot; in game" HorizontalAlignment="Left" Margin="36,110,0,0" VerticalAlignment="Top" Grid.Column="0"/>
-            <!--<Label Name="enbiesNotice" Content="- Enbies, simply type whatever you want into the box." HorizontalAlignment="Left" Margin="36,141,0,0" VerticalAlignment="Top"/>-->
             <Label Name="privledgesLabel" Grid.Column="1" Content="Privledges:" HorizontalAlignment="Right" Margin="0,55,55,0" VerticalAlignment="Top"/>
             <CheckBox Name="adminCheckbox" Grid.Column="1" Checked="adminChecked" Content="Administrator" HorizontalAlignment="Right" Margin="0,95,9,0" VerticalAlignment="Top" IsChecked="True"/>
             <CheckBox Name="modCheckbox" Grid.Column="1" Unchecked="modUnchecked" Content="Moderator" HorizontalAlignment="Right" Margin="0,120,29,0" VerticalAlignment="Top" IsChecked="True"/>

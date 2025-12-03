@@ -14,7 +14,7 @@ namespace MPN00BS
     {
         public RegisterWindow()
         {
-            InitializeComponent();
+            InitializeComponent(true);
         }
 
 
@@ -142,23 +142,6 @@ namespace MPN00BS
             Authentication.CreateAccount(username, password, gender, admin, mod);
 
             this.Close();
-        }
-
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-            genderSelectionBox = this.FindControl<ComboBox>("genderSelectionBox"); // TODO; add isEditable >->
-          
-            adminCheckbox = this.FindControl<CheckBox>("adminCheckbox");
-            modCheckbox = this.FindControl<CheckBox>("modCheckbox");
-
-            createAccountButton = this.FindControl<Button>("createAccountButton");
-
-            usernameValidationFailReason = this.FindControl<Label>("usernameValidationFailReason");
-            passwordValidationFailReason = this.FindControl<Label>("passwordValidationFailReason");
-
-            usernameBox = this.FindControl<TextBox>("usernameBox");
-            passwordBox = this.FindControl<TextBox>("passwordBox");
         }
 
     }

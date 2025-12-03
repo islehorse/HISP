@@ -24,7 +24,7 @@ namespace MPN00BS
 
         public MessageBox()
         {
-            AvaloniaXamlLoader.Load(this);
+            InitializeComponent(true);
         }
 
         public static Task<MessageBoxResult> Show(Window parent, string text, string title, MessageBoxButtons buttons)
