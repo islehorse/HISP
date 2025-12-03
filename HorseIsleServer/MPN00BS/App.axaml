@@ -1,14 +1,13 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:MPN00BS.ViewModels"
-             x:DataType="vm:HispViewModel"
              x:CompileBindings="True"
              Name="Horse Isle"
-             x:Class="MPN00BS.App">
+             x:Class="MPN00BS.App"
+			 RequestedThemeVariant="Light">
     <Application.Styles>
-        <FluentTheme Mode="Light"/>
+	    <FluentTheme/>
     </Application.Styles>
-    
   
   <TrayIcon.Icons>
     <TrayIcons>
@@ -17,31 +16,32 @@
           <NativeMenu>
             <NativeMenuItem Header="Users">
               <NativeMenu>
-                <NativeMenuItem Header="Create New User" Command="{Binding createAccountCommand}"/>
-                <NativeMenuItem Header="Reset Passsword" Command="{Binding resetPasswordCommand}"/>
+                <NativeMenuItem Header="Create New User" Click="createAccountCommand"/>
+                <NativeMenuItem Header="Reset Passsword" Click="resetPasswordCommand"/>
               </NativeMenu>
             </NativeMenuItem>
             <NativeMenuItem Header="Server">
               <NativeMenu>
-                <NativeMenuItem Header="Shutdown Server" Command="{Binding shutdownServerCommand}"/>
+                <NativeMenuItem Header="Shutdown Server" Click="shutdownServerCommand"/>
                  <NativeMenuItem Header="Chat">
                   <NativeMenu>
-                    <NativeMenuItem Header="{Binding swearFilterHeader}" Command="{Binding toggleSwearFilter}"/>
-                    <NativeMenuItem Header="{Binding correctionsHeader}" Command="{Binding toggleCorrections}"/>
-                    <NativeMenuItem Header="{Binding vioChecksHeader}" Command="{Binding toggleNonVioChecks}"/>
-                    <NativeMenuItem Header="{Binding spamFilterHeader}" Command="{Binding toggleSpamFilter}"/>
+                    <NativeMenuItem Header="Swear Filter" ToggleType="CheckBox" Click="toggleSwearFilter"/>
+                    <NativeMenuItem Header="Corrections" ToggleType="CheckBox" Click="toggleCorrections"/>
+                    <NativeMenuItem Header="Non Violation Checks" ToggleType="CheckBox" Click="toggleNonVioChecks"/>
+                    <NativeMenuItem Header="Spam Filter" ToggleType="CheckBox" Click="toggleSpamFilter"/>
                   </NativeMenu>
                 </NativeMenuItem>
                 <NativeMenuItem Header="Game">
                   <NativeMenu>
-                    <NativeMenuItem Header="{Binding allUsersSubbedHeader}" Command="{Binding toggleAllUsersSubbed}"/>
-                    <NativeMenuItem Header="{Binding fixOfficalBugsHeader}" Command="{Binding toggleFixOfficalBugs}"/>
-                  </NativeMenu>
+                    <NativeMenuItem Header="All Users Subscribed" ToggleType="CheckBox" Click="toggleAllUsersSubbed"/>
+                    <NativeMenuItem Header="Fix Offical Bugs" ToggleType="CheckBox" Click="toggleFixOfficalBugs"/>
+					<NativeMenuItem Header="Enable EOL Features" ToggleType="CheckBox" Click="toggleEolFeatures"/>
+				  </NativeMenu>
                 </NativeMenuItem> 
                 <NativeMenuItem Header="Advanced">
                   <NativeMenu>
-                    <NativeMenuItem Header="Edit &quot;server.properties&quot;" Command="{Binding editServerPropertiesCommand}"/>
-                    <NativeMenuItem Header="Open Server Folder" Command="{Binding openServerFolderCommand}"/>
+                    <NativeMenuItem Header="Edit &quot;server.properties&quot;" ToggleType="CheckBox" Click="editServerPropertiesCommand"/>
+                    <NativeMenuItem Header="Open Server Folder" ToggleType="CheckBox" Click="openServerFolderCommand"/>
                   </NativeMenu>
                 </NativeMenuItem>
               </NativeMenu>
