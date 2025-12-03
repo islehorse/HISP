@@ -9,7 +9,7 @@ defaults:
 
 jobs:
   build-linux-arm:
-    runs-on: ubuntu-latest-arm
+    runs-on: ubuntu-24.04-arm
     env:
         AUTHENTICATION_TOKEN: ${{ secrets.SILICA_CODES_AUTH }}
     steps:
