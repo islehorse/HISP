@@ -141,7 +141,7 @@ jobs:
     - name: Upload deb package arm
       uses: actions/upload-artifact@v4
       with:
-        name: HISP-Debian-ARM64
+        name: HISP-Debian-ARM
         path: HorseIsleServer/debpackage-arm
         
   build-linux:
