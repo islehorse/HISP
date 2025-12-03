@@ -81,7 +81,7 @@ jobs:
         mkdir debpackage-arm64
         dpkg-deb --build /tmp/debpkg/DebianArm64
         mv /tmp/debpkg/DebianArm64.deb debpackage-arm64/HISP-Debian-ARM64.deb
-        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm64/HISP-Debian-ARM64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/arm64/upload
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm64/HISP-Debian-ARM64.deb https://git.silica.codes/api/packages/islehorse/debian/pool/debian/arm64/upload
         
     - name: Build arm deb package
       continue-on-error: false
@@ -116,7 +116,7 @@ jobs:
         mkdir debpackage-arm
         dpkg-deb --build /tmp/debpkg/DebianArm
         mv /tmp/debpkg/DebianArm.deb debpackage-arm/HISP-Debian-ARM.deb
-        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm/HISP-Debian-ARM.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/arm/upload
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm/HISP-Debian-ARM.deb https://git.silica.codes/api/packages/islehorse/debian/pool/debian/arm/upload
         
 # Upload LINUX
 
@@ -132,11 +132,17 @@ jobs:
         name: HISP-LinuxARM64
         path: HorseIsleServer/HISPd/build/Linux-ARM64
 
-    - name: Upload deb package
+    - name: Upload deb package arm64
       uses: actions/upload-artifact@v4
       with:
         name: HISP-Debian-ARM64
         path: HorseIsleServer/debpackage-arm64
+        
+    - name: Upload deb package arm
+      uses: actions/upload-artifact@v4
+      with:
+        name: HISP-Debian-ARM64
+        path: HorseIsleServer/debpackage-arm
         
   build-linux:
     runs-on: ubuntu-latest
@@ -202,7 +208,7 @@ jobs:
         mkdir debpackage-x64
         dpkg-deb --build /tmp/debpkg/Debian64
         mv /tmp/debpkg/Debian64.deb debpackage-x64/HISP-Debian-AMD64.deb
-        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-x64/HISP-Debian-AMD64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/x64/upload
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-x64/HISP-Debian-AMD64.deb https://git.silica.codes/api/packages/islehorse/debian/pool/debian/x64/upload
         
 # Upload LINUX
     - name: Upload linux-x64
@@ -217,7 +223,7 @@ jobs:
         name: HISP-Linux64-Noobs
         path: HorseIsleServer/MPN00BS/build/Linux-x64
 
-    - name: Upload deb package
+    - name: Upload deb package x64
       uses: actions/upload-artifact@v4
       with:
         name: HISP-Debian-x64
