@@ -8,6 +8,138 @@ defaults:
     working-directory: ./HorseIsleServer
 
 jobs:
+  build-linux-arm:
+    runs-on: ubuntu-latest-arm
+    env:
+        AUTHENTICATION_TOKEN: ${{ secrets.SILICA_CODES_AUTH }}
+    steps:
+    - uses: actions/checkout@v5
+      with:
+        fetch-depth: 0
+        submodules: true
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 9.0.x
+        include-prerelease: false
+        
+    - name: Install utils
+      run: |
+        sudo apt update
+        sudo apt install -y build-essential zlib1g-dev dos2unix
+        dotnet tool install -g dotnet-script
+        
+    - name: Restore dependencies
+      run: |
+        dotnet restore LibHISP
+        dotnet restore HISPd
+        
+# linux arm
+    - name: Build linux-arm
+      continue-on-error: false
+      run: |
+        dotnet publish -c Linux -p:PublishProfile=LinuxARM HISPd
+        
+# linux arm64
+    - name: Build linux-arm64
+      continue-on-error: false
+      run: |
+        dotnet publish -c Linux -p:PublishProfile=LinuxARM64 HISPd
+
+        
+    - name: Build arm64 deb package
+      continue-on-error: false
+      run: |
+        mkdir /tmp/debpkg
+        mkdir /tmp/debpkg/DebianArm64
+        mkdir /tmp/debpkg/DebianArm64/etc
+        mkdir /tmp/debpkg/DebianArm64/usr
+        mkdir /tmp/debpkg/DebianArm64/etc/hisp
+        mkdir /tmp/debpkg/DebianArm64/etc/hisp/gamedata
+        mkdir /tmp/debpkg/DebianArm64/etc/systemd
+        mkdir /tmp/debpkg/DebianArm64/etc/systemd/system
+        mkdir /tmp/debpkg/DebianArm64/usr/bin
+        mkdir /tmp/debpkg/DebianArm64/usr/lib
+        mkdir /tmp/debpkg/DebianArm64/DEBIAN
+        cp LibHISP/Resources/server.properties /tmp/debpkg/DebianArm64/etc/hisp/server.properties
+        cp LibHISP/Resources/default_cross_domain.xml /tmp/debpkg/DebianArm64/etc/hisp/CrossDomainPolicy.xml
+        cp -r HISPd/Resources/DEBIAN/* /tmp/debpkg/DebianArm64/DEBIAN
+        cp -r HISPd/build/Linux-ARM64/gamedata/* /tmp/debpkg/DebianArm64/etc/hisp/gamedata
+        cp HISPd/build/Linux-ARM64/libe_sqlite3.so /tmp/debpkg/DebianArm64/usr/lib/libe_sqlite3.so
+        cp HISPd/build/Linux-ARM64/HI1.MAP /tmp/debpkg/DebianArm64/etc/hisp/HI1.MAP
+        cp HISPd/build/Linux-ARM64/HISPd /tmp/debpkg/DebianArm64/usr/bin/HISPd
+        cp HISPd/Resources/HISP.service /tmp/debpkg/DebianArm64/etc/systemd/system/HISP.service
+        cat /tmp/debpkg/DebianArm64/DEBIAN/control
+        dos2unix /tmp/debpkg/DebianArm64/DEBIAN/conffiles
+        dos2unix /tmp/debpkg/DebianArm64/DEBIAN/control
+        dos2unix /tmp/debpkg/DebianArm64/DEBIAN/postinst
+        dos2unix /tmp/debpkg/DebianArm64/DEBIAN/postrm
+        dos2unix /tmp/debpkg/DebianArm64/DEBIAN/prerm
+        dos2unix /tmp/debpkg/DebianArm64/etc/systemd/system/HISP.service
+        chmod 755 -R /tmp/debpkg/DebianArm64
+        chmod +x /tmp/debpkg/DebianArm64/usr/bin/HISPd
+        mkdir debpackage-arm64
+        dpkg-deb --build /tmp/debpkg/DebianArm64
+        mv /tmp/debpkg/DebianArm64.deb debpackage-arm64/HISP-Debian-ARM64.deb
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm64/HISP-Debian-ARM64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/main/upload
+        
+    - name: Build arm deb package
+      continue-on-error: false
+      run: |
+        mkdir /tmp/debpkg
+        mkdir /tmp/debpkg/DebianArm
+        mkdir /tmp/debpkg/DebianArm/etc
+        mkdir /tmp/debpkg/DebianArm/usr
+        mkdir /tmp/debpkg/DebianArm/etc/hisp
+        mkdir /tmp/debpkg/DebianArm/etc/hisp/gamedata
+        mkdir /tmp/debpkg/DebianArm/etc/systemd
+        mkdir /tmp/debpkg/DebianArm/etc/systemd/system
+        mkdir /tmp/debpkg/DebianArm/usr/bin
+        mkdir /tmp/debpkg/DebianArm/usr/lib
+        mkdir /tmp/debpkg/DebianArm/DEBIAN
+        cp LibHISP/Resources/server.properties /tmp/debpkg/DebianArm/etc/hisp/server.properties
+        cp LibHISP/Resources/default_cross_domain.xml /tmp/debpkg/DebianArm/etc/hisp/CrossDomainPolicy.xml
+        cp -r HISPd/Resources/DEBIAN/* /tmp/debpkg/DebianArm/DEBIAN
+        cp -r HISPd/build/Linux-ARM/gamedata/* /tmp/debpkg/DebianArm/etc/hisp/gamedata
+        cp HISPd/build/Linux-ARM/libe_sqlite3.so /tmp/debpkg/DebianArm/usr/lib/libe_sqlite3.so
+        cp HISPd/build/Linux-ARM/HI1.MAP /tmp/debpkg/DebianArm/etc/hisp/HI1.MAP
+        cp HISPd/build/Linux-ARM/HISPd /tmp/debpkg/DebianArm/usr/bin/HISPd
+        cp HISPd/Resources/HISP.service /tmp/debpkg/DebianArm/etc/systemd/system/HISP.service
+        cat /tmp/debpkg/DebianArm/DEBIAN/control
+        dos2unix /tmp/debpkg/DebianArm/DEBIAN/conffiles
+        dos2unix /tmp/debpkg/DebianArm/DEBIAN/control
+        dos2unix /tmp/debpkg/DebianArm/DEBIAN/postinst
+        dos2unix /tmp/debpkg/DebianArm/DEBIAN/postrm
+        dos2unix /tmp/debpkg/DebianArm/DEBIAN/prerm
+        dos2unix /tmp/debpkg/DebianArm/etc/systemd/system/HISP.service
+        chmod 755 -R /tmp/debpkg/DebianArm
+        chmod +x /tmp/debpkg/DebianArm/usr/bin/HISPd
+        mkdir debpackage-arm
+        dpkg-deb --build /tmp/debpkg/DebianArm
+        mv /tmp/debpkg/DebianArm.deb debpackage-arm/HISP-Debian-ARM64.deb
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm/HISP-Debian-ARM.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/main/upload
+        
+# Upload LINUX
+
+    - name: Upload linux-arm
+      uses: actions/upload-artifact@v4
+      with:
+        name: HISP-LinuxARM
+        path: HorseIsleServer/HISPd/build/Linux-ARM
+    
+    - name: Upload linux-arm64
+      uses: actions/upload-artifact@v4
+      with:
+        name: HISP-LinuxARM64
+        path: HorseIsleServer/HISPd/build/Linux-ARM64
+
+    - name: Upload deb package
+      uses: actions/upload-artifact@v4
+      with:
+        name: HISP-Debian-ARM64
+        path: HorseIsleServer/debpackage-arm64
+        
   build-linux:
     runs-on: ubuntu-latest
     env:
@@ -26,8 +158,7 @@ jobs:
     - name: Install utils
       run: |
         sudo apt update
-        sudo apt install -y clang zlib1g-dev dos2unix gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf
-        dotnet tool install -g dotnet-script
+        sudo apt install -y build-essential zlib1g-dev dos2unix
         
     - name: Restore dependencies
       run: |
@@ -39,19 +170,6 @@ jobs:
       run: |
         dotnet publish -c Linux -p:PublishProfile=Linux64 HISPd
         dotnet publish -c Linux -p:PublishProfile=Linux64 MPN00BS
-        
-# linux arm
-    - name: Build linux-arm
-      continue-on-error: false
-      run: |
-        dotnet publish -c Linux -p:PublishProfile=LinuxARM HISPd
-        
-# linux arm64
-    - name: Build linux-arm64
-      continue-on-error: false
-      run: |
-        dotnet publish -c Linux -p:PublishProfile=LinuxARM64 HISPd
-
         
     - name: Build deb package
       continue-on-error: false
@@ -84,10 +202,10 @@ jobs:
         dos2unix /tmp/debpkg/Debian64/etc/systemd/system/HISP.service
         chmod 755 -R /tmp/debpkg/Debian64
         chmod +x /tmp/debpkg/Debian64/usr/bin/HISPd
-        mkdir debpackage
+        mkdir debpackage-x64
         dpkg-deb --build /tmp/debpkg/Debian64
-        mv /tmp/debpkg/Debian64.deb debpackage/HISP-Debian-AMD64.deb
-        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage/HISP-Debian-AMD64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/main/upload
+        mv /tmp/debpkg/Debian64.deb debpackage-x64/HISP-Debian-AMD64.deb
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-x64/HISP-Debian-AMD64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/main/upload
         
 # Upload LINUX
     - name: Upload linux-x64
@@ -102,23 +220,11 @@ jobs:
         name: HISP-Linux64-Noobs
         path: HorseIsleServer/MPN00BS/build/Linux-x64
 
-    - name: Upload linux-arm
-      uses: actions/upload-artifact@v4
-      with:
-        name: HISP-LinuxARM
-        path: HorseIsleServer/HISPd/build/Linux-ARM
-    
-    - name: Upload linux-arm64
-      uses: actions/upload-artifact@v4
-      with:
-        name: HISP-LinuxARM64
-        path: HorseIsleServer/HISPd/build/Linux-ARM64
-
     - name: Upload deb package
       uses: actions/upload-artifact@v4
       with:
-        name: HISP-DebianPackage
-        path: HorseIsleServer/debpackage
+        name: HISP-Debian-x64
+        path: HorseIsleServer/debpackage-x64
         
   build-win:
     runs-on: windows-latest
