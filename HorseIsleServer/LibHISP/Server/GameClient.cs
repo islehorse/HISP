@@ -8,12 +8,13 @@ using HISP.Game.Events;
 using HISP.Game.Items;
 using HISP.Util;
 using HISP.Server.Network;
-using HISP.Ipc;
 
 namespace HISP.Server
 {
     public class GameClient
     {
+        private ITransport networkTransport;
+        private bool loggedIn = false;
         private static ThreadSafeList<GameClient> connectedClients = new ThreadSafeList<GameClient>();
         public static GameClient[] ConnectedClients // Converted to array to prevent "Enumerator Changed" errors.
         {
@@ -23,9 +24,6 @@ namespace HISP.Server
             }
         }
 
-        private ITransport networkTransport;
-
-        private bool loggedIn = false;
 
         public string RemoteIp
         {
