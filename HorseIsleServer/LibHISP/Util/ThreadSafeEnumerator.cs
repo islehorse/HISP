@@ -14,31 +14,53 @@ namespace HISP.Util
             this.enumerator = baseEnum; 
         }
 
-        public T Current => this.enumerator.Current;
+        public T Current
+        {
+            get
+            {
+                lock(enumLock)
+                {
+                    return this.enumerator.Current;
+                }
+            }
 
-        object IEnumerator.Current => this.enumerator.Current;
+        }
+
+        object IEnumerator.Current
+        {
+            get
+            {
+                lock(enumLock)
+                {
+                    return this.enumerator.Current;
+                }
+            }
+        }
 
         public void Dispose()
         {
-            enumLock.WaitOne();
-            this.enumerator.Dispose();
-            enumLock.ReleaseMutex();
+            lock(enumLock)
+            {
+                this.enumerator.Dispose();
+            }
             enumLock.Dispose();
+            enumLock = null;
         }
 
         public bool MoveNext()
         {
-            enumLock.WaitOne();
-            bool val = this.enumerator.MoveNext();
-            enumLock.ReleaseMutex();
-            return val;
+            lock(enumLock)
+            {
+                return this.enumerator.MoveNext();
+            }
         }
 
         public void Reset()
         {
-            enumLock.WaitOne();
-            this.enumerator.Reset();
-            enumLock.ReleaseMutex();
+            lock (enumLock)
+            {
+                this.enumerator.Reset();
+            }
         }
     }
 }

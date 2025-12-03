@@ -3,6 +3,7 @@ using HISP.Server;
 using HISP.Util;
 using System;
 using System.Linq;
+using System.Threading;
 
 namespace HISP.Game.Items
 {
@@ -22,84 +23,115 @@ namespace HISP.Game.Items
             public int Data;
         }
         private static ThreadSafeList<DroppedItem> droppedItemsList = new ThreadSafeList<DroppedItem>();
-
+        private static Mutex droppedItemsLock = new Mutex();
         public static DroppedItem[] Items
         {
             get
             {
-                return droppedItemsList.ToArray();
+                lock (droppedItemsLock)
+                {
+                    return droppedItemsList.ToArray();
+                }
             }
         }
         public static int GetCountOfItem(Item.ItemInformation item)
         {
-            return droppedItemsList.Count(o => o.Instance.ItemId == item.Id);
+            lock (droppedItemsLock)
+            {
+                return droppedItemsList.Count(o => o.Instance.ItemId == item.Id);
+            }
         }
 
         public static DroppedItem[] GetItemsAt(int x, int y)
         {
-            return droppedItemsList.Where(o => (o.X == x && o.Y == y)).ToArray();
+            lock (droppedItemsLock)
+            {
+                return droppedItemsList.Where(o => (o.X == x && o.Y == y)).ToArray();
+            }
         }
         public static void ReadFromDatabase()
         {
-            DroppedItem[] items = Database.GetDroppedItems();
-            foreach (DroppedItem droppedItem in items) droppedItemsList.Add(droppedItem); 
+            lock (droppedItemsLock)
+            {
+                DroppedItem[] items = Database.GetDroppedItems();
+                foreach (DroppedItem droppedItem in items) droppedItemsList.Add(droppedItem);
+            }
         }
         public static void RemoveDroppedItem(DroppedItem item)
         {
-            int randomId = item.Instance.RandomId;
-            Database.RemoveDroppedItem(randomId);
-            droppedItemsList.Remove(item);
-            
+            lock(droppedItemsLock)
+            {
+                int randomId = item.Instance.RandomId;
+                Database.RemoveDroppedItem(randomId);
+                droppedItemsList.Remove(item);
+            }
+
         }
 
         public static bool IsDroppedItemExist(int randomId)
         {
-            return droppedItemsList.Any(o => o.Instance.RandomId == randomId);
+            lock (droppedItemsLock)
+            {
+                return droppedItemsList.Any(o => o.Instance.RandomId == randomId);
+            }
         }
         public static DroppedItem GetDroppedItemById(int randomId)
         {
-            return droppedItemsList.First(o => o.Instance.RandomId == randomId);
+            lock (droppedItemsLock)
+            {
+                return droppedItemsList.First(o => o.Instance.RandomId == randomId);
+            }
         }
         public static void DespawnItems()
         {
-            Database.DecrementDroppedItemDespawnTimer();
-            Database.RemoveDespawningItems(); // GO-GO-GO-GOGOGOGO GOTTA GO FAST!!!
-            for (int i = 0; i < droppedItemsList.Count; i++)
+            lock(droppedItemsLock)
             {
-                if (droppedItemsList[i] == null) // Item removed in another thread.
-                    continue;
+                Database.DecrementDroppedItemDespawnTimer();
+                Database.RemoveDespawningItems(); // GO-GO-GO-GOGOGOGO GOTTA GO FAST!!!
 
-                droppedItemsList[i].DespawnTimer -= 5;
-
-                if(droppedItemsList[i].DespawnTimer <= 0)
+                for (int i = 0; i < droppedItemsList.Count; i++)
                 {
-                    if (User.GetUsersAt(droppedItemsList[i].X, droppedItemsList[i].Y, true, true).Length > 0) // Dont despawn items players are standing on
+                    if (droppedItemsList[i] == null) // Item removed in another thread.
                         continue;
 
-                    Logger.DebugPrint("Despawned Item at " + droppedItemsList[i].X + ", " + droppedItemsList[i].Y);
-                    droppedItemsList.Remove(droppedItemsList[i]);
-                    
+                    droppedItemsList[i].DespawnTimer -= 5;
+
+                    if (droppedItemsList[i].DespawnTimer <= 0)
+                    {
+                        if (User.GetUsersAt(droppedItemsList[i].X, droppedItemsList[i].Y, true, true).Length > 0) // Dont despawn items players are standing on
+                            continue;
+
+                        Logger.DebugPrint("Despawned Item at " + droppedItemsList[i].X + ", " + droppedItemsList[i].Y);
+                        droppedItemsList.Remove(droppedItemsList[i]);
+
+                    }
                 }
             }
+
         }
 
         public static void AddItem(ItemInstance item, int x, int y, int despawnTimer=1500)
         {
-            DroppedItem droppedItem = new DroppedItem(item);
-            droppedItem.X = x;
-            droppedItem.Y = y;
-            droppedItem.DespawnTimer = despawnTimer;
-            droppedItemsList.Add(droppedItem);
-            Database.AddDroppedItem(droppedItem);
+            lock(droppedItemsLock)
+            {
+                DroppedItem droppedItem = new DroppedItem(item);
+                droppedItem.X = x;
+                droppedItem.Y = y;
+                droppedItem.DespawnTimer = despawnTimer;
+                droppedItemsList.Add(droppedItem);
+                Database.AddDroppedItem(droppedItem);
+            }
         }
         public static void GenerateItems()
         {
-            Logger.DebugPrint("Generating items.");
-
-            int newItems = 0;
-            foreach (Item.ItemInformation item in Item.Items)
+            lock (droppedItemsLock)
             {
-                int count = GetCountOfItem(item);
+                Logger.DebugPrint("Generating items.");
+
+                int newItems = 0;
+                foreach (Item.ItemInformation item in Item.Items)
+                {
+                    int count = GetCountOfItem(item);
 #if !OS_DEBUG
                 do
                 {
@@ -282,20 +314,27 @@ namespace HISP.Game.Items
                 } while (count < item.SpawnParamaters.SpawnCap);
 #endif
 
+                }
             }
 
         }
 
         public static void DeleteAllItemsWithId(int itemId)
         {
-            Database.DeleteAllDroppedItemsWithId(itemId);
-            droppedItemsList.RemoveAll(o => o.Instance.ItemId == itemId);
+            lock(droppedItemsLock)
+            {
+                Database.DeleteAllDroppedItemsWithId(itemId);
+                droppedItemsList.RemoveAll(o => o.Instance.ItemId == itemId);
+            }
         }
 
         public static void Init()
         {
-            ReadFromDatabase();
-            GenerateItems();
+            lock(droppedItemsLock)
+            {
+                ReadFromDatabase();
+                GenerateItems();
+            }
         }
 
     }
