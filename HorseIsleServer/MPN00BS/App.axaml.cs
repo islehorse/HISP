@@ -6,6 +6,7 @@ using HISP.Server;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace MPN00BS
 {
@@ -16,7 +17,7 @@ namespace MPN00BS
         private static extern int chmod(string pathname, int mode);
 
 #endif
-        
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
