@@ -13,8 +13,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using System.Xml.Linq;
-using static HISP.Game.Ranch;
 
 namespace HISP.Server
 {
@@ -171,11 +169,11 @@ namespace HISP.Server
             {
 
                 World.Area area = new World.Area();
-                area.StartX = ((int)gameData["places"]["areas"][i].AsArray()["start_x"]);
-                area.StartY = ((int)gameData["places"]["areas"][i].AsArray()["start_y"]);
-                area.EndX   = ((int)gameData["places"]["areas"][i].AsArray()["end_x"]);
-                area.EndY   = ((int)gameData["places"]["areas"][i].AsArray()["end_y"]);
-                area.Name   = ((string)gameData["places"]["areas"][i].AsArray()["name"]);
+                area.StartX = ((int)gameData["places"]["areas"].AsArray()[i]["start_x"]);
+                area.StartY = ((int)gameData["places"]["areas"].AsArray()[i]["start_y"]);
+                area.EndX   = ((int)gameData["places"]["areas"].AsArray()[i]["end_x"]);
+                area.EndY   = ((int)gameData["places"]["areas"].AsArray()[i]["end_y"]);
+                area.Name   = ((string)gameData["places"]["areas"].AsArray()[i]["name"]);
 
                 Logger.DebugPrint("Registered Area: " + area.Name + " X " + area.StartX + "-" + area.EndX + " Y " + area.StartY + "-" + area.EndY);
                 World.Areas.Add(area);
@@ -202,7 +200,7 @@ namespace HISP.Server
 
         private static void registerWaypoints()
         {
-            int totalWaypoints = gameData["places"]["waypoint"].AsArray().Count;
+            int totalWaypoints = gameData["places"]["waypoints"].AsArray().Count;
             for (int i = 0; i < totalWaypoints; i++)
             {
                 World.Waypoint waypoint = new World.Waypoint();
@@ -233,7 +231,7 @@ namespace HISP.Server
                 if (gameData["places"]["special_tiles"].AsArray()[i]["exit_y"] != null)
                     specialTile.ExitY = ((int)gameData["places"]["special_tiles"].AsArray()[i]["exit_y"]);
                 specialTile.AutoplaySwf = ((string)gameData["places"]["special_tiles"].AsArray()[i]["autoplay_swf"]);
-                specialTile.TypeFlag = ((string?)gameData["places"]["special_tiles"].AsArray()[i]["type_flag"]);
+                specialTile.TypeFlag = ((string)gameData["places"]["special_tiles"].AsArray()[i]["type_flag"]);
 
                 Logger.DebugPrint("Registered Special Tile: " + specialTile.Title + " X " + specialTile.X + " Y: " + specialTile.Y);
                 World.SpecialTiles.Add(specialTile);
@@ -320,14 +318,14 @@ namespace HISP.Server
                 Item.ItemInformation iteminfo = new Item.ItemInformation();
                 iteminfo.Id = ((int)gameData["item"]["item_list"].AsArray()[i]["id"]);
                 iteminfo.Name = ((string)gameData["item"]["item_list"].AsArray()[i]["name"]);
-                iteminfo.PluralName = ((string?)gameData["item"]["item_list"].AsArray()[i]["plural_name"]);
-                iteminfo.Description = ((string?)gameData["item"]["item_list"].AsArray()[i]["description"]);
+                iteminfo.PluralName = ((string)gameData["item"]["item_list"].AsArray()[i]["plural_name"]);
+                iteminfo.Description = ((string)gameData["item"]["item_list"].AsArray()[i]["description"]);
                 iteminfo.IconId = ((int)gameData["item"]["item_list"].AsArray()[i]["icon_id"]);
                 iteminfo.SortBy = ((int)gameData["item"]["item_list"].AsArray()[i]["sort_by"]);
                 iteminfo.SellPrice = ((int)gameData["item"]["item_list"].AsArray()[i]["sell_price"]);
-                iteminfo.EmbedSwf = ((string?)gameData["item"]["item_list"].AsArray()[i]["embed_swf"]);
+                iteminfo.EmbedSwf = ((string)gameData["item"]["item_list"].AsArray()[i]["embed_swf"]);
                 iteminfo.WishingWell = ((bool)gameData["item"]["item_list"].AsArray()[i]["wishing_well"]);
-                iteminfo.Type = ((string?)gameData["item"]["item_list"].AsArray()[i]["type"]);
+                iteminfo.Type = ((string)gameData["item"]["item_list"].AsArray()[i]["type"]);
                 iteminfo.MiscFlags = gameData["item"]["item_list"].AsArray()[i]["misc_flags"].Deserialize<int[]>();
                 int effectsCount = gameData["item"]["item_list"].AsArray()[i]["effects"].AsArray().Count;
 
@@ -335,17 +333,17 @@ namespace HISP.Server
                 for (int ii = 0; ii < effectsCount; ii++)
                 {
                     effectsList[ii] = new Item.Effects();
-                    effectsList[ii].EffectsWhat = ((string?)gameData["item"]["item_list"].AsArray()[i]["effects"].AsArray()[ii]["effect_what"]);
+                    effectsList[ii].EffectsWhat = ((string)gameData["item"]["item_list"].AsArray()[i]["effects"].AsArray()[ii]["effect_what"]);
                     effectsList[ii].EffectAmount = ((int)gameData["item"]["item_list"].AsArray()[i]["effects"].AsArray()[ii]["effect_amount"]);
                 }
 
                 iteminfo.Effects = effectsList;
                 iteminfo.SpawnParamaters = new Item.SpawnRules();
                 iteminfo.SpawnParamaters.SpawnCap = ((int)gameData["item"]["item_list"].AsArray()[i]["spawn_parameters"]["spawn_cap"]);
-                iteminfo.SpawnParamaters.SpawnInZone = ((string?)gameData["item"]["item_list"].AsArray()[i]["spawn_parameters"]["spawn_in_area"]);
-                iteminfo.SpawnParamaters.SpawnOnTileType = ((string?)gameData["item"]["item_list"].AsArray()[i]["spawn_parameters"]["spawn_on_tile_type"]);
-                iteminfo.SpawnParamaters.SpawnOnSpecialTile = ((string?)gameData["item"]["item_list"].AsArray()[i]["spawn_parameters"]["spawn_on_special_tile"]);
-                iteminfo.SpawnParamaters.SpawnNearSpecialTile = ((string?)gameData["item"]["item_list"].AsArray()[i]["spawn_parameters"]["spawn_near_special_tile"]);
+                iteminfo.SpawnParamaters.SpawnInZone = ((string)gameData["item"]["item_list"].AsArray()[i]["spawn_parameters"]["spawn_in_area"]);
+                iteminfo.SpawnParamaters.SpawnOnTileType = ((string)gameData["item"]["item_list"].AsArray()[i]["spawn_parameters"]["spawn_on_tile_type"]);
+                iteminfo.SpawnParamaters.SpawnOnSpecialTile = ((string)gameData["item"]["item_list"].AsArray()[i]["spawn_parameters"]["spawn_on_special_tile"]);
+                iteminfo.SpawnParamaters.SpawnNearSpecialTile = ((string)gameData["item"]["item_list"].AsArray()[i]["spawn_parameters"]["spawn_near_special_tile"]);
 
                 Logger.DebugPrint("Registered Item ID: " + iteminfo.Id + " Name: " + iteminfo.Name + " spawns on: " + iteminfo.SpawnParamaters.SpawnOnTileType);
                 Item.AddItemInfo(iteminfo);
@@ -358,9 +356,9 @@ namespace HISP.Server
             {
                 Item.ThrowableItem throwableItem = new Item.ThrowableItem();
                 throwableItem.Id = ((int)gameData["item"]["throwable"].AsArray()[i]["id"]);
-                throwableItem.HitMessage = ((string?)gameData["item"]["throwable"].AsArray()[i]["message_hit"]);
-                throwableItem.ThrowMessage = ((string?)gameData["item"]["throwable"].AsArray()[i]["message_throw"]);
-                throwableItem.HitYourselfMessage = ((string?)gameData["item"]["throwable"].AsArray()[i]["message_hit_yourself"]);
+                throwableItem.HitMessage = ((string)gameData["item"]["throwable"].AsArray()[i]["message_hit"]);
+                throwableItem.ThrowMessage = ((string)gameData["item"]["throwable"].AsArray()[i]["message_throw"]);
+                throwableItem.HitYourselfMessage = ((string)gameData["item"]["throwable"].AsArray()[i]["message_hit_yourself"]);
                 Item.AddThrowableItem(throwableItem);
             }
         }
@@ -1132,1265 +1130,1257 @@ namespace HISP.Server
 
             // the rest is easier;
 
-            HorseInfo.HorseNames = gameData["horses"]["names"].Deserialize<string[]>();
+            HorseInfo.HorseNames = gameData["horses"]["names"].Deserialize<string[]>(); 
 
-            Item.Present = gameData["item"]["special"]present;
-            Item.MailMessage = gameData["item"]["special"]mail_message;
-            Item.DorothyShoes = gameData["item"]["special"]dorothy_shoes;
-            Item.PawneerOrder = gameData["item"]["special"]pawneer_order;
-            Item.Telescope = gameData["item"]["special"]telescope;
-            Item.Pitchfork = gameData["item"]["special"]pitchfork;
-            Item.WishingCoin = gameData["item"]["special"]wishing_coin;
-            Item.FishingPole = gameData["item"]["special"]fishing_poll;
-            Item.Earthworm = gameData["item"]["special"]earthworm;
-            Item.BirthdayToken = gameData["item"]["special"]birthday_token;
-            Item.WaterBalloon = gameData["item"]["special"]water_balloon;
-            Item.ModSplatterball = gameData["item"]["special"]mod_splatterball;
-            Item.MagicBean = gameData["item"]["special"]magic_bean;
-            Item.MagicDroplet = gameData["item"]["special"]magic_droplet;
-            Item.Ruby = gameData["item"]["special"]ruby;
+            Item.Present = (int)gameData["item"]["special"]["present"];
+            Item.MailMessage = (int)gameData["item"]["special"]["mail_message"];
+            Item.DorothyShoes = (int)gameData["item"]["special"]["dorothy_shoes"];
+            Item.PawneerOrder = (int)gameData["item"]["special"]["pawneer_order"];
+            Item.Telescope = (int)gameData["item"]["special"]["telescope"];
+            Item.Pitchfork = (int)gameData["item"]["special"]["pitchfork"];
+            Item.WishingCoin = (int)gameData["item"]["special"]["wishing_coin"];
+            Item.FishingPole = (int)gameData["item"]["special"]["fishing_poll"];
+            Item.Earthworm = (int)gameData["item"]["special"]["earthworm"];
+            Item.BirthdayToken = (int)gameData["item"]["special"]["birthday_token"];
+            Item.WaterBalloon = (int)gameData["item"]["special"]["water_balloon"];
+            Item.ModSplatterball = (int)gameData["item"]["special"]["mod_splatterball"];
+            Item.MagicBean = (int)gameData["item"]["special"]["magic_bean"];
+            Item.MagicDroplet = (int)gameData["item"]["special"]["magic_droplet"];
+            Item.Ruby = (int)gameData["item"]["special"]["ruby"];
 
-            Item.StallionTradingCard = gameData["item"]["special"]stallion_trading_card;
-            Item.MareTradingCard = gameData["item"]["special"]mare_trading_card;
-            Item.ColtTradingCard = gameData["item"]["special"]colt_trading_card;
-            Item.FillyTradingCard = gameData["item"]["special"]filly_trading_card;
+            Item.StallionTradingCard = (int)gameData["item"]["special"]["stallion_trading_card"];
+            Item.MareTradingCard = (int)gameData["item"]["special"]["mare_trading_card"];
+            Item.ColtTradingCard = (int)gameData["item"]["special"]["colt_trading_card"];
+            Item.FillyTradingCard = (int)gameData["item"]["special"]["filly_trading_card"];
 
-            GameServer.IdleWarning = Convert.ToInt32(gameData["messages"]["disconnect"]["client_timeout"]warn_after);
-            GameServer.IdleTimeout = Convert.ToInt32(gameData["messages"]["disconnect"]["client_timeout"]kick_after);
+            GameServer.IdleWarning = (int)gameData["messages"]["disconnect"]["client_timeout"]["warn_after"];
+            GameServer.IdleTimeout = (int)gameData["messages"]["disconnect"]["client_timeout"]["kick_after"];
 
-            ChatMsg.PrivateMessageSound = gameData["messages"]["chat"]pm_sound;
+            ChatMsg.PrivateMessageSound = (string)gameData["messages"]["chat"]["pm_sound"];
 
             // HISP Specific ...
-            Messages.HISPHelpCommandUsageFormat = gameData["hisp_specific"]["HISP_help_command_usage_format"];
+            Messages.HISPHelpCommandUsageFormat = (string)gameData["hisp_specific"]["HISP_help_command_usage_format"];
 
             // New Users
 
-            Messages.NewUserMessage = gameData["messages"]["new_user"]starting_message;
-            Map.NewUserStartX = gameData["messages"]["new_user"]starting_x;
-            Map.NewUserStartY = gameData["messages"]["new_user"]starting_y;
+            Messages.NewUserMessage = (string)gameData["messages"]["new_user"]["starting_message"];
+            Map.NewUserStartX = (int)gameData["messages"]["new_user"]["starting_x"];
+            Map.NewUserStartY = (int)gameData["messages"]["new_user"]["starting_y"];
 
             // Timed Messages
 
-            Messages.PlaytimeMessageFormat = gameData["messages"]["timed_messages"]playtime_message;
+            Messages.PlaytimeMessageFormat = (string)gameData["messages"]["timed_messages"]["playtime_message"];
             Messages.RngMessages = gameData["messages"]["timed_messages"]["rng_message"].Deserialize<string[]>();
 
             // Auto Sell
-            Messages.AutoSellNotStandingInSamePlace = gameData["messages"]["meta"]["auto_sell"]not_standing_sameplace;
-            Messages.AutoSellSuccessFormat = gameData["messages"]["meta"]["auto_sell"]success;
-            Messages.AutoSellInsufficentFunds = gameData["messages"]["meta"]["auto_sell"]insufficent_money;
-            Messages.AutoSellTooManyHorses = gameData["messages"]["meta"]["auto_sell"]toomany_horses;
-            Messages.AutoSellYouSoldHorseFormat = gameData["messages"]["meta"]["auto_sell"]you_sold;
-            Messages.AutoSellYouSoldHorseOfflineFormat = gameData["messages"]["meta"]["auto_sell"]sold_offline;
-            
+            Messages.AutoSellNotStandingInSamePlace = (string)gameData["messages"]["meta"]["auto_sell"]["not_standing_sameplace"];
+            Messages.AutoSellSuccessFormat = (string)gameData["messages"]["meta"]["auto_sell"]["success"];
+            Messages.AutoSellInsufficentFunds = (string)gameData["messages"]["meta"]["auto_sell"]["insufficent_money"];
+            Messages.AutoSellTooManyHorses = (string)gameData["messages"]["meta"]["auto_sell"]["toomany_horses"];
+            Messages.AutoSellYouSoldHorseFormat = (string)gameData["messages"]["meta"]["auto_sell"]["you_sold"];
+            Messages.AutoSellYouSoldHorseOfflineFormat = (string)gameData["messages"]["meta"]["auto_sell"]["sold_offline"];
+
             // Mute Command
-            Messages.NowMutingPlayerFormat = gameData["messages"]["meta"]mute_command.now_ignoring_player;
-            Messages.StoppedMutingPlayerFormat = gameData["messages"]["meta"]mute_command.stop_ignoring_player;
+            Messages.NowMutingPlayerFormat = (string)gameData["messages"]["meta"]["mute_command"]["now_ignoring_player"];
+            Messages.StoppedMutingPlayerFormat = (string)gameData["messages"]["meta"]["mute_command"]["stop_ignoring_player"];
 
-            Messages.PlayerIgnoringYourPrivateMessagesFormat = gameData["messages"]["meta"]mute_command.player_ignoring_your_pm;
-            Messages.PlayerIgnoringYourBuddyRequests = gameData["messages"]["meta"]mute_command.player_ignoring_your_br;
-            Messages.PlayerIgnoringYourSocials = gameData["messages"]["meta"]mute_command.player_ignoring_your_socials;
+            Messages.PlayerIgnoringYourPrivateMessagesFormat = (string)gameData["messages"]["meta"]["mute_command"]["player_ignoring_your_pm"];
+            Messages.PlayerIgnoringYourBuddyRequests = (string)gameData["messages"]["meta"]["mute_command"]["player_ignoring_your_br"];
+            Messages.PlayerIgnoringYourSocials = (string)gameData["messages"]["meta"]["mute_command"]["player_ignoring_your_socials"];
 
-            Messages.PlayerIgnoringAllPrivateMessagesFormat = gameData["messages"]["meta"]mute_command.player_ignoring_all_pm;
-            Messages.PlayerIgnoringAllBuddyRequests = gameData["messages"]["meta"]mute_command.player_ignoring_all_br;
-            Messages.PlayerIgnoringAllSocials = gameData["messages"]["meta"]mute_command.player_ignoring_all_socials;
+            Messages.PlayerIgnoringAllPrivateMessagesFormat = (string)gameData["messages"]["meta"]["mute_command"]["player_ignoring_all_pm"];
+            Messages.PlayerIgnoringAllBuddyRequests = (string)gameData["messages"]["meta"]["mute_command"]["player_ignoring_all_br"];
+            Messages.PlayerIgnoringAllSocials = (string)gameData["messages"]["meta"]["mute_command"]["player_ignoring_all_socials"];
 
-            Messages.CantSendInMutedChannel = gameData["messages"]["meta"]mute_command.cant_send_in_muted_channel;
-            Messages.CantSendBuddyRequestWhileMuted = gameData["messages"]["meta"]mute_command.cant_send_br_muted;
-            Messages.CantSendPrivateMessageWhileMuted = gameData["messages"]["meta"]mute_command.cant_send_pm_muted;
+            Messages.CantSendInMutedChannel = (string)gameData["messages"]["meta"]["mute_command"]["cant_send_in_muted_channel"];
+            Messages.CantSendBuddyRequestWhileMuted = (string)gameData["messages"]["meta"]["mute_command"]["cant_send_br_muted"];
+            Messages.CantSendPrivateMessageWhileMuted = (string)gameData["messages"]["meta"]["mute_command"]["cant_send_pm_muted"];
 
-            Messages.CantSendPrivateMessagePlayerMutedFormat = gameData["messages"]["meta"]mute_command.cant_send_pm_player_muted;
+            Messages.CantSendPrivateMessagePlayerMutedFormat = (string)gameData["messages"]["meta"]["mute_command"]["cant_send_pm_player_muted"];
 
             // Chat Errors
-            Messages.CantFindPlayerToPrivateMessage = gameData["messages"]chat_errors.cant_find_player;
-            Messages.AdsOnlyOncePerMinute = gameData["messages"]chat_errors.ads_once_per_minute;
-            Messages.GlobalChatLimited = gameData["messages"]chat_errors.global_chats_limited;
-            Messages.GlobalChatTooLong = gameData["messages"]chat_errors.global_too_long;
-            Messages.AdsChatTooLong = gameData["messages"]chat_errors.ads_too_long;
+            Messages.CantFindPlayerToPrivateMessage = (string)gameData["messages"]["chat_errors"]["cant_find_player"];
+            Messages.AdsOnlyOncePerMinute = (string)gameData["messages"]["chat_errors"]["ads_once_per_minute"];
+            Messages.GlobalChatLimited = (string)gameData["messages"]["chat_errors"]["global_chats_limited"];
+            Messages.GlobalChatTooLong = (string)gameData["messages"]["chat_errors"]["global_too_long"];
+            Messages.AdsChatTooLong = (string)gameData["messages"]["chat_errors"]["ads_too_long"];
 
             // Warp Command
 
-            Messages.SuccessfullyWarpedToPlayer = gameData["messages"]commands.warp.player;
-            Messages.SuccessfullyWarpedToLocation = gameData["messages"]commands.warp.location;
-            Messages.OnlyUnicornCanWarp = gameData["messages"]commands.warp.only_unicorn;
-            Messages.FailedToUnderstandLocation = gameData["messages"]commands.warp.location_unknown;
+            Messages.SuccessfullyWarpedToPlayer = (string)gameData["messages"]["commands"]["warp"]["player"];
+            Messages.SuccessfullyWarpedToLocation = (string)gameData["messages"]["commands"]["warp"]["location"];
+            Messages.OnlyUnicornCanWarp = (string)gameData["messages"]["commands"]["warp"]["only_unicorn"];
+            Messages.FailedToUnderstandLocation = (string)gameData["messages"]["commands"]["warp"]["location_unknown"];
 
             // Mod Isle
-            Messages.ModSplatterballEarnedYouFormat = gameData["messages"]mods_revenge.awarded_you;
-            Messages.ModSplatterballEarnedOtherFormat = gameData["messages"]mods_revenge.awareded_others;
-            Messages.ModIsleMessage = gameData["messages"]commands.mod_isle.message;
-            Map.ModIsleX = gameData["messages"]commands.mod_isle["x"];
-            Map.ModIsleY = gameData["messages"]commands.mod_isle["y"];
+            Messages.ModSplatterballEarnedYouFormat = (string)gameData["messages"]["mods_revenge"]["awarded_you"];
+            Messages.ModSplatterballEarnedOtherFormat = (string)gameData["messages"]["mods_revenge"]["awareded_others"];
+            Messages.ModIsleMessage = (string)gameData["messages"]["commands"]["mod_isle"]["message"];
+            Map.ModIsleX = (int)gameData["messages"]["commands"]["mod_isle"]["x"];
+            Map.ModIsleY = (int)gameData["messages"]["commands"]["mod_isle"]["y"];
 
             // Rules Isle
-            Map.RulesIsleX = gameData["messages"]commands.rules_isle["x"];
-            Map.RulesIsleY = gameData["messages"]commands.rules_isle["y"];
-            Messages.RulesIsleSentMessage = gameData["messages"]commands.rules_isle.message;
-            Messages.RulesIsleCommandMessageFormat = gameData["messages"]commands.rules_isle.command_msg;
+            Map.RulesIsleX = (int)gameData["messages"]["commands"]["rules_isle"]["x"];
+            Map.RulesIsleY = (int)gameData["messages"]["commands"]["rules_isle"]["y"];
+            Messages.RulesIsleSentMessage = (string)gameData["messages"]["commands"]["rules_isle"]["message"];
+            Messages.RulesIsleCommandMessageFormat = (string)gameData["messages"]["commands"]["rules_isle"]["command_msg"];
 
             // Prison Isle
-            Map.PrisonIsleX = gameData["messages"]commands.prison_isle["x"];
-            Map.PrisonIsleY = gameData["messages"]commands.prison_isle["y"];
-            Messages.PrisonIsleSentMessage = gameData["messages"]commands.prison_isle.message;
-            Messages.PrisonIsleCommandMessageFormat = gameData["messages"]commands.prison_isle.command_msg;
+            Map.PrisonIsleX = (int)gameData["messages"]["commands"]["prison_isle"]["x"];
+            Map.PrisonIsleY = (int)gameData["messages"]["commands"]["prison_isle"]["y"];
+            Messages.PrisonIsleSentMessage = (string)gameData["messages"]["commands"]["prison_isle"]["message"];
+            Messages.PrisonIsleCommandMessageFormat = (string)gameData["messages"]["commands"]["prison_isle"]["command_msg"];
 
 
             // Tag
 
-            Messages.TagYourItFormat = gameData["messages"]["meta"]player_interaction.tag.tag_player;
-            Messages.TagOtherBuddiesOnlineFormat = gameData["messages"]["meta"]player_interaction.tag.total_buddies;
+            Messages.TagYourItFormat = (string)gameData["messages"]["meta"]["player_interaction"]["tag.tag_player"];
+            Messages.TagOtherBuddiesOnlineFormat = (string)gameData["messages"]["meta"]["player_interaction"]["tag.total_buddies"];
 
             // Add Buddy
 
-            Messages.AddBuddyPending = gameData["messages"]["meta"]player_interaction.add_buddy.add_pending;
-            Messages.AddBuddyOtherPendingFormat = gameData["messages"]["meta"]player_interaction.add_buddy.other_pending;
-            Messages.AddBuddyYourNowBuddiesFormat = gameData["messages"]["meta"]player_interaction.add_buddy.add_confirmed; 
-            Messages.AddBuddyDeleteBuddyFormat = gameData["messages"]["meta"]player_interaction.add_buddy.deleted;
+            Messages.AddBuddyPending = (string)gameData["messages"]["meta"]["player_interaction"]["add_buddy.add_pending"];
+            Messages.AddBuddyOtherPendingFormat = (string)gameData["messages"]["meta"]["player_interaction"]["add_buddy.other_pending"];
+            Messages.AddBuddyYourNowBuddiesFormat = (string)gameData["messages"]["meta"]["player_interaction"]["add_buddy.add_confirmed"];
+            Messages.AddBuddyDeleteBuddyFormat = (string)gameData["messages"]["meta"]["player_interaction"]["add_buddy.deleted"];
 
             // Socials
 
-            Messages.SocialButton = gameData["messages"]["meta"]player_interaction["socials"].AsArray().socials_button;
-            Messages.SocialMessageFormat = gameData["messages"]["meta"]player_interaction["socials"].AsArray().socials_message;
-            Messages.SocialTypeFormat = gameData["messages"]["meta"]player_interaction["socials"].AsArray().socials_menu_type;
-            Messages.SocialPlayerNoLongerNearby = gameData["messages"]["meta"]player_interaction["socials"].AsArray().no_longer_nearby;
+            Messages.SocialButton = (string)gameData["messages"]["meta"]["player_interaction"]["socials"]["socials_button"];
+            Messages.SocialMessageFormat = (string)gameData["messages"]["meta"]["player_interaction"]["socials"]["socials_message"];
+            Messages.SocialTypeFormat = (string)gameData["messages"]["meta"]["player_interaction"]["socials"]["socials_menu_type"];
+            Messages.SocialPlayerNoLongerNearby = (string)gameData["messages"]["meta"]["player_interaction"]["socials"]["no_longer_nearby"];
 
             // Message Queue 
-            Messages.MessageQueueHeader = gameData["messages"]message_queue;
+            Messages.MessageQueueHeader = (string)gameData["messages"]["message_queue"];
 
             // Random Event
-            Messages.RandomEventPrefix = gameData["messages"]random_event_prefix;
+            Messages.RandomEventPrefix = (string)gameData["messages"]["random_event_prefix"];
 
             // Events : Mods Revenge
-            Messages.EventStartModsRevenge = gameData["messages"]events.mods_revenge.event_start;
-            Messages.EventEndModsRevenge = gameData["messages"]events.mods_revenge.event_end;
+            Messages.EventStartModsRevenge = (string)gameData["messages"]["events"]["mods_revenge"]["event_start"];
+            Messages.EventEndModsRevenge = (string)gameData["messages"]["events"]["mods_revenge"]["event_end"];
 
             // Events : Isle Trading Game
-            Messages.EventStartIsleTradingGame = gameData["messages"]events.isle_card_trading_game.event_start;
-            Messages.EventDisqualifiedIsleTradingGame = gameData["messages"]events.isle_card_trading_game.event_disqualified;
-            Messages.EventOnlyOneTypeIsleTradingGame = gameData["messages"]events.isle_card_trading_game.event_one_type;
-            Messages.EventOnlyTwoTypeIsleTradingGame = gameData["messages"]events.isle_card_trading_game.event_two_type;
-            Messages.EventOnlyThreeTypeIsleTradingGame = gameData["messages"]events.isle_card_trading_game.event_three_type;
-            Messages.EventNoneIsleTradingGame = gameData["messages"]events.isle_card_trading_game.event_no_cards;
-            Messages.EventWonIsleTradingGame = gameData["messages"]events.isle_card_trading_game.event_win;
+            Messages.EventStartIsleTradingGame = (string)gameData["messages"]["events"]["isle_card_trading_game"]["event_start"];
+            Messages.EventDisqualifiedIsleTradingGame = (string)gameData["messages"]["events"]["isle_card_trading_game"]["event_disqualified"];
+            Messages.EventOnlyOneTypeIsleTradingGame = (string)gameData["messages"]["events"]["isle_card_trading_game"]["event_one_type"];
+            Messages.EventOnlyTwoTypeIsleTradingGame = (string)gameData["messages"]["events"]["isle_card_trading_game"]["event_two_type"];
+            Messages.EventOnlyThreeTypeIsleTradingGame = (string)gameData["messages"]["events"]["isle_card_trading_game"]["event_three_type"];
+            Messages.EventNoneIsleTradingGame = (string)gameData["messages"]["events"]["isle_card_trading_game"]["event_no_cards"];
+            Messages.EventWonIsleTradingGame = (string)gameData["messages"]["events"]["isle_card_trading_game"]["event_win"];
 
             // Events : Water Ballon Game
-            Messages.EventStartWaterBallonGame = gameData["messages"]events.water_balloon_game.event_start;
-            Messages.EventWonWaterBallonGame = gameData["messages"]events.water_balloon_game.event_won;
-            Messages.EventEndWaterBalloonGame = gameData["messages"]events.water_balloon_game.event_end;
-            Messages.EventWinnerWaterBalloonGameFormat = gameData["messages"]events.water_balloon_game.event_winner;
+            Messages.EventStartWaterBallonGame = (string)gameData["messages"]["events"]["water_balloon_game"]["event_start"];
+            Messages.EventWonWaterBallonGame = (string)gameData["messages"]["events"]["water_balloon_game"]["event_won"];
+            Messages.EventEndWaterBalloonGame = (string)gameData["messages"]["events"]["water_balloon_game"]["event_end"];
+            Messages.EventWinnerWaterBalloonGameFormat = (string)gameData["messages"]["events"]["water_balloon_game"]["event_winner"];
 
             // Events : Real Time Quiz
 
-            Messages.EventMetaRealTimeQuizFormat = gameData["messages"]events["real_time_quiz"].AsArray().event_meta;
-            Messages.EventStartRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_start;
-            Messages.EventEndRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_end;
-            Messages.EventBonusRealTimeQuizFormat = gameData["messages"]events["real_time_quiz"].AsArray().event_bonus;
-            Messages.EventWinBonusRealTimeQuizFormat = gameData["messages"]events["real_time_quiz"].AsArray().event_win_bonus;
-            Messages.EventWinRealTimeQuizFormat = gameData["messages"]events["real_time_quiz"].AsArray().event_win;
-            Messages.EventUnavailableRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_unavailable;
-            Messages.EventEnteredRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_entered;
-            Messages.EventAlreadyEnteredRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_entered_already;
-            Messages.EventQuitRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_quit;
+            Messages.EventMetaRealTimeQuizFormat = (string)gameData["messages"]["events"]["real_time_quiz"]["event_meta"];
+            Messages.EventStartRealTimeQuiz = (string)gameData["messages"]["events"]["real_time_quiz"]["event_start"];
+            Messages.EventEndRealTimeQuiz = (string)gameData["messages"]["events"]["real_time_quiz"]["event_end"];
+            Messages.EventBonusRealTimeQuizFormat = (string)gameData["messages"]["events"]["real_time_quiz"]["event_bonus"];
+            Messages.EventWinBonusRealTimeQuizFormat = (string)gameData["messages"]["events"]["real_time_quiz"]["event_win_bonus"];
+            Messages.EventWinRealTimeQuizFormat = (string)gameData["messages"]["events"]["real_time_quiz"]["event_win"];
+            Messages.EventUnavailableRealTimeQuiz = (string)gameData["messages"]["events"]["real_time_quiz"]["event_unavailable"];
+            Messages.EventEnteredRealTimeQuiz = (string)gameData["messages"]["events"]["real_time_quiz"]["event_entered"];
+            Messages.EventAlreadyEnteredRealTimeQuiz = (string)gameData["messages"]["events"]["real_time_quiz"]["event_entered_already"];
+            Messages.EventQuitRealTimeQuiz = (string)gameData["messages"]["events"]["real_time_quiz"]["event_quit"];
 
             // Events : Real Time Riddle
 
-            Messages.EventStartRealTimeRiddleFormat = gameData["messages"]events["real_time_riddle"].AsArray().event_start;
-            Messages.EventEndRealTimeRiddle = gameData["messages"]events["real_time_riddle"].AsArray().event_end;
-            Messages.EventWonRealTimeRiddleForOthersFormat = gameData["messages"]events["real_time_riddle"].AsArray().event_won_others;
-            Messages.EventWonRealTimeRiddleForYouFormat = gameData["messages"]events["real_time_riddle"].AsArray().event_won_you;
-            Messages.EventAlreadySovledRealTimeRiddle = gameData["messages"]events["real_time_riddle"].AsArray().event_solved_already;
+            Messages.EventStartRealTimeRiddleFormat = (string)gameData["messages"]["events"]["real_time_riddle"]["event_start"];
+            Messages.EventEndRealTimeRiddle = (string)gameData["messages"]["events"]["real_time_riddle"]["event_end"];
+            Messages.EventWonRealTimeRiddleForOthersFormat = (string)gameData["messages"]["events"]["real_time_riddle"]["event_won_others"];
+            Messages.EventWonRealTimeRiddleForYouFormat = (string)gameData["messages"]["events"]["real_time_riddle"]["event_won_you"];
+            Messages.EventAlreadySovledRealTimeRiddle = (string)gameData["messages"]["events"]["real_time_riddle"]["event_solved_already"];
 
             // Events : Tack Shop Giveaway
 
-            Messages.EventStartTackShopGiveawayFormat = gameData["messages"]events.tack_shop_giveaway.event_start;
-            Messages.Event1MinTackShopGiveawayFormat = gameData["messages"]events.tack_shop_giveaway.event_1min;
-            Messages.EventWonTackShopGiveawayFormat = gameData["messages"]events.tack_shop_giveaway.event_won;
-            Messages.EventEndTackShopGiveawayFormat = gameData["messages"]events.tack_shop_giveaway.event_end;
+            Messages.EventStartTackShopGiveawayFormat = (string)gameData["messages"]["events"]["tack_shop_giveaway"]["event_start"];
+            Messages.Event1MinTackShopGiveawayFormat = (string)gameData["messages"]["events"]["tack_shop_giveaway"]["event_1min"];
+            Messages.EventWonTackShopGiveawayFormat = (string)gameData["messages"]["events"]["tack_shop_giveaway"]["event_won"];
+            Messages.EventEndTackShopGiveawayFormat = (string)gameData["messages"]["events"]["tack_shop_giveaway"]["event_end"];
 
 
             // MultiHorses
-            Messages.OtherPlayersHere = gameData["messages"]["meta"]multihorses.other_players_here;
-            Messages.MultiHorseSelectOneToJoinWith = gameData["messages"]["meta"]multihorses.select_a_horse;
-            Messages.MultiHorseFormat = gameData["messages"]["meta"]multihorses.horse_format;
+            Messages.OtherPlayersHere = (string)gameData["messages"]["meta"]["multihorses"]["other_players_here"];
+            Messages.MultiHorseSelectOneToJoinWith = (string)gameData["messages"]["meta"]["multihorses"]["select_a_horse"];
+            Messages.MultiHorseFormat = (string)gameData["messages"]["meta"]["multihorses"]["horse_format"];
 
             // 2Player
-            Messages.TwoPlayerOtherPlayer = gameData["messages"]["meta"]two_player.other_player;
-            Messages.TwoPlayerPlayerFormat = gameData["messages"]["meta"]two_player.player_name;
-            Messages.TwoPlayerInviteButton = gameData["messages"]["meta"]two_player.invite_button;
-            Messages.TwoPlayerAcceptButton = gameData["messages"]["meta"]two_player.accept_button;
-            Messages.TwoPlayerSentInvite = gameData["messages"]["meta"]two_player.sent_invite;
-            Messages.TwoPlayerPlayingWithFormat = gameData["messages"]["meta"]two_player.playing_with;
+            Messages.TwoPlayerOtherPlayer = (string)gameData["messages"]["meta"]["two_player"]["other_player"];
+            Messages.TwoPlayerPlayerFormat = (string)gameData["messages"]["meta"]["two_player"]["player_name"];
+            Messages.TwoPlayerInviteButton = (string)gameData["messages"]["meta"]["two_player"]["invite_button"];
+            Messages.TwoPlayerAcceptButton = (string)gameData["messages"]["meta"]["two_player"]["accept_button"];
+            Messages.TwoPlayerSentInvite = (string)gameData["messages"]["meta"]["two_player"]["sent_invite"];
+            Messages.TwoPlayerPlayingWithFormat = (string)gameData["messages"]["meta"]["two_player"]["playing_with"];
 
-            Messages.TwoPlayerGameInProgressFormat = gameData["messages"]["meta"]two_player.game_in_progress;
+            Messages.TwoPlayerGameInProgressFormat = (string)gameData["messages"]["meta"]["two_player"]["game_in_progress"];
 
-            Messages.TwoPlayerYourInvitedFormat = gameData["messages"]["meta"]two_player.your_invited;
-            Messages.TwoPlayerInvitedFormat = gameData["messages"]["meta"]two_player.you_invited;
-            Messages.TwoPlayerStartingUpGameFormat = gameData["messages"]["meta"]two_player.starting_game;
+            Messages.TwoPlayerYourInvitedFormat = (string)gameData["messages"]["meta"]["two_player"]["your_invited"];
+            Messages.TwoPlayerInvitedFormat = (string)gameData["messages"]["meta"]["two_player"]["you_invited"];
+            Messages.TwoPlayerStartingUpGameFormat = (string)gameData["messages"]["meta"]["two_player"]["starting_game"];
 
-            Messages.TwoPlayerGameClosed = gameData["messages"]["meta"]two_player.game_closed;
-            Messages.TwoPlayerGameClosedOther = gameData["messages"]["meta"]two_player.game_closed_other;
+            Messages.TwoPlayerGameClosed = (string)gameData["messages"]["meta"]["two_player"]["game_closed"];
+            Messages.TwoPlayerGameClosedOther = (string)gameData["messages"]["meta"]["two_player"]["game_closed_other"];
 
-            Messages.TwoPlayerRecordedWinFormat = gameData["messages"]["meta"]two_player.recorded_win;
-            Messages.TwoPlayerRecordedLossFormat = gameData["messages"]["meta"]two_player.recorded_loss;
+            Messages.TwoPlayerRecordedWinFormat = (string)gameData["messages"]["meta"]["two_player"]["recorded_win"];
+            Messages.TwoPlayerRecordedLossFormat = (string)gameData["messages"]["meta"]["two_player"]["recorded_loss"];
 
             // Trade
 
-            Messages.TradeWithPlayerFormat = gameData["messages"]["meta"]player_interaction.trade.trading_with;
+            Messages.TradeWithPlayerFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trading_with"];
 
-            Messages.TradeWaitingForOtherDone = gameData["messages"]["meta"]player_interaction.trade.trade_wait_for_done;
-            Messages.TradeOtherPlayerIsDone = gameData["messages"]["meta"]player_interaction.trade.other_player_is_done;
-            Messages.TradeFinalReview = gameData["messages"]["meta"]player_interaction.trade.final_review;
+            Messages.TradeWaitingForOtherDone = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trade_wait_for_done"];
+            Messages.TradeOtherPlayerIsDone = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["other_player_is_done"];
+            Messages.TradeFinalReview = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["final_review"];
 
-            Messages.TradeYourOfferingFormat = gameData["messages"]["meta"]player_interaction.trade.you_offering;
+            Messages.TradeYourOfferingFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["you_offering"];
 
-            Messages.TradeAddItems = gameData["messages"]["meta"]player_interaction.trade.add_items;
-            Messages.TradeOtherOfferingFormat = gameData["messages"]["meta"]player_interaction.trade.other_offering;
+            Messages.TradeAddItems = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["add_items"];
+            Messages.TradeOtherOfferingFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["other_offering"];
 
-            Messages.TradeWhenDoneClick = gameData["messages"]["meta"]player_interaction.trade.when_done_click;
-            Messages.TradeCancelAnytime = gameData["messages"]["meta"]player_interaction.trade.cancel_anytime;
-            Messages.TradeAcceptTrade = gameData["messages"]["meta"]player_interaction.trade.accept_trade;
+            Messages.TradeWhenDoneClick = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["when_done_click"];
+            Messages.TradeCancelAnytime = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["cancel_anytime"];
+            Messages.TradeAcceptTrade = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["accept_trade"];
 
-            Messages.TradeOfferingNothing = gameData["messages"]["meta"]player_interaction.trade.offering_nothing;
-            Messages.TradeOfferingMoneyFormat = gameData["messages"]["meta"]player_interaction.trade.offering_money;
-            Messages.TradeOfferingItemFormat = gameData["messages"]["meta"]player_interaction.trade.offering_item;
-            Messages.TradeOfferingHorseFormat = gameData["messages"]["meta"]player_interaction.trade.offering_horse;
+            Messages.TradeOfferingNothing = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["offering_nothing"];
+            Messages.TradeOfferingMoneyFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["offering_money"];
+            Messages.TradeOfferingItemFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["offering_item"];
+            Messages.TradeOfferingHorseFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["offering_horse"];
 
             // Trading : What to offer
 
-            Messages.TradeWhatToOfferFormat = gameData["messages"]["meta"]player_interaction.trade.what_to_offer;
-            Messages.TradeOfferMoney = gameData["messages"]["meta"]player_interaction.trade.offer_money;
+            Messages.TradeWhatToOfferFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["what_to_offer"];
+            Messages.TradeOfferMoney = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["offer_money"];
 
-            Messages.TradeOfferHorse = gameData["messages"]["meta"]player_interaction.trade.offer_horse;
-            Messages.TradeOfferHorseFormat = gameData["messages"]["meta"]player_interaction.trade.offer_horse_format;
-            Messages.TradeOfferHorseTacked = gameData["messages"]["meta"]player_interaction.trade.horse_tacked;
+            Messages.TradeOfferHorse = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["offer_horse"];
+            Messages.TradeOfferHorseFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["offer_horse_format"];
+            Messages.TradeOfferHorseTacked = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["horse_tacked"];
 
-            Messages.TradeOfferItem = gameData["messages"]["meta"]player_interaction.trade.offer_object;
-            Messages.TradeOfferItemFormat = gameData["messages"]["meta"]player_interaction.trade.offer_object_format;
-            Messages.TradeOfferItemOtherPlayerInvFull = gameData["messages"]["meta"]player_interaction.trade.offer_object_inv_full;
+            Messages.TradeOfferItem = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["offer_object"];
+            Messages.TradeOfferItemFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["offer_object_format"];
+            Messages.TradeOfferItemOtherPlayerInvFull = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["offer_object_inv_full"];
 
             // Trading : Offer Submenu
 
-            Messages.TradeMoneyOfferSubmenuFormat = gameData["messages"]["meta"]player_interaction.trade.money_offer_submenu;
-            Messages.TradeItemOfferSubmenuFormat = gameData["messages"]["meta"]player_interaction.trade.object_offer_submenu;
+            Messages.TradeMoneyOfferSubmenuFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["money_offer_submenu"];
+            Messages.TradeItemOfferSubmenuFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["object_offer_submenu"];
 
             // Trading : Messges
 
-            Messages.TradeWaitingForOthersToAcceptMessage = gameData["messages"]["meta"]player_interaction.trade.waiting_for_other_to_accept;
-            Messages.TradeRequiresBothPlayersMessage = gameData["messages"]["meta"]player_interaction.trade.requires_both_players;
+            Messages.TradeWaitingForOthersToAcceptMessage = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["waiting_for_other_to_accept"];
+            Messages.TradeRequiresBothPlayersMessage = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["requires_both_players"];
 
-            Messages.TradeItemOfferAtleast1 = gameData["messages"]["meta"]player_interaction.trade.object_offer_atleast_1;
-            Messages.TradeItemOfferTooMuchFormat = gameData["messages"]["meta"]player_interaction.trade.object_offer_too_much;
-            Messages.TradeMoneyOfferTooMuch = gameData["messages"]["meta"]player_interaction.trade.money_offer_too_much;
+            Messages.TradeItemOfferAtleast1 = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["object_offer_atleast_1"];
+            Messages.TradeItemOfferTooMuchFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["object_offer_too_much"];
+            Messages.TradeMoneyOfferTooMuch = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["money_offer_too_much"];
 
-            Messages.TradeOtherPlayerHasNegativeMoney = gameData["messages"]["meta"]player_interaction.trade.other_player_has_negative_money;
-            Messages.TradeYouHaveNegativeMoney = gameData["messages"]["meta"]player_interaction.trade.you_have_negative_money;
+            Messages.TradeOtherPlayerHasNegativeMoney = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["other_player_has_negative_money"];
+            Messages.TradeYouHaveNegativeMoney = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["you_have_negative_money"];
 
 
-            Messages.TradeAcceptedMessage = gameData["messages"]["meta"]player_interaction.trade.trade_accepted;
-            Messages.TradeCanceledByYouMessage = gameData["messages"]["meta"]player_interaction.trade.you_canceled;
-            Messages.TradeCanceledByOtherPlayerFormat = gameData["messages"]["meta"]player_interaction.trade.other_canceled;
-            Messages.TradeCanceledBecuasePlayerMovedMessage = gameData["messages"]["meta"]player_interaction.trade.trade_canceled_moved;
-            Messages.TradeCanceledInterupted = gameData["messages"]["meta"]player_interaction.trade.trade_interupted;
+            Messages.TradeAcceptedMessage = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trade_accepted"];
+            Messages.TradeCanceledByYouMessage = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["you_canceled"];
+            Messages.TradeCanceledByOtherPlayerFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["other_canceled"];
+            Messages.TradeCanceledBecuasePlayerMovedMessage = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trade_canceled_moved"];
+            Messages.TradeCanceledInterupted = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trade_interupted"];
 
-            Messages.TradeRiddenHorse = gameData["messages"]["meta"]player_interaction.trade.trade_ridden_horse;
+            Messages.TradeRiddenHorse = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trade_ridden_horse"];
 
-            Messages.TradeYouCantHandleMoreHorses = gameData["messages"]["meta"]player_interaction.trade.cant_handle_more_horses;
-            Messages.TradeOtherPlayerCantHandleMoreHorsesFormat = gameData["messages"]["meta"]player_interaction.trade.other_player_cant_handle_more_horses;
+            Messages.TradeYouCantHandleMoreHorses = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["cant_handle_more_horses"];
+            Messages.TradeOtherPlayerCantHandleMoreHorsesFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["other_player_cant_handle_more_horses"];
 
-            Messages.TradeOtherCantCarryMoreItems = gameData["messages"]["meta"]player_interaction.trade.other_carry_more;
-            Messages.TradeYouCantCarryMoreItems = gameData["messages"]["meta"]player_interaction.trade.you_cant_carry_more;
+            Messages.TradeOtherCantCarryMoreItems = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["other_carry_more"];
+            Messages.TradeYouCantCarryMoreItems = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["you_cant_carry_more"];
 
-            Messages.TradeYouSpentMoneyMessageFormat = gameData["messages"]["meta"]player_interaction.trade.trade_spent;
-            Messages.TradeYouReceivedMoneyMessageFormat = gameData["messages"]["meta"]player_interaction.trade.trade_received;
+            Messages.TradeYouSpentMoneyMessageFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trade_spent"];
+            Messages.TradeYouReceivedMoneyMessageFormat = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trade_received"];
 
-            Messages.TradeNotAllowedWhileBidding = gameData["messages"]["meta"]player_interaction.trade.trade_not_allowed_while_bidding;
-            Messages.TradeNotAllowedWhileOtherBidding = gameData["messages"]["meta"]player_interaction.trade.trade_not_allowed_while_other_is_bidding;
+            Messages.TradeNotAllowedWhileBidding = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trade_not_allowed_while_bidding"];
+            Messages.TradeNotAllowedWhileOtherBidding = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trade_not_allowed_while_other_is_bidding"];
 
-            Messages.TradeWillGiveYouTooMuchMoney = gameData["messages"]["meta"]player_interaction.trade.trade_other_cannot_carry_that_much;
-            Messages.TradeWillGiveOtherTooMuchMoney = gameData["messages"]["meta"]player_interaction.trade.trade_you_cannot_carry_that_much;
+            Messages.TradeWillGiveYouTooMuchMoney = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trade_other_cannot_carry_that_much"];
+            Messages.TradeWillGiveOtherTooMuchMoney = (string)gameData["messages"]["meta"]["player_interaction"]["trade"]["trade_you_cannot_carry_that_much"];
 
             // Player Interation
 
-            Messages.PlayerHereMenuFormat = gameData["messages"]["meta"]player_interaction.menu;
+            Messages.PlayerHereMenuFormat = (string)gameData["messages"]["meta"]["player_interaction"]["menu"];
 
-            Messages.PlayerHereProfileButton = gameData["messages"]["meta"]player_interaction.profiile_button;
-            Messages.PlayerHereSocialButton = gameData["messages"]["meta"]player_interaction.social_button;
-            Messages.PlayerHereTradeButton = gameData["messages"]["meta"]player_interaction.trade_button;
-            Messages.PlayerHereAddBuddyButton = gameData["messages"]["meta"]player_interaction.buddy_button;
-            Messages.PlayerHereTagButton = gameData["messages"]["meta"]player_interaction.tag_button;
-            Messages.PmButton = gameData["messages"]["meta"]player_interaction.pm_button;
+            Messages.PlayerHereProfileButton = (string)gameData["messages"]["meta"]["player_interaction"]["profiile_button"];
+            Messages.PlayerHereSocialButton = (string)gameData["messages"]["meta"]["player_interaction"]["social_button"];
+            Messages.PlayerHereTradeButton = (string)gameData["messages"]["meta"]["player_interaction"]["trade_button"];
+            Messages.PlayerHereAddBuddyButton = (string)gameData["messages"]["meta"]["player_interaction"]["buddy_button"];
+            Messages.PlayerHereTagButton = (string)gameData["messages"]["meta"]["player_interaction"]["tag_button"];
+            Messages.PmButton = (string)gameData["messages"]["meta"]["player_interaction"]["pm_button"];
 
 
             // Auction
-            Messages.AuctionsRunning = gameData["messages"]["meta"]auction.auctions_running;
-            Messages.AuctionPlayersHereFormat = gameData["messages"]["meta"]auction.players_here;
-            Messages.AuctionHorseEntryFormat = gameData["messages"]["meta"]auction.auction_horse_entry;
-            Messages.AuctionAHorse = gameData["messages"]["meta"]auction.auction_horse;
+            Messages.AuctionsRunning = (string)gameData["messages"]["meta"]["auction"]["auctions_running"];
+            Messages.AuctionPlayersHereFormat = (string)gameData["messages"]["meta"]["auction"]["players_here"];
+            Messages.AuctionHorseEntryFormat = (string)gameData["messages"]["meta"]["auction"]["auction_horse_entry"];
+            Messages.AuctionAHorse = (string)gameData["messages"]["meta"]["auction"]["auction_horse"];
 
-            Messages.AuctionListHorse = gameData["messages"]["meta"]auction.list_horse;
-            Messages.AuctionHorseListEntryFormat = gameData["messages"]["meta"]auction.horse_list_entry;
-            Messages.AuctionHorseViewButton = gameData["messages"]["meta"]auction.view_button;
-            Messages.AuctionHorseIsTacked = gameData["messages"]["meta"]auction.tacked;
+            Messages.AuctionListHorse = (string)gameData["messages"]["meta"]["auction"]["list_horse"];
+            Messages.AuctionHorseListEntryFormat = (string)gameData["messages"]["meta"]["auction"]["horse_list_entry"];
+            Messages.AuctionHorseViewButton = (string)gameData["messages"]["meta"]["auction"]["view_button"];
+            Messages.AuctionHorseIsTacked = (string)gameData["messages"]["meta"]["auction"]["tacked"];
 
-            Messages.AuctionBidMax = gameData["messages"]["meta"]auction.max_bid;
-            Messages.AuctionBidRaisedFormat = gameData["messages"]["meta"]auction.bid_raised;
-            Messages.AuctionTopBid = gameData["messages"]["meta"]auction.top_bid;
-            Messages.AuctionExistingBidHigher = gameData["messages"]["meta"]auction.existing_higher;
+            Messages.AuctionBidMax = (string)gameData["messages"]["meta"]["auction"]["max_bid"];
+            Messages.AuctionBidRaisedFormat = (string)gameData["messages"]["meta"]["auction"]["bid_raised"];
+            Messages.AuctionTopBid = (string)gameData["messages"]["meta"]["auction"]["top_bid"];
+            Messages.AuctionExistingBidHigher = (string)gameData["messages"]["meta"]["auction"]["existing_higher"];
 
-            Messages.AuctionYouHaveTooManyHorses = gameData["messages"]["meta"]auction.you_have_too_many_horses;
-            Messages.AuctionOnlyOneWinningBidAllowed = gameData["messages"]["meta"]auction.only_one_winning_bid_allowed;
+            Messages.AuctionYouHaveTooManyHorses = (string)gameData["messages"]["meta"]["auction"]["you_have_too_many_horses"];
+            Messages.AuctionOnlyOneWinningBidAllowed = (string)gameData["messages"]["meta"]["auction"]["only_one_winning_bid_allowed"];
 
-            Messages.AuctionOneHorsePerPlayer = gameData["messages"]["meta"]auction.one_horse_at_a_time;
-            Messages.AuctionYouveBeenOutbidFormat = gameData["messages"]["meta"]auction.outbid_by;
-            Messages.AuctionCantAffordBid = gameData["messages"]["meta"]auction.cant_afford_bid;
-            Messages.AuctionCantAffordAuctionFee = gameData["messages"]["meta"]auction.cant_afford_listing;
-            Messages.AuctionNoOtherTransactionAllowed = gameData["messages"]["meta"]auction.no_other_transaction_allowed;
+            Messages.AuctionOneHorsePerPlayer = (string)gameData["messages"]["meta"]["auction"]["one_horse_at_a_time"];
+            Messages.AuctionYouveBeenOutbidFormat = (string)gameData["messages"]["meta"]["auction"]["outbid_by"];
+            Messages.AuctionCantAffordBid = (string)gameData["messages"]["meta"]["auction"]["cant_afford_bid"];
+            Messages.AuctionCantAffordAuctionFee = (string)gameData["messages"]["meta"]["auction"]["cant_afford_listing"];
+            Messages.AuctionNoOtherTransactionAllowed = (string)gameData["messages"]["meta"]["auction"]["no_other_transaction_allowed"];
 
-            Messages.AuctionYouBroughtAHorseFormat = gameData["messages"]["meta"]auction.brought_horse;
-            Messages.AuctionNoHorseBrought = gameData["messages"]["meta"]auction.no_one_brought;
-            Messages.AuctionHorseSoldFormat = gameData["messages"]["meta"]auction.horse_sold;
-            
-            Messages.AuctionSoldToFormat = gameData["messages"]["meta"]auction.sold_to;
-            Messages.AuctionNotSold = gameData["messages"]["meta"]auction.not_sold;
-            Messages.AuctionGoingToFormat = gameData["messages"]["meta"]auction.going_to;
+            Messages.AuctionYouBroughtAHorseFormat = (string)gameData["messages"]["meta"]["auction"]["brought_horse"];
+            Messages.AuctionNoHorseBrought = (string)gameData["messages"]["meta"]["auction"]["no_one_brought"];
+            Messages.AuctionHorseSoldFormat = (string)gameData["messages"]["meta"]["auction"]["horse_sold"];
+
+            Messages.AuctionSoldToFormat = (string)gameData["messages"]["meta"]["auction"]["sold_to"];
+            Messages.AuctionNotSold = (string)gameData["messages"]["meta"]["auction"]["not_sold"];
+            Messages.AuctionGoingToFormat = (string)gameData["messages"]["meta"]["auction"]["going_to"];
 
             // Hammock Text
-            Messages.HammockText = gameData["messages"]["meta"]hammock;
+            Messages.HammockText = (string)gameData["messages"]["meta"]["hammock"];
 
             // Horse Leaser
-            Messages.HorseLeaserCantAffordMessage = gameData["messages"]horse_leaser.cant_afford;
-            Messages.HorseLeaserTemporaryHorseAdded = gameData["messages"]horse_leaser.temporary_horse_added;
-            Messages.HorseLeaserHorsesFull = gameData["messages"]horse_leaser.horses_full;
+            Messages.HorseLeaserCantAffordMessage = (string)gameData["messages"]["horse_leaser"]["cant_afford"];
+            Messages.HorseLeaserTemporaryHorseAdded = (string)gameData["messages"]["horse_leaser"]["temporary_horse_added"];
+            Messages.HorseLeaserHorsesFull = (string)gameData["messages"]["horse_leaser"]["horses_full"];
 
-            Messages.HorseLeaserReturnedToUniterPegasus = gameData["messages"]horse_leaser.returned_to_uniter_pegasus;
+            Messages.HorseLeaserReturnedToUniterPegasus = (string)gameData["messages"]["horse_leaser"]["returned_to_uniter_pegasus"];
 
-            Messages.HorseLeaserReturnedToUniterFormat = gameData["messages"]horse_leaser.returned_to_uniter;
-            Messages.HorseLeaserReturnedToOwnerFormat = gameData["messages"]horse_leaser.returned_to_owner;
+            Messages.HorseLeaserReturnedToUniterFormat = (string)gameData["messages"]["horse_leaser"]["returned_to_uniter"];
+            Messages.HorseLeaserReturnedToOwnerFormat = (string)gameData["messages"]["horse_leaser"]["returned_to_owner"];
 
             // Competitions
-            Messages.ArenaResultsMessage = gameData["messages"]["meta"]arena.results;
-            Messages.ArenaPlacingFormat = gameData["messages"]["meta"]arena.placing;
-            Messages.ArenaAlreadyEntered = gameData["messages"]["meta"]arena.already_entered;
+            Messages.ArenaResultsMessage = (string)gameData["messages"]["meta"]["arena"]["results"];
+            Messages.ArenaPlacingFormat = (string)gameData["messages"]["meta"]["arena"]["placing"];
+            Messages.ArenaAlreadyEntered = (string)gameData["messages"]["meta"]["arena"]["already_entered"];
 
-            Messages.ArenaFirstPlace = gameData["messages"]["meta"]arena.first_place;
-            Messages.ArenaSecondPlace = gameData["messages"]["meta"]arena.second_place;
-            Messages.ArenaThirdPlace = gameData["messages"]["meta"]arena.third_place;
-            Messages.ArenaFourthPlace = gameData["messages"]["meta"]arena.fourth_place;
-            Messages.ArenaFifthPlace = gameData["messages"]["meta"]arena.fifth_place;
-            Messages.ArenaSixthPlace = gameData["messages"]["meta"]arena.sixth_place;
+            Messages.ArenaFirstPlace = (string)gameData["messages"]["meta"]["arena"]["first_place"];
+            Messages.ArenaSecondPlace = (string)gameData["messages"]["meta"]["arena"]["second_place"];
+            Messages.ArenaThirdPlace = (string)gameData["messages"]["meta"]["arena"]["third_place"];
+            Messages.ArenaFourthPlace = (string)gameData["messages"]["meta"]["arena"]["fourth_place"];
+            Messages.ArenaFifthPlace = (string)gameData["messages"]["meta"]["arena"]["fifth_place"];
+            Messages.ArenaSixthPlace = (string)gameData["messages"]["meta"]["arena"]["sixth_place"];
 
-            Messages.ArenaEnteredInto = gameData["messages"]["meta"]arena.enter_into;
-            Messages.ArenaCantAfford = gameData["messages"]["meta"]arena.cant_afford;
+            Messages.ArenaEnteredInto = (string)gameData["messages"]["meta"]["arena"]["enter_into"];
+            Messages.ArenaCantAfford = (string)gameData["messages"]["meta"]["arena"]["cant_afford"];
 
-            Messages.ArenaYourScoreFormat = gameData["messages"]["meta"]arena.your_score;
+            Messages.ArenaYourScoreFormat = (string)gameData["messages"]["meta"]["arena"]["your_score"];
 
-            Messages.ArenaJumpingStartup = gameData["messages"]["meta"]arena.jumping_start_up;
-            Messages.ArenaDraftStartup = gameData["messages"]["meta"]arena.draft_start_up;
-            Messages.ArenaRacingStartup = gameData["messages"]["meta"]arena.racing_start_up;
-            Messages.ArenaConformationStartup = gameData["messages"]["meta"]arena.conformation_start_up;
+            Messages.ArenaJumpingStartup = (string)gameData["messages"]["meta"]["arena"]["jumping_start_up"];
+            Messages.ArenaDraftStartup = (string)gameData["messages"]["meta"]["arena"]["draft_start_up"];
+            Messages.ArenaRacingStartup = (string)gameData["messages"]["meta"]["arena"]["racing_start_up"];
+            Messages.ArenaConformationStartup = (string)gameData["messages"]["meta"]["arena"]["conformation_start_up"];
 
-            Messages.ArenaYouWinFormat = gameData["messages"]["meta"]arena.winner;
-            Messages.ArenaOnlyWinnerWins = gameData["messages"]["meta"]arena.only_winner_wins;
+            Messages.ArenaYouWinFormat = (string)gameData["messages"]["meta"]["arena"]["winner"];
+            Messages.ArenaOnlyWinnerWins = (string)gameData["messages"]["meta"]["arena"]["only_winner_wins"];
 
-            Messages.ArenaTooHungry = gameData["messages"]["meta"]arena.too_hungry;
-            Messages.ArenaTooThirsty = gameData["messages"]["meta"]arena.too_thisty;
-            Messages.ArenaNeedsFarrier = gameData["messages"]["meta"]arena.farrier;
-            Messages.ArenaTooTired = gameData["messages"]["meta"]arena.too_tired;
-            Messages.ArenaNeedsVet = gameData["messages"]["meta"]arena.needs_vet;
+            Messages.ArenaTooHungry = (string)gameData["messages"]["meta"]["arena"]["too_hungry"];
+            Messages.ArenaTooThirsty = (string)gameData["messages"]["meta"]["arena"]["too_thisty"];
+            Messages.ArenaNeedsFarrier = (string)gameData["messages"]["meta"]["arena"]["farrier"];
+            Messages.ArenaTooTired = (string)gameData["messages"]["meta"]["arena"]["too_tired"];
+            Messages.ArenaNeedsVet = (string)gameData["messages"]["meta"]["arena"]["needs_vet"];
 
-            Messages.ArenaEventNameFormat = gameData["messages"]["meta"]arena.event_name;
-            Messages.ArenaCurrentlyTakingEntriesFormat = gameData["messages"]["meta"]arena.currently_taking_entries;
-            Messages.ArenaCompetitionInProgress = gameData["messages"]["meta"]arena.competition_in_progress;
-            Messages.ArenaYouHaveHorseEntered = gameData["messages"]["meta"]arena.horse_entered;
-            Messages.ArenaCompetitionFull = gameData["messages"]["meta"]arena.competiton_full;
+            Messages.ArenaEventNameFormat = (string)gameData["messages"]["meta"]["arena"]["event_name"];
+            Messages.ArenaCurrentlyTakingEntriesFormat = (string)gameData["messages"]["meta"]["arena"]["currently_taking_entries"];
+            Messages.ArenaCompetitionInProgress = (string)gameData["messages"]["meta"]["arena"]["competition_in_progress"];
+            Messages.ArenaYouHaveHorseEntered = (string)gameData["messages"]["meta"]["arena"]["horse_entered"];
+            Messages.ArenaCompetitionFull = (string)gameData["messages"]["meta"]["arena"]["competiton_full"];
 
-            Messages.ArenaFullErrorMessage = gameData["messages"]["meta"]arena.arena_join_fail_full;
+            Messages.ArenaFullErrorMessage = (string)gameData["messages"]["meta"]["arena"]["arena_join_fail_full"];
 
-            Messages.ArenaEnterHorseFormat = gameData["messages"]["meta"]arena.enter_horse;
-            Messages.ArenaCurrentCompetitors = gameData["messages"]["meta"]arena.current_competitors;
-            Messages.ArenaCompetingHorseFormat = gameData["messages"]["meta"]arena.competing_horses;
+            Messages.ArenaEnterHorseFormat = (string)gameData["messages"]["meta"]["arena"]["enter_horse"];
+            Messages.ArenaCurrentCompetitors = (string)gameData["messages"]["meta"]["arena"]["current_competitors"];
+            Messages.ArenaCompetingHorseFormat = (string)gameData["messages"]["meta"]["arena"]["competing_horses"];
 
             // Horse Games
-            Messages.HorseGamesSelectHorse = gameData["messages"]["meta"]horse_games.select_a_horse;
-            Messages.HorseGamesHorseEntryFormat = gameData["messages"]["meta"]horse_games.horse_entry;
+            Messages.HorseGamesSelectHorse = (string)gameData["messages"]["meta"]["horse_games"]["select_a_horse"];
+            Messages.HorseGamesHorseEntryFormat = (string)gameData["messages"]["meta"]["horse_games"]["horse_entry"];
 
             // City Hall
-            Messages.CityHallMenu = gameData["messages"]["meta"]city_hall.menu;
-            Messages.CityHallMailSendMeta = gameData["messages"]["meta"]city_hall.mail_send_meta;
+            Messages.CityHallMenu = (string)gameData["messages"]["meta"]["city_hall"]["menu"];
+            Messages.CityHallMailSendMeta = (string)gameData["messages"]["meta"]["city_hall"]["mail_send_meta"];
 
-            Messages.CityHallSentMessageFormat = gameData["messages"]["meta"]city_hall.sent_mail;
-            Messages.CityHallCantAffordPostageMessage = gameData["messages"]["meta"]city_hall.cant_afford_postage;
-            Messages.CityHallCantFindPlayerMessageFormat = gameData["messages"]["meta"]city_hall.cant_find_player;
+            Messages.CityHallSentMessageFormat = (string)gameData["messages"]["meta"]["city_hall"]["sent_mail"];
+            Messages.CityHallCantAffordPostageMessage = (string)gameData["messages"]["meta"]["city_hall"]["cant_afford_postage"];
+            Messages.CityHallCantFindPlayerMessageFormat = (string)gameData["messages"]["meta"]["city_hall"]["cant_find_player"];
 
-            Messages.CityHallCheapestAutoSells = gameData["messages"]["meta"]city_hall["auto_sell"]top_100_cheapest;
-            Messages.CityHallCheapestAutoSellHorseEntryFormat = gameData["messages"]["meta"]city_hall["auto_sell"]cheap_horse_entry;
+            Messages.CityHallCheapestAutoSells = (string)gameData["messages"]["meta"]["city_hall"]["auto_sell"]["top_100_cheapest"];
+            Messages.CityHallCheapestAutoSellHorseEntryFormat = (string)gameData["messages"]["meta"]["city_hall"]["auto_sell"]["cheap_horse_entry"];
 
-            Messages.CityHallMostExpAutoSells = gameData["messages"]["meta"]city_hall["auto_sell"]top_50_most_exp;
-            Messages.CityHallMostExpAutoSellHorseEntryFormat = gameData["messages"]["meta"]city_hall["auto_sell"]exp_horse_entry;
+            Messages.CityHallMostExpAutoSells = (string)gameData["messages"]["meta"]["city_hall"]["auto_sell"]["top_50_most_exp"];
+            Messages.CityHallMostExpAutoSellHorseEntryFormat = (string)gameData["messages"]["meta"]["city_hall"]["auto_sell"]["exp_horse_entry"];
 
-            Messages.CityHallTop25Ranches = gameData["messages"]["meta"]city_hall.ranch_investment.top_25;
-            Messages.CityHallRanchEntryFormat = gameData["messages"]["meta"]city_hall.ranch_investment.ranch_entry;
+            Messages.CityHallTop25Ranches = (string)gameData["messages"]["meta"]["city_hall"]["ranch_investment"]["top_25"];
+            Messages.CityHallRanchEntryFormat = (string)gameData["messages"]["meta"]["city_hall"]["ranch_investment"]["ranch_entry"];
 
-            Messages.CityHallTop25Players = gameData["messages"]["meta"]city_hall.richest_players.top_25;
-            Messages.CityHallRichPlayerFormat = gameData["messages"]["meta"]city_hall.richest_players.rich_player_format;
+            Messages.CityHallTop25Players = (string)gameData["messages"]["meta"]["city_hall"]["richest_players"]["top_25"];
+            Messages.CityHallRichPlayerFormat = (string)gameData["messages"]["meta"]["city_hall"]["richest_players"]["rich_player_format"];
 
-            Messages.CityHallTop100SpoiledHorses = gameData["messages"]["meta"]city_hall.spoiled_horses.top_100;
-            Messages.CityHallSpoiledHorseEntryFormat = gameData["messages"]["meta"]city_hall.spoiled_horses.spoiled_horse_entry;
+            Messages.CityHallTop100SpoiledHorses = (string)gameData["messages"]["meta"]["city_hall"]["spoiled_horses"]["top_100"];
+            Messages.CityHallSpoiledHorseEntryFormat = (string)gameData["messages"]["meta"]["city_hall"]["spoiled_horses"]["spoiled_horse_entry"];
 
-            Messages.CityHallTop25AdventurousPlayers = gameData["messages"]["meta"]city_hall.most_adventurous_players.top_25;
-            Messages.CityHallAdventurousPlayerEntryFormat = gameData["messages"]["meta"]city_hall.most_adventurous_players.adventurous_player_entry;
+            Messages.CityHallTop25AdventurousPlayers = (string)gameData["messages"]["meta"]["city_hall"]["most_adventurous_players"]["top_25"];
+            Messages.CityHallAdventurousPlayerEntryFormat = (string)gameData["messages"]["meta"]["city_hall"]["most_adventurous_players"]["adventurous_player_entry"];
 
-            Messages.CityHallTop25ExperiencedPlayers = gameData["messages"]["meta"]city_hall.most_experinced_players.top_25;
-            Messages.CityHallExperiencePlayerEntryFormat = gameData["messages"]["meta"]city_hall.most_experinced_players.experienced_player_entry;
+            Messages.CityHallTop25ExperiencedPlayers = (string)gameData["messages"]["meta"]["city_hall"]["most_experinced_players"]["top_25"];
+            Messages.CityHallExperiencePlayerEntryFormat = (string)gameData["messages"]["meta"]["city_hall"]["most_experinced_players"]["experienced_player_entry"];
 
-            Messages.CityHallTop25MinigamePlayers = gameData["messages"]["meta"]city_hall.most_active_minigame_players.top_25;
-            Messages.CityHallMinigamePlayerEntryFormat = gameData["messages"]["meta"]city_hall.most_active_minigame_players.minigame_player_entry;
+            Messages.CityHallTop25MinigamePlayers = (string)gameData["messages"]["meta"]["city_hall"]["most_active_minigame_players"]["top_25"];
+            Messages.CityHallMinigamePlayerEntryFormat = (string)gameData["messages"]["meta"]["city_hall"]["most_active_minigame_players"]["minigame_player_entry"];
 
-            Messages.CityHallTop25ExperiencedHorses = gameData["messages"]["meta"]city_hall.most_experienced_horses.top_25;
-            Messages.CityHallExperiencedHorseEntryFormat = gameData["messages"]["meta"]city_hall.most_experienced_horses.experienced_horse_entry;
+            Messages.CityHallTop25ExperiencedHorses = (string)gameData["messages"]["meta"]["city_hall"]["most_experienced_horses"]["top_25"];
+            Messages.CityHallExperiencedHorseEntryFormat = (string)gameData["messages"]["meta"]["city_hall"]["most_experienced_horses"]["experienced_horse_entry"];
 
             // Mail Messages
-            Messages.MailReceivedMessage = gameData["messages"]["meta"]["mail"]mail_received;
-            Messages.MailSelectFromFollowing = gameData["messages"]["meta"]["mail"]mail_select;
-            Messages.MailSe = gameData["messages"]["meta"]["mail"]mail_se;
+            Messages.MailReceivedMessage = (string)gameData["messages"]["meta"]["mail"]["mail_received"];
+            Messages.MailSelectFromFollowing = (string)gameData["messages"]["meta"]["mail"]["mail_select"];
+            Messages.MailSe = (string)gameData["messages"]["meta"]["mail"]["mail_se"];
 
-            Messages.MailReadMetaFormat = gameData["messages"]["meta"]["mail"]mail_read;
-            Messages.MailEntryFormat = gameData["messages"]["meta"]["mail"]mail_entry;
-            Messages.MailRippedMessage = gameData["messages"]["meta"]["mail"]mail_ripped;
+            Messages.MailReadMetaFormat = (string)gameData["messages"]["meta"]["mail"]["mail_read"];
+            Messages.MailEntryFormat = (string)gameData["messages"]["meta"]["mail"]["mail_entry"];
+            Messages.MailRippedMessage = (string)gameData["messages"]["meta"]["mail"]["mail_ripped"];
 
             // Click
-            Messages.ClickPlayerHereFormat = gameData["messages"]player_here;
+            Messages.ClickPlayerHereFormat = (string)gameData["messages"]["player_here"];
 
 
             // Ranch
-            Messages.RanchUnownedRanchFormat = gameData["messages"]["meta"]["ranch"]unowned_ranch;
-            Messages.RanchYouCouldPurchaseThisRanch = gameData["messages"]["meta"]["ranch"]you_could_purchase_this;
-            Messages.RanchYouAllreadyOwnARanch = gameData["messages"]["meta"]["ranch"]ranch_already_owned;
-            Messages.RanchSubscribersOnly = gameData["messages"]["meta"]["ranch"]sub_only;
-            Messages.RanchDescriptionOthersFormat = gameData["messages"]["meta"]["ranch"]ranch_desc_others;
-            Messages.RanchUnownedRanchClicked = gameData["messages"]["meta"]["ranch"]unowned_ranch_click;
-            Messages.RanchClickMessageFormat = gameData["messages"]["meta"]["ranch"]click_message;
+            Messages.RanchUnownedRanchFormat = (string)gameData["messages"]["meta"]["ranch"]["unowned_ranch"];
+            Messages.RanchYouCouldPurchaseThisRanch = (string)gameData["messages"]["meta"]["ranch"]["you_could_purchase_this"];
+            Messages.RanchYouAllreadyOwnARanch = (string)gameData["messages"]["meta"]["ranch"]["ranch_already_owned"];
+            Messages.RanchSubscribersOnly = (string)gameData["messages"]["meta"]["ranch"]["sub_only"];
+            Messages.RanchDescriptionOthersFormat = (string)gameData["messages"]["meta"]["ranch"]["ranch_desc_others"];
+            Messages.RanchUnownedRanchClicked = (string)gameData["messages"]["meta"]["ranch"]["unowned_ranch_click"];
+            Messages.RanchClickMessageFormat = (string)gameData["messages"]["meta"]["ranch"]["click_message"];
 
-            Messages.RanchNoDorothyShoesMessage = gameData["messages"]["meta"]["ranch"]no_dorothy_shoes;
-            Messages.RanchDorothyShoesMessage = gameData["messages"]["meta"]["ranch"]dorothy_message;
-            Messages.RanchDorothyShoesPrisonIsleMessage = gameData["messages"]["meta"]["ranch"]dorothy_prison_isle;
-            Messages.RanchForcefullySoldFormat = gameData["messages"]["meta"]["ranch"]forcefully_sold;
+            Messages.RanchNoDorothyShoesMessage = (string)gameData["messages"]["meta"]["ranch"]["no_dorothy_shoes"];
+            Messages.RanchDorothyShoesMessage = (string)gameData["messages"]["meta"]["ranch"]["dorothy_message"];
+            Messages.RanchDorothyShoesPrisonIsleMessage = (string)gameData["messages"]["meta"]["ranch"]["dorothy_prison_isle"];
+            Messages.RanchForcefullySoldFormat = (string)gameData["messages"]["meta"]["ranch"]["forcefully_sold"];
 
-            Messages.RanchCantAffordRanch = gameData["messages"]["meta"]["ranch"]ranch_buy_cannot_afford;
-            Messages.RanchRanchBroughtMessageFormat = gameData["messages"]["meta"]["ranch"]ranch_brought;
-            
-            Messages.RanchSavedRanchDescripton = gameData["messages"]["meta"]["ranch"]["ranch_info"]saved;
-            Messages.RanchSavedTitleTooLongError = gameData["messages"]["meta"]["ranch"]["ranch_info"]title_too_long;
-            Messages.RanchSavedDescrptionTooLongError = gameData["messages"]["meta"]["ranch"]["ranch_info"]description_too_long;
-            Messages.RanchSavedTitleViolationsError = gameData["messages"]["meta"]["ranch"]["ranch_info"]title_contains_violations;
-            Messages.RanchSavedDescrptionViolationsErrorFormat = gameData["messages"]["meta"]["ranch"]["ranch_info"]desc_contains_violations;
-            
+            Messages.RanchCantAffordRanch = (string)gameData["messages"]["meta"]["ranch"]["ranch_buy_cannot_afford"];
+            Messages.RanchRanchBroughtMessageFormat = (string)gameData["messages"]["meta"]["ranch"]["ranch_brought"];
 
-            Messages.RanchDefaultRanchTitle = gameData["messages"]["meta"]["ranch"]default_title;
-            Messages.RanchEditDescriptionMetaFormat = gameData["messages"]["meta"]["ranch"]edit_description;
-            Messages.RanchTitleFormat = gameData["messages"]["meta"]["ranch"]your_ranch_meta;
-            Messages.RanchYourDescriptionFormat = gameData["messages"]["meta"]["ranch"]view_desc;
+            Messages.RanchSavedRanchDescripton = (string)gameData["messages"]["meta"]["ranch"]["ranch_info"]["saved"];
+            Messages.RanchSavedTitleTooLongError = (string)gameData["messages"]["meta"]["ranch"]["ranch_info"]["title_too_long"];
+            Messages.RanchSavedDescrptionTooLongError = (string)gameData["messages"]["meta"]["ranch"]["ranch_info"]["description_too_long"];
+            Messages.RanchSavedTitleViolationsError = (string)gameData["messages"]["meta"]["ranch"]["ranch_info"]["title_contains_violations"];
+            Messages.RanchSavedDescrptionViolationsErrorFormat = (string)gameData["messages"]["meta"]["ranch"]["ranch_info"]["desc_contains_violations"];
 
-            Messages.RanchSellAreYouSure = gameData["messages"]["meta"]["ranch"]sell_confirm;
-            Messages.RanchSoldFormat = gameData["messages"]["meta"]["ranch"]sell_done;
+
+            Messages.RanchDefaultRanchTitle = (string)gameData["messages"]["meta"]["ranch"]["default_title"];
+            Messages.RanchEditDescriptionMetaFormat = (string)gameData["messages"]["meta"]["ranch"]["edit_description"];
+            Messages.RanchTitleFormat = (string)gameData["messages"]["meta"]["ranch"]["your_ranch_meta"];
+            Messages.RanchYourDescriptionFormat = (string)gameData["messages"]["meta"]["ranch"]["view_desc"];
+
+            Messages.RanchSellAreYouSure = (string)gameData["messages"]["meta"]["ranch"]["sell_confirm"];
+            Messages.RanchSoldFormat = (string)gameData["messages"]["meta"]["ranch"]["sell_done"];
 
             // Ranch : Breed
 
-            Messages.RanchCanBuildOneOfTheFollowingInThisSpot = gameData["messages"]["meta"]["ranch"]["build"]build_on_this_spot;
-            Messages.RanchBuildingEntryFormat = gameData["messages"]["meta"]["ranch"]["build"]build_format;
-            Messages.RanchCantAffordThisBuilding = gameData["messages"]["meta"]["ranch"]["build"]cannot_afford;
-            Messages.RanchBuildingInformationFormat = gameData["messages"]["meta"]["ranch"]["build"]information;
-            Messages.RanchBuildingComplete = gameData["messages"]["meta"]["ranch"]["build"]build_complete;
-            Messages.RanchBuildingAlreadyHere = gameData["messages"]["meta"]["ranch"]["build"]building_allready_placed;
-            Messages.RanchTornDownRanchBuildingFormat = gameData["messages"]["meta"]["ranch"]["build"]torn_down;
-            Messages.RanchViewBuildingFormat = gameData["messages"]["meta"]["ranch"]["build"]view_building;
-            Messages.RanchBarnHorsesFormat = gameData["messages"]["meta"]["ranch"]["build"]barn;
+            Messages.RanchCanBuildOneOfTheFollowingInThisSpot = (string)gameData["messages"]["meta"]["ranch"]["build"]["build_on_this_spot"];
+            Messages.RanchBuildingEntryFormat = (string)gameData["messages"]["meta"]["ranch"]["build"]["build_format"];
+            Messages.RanchCantAffordThisBuilding = (string)gameData["messages"]["meta"]["ranch"]["build"]["cannot_afford"];
+            Messages.RanchBuildingInformationFormat = (string)gameData["messages"]["meta"]["ranch"]["build"]["information"];
+            Messages.RanchBuildingComplete = (string)gameData["messages"]["meta"]["ranch"]["build"]["build_complete"];
+            Messages.RanchBuildingAlreadyHere = (string)gameData["messages"]["meta"]["ranch"]["build"]["building_allready_placed"];
+            Messages.RanchTornDownRanchBuildingFormat = (string)gameData["messages"]["meta"]["ranch"]["build"]["torn_down"];
+            Messages.RanchViewBuildingFormat = (string)gameData["messages"]["meta"]["ranch"]["build"]["view_building"];
+            Messages.RanchBarnHorsesFormat = (string)gameData["messages"]["meta"]["ranch"]["build"]["barn"];
 
             // Ranch : Upgrades
 
-            Messages.UpgradedMessage = gameData["messages"]["meta"]["ranch"]["upgrade"]upgrade_message;
-            Messages.UpgradeCannotAfford = gameData["messages"]["meta"]["ranch"]["upgrade"]cannot_afford;
-            Messages.UpgradeCurrentUpgradeFormat = gameData["messages"]["meta"]["ranch"]["upgrade"]upgrade_meta;
-            Messages.UpgradeNextUpgradeFormat = gameData["messages"]["meta"]["ranch"]["upgrade"]you_could_upgrade;
+            Messages.UpgradedMessage = (string)gameData["messages"]["meta"]["ranch"]["upgrade"]["upgrade_message"];
+            Messages.UpgradeCannotAfford = (string)gameData["messages"]["meta"]["ranch"]["upgrade"]["cannot_afford"];
+            Messages.UpgradeCurrentUpgradeFormat = (string)gameData["messages"]["meta"]["ranch"]["upgrade"]["upgrade_meta"];
+            Messages.UpgradeNextUpgradeFormat = (string)gameData["messages"]["meta"]["ranch"]["upgrade"]["you_could_upgrade"];
 
             // Ranch : Special
 
-            Messages.BuildingRestHere = gameData["messages"]["meta"]["ranch"]["special"]rest_here;
-            Messages.BuildingGrainSilo = gameData["messages"]["meta"]["ranch"]["special"]grain_silo;
-            Messages.BuildingBarnFormat = gameData["messages"]["meta"]["ranch"]["special"]barn;
-            Messages.BuildingBigBarnFormat = gameData["messages"]["meta"]["ranch"]["special"]big_barn;
-            Messages.BuildingGoldBarnFormat = gameData["messages"]["meta"]["ranch"]["special"]gold_barn;
-            Messages.BuildingWaterWell = gameData["messages"]["meta"]["ranch"]["special"]water_well;
-            Messages.BuildingWindmillFormat = gameData["messages"]["meta"]["ranch"]["special"]windmills;
-            Messages.BuildingWagon = gameData["messages"]["meta"]["ranch"]["special"]wagon;
-            Messages.BuildingTrainingPen = gameData["messages"]["meta"]["ranch"]["special"]training_pen;
-            Messages.BuildingVegatableGarden = gameData["messages"]["meta"]["ranch"]["special"]vegatable_garden;
+            Messages.BuildingRestHere = (string)gameData["messages"]["meta"]["ranch"]["special"]["rest_here"];
+            Messages.BuildingGrainSilo = (string)gameData["messages"]["meta"]["ranch"]["special"]["grain_silo"];
+            Messages.BuildingBarnFormat = (string)gameData["messages"]["meta"]["ranch"]["special"]["barn"];
+            Messages.BuildingBigBarnFormat = (string)gameData["messages"]["meta"]["ranch"]["special"]["big_barn"];
+            Messages.BuildingGoldBarnFormat = (string)gameData["messages"]["meta"]["ranch"]["special"]["gold_barn"];
+            Messages.BuildingWaterWell = (string)gameData["messages"]["meta"]["ranch"]["special"]["water_well"];
+            Messages.BuildingWindmillFormat = (string)gameData["messages"]["meta"]["ranch"]["special"]["windmills"];
+            Messages.BuildingWagon = (string)gameData["messages"]["meta"]["ranch"]["special"]["wagon"];
+            Messages.BuildingTrainingPen = (string)gameData["messages"]["meta"]["ranch"]["special"]["training_pen"];
+            Messages.BuildingVegatableGarden = (string)gameData["messages"]["meta"]["ranch"]["special"]["vegatable_garden"];
 
-            Messages.RanchTrainAllAttempt = gameData["messages"]["meta"]["ranch"]["special"]train_all;
-            Messages.RanchTrainSuccessFormat = gameData["messages"]["meta"]["ranch"]["special"]train_success;
-            Messages.RanchTrainCantTrainFormat = gameData["messages"]["meta"]["ranch"]["special"]train_cant_train;
-            Messages.RanchTrainBadMoodFormat = gameData["messages"]["meta"]["ranch"]["special"]train_bad_mood;
-            Messages.RanchHorsesFullyRested = gameData["messages"]["meta"]["ranch"]["special"]fully_rested;
-            Messages.RanchWagonDroppedYouOff = gameData["messages"]["meta"]["ranch"]["special"]wagon_used;
+            Messages.RanchTrainAllAttempt = (string)gameData["messages"]["meta"]["ranch"]["special"]["train_all"];
+            Messages.RanchTrainSuccessFormat = (string)gameData["messages"]["meta"]["ranch"]["special"]["train_success"];
+            Messages.RanchTrainCantTrainFormat = (string)gameData["messages"]["meta"]["ranch"]["special"]["train_cant_train"];
+            Messages.RanchTrainBadMoodFormat = (string)gameData["messages"]["meta"]["ranch"]["special"]["train_bad_mood"];
+            Messages.RanchHorsesFullyRested = (string)gameData["messages"]["meta"]["ranch"]["special"]["fully_rested"];
+            Messages.RanchWagonDroppedYouOff = (string)gameData["messages"]["meta"]["ranch"]["special"]["wagon_used"];
 
             // Treasure
-            Messages.PirateTreasureFormat = gameData["messages"]["treasure"]pirate_treasure;
-            Messages.PotOfGoldFormat = gameData["messages"]["treasure"]pot_of_gold;
+            Messages.PirateTreasureFormat = (string)gameData["messages"]["treasure"]["pirate_treasure"];
+            Messages.PotOfGoldFormat = (string)gameData["messages"]["treasure"]["pot_of_gold"];
 
             // Records
-            Messages.PrivateNotesSavedMessage = gameData["messages"]private_notes_save;
-            Messages.PrivateNotesMetaFormat = gameData["messages"]["meta"]private_notes_format;
+            Messages.PrivateNotesSavedMessage = (string)gameData["messages"]["private_notes_save"];
+            Messages.PrivateNotesMetaFormat = (string)gameData["messages"]["meta"]["private_notes_format"];
 
             // Profile
-            Messages.ProfileSavedMessage = gameData["messages"]["profile"]save;
-            Messages.ProfileTooLongMessage = gameData["messages"]["profile"]too_long;
-            Messages.ProfileViolationFormat = gameData["messages"]["profile"]blocked;
+            Messages.ProfileSavedMessage = (string)gameData["messages"]["profile"]["save"];
+            Messages.ProfileTooLongMessage = (string)gameData["messages"]["profile"]["too_long"];
+            Messages.ProfileViolationFormat = (string)gameData["messages"]["profile"]["blocked"];
 
             // Announcements
 
-            Messages.WelcomeFormat = gameData["messages"]welcome_format;
-            Messages.MotdFormat = gameData["messages"]motd_format;
-            Messages.LoginMessageFormat = gameData["messages"]login_format;
-            Messages.LogoutMessageFormat = gameData["messages"]logout_format;
+            Messages.WelcomeFormat = (string)gameData["messages"]["welcome_format"];
+            Messages.MotdFormat = (string)gameData["messages"]["motd_format"];
+            Messages.LoginMessageFormat = (string)gameData["messages"]["login_format"];
+            Messages.LogoutMessageFormat = (string)gameData["messages"]["logout_format"];
 
             // Pronoun
-            Messages.PronounFemaleShe = gameData["messages"]["meta"]["stats_page"]["pronouns"]female_she;
-            Messages.PronounFemaleHer = gameData["messages"]["meta"]["stats_page"]["pronouns"]female_her;
+            Messages.PronounFemaleShe = (string)gameData["messages"]["meta"]["stats_page"]["pronouns"]["female_she"];
+            Messages.PronounFemaleHer = (string)gameData["messages"]["meta"]["stats_page"]["pronouns"]["female_her"];
 
-            Messages.PronounMaleHe = gameData["messages"]["meta"]["stats_page"]["pronouns"]male_he;
-            Messages.PronounMaleHis = gameData["messages"]["meta"]["stats_page"]["pronouns"]male_his;
+            Messages.PronounMaleHe = (string)gameData["messages"]["meta"]["stats_page"]["pronouns"]["male_he"];
+            Messages.PronounMaleHis = (string)gameData["messages"]["meta"]["stats_page"]["pronouns"]["male_his"];
 
-            Messages.PronounNeutralYour = gameData["messages"]["meta"]["stats_page"]["pronouns"]neutral_your;
+            Messages.PronounNeutralYour = (string)gameData["messages"]["meta"]["stats_page"]["pronouns"]["neutral_your"];
 
-            Messages.PronounNeutralThey = gameData["messages"]["meta"]["stats_page"]["pronouns"]neutral_they;
-            Messages.PronounNeutralTheir = gameData["messages"]["meta"]["stats_page"]["pronouns"]neutral_their;
+            Messages.PronounNeutralThey = (string)gameData["messages"]["meta"]["stats_page"]["pronouns"]["neutral_they"];
+            Messages.PronounNeutralTheir = (string)gameData["messages"]["meta"]["stats_page"]["pronouns"]["neutral_their"];
 
             // Stats
-            Messages.StatsBarFormat = gameData["messages"]["meta"]["stats_page"]stats_bar_format;
-            Messages.StatsAreaFormat = gameData["messages"]["meta"]["stats_page"]stats_area_format;
-            Messages.StatsMoneyFormat = gameData["messages"]["meta"]["stats_page"]stats_money_format;
-            Messages.StatsFreeTimeFormat = gameData["messages"]["meta"]["stats_page"]stats_freetime_format;
-            Messages.StatsDescriptionFormat = gameData["messages"]["meta"]["stats_page"]stats_description_format;
-            Messages.StatsExpFormat = gameData["messages"]["meta"]["stats_page"]stats_experience;
-            Messages.StatsQuestpointsFormat = gameData["messages"]["meta"]["stats_page"]stats_questpoints;
-            Messages.StatsHungerFormat = gameData["messages"]["meta"]["stats_page"]stats_hunger;
-            Messages.StatsThirstFormat = gameData["messages"]["meta"]["stats_page"]stats_thisrt;
-            Messages.StatsTiredFormat = gameData["messages"]["meta"]["stats_page"]stats_tiredness;
-            Messages.StatsGenderFormat = gameData["messages"]["meta"]["stats_page"]stats_gender;
-            Messages.StatsJewelFormat = gameData["messages"]["meta"]["stats_page"]stats_equipped;
-            Messages.StatsCompetitionGearFormat = gameData["messages"]["meta"]["stats_page"]stats_competion_gear;
+            Messages.StatsBarFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_bar_format"];
+            Messages.StatsAreaFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_area_format"];
+            Messages.StatsMoneyFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_money_format"];
+            Messages.StatsFreeTimeFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_freetime_format"];
+            Messages.StatsDescriptionFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_description_format"];
+            Messages.StatsExpFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_experience"];
+            Messages.StatsQuestpointsFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_questpoints"];
+            Messages.StatsHungerFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_hunger"];
+            Messages.StatsThirstFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_thisrt"];
+            Messages.StatsTiredFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_tiredness"];
+            Messages.StatsGenderFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_gender"];
+            Messages.StatsJewelFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_equipped"];
+            Messages.StatsCompetitionGearFormat = (string)gameData["messages"]["meta"]["stats_page"]["stats_competion_gear"];
 
-            Messages.JewelrySlot1Format = gameData["messages"]["meta"]["stats_page"]jewelry.slot_1;
-            Messages.JewelrySlot2Format = gameData["messages"]["meta"]["stats_page"]jewelry.slot_2;
-            Messages.JewelrySlot3Format = gameData["messages"]["meta"]["stats_page"]jewelry.slot_3;
-            Messages.JewelrySlot4Format = gameData["messages"]["meta"]["stats_page"]jewelry.slot_4;
+            Messages.JewelrySlot1Format = (string)gameData["messages"]["meta"]["stats_page"]["jewelry"]["slot_1"];
+            Messages.JewelrySlot2Format = (string)gameData["messages"]["meta"]["stats_page"]["jewelry"]["slot_2"];
+            Messages.JewelrySlot3Format = (string)gameData["messages"]["meta"]["stats_page"]["jewelry"]["slot_3"];
+            Messages.JewelrySlot4Format = (string)gameData["messages"]["meta"]["stats_page"]["jewelry"]["slot_4"];
 
-            Messages.JewelryRemoveSlot1Button = gameData["messages"]["meta"]["stats_page"]jewelry.remove_slot_1;
-            Messages.JewelryRemoveSlot2Button = gameData["messages"]["meta"]["stats_page"]jewelry.remove_slot_2;
-            Messages.JewelryRemoveSlot3Button = gameData["messages"]["meta"]["stats_page"]jewelry.remove_slot_3;
-            Messages.JewelryRemoveSlot4Button = gameData["messages"]["meta"]["stats_page"]jewelry.remove_slot_4;
+            Messages.JewelryRemoveSlot1Button = (string)gameData["messages"]["meta"]["stats_page"]["jewelry"]["remove_slot_1"];
+            Messages.JewelryRemoveSlot2Button = (string)gameData["messages"]["meta"]["stats_page"]["jewelry"]["remove_slot_2"];
+            Messages.JewelryRemoveSlot3Button = (string)gameData["messages"]["meta"]["stats_page"]["jewelry"]["remove_slot_3"];
+            Messages.JewelryRemoveSlot4Button = (string)gameData["messages"]["meta"]["stats_page"]["jewelry"]["remove_slot_4"];
 
-            Messages.CompetitionGearHeadFormat = gameData["messages"]["meta"]["stats_page"]competition_gear.head_format;
-            Messages.CompetitionGearBodyFormat = gameData["messages"]["meta"]["stats_page"]competition_gear.body_format;
-            Messages.CompetitionGearLegsFormat = gameData["messages"]["meta"]["stats_page"]competition_gear.legs_format;
-            Messages.CompetitionGearFeetFormat = gameData["messages"]["meta"]["stats_page"]competition_gear.feet_format;
+            Messages.CompetitionGearHeadFormat = (string)gameData["messages"]["meta"]["stats_page"]["competition_gear"]["head_format"];
+            Messages.CompetitionGearBodyFormat = (string)gameData["messages"]["meta"]["stats_page"]["competition_gear"]["body_format"];
+            Messages.CompetitionGearLegsFormat = (string)gameData["messages"]["meta"]["stats_page"]["competition_gear"]["legs_format"];
+            Messages.CompetitionGearFeetFormat = (string)gameData["messages"]["meta"]["stats_page"]["competition_gear"]["feet_format"];
 
-            Messages.CompetitionGearRemoveHeadButton = gameData["messages"]["meta"]["stats_page"]competition_gear.remove_head;
-            Messages.CompetitionGearRemoveBodyButton = gameData["messages"]["meta"]["stats_page"]competition_gear.remove_body;
-            Messages.CompetitionGearRemoveLegsButton = gameData["messages"]["meta"]["stats_page"]competition_gear.remove_legs;
-            Messages.CompetitionGearRemoveFeetButton = gameData["messages"]["meta"]["stats_page"]competition_gear.remove_feet;
+            Messages.CompetitionGearRemoveHeadButton = (string)gameData["messages"]["meta"]["stats_page"]["competition_gear"]["remove_head"];
+            Messages.CompetitionGearRemoveBodyButton = (string)gameData["messages"]["meta"]["stats_page"]["competition_gear"]["remove_body"];
+            Messages.CompetitionGearRemoveLegsButton = (string)gameData["messages"]["meta"]["stats_page"]["competition_gear"]["remove_legs"];
+            Messages.CompetitionGearRemoveFeetButton = (string)gameData["messages"]["meta"]["stats_page"]["competition_gear"]["remove_feet"];
 
-            Messages.StatsPrivateNotesButton = gameData["messages"]["meta"]["stats_page"]stats_private_notes;
-            Messages.StatsQuestsButton = gameData["messages"]["meta"]["stats_page"]stats_quests;
-            Messages.StatsMinigameRankingButton = gameData["messages"]["meta"]["stats_page"]stats_minigame_ranking;
-            Messages.StatsAwardsButton = gameData["messages"]["meta"]["stats_page"]stats_awards;
-            Messages.StatsMiscButton = gameData["messages"]["meta"]["stats_page"]stats_misc;
+            Messages.StatsPrivateNotesButton = (string)gameData["messages"]["meta"]["stats_page"]["stats_private_notes"];
+            Messages.StatsQuestsButton = (string)gameData["messages"]["meta"]["stats_page"]["stats_quests"];
+            Messages.StatsMinigameRankingButton = (string)gameData["messages"]["meta"]["stats_page"]["stats_minigame_ranking"];
+            Messages.StatsAwardsButton = (string)gameData["messages"]["meta"]["stats_page"]["stats_awards"];
+            Messages.StatsMiscButton = (string)gameData["messages"]["meta"]["stats_page"]["stats_misc"];
 
-            Messages.JewelrySelected = gameData["messages"]["meta"]["stats_page"]msg.jewelry_selected;
-            Messages.JewelrySelectedOther = gameData["messages"]["meta"]["stats_page"]msg.jewelry_other;
+            Messages.JewelrySelected = (string)gameData["messages"]["meta"]["stats_page"]["msg"]["jewelry_selected"];
+            Messages.JewelrySelectedOther = (string)gameData["messages"]["meta"]["stats_page"]["msg"]["jewelry_other"];
 
-            Messages.NoJewerlyEquipped = gameData["messages"]["meta"]["stats_page"]msg.no_jewelry_equipped;
-            Messages.NoJewerlyEquippedOther = gameData["messages"]["meta"]["stats_page"]msg.no_jewelry_other;
+            Messages.NoJewerlyEquipped = (string)gameData["messages"]["meta"]["stats_page"]["msg"]["no_jewelry_equipped"];
+            Messages.NoJewerlyEquippedOther = (string)gameData["messages"]["meta"]["stats_page"]["msg"]["no_jewelry_other"];
 
-            Messages.NoCompetitionGear = gameData["messages"]["meta"]["stats_page"]msg.no_competition_gear;
-            Messages.NoCompetitionGearOther = gameData["messages"]["meta"]["stats_page"]msg.no_competition_gear_other;
+            Messages.NoCompetitionGear = (string)gameData["messages"]["meta"]["stats_page"]["msg"]["no_competition_gear"];
+            Messages.NoCompetitionGearOther = (string)gameData["messages"]["meta"]["stats_page"]["msg"]["no_competition_gear_other"];
 
-            Messages.CompetitionGearSelected = gameData["messages"]["meta"]["stats_page"]msg.competition_gear_selected;
-            Messages.CompetitionGearSelectedOther = gameData["messages"]["meta"]["stats_page"]msg.competition_gear_other_selected;
+            Messages.CompetitionGearSelected = (string)gameData["messages"]["meta"]["stats_page"]["msg"]["competition_gear_selected"];
+            Messages.CompetitionGearSelectedOther = (string)gameData["messages"]["meta"]["stats_page"]["msg"]["competition_gear_other_selected"];
 
-            Messages.StatHunger = gameData["messages"]["meta"]["stats_page"]hunger_stat_name;
-            Messages.StatThirst = gameData["messages"]["meta"]["stats_page"]thirst_stat_name;
-            Messages.StatTired = gameData["messages"]["meta"]["stats_page"]tired_stat_name;
+            Messages.StatHunger = (string)gameData["messages"]["meta"]["stats_page"]["hunger_stat_name"];
+            Messages.StatThirst = (string)gameData["messages"]["meta"]["stats_page"]["thirst_stat_name"];
+            Messages.StatTired = (string)gameData["messages"]["meta"]["stats_page"]["tired_stat_name"];
 
-            Messages.StatsOtherHorses = gameData["messages"]["meta"]["stats_page"]msg.other_horses;
-            Messages.StatPlayerFormats = gameData["messages"]["meta"]["stats_page"]player_stats.Deserialize<string[]>();
+            Messages.StatsOtherHorses = (string)gameData["messages"]["meta"]["stats_page"]["msg"]["other_horses"];
+            Messages.StatPlayerFormats = gameData["messages"]["meta"]["stats_page"]["player_stats"].Deserialize<string[]>();
 
-            Messages.StatThirstDizzy = gameData["messages"]["movement_key"]thirsty;
-            Messages.StatHungerStumble = gameData["messages"]["movement_key"]hungery;
+            Messages.StatThirstDizzy = (string)gameData["messages"]["movement_key"]["thirsty"];
+            Messages.StatHungerStumble = (string)gameData["messages"]["movement_key"]["hungery"];
 
             // Misc Stats
-            Messages.StatMiscHeader = gameData["messages"]["meta"]["misc_stats"]header;
-            Messages.StatMiscNoneRecorded = gameData["messages"]["meta"]["misc_stats"]no_stats_recorded;
-            Messages.StatMiscEntryFormat = gameData["messages"]["meta"]["misc_stats"]stat_format;
+            Messages.StatMiscHeader = (string)gameData["messages"]["meta"]["misc_stats"]["header"];
+            Messages.StatMiscNoneRecorded = (string)gameData["messages"]["meta"]["misc_stats"]["no_stats_recorded"];
+            Messages.StatMiscEntryFormat = (string)gameData["messages"]["meta"]["misc_stats"]["stat_format"];
 
             // Books (Libary)
-            Messages.BooksOfHorseIsle = gameData["messages"]["meta"]["libary"]["books"]books_of_horseisle;
-            Messages.BookEntryFormat = gameData["messages"]["meta"]["libary"]["books"]book_entry;
-            Messages.BookReadFormat = gameData["messages"]["meta"]["libary"]["books"]book_read;
+            Messages.BooksOfHorseIsle = (string)gameData["messages"]["meta"]["libary"]["books"]["books_of_horseisle"];
+            Messages.BookEntryFormat = (string)gameData["messages"]["meta"]["libary"]["books"]["book_entry"];
+            Messages.BookReadFormat = (string)gameData["messages"]["meta"]["libary"]["books"]["book_read"];
 
             // Awards (Libary)
-            Messages.AwardsAvalible = gameData["messages"]["meta"]["libary"]["awards"]all_earnable_awards;
-            Messages.AwardEntryFormat = gameData["messages"]["meta"]["libary"]["awards"]award_entry;
+            Messages.AwardsAvalible = (string)gameData["messages"]["meta"]["libary"]["awards"]["all_earnable_awards"];
+            Messages.AwardEntryFormat = (string)gameData["messages"]["meta"]["libary"]["awards"]["award_entry"];
 
             // Locations (Libary)
-            Messages.LocationKnownIslands = gameData["messages"]["meta"]["libary"]["locations"]known_islands;
-            Messages.LocationKnownTowns = gameData["messages"]["meta"]["libary"]["locations"]known_towns;
-            Messages.LocationIslandFormat = gameData["messages"]["meta"]["libary"]["locations"]isle_entry;
-            Messages.LocationTownFormat = gameData["messages"]["meta"]["libary"]["locations"]town_entry;
-            Messages.LocationDescriptionFormat = gameData["messages"]["meta"]["libary"]["locations"]location_description;
+            Messages.LocationKnownIslands = (string)gameData["messages"]["meta"]["libary"]["locations"]["known_islands"];
+            Messages.LocationKnownTowns = (string)gameData["messages"]["meta"]["libary"]["locations"]["known_towns"];
+            Messages.LocationIslandFormat = (string)gameData["messages"]["meta"]["libary"]["locations"]["isle_entry"];
+            Messages.LocationTownFormat = (string)gameData["messages"]["meta"]["libary"]["locations"]["town_entry"];
+            Messages.LocationDescriptionFormat = (string)gameData["messages"]["meta"]["libary"]["locations"]["location_description"];
 
             // Minigame (Libary)
-            Messages.MinigameSingleplayer = gameData["messages"]["meta"]["libary"]["minigames"]singleplayer;
-            Messages.MinigameTwoplayer = gameData["messages"]["meta"]["libary"]["minigames"]twoplayer;
-            Messages.MinigameMultiplayer = gameData["messages"]["meta"]["libary"]["minigames"]multiplayer;
-            Messages.MinigameCompetitions = gameData["messages"]["meta"]["libary"]["minigames"]competitions;
-            Messages.MinigameEntryFormat = gameData["messages"]["meta"]["libary"]["minigames"]minigame_entry;
+            Messages.MinigameSingleplayer = (string)gameData["messages"]["meta"]["libary"]["minigames"]["singleplayer"];
+            Messages.MinigameTwoplayer = (string)gameData["messages"]["meta"]["libary"]["minigames"]["twoplayer"];
+            Messages.MinigameMultiplayer = (string)gameData["messages"]["meta"]["libary"]["minigames"]["multiplayer"];
+            Messages.MinigameCompetitions = (string)gameData["messages"]["meta"]["libary"]["minigames"]["competitions"];
+            Messages.MinigameEntryFormat = (string)gameData["messages"]["meta"]["libary"]["minigames"]["minigame_entry"];
 
             // Companion (Libary)
-            Messages.CompanionViewFormat = gameData["messages"]["meta"]["libary"]["companion"]view_button;
-            Messages.CompanionEntryFormat = gameData["messages"]["meta"]["libary"]["companion"]entry_format;
+            Messages.CompanionViewFormat = (string)gameData["messages"]["meta"]["libary"]["companion"]["view_button"];
+            Messages.CompanionEntryFormat = (string)gameData["messages"]["meta"]["libary"]["companion"]["entry_format"];
 
             // Tack (Libary)
-            Messages.TackViewSetFormat = gameData["messages"]["meta"]["libary"]["tack"]view_tack_set;
-            Messages.TackSetPeiceFormat = gameData["messages"]["meta"]["libary"]["tack"]set_peice_format;
+            Messages.TackViewSetFormat = (string)gameData["messages"]["meta"]["libary"]["tack"]["view_tack_set"];
+            Messages.TackSetPeiceFormat = (string)gameData["messages"]["meta"]["libary"]["tack"]["set_peice_format"];
 
             // Groomer
-            Messages.GroomerBestToHisAbilitiesFormat = gameData["messages"]["meta"]["groomer"]groomed_best_it_can;
-            Messages.GroomerCannotAffordMessage = gameData["messages"]["meta"]["groomer"]cannot_afford_service;
-            Messages.GroomerCannotImprove = gameData["messages"]["meta"]["groomer"]cannot_improve;
-            Messages.GroomerBestToHisAbilitiesALL = gameData["messages"]["meta"]["groomer"]groomed_best_all;
-            Messages.GroomerDontNeed = gameData["messages"]["meta"]["groomer"]dont_need;
+            Messages.GroomerBestToHisAbilitiesFormat = (string)gameData["messages"]["meta"]["groomer"]["groomed_best_it_can"];
+            Messages.GroomerCannotAffordMessage = (string)gameData["messages"]["meta"]["groomer"]["cannot_afford_service"];
+            Messages.GroomerCannotImprove = (string)gameData["messages"]["meta"]["groomer"]["cannot_improve"];
+            Messages.GroomerBestToHisAbilitiesALL = (string)gameData["messages"]["meta"]["groomer"]["groomed_best_all"];
+            Messages.GroomerDontNeed = (string)gameData["messages"]["meta"]["groomer"]["dont_need"];
 
-            Messages.GroomerHorseCurrentlyAtFormat = gameData["messages"]["meta"]["groomer"]currently_at;
-            Messages.GroomerApplyServiceFormat = gameData["messages"]["meta"]["groomer"]apply_service;
-            Messages.GroomerApplyServiceForAllFormat = gameData["messages"]["meta"]["groomer"]apply_all;
+            Messages.GroomerHorseCurrentlyAtFormat = (string)gameData["messages"]["meta"]["groomer"]["currently_at"];
+            Messages.GroomerApplyServiceFormat = (string)gameData["messages"]["meta"]["groomer"]["apply_service"];
+            Messages.GroomerApplyServiceForAllFormat = (string)gameData["messages"]["meta"]["groomer"]["apply_all"];
 
             // Barn
-            Messages.BarnHorseFullyFedFormat = gameData["messages"]["meta"]["barn"]fully_fed;
-            Messages.BarnCantAffordService = gameData["messages"]["meta"]["barn"]cant_afford;
-            Messages.BarnAllHorsesFullyFed = gameData["messages"]["meta"]["barn"]rested_all;
-            Messages.BarnServiceNotNeeded = gameData["messages"]["meta"]["barn"]not_needed;
+            Messages.BarnHorseFullyFedFormat = (string)gameData["messages"]["meta"]["barn"]["fully_fed"];
+            Messages.BarnCantAffordService = (string)gameData["messages"]["meta"]["barn"]["cant_afford"];
+            Messages.BarnAllHorsesFullyFed = (string)gameData["messages"]["meta"]["barn"]["rested_all"];
+            Messages.BarnServiceNotNeeded = (string)gameData["messages"]["meta"]["barn"]["not_needed"];
 
-            Messages.BarnHorseStatusFormat = gameData["messages"]["meta"]["barn"]horse_status;
-            Messages.BarnHorseMaxed = gameData["messages"]["meta"]["barn"]horse_maxed;
-            Messages.BarnLetHorseRelaxFormat = gameData["messages"]["meta"]["barn"]let_relax;
-            Messages.BarnLetAllHorsesReleaxFormat = gameData["messages"]["meta"]["barn"]relax_all;
+            Messages.BarnHorseStatusFormat = (string)gameData["messages"]["meta"]["barn"]["horse_status"];
+            Messages.BarnHorseMaxed = (string)gameData["messages"]["meta"]["barn"]["horse_maxed"];
+            Messages.BarnLetHorseRelaxFormat = (string)gameData["messages"]["meta"]["barn"]["let_relax"];
+            Messages.BarnLetAllHorsesReleaxFormat = (string)gameData["messages"]["meta"]["barn"]["relax_all"];
 
             // Farrier
-            Messages.FarrierCurrentShoesFormat = gameData["messages"]["meta"]["farrier"]current_shoes;
-            Messages.FarrierApplyIronShoesFormat = gameData["messages"]["meta"]["farrier"]apply_iron;
-            Messages.FarrierApplySteelShoesFormat = gameData["messages"]["meta"]["farrier"]apply_steel;
-            Messages.FarrierShoeAllFormat = gameData["messages"]["meta"]["farrier"]shoe_all;
+            Messages.FarrierCurrentShoesFormat = (string)gameData["messages"]["meta"]["farrier"]["current_shoes"];
+            Messages.FarrierApplyIronShoesFormat = (string)gameData["messages"]["meta"]["farrier"]["apply_iron"];
+            Messages.FarrierApplySteelShoesFormat = (string)gameData["messages"]["meta"]["farrier"]["apply_steel"];
+            Messages.FarrierShoeAllFormat = (string)gameData["messages"]["meta"]["farrier"]["shoe_all"];
 
-            Messages.FarrierPutOnSteelShoesMessageFormat = gameData["messages"]["meta"]["farrier"]put_on_steel_shoes;
-            Messages.FarrierPutOnIronShoesMessageFormat = gameData["messages"]["meta"]["farrier"]put_on_iron_shoes;
-            Messages.FarrierPutOnSteelShoesAllMesssageFormat = gameData["messages"]["meta"]["farrier"]put_on_steel_all;
-            Messages.FarrierShoesCantAffordMessage = gameData["messages"]["meta"]["farrier"]cant_afford_farrier;
+            Messages.FarrierPutOnSteelShoesMessageFormat = (string)gameData["messages"]["meta"]["farrier"]["put_on_steel_shoes"];
+            Messages.FarrierPutOnIronShoesMessageFormat = (string)gameData["messages"]["meta"]["farrier"]["put_on_iron_shoes"];
+            Messages.FarrierPutOnSteelShoesAllMesssageFormat = (string)gameData["messages"]["meta"]["farrier"]["put_on_steel_all"];
+            Messages.FarrierShoesCantAffordMessage = (string)gameData["messages"]["meta"]["farrier"]["cant_afford_farrier"];
 
             // Trainng Pen
-            Messages.TrainedInStatFormat = gameData["messages"]["meta"]["trainer_pen"]train_success;
-            Messages.TrainerHeaderFormat = gameData["messages"]["meta"]["trainer_pen"]train_header;
-            Messages.TrainerHorseEntryFormat = gameData["messages"]["meta"]["trainer_pen"]train_format;
-            Messages.TrainerHorseFullyTrainedFormat = gameData["messages"]["meta"]["trainer_pen"]fully_trained;
-            Messages.TrainerCantTrainAgainInFormat = gameData["messages"]["meta"]["trainer_pen"]train_again_in;
-            Messages.TrainerCantAfford = gameData["messages"]["meta"]["trainer_pen"]cant_afford;
+            Messages.TrainedInStatFormat = (string)gameData["messages"]["meta"]["trainer_pen"]["train_success"];
+            Messages.TrainerHeaderFormat = (string)gameData["messages"]["meta"]["trainer_pen"]["train_header"];
+            Messages.TrainerHorseEntryFormat = (string)gameData["messages"]["meta"]["trainer_pen"]["train_format"];
+            Messages.TrainerHorseFullyTrainedFormat = (string)gameData["messages"]["meta"]["trainer_pen"]["fully_trained"];
+            Messages.TrainerCantTrainAgainInFormat = (string)gameData["messages"]["meta"]["trainer_pen"]["train_again_in"];
+            Messages.TrainerCantAfford = (string)gameData["messages"]["meta"]["trainer_pen"]["cant_afford"];
 
             // Santa
-            Messages.SantaHiddenText = gameData["messages"]["meta"]["santa"]hidden_text;
-            Messages.SantaWrapItemFormat = gameData["messages"]["meta"]["santa"]wrap_format;
-            Messages.SantaWrappedObjectMessage = gameData["messages"]["meta"]["santa"]wrapped_object;
-            Messages.SantaCantWrapInvFull = gameData["messages"]["meta"]["santa"]wrap_fail_inv_full;
-            Messages.SantaCantOpenNothingInside = gameData["messages"]["meta"]["santa"]open_fail_empty;
-            Messages.SantaItemOpenedFormat = gameData["messages"]["meta"]["santa"]open_format;
-            Messages.SantaItemCantOpenInvFull = gameData["messages"]["meta"]["santa"]open_fail_inv_full;
+            Messages.SantaHiddenText = (string)gameData["messages"]["meta"]["santa"]["hidden_text"];
+            Messages.SantaWrapItemFormat = (string)gameData["messages"]["meta"]["santa"]["wrap_format"];
+            Messages.SantaWrappedObjectMessage = (string)gameData["messages"]["meta"]["santa"]["wrapped_object"];
+            Messages.SantaCantWrapInvFull = (string)gameData["messages"]["meta"]["santa"]["wrap_fail_inv_full"];
+            Messages.SantaCantOpenNothingInside = (string)gameData["messages"]["meta"]["santa"]["open_fail_empty"];
+            Messages.SantaItemOpenedFormat = (string)gameData["messages"]["meta"]["santa"]["open_format"];
+            Messages.SantaItemCantOpenInvFull = (string)gameData["messages"]["meta"]["santa"]["open_fail_inv_full"];
 
             // Pawneer
-            Messages.PawneerUntackedHorsesICanBuy = gameData["messages"]["meta"]["pawneer"]untacked_i_can_buy;
-            Messages.PawneerHorseFormat = gameData["messages"]["meta"]["pawneer"]pawn_horse;
-            Messages.PawneerOrderMeta = gameData["messages"]["meta"]["pawneer"]pawneer_order;
-            Messages.PawneerHorseConfirmationFormat = gameData["messages"]["meta"]["pawneer"]are_you_sure;
-            Messages.PawneerHorseSoldMessagesFormat = gameData["messages"]["meta"]["pawneer"]horse_sold;
-            Messages.PawneerHorseNotFound = gameData["messages"]["meta"]["pawneer"]horse_not_found;
+            Messages.PawneerUntackedHorsesICanBuy = (string)gameData["messages"]["meta"]["pawneer"]["untacked_i_can_buy"];
+            Messages.PawneerHorseFormat = (string)gameData["messages"]["meta"]["pawneer"]["pawn_horse"];
+            Messages.PawneerOrderMeta = (string)gameData["messages"]["meta"]["pawneer"]["pawneer_order"];
+            Messages.PawneerHorseConfirmationFormat = (string)gameData["messages"]["meta"]["pawneer"]["are_you_sure"];
+            Messages.PawneerHorseSoldMessagesFormat = (string)gameData["messages"]["meta"]["pawneer"]["horse_sold"];
+            Messages.PawneerHorseNotFound = (string)gameData["messages"]["meta"]["pawneer"]["horse_not_found"];
 
-            Messages.PawneerOrderSelectBreed = gameData["messages"]["meta"]["pawneer"]["order"]select_breed;
-            Messages.PawneerOrderBreedEntryFormat = gameData["messages"]["meta"]["pawneer"]["order"]breed_entry;
+            Messages.PawneerOrderSelectBreed = (string)gameData["messages"]["meta"]["pawneer"]["order"]["select_breed"];
+            Messages.PawneerOrderBreedEntryFormat = (string)gameData["messages"]["meta"]["pawneer"]["order"]["breed_entry"];
 
-            Messages.PawneerOrderSelectColorFormat = gameData["messages"]["meta"]["pawneer"]["order"]select_color;
-            Messages.PawneerOrderColorEntryFormat = gameData["messages"]["meta"]["pawneer"]["order"]color_entry;
+            Messages.PawneerOrderSelectColorFormat = (string)gameData["messages"]["meta"]["pawneer"]["order"]["select_color"];
+            Messages.PawneerOrderColorEntryFormat = (string)gameData["messages"]["meta"]["pawneer"]["order"]["color_entry"];
 
-            Messages.PawneerOrderSelectGenderFormat = gameData["messages"]["meta"]["pawneer"]["order"]select_gender;
-            Messages.PawneerOrderGenderEntryFormat = gameData["messages"]["meta"]["pawneer"]["order"]gender_entry;
+            Messages.PawneerOrderSelectGenderFormat = (string)gameData["messages"]["meta"]["pawneer"]["order"]["select_gender"];
+            Messages.PawneerOrderGenderEntryFormat = (string)gameData["messages"]["meta"]["pawneer"]["order"]["gender_entry"];
 
-            Messages.PawneerOrderHorseFoundFormat = gameData["messages"]["meta"]["pawneer"]["order"]found;
+            Messages.PawneerOrderHorseFoundFormat = (string)gameData["messages"]["meta"]["pawneer"]["order"]["found"];
 
             // Vet
-            Messages.VetServiceHorseFormat = gameData["messages"]["meta"]["vet"]service_horse;
-            Messages.VetSerivcesNotNeeded = gameData["messages"]["meta"]["vet"]not_needed;
-            Messages.VetApplyServicesFormat = gameData["messages"]["meta"]["vet"]apply;
+            Messages.VetServiceHorseFormat = (string)gameData["messages"]["meta"]["vet"]["service_horse"];
+            Messages.VetSerivcesNotNeeded = (string)gameData["messages"]["meta"]["vet"]["not_needed"];
+            Messages.VetApplyServicesFormat = (string)gameData["messages"]["meta"]["vet"]["apply"];
 
-            Messages.VetApplyServicesForAllFormat = gameData["messages"]["meta"]["vet"]apply_all;
-            Messages.VetFullHealthRecoveredMessageFormat = gameData["messages"]["meta"]["vet"]now_full_health;
-            Messages.VetServicesNotNeededAll = gameData["messages"]["meta"]["vet"]not_needed_all;
-            Messages.VetAllFullHealthRecoveredMessage = gameData["messages"]["meta"]["vet"]all_full;
-            Messages.VetCannotAffordMessage = gameData["messages"]["meta"]["vet"]cant_afford;
+            Messages.VetApplyServicesForAllFormat = (string)gameData["messages"]["meta"]["vet"]["apply_all"];
+            Messages.VetFullHealthRecoveredMessageFormat = (string)gameData["messages"]["meta"]["vet"]["now_full_health"];
+            Messages.VetServicesNotNeededAll = (string)gameData["messages"]["meta"]["vet"]["not_needed_all"];
+            Messages.VetAllFullHealthRecoveredMessage = (string)gameData["messages"]["meta"]["vet"]["all_full"];
+            Messages.VetCannotAffordMessage = (string)gameData["messages"]["meta"]["vet"]["cant_afford"];
 
             // Pond
-            Messages.PondHeader = gameData["messages"]["meta"]["pond"]header;
-            Messages.PondGoFishing = gameData["messages"]["meta"]["pond"]go_fishing;
-            Messages.PondNoFishingPole = gameData["messages"]["meta"]["pond"]no_fishing_pole;
-            Messages.PondDrinkHereIfSafe = gameData["messages"]["meta"]["pond"]drink_here;
-            Messages.PondHorseDrinkFormat = gameData["messages"]["meta"]["pond"]horse_drink_format;
-            Messages.PondNoEarthWorms = gameData["messages"]["meta"]["pond"]no_earth_worms;
+            Messages.PondHeader = (string)gameData["messages"]["meta"]["pond"]["header"];
+            Messages.PondGoFishing = (string)gameData["messages"]["meta"]["pond"]["go_fishing"];
+            Messages.PondNoFishingPole = (string)gameData["messages"]["meta"]["pond"]["no_fishing_pole"];
+            Messages.PondDrinkHereIfSafe = (string)gameData["messages"]["meta"]["pond"]["drink_here"];
+            Messages.PondHorseDrinkFormat = (string)gameData["messages"]["meta"]["pond"]["horse_drink_format"];
+            Messages.PondNoEarthWorms = (string)gameData["messages"]["meta"]["pond"]["no_earth_worms"];
 
-            Messages.PondDrinkFullFormat = gameData["messages"]["meta"]["pond"]drank_full;
-            Messages.PondCantDrinkHpLowFormat = gameData["messages"]["meta"]["pond"]cant_drink_hp_low;
-            Messages.PondDrinkOhNoesFormat = gameData["messages"]["meta"]["pond"]drank_something_bad;
-            Messages.PondNotThirstyFormat = gameData["messages"]["meta"]["pond"]not_thirsty;
+            Messages.PondDrinkFullFormat = (string)gameData["messages"]["meta"]["pond"]["drank_full"];
+            Messages.PondCantDrinkHpLowFormat = (string)gameData["messages"]["meta"]["pond"]["cant_drink_hp_low"];
+            Messages.PondDrinkOhNoesFormat = (string)gameData["messages"]["meta"]["pond"]["drank_something_bad"];
+            Messages.PondNotThirstyFormat = (string)gameData["messages"]["meta"]["pond"]["not_thirsty"];
 
             // Horse Whisperer
-            Messages.WhispererHorseLocateButtonFormat = gameData["messages"]["meta"]["whisperer"]horse_locate_meta;
-            Messages.WhispererServiceCostYouFormat = gameData["messages"]["meta"]["whisperer"]service_cost;
-            Messages.WhispererServiceCannotAfford = gameData["messages"]["meta"]["whisperer"]cant_afford;
-            Messages.WhispererSearchingAmoungHorses = gameData["messages"]["meta"]["whisperer"]searching_amoung_horses;
-            Messages.WhispererNoneFound = gameData["messages"]["meta"]["whisperer"]none_found_meta;
-            Messages.WhispererHorsesFoundFormat = gameData["messages"]["meta"]["whisperer"]horse_found_meta;
+            Messages.WhispererHorseLocateButtonFormat = (string)gameData["messages"]["meta"]["whisperer"]["horse_locate_meta"];
+            Messages.WhispererServiceCostYouFormat = (string)gameData["messages"]["meta"]["whisperer"]["service_cost"];
+            Messages.WhispererServiceCannotAfford = (string)gameData["messages"]["meta"]["whisperer"]["cant_afford"];
+            Messages.WhispererSearchingAmoungHorses = (string)gameData["messages"]["meta"]["whisperer"]["searching_amoung_horses"];
+            Messages.WhispererNoneFound = (string)gameData["messages"]["meta"]["whisperer"]["none_found_meta"];
+            Messages.WhispererHorsesFoundFormat = (string)gameData["messages"]["meta"]["whisperer"]["horse_found_meta"];
 
             // Mud Hole
-            Messages.MudHoleNoHorses = gameData["messages"]["meta"]["mud_hole"]no_horses;
-            Messages.MudHoleRuinedGroomFormat = gameData["messages"]["meta"]["mud_hole"]ruined_groom;
+            Messages.MudHoleNoHorses = (string)gameData["messages"]["meta"]["mud_hole"]["no_horses"];
+            Messages.MudHoleRuinedGroomFormat = (string)gameData["messages"]["meta"]["mud_hole"]["ruined_groom"];
 
             // Movement
-            Messages.RandomMovement = gameData["messages"]random_movement;
+            Messages.RandomMovement = (string)gameData["messages"]["random_movement"];
 
             // Quests Log
-            Messages.QuestLogHeader = gameData["messages"]["meta"]["quest_log"]header_meta;
-            Messages.QuestFormat = gameData["messages"]["meta"]["quest_log"]quest_format;
+            Messages.QuestLogHeader = (string)gameData["messages"]["meta"]["quest_log"]["header_meta"];
+            Messages.QuestFormat = (string)gameData["messages"]["meta"]["quest_log"]["quest_format"];
 
-            Messages.QuestNotCompleted = gameData["messages"]["meta"]["quest_log"]not_complete;
-            Messages.QuestNotAvalible = gameData["messages"]["meta"]["quest_log"]not_avalible;
-            Messages.QuestCompleted = gameData["messages"]["meta"]["quest_log"]completed;
+            Messages.QuestNotCompleted = (string)gameData["messages"]["meta"]["quest_log"]["not_complete"];
+            Messages.QuestNotAvalible = (string)gameData["messages"]["meta"]["quest_log"]["not_avalible"];
+            Messages.QuestCompleted = (string)gameData["messages"]["meta"]["quest_log"]["completed"];
 
-            Messages.QuestFooterFormat = gameData["messages"]["meta"]["quest_log"]footer_format;
+            Messages.QuestFooterFormat = (string)gameData["messages"]["meta"]["quest_log"]["footer_format"];
             // Transport
 
-            Messages.CantAffordTransport = gameData["messages"]["transport"]not_enough_money;
-            Messages.WelcomeToAreaFormat = gameData["messages"]["transport"]welcome_to_format;
-            Messages.TransportFormat = gameData["messages"]["meta"]transport_format;
-            Messages.TransportCostFormat = gameData["messages"]["meta"]transport_cost;
-            Messages.TransportWagonFree = gameData["messages"]["meta"]transport_free;
+            Messages.CantAffordTransport = (string)gameData["messages"]["transport"]["not_enough_money"];
+            Messages.WelcomeToAreaFormat = (string)gameData["messages"]["transport"]["welcome_to_format"];
+            Messages.TransportFormat = (string)gameData["messages"]["meta"]["transport_format"];
+            Messages.TransportCostFormat = (string)gameData["messages"]["meta"]["transport_cost"];
+            Messages.TransportWagonFree = (string)gameData["messages"]["meta"]["transport_free"];
 
             // Abuse Reports
-            Messages.AbuseReportMetaFormat = gameData["messages"]["meta"]["abuse_report"]options_format;
-            Messages.AbuseReportReasonFormat = gameData["messages"]["meta"]["abuse_report"]report_reason_format;
+            Messages.AbuseReportMetaFormat = (string)gameData["messages"]["meta"]["abuse_report"]["options_format"];
+            Messages.AbuseReportReasonFormat = (string)gameData["messages"]["meta"]["abuse_report"]["report_reason_format"];
 
-            Messages.AbuseReportPlayerNotFoundFormat = gameData["messages"]["abuse_report"]player_not_found_format;
-            Messages.AbuseReportFiled = gameData["messages"]["abuse_report"]report_filed;
-            Messages.AbuseReportProvideValidReason = gameData["messages"]["abuse_report"]valid_reason;
+            Messages.AbuseReportPlayerNotFoundFormat = (string)gameData["messages"]["abuse_report"]["player_not_found_format"];
+            Messages.AbuseReportFiled = (string)gameData["messages"]["abuse_report"]["report_filed"];
+            Messages.AbuseReportProvideValidReason = (string)gameData["messages"]["abuse_report"]["valid_reason"];
 
             // Bank
-            Messages.BankMadeInIntrestFormat = gameData["messages"]["meta"]["bank"]made_interest;
-            Messages.BankCarryingFormat = gameData["messages"]["meta"]["bank"]carrying_message;
-            Messages.BankWhatToDo = gameData["messages"]["meta"]["bank"]what_to_do;
-            Messages.BankOptionsFormat = gameData["messages"]["meta"]["bank"]options;
+            Messages.BankMadeInIntrestFormat = (string)gameData["messages"]["meta"]["bank"]["made_interest"];
+            Messages.BankCarryingFormat = (string)gameData["messages"]["meta"]["bank"]["carrying_message"];
+            Messages.BankWhatToDo = (string)gameData["messages"]["meta"]["bank"]["what_to_do"];
+            Messages.BankOptionsFormat = (string)gameData["messages"]["meta"]["bank"]["options"];
 
 
-            Messages.BankDepositedMoneyFormat = gameData["messages"]["bank"]deposit_format;
-            Messages.BankWithdrewMoneyFormat = gameData["messages"]["bank"]withdraw_format;
+            Messages.BankDepositedMoneyFormat = (string)gameData["messages"]["bank"]["deposit_format"];
+            Messages.BankWithdrewMoneyFormat = (string)gameData["messages"]["bank"]["withdraw_format"];
 
-            Messages.BankCantHoldThisMuch = gameData["messages"]["bank"]cant_hold_that_much;
-            Messages.BankYouCantHoldThisMuch = gameData["messages"]["bank"]cant_withdraw_that_much;
+            Messages.BankCantHoldThisMuch = (string)gameData["messages"]["bank"]["cant_hold_that_much"];
+            Messages.BankYouCantHoldThisMuch = (string)gameData["messages"]["bank"]["cant_withdraw_that_much"];
 
             // Riddler
-            Messages.RiddlerAnsweredAll = gameData["messages"]["meta"]riddler.riddle_all_complete;
-            Messages.RiddlerIncorrectAnswer = gameData["messages"]["meta"]riddler.riddle_incorrect;
-            Messages.RiddlerCorrectAnswerFormat = gameData["messages"]["meta"]riddler.riddle_correct;
-            Messages.RiddlerEnterAnswerFormat = gameData["messages"]["meta"]riddler.riddle_format;
+            Messages.RiddlerAnsweredAll = (string)gameData["messages"]["meta"]["riddler.riddle_all_complete"];
+            Messages.RiddlerIncorrectAnswer = (string)gameData["messages"]["meta"]["riddler.riddle_incorrect"];
+            Messages.RiddlerCorrectAnswerFormat = (string)gameData["messages"]["meta"]["riddler.riddle_correct"];
+            Messages.RiddlerEnterAnswerFormat = (string)gameData["messages"]["meta"]["riddler.riddle_format"];
 
             // Workshop
-            Messages.WorkshopCraftEntryFormat = gameData["messages"]["meta"]workshop.craft_entry;
-            Messages.WorkshopRequiresFormat = gameData["messages"]["meta"]workshop.requires;
-            Messages.WorkshopRequireEntryFormat = gameData["messages"]["meta"]workshop.require;
-            Messages.WorkshopAnd = gameData["messages"]["meta"]workshop.and;
+            Messages.WorkshopCraftEntryFormat = (string)gameData["messages"]["meta"]["workshop.craft_entry"];
+            Messages.WorkshopRequiresFormat = (string)gameData["messages"]["meta"]["workshop.requires"];
+            Messages.WorkshopRequireEntryFormat = (string)gameData["messages"]["meta"]["workshop.require"];
+            Messages.WorkshopAnd = (string)gameData["messages"]["meta"]["workshop.and"];
 
-            Messages.WorkshopNoRoomInInventory = gameData["messages"]["meta"]workshop.no_room;
-            Messages.WorkshopMissingRequiredItem = gameData["messages"]["meta"]workshop.missing_item;
-            Messages.WorkshopCraftingSuccess = gameData["messages"]["meta"]workshop.craft_success;
-            Messages.WorkshopCannotAfford = gameData["messages"]["meta"]workshop.no_money;
+            Messages.WorkshopNoRoomInInventory = (string)gameData["messages"]["meta"]["workshop.no_room"];
+            Messages.WorkshopMissingRequiredItem = (string)gameData["messages"]["meta"]["workshop.missing_item"];
+            Messages.WorkshopCraftingSuccess = (string)gameData["messages"]["meta"]["workshop.craft_success"];
+            Messages.WorkshopCannotAfford = (string)gameData["messages"]["meta"]["workshop.no_money"];
 
             // Horses
-            Messages.AdvancedStatFormat = gameData["messages"]["meta"]["horse"]stat_format;
-            Messages.BasicStatFormat = gameData["messages"]["meta"]["horse"]basic_stat_format;
-            Messages.HorsesHere = gameData["messages"]["meta"]["horse"]horses_here;
-            Messages.WildHorseFormat = gameData["messages"]["meta"]["horse"]wild_horse;
-            Messages.HorseCaptureTimer = gameData["messages"]["meta"]["horse"]horse_timer;
+            Messages.AdvancedStatFormat = (string)gameData["messages"]["meta"]["horse"]["stat_format"];
+            Messages.BasicStatFormat = (string)gameData["messages"]["meta"]["horse"]["basic_stat_format"];
+            Messages.HorsesHere = (string)gameData["messages"]["meta"]["horse"]["horses_here"];
+            Messages.WildHorseFormat = (string)gameData["messages"]["meta"]["horse"]["wild_horse"];
+            Messages.HorseCaptureTimer = (string)gameData["messages"]["meta"]["horse"]["horse_timer"];
 
-            Messages.YouCapturedTheHorse = gameData["messages"]["meta"]["horse"]horse_caught;
-            Messages.HorseEvadedCapture = gameData["messages"]["meta"]["horse"]horse_escaped;
-            Messages.HorseEscapedAnyway = gameData["messages"]["meta"]["horse"]horse_escaped_anyway;
+            Messages.YouCapturedTheHorse = (string)gameData["messages"]["meta"]["horse"]["horse_caught"];
+            Messages.HorseEvadedCapture = (string)gameData["messages"]["meta"]["horse"]["horse_escaped"];
+            Messages.HorseEscapedAnyway = (string)gameData["messages"]["meta"]["horse"]["horse_escaped_anyway"];
 
-            Messages.HorsesMenuHeader = gameData["messages"]["meta"]["horse"]horses_menu;
-            Messages.TooManyHorses = gameData["messages"]["meta"]["horse"]too_many_horses;
-            Messages.UpdateHorseCategory = gameData["messages"]["meta"]["horse"]update_category;
-            Messages.HorseEntryFormat = gameData["messages"]["meta"]["horse"]horse_format;
-            Messages.ViewBaiscStats = gameData["messages"]["meta"]["horse"]view_basic_stats;
-            Messages.ViewAdvancedStats = gameData["messages"]["meta"]["horse"]view_advanced_stats;
-            Messages.HorseBuckedYou = gameData["messages"]["meta"]["horse"]horse_bucked;
-            Messages.HorseLlamaBuckedYou = gameData["messages"]["meta"]["horse"]llama_bucked;
-            Messages.HorseCamelBuckedYou = gameData["messages"]["meta"]["horse"]camel_bucked;
+            Messages.HorsesMenuHeader = (string)gameData["messages"]["meta"]["horse"]["horses_menu"];
+            Messages.TooManyHorses = (string)gameData["messages"]["meta"]["horse"]["too_many_horses"];
+            Messages.UpdateHorseCategory = (string)gameData["messages"]["meta"]["horse"]["update_category"];
+            Messages.HorseEntryFormat = (string)gameData["messages"]["meta"]["horse"]["horse_format"];
+            Messages.ViewBaiscStats = (string)gameData["messages"]["meta"]["horse"]["view_basic_stats"];
+            Messages.ViewAdvancedStats = (string)gameData["messages"]["meta"]["horse"]["view_advanced_stats"];
+            Messages.HorseBuckedYou = (string)gameData["messages"]["meta"]["horse"]["horse_bucked"];
+            Messages.HorseLlamaBuckedYou = (string)gameData["messages"]["meta"]["horse"]["llama_bucked"];
+            Messages.HorseCamelBuckedYou = (string)gameData["messages"]["meta"]["horse"]["camel_bucked"];
 
-            Messages.HorseRidingMessageFormat = gameData["messages"]["meta"]["horse"]riding_message;
-            Messages.HorseNameYoursFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]your_horse_format;
-            Messages.HorseNameOthersFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]horse_others_format;
-            Messages.HorseDescriptionFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]description_format;
-            Messages.HorseHandsHeightFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]hands_high;
-            Messages.HorseExperienceEarnedFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]experience;
-            
-            Messages.HorseTrainableInFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]trainable_in;
-            Messages.HorseIsTrainable = gameData["messages"]["meta"]["horse"]["horse_inventory"]currently_trainable;
-            Messages.HorseLeasedRemainingTimeFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]leased_horse;
+            Messages.HorseRidingMessageFormat = (string)gameData["messages"]["meta"]["horse"]["riding_message"];
+            Messages.HorseNameYoursFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["your_horse_format"];
+            Messages.HorseNameOthersFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["horse_others_format"];
+            Messages.HorseDescriptionFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["description_format"];
+            Messages.HorseHandsHeightFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["hands_high"];
+            Messages.HorseExperienceEarnedFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["experience"];
 
-            Messages.HorseCannotMountUntilTackedMessage = gameData["messages"]["meta"]["horse"]cannot_mount_tacked;
-            Messages.HorseDismountedBecauseNotTackedMessageFormat = gameData["messages"]["meta"]["horse"]dismount_because_tack;
-            Messages.HorseMountButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]mount_button;
-            Messages.HorseDisMountButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]dismount_button;
-            Messages.HorseFeedButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]feed_button;
-            Messages.HorseTackButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]tack_button;
-            Messages.HorsePetButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]pet_button;
-            Messages.HorseProfileButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]profile_button;
+            Messages.HorseTrainableInFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["trainable_in"];
+            Messages.HorseIsTrainable = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["currently_trainable"];
+            Messages.HorseLeasedRemainingTimeFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["leased_horse"];
 
-            Messages.HorseSavedProfileMessageFormat = gameData["messages"]["meta"]["horse"]["profile"]saved;
-            Messages.HorseProfileMessageTooLongError = gameData["messages"]["meta"]["horse"]["profile"]desc_too_long;
-            Messages.HorseNameTooLongError = gameData["messages"]["meta"]["horse"]["profile"]name_too_long;
-            Messages.HorseNameViolationsError = gameData["messages"]["meta"]["horse"]["profile"]name_profanity_detected;
-            Messages.HorseProfileMessageProfileError = gameData["messages"]["meta"]["horse"]["profile"]profile_profanity_detected;
+            Messages.HorseCannotMountUntilTackedMessage = (string)gameData["messages"]["meta"]["horse"]["cannot_mount_tacked"];
+            Messages.HorseDismountedBecauseNotTackedMessageFormat = (string)gameData["messages"]["meta"]["horse"]["dismount_because_tack"];
+            Messages.HorseMountButtonFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["mount_button"];
+            Messages.HorseDisMountButtonFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["dismount_button"];
+            Messages.HorseFeedButtonFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["feed_button"];
+            Messages.HorseTackButtonFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["tack_button"];
+            Messages.HorsePetButtonFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["pet_button"];
+            Messages.HorseProfileButtonFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["profile_button"];
 
-            Messages.HorseCatchTooManyHorsesMessage = gameData["messages"]["meta"]["horse"]["horse_inventory"]horse_cannot_catch_max;
-            Messages.HorseNoAutoSell = gameData["messages"]["meta"]["horse"]["horse_inventory"]no_auto_sell;
-            Messages.HorseAutoSellPriceFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]auto_sell_format;
-            Messages.HorseAutoSellOthersFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]auto_sell_others;
-            Messages.HorseAutoSellFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]auto_sell;
-            Messages.HorseCantAutoSellTacked = gameData["messages"]["meta"]["horse"]["horse_inventory"]cannot_auto_sell_tacked;
+            Messages.HorseSavedProfileMessageFormat = (string)gameData["messages"]["meta"]["horse"]["profile"]["saved"];
+            Messages.HorseProfileMessageTooLongError = (string)gameData["messages"]["meta"]["horse"]["profile"]["desc_too_long"];
+            Messages.HorseNameTooLongError = (string)gameData["messages"]["meta"]["horse"]["profile"]["name_too_long"];
+            Messages.HorseNameViolationsError = (string)gameData["messages"]["meta"]["horse"]["profile"]["name_profanity_detected"];
+            Messages.HorseProfileMessageProfileError = (string)gameData["messages"]["meta"]["horse"]["profile"]["profile_profanity_detected"];
 
-            Messages.HorseCurrentlyCategoryFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]marked_as;
-            Messages.HorseMarkAsCategory = gameData["messages"]["meta"]["horse"]["horse_inventory"]marking_options;
-            Messages.HorseStats = gameData["messages"]["meta"]["horse"]["horse_inventory"]horse_stats;
-            Messages.HorseTacked = gameData["messages"]["meta"]["horse"]["horse_inventory"]wearing_tacked;
-            Messages.HorseTackFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]tacked_format;
+            Messages.HorseCatchTooManyHorsesMessage = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["horse_cannot_catch_max"];
+            Messages.HorseNoAutoSell = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["no_auto_sell"];
+            Messages.HorseAutoSellPriceFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["auto_sell_format"];
+            Messages.HorseAutoSellOthersFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["auto_sell_others"];
+            Messages.HorseAutoSellFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["auto_sell"];
+            Messages.HorseCantAutoSellTacked = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["cannot_auto_sell_tacked"];
 
-            Messages.HorseCompanion = gameData["messages"]["meta"]["horse"]["horse_inventory"]companion;
-            Messages.HorseCompanionFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]companion_selected;
-            Messages.HorseCompanionChangeButton = gameData["messages"]["meta"]["horse"]["horse_inventory"]companion_change_button;
-            Messages.HorseNoCompanion = gameData["messages"]["meta"]["horse"]["horse_inventory"]no_companion;
+            Messages.HorseCurrentlyCategoryFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["marked_as"];
+            Messages.HorseMarkAsCategory = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["marking_options"];
+            Messages.HorseStats = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["horse_stats"];
+            Messages.HorseTacked = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["wearing_tacked"];
+            Messages.HorseTackFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["tacked_format"];
 
-            Messages.HorseAdvancedStatsFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]advanced_stats;
-            Messages.HorseBreedDetailsFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]breed_details;
-            Messages.HorseHeightRangeFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]height_range;
-            Messages.HorsePossibleColorsFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]possible_colors;
-            Messages.HorseReleaseButton = gameData["messages"]["meta"]["horse"]["horse_inventory"]release_horse;
-            Messages.HorseOthers = gameData["messages"]["meta"]["horse"]["horse_inventory"]other_horses;
+            Messages.HorseCompanion = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["companion"];
+            Messages.HorseCompanionFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["companion_selected"];
+            Messages.HorseCompanionChangeButton = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["companion_change_button"];
+            Messages.HorseNoCompanion = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["no_companion"];
 
-            Messages.HorseDescriptionEditFormat = gameData["messages"]["meta"]["horse"]description_edit;
-            Messages.HorseEquipTackMessageFormat = gameData["messages"]["meta"]["horse"]equip_tack_message;
-            Messages.HorseUnEquipTackMessageFormat = gameData["messages"]["meta"]["horse"]unequip_tack_message;
-            Messages.HorseStopRidingMessage = gameData["messages"]["meta"]["horse"]stop_riding_message;
+            Messages.HorseAdvancedStatsFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["advanced_stats"];
+            Messages.HorseBreedDetailsFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["breed_details"];
+            Messages.HorseHeightRangeFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["height_range"];
+            Messages.HorsePossibleColorsFormat = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["possible_colors"];
+            Messages.HorseReleaseButton = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["release_horse"];
+            Messages.HorseOthers = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["other_horses"];
 
-            Messages.HorsePetMessageFormat = gameData["messages"]["meta"]["horse"]pet_horse;
-            Messages.HorsePetTooHappy = gameData["messages"]["meta"]["horse"]pet_horse_too_happy;
-            Messages.HorsePetTooTired = gameData["messages"]["meta"]["horse"]pet_horse_too_sleepy;
-            Messages.HorseSetNewCategoryMessageFormat = gameData["messages"]["meta"]["horse"]horse_set_new_category;
+            Messages.HorseDescriptionEditFormat = (string)gameData["messages"]["meta"]["horse"]["description_edit"];
+            Messages.HorseEquipTackMessageFormat = (string)gameData["messages"]["meta"]["horse"]["equip_tack_message"];
+            Messages.HorseUnEquipTackMessageFormat = (string)gameData["messages"]["meta"]["horse"]["unequip_tack_message"];
+            Messages.HorseStopRidingMessage = (string)gameData["messages"]["meta"]["horse"]["stop_riding_message"];
 
-            Messages.HorseAutoSellMenuFormat = gameData["messages"]["meta"]["horse"]["auto_sell"]auto_sell_meta;
-            Messages.HorseIsAutoSell = gameData["messages"]["meta"]["horse"]["auto_sell"]is_auto_sell;
-            Messages.HorseAutoSellConfirmedFormat = gameData["messages"]["meta"]["horse"]["auto_sell"]auto_sell_confirmed;
-            Messages.HorseAutoSellValueTooHigh = gameData["messages"]["meta"]["horse"]["auto_sell"]auto_sell_to_high;
-            Messages.HorseAutoSellRemoved = gameData["messages"]["meta"]["horse"]["auto_sell"]auto_sell_remove;
+            Messages.HorsePetMessageFormat = (string)gameData["messages"]["meta"]["horse"]["pet_horse"];
+            Messages.HorsePetTooHappy = (string)gameData["messages"]["meta"]["horse"]["pet_horse_too_happy"];
+            Messages.HorsePetTooTired = (string)gameData["messages"]["meta"]["horse"]["pet_horse_too_sleepy"];
+            Messages.HorseSetNewCategoryMessageFormat = (string)gameData["messages"]["meta"]["horse"]["horse_set_new_category"];
 
-            Messages.HorseSetAutoSell = gameData["messages"]["meta"]["horse"]["horse_inventory"]set_auto_sell;
-            Messages.HorseChangeAutoSell = gameData["messages"]["meta"]["horse"]["horse_inventory"]change_auto_sell;
-            Messages.HorseTackFailAutoSell = gameData["messages"]["meta"]["horse"]tack_fail_autosell;
+            Messages.HorseAutoSellMenuFormat = (string)gameData["messages"]["meta"]["horse"]["auto_sell"]["auto_sell_meta"];
+            Messages.HorseIsAutoSell = (string)gameData["messages"]["meta"]["horse"]["auto_sell"]["is_auto_sell"];
+            Messages.HorseAutoSellConfirmedFormat = (string)gameData["messages"]["meta"]["horse"]["auto_sell"]["auto_sell_confirmed"];
+            Messages.HorseAutoSellValueTooHigh = (string)gameData["messages"]["meta"]["horse"]["auto_sell"]["auto_sell_to_high"];
+            Messages.HorseAutoSellRemoved = (string)gameData["messages"]["meta"]["horse"]["auto_sell"]["auto_sell_remove"];
 
-            Messages.HorseAreYouSureYouWantToReleaseFormat = gameData["messages"]["meta"]["horse"]horse_release;
-            Messages.HorseCantReleaseTheHorseYourRidingOn = gameData["messages"]["meta"]["horse"]cant_release_currently_riding;
-            Messages.HorseReleasedMeta = gameData["messages"]["meta"]["horse"]released_horse;
-            Messages.HorseReleasedBy = gameData["messages"]["meta"]["horse"]released_by_message;
+            Messages.HorseSetAutoSell = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["set_auto_sell"];
+            Messages.HorseChangeAutoSell = (string)gameData["messages"]["meta"]["horse"]["horse_inventory"]["change_auto_sell"];
+            Messages.HorseTackFailAutoSell = (string)gameData["messages"]["meta"]["horse"]["tack_fail_autosell"];
+
+            Messages.HorseAreYouSureYouWantToReleaseFormat = (string)gameData["messages"]["meta"]["horse"]["horse_release"];
+            Messages.HorseCantReleaseTheHorseYourRidingOn = (string)gameData["messages"]["meta"]["horse"]["cant_release_currently_riding"];
+            Messages.HorseReleasedMeta = (string)gameData["messages"]["meta"]["horse"]["released_horse"];
+            Messages.HorseReleasedBy = (string)gameData["messages"]["meta"]["horse"]["released_by_message"];
 
             // All Stats (basic)
 
-            Messages.HorseAllBasicStats = gameData["messages"]["meta"]["horse"]["allstats_basic"]all_baisc_stats;
-            Messages.HorseBasicStatEntryFormat = gameData["messages"]["meta"]["horse"]["allstats_basic"]horse_entry;
+            Messages.HorseAllBasicStats = (string)gameData["messages"]["meta"]["horse"]["allstats_basic"]["all_baisc_stats"];
+            Messages.HorseBasicStatEntryFormat = (string)gameData["messages"]["meta"]["horse"]["allstats_basic"]["horse_entry"];
 
             // All Stats (all)
-            Messages.HorseAllStatsHeader = gameData["messages"]["meta"]["horse"]["allstats"]all_stats_header;
-            Messages.HorseNameEntryFormat = gameData["messages"]["meta"]["horse"]["allstats"]horse_name_entry;
-            Messages.HorseBasicStatsCompactedFormat = gameData["messages"]["meta"]["horse"]["allstats"]basic_stats_compact;
-            Messages.HorseAdvancedStatsCompactedFormat = gameData["messages"]["meta"]["horse"]["allstats"]advanced_stats_compact;
-            Messages.HorseAllStatsLegend = gameData["messages"]["meta"]["horse"]["allstats"]legend;
+            Messages.HorseAllStatsHeader = (string)gameData["messages"]["meta"]["horse"]["allstats"]["all_stats_header"];
+            Messages.HorseNameEntryFormat = (string)gameData["messages"]["meta"]["horse"]["allstats"]["horse_name_entry"];
+            Messages.HorseBasicStatsCompactedFormat = (string)gameData["messages"]["meta"]["horse"]["allstats"]["basic_stats_compact"];
+            Messages.HorseAdvancedStatsCompactedFormat = (string)gameData["messages"]["meta"]["horse"]["allstats"]["advanced_stats_compact"];
+            Messages.HorseAllStatsLegend = (string)gameData["messages"]["meta"]["horse"]["allstats"]["legend"];
 
 
             // Horse companion menu
-            Messages.HorseCompanionMenuHeaderFormat = gameData["messages"]["meta"]["horse"]["companion_menu"]menu_header;
-            Messages.HorseCompnaionMenuCurrentCompanionFormat = gameData["messages"]["meta"]["horse"]["companion_menu"]selected_companion;
-            Messages.HorseCompanionEntryFormat = gameData["messages"]["meta"]["horse"]["companion_menu"]companion_entry;
-            Messages.HorseCompanionEquipMessageFormat = gameData["messages"]["meta"]["horse"]["companion_menu"]companion_equip_message;
-            Messages.HorseCompanionRemoveMessageFormat = gameData["messages"]["meta"]["horse"]["companion_menu"]companion_remove_message;
-            Messages.HorseCompanionMenuCurrentlyAvalibleCompanions = gameData["messages"]["meta"]["horse"]["companion_menu"]companions_avalible;
+            Messages.HorseCompanionMenuHeaderFormat = (string)gameData["messages"]["meta"]["horse"]["companion_menu"]["menu_header"];
+            Messages.HorseCompnaionMenuCurrentCompanionFormat = (string)gameData["messages"]["meta"]["horse"]["companion_menu"]["selected_companion"];
+            Messages.HorseCompanionEntryFormat = (string)gameData["messages"]["meta"]["horse"]["companion_menu"]["companion_entry"];
+            Messages.HorseCompanionEquipMessageFormat = (string)gameData["messages"]["meta"]["horse"]["companion_menu"]["companion_equip_message"];
+            Messages.HorseCompanionRemoveMessageFormat = (string)gameData["messages"]["meta"]["horse"]["companion_menu"]["companion_remove_message"];
+            Messages.HorseCompanionMenuCurrentlyAvalibleCompanions = (string)gameData["messages"]["meta"]["horse"]["companion_menu"]["companions_avalible"];
 
             // Horse Feed Menu
-            Messages.HorseCurrentStatusFormat = gameData["messages"]["meta"]["horse"]["feed_horse"]current_status;
-            Messages.HorseHoldingHorseFeed = gameData["messages"]["meta"]["horse"]["feed_horse"]holding_horse_feed;
-            Messages.HorsefeedFormat = gameData["messages"]["meta"]["horse"]["feed_horse"]horsefeed_format;
-            Messages.HorseNeighsThanks = gameData["messages"]["meta"]["horse"]["feed_horse"]horse_neigh;
-            Messages.HorseCouldNotFinish = gameData["messages"]["meta"]["horse"]["feed_horse"]horse_could_not_finish;
+            Messages.HorseCurrentStatusFormat = (string)gameData["messages"]["meta"]["horse"]["feed_horse"]["current_status"];
+            Messages.HorseHoldingHorseFeed = (string)gameData["messages"]["meta"]["horse"]["feed_horse"]["holding_horse_feed"];
+            Messages.HorsefeedFormat = (string)gameData["messages"]["meta"]["horse"]["feed_horse"]["horsefeed_format"];
+            Messages.HorseNeighsThanks = (string)gameData["messages"]["meta"]["horse"]["feed_horse"]["horse_neigh"];
+            Messages.HorseCouldNotFinish = (string)gameData["messages"]["meta"]["horse"]["feed_horse"]["horse_could_not_finish"];
 
-            Messages.HorseFeedPersonalityIncreased = gameData["messages"]["meta"]["horse"]["feed_horse"]feed_special_personality;
-            Messages.HorseFeedInteligenceIncreased = gameData["messages"]["meta"]["horse"]["feed_horse"]feed_special_inteligence;
-            Messages.HorseFeedMagicBeanFormat = gameData["messages"]["meta"]["horse"]["feed_horse"]feed_special_magic_bean;
-            Messages.HorseFeedMagicDropletFormat = gameData["messages"]["meta"]["horse"]["feed_horse"]feed_special_magic_droplet;
+            Messages.HorseFeedPersonalityIncreased = (string)gameData["messages"]["meta"]["horse"]["feed_horse"]["feed_special_personality"];
+            Messages.HorseFeedInteligenceIncreased = (string)gameData["messages"]["meta"]["horse"]["feed_horse"]["feed_special_inteligence"];
+            Messages.HorseFeedMagicBeanFormat = (string)gameData["messages"]["meta"]["horse"]["feed_horse"]["feed_special_magic_bean"];
+            Messages.HorseFeedMagicDropletFormat = (string)gameData["messages"]["meta"]["horse"]["feed_horse"]["feed_special_magic_droplet"];
 
             // Tack menu (horses)
-            Messages.HorseTackedAsFollowsFormat = gameData["messages"]["meta"]["horse"]["tack_menu"]tacked_as_follows;
-            Messages.HorseUnEquipSaddleFormat = gameData["messages"]["meta"]["horse"]["tack_menu"]dequip_saddle;
-            Messages.HorseUnEquipSaddlePadFormat = gameData["messages"]["meta"]["horse"]["tack_menu"]dequip_saddle_pad;
-            Messages.HorseUnEquipBridleFormat = gameData["messages"]["meta"]["horse"]["tack_menu"]dequip_bridle;
-            Messages.HorseTackInInventory = gameData["messages"]["meta"]["horse"]["tack_menu"]you_have_following_tack;
-            Messages.HorseLlamaTackInInventory = gameData["messages"]["meta"]["horse"]["tack_menu"]you_have_following_llama_tack;
-            Messages.HorseCamelTackInInventory = gameData["messages"]["meta"]["horse"]["tack_menu"]you_have_following_camel_tack;
-            Messages.HorseEquipFormat = gameData["messages"]["meta"]["horse"]["tack_menu"]equip_tack;
-            Messages.BackToHorse = gameData["messages"]["meta"]["horse"]back_to_horse;
+            Messages.HorseTackedAsFollowsFormat = (string)gameData["messages"]["meta"]["horse"]["tack_menu"]["tacked_as_follows"];
+            Messages.HorseUnEquipSaddleFormat = (string)gameData["messages"]["meta"]["horse"]["tack_menu"]["dequip_saddle"];
+            Messages.HorseUnEquipSaddlePadFormat = (string)gameData["messages"]["meta"]["horse"]["tack_menu"]["dequip_saddle_pad"];
+            Messages.HorseUnEquipBridleFormat = (string)gameData["messages"]["meta"]["horse"]["tack_menu"]["dequip_bridle"];
+            Messages.HorseTackInInventory = (string)gameData["messages"]["meta"]["horse"]["tack_menu"]["you_have_following_tack"];
+            Messages.HorseLlamaTackInInventory = (string)gameData["messages"]["meta"]["horse"]["tack_menu"]["you_have_following_llama_tack"];
+            Messages.HorseCamelTackInInventory = (string)gameData["messages"]["meta"]["horse"]["tack_menu"]["you_have_following_camel_tack"];
+            Messages.HorseEquipFormat = (string)gameData["messages"]["meta"]["horse"]["tack_menu"]["equip_tack"];
+            Messages.BackToHorse = (string)gameData["messages"]["meta"]["horse"]["back_to_horse"];
 
 
             // Libary
-            Messages.LibaryMainMenu = gameData["messages"]["meta"]["libary"]main_menu;
-            Messages.LibaryFindNpc = gameData["messages"]["meta"]["libary"]find_npc;
-            Messages.LibaryFindNpcSearchResultsHeader = gameData["messages"]["meta"]["libary"]find_npc_results_header;
-            Messages.LibaryFindNpcSearchResultFormat = gameData["messages"]["meta"]["libary"]find_npc_results_format;
-            Messages.LibaryFindNpcSearchNoResults = gameData["messages"]["meta"]["libary"]find_npc_no_results;
-            Messages.LibaryFindNpcLimit5 = gameData["messages"]["meta"]["libary"]find_npc_limit5;
+            Messages.LibaryMainMenu = (string)gameData["messages"]["meta"]["libary"]["main_menu"];
+            Messages.LibaryFindNpc = (string)gameData["messages"]["meta"]["libary"]["find_npc"];
+            Messages.LibaryFindNpcSearchResultsHeader = (string)gameData["messages"]["meta"]["libary"]["find_npc_results_header"];
+            Messages.LibaryFindNpcSearchResultFormat = (string)gameData["messages"]["meta"]["libary"]["find_npc_results_format"];
+            Messages.LibaryFindNpcSearchNoResults = (string)gameData["messages"]["meta"]["libary"]["find_npc_no_results"];
+            Messages.LibaryFindNpcLimit5 = (string)gameData["messages"]["meta"]["libary"]["find_npc_limit5"];
 
-            Messages.LibaryFindRanch = gameData["messages"]["meta"]["libary"]find_ranch;
-            Messages.LibaryFindRanchResultsHeader = gameData["messages"]["meta"]["libary"]find_ranch_match_closely;
-            Messages.LibaryFindRanchResultFormat = gameData["messages"]["meta"]["libary"]find_ranch_result;
-            Messages.LibaryFindRanchResultsNoResults = gameData["messages"]["meta"]["libary"]find_ranch_no_results;
+            Messages.LibaryFindRanch = (string)gameData["messages"]["meta"]["libary"]["find_ranch"];
+            Messages.LibaryFindRanchResultsHeader = (string)gameData["messages"]["meta"]["libary"]["find_ranch_match_closely"];
+            Messages.LibaryFindRanchResultFormat = (string)gameData["messages"]["meta"]["libary"]["find_ranch_result"];
+            Messages.LibaryFindRanchResultsNoResults = (string)gameData["messages"]["meta"]["libary"]["find_ranch_no_results"];
 
-            Messages.HorseBreedFormat = gameData["messages"]["meta"]["libary"]horse_breed_format;
-            Messages.HorseRelativeFormat = gameData["messages"]["meta"]["libary"]horse_relative_format;
-            Messages.BreedViewerFormat = gameData["messages"]["meta"]["libary"]breed_preview_format;
-            Messages.BreedViewerMaximumStats = gameData["messages"]["meta"]["libary"]maximum_stats;
+            Messages.HorseBreedFormat = (string)gameData["messages"]["meta"]["libary"]["horse_breed_format"];
+            Messages.HorseRelativeFormat = (string)gameData["messages"]["meta"]["libary"]["horse_relative_format"];
+            Messages.BreedViewerFormat = (string)gameData["messages"]["meta"]["libary"]["breed_preview_format"];
+            Messages.BreedViewerMaximumStats = (string)gameData["messages"]["meta"]["libary"]["maximum_stats"];
 
             // Chat
 
-            Messages.ChatViolationMessageFormat = gameData["messages"]["chat"]violation_format;
-            Messages.RequiredChatViolations = gameData["messages"]["chat"]violation_points_required;
+            Messages.ChatViolationMessageFormat = (string)gameData["messages"]["chat"]["violation_format"];
+            Messages.RequiredChatViolations = (int)gameData["messages"]["chat"]["violation_points_required"];
 
-            Messages.GlobalChatFormatForModerators = gameData["messages"]["chat"]for_others.global_format_moderator;
-            Messages.DirectChatFormatForModerators = gameData["messages"]["chat"]for_others.dm_format_moderator;
+            Messages.GlobalChatFormatForModerators = (string)gameData["messages"]["chat"]["for_others"]["global_format_moderator"];
+            Messages.DirectChatFormatForModerators = (string)gameData["messages"]["chat"]["for_others"]["dm_format_moderator"];
 
-            Messages.YouWereSentToPrisionIsle = gameData["messages"]starved_horse;
+            Messages.YouWereSentToPrisionIsle = (string)gameData["messages"]["starved_horse"];
 
-            Messages.HereChatFormat = gameData["messages"]["chat"]for_others.here_format;
-            Messages.IsleChatFormat = gameData["messages"]["chat"]for_others.isle_format;
-            Messages.NearChatFormat = gameData["messages"]["chat"]for_others.near_format;
-            Messages.GlobalChatFormat = gameData["messages"]["chat"]for_others.global_format;
-            Messages.AdsChatFormat = gameData["messages"]["chat"]for_others.ads_format;
-            Messages.DirectChatFormat = gameData["messages"]["chat"]for_others.dm_format;
-            Messages.BuddyChatFormat = gameData["messages"]["chat"]for_others.friend_format;
-            Messages.ModChatFormat = gameData["messages"]["chat"]for_others.mod_format;
-            Messages.AdminChatFormat = gameData["messages"]["chat"]for_others.admin_format;
+            Messages.HereChatFormat = (string)gameData["messages"]["chat"]["for_others"]["here_format"];
+            Messages.IsleChatFormat = (string)gameData["messages"]["chat"]["for_others"]["isle_format"];
+            Messages.NearChatFormat = (string)gameData["messages"]["chat"]["for_others"]["near_format"];
+            Messages.GlobalChatFormat = (string)gameData["messages"]["chat"]["for_others"]["global_format"];
+            Messages.AdsChatFormat = (string)gameData["messages"]["chat"]["for_others"]["ads_format"];
+            Messages.DirectChatFormat = (string)gameData["messages"]["chat"]["for_others"]["dm_format"];
+            Messages.BuddyChatFormat = (string)gameData["messages"]["chat"]["for_others"]["friend_format"];
+            Messages.ModChatFormat = (string)gameData["messages"]["chat"]["for_others"]["mod_format"];
+            Messages.AdminChatFormat = (string)gameData["messages"]["chat"]["for_others"]["admin_format"];
 
-            Messages.HereChatFormatForSender = gameData["messages"]["chat"]for_sender.here_format;
-            Messages.IsleChatFormatForSender = gameData["messages"]["chat"]for_sender.isle_format;
-            Messages.NearChatFormatForSender = gameData["messages"]["chat"]for_sender.near_format;
-            Messages.BuddyChatFormatForSender = gameData["messages"]["chat"]for_sender.friend_format;
-            Messages.DirectChatFormatForSender = gameData["messages"]["chat"]for_sender.dm_format;
-            Messages.ModChatFormatForSender = gameData["messages"]["chat"]for_sender.mod_format;
-            Messages.AdsChatFormatForSender = gameData["messages"]["chat"]for_sender.ads_format;
-            Messages.AdminChatFormatForSender = gameData["messages"]["chat"]for_sender.admin_format;
+            Messages.HereChatFormatForSender = (string)gameData["messages"]["chat"]["for_sender"]["here_format"];
+            Messages.IsleChatFormatForSender = (string)gameData["messages"]["chat"]["for_sender"]["isle_format"];
+            Messages.NearChatFormatForSender = (string)gameData["messages"]["chat"]["for_sender"]["near_format"];
+            Messages.BuddyChatFormatForSender = (string)gameData["messages"]["chat"]["for_sender"]["friend_format"];
+            Messages.DirectChatFormatForSender = (string)gameData["messages"]["chat"]["for_sender"]["dm_format"];
+            Messages.ModChatFormatForSender = (string)gameData["messages"]["chat"]["for_sender"]["mod_format"];
+            Messages.AdsChatFormatForSender = (string)gameData["messages"]["chat"]["for_sender"]["ads_format"];
+            Messages.AdminChatFormatForSender = (string)gameData["messages"]["chat"]["for_sender"]["admin_format"];
 
-            Messages.ServerAnnoucementFormat = gameData["messages"]["chat"]server_annoucement;
+            Messages.ServerAnnoucementFormat = (string)gameData["messages"]["chat"]["server_annoucement"];
 
-            Messages.DmModBadge = gameData["messages"]["chat"]dm_moderator;
-            Messages.DmAutoResponse = gameData["messages"]["chat"]dm_autoreply;
+            Messages.DmModBadge = (string)gameData["messages"]["chat"]["dm_moderator"];
+            Messages.DmAutoResponse = (string)gameData["messages"]["chat"]["dm_autoreply"];
 
-            Messages.AdminCommandFormat = gameData["messages"]commands.admin_command_completed;
-            Messages.PlayerCommandFormat = gameData["messages"]commands.player_command_completed;
-            Messages.MuteHelp = gameData["messages"]commands.mute_help;
-            Messages.UnMuteHelp = gameData["messages"]commands.unmute_help;
+            Messages.AdminCommandFormat = (string)gameData["messages"]["commands"]["admin_command_completed"];
+            Messages.PlayerCommandFormat = (string)gameData["messages"]["commands"]["player_command_completed"];
+            Messages.MuteHelp = (string)gameData["messages"]["commands"]["mute_help"];
+            Messages.UnMuteHelp = (string)gameData["messages"]["commands"]["unmute_help"];
 
-            Messages.PasswordNotice = gameData["messages"]["chat"]password_included;
-            Messages.CapsNotice = gameData["messages"]["chat"]caps_notice;
+            Messages.PasswordNotice = (string)gameData["messages"]["chat"]["password_included"];
+            Messages.CapsNotice = (string)gameData["messages"]["chat"]["caps_notice"];
 
             // AutoReply
-            Messages.AutoReplyTooLong = gameData["messages"]auto_reply.too_long; 
-            Messages.AutoReplyHasViolations = gameData["messages"]auto_reply.contains_violations;
+            Messages.AutoReplyTooLong = (string)gameData["messages"]["auto_reply.too_long"];
+            Messages.AutoReplyHasViolations = (string)gameData["messages"]["auto_reply.contains_violations"];
 
             // Drawing Rooms
-            Messages.DrawingLastToDrawFormat = gameData["messages"]["meta"]drawing_rooms.last_draw;
-            Messages.DrawingContentsSavedInSlotFormat = gameData["messages"]["meta"]drawing_rooms.saved;
-            Messages.DrawingContentsLoadedFromSlotFormat = gameData["messages"]["meta"]drawing_rooms.load;
-            Messages.DrawingPlzClearDraw = gameData["messages"]["meta"]drawing_rooms.plz_clear_draw;
-            Messages.DrawingPlzClearLoad = gameData["messages"]["meta"]drawing_rooms.plz_clear_load;
-            Messages.DrawingNotSentNotSubscribed = gameData["messages"]["meta"]drawing_rooms.not_subscribed_draw;
-            Messages.DrawingCannotLoadNotSubscribed = gameData["messages"]["meta"]drawing_rooms.not_subscribed_load;
+            Messages.DrawingLastToDrawFormat = (string)gameData["messages"]["meta"]["drawing_rooms"]["last_draw"];
+            Messages.DrawingContentsSavedInSlotFormat = (string)gameData["messages"]["meta"]["drawing_rooms"]["saved"];
+            Messages.DrawingContentsLoadedFromSlotFormat = (string)gameData["messages"]["meta"]["drawing_rooms"]["load"];
+            Messages.DrawingPlzClearDraw = (string)gameData["messages"]["meta"]["drawing_rooms"]["plz_clear_draw"];
+            Messages.DrawingPlzClearLoad = (string)gameData["messages"]["meta"]["drawing_rooms"]["plz_clear_load"];
+            Messages.DrawingNotSentNotSubscribed = (string)gameData["messages"]["meta"]["drawing_rooms"]["not_subscribed_draw"];
+            Messages.DrawingCannotLoadNotSubscribed = (string)gameData["messages"]["meta"]["drawing_rooms"]["not_subscribed_load"];
 
             // Brickpoet
-            Messages.LastPoetFormat = gameData["messages"]["meta"]last_poet;
+            Messages.LastPoetFormat = (string)gameData["messages"]["meta"]["last_poet"];
 
             // Mutliroom
-            Messages.MultiroomParticipentFormat = gameData["messages"]["meta"]multiroom.partcipent_format;
-            Messages.MultiroomPlayersParticipating = gameData["messages"]["meta"]multiroom.other_players_participating;
+            Messages.MultiroomParticipentFormat = (string)gameData["messages"]["meta"]["multiroom"]["partcipent_format"];
+            Messages.MultiroomPlayersParticipating = (string)gameData["messages"]["meta"]["multiroom"]["other_players_participating"];
 
             // Dropped Items
+            Messages.NothingMessage = (string)gameData["messages"]["meta"]["dropped_items"]["nothing_message"];
+            Messages.ItemsOnGroundMessage = (string)gameData["messages"]["meta"]["dropped_items"]["items_message"];
+            Messages.GrabItemFormat = (string)gameData["messages"]["meta"]["dropped_items"]["item_format"];
+            Messages.ItemInformationFormat = (string)gameData["messages"]["meta"]["dropped_items"]["item_information_format"];
+            Messages.GrabAllItemsButton = (string)gameData["messages"]["meta"]["dropped_items"]["grab_all"];
+            Messages.DroppedAnItemMessage = (string)gameData["messages"]["dropped_items"]["dropped_item_message"];
+            Messages.DroppedItemTileIsFull = (string)gameData["messages"]["dropped_items"]["drop_tile_full"];
+            Messages.DroppedItemCouldntPickup = (string)gameData["messages"]["dropped_items"]["other_picked_up"];
+            Messages.GrabbedAllItemsMessage = (string)gameData["messages"]["dropped_items"]["grab_all_message"];
+            Messages.GrabbedItemMessage = (string)gameData["messages"]["dropped_items"]["grab_message"];
+            Messages.GrabAllItemsMessage = (string)gameData["messages"]["dropped_items"]["grab_all_message"];
 
-            Messages.NothingMessage = gameData["messages"]["meta"]dropped_items.nothing_message;
-            Messages.ItemsOnGroundMessage = gameData["messages"]["meta"]dropped_items.items_message;
-            Messages.GrabItemFormat = gameData["messages"]["meta"]dropped_items.item_format;
-            Messages.ItemInformationFormat = gameData["messages"]["meta"]dropped_items.item_information_format;
-            Messages.GrabAllItemsButton = gameData["messages"]["meta"]dropped_items.grab_all;
-            Messages.DroppedAnItemMessage = gameData["messages"]dropped_items.dropped_item_message;
-            Messages.DroppedItemTileIsFull = gameData["messages"]dropped_items.drop_tile_full;
-            Messages.DroppedItemCouldntPickup = gameData["messages"]dropped_items.other_picked_up;
-            Messages.GrabbedAllItemsMessage = gameData["messages"]dropped_items.grab_all_message;
-            Messages.GrabbedItemMessage = gameData["messages"]dropped_items.grab_message;
-            Messages.GrabAllItemsMessage = gameData["messages"]dropped_items.grab_all_message;
-
-            Messages.GrabbedAllItemsButInventoryFull = gameData["messages"]dropped_items.grab_all_but_inv_full;
-            Messages.GrabbedItemButInventoryFull = gameData["messages"]dropped_items.grab_but_inv_full;
+            Messages.GrabbedAllItemsButInventoryFull = (string)gameData["messages"]["dropped_items"]["grab_all_but_inv_full"];
+            Messages.GrabbedItemButInventoryFull = (string)gameData["messages"]["dropped_items"]["grab_but_inv_full"];
 
             // Tools
-            Messages.BinocularsNothing = gameData["messages"]tools.binoculars;
-            Messages.MagnifyNothing = gameData["messages"]tools.magnify;
-            Messages.RakeNothing = gameData["messages"]tools.rake;
-            Messages.ShovelNothing = gameData["messages"]tools.shovel;
+            Messages.BinocularsNothing = (string)gameData["messages"]["tools"]["binoculars"];
+            Messages.MagnifyNothing = (string)gameData["messages"]["tools"]["magnify"];
+            Messages.RakeNothing = (string)gameData["messages"]["tools"]["rake"];
+            Messages.ShovelNothing = (string)gameData["messages"]["tools"]["shovel"];
 
             // Shop
-            Messages.ThingsIAmSelling = gameData["messages"]["meta"]shop.selling;
-            Messages.ThingsYouSellMe = gameData["messages"]["meta"]shop.sell_me;
-            Messages.InfinitySign = gameData["messages"]["meta"]shop.infinity;
+            Messages.ThingsIAmSelling = (string)gameData["messages"]["meta"]["shop"]["selling"];
+            Messages.ThingsYouSellMe = (string)gameData["messages"]["meta"]["shop"]["sell_me"];
+            Messages.InfinitySign = (string)gameData["messages"]["meta"]["shop"]["infinity"];
 
-            Messages.CantAfford1 = gameData["messages"]shop.cant_afford_1;
-            Messages.CantAfford5 = gameData["messages"]shop.cant_afford_5;
-            Messages.CantAfford25 = gameData["messages"]shop.cant_afford_25;
-            Messages.Brought1Format = gameData["messages"]shop.brought_1;
-            Messages.Brought5Format = gameData["messages"]shop.brought_5;
-            Messages.Brought25Format = gameData["messages"]shop.brought_25;
-            Messages.Sold1Format = gameData["messages"]shop.sold_1;
-            Messages.SoldAllFormat = gameData["messages"]shop.sold_all;
-            Messages.CannotSellYoudGetTooMuchMoney = gameData["messages"]shop.cant_hold_extra_money;
+            Messages.CantAfford1 = (string)gameData["messages"]["shop"]["cant_afford_1"];
+            Messages.CantAfford5 = (string)gameData["messages"]["shop"]["cant_afford_5"];
+            Messages.CantAfford25 = (string)gameData["messages"]["shop"]["cant_afford_25"];
+            Messages.Brought1Format = (string)gameData["messages"]["shop"]["brought_1"];
+            Messages.Brought5Format = (string)gameData["messages"]["shop"]["brought_5"];
+            Messages.Brought25Format = (string)gameData["messages"]["shop"]["brought_25"];
+            Messages.Sold1Format = (string)gameData["messages"]["shop"]["sold_1"];
+            Messages.SoldAllFormat = (string)gameData["messages"]["shop"]["sold_all"];
+            Messages.CannotSellYoudGetTooMuchMoney = (string)gameData["messages"]["shop"]["cant_hold_extra_money"];
 
-            Messages.Brought1ButInventoryFull = gameData["messages"]shop.brought_1_but_inv_full;
-            Messages.Brought5ButInventoryFull = gameData["messages"]shop.brought_5_but_inv_full;
-            Messages.Brought25ButInventoryFull = gameData["messages"]shop.brought_25_but_inv_full;
+            Messages.Brought1ButInventoryFull = (string)gameData["messages"]["shop"]["brought_1_but_inv_full"];
+            Messages.Brought5ButInventoryFull = (string)gameData["messages"]["shop"]["brought_5_but_inv_full"];
+            Messages.Brought25ButInventoryFull = (string)gameData["messages"]["shop"]["brought_25_but_inv_full"];
 
             // Player List
+            Messages.PlayerListHeader = (string)gameData["messages"]["meta"]["player_list"]["playerlist_header"];
+            Messages.PlayerListSelectFromFollowing = (string)gameData["messages"]["meta"]["player_list"]["select_from_following"];
+            Messages.PlayerListOfBuddiesFormat = (string)gameData["messages"]["meta"]["player_list"]["list_of_buddies_format"];
+            Messages.PlayerListOfNearby = (string)gameData["messages"]["meta"]["player_list"]["list_of_players_nearby"];
+            Messages.PlayerListOfPlayersFormat = (string)gameData["messages"]["meta"]["player_list"]["list_of_all_players_format"];
+            Messages.PlayerListOfPlayersAlphabetically = (string)gameData["messages"]["meta"]["player_list"]["list_of_all_players_alphabetically"];
+            Messages.PlayerListMapAllBuddiesForamt = (string)gameData["messages"]["meta"]["player_list"]["map_all_buddies_format"];
+            Messages.PlayerListMapAllPlayersFormat = (string)gameData["messages"]["meta"]["player_list"]["map_all_players_format"];
+            Messages.PlayerListAbuseReport = (string)gameData["messages"]["meta"]["player_list"]["abuse_report"];
 
-            Messages.PlayerListHeader = gameData["messages"]["meta"]player_list.playerlist_header;
-            Messages.PlayerListSelectFromFollowing = gameData["messages"]["meta"]player_list.select_from_following;
-            Messages.PlayerListOfBuddiesFormat = gameData["messages"]["meta"]player_list.list_of_buddies_format;
-            Messages.PlayerListOfNearby = gameData["messages"]["meta"]player_list.list_of_players_nearby;
-            Messages.PlayerListOfPlayersFormat = gameData["messages"]["meta"]player_list.list_of_all_players_format;
-            Messages.PlayerListOfPlayersAlphabetically = gameData["messages"]["meta"]player_list.list_of_all_players_alphabetically;
-            Messages.PlayerListMapAllBuddiesForamt = gameData["messages"]["meta"]player_list.map_all_buddies_format;
-            Messages.PlayerListMapAllPlayersFormat = gameData["messages"]["meta"]player_list.map_all_players_format;
-            Messages.PlayerListAbuseReport = gameData["messages"]["meta"]player_list["abuse_report"];
+            Messages.MuteButton = (string)gameData["messages"]["meta"]["player_list"]["mute_button"];
+            Messages.HearButton = (string)gameData["messages"]["meta"]["player_list"]["hear_button"];
 
-            Messages.MuteButton = gameData["messages"]["meta"]player_list.mute_button;
-            Messages.HearButton = gameData["messages"]["meta"]player_list.hear_button;
+            Messages.ThreeMonthSubscripitionIcon = (int)gameData["messages"]["meta"]["player_list"]["icon_subbed_3month"];
+            Messages.YearSubscriptionIcon = (int)gameData["messages"]["meta"]["player_list"]["icon_subbed_year"];
+            Messages.NewUserIcon = (int)gameData["messages"]["meta"]["player_list"]["icon_new"];
+            Messages.MonthSubscriptionIcon = (int)gameData["messages"]["meta"]["player_list"]["icon_subbed_month"];
+            Messages.AdminIcon = (int)gameData["messages"]["meta"]["player_list"]["icon_admin"];
+            Messages.ModeratorIcon = (int)gameData["messages"]["meta"]["player_list"]["icon_mod"];
 
-            Messages.ThreeMonthSubscripitionIcon = gameData["messages"]["meta"]player_list.icon_subbed_3month;
-            Messages.YearSubscriptionIcon = gameData["messages"]["meta"]player_list.icon_subbed_year;
-            Messages.NewUserIcon = gameData["messages"]["meta"]player_list.icon_new;
-            Messages.MonthSubscriptionIcon = gameData["messages"]["meta"]player_list.icon_subbed_month;
-            Messages.AdminIcon = gameData["messages"]["meta"]player_list.icon_admin;
-            Messages.ModeratorIcon = gameData["messages"]["meta"]player_list.icon_mod;
+            Messages.BuddyListHeader = (string)gameData["messages"]["meta"]["player_list"]["online_buddy_header"];
+            Messages.BuddyListOnlineBuddyEntryFormat = (string)gameData["messages"]["meta"]["player_list"]["online_buddy_format"];
+            Messages.BuddyListOfflineBuddys = (string)gameData["messages"]["meta"]["player_list"]["offline_buddys"];
+            Messages.BuddyListOfflineBuddyEntryFormat = (string)gameData["messages"]["meta"]["player_list"]["offline_buddy_format"];
 
-            Messages.BuddyListHeader = gameData["messages"]["meta"]player_list.online_buddy_header;
-            Messages.BuddyListOnlineBuddyEntryFormat = gameData["messages"]["meta"]player_list.online_buddy_format;
-            Messages.BuddyListOfflineBuddys = gameData["messages"]["meta"]player_list.offline_buddys;
-            Messages.BuddyListOfflineBuddyEntryFormat = gameData["messages"]["meta"]player_list.offline_buddy_format;
+            Messages.NearbyPlayersListHeader = (string)gameData["messages"]["meta"]["player_list"]["nearby_player_header"];
+            Messages.PlayerListAllAlphabeticalHeader = (string)gameData["messages"]["meta"]["player_list"]["all_players_alphabetical_header"];
 
-            Messages.NearbyPlayersListHeader = gameData["messages"]["meta"]player_list.nearby_player_header;
-            Messages.PlayerListAllAlphabeticalHeader = gameData["messages"]["meta"]player_list.all_players_alphabetical_header;
+            Messages.PlayerListEntryFormat = (string)gameData["messages"]["meta"]["player_list"]["player_format"];
 
-            Messages.PlayerListEntryFormat = gameData["messages"]["meta"]player_list.player_format;
-
-            Messages.PlayerListIdle = gameData["messages"]["meta"]player_list.idle_text;
-            Messages.PlayerListAllHeader = gameData["messages"]["meta"]player_list.all_players_header;
-            Messages.PlayerListIconFormat = gameData["messages"]["meta"]player_list.icon_format;
-            Messages.PlayerListIconInformation = gameData["messages"]["meta"]player_list.icon_info;
+            Messages.PlayerListIdle = (string)gameData["messages"]["meta"]["player_list"]["idle_text"];
+            Messages.PlayerListAllHeader = (string)gameData["messages"]["meta"]["player_list"]["all_players_header"];
+            Messages.PlayerListIconFormat = (string)gameData["messages"]["meta"]["player_list"]["icon_format"];
+            Messages.PlayerListIconInformation = (string)gameData["messages"]["meta"]["player_list"]["icon_info"];
 
             // Consume
-
-            Messages.ConsumeItemFormat = gameData["messages"]consume.consumed_item_format;
-            Messages.ConsumedButMaxReached = gameData["messages"]consume.consumed_but_max_reached;
+            Messages.ConsumeItemFormat = (string)gameData["messages"]["consume"]["consumed_item_format"];
+            Messages.ConsumedButMaxReached = (string)gameData["messages"]["consume"]["consumed_but_max_reached"];
 
             // Meta Format
+            Messages.LocationFormat = (string)gameData["messages"]["meta"]["location_format"];
+            Messages.IsleFormat = (string)gameData["messages"]["meta"]["isle_format"];
+            Messages.TownFormat = (string)gameData["messages"]["meta"]["town_format"];
+            Messages.AreaFormat = (string)gameData["messages"]["meta"]["area_format"];
+            Messages.Seperator = (string)gameData["messages"]["meta"]["seperator"];
+            Messages.TileFormat = (string)gameData["messages"]["meta"]["tile_format"];
+            Messages.ExitThisPlace = (string)gameData["messages"]["meta"]["exit_this_place"];
+            Messages.BackToMap = (string)gameData["messages"]["meta"]["back_to_map"];
+            Messages.BackToMapHorse = (string)gameData["messages"]["meta"]["back_to_map_horse"];
+            Messages.LongFullLine = (string)gameData["messages"]["meta"]["long_full_line"];
+            Messages.MetaTerminator = (string)gameData["messages"]["meta"]["end_of_meta"];
 
-            Messages.LocationFormat = gameData["messages"]["meta"]location_format;
-            Messages.IsleFormat = gameData["messages"]["meta"]isle_format;
-            Messages.TownFormat = gameData["messages"]["meta"]town_format;
-            Messages.AreaFormat = gameData["messages"]["meta"]area_format;
-            Messages.Seperator = gameData["messages"]["meta"]seperator;
-            Messages.TileFormat = gameData["messages"]["meta"]tile_format;
-            Messages.ExitThisPlace = gameData["messages"]["meta"]exit_this_place;
-            Messages.BackToMap = gameData["messages"]["meta"]back_to_map;
-            Messages.BackToMapHorse = gameData["messages"]["meta"]back_to_map_horse;
-            Messages.LongFullLine = gameData["messages"]["meta"]long_full_line;
-            Messages.MetaTerminator = gameData["messages"]["meta"]end_of_meta;
+            Messages.PlayersHere = (string)gameData["messages"]["meta"]["player_interaction"]["players_here"];
+            Messages.NearbyPlayers = (string)gameData["messages"]["meta"]["nearby"]["players_nearby"];
+            Messages.North = (string)gameData["messages"]["meta"]["nearby"]["north"];
+            Messages.East = (string)gameData["messages"]["meta"]["nearby"]["east"];
+            Messages.South = (string)gameData["messages"]["meta"]["nearby"]["south"];
+            Messages.West = (string)gameData["messages"]["meta"]["nearby"]["west"];
 
-            Messages.PlayersHere = gameData["messages"]["meta"]player_interaction.players_here;
-            Messages.NearbyPlayers = gameData["messages"]["meta"]nearby.players_nearby;
-            Messages.North = gameData["messages"]["meta"]nearby.north;
-            Messages.East = gameData["messages"]["meta"]nearby.east;
-            Messages.South = gameData["messages"]["meta"]nearby.south;
-            Messages.West = gameData["messages"]["meta"]nearby.west;
-
-            Messages.NoPitchforkMeta = gameData["messages"]["meta"]hay_pile.no_pitchfork;
-            Messages.HasPitchforkMeta = gameData["messages"]["meta"]hay_pile.pitchfork;
-            Messages.R1 = gameData["messages"]["meta"]r1;
-            Messages.PasswordEntry = gameData["messages"]["meta"]password_input;
+            Messages.NoPitchforkMeta = (string)gameData["messages"]["meta"]["hay_pile"]["no_pitchfork"];
+            Messages.HasPitchforkMeta = (string)gameData["messages"]["meta"]["hay_pile"]["pitchfork"];
+            Messages.R1 = (string)gameData["messages"]["meta"]["r1"];
+            Messages.PasswordEntry = (string)gameData["messages"]["meta"]["password_input"];
 
             // Venus Fly Trap
-
-            Messages.VenusFlyTrapFormat = gameData["messages"]["meta"]venus_flytrap_format;
+            Messages.VenusFlyTrapFormat = (string)gameData["messages"]["meta"]["venus_flytrap_format"];
 
             // Shortcut
-            Messages.NoTelescope = gameData["messages"]no_telescope;
+            Messages.NoTelescope = (string)gameData["messages"]["no_telescope"];
 
             // Inn
-            Messages.InnBuyMeal = gameData["messages"]["meta"]inn.buy_meal;
-            Messages.InnBuyRest = gameData["messages"]["meta"]inn.buy_rest;
-            Messages.InnItemEntryFormat = gameData["messages"]["meta"]inn.inn_entry;
-            Messages.InnEnjoyedServiceFormat = gameData["messages"]inn.enjoyed_service;
-            Messages.InnCannotAffordService = gameData["messages"]inn.cant_afford;
-            Messages.InnFullyRested = gameData["messages"]inn.fully_rested;
+            Messages.InnBuyMeal = (string)gameData["messages"]["meta"]["inn"]["buy_meal"];
+            Messages.InnBuyRest = (string)gameData["messages"]["meta"]["inn"]["buy_rest"];
+            Messages.InnItemEntryFormat = (string)gameData["messages"]["meta"]["inn"]["inn_entry"];
+            Messages.InnEnjoyedServiceFormat = (string)gameData["messages"]["inn"]["enjoyed_service"];
+            Messages.InnCannotAffordService = (string)gameData["messages"]["inn"]["cant_afford"];
+            Messages.InnFullyRested = (string)gameData["messages"]["inn"]["fully_rested"];
 
             // Password
-            Messages.IncorrectPasswordMessage = gameData["messages"]incorrect_password;
+            Messages.IncorrectPasswordMessage = (string)gameData["messages"]["incorrect_password"];
 
             // Fountain
-            Messages.FountainMeta = gameData["messages"]["meta"]fountain;
-            Messages.FountainDrankYourFull = gameData["messages"]fountain.drank_your_fill;
-            Messages.FountainDroppedMoneyFormat = gameData["messages"]fountain.dropped_money;
+            Messages.FountainMeta = (string)gameData["messages"]["meta"]["fountain"];
+            Messages.FountainDrankYourFull = (string)gameData["messages"]["fountain"]["drank_your_fill"];
+            Messages.FountainDroppedMoneyFormat = (string)gameData["messages"]["fountain"]["dropped_money"];
 
             // Highscore
+            Messages.HighscoreHeaderMeta = (string)gameData["messages"]["meta"]["highscores"]["header_meta"];
+            Messages.HighscoreFormat = (string)gameData["messages"]["meta"]["highscores"]["highscore_format"];
+            Messages.BestTimeFormat = (string)gameData["messages"]["meta"]["highscores"]["besttime_format"];
 
-            Messages.HighscoreHeaderMeta = gameData["messages"]["meta"]highscores.header_meta;
-            Messages.HighscoreFormat = gameData["messages"]["meta"]highscores.highscore_format;
-            Messages.BestTimeFormat = gameData["messages"]["meta"]highscores.besttime_format;
+            Messages.GameHighScoreHeaderFormat = (string)gameData["messages"]["meta"]["highscores"]["game_highscore_header"];
+            Messages.GameHighScoreFormat = (string)gameData["messages"]["meta"]["highscores"]["game_highscore_format"];
 
-            Messages.GameHighScoreHeaderFormat = gameData["messages"]["meta"]highscores.game_highscore_header;
-            Messages.GameHighScoreFormat = gameData["messages"]["meta"]highscores.game_highscore_format;
+            Messages.GameWinLooseHeaderFormat = (string)gameData["messages"]["meta"]["highscores"]["game_winloose_header"];
+            Messages.GameWinLooseFormat = (string)gameData["messages"]["meta"]["highscores"]["game_winloose_format"];
 
-            Messages.GameWinLooseHeaderFormat = gameData["messages"]["meta"]highscores.game_winloose_header;
-            Messages.GameWinLooseFormat = gameData["messages"]["meta"]highscores.game_winloose_format;
-
-            Messages.GameBestTimeHeaderFormat = gameData["messages"]["meta"]highscores.game_besttime_header;
-            Messages.GameBestTimeFormat = gameData["messages"]["meta"]highscores.game_besttime_format;
+            Messages.GameBestTimeHeaderFormat = (string)gameData["messages"]["meta"]["highscores"]["game_besttime_header"];
+            Messages.GameBestTimeFormat = (string)gameData["messages"]["meta"]["highscores"]["game_besttime_format"];
 
             // Awards
-
-            Messages.AwardHeader = gameData["messages"]["meta"]awards_page.awards_header;
-            Messages.AwardOthersFormat = gameData["messages"]["meta"]awards_page.awards_others_header;
-            Messages.NoAwards = gameData["messages"]["meta"]awards_page.no_awards;
-            Messages.AwardFormat = gameData["messages"]["meta"]awards_page.award_format;
+            Messages.AwardHeader = (string)gameData["messages"]["meta"]["awards_page"]["awards_header"];
+            Messages.AwardOthersFormat = (string)gameData["messages"]["meta"]["awards_page"]["awards_others_header"];
+            Messages.NoAwards = (string)gameData["messages"]["meta"]["awards_page"]["no_awards"];
+            Messages.AwardFormat = (string)gameData["messages"]["meta"]["awards_page"]["award_format"];
 
             // World Peace
-            Messages.NoWishingCoins = gameData["messages"]["meta"]wishing_well.no_coins;
-            Messages.YouHaveWishingCoinsFormat = gameData["messages"]["meta"]wishing_well.wish_coins;
-            Messages.WishItemsFormat = gameData["messages"]["meta"]wishing_well.wish_things;
-            Messages.WishMoneyFormat = gameData["messages"]["meta"]wishing_well.wish_money;
-            Messages.WishWorldPeaceFormat = gameData["messages"]["meta"]wishing_well.wish_worldpeace;
+            Messages.NoWishingCoins = (string)gameData["messages"]["meta"]["wishing_well"]["no_coins"];
+            Messages.YouHaveWishingCoinsFormat = (string)gameData["messages"]["meta"]["wishing_well"]["wish_coins"];
+            Messages.WishItemsFormat = (string)gameData["messages"]["meta"]["wishing_well"]["wish_things"];
+            Messages.WishMoneyFormat = (string)gameData["messages"]["meta"]["wishing_well"]["wish_money"];
+            Messages.WishWorldPeaceFormat = (string)gameData["messages"]["meta"]["wishing_well"]["wish_worldpeace"];
 
-            Messages.TossedCoin = gameData["messages"]["meta"]wishing_well.make_wish;
-            Messages.WorldPeaceOnlySoDeep = gameData["messages"]["meta"]wishing_well.world_peace_message;
-            Messages.WishingWellMeta = gameData["messages"]["meta"]wishing_well.wish_meta;
+            Messages.TossedCoin = (string)gameData["messages"]["meta"]["wishing_well"]["make_wish"];
+            Messages.WorldPeaceOnlySoDeep = (string)gameData["messages"]["meta"]["wishing_well"]["world_peace_message"];
+            Messages.WishingWellMeta = (string)gameData["messages"]["meta"]["wishing_well"]["wish_meta"];
             // Sec Codes
 
-            Messages.InvalidSecCodeError = gameData["messages"]sec_code.invalid_sec_code;
-            Messages.YouEarnedAnItemFormat = gameData["messages"]sec_code.item_earned;
-            Messages.YouEarnedAnItemButInventoryWasFullFormat = gameData["messages"]sec_code.item_earned_full_inv;
-            Messages.YouLostAnItemFormat = gameData["messages"]sec_code.item_deleted;
-            Messages.YouEarnedMoneyFormat = gameData["messages"]sec_code.money_earned;
-            Messages.BeatHighscoreFormat = gameData["messages"]sec_code.highscore_beaten;
-            Messages.BeatBestHighscore = gameData["messages"]sec_code.best_highscore_beaten;
-            Messages.BeatBestTimeFormat = gameData["messages"]sec_code.best_time_beaten;
+            Messages.InvalidSecCodeError = (string)gameData["messages"]["sec_code"]["invalid_sec_code"];
+            Messages.YouEarnedAnItemFormat = (string)gameData["messages"]["sec_code"]["item_earned"];
+            Messages.YouEarnedAnItemButInventoryWasFullFormat = (string)gameData["messages"]["sec_code"]["item_earned_full_inv"];
+            Messages.YouLostAnItemFormat = (string)gameData["messages"]["sec_code"]["item_deleted"];
+            Messages.YouEarnedMoneyFormat = (string)gameData["messages"]["sec_code"]["money_earned"];
+            Messages.BeatHighscoreFormat = (string)gameData["messages"]["sec_code"]["highscore_beaten"];
+            Messages.BeatBestHighscore = (string)gameData["messages"]["sec_code"]["best_highscore_beaten"];
+            Messages.BeatBestTimeFormat = (string)gameData["messages"]["sec_code"]["best_time_beaten"];
 
             // Inventory
 
-            Messages.InventoryHeaderFormat = gameData["messages"]["meta"]inventory.header_format;
-            Messages.InventoryItemFormat = gameData["messages"]["meta"]inventory.item_entry;
-            Messages.ShopEntryFormat = gameData["messages"]["meta"]inventory.shop_entry;
-            Messages.ItemInformationButton = gameData["messages"]["meta"]inventory.item_info_button;
-            Messages.ItemInformationByIdButton = gameData["messages"]["meta"]inventory.item_info_itemid_button;
+            Messages.InventoryHeaderFormat = (string)gameData["messages"]["meta"]["inventory"]["header_format"];
+            Messages.InventoryItemFormat = (string)gameData["messages"]["meta"]["inventory"]["item_entry"];
+            Messages.ShopEntryFormat = (string)gameData["messages"]["meta"]["inventory"]["shop_entry"];
+            Messages.ItemInformationButton = (string)gameData["messages"]["meta"]["inventory"]["item_info_button"];
+            Messages.ItemInformationByIdButton = (string)gameData["messages"]["meta"]["inventory"]["item_info_itemid_button"];
 
-            Messages.ItemDropButton = gameData["messages"]["meta"]inventory.item_drop_button;
-            Messages.ItemThrowButton = gameData["messages"]["meta"]inventory.item_throw_button;
-            Messages.ItemConsumeButton = gameData["messages"]["meta"]inventory.item_consume_button;
-            Messages.ItemUseButton = gameData["messages"]["meta"]inventory.item_use_button;
-            Messages.ItemOpenButton = gameData["messages"]["meta"]inventory.item_open_button;
-            Messages.ItemWearButton = gameData["messages"]["meta"]inventory.item_wear_button;
-            Messages.ItemReadButton = gameData["messages"]["meta"]inventory.item_read_button;
+            Messages.ItemDropButton = (string)gameData["messages"]["meta"]["inventory"]["item_drop_button"];
+            Messages.ItemThrowButton = (string)gameData["messages"]["meta"]["inventory"]["item_throw_button"];
+            Messages.ItemConsumeButton = (string)gameData["messages"]["meta"]["inventory"]["item_consume_button"];
+            Messages.ItemUseButton = (string)gameData["messages"]["meta"]["inventory"]["item_use_button"];
+            Messages.ItemOpenButton = (string)gameData["messages"]["meta"]["inventory"]["item_open_button"];
+            Messages.ItemWearButton = (string)gameData["messages"]["meta"]["inventory"]["item_wear_button"];
+            Messages.ItemReadButton = (string)gameData["messages"]["meta"]["inventory"]["item_read_button"];
 
-            Messages.ShopBuyButton = gameData["messages"]["meta"]inventory.buy_button;
-            Messages.ShopBuy5Button = gameData["messages"]["meta"]inventory.buy_5_button;
-            Messages.ShopBuy25Button = gameData["messages"]["meta"]inventory.buy_25_button;
+            Messages.ShopBuyButton = (string)gameData["messages"]["meta"]["inventory"]["buy_button"];
+            Messages.ShopBuy5Button = (string)gameData["messages"]["meta"]["inventory"]["buy_5_button"];
+            Messages.ShopBuy25Button = (string)gameData["messages"]["meta"]["inventory"]["buy_25_button"];
 
-            Messages.SellButton = gameData["messages"]["meta"]inventory.sell_button;
-            Messages.SellAllButton = gameData["messages"]["meta"]inventory.sell_all_button;
+            Messages.SellButton = (string)gameData["messages"]["meta"]["inventory"]["sell_button"];
+            Messages.SellAllButton = (string)gameData["messages"]["meta"]["inventory"]["sell_all_button"];
             // Npc
 
-            Messages.NpcStartChatFormat = gameData["messages"]["meta"]npc.start_chat_format;
-            Messages.NpcNoChatpoints = gameData["messages"]["meta"]npc.no_chatpoints;
-            Messages.NpcChatpointFormat = gameData["messages"]["meta"]npc.chatpoint_format;
-            Messages.NpcReplyFormat = gameData["messages"]["meta"]npc.reply_format;
-            Messages.NpcTalkButton = gameData["messages"]["meta"]npc.npc_talk_button;
-            Messages.NpcInformationButton = gameData["messages"]["meta"]npc.npc_information_button;
-            Messages.NpcInformationFormat = gameData["messages"]["meta"]npc.npc_information_format;
+            Messages.NpcStartChatFormat = (string)gameData["messages"]["meta"]["npc"]["start_chat_format"];
+            Messages.NpcNoChatpoints = (string)gameData["messages"]["meta"]["npc"]["no_chatpoints"];
+            Messages.NpcChatpointFormat = (string)gameData["messages"]["meta"]["npc"]["chatpoint_format"];
+            Messages.NpcReplyFormat = (string)gameData["messages"]["meta"]["npc"]["reply_format"];
+            Messages.NpcTalkButton = (string)gameData["messages"]["meta"]["npc"]["npc_talk_button"];
+            Messages.NpcInformationButton = (string)gameData["messages"]["meta"]["npc"]["npc_information_button"];
+            Messages.NpcInformationFormat = (string)gameData["messages"]["meta"]["npc"]["npc_information_format"];
 
             // Login Failed Reasons
-            Messages.LoginFailedReasonBanned = gameData["messages"]login.banned;
-            Messages.LoginFailedReasonBannedIpFormat = gameData["messages"]login.ip_banned;
+            Messages.LoginFailedReasonBanned = (string)gameData["messages"]["login"]["banned"];
+            Messages.LoginFailedReasonBannedIpFormat = (string)gameData["messages"]["login"]["ip_banned"];
 
             // Disconnect Reasons
 
-            Messages.KickReasonKicked = gameData["messages"]["disconnect"]kicked;
-            Messages.KickReasonBanned = gameData["messages"]["disconnect"]banned;
-            Messages.KickReasonIdleFormat = gameData["messages"]["disconnect"]["client_timeout"]kick_message;
-            Messages.KickReasonNoTime = gameData["messages"]["disconnect"]no_playtime;
-            Messages.IdleWarningFormat = gameData["messages"]["disconnect"]["client_timeout"]warn_message;
-            Messages.KickReasonDuplicateLogin = gameData["messages"]["disconnect"]dupe_login;
+            Messages.KickReasonKicked = (string)gameData["messages"]["disconnect"]["kicked"];
+            Messages.KickReasonBanned = (string)gameData["messages"]["disconnect"]["banned"];
+            Messages.KickReasonIdleFormat = (string)gameData["messages"]["disconnect"]["client_timeout"]["kick_message"];
+            Messages.KickReasonNoTime = (string)gameData["messages"]["disconnect"]["no_playtime"];
+            Messages.IdleWarningFormat = (string)gameData["messages"]["disconnect"]["client_timeout"]["warn_message"];
+            Messages.KickReasonDuplicateLogin = (string)gameData["messages"]["disconnect"]["dupe_login"];
 
             // Competition Gear
 
-            Messages.EquipCompetitionGearFormat = gameData["messages"]equips.equip_competition_gear_format;
-            Messages.RemoveCompetitionGear = gameData["messages"]equips.removed_competition_gear;
+            Messages.EquipCompetitionGearFormat = (string)gameData["messages"]["equips"]["equip_competition_gear_format"];
+            Messages.RemoveCompetitionGear = (string)gameData["messages"]["equips"]["removed_competition_gear"];
 
             // Jewerly
-            Messages.EquipJewelryFormat = gameData["messages"]equips.equip_jewelry;
-            Messages.MaxJewelryMessage = gameData["messages"]equips.max_jewelry;
-            Messages.RemoveJewelry = gameData["messages"]equips.removed_jewelry;
+            Messages.EquipJewelryFormat = (string)gameData["messages"]["equips"]["equip_jewelry"];
+            Messages.MaxJewelryMessage = (string)gameData["messages"]["equips"]["max_jewelry"];
+            Messages.RemoveJewelry = (string)gameData["messages"]["equips"]["removed_jewelry"];
 
             // Click
-            Messages.NothingInterestingHere = gameData["messages"]click_nothing_message;
+            Messages.NothingInterestingHere = (string)gameData["messages"]["click_nothing_message"];
 
             // Swf
             Messages.WagonCutscene = (string)gameData["transport"]["wagon_cutscene"];
             Messages.BoatCutscene = (string)gameData["transport"]["boat_cutscene"];
             Messages.BallonCutscene = (string)gameData["transport"]["ballon_cutscene"];
 
-            gameData.Dispose();
+            gameData = null;
             GC.Collect();
             GC.WaitForPendingFinalizers();
-            gameData = null;
             return;
         }
 
