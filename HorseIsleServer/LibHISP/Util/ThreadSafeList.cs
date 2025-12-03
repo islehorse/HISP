@@ -1,12 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace HISP.Util
 {
-    public class ThreadSafeList<T> : List<T>
+    public class ThreadSafeList<T> : List<T>, IEnumerable<T>
     {
         private Mutex listLock = new Mutex();
+
+        new public T this[int key]
+        {
+            get
+            {
+                listLock.WaitOne();
+                T val = base[key];
+                listLock.ReleaseMutex();
+                return val;
+            }
+        }
+
+
         new public void AddRange(IEnumerable<T> collection)
         {
             listLock.WaitOne();
@@ -37,7 +51,7 @@ namespace HISP.Util
         new public IEnumerator GetEnumerator()
         {
             listLock.WaitOne();
-            IEnumerator res = base.ToArray().GetEnumerator();
+            ThreadSafeEnumerator<T> res = new ThreadSafeEnumerator<T>(base.GetEnumerator());
             listLock.ReleaseMutex();
             return res;
         }
