@@ -115,8 +115,8 @@ jobs:
         chmod +x /tmp/debpkg/DebianArm/usr/bin/HISPd
         mkdir debpackage-arm
         dpkg-deb --build /tmp/debpkg/DebianArm
-        mv /tmp/debpkg/DebianArm.deb debpackage-arm/HISP-Debian-ARM64.deb
-        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm/HISP-Debian-ARM64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/arm/upload
+        mv /tmp/debpkg/DebianArm.deb debpackage-arm/HISP-Debian-ARM.deb
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm/HISP-Debian-ARM.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/arm/upload
         
 # Upload LINUX
 
