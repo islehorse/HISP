@@ -27,7 +27,7 @@ jobs:
     - name: Install utils
       run: |
         sudo apt update
-        sudo apt install -y build-essential zlib1g-dev dos2unix
+        sudo apt install -y clang build-essential zlib1g-dev dos2unix gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf gcc-arm-none-eabi gcc-aarch64-linux-gnu
         dotnet tool install -g dotnet-script
         
     - name: Restore dependencies
