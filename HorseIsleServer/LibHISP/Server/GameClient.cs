@@ -68,7 +68,6 @@ namespace HISP.Server
 
         public GameClient(Socket clientSocket)
         {
-
             kickTimer = new Timer(new TimerCallback(kickTimerTick), null, kickInterval, kickInterval);
             warnTimer = new Timer(new TimerCallback(warnTimerTick), null, warnInterval, warnInterval);
             minuteTimer = new Timer(new TimerCallback(minuteTimerTick), null, oneMinute, oneMinute);
@@ -76,8 +75,6 @@ namespace HISP.Server
             networkTransport = new Hybrid();
             networkTransport.Accept(clientSocket, parsePackets, disconnectHandler);
             Logger.DebugPrint(networkTransport.Name + " : Client connected @ " + networkTransport.Ip);
-
-
         }
 
         public static void OnShutdown(string reason)
@@ -425,7 +422,7 @@ namespace HISP.Server
             }
             catch (ObjectDisposedException e) 
             {
-                Logger.DebugPrint("Unhandled exception: " + e.Message);
+                Logger.ErrorPrint("Unhandled exception: " + e.Message);
                 return;
             }
 
@@ -552,8 +549,7 @@ namespace HISP.Server
 
        public void SendPacket(byte[] packetData)
         {
-            if(!networkTransport.Disconnected)
-                networkTransport.Send(packetData);
+            if(!networkTransport.Disconnected) networkTransport.Send(packetData);
         }
 
     }

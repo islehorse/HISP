@@ -13,7 +13,7 @@ namespace MPN00BS
     {
         public ResetWindow()
         {
-            InitializeComponent();
+            InitializeComponent(true);
         }
 
         private void ValidateInput()
@@ -114,18 +114,6 @@ namespace MPN00BS
             ValidateInput();
 
         }
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-            resetPasswordButton = this.FindControl<Button>("resetPasswordButton");
-
-            usernameValidationFailReason = this.FindControl<Label>("usernameValidationFailReason");
-            passwordValidationFailReason = this.FindControl<Label>("passwordValidationFailReason");
-
-            usernameBox = this.FindControl<TextBox>("usernameBox");
-            passwordBox = this.FindControl<TextBox>("passwordBox");
-        }
-
         private void ResetPassword(object sender, RoutedEventArgs e)
         {
             Authentication.ChangePassword(usernameBox.Text, passwordBox.Text);

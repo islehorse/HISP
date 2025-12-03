@@ -16,7 +16,11 @@ namespace MPN00BS
             try
             {
                 GameServer.ShutdownServer();
-            }catch(Exception) { Environment.Exit(-1); }
+            }
+            catch(Exception) 
+            { 
+                Environment.Exit(-1); 
+            }
         }
         public void OnServerStarted()
         {
@@ -53,20 +57,15 @@ namespace MPN00BS
         }
         public LoadingWindow()
         {
-            InitializeComponent();
+            InitializeComponent(true);
             ServerStarter.StartHttpServer();
             new Task( () => ServerStarter.StartHispServer(ProgressUpdate, OnNoUsersFound, OnServerStarted, OnShutdown)).Start();
         }
 
-        private void OnServerClose(object sender, CancelEventArgs e)
+        private void OnServerClose(object sender, WindowClosingEventArgs e)
         {
             GameServer.ShutdownServer();
         }
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-            startupProgress = this.FindControl<ProgressBar>("startupProgress");
-        }
     }
 }
