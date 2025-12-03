@@ -14,6 +14,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Xml.Linq;
+using static HISP.Game.Ranch;
 
 namespace HISP.Server
 {
@@ -229,8 +230,8 @@ namespace HISP.Server
                 specialTile.Code = ((string)gameData["places"]["special_tiles"].AsArray()[i]["code"]);
                 if (gameData["places"]["special_tiles"].AsArray()[i]["exit_x"] != null)
                     specialTile.ExitX = ((int)gameData["places"]["special_tiles"].AsArray()[i]["exit_x"]);
-                if (gameData["places"]["special_tiles"].AsArray()[i]["exit_x"] != null)
-                    specialTile.ExitY = ((int)gameData["places"]["special_tiles"].AsArray()[i]["exit_x"]);
+                if (gameData["places"]["special_tiles"].AsArray()[i]["exit_y"] != null)
+                    specialTile.ExitY = ((int)gameData["places"]["special_tiles"].AsArray()[i]["exit_y"]);
                 specialTile.AutoplaySwf = ((string)gameData["places"]["special_tiles"].AsArray()[i]["autoplay_swf"]);
                 specialTile.TypeFlag = ((string?)gameData["places"]["special_tiles"].AsArray()[i]["type_flag"]);
 
@@ -526,11 +527,11 @@ namespace HISP.Server
             for (int i = 0; i < totalShops; i++)
             {
                 int id = (int)gameData["shop_list"].AsArray()[i]["id"];
-                int[] item_list = gameData["shop_list"].AsArray()[i].stocks_itemids.Deserialize<int[]>();
+                int[] item_list = gameData["shop_list"].AsArray()[i]["stocks_itemids"].Deserialize<int[]>();
                 Shop shop = new Shop(item_list, id);
-                shop.BuyPricePercentage = gameData["shop_list"].AsArray()[i].buy_percent;
-                shop.SellPricePercentage = gameData["shop_list"].AsArray()[i].sell_percent;
-                shop.BuysItemTypes = gameData["shop_list"].AsArray()[i].buys_item_types.Deserialize<string[]>();
+                shop.BuyPricePercentage = (int)gameData["shop_list"].AsArray()[i]["buy_percent"];
+                shop.SellPricePercentage = (int)gameData["shop_list"].AsArray()[i]["sell_percent"];
+                shop.BuysItemTypes = gameData["shop_list"].AsArray()[i]["buys_item_types"].Deserialize<string[]>();
 
                 Logger.DebugPrint("Registered Shop ID: " + shop.Id + " Selling items at " + shop.SellPricePercentage + "% and buying at " + shop.BuyPricePercentage);
             }
@@ -545,12 +546,12 @@ namespace HISP.Server
 
                 Award.AwardEntry award = new Award.AwardEntry();
                 award.Id = (int)gameData["award_list"].AsArray()[i]["id"];
-                award.Sort = gameData["award_list"].AsArray()[i].sort_by;
-                award.Title = gameData["award_list"].AsArray()[i].title;
+                award.Sort = (int)gameData["award_list"].AsArray()[i]["sort_by"];
+                award.Title = (string)gameData["award_list"].AsArray()[i]["title"];
                 award.IconId = (int)gameData["award_list"].AsArray()[i]["icon_id"];
-                award.MoneyBonus = gameData["award_list"].AsArray()[i].earn_money;
-                award.CompletionText = gameData["award_list"].AsArray()[i].on_complete_text;
-                award.Description = gameData["award_list"].AsArray()[i].description;
+                award.MoneyBonus = (int)gameData["award_list"].AsArray()[i]["earn_money"];
+                award.CompletionText = (string)gameData["award_list"].AsArray()[i]["on_complete_text"];
+                award.Description = (string)gameData["award_list"].AsArray()[i]["description"];
 
                 Award.GlobalAwardList[i] = award;
 
@@ -559,13 +560,13 @@ namespace HISP.Server
         }
         private static void registerAbuseReportReasons()
         {
-            int totalAbuseReportReasons = gameData["messages"]["meta"]["abuse_report"]["reasons"].Count;
+            int totalAbuseReportReasons = gameData["messages"]["meta"]["abuse_report"]["reasons"].AsArray().Count;
             for (int i = 0; i < totalAbuseReportReasons; i++)
             {
                 AbuseReport.ReportReason reason = new AbuseReport.ReportReason();
-                reason.Id = (string)gameData["messages"]["meta"]["abuse_report"]["reasons"][i]["id"];
-                reason.Name = (string)gameData["messages"]["meta"]["abuse_report"]["reasons"][i]["name"];
-                reason.Meta = (string)gameData["messages"]["meta"]["abuse_report"]["reasons"][i]["meta"];
+                reason.Id = (string)gameData["messages"]["meta"]["abuse_report"]["reasons"].AsArray()[i]["id"];
+                reason.Name = (string)gameData["messages"]["meta"]["abuse_report"]["reasons"].AsArray()[i]["name"];
+                reason.Meta = (string)gameData["messages"]["meta"]["abuse_report"]["reasons"].AsArray()[i]["meta"];
                 AbuseReport.AddReason(reason);
                 Logger.DebugPrint("Registered Abuse Report Reason: " + reason.Name);
             }
@@ -573,12 +574,12 @@ namespace HISP.Server
         private static void registerOverlayTileDepth()
         {
             List<Map.TileDepth> overlayTilesDepth = new List<Map.TileDepth>();
-            int totalOverlayTileDepth = gameData.tile_paramaters.overlay_tiles.Count;
+            int totalOverlayTileDepth = gameData["tile_paramaters"]["overlay_tiles"].AsArray().Count;
             for (int i = 0; i < totalOverlayTileDepth; i++)
             {
                 Map.TileDepth tileDepth = new Map.TileDepth();
-                tileDepth.Passable = gameData.tile_paramaters.overlay_tiles[i].passable;
-                tileDepth.ShowPlayer = gameData.tile_paramaters.overlay_tiles[i].show_player;
+                tileDepth.Passable = (bool)gameData["tile_paramaters"]["overlay_tiles"].AsArray()[i]["passable"];
+                tileDepth.ShowPlayer = (bool)gameData["tile_paramaters"]["overlay_tiles"].AsArray()[i]["show_player"];
                 Logger.DebugPrint("Registered Overlay Tile: " + i + " Depth; Passable: " + tileDepth.Passable + " ShowPlayer: " + tileDepth.ShowPlayer);
                 overlayTilesDepth.Add(tileDepth);
             }
@@ -587,12 +588,12 @@ namespace HISP.Server
         private static void registerTerrianTileTypes()
         {
             List<Map.TerrainTile> terrainTiles = new List<Map.TerrainTile>();
-            int totalTerrainTiles = gameData.tile_paramaters.terrain_tiles.Count;
+            int totalTerrainTiles = gameData["tile_paramaters"]["terrain_tiles"].AsArray().Count;
             for (int i = 0; i < totalTerrainTiles; i++)
             {
                 Map.TerrainTile tile = new Map.TerrainTile();
-                tile.Passable = gameData.tile_paramaters.terrain_tiles[i].passable;
-                tile.Type = gameData.tile_paramaters.terrain_tiles[i].tile_type;
+                tile.Passable = (bool)gameData["tile_paramaters"]["terrain_tiles"].AsArray()[i]["passable"];
+                tile.Type = (string)gameData["tile_paramaters"]["terrain_tiles"].AsArray()[i]["tile_type"];
                 Logger.DebugPrint("Registered Tile Information: " + i + " Passable: " + tile.Passable + " Type: " + tile.Type);
                 terrainTiles.Add(tile);
             }
@@ -600,13 +601,13 @@ namespace HISP.Server
         }
         private static void registerInns()
         {
-            int totalInns = gameData.inns.Count;
+            int totalInns = gameData["inns"].AsArray().Count;
             for (int i = 0; i < totalInns; i++)
             {
-                int id = gameData.inns[i]["id"];
-                int[] restsOffered = gameData.inns[i].rests_offered.Deserialize<int[]>();
-                int[] mealsOffered = gameData.inns[i].meals_offered.Deserialize<int[]>();
-                int buyPercent = gameData.inns[i].buy_percent;
+                int id = (int)gameData["inns"].AsArray()[i]["id"];
+                int[] restsOffered = gameData["inns"].AsArray()[i]["rests_offered"].Deserialize<int[]>();
+                int[] mealsOffered = gameData["inns"].AsArray()[i]["meals_offered"].Deserialize<int[]>();
+                int buyPercent = (int)gameData["inns"].AsArray()[i]["buy_percent"];
                 Inn inn = new Inn(id, restsOffered, mealsOffered, buyPercent);
 
                 Logger.DebugPrint("Registered Inn: " + inn.Id + " Buying at: " + inn.BuyPercentage.ToString() + "%!");
@@ -615,13 +616,13 @@ namespace HISP.Server
 
         private static void registerPoets()
         {
-            int totalPoets = gameData.poetry.Count;
+            int totalPoets = gameData["poetry"].AsArray().Count;
             for (int i = 0; i < totalPoets; i++)
             {
                 Brickpoet.PoetryEntry entry = new Brickpoet.PoetryEntry();
-                entry.Id = gameData.poetry[i]["id"];
-                entry.Word = gameData.poetry[i]["word"];
-                entry.Room = gameData.poetry[i].room_id;
+                entry.Id = (int)gameData["poetry"].AsArray()[i]["id"];
+                entry.Word = (string)gameData["poetry"].AsArray()[i]["word"];
+                entry.Room = (int)gameData["poetry"].AsArray()[i]["room_id"];
                 Brickpoet.AddPoetEntry(entry);
 
                 Logger.DebugPrint("Registered poet: " + entry.Id.ToString() + " word: " + entry.Word + " in room " + entry.Room.ToString());
@@ -630,32 +631,32 @@ namespace HISP.Server
 
         private static void registerBreeds()
         {
-            int totalBreeds = gameData["horses"].breeds.Count;
+            int totalBreeds = gameData["horses"]["breeds"].AsArray().Count;
             for (int i = 0; i < totalBreeds; i++)
             {
                 HorseInfo.Breed horseBreed = new HorseInfo.Breed();
 
-                horseBreed.Id = gameData["horses"].breeds[i]["id"];
-                horseBreed.Name = gameData["horses"].breeds[i]["name"];
-                horseBreed.Description = gameData["horses"].breeds[i].description;
+                horseBreed.Id = (int)gameData["horses"]["breeds"].AsArray()[i]["id"];
+                horseBreed.Name = (string)gameData["horses"]["breeds"].AsArray()[i]["name"];
+                horseBreed.Description = (string)gameData["horses"]["breeds"].AsArray()[i]["description"];
 
-                int speed = gameData["horses"].breeds[i].base_stats.speed;
-                int strength = gameData["horses"].breeds[i].base_stats.strength;
-                int conformation = gameData["horses"].breeds[i].base_stats.conformation;
-                int agility = gameData["horses"].breeds[i].base_stats.agility;
-                int inteligence = gameData["horses"].breeds[i].base_stats.inteligence;
-                int endurance = gameData["horses"].breeds[i].base_stats.endurance;
-                int personality = gameData["horses"].breeds[i].base_stats.personality;
-                int height = gameData["horses"].breeds[i].base_stats.height;
+                int speed = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["speed"];
+                int strength = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["strength"];
+                int conformation = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["conformation"];
+                int agility = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["agility"];
+                int inteligence = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["inteligence"];
+                int endurance = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["endurance"];
+                int personality = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["personality"];
+                int height = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["height"];
                 horseBreed.BaseStats = new HorseInfo.AdvancedStats(null, speed, strength, conformation, agility, inteligence, endurance, personality, height);
-                horseBreed.BaseStats.MinHeight = gameData["horses"].breeds[i].base_stats.min_height;
-                horseBreed.BaseStats.MaxHeight = gameData["horses"].breeds[i].base_stats.max_height;
+                horseBreed.BaseStats.MinHeight = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["min_height"];
+                horseBreed.BaseStats.MaxHeight = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["max_height"];
 
-                horseBreed.Colors = gameData["horses"].breeds[i].colors.Deserialize<string[]>();
-                horseBreed.SpawnOn = gameData["horses"].breeds[i].spawn_on;
-                horseBreed.SpawnInArea = gameData["horses"].breeds[i].spawn_area;
-                horseBreed.Swf = gameData["horses"].breeds[i].swf;
-                horseBreed.Type = gameData["horses"].breeds[i]["type"];
+                horseBreed.Colors = gameData["horses"]["breeds"].AsArray()[i]["colors"].Deserialize<string[]>();
+                horseBreed.SpawnOn = (string)gameData["horses"]["breeds"].AsArray()[i]["spawn_on"];
+                horseBreed.SpawnInArea = (string)gameData["horses"]["breeds"].AsArray()[i]["spawn_area"];
+                horseBreed.Swf = (string)gameData["horses"]["breeds"].AsArray()[i]["swf"];
+                horseBreed.Type = (string)gameData["horses"]["breeds"].AsArray()[i]["type"];
 
                 HorseInfo.AddBreed(horseBreed);
                 Logger.DebugPrint("Registered Horse Breed: #" + horseBreed.Id + ": " + horseBreed.Name);
@@ -667,8 +668,8 @@ namespace HISP.Server
             int totalBreedPrices = gameData["horses"]["pawneer_base_price"].AsArray().Count;
             for (int i = 0; i < totalBreedPrices; i++)
             {
-                int id = gameData["horses"]["pawneer_base_price"].AsArray()[i].breed_id;
-                int price = gameData["horses"]["pawneer_base_price"].AsArray()[i]["price"];
+                int id = (int)gameData["horses"]["pawneer_base_price"].AsArray()[i]["breed_id"];
+                int price = (int)gameData["horses"]["pawneer_base_price"].AsArray()[i]["price"];
                 Pawneer pawneerPricing = new Pawneer(id, price);
                 Pawneer.AddPawneerPriceModel(pawneerPricing);
                 Logger.DebugPrint("Registered Pawneer Base Price " + pawneerPricing.BreedId + " for $" + pawneerPricing.BasePrice.ToString("N0", CultureInfo.InvariantCulture));
@@ -677,13 +678,13 @@ namespace HISP.Server
 
         private static void registerHorseCategorys()
         {
-            int totalCategories = gameData["horses"].categorys.Count;
+            int totalCategories = gameData["horses"]["categorys"].AsArray().Count;
             for (int i = 0; i < totalCategories; i++)
             {
                 HorseInfo.Category category = new HorseInfo.Category();
-                category.Name = gameData["horses"].categorys[i]["name"];
-                category.MetaOthers = gameData["horses"].categorys[i].message_others;
-                category.Meta = gameData["horses"].categorys[i].message;
+                category.Name = (string)gameData["horses"]["categorys"].AsArray()[i]["name"];
+                category.MetaOthers = (string)gameData["horses"]["categorys"].AsArray()[i]["message_others"];
+                category.Meta = (string)gameData["horses"]["categorys"].AsArray()[i]["message"];
                 HorseInfo.AddHorseCategory(category);
                 Logger.DebugPrint("Registered horse category type: " + category.Name);
             }
@@ -692,36 +693,36 @@ namespace HISP.Server
         private static void registerTrackedItems()
         {
 
-            int totalTrackedItems = gameData["messages"]["meta"]misc_stats.tracked_items.Count;
+            int totalTrackedItems = gameData["messages"]["meta"]["misc_stats"]["tracked_items"].AsArray().Count;
             for (int i = 0; i < totalTrackedItems; i++)
             {
                 Tracking.TrackedItemStatsMenu trackedItem = new Tracking.TrackedItemStatsMenu();
-                trackedItem.What = gameData["messages"]["meta"]misc_stats.tracked_items[i]["id"];
-                trackedItem.Value = gameData["messages"]["meta"]misc_stats.tracked_items[i].value;
+                trackedItem.What = (string)gameData["messages"]["meta"]["misc_stats"]["tracked_items"].AsArray()[i]["id"];
+                trackedItem.Value = (string)gameData["messages"]["meta"]["misc_stats"]["tracked_items"].AsArray()[i]["value"];
                 Tracking.TrackedItemsStatsMenu.Add(trackedItem);
                 Logger.DebugPrint("Registered Tracked Item: " + trackedItem.What + " value: " + trackedItem.Value);
             }
         }
         private static void registerVets()
         {
-            int totalVets = gameData.services.vet.price_multipliers.Count;
+            int totalVets = gameData["services"]["vet"]["price_multipliers"].AsArray().Count;
             for (int i = 0; i < totalVets; i++)
             {
-                double cost = gameData.services.vet.price_multipliers[i]["cost"];
-                int id = gameData.services.vet.price_multipliers[i]["id"];
-                Vet vet = new Vet(id, cost);
-                Logger.DebugPrint("Registered Vet: " + vet.Id + " selling at: " + vet.PriceMultiplier.ToString(CultureInfo.InvariantCulture));
+                double cost = (double)gameData["services"]["vet"]["price_multipliers"].AsArray()[i]["cost"];
+                int id = (int)gameData["services"]["vet"]["price_multipliers"].AsArray()[i]["id"];
+                Vet veternarian = new Vet(id, cost);
+                Logger.DebugPrint("Registered Vet: " + veternarian.Id + " selling at: " + veternarian.PriceMultiplier.ToString(CultureInfo.InvariantCulture));
             }
         }
 
         private static void registerGroomers()
         {
-            int totalGroomers = gameData.services.groomer.price_multipliers.Count;
+            int totalGroomers = gameData["services"]["groomer"]["price_multipliers"].AsArray().Count;
             for (int i = 0; i < totalGroomers; i++)
             {
-                double cost = gameData.services.groomer.price_multipliers[i]["cost"];
-                int id = gameData.services.groomer.price_multipliers[i]["id"];
-                int max = gameData.services.groomer.price_multipliers[i].max;
+                double cost = (double)gameData["services"]["groomer"]["price_multipliers"].AsArray()[i]["cost"];
+                int id = (int)gameData["services"]["groomer"]["price_multipliers"].AsArray()[i]["id"];
+                int max = (int)gameData["services"]["groomer"]["price_multipliers"].AsArray()[i]["max"];
                 Groomer groomer = new Groomer(id, cost, max);
                 Logger.DebugPrint("Registered Groomer: " + groomer.Id + " selling at: " + groomer.PriceMultiplier.ToString(CultureInfo.InvariantCulture));
             }
@@ -730,14 +731,14 @@ namespace HISP.Server
 
         private static void registerFarriers()
         {
-            int totalFarriers = gameData.services.farrier.price_multipliers.Count;
+            int totalFarriers = gameData["services"]["farrier"]["price_multipliers"].AsArray().Count;
             for (int i = 0; i < totalFarriers; i++)
             {
-                int id = gameData.services.farrier.price_multipliers[i]["id"];
-                int steel = gameData.services.farrier.price_multipliers[i].steel;
-                int steelcost = gameData.services.farrier.price_multipliers[i].steel_cost;
-                int iron = gameData.services.farrier.price_multipliers[i].iron;
-                int ironcost = gameData.services.farrier.price_multipliers[i].iron_cost;
+                int id = (int)gameData["services"]["farrier"]["price_multipliers"].AsArray()[i]["id"];
+                int steel = (int)gameData["services"]["farrier"]["price_multipliers"].AsArray()[i]["steel"];
+                int steelcost = (int)gameData["services"]["farrier"]["price_multipliers"].AsArray()[i]["steel_cost"];
+                int iron = (int)gameData["services"]["farrier"]["price_multipliers"].AsArray()[i]["iron"];
+                int ironcost = (int)gameData["services"]["farrier"]["price_multipliers"].AsArray()[i]["iron_cost"];
 
                 Farrier farrier = new Farrier(id, steel, steelcost, iron, ironcost);
                 Logger.DebugPrint("Registered Farrier: " + farrier.Id);
@@ -746,13 +747,13 @@ namespace HISP.Server
 
         private static void registerBarns()
         {
-            int totalBarns = gameData.services.barn.price_multipliers.Count;
+            int totalBarns = gameData["services"]["barn"]["price_multipliers"].AsArray().Count;
             for (int i = 0; i < totalBarns; i++)
             {
-                int id = gameData.services.barn.price_multipliers[i]["id"];
-                double tired_cost = gameData.services.barn.price_multipliers[i].tired_cost;
-                double hunger_cost = gameData.services.barn.price_multipliers[i].hunger_cost;
-                double thirst_cost = gameData.services.barn.price_multipliers[i].thirst_cost;
+                int id = (int)gameData["services"]["barn"]["price_multipliers"].AsArray()[i]["id"];
+                double tired_cost = (double)gameData["services"]["barn"]["price_multipliers"].AsArray()[i]["tired_cost"];
+                double hunger_cost = (double)gameData["services"]["barn"]["price_multipliers"].AsArray()[i]["hunger_cost"];
+                double thirst_cost = (double)gameData["services"]["barn"]["price_multipliers"].AsArray()[i]["thirst_cost"];
 
 
                 Barn barn = new Barn(id, tired_cost, hunger_cost, thirst_cost);
@@ -762,13 +763,13 @@ namespace HISP.Server
 
         private static void registerLibaryBooks()
         {
-            int totalBooks = gameData.books.Count;
+            int totalBooks = gameData["books"].AsArray().Count;
             for (int i = 0; i < totalBooks; i++)
             {
-                int id = gameData.books[i]["id"];
-                string author = gameData.books[i].author;
-                string title = gameData.books[i].title;
-                string text = gameData.books[i].text;
+                int id = (int)gameData["books"][i]["id"];
+                string author = (string)gameData["books"][i]["author"];
+                string title = (string)gameData["books"][i]["title"];
+                string text = (string)gameData["books"][i]["text"];
                 Book book = new Book(id, title, author, text);
                 Logger.DebugPrint("Registered Library Book: " + book.Id + " " + book.Title + " by " + book.Author);
             }
@@ -776,25 +777,25 @@ namespace HISP.Server
 
         private static void registerCrafts()
         {
-            int totalWorkshops = gameData.workshop.Count;
+            int totalWorkshops = gameData["workshop"].AsArray().Count;
             for (int i = 0; i < totalWorkshops; i++)
             {
                 Workshop wkShop = new Workshop();
-                wkShop.X = gameData.workshop[i].pos_x;
-                wkShop.Y = gameData.workshop[i].pos_y;
-                int totalCraftableItems = gameData.workshop[i].craftable_items.Count;
+                wkShop.X = (int)gameData["workshop"].AsArray()[i]["pos_x"];
+                wkShop.Y = (int)gameData["workshop"].AsArray()[i]["pos_y"];
+                int totalCraftableItems = gameData["workshop"].AsArray()[i]["craftable_items"].AsArray().Count;
                 for (int ii = 0; ii < totalCraftableItems; ii++)
                 {
                     Workshop.CraftableItem craftableItem = new Workshop.CraftableItem();
-                    craftableItem.Id = gameData.workshop[i].craftable_items[ii]["id"];
-                    craftableItem.GiveItemId = gameData.workshop[i].craftable_items[ii].give_item;
-                    craftableItem.MoneyCost = gameData.workshop[i].craftable_items[ii].money_cost;
-                    int totalItemsRequired = gameData.workshop[i].craftable_items[ii].required_items.Count;
+                    craftableItem.Id = (int)gameData["workshop"].AsArray()[i]["craftable_items"].AsArray()[ii]["id"];
+                    craftableItem.GiveItemId = (int)gameData["workshop"].AsArray()[i]["craftable_items"].AsArray()[ii]["give_item"];
+                    craftableItem.MoneyCost = (int)gameData["workshop"].AsArray()[i]["craftable_items"].AsArray()[ii]["money_cost"];
+                    int totalItemsRequired = gameData["workshop"].AsArray()[i]["craftable_items"].AsArray()[ii]["required_items"].AsArray().Count;
                     for (int iii = 0; iii < totalItemsRequired; iii++)
                     {
                         Workshop.RequiredItem requiredItem = new Workshop.RequiredItem();
-                        requiredItem.RequiredItemId = gameData.workshop[i].craftable_items[ii].required_items[iii].req_item;
-                        requiredItem.RequiredItemCount = gameData.workshop[i].craftable_items[ii].required_items[iii].req_quantity;
+                        requiredItem.RequiredItemId = (int)gameData["workshop"].AsArray()[i]["craftable_items"].AsArray()[ii]["required_items"].AsArray()[iii]["req_item"];
+                        requiredItem.RequiredItemCount = (int)gameData["workshop"].AsArray()[i]["craftable_items"].AsArray()[ii]["required_items"].AsArray()[iii]["req_quantity"];
                         craftableItem.AddRequiredItem(requiredItem);
                     }
                     wkShop.AddCraftableItem(craftableItem);
@@ -808,107 +809,108 @@ namespace HISP.Server
 
         private static void registerRanchBuildings()
         {
-            int totalRanchBuildings = gameData.ranch.ranch_buildings.buildings.Count;
+            int totalRanchBuildings = gameData["ranch"]["ranch_buildings"]["buildings"].AsArray().Count;
             for (int i = 0; i < totalRanchBuildings; i++)
             {
-                int id = gameData.ranch.ranch_buildings.buildings[i]["id"];
-                int cost = gameData.ranch.ranch_buildings.buildings[i]["cost"];
-                string title = gameData.ranch.ranch_buildings.buildings[i].title;
-                string description = gameData.ranch.ranch_buildings.buildings[i].description;
+                int id = (int)gameData["ranch"]["ranch_buildings"]["buildings"].AsArray()[i]["id"];
+                int cost = (int)gameData["ranch"]["ranch_buildings"]["buildings"].AsArray()[i]["cost"];
+                string title = (string)gameData["ranch"]["ranch_buildings"]["buildings"].AsArray()[i]["title"];
+                string description = (string)gameData["ranch"]["ranch_buildings"]["buildings"].AsArray()[i]["description"];
 
-                Ranch.RanchBuilding building = new Ranch.RanchBuilding();
+                Ranch.RanchBuilding ranchBuilding = new Ranch.RanchBuilding();
 
-                building.Id = id;
-                building.Cost = cost;
-                building.Title = title;
-                building.Description = description;
+                ranchBuilding.Id = id;
+                ranchBuilding.Cost = cost;
+                ranchBuilding.Title = title;
+                ranchBuilding.Description = description;
 
-                Ranch.RanchBuilding.RanchBuildings.Add(building);
-                Logger.DebugPrint("Registered Ranch Building: " + building.Title);
+                Ranch.RanchBuilding.RanchBuildings.Add(ranchBuilding);
+                Logger.DebugPrint("Registered Ranch Building: " + ranchBuilding.Title);
 
             }
         }
 
         private static void registerRanchUpgrades()
         {
-            int totalRanchUpgrades = gameData.ranch.ranch_buildings.upgrades.Count;
+            int totalRanchUpgrades = gameData["ranch"]["ranch_buildings"]["upgrades"].AsArray().Count;
             for (int i = 0; i < totalRanchUpgrades; i++)
             {
-                int id = gameData.ranch.ranch_buildings.upgrades[i]["id"];
-                int cost = gameData.ranch.ranch_buildings.upgrades[i]["cost"];
-                string title = gameData.ranch.ranch_buildings.upgrades[i].title;
-                string description = gameData.ranch.ranch_buildings.upgrades[i].description;
+                int id = (int)gameData["ranch"]["ranch_buildings"]["upgrades"].AsArray()[i]["id"];
+                int cost = (int)gameData["ranch"]["ranch_buildings"]["upgrades"].AsArray()[i]["cost"];
+                string title = (string)gameData["ranch"]["ranch_buildings"]["upgrades"].AsArray()[i]["title"];
+                string description = (string)gameData["ranch"]["ranch_buildings"]["upgrades"].AsArray()[i]["description"];
 
-                Ranch.RanchUpgrade upgrade = new Ranch.RanchUpgrade();
+                Ranch.RanchUpgrade ranchUpgrade = new Ranch.RanchUpgrade();
 
-                if (gameData.ranch.ranch_buildings.upgrades[i].limit != null)
-                    upgrade.Limit = gameData.ranch.ranch_buildings.upgrades[i].limit;
-                upgrade.Id = id;
-                upgrade.Cost = cost;
-                upgrade.Title = title;
-                upgrade.Description = description;
+                if (gameData["ranch"]["ranch_buildings"]["upgrades"].AsArray()[i]["limit"] != null)
+                    ranchUpgrade.Limit = (int)gameData["ranch"]["ranch_buildings"]["upgrades"].AsArray()[i]["limit"];
+                ranchUpgrade.Id = id;
+                ranchUpgrade.Cost = cost;
+                ranchUpgrade.Title = title;
+                ranchUpgrade.Description = description;
 
-                Ranch.RanchUpgrade.RanchUpgrades.Add(upgrade);
-                Logger.DebugPrint("Registered Ranch Upgrade: " + upgrade.Title);
+                Ranch.RanchUpgrade.RanchUpgrades.Add(ranchUpgrade);
+                Logger.DebugPrint("Registered Ranch Upgrade: " + ranchUpgrade.Title);
 
             }
         }
 
         private static void registerRanchs()
         {
-            int totalRanchLocations = gameData.ranch.ranch_locations.Count;
+            int totalRanchLocations = gameData["ranch"]["ranch_locations"].AsArray().Count;
             for (int i = 0; i < totalRanchLocations; i++)
             {
-                int x = gameData.ranch.ranch_locations[i]["x"];
-                int y = gameData.ranch.ranch_locations[i]["y"];
-                int id = gameData.ranch.ranch_locations[i]["id"];
-                int value = gameData.ranch.ranch_locations[i].value;
-                Ranch ranch = new Ranch(x, y, id, value);
-                Ranch.Ranches.Add(ranch);
-                Logger.DebugPrint("Registered Ranch id " + id + " at X: " + ranch.X + " Y: " + ranch.Y);
+                int x = (int)gameData["ranch"]["ranch_locations"].AsArray()[i]["x"];
+                int y = (int)gameData["ranch"]["ranch_locations"].AsArray()[i]["y"];
+                int id = (int)gameData["ranch"]["ranch_locations"].AsArray()[i]["id"];
+                int value = (int)gameData["ranch"]["ranch_locations"].AsArray()[i]["value"];
+                Ranch ranchEntry = new Ranch(x, y, id, value);
+                Ranch.Ranches.Add(ranchEntry);
+                Logger.DebugPrint("Registered Ranch id " + id + " at X: " + ranchEntry.X + " Y: " + ranchEntry.Y);
 
             }
         }
 
         private static void registerRiddlerRiddles()
         {
-            int totalRiddles = gameData.riddle_room.Count;
+            int totalRiddles = gameData["riddle_room"].AsArray().Count;
             for (int i = 0; i < totalRiddles; i++)
             {
-                int id = gameData.riddle_room[i]["id"];
-                string riddle = gameData.riddle_room[i].riddle;
-                string[] answers = gameData.riddle_room[i].answers.Deserialize<string[]>();
-                string reason = gameData.riddle_room[i].reason;
+                int id = (int)gameData["riddle_room"].AsArray()[i]["id"];
+                string riddle = (string)gameData["riddle_room"].AsArray()[i]["riddle"];
+                string[] answers = gameData["riddle_room"].AsArray()[i]["answers"].Deserialize<string[]>();
+                string reason = (string)gameData["riddle_room"].AsArray()[i]["reason"];
                 Riddler riddlerRiddle = new Riddler(id, riddle, answers, reason);
                 Logger.DebugPrint("Registered Riddler Riddle: " + riddlerRiddle.Riddle);
 
             }
         }
+
         private static void registerBBCodes()
         {
-            int totalBBocdes = gameData.bbcode.Count;
+            int totalBBocdes = gameData["bbcode"].AsArray().Count;
             for (int i = 0; i < totalBBocdes; i++)
             {
-                string tag = gameData.bbcode[i].tag;
-                string meta = gameData.bbcode[i]["meta"];
+                string tag = (string)gameData["bbcode"].AsArray()[i]["tag"];
+                string meta = (string)gameData["bbcode"].AsArray()[i]["meta"];
                 BBCode code = new BBCode(tag, meta);
                 Logger.DebugPrint("Registered BBCODE: " + code.Tag + " to " + code.MetaTranslation);
             }
         }
         private static void registerTrainingPens()
         {
-            int totalTrainingPens = gameData.training_pens.Count;
+            int totalTrainingPens = gameData["training_pens"].AsArray().Count;
             for (int i = 0; i < totalTrainingPens; i++)
             {
                 Trainer trainer = new Trainer();
-                trainer.Id = gameData.training_pens[i].trainer_id;
-                trainer.ImprovesStat = gameData.training_pens[i].improves_stat;
-                trainer.ImprovesAmount = gameData.training_pens[i].improves_amount;
-                trainer.ThirstCost = gameData.training_pens[i].thirst_cost;
-                trainer.MoodCost = gameData.training_pens[i].mood_cost;
-                trainer.HungerCost = gameData.training_pens[i].hunger_cost;
-                trainer.MoneyCost = gameData.training_pens[i].money_cost;
-                trainer.ExperienceGained = gameData.training_pens[i].experience;
+                trainer.Id = (int)gameData["training_pens"].AsArray()[i]["trainer_id"];
+                trainer.ImprovesStat = (string)gameData["training_pens"].AsArray()[i]["improves_stat"];
+                trainer.ImprovesAmount = (int)gameData["training_pens"].AsArray()[i]["improves_amount"];
+                trainer.ThirstCost = (int)gameData["training_pens"].AsArray()[i]["thirst_cost"];
+                trainer.MoodCost = (int)gameData["training_pens"].AsArray()[i]["mood_cost"];
+                trainer.HungerCost = (int)gameData["training_pens"].AsArray()[i]["hunger_cost"];
+                trainer.MoneyCost = (int)gameData["training_pens"].AsArray()[i]["money_cost"];
+                trainer.ExperienceGained = (int)gameData["training_pens"].AsArray()[i]["experience"];
                 Trainer.Trainers.Add(trainer);
                 Logger.DebugPrint("Registered Training Pen: " + trainer.Id + " for " + trainer.ImprovesStat);
             }
@@ -917,71 +919,71 @@ namespace HISP.Server
 
         private static void registerArenas()
         {
-            int totalArenas = gameData.arena.arena_list.Count;
+            int totalArenas = gameData["arena"]["arena_list"].AsArray().Count;
             for (int i = 0; i < totalArenas; i++)
             {
-                int arenaId = gameData.arena.arena_list[i].arena_id;
-                string arenaType = gameData.arena.arena_list[i].arena_type;
-                int arenaEntryCost = gameData.arena.arena_list[i].entry_cost;
-                int raceEvery = gameData.arena.arena_list[i].race_every;
-                int slots = gameData.arena.arena_list[i].slots;
-                int timeout = gameData.arena.arena_list[i].timeout;
+                int arenaId = (int)gameData["arena"]["arena_list"].AsArray()[i]["arena_id"];
+                string arenaType = (string)gameData["arena"]["arena_list"].AsArray()[i]["arena_type"];
+                int arenaEntryCost = (int)gameData["arena"]["arena_list"].AsArray()[i]["entry_cost"];
+                int raceEvery = (int)gameData["arena"]["arena_list"].AsArray()[i]["race_every"];
+                int slots = (int)gameData["arena"]["arena_list"].AsArray()[i]["slots"];
+                int timeout = (int)gameData["arena"]["arena_list"].AsArray()[i]["timeout"];
 
                 Arena arena = new Arena(arenaId, arenaType, arenaEntryCost, raceEvery, slots, timeout);
                 Logger.DebugPrint("Registered Arena: " + arena.Id.ToString() + " as " + arena.Type);
             }
-            Arena.ExpRewards = gameData.arena.arena_exp.Deserialize<int[]>();
+            Arena.ExpRewards = gameData["arena"]["arena_exp"].Deserialize<int[]>();
         }
 
         private static void registerLeasers()
         {
-            int totalLeasers = gameData.leaser.Count;
+            int totalLeasers = gameData["leaser"].AsArray().Count;
             for (int i = 0; i < totalLeasers; i++)
             {
-                int breedId = gameData.leaser[i].horse.breed;
+                int breedId = (int)gameData["leaser"].AsArray()[i]["horse"]["breed"];
 
                 int saddle = -1;
                 int saddlePad = -1;
                 int bridle = -1;
 
-                if (gameData.leaser[i].horse.tack.saddle != null)
-                    saddle = gameData.leaser[i].horse.tack.saddle;
+                if (gameData["leaser"].AsArray()[i]["horse"]["tack"]["saddle"] != null)
+                    saddle = (int)gameData["leaser"].AsArray()[i]["horse"]["tack"]["saddle"];
 
-                if (gameData.leaser[i].horse.tack.saddle_pad != null)
-                    saddlePad = gameData.leaser[i].horse.tack.saddle_pad;
+                if (gameData["leaser"].AsArray()[i]["horse"]["tack"]["saddle_pad"] != null)
+                    saddlePad = (int)gameData["leaser"].AsArray()[i]["horse"]["tack"]["saddle_pad"];
 
-                if (gameData.leaser[i].horse.tack.bridle != null)
-                    bridle = gameData.leaser[i].horse.tack.bridle;
+                if (gameData["leaser"].AsArray()[i]["horse"]["tack"]["bridle"] != null)
+                    bridle = (int)gameData["leaser"].AsArray()[i]["horse"]["tack"]["bridle"];
 
                 Leaser leaser = new Leaser(breedId, saddle, saddlePad, bridle);
-                leaser.LeaseId = gameData.leaser[i].lease_id;
-                leaser.ButtonId = gameData.leaser[i].button_id;
-                leaser.Info = gameData.leaser[i].info;
-                leaser.OnLeaseText = gameData.leaser[i].on_lease;
-                leaser.Price = gameData.leaser[i]["price"];
-                leaser.Minutes = gameData.leaser[i].minutes;
+                leaser.LeaseId = (int)gameData["leaser"].AsArray()[i]["lease_id"];
+                leaser.ButtonId = (string)gameData["leaser"].AsArray()[i]["button_id"];
+                leaser.Info = (string)gameData["leaser"].AsArray()[i]["info"];
+                leaser.OnLeaseText = (string)gameData["leaser"].AsArray()[i]["on_lease"];
+                leaser.Price = (int)gameData["leaser"].AsArray()[i]["price"];
+                leaser.Minutes = (int)gameData["leaser"].AsArray()[i]["minutes"];
 
-                leaser.Color = gameData.leaser[i].horse.color;
-                leaser.Gender = gameData.leaser[i].horse.gender;
-                leaser.Height = gameData.leaser[i].horse.hands;
-                leaser.Experience = gameData.leaser[i].horse.exp;
-                leaser.HorseName = gameData.leaser[i].horse["name"];
+                leaser.Color = (string)gameData["leaser"].AsArray()[i]["horse"]["color"];
+                leaser.Gender = (string)gameData["leaser"].AsArray()[i]["horse"]["gender"];
+                leaser.Height = (int)gameData["leaser"].AsArray()[i]["horse"]["hands"];
+                leaser.Experience = (int)gameData["leaser"].AsArray()[i]["horse"]["exp"];
+                leaser.HorseName = (string)gameData["leaser"].AsArray()[i]["horse"]["name"];
 
-                leaser.Health = gameData.leaser[i].horse.basic_stats.health;
-                leaser.Hunger = gameData.leaser[i].horse.basic_stats.hunger;
-                leaser.Thirst = gameData.leaser[i].horse.basic_stats.thirst;
-                leaser.Mood = gameData.leaser[i].horse.basic_stats.mood;
-                leaser.Tiredness = gameData.leaser[i].horse.basic_stats.energy;
-                leaser.Groom = gameData.leaser[i].horse.basic_stats.groom;
-                leaser.Shoes = gameData.leaser[i].horse.basic_stats.shoes;
+                leaser.Health = (int)gameData["leaser"].AsArray()[i]["horse"]["basic_stats"]["health"];
+                leaser.Hunger = (int)gameData["leaser"].AsArray()[i]["horse"]["basic_stats"]["hunger"];
+                leaser.Thirst = (int)gameData["leaser"].AsArray()[i]["horse"]["basic_stats"]["thirst"];
+                leaser.Mood = (int)gameData["leaser"].AsArray()[i]["horse"]["basic_stats"]["mood"];
+                leaser.Tiredness = (int)gameData["leaser"].AsArray()[i]["horse"]["basic_stats"]["energy"];
+                leaser.Groom = (int)gameData["leaser"].AsArray()[i]["horse"]["basic_stats"]["groom"];
+                leaser.Shoes = (int)gameData["leaser"].AsArray()[i]["horse"]["basic_stats"]["shoes"];
 
-                leaser.Speed = gameData.leaser[i].horse.advanced_stats.speed;
-                leaser.Strength = gameData.leaser[i].horse.advanced_stats.strength;
-                leaser.Conformation = gameData.leaser[i].horse.advanced_stats.conformation;
-                leaser.Agility = gameData.leaser[i].horse.advanced_stats.agility;
-                leaser.Endurance = gameData.leaser[i].horse.advanced_stats.endurance;
-                leaser.Inteligence = gameData.leaser[i].horse.advanced_stats.inteligence;
-                leaser.Personality = gameData.leaser[i].horse.advanced_stats.personality;
+                leaser.Speed = (int)gameData["leaser"].AsArray()[i]["horse"]["advanced_stats"]["speed"];
+                leaser.Strength = (int)gameData["leaser"].AsArray()[i]["horse"]["advanced_stats"]["strength"];
+                leaser.Conformation = (int)gameData["leaser"].AsArray()[i]["horse"]["advanced_stats"]["conformation"];
+                leaser.Agility = (int)gameData["leaser"].AsArray()[i]["horse"]["advanced_stats"]["agility"];
+                leaser.Endurance = (int)gameData["leaser"].AsArray()[i]["horse"]["advanced_stats"]["endurance"];
+                leaser.Inteligence = (int)gameData["leaser"].AsArray()[i]["horse"]["advanced_stats"]["inteligence"];
+                leaser.Personality = (int)gameData["leaser"].AsArray()[i]["horse"]["advanced_stats"]["personality"];
 
                 Leaser.AddHorseLeaser(leaser);
                 Logger.DebugPrint("Registered Leaser: " + leaser.LeaseId.ToString() + " For a " + leaser.HorseName);
@@ -990,21 +992,21 @@ namespace HISP.Server
 
         private static void registerSocials()
         {
-            int totalSocials = gameData.social_types.Count;
+            int totalSocials = gameData["social_types"].AsArray().Count;
             for (int i = 0; i < totalSocials; i++)
             {
-                string socialType = gameData.social_types[i]["type"];
-                int totalSocialsOfType = gameData.social_types[i].socials.Count;
+                string socialType = (string)gameData["social_types"].AsArray()[i]["type"];
+                int totalSocialsOfType = gameData["social_types"].AsArray()[i]["socials"].AsArray().Count;
                 for (int ii = 0; ii < totalSocialsOfType; ii++)
                 {
                     SocialType.Social social = new SocialType.Social();
 
-                    social.Id = gameData.social_types[i].socials[ii].social_id;
-                    social.ButtonName = gameData.social_types[i].socials[ii].button_name;
-                    social.ForSender = gameData.social_types[i].socials[ii].for_sender;
-                    social.ForTarget = gameData.social_types[i].socials[ii].for_target;
-                    social.ForEveryone = gameData.social_types[i].socials[ii].for_everyone;
-                    social.SoundEffect = gameData.social_types[i].socials[ii].sound_effect;
+                    social.Id = (int)gameData["social_types"].AsArray()[i]["socials"].AsArray()[ii]["social_id"];
+                    social.ButtonName = (string)gameData["social_types"].AsArray()[i]["socials"].AsArray()[ii]["button_name"];
+                    social.ForSender = (string)gameData["social_types"].AsArray()[i]["socials"].AsArray()[ii]["for_sender"];
+                    social.ForTarget = (string)gameData["social_types"].AsArray()[i]["socials"].AsArray()[ii]["for_target"];
+                    social.ForEveryone = (string)gameData["social_types"].AsArray()[i]["socials"].AsArray()[ii]["for_everyone"];
+                    social.SoundEffect = (string)gameData["social_types"].AsArray()[i]["socials"].AsArray()[ii]["sound_effect"];
 
                     SocialType.AddNewSocial(socialType, social);
                     Logger.DebugPrint("Registered Social: " + social.ButtonName);
@@ -1014,13 +1016,13 @@ namespace HISP.Server
 
         private static void registerRealTimeRiddleEvents()
         {
-            int totalRealTimeRiddles = gameData.events.real_time_riddle.Count;
+            int totalRealTimeRiddles = gameData["events"]["real_time_riddle"].AsArray().Count;
             for (int i = 0; i < totalRealTimeRiddles; i++)
             {
-                int id = gameData.events.real_time_riddle[i]["id"];
-                string riddleText = gameData.events.real_time_riddle[i].text;
-                string[] riddleAnswers = gameData.events.real_time_riddle[i].answers.Deserialize<string[]>();
-                int reward = gameData.events.real_time_riddle[i].money_reward;
+                int id = (int)gameData["events"]["real_time_riddle"].AsArray()[i]["id"];
+                string riddleText = (string)gameData["events"]["real_time_riddle"].AsArray()[i]["text"];
+                string[] riddleAnswers = gameData["events"]["real_time_riddle"].AsArray()[i]["answers"].Deserialize<string[]>();
+                int reward = (int)gameData["events"]["real_time_riddle"].AsArray()[i]["money_reward"];
 
                 RealTimeRiddle riddle = new RealTimeRiddle(id, riddleText, riddleAnswers, reward);
 
@@ -1030,12 +1032,12 @@ namespace HISP.Server
 
         private static void registerRealTimeQuizEvents()
         {
-            int totalRealTimeQuizCategories = gameData.events.real_time_quiz.Count;
+            int totalRealTimeQuizCategories = gameData["events"]["real_time_quiz"].AsArray().Count;
             RealTimeQuiz.Categories = new RealTimeQuiz.QuizCategory[totalRealTimeQuizCategories]; // initalize array
             for (int i = 0; i < totalRealTimeQuizCategories; i++)
             {
-                string name = gameData.events.real_time_quiz[i]["name"];
-                int totalQuestions = gameData.events.real_time_quiz[i].questons.Count;
+                string name = (string)gameData["events"]["real_time_quiz"].AsArray()[i]["name"];
+                int totalQuestions = gameData["events"]["real_time_quiz"].AsArray()[i]["questons"].AsArray().Count;
 
                 RealTimeQuiz.QuizCategory quizCategory = new RealTimeQuiz.QuizCategory();
                 quizCategory.Name = name;
@@ -1044,8 +1046,8 @@ namespace HISP.Server
                 for (int ii = 0; ii < totalQuestions; ii++)
                 {
                     quizCategory.Questions[ii] = new RealTimeQuiz.QuizQuestion(quizCategory);
-                    quizCategory.Questions[ii].Question = gameData.events.real_time_quiz[i].questons[ii].question;
-                    quizCategory.Questions[ii].Answers = gameData.events.real_time_quiz[i].questons[ii].answers.Deserialize<string[]>();
+                    quizCategory.Questions[ii].Question = (string)gameData["events"]["real_time_quiz"].AsArray()[i]["questons"].AsArray()[ii]["question"];
+                    quizCategory.Questions[ii].Answers = gameData["events"]["real_time_quiz"].AsArray()[i]["questons"].AsArray()[ii]["answers"].Deserialize<string[]>();
                     Logger.DebugPrint("Registered Real Time Quiz Question: " + quizCategory.Questions[ii].Question);
                 }
 
@@ -1056,7 +1058,7 @@ namespace HISP.Server
         }
         private static void registerRandomEvents()
         {
-            int totalRandomEvent = gameData.events.random_events.Count;
+            int totalRandomEvent = gameData["events"]["random_events"].AsArray().Count;
             for (int i = 0; i < totalRandomEvent; i++)
             {
                 int minmoney = 0;
@@ -1064,20 +1066,19 @@ namespace HISP.Server
                 int lowerHorseHealth = 0;
                 int giveObj = 0;
 
-                int id = gameData.events.random_events[i]["id"];
-                string txt = gameData.events.random_events[i].text;
+                int id = (int)gameData["events"]["random_events"].AsArray()[i]["id"];
+                string txt = (string)gameData["events"]["random_events"].AsArray()[i]["text"];
 
-                if (gameData.events.random_events[i].min_money != null)
-                    minmoney = gameData.events.random_events[i].min_money;
-                if (gameData.events.random_events[i].max_money != null)
-                    maxmoney = gameData.events.random_events[i].max_money;
-                if (gameData.events.random_events[i].lower_horse_health != null)
-                    lowerHorseHealth = gameData.events.random_events[i].lower_horse_health;
-                if (gameData.events.random_events[i].give_object != null)
-                    giveObj = gameData.events.random_events[i].give_object;
+                if (gameData["events"]["random_events"].AsArray()[i]["min_money"] != null)
+                    minmoney = (int)gameData["events"]["random_events"].AsArray()[i]["min_money"];
+                if (gameData["events"]["random_events"].AsArray()[i]["max_money"] != null)
+                    maxmoney = (int)gameData["events"]["random_events"].AsArray()[i]["max_money"];
+                if (gameData["events"]["random_events"].AsArray()[i]["lower_horse_health"] != null)
+                    lowerHorseHealth = (int)gameData["events"]["random_events"].AsArray()[i]["lower_horse_health"];
+                if (gameData["events"]["random_events"].AsArray()[i]["give_object"] != null)
+                    giveObj = (int)gameData["events"]["random_events"].AsArray()[i]["give_object"];
 
                 new RandomEvent(id, txt, minmoney, maxmoney, lowerHorseHealth, giveObj);
-
                 Logger.DebugPrint("Registered Random Event: " + txt);
             }
         }
@@ -1131,55 +1132,55 @@ namespace HISP.Server
 
             // the rest is easier;
 
-            HorseInfo.HorseNames = gameData["horses"].names.Deserialize<string[]>();
+            HorseInfo.HorseNames = gameData["horses"]["names"].Deserialize<string[]>();
 
-            Item.Present = gameData["item"].special.present;
-            Item.MailMessage = gameData["item"].special.mail_message;
-            Item.DorothyShoes = gameData["item"].special.dorothy_shoes;
-            Item.PawneerOrder = gameData["item"].special.pawneer_order;
-            Item.Telescope = gameData["item"].special.telescope;
-            Item.Pitchfork = gameData["item"].special.pitchfork;
-            Item.WishingCoin = gameData["item"].special.wishing_coin;
-            Item.FishingPole = gameData["item"].special.fishing_poll;
-            Item.Earthworm = gameData["item"].special.earthworm;
-            Item.BirthdayToken = gameData["item"].special.birthday_token;
-            Item.WaterBalloon = gameData["item"].special.water_balloon;
-            Item.ModSplatterball = gameData["item"].special.mod_splatterball;
-            Item.MagicBean = gameData["item"].special.magic_bean;
-            Item.MagicDroplet = gameData["item"].special.magic_droplet;
-            Item.Ruby = gameData["item"].special.ruby;
+            Item.Present = gameData["item"]["special"]present;
+            Item.MailMessage = gameData["item"]["special"]mail_message;
+            Item.DorothyShoes = gameData["item"]["special"]dorothy_shoes;
+            Item.PawneerOrder = gameData["item"]["special"]pawneer_order;
+            Item.Telescope = gameData["item"]["special"]telescope;
+            Item.Pitchfork = gameData["item"]["special"]pitchfork;
+            Item.WishingCoin = gameData["item"]["special"]wishing_coin;
+            Item.FishingPole = gameData["item"]["special"]fishing_poll;
+            Item.Earthworm = gameData["item"]["special"]earthworm;
+            Item.BirthdayToken = gameData["item"]["special"]birthday_token;
+            Item.WaterBalloon = gameData["item"]["special"]water_balloon;
+            Item.ModSplatterball = gameData["item"]["special"]mod_splatterball;
+            Item.MagicBean = gameData["item"]["special"]magic_bean;
+            Item.MagicDroplet = gameData["item"]["special"]magic_droplet;
+            Item.Ruby = gameData["item"]["special"]ruby;
 
-            Item.StallionTradingCard = gameData["item"].special.stallion_trading_card;
-            Item.MareTradingCard = gameData["item"].special.mare_trading_card;
-            Item.ColtTradingCard = gameData["item"].special.colt_trading_card;
-            Item.FillyTradingCard = gameData["item"].special.filly_trading_card;
+            Item.StallionTradingCard = gameData["item"]["special"]stallion_trading_card;
+            Item.MareTradingCard = gameData["item"]["special"]mare_trading_card;
+            Item.ColtTradingCard = gameData["item"]["special"]colt_trading_card;
+            Item.FillyTradingCard = gameData["item"]["special"]filly_trading_card;
 
-            GameServer.IdleWarning = Convert.ToInt32(gameData["messages"]disconnect.client_timeout.warn_after);
-            GameServer.IdleTimeout = Convert.ToInt32(gameData["messages"]disconnect.client_timeout.kick_after);
+            GameServer.IdleWarning = Convert.ToInt32(gameData["messages"]["disconnect"]["client_timeout"]warn_after);
+            GameServer.IdleTimeout = Convert.ToInt32(gameData["messages"]["disconnect"]["client_timeout"]kick_after);
 
             ChatMsg.PrivateMessageSound = gameData["messages"]["chat"]pm_sound;
 
             // HISP Specific ...
-            Messages.HISPHelpCommandUsageFormat = gameData.hisp_specific.HISP_help_command_usage_format;
+            Messages.HISPHelpCommandUsageFormat = gameData["hisp_specific"]["HISP_help_command_usage_format"];
 
             // New Users
 
-            Messages.NewUserMessage = gameData["messages"]new_user.starting_message;
-            Map.NewUserStartX = gameData["messages"]new_user.starting_x;
-            Map.NewUserStartY = gameData["messages"]new_user.starting_y;
+            Messages.NewUserMessage = gameData["messages"]["new_user"]starting_message;
+            Map.NewUserStartX = gameData["messages"]["new_user"]starting_x;
+            Map.NewUserStartY = gameData["messages"]["new_user"]starting_y;
 
             // Timed Messages
 
-            Messages.PlaytimeMessageFormat = gameData["messages"]timed_messages.playtime_message;
-            Messages.RngMessages = gameData["messages"]timed_messages.rng_message.Deserialize<string[]>();
+            Messages.PlaytimeMessageFormat = gameData["messages"]["timed_messages"]playtime_message;
+            Messages.RngMessages = gameData["messages"]["timed_messages"]["rng_message"].Deserialize<string[]>();
 
             // Auto Sell
-            Messages.AutoSellNotStandingInSamePlace = gameData["messages"]["meta"]auto_sell.not_standing_sameplace;
-            Messages.AutoSellSuccessFormat = gameData["messages"]["meta"]auto_sell.success;
-            Messages.AutoSellInsufficentFunds = gameData["messages"]["meta"]auto_sell.insufficent_money;
-            Messages.AutoSellTooManyHorses = gameData["messages"]["meta"]auto_sell.toomany_horses;
-            Messages.AutoSellYouSoldHorseFormat = gameData["messages"]["meta"]auto_sell.you_sold;
-            Messages.AutoSellYouSoldHorseOfflineFormat = gameData["messages"]["meta"]auto_sell.sold_offline;
+            Messages.AutoSellNotStandingInSamePlace = gameData["messages"]["meta"]["auto_sell"]not_standing_sameplace;
+            Messages.AutoSellSuccessFormat = gameData["messages"]["meta"]["auto_sell"]success;
+            Messages.AutoSellInsufficentFunds = gameData["messages"]["meta"]["auto_sell"]insufficent_money;
+            Messages.AutoSellTooManyHorses = gameData["messages"]["meta"]["auto_sell"]toomany_horses;
+            Messages.AutoSellYouSoldHorseFormat = gameData["messages"]["meta"]["auto_sell"]you_sold;
+            Messages.AutoSellYouSoldHorseOfflineFormat = gameData["messages"]["meta"]["auto_sell"]sold_offline;
             
             // Mute Command
             Messages.NowMutingPlayerFormat = gameData["messages"]["meta"]mute_command.now_ignoring_player;
@@ -1247,10 +1248,10 @@ namespace HISP.Server
 
             // Socials
 
-            Messages.SocialButton = gameData["messages"]["meta"]player_interaction.socials.socials_button;
-            Messages.SocialMessageFormat = gameData["messages"]["meta"]player_interaction.socials.socials_message;
-            Messages.SocialTypeFormat = gameData["messages"]["meta"]player_interaction.socials.socials_menu_type;
-            Messages.SocialPlayerNoLongerNearby = gameData["messages"]["meta"]player_interaction.socials.no_longer_nearby;
+            Messages.SocialButton = gameData["messages"]["meta"]player_interaction["socials"].AsArray().socials_button;
+            Messages.SocialMessageFormat = gameData["messages"]["meta"]player_interaction["socials"].AsArray().socials_message;
+            Messages.SocialTypeFormat = gameData["messages"]["meta"]player_interaction["socials"].AsArray().socials_menu_type;
+            Messages.SocialPlayerNoLongerNearby = gameData["messages"]["meta"]player_interaction["socials"].AsArray().no_longer_nearby;
 
             // Message Queue 
             Messages.MessageQueueHeader = gameData["messages"]message_queue;
@@ -1279,24 +1280,24 @@ namespace HISP.Server
 
             // Events : Real Time Quiz
 
-            Messages.EventMetaRealTimeQuizFormat = gameData["messages"]events.real_time_quiz.event_meta;
-            Messages.EventStartRealTimeQuiz = gameData["messages"]events.real_time_quiz.event_start;
-            Messages.EventEndRealTimeQuiz = gameData["messages"]events.real_time_quiz.event_end;
-            Messages.EventBonusRealTimeQuizFormat = gameData["messages"]events.real_time_quiz.event_bonus;
-            Messages.EventWinBonusRealTimeQuizFormat = gameData["messages"]events.real_time_quiz.event_win_bonus;
-            Messages.EventWinRealTimeQuizFormat = gameData["messages"]events.real_time_quiz.event_win;
-            Messages.EventUnavailableRealTimeQuiz = gameData["messages"]events.real_time_quiz.event_unavailable;
-            Messages.EventEnteredRealTimeQuiz = gameData["messages"]events.real_time_quiz.event_entered;
-            Messages.EventAlreadyEnteredRealTimeQuiz = gameData["messages"]events.real_time_quiz.event_entered_already;
-            Messages.EventQuitRealTimeQuiz = gameData["messages"]events.real_time_quiz.event_quit;
+            Messages.EventMetaRealTimeQuizFormat = gameData["messages"]events["real_time_quiz"].AsArray().event_meta;
+            Messages.EventStartRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_start;
+            Messages.EventEndRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_end;
+            Messages.EventBonusRealTimeQuizFormat = gameData["messages"]events["real_time_quiz"].AsArray().event_bonus;
+            Messages.EventWinBonusRealTimeQuizFormat = gameData["messages"]events["real_time_quiz"].AsArray().event_win_bonus;
+            Messages.EventWinRealTimeQuizFormat = gameData["messages"]events["real_time_quiz"].AsArray().event_win;
+            Messages.EventUnavailableRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_unavailable;
+            Messages.EventEnteredRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_entered;
+            Messages.EventAlreadyEnteredRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_entered_already;
+            Messages.EventQuitRealTimeQuiz = gameData["messages"]events["real_time_quiz"].AsArray().event_quit;
 
             // Events : Real Time Riddle
 
-            Messages.EventStartRealTimeRiddleFormat = gameData["messages"]events.real_time_riddle.event_start;
-            Messages.EventEndRealTimeRiddle = gameData["messages"]events.real_time_riddle.event_end;
-            Messages.EventWonRealTimeRiddleForOthersFormat = gameData["messages"]events.real_time_riddle.event_won_others;
-            Messages.EventWonRealTimeRiddleForYouFormat = gameData["messages"]events.real_time_riddle.event_won_you;
-            Messages.EventAlreadySovledRealTimeRiddle = gameData["messages"]events.real_time_riddle.event_solved_already;
+            Messages.EventStartRealTimeRiddleFormat = gameData["messages"]events["real_time_riddle"].AsArray().event_start;
+            Messages.EventEndRealTimeRiddle = gameData["messages"]events["real_time_riddle"].AsArray().event_end;
+            Messages.EventWonRealTimeRiddleForOthersFormat = gameData["messages"]events["real_time_riddle"].AsArray().event_won_others;
+            Messages.EventWonRealTimeRiddleForYouFormat = gameData["messages"]events["real_time_riddle"].AsArray().event_won_you;
+            Messages.EventAlreadySovledRealTimeRiddle = gameData["messages"]events["real_time_riddle"].AsArray().event_solved_already;
 
             // Events : Tack Shop Giveaway
 
@@ -1520,11 +1521,11 @@ namespace HISP.Server
             Messages.CityHallCantAffordPostageMessage = gameData["messages"]["meta"]city_hall.cant_afford_postage;
             Messages.CityHallCantFindPlayerMessageFormat = gameData["messages"]["meta"]city_hall.cant_find_player;
 
-            Messages.CityHallCheapestAutoSells = gameData["messages"]["meta"]city_hall.auto_sell.top_100_cheapest;
-            Messages.CityHallCheapestAutoSellHorseEntryFormat = gameData["messages"]["meta"]city_hall.auto_sell.cheap_horse_entry;
+            Messages.CityHallCheapestAutoSells = gameData["messages"]["meta"]city_hall["auto_sell"]top_100_cheapest;
+            Messages.CityHallCheapestAutoSellHorseEntryFormat = gameData["messages"]["meta"]city_hall["auto_sell"]cheap_horse_entry;
 
-            Messages.CityHallMostExpAutoSells = gameData["messages"]["meta"]city_hall.auto_sell.top_50_most_exp;
-            Messages.CityHallMostExpAutoSellHorseEntryFormat = gameData["messages"]["meta"]city_hall.auto_sell.exp_horse_entry;
+            Messages.CityHallMostExpAutoSells = gameData["messages"]["meta"]city_hall["auto_sell"]top_50_most_exp;
+            Messages.CityHallMostExpAutoSellHorseEntryFormat = gameData["messages"]["meta"]city_hall["auto_sell"]exp_horse_entry;
 
             Messages.CityHallTop25Ranches = gameData["messages"]["meta"]city_hall.ranch_investment.top_25;
             Messages.CityHallRanchEntryFormat = gameData["messages"]["meta"]city_hall.ranch_investment.ranch_entry;
@@ -1548,101 +1549,101 @@ namespace HISP.Server
             Messages.CityHallExperiencedHorseEntryFormat = gameData["messages"]["meta"]city_hall.most_experienced_horses.experienced_horse_entry;
 
             // Mail Messages
-            Messages.MailReceivedMessage = gameData["messages"]["meta"]mail.mail_received;
-            Messages.MailSelectFromFollowing = gameData["messages"]["meta"]mail.mail_select;
-            Messages.MailSe = gameData["messages"]["meta"]mail.mail_se;
+            Messages.MailReceivedMessage = gameData["messages"]["meta"]["mail"]mail_received;
+            Messages.MailSelectFromFollowing = gameData["messages"]["meta"]["mail"]mail_select;
+            Messages.MailSe = gameData["messages"]["meta"]["mail"]mail_se;
 
-            Messages.MailReadMetaFormat = gameData["messages"]["meta"]mail.mail_read;
-            Messages.MailEntryFormat = gameData["messages"]["meta"]mail.mail_entry;
-            Messages.MailRippedMessage = gameData["messages"]["meta"]mail.mail_ripped;
+            Messages.MailReadMetaFormat = gameData["messages"]["meta"]["mail"]mail_read;
+            Messages.MailEntryFormat = gameData["messages"]["meta"]["mail"]mail_entry;
+            Messages.MailRippedMessage = gameData["messages"]["meta"]["mail"]mail_ripped;
 
             // Click
             Messages.ClickPlayerHereFormat = gameData["messages"]player_here;
 
 
             // Ranch
-            Messages.RanchUnownedRanchFormat = gameData["messages"]["meta"]ranch.unowned_ranch;
-            Messages.RanchYouCouldPurchaseThisRanch = gameData["messages"]["meta"]ranch.you_could_purchase_this;
-            Messages.RanchYouAllreadyOwnARanch = gameData["messages"]["meta"]ranch.ranch_already_owned;
-            Messages.RanchSubscribersOnly = gameData["messages"]["meta"]ranch.sub_only;
-            Messages.RanchDescriptionOthersFormat = gameData["messages"]["meta"]ranch.ranch_desc_others;
-            Messages.RanchUnownedRanchClicked = gameData["messages"]["meta"]ranch.unowned_ranch_click;
-            Messages.RanchClickMessageFormat = gameData["messages"]["meta"]ranch.click_message;
+            Messages.RanchUnownedRanchFormat = gameData["messages"]["meta"]["ranch"]unowned_ranch;
+            Messages.RanchYouCouldPurchaseThisRanch = gameData["messages"]["meta"]["ranch"]you_could_purchase_this;
+            Messages.RanchYouAllreadyOwnARanch = gameData["messages"]["meta"]["ranch"]ranch_already_owned;
+            Messages.RanchSubscribersOnly = gameData["messages"]["meta"]["ranch"]sub_only;
+            Messages.RanchDescriptionOthersFormat = gameData["messages"]["meta"]["ranch"]ranch_desc_others;
+            Messages.RanchUnownedRanchClicked = gameData["messages"]["meta"]["ranch"]unowned_ranch_click;
+            Messages.RanchClickMessageFormat = gameData["messages"]["meta"]["ranch"]click_message;
 
-            Messages.RanchNoDorothyShoesMessage = gameData["messages"]["meta"]ranch.no_dorothy_shoes;
-            Messages.RanchDorothyShoesMessage = gameData["messages"]["meta"]ranch.dorothy_message;
-            Messages.RanchDorothyShoesPrisonIsleMessage = gameData["messages"]["meta"]ranch.dorothy_prison_isle;
-            Messages.RanchForcefullySoldFormat = gameData["messages"]["meta"]ranch.forcefully_sold;
+            Messages.RanchNoDorothyShoesMessage = gameData["messages"]["meta"]["ranch"]no_dorothy_shoes;
+            Messages.RanchDorothyShoesMessage = gameData["messages"]["meta"]["ranch"]dorothy_message;
+            Messages.RanchDorothyShoesPrisonIsleMessage = gameData["messages"]["meta"]["ranch"]dorothy_prison_isle;
+            Messages.RanchForcefullySoldFormat = gameData["messages"]["meta"]["ranch"]forcefully_sold;
 
-            Messages.RanchCantAffordRanch = gameData["messages"]["meta"]ranch.ranch_buy_cannot_afford;
-            Messages.RanchRanchBroughtMessageFormat = gameData["messages"]["meta"]ranch.ranch_brought;
+            Messages.RanchCantAffordRanch = gameData["messages"]["meta"]["ranch"]ranch_buy_cannot_afford;
+            Messages.RanchRanchBroughtMessageFormat = gameData["messages"]["meta"]["ranch"]ranch_brought;
             
-            Messages.RanchSavedRanchDescripton = gameData["messages"]["meta"]ranch.ranch_info.saved;
-            Messages.RanchSavedTitleTooLongError = gameData["messages"]["meta"]ranch.ranch_info.title_too_long;
-            Messages.RanchSavedDescrptionTooLongError = gameData["messages"]["meta"]ranch.ranch_info.description_too_long;
-            Messages.RanchSavedTitleViolationsError = gameData["messages"]["meta"]ranch.ranch_info.title_contains_violations;
-            Messages.RanchSavedDescrptionViolationsErrorFormat = gameData["messages"]["meta"]ranch.ranch_info.desc_contains_violations;
+            Messages.RanchSavedRanchDescripton = gameData["messages"]["meta"]["ranch"]["ranch_info"]saved;
+            Messages.RanchSavedTitleTooLongError = gameData["messages"]["meta"]["ranch"]["ranch_info"]title_too_long;
+            Messages.RanchSavedDescrptionTooLongError = gameData["messages"]["meta"]["ranch"]["ranch_info"]description_too_long;
+            Messages.RanchSavedTitleViolationsError = gameData["messages"]["meta"]["ranch"]["ranch_info"]title_contains_violations;
+            Messages.RanchSavedDescrptionViolationsErrorFormat = gameData["messages"]["meta"]["ranch"]["ranch_info"]desc_contains_violations;
             
 
-            Messages.RanchDefaultRanchTitle = gameData["messages"]["meta"]ranch.default_title;
-            Messages.RanchEditDescriptionMetaFormat = gameData["messages"]["meta"]ranch.edit_description;
-            Messages.RanchTitleFormat = gameData["messages"]["meta"]ranch.your_ranch_meta;
-            Messages.RanchYourDescriptionFormat = gameData["messages"]["meta"]ranch.view_desc;
+            Messages.RanchDefaultRanchTitle = gameData["messages"]["meta"]["ranch"]default_title;
+            Messages.RanchEditDescriptionMetaFormat = gameData["messages"]["meta"]["ranch"]edit_description;
+            Messages.RanchTitleFormat = gameData["messages"]["meta"]["ranch"]your_ranch_meta;
+            Messages.RanchYourDescriptionFormat = gameData["messages"]["meta"]["ranch"]view_desc;
 
-            Messages.RanchSellAreYouSure = gameData["messages"]["meta"]ranch.sell_confirm;
-            Messages.RanchSoldFormat = gameData["messages"]["meta"]ranch.sell_done;
+            Messages.RanchSellAreYouSure = gameData["messages"]["meta"]["ranch"]sell_confirm;
+            Messages.RanchSoldFormat = gameData["messages"]["meta"]["ranch"]sell_done;
 
             // Ranch : Breed
 
-            Messages.RanchCanBuildOneOfTheFollowingInThisSpot = gameData["messages"]["meta"]ranch.build.build_on_this_spot;
-            Messages.RanchBuildingEntryFormat = gameData["messages"]["meta"]ranch.build.build_format;
-            Messages.RanchCantAffordThisBuilding = gameData["messages"]["meta"]ranch.build.cannot_afford;
-            Messages.RanchBuildingInformationFormat = gameData["messages"]["meta"]ranch.build.information;
-            Messages.RanchBuildingComplete = gameData["messages"]["meta"]ranch.build.build_complete;
-            Messages.RanchBuildingAlreadyHere = gameData["messages"]["meta"]ranch.build.building_allready_placed;
-            Messages.RanchTornDownRanchBuildingFormat = gameData["messages"]["meta"]ranch.build.torn_down;
-            Messages.RanchViewBuildingFormat = gameData["messages"]["meta"]ranch.build.view_building;
-            Messages.RanchBarnHorsesFormat = gameData["messages"]["meta"]ranch.build.barn;
+            Messages.RanchCanBuildOneOfTheFollowingInThisSpot = gameData["messages"]["meta"]["ranch"]["build"]build_on_this_spot;
+            Messages.RanchBuildingEntryFormat = gameData["messages"]["meta"]["ranch"]["build"]build_format;
+            Messages.RanchCantAffordThisBuilding = gameData["messages"]["meta"]["ranch"]["build"]cannot_afford;
+            Messages.RanchBuildingInformationFormat = gameData["messages"]["meta"]["ranch"]["build"]information;
+            Messages.RanchBuildingComplete = gameData["messages"]["meta"]["ranch"]["build"]build_complete;
+            Messages.RanchBuildingAlreadyHere = gameData["messages"]["meta"]["ranch"]["build"]building_allready_placed;
+            Messages.RanchTornDownRanchBuildingFormat = gameData["messages"]["meta"]["ranch"]["build"]torn_down;
+            Messages.RanchViewBuildingFormat = gameData["messages"]["meta"]["ranch"]["build"]view_building;
+            Messages.RanchBarnHorsesFormat = gameData["messages"]["meta"]["ranch"]["build"]barn;
 
             // Ranch : Upgrades
 
-            Messages.UpgradedMessage = gameData["messages"]["meta"]ranch.upgrade.upgrade_message;
-            Messages.UpgradeCannotAfford = gameData["messages"]["meta"]ranch.upgrade.cannot_afford;
-            Messages.UpgradeCurrentUpgradeFormat = gameData["messages"]["meta"]ranch.upgrade.upgrade_meta;
-            Messages.UpgradeNextUpgradeFormat = gameData["messages"]["meta"]ranch.upgrade.you_could_upgrade;
+            Messages.UpgradedMessage = gameData["messages"]["meta"]["ranch"]["upgrade"]upgrade_message;
+            Messages.UpgradeCannotAfford = gameData["messages"]["meta"]["ranch"]["upgrade"]cannot_afford;
+            Messages.UpgradeCurrentUpgradeFormat = gameData["messages"]["meta"]["ranch"]["upgrade"]upgrade_meta;
+            Messages.UpgradeNextUpgradeFormat = gameData["messages"]["meta"]["ranch"]["upgrade"]you_could_upgrade;
 
             // Ranch : Special
 
-            Messages.BuildingRestHere = gameData["messages"]["meta"]ranch.special.rest_here;
-            Messages.BuildingGrainSilo = gameData["messages"]["meta"]ranch.special.grain_silo;
-            Messages.BuildingBarnFormat = gameData["messages"]["meta"]ranch.special.barn;
-            Messages.BuildingBigBarnFormat = gameData["messages"]["meta"]ranch.special.big_barn;
-            Messages.BuildingGoldBarnFormat = gameData["messages"]["meta"]ranch.special.gold_barn;
-            Messages.BuildingWaterWell = gameData["messages"]["meta"]ranch.special.water_well;
-            Messages.BuildingWindmillFormat = gameData["messages"]["meta"]ranch.special.windmills;
-            Messages.BuildingWagon = gameData["messages"]["meta"]ranch.special.wagon;
-            Messages.BuildingTrainingPen = gameData["messages"]["meta"]ranch.special.training_pen;
-            Messages.BuildingVegatableGarden = gameData["messages"]["meta"]ranch.special.vegatable_garden;
+            Messages.BuildingRestHere = gameData["messages"]["meta"]["ranch"]["special"]rest_here;
+            Messages.BuildingGrainSilo = gameData["messages"]["meta"]["ranch"]["special"]grain_silo;
+            Messages.BuildingBarnFormat = gameData["messages"]["meta"]["ranch"]["special"]barn;
+            Messages.BuildingBigBarnFormat = gameData["messages"]["meta"]["ranch"]["special"]big_barn;
+            Messages.BuildingGoldBarnFormat = gameData["messages"]["meta"]["ranch"]["special"]gold_barn;
+            Messages.BuildingWaterWell = gameData["messages"]["meta"]["ranch"]["special"]water_well;
+            Messages.BuildingWindmillFormat = gameData["messages"]["meta"]["ranch"]["special"]windmills;
+            Messages.BuildingWagon = gameData["messages"]["meta"]["ranch"]["special"]wagon;
+            Messages.BuildingTrainingPen = gameData["messages"]["meta"]["ranch"]["special"]training_pen;
+            Messages.BuildingVegatableGarden = gameData["messages"]["meta"]["ranch"]["special"]vegatable_garden;
 
-            Messages.RanchTrainAllAttempt = gameData["messages"]["meta"]ranch.special.train_all;
-            Messages.RanchTrainSuccessFormat = gameData["messages"]["meta"]ranch.special.train_success;
-            Messages.RanchTrainCantTrainFormat = gameData["messages"]["meta"]ranch.special.train_cant_train;
-            Messages.RanchTrainBadMoodFormat = gameData["messages"]["meta"]ranch.special.train_bad_mood;
-            Messages.RanchHorsesFullyRested = gameData["messages"]["meta"]ranch.special.fully_rested;
-            Messages.RanchWagonDroppedYouOff = gameData["messages"]["meta"]ranch.special.wagon_used;
+            Messages.RanchTrainAllAttempt = gameData["messages"]["meta"]["ranch"]["special"]train_all;
+            Messages.RanchTrainSuccessFormat = gameData["messages"]["meta"]["ranch"]["special"]train_success;
+            Messages.RanchTrainCantTrainFormat = gameData["messages"]["meta"]["ranch"]["special"]train_cant_train;
+            Messages.RanchTrainBadMoodFormat = gameData["messages"]["meta"]["ranch"]["special"]train_bad_mood;
+            Messages.RanchHorsesFullyRested = gameData["messages"]["meta"]["ranch"]["special"]fully_rested;
+            Messages.RanchWagonDroppedYouOff = gameData["messages"]["meta"]["ranch"]["special"]wagon_used;
 
             // Treasure
-            Messages.PirateTreasureFormat = gameData["messages"]treasure.pirate_treasure;
-            Messages.PotOfGoldFormat = gameData["messages"]treasure.pot_of_gold;
+            Messages.PirateTreasureFormat = gameData["messages"]["treasure"]pirate_treasure;
+            Messages.PotOfGoldFormat = gameData["messages"]["treasure"]pot_of_gold;
 
             // Records
             Messages.PrivateNotesSavedMessage = gameData["messages"]private_notes_save;
             Messages.PrivateNotesMetaFormat = gameData["messages"]["meta"]private_notes_format;
 
             // Profile
-            Messages.ProfileSavedMessage = gameData["messages"]profile.save;
-            Messages.ProfileTooLongMessage = gameData["messages"]profile.too_long;
-            Messages.ProfileViolationFormat = gameData["messages"]profile.blocked;
+            Messages.ProfileSavedMessage = gameData["messages"]["profile"]save;
+            Messages.ProfileTooLongMessage = gameData["messages"]["profile"]too_long;
+            Messages.ProfileViolationFormat = gameData["messages"]["profile"]blocked;
 
             // Announcements
 
@@ -1652,261 +1653,261 @@ namespace HISP.Server
             Messages.LogoutMessageFormat = gameData["messages"]logout_format;
 
             // Pronoun
-            Messages.PronounFemaleShe = gameData["messages"]["meta"]stats_page.pronouns.female_she;
-            Messages.PronounFemaleHer = gameData["messages"]["meta"]stats_page.pronouns.female_her;
+            Messages.PronounFemaleShe = gameData["messages"]["meta"]["stats_page"]["pronouns"]female_she;
+            Messages.PronounFemaleHer = gameData["messages"]["meta"]["stats_page"]["pronouns"]female_her;
 
-            Messages.PronounMaleHe = gameData["messages"]["meta"]stats_page.pronouns.male_he;
-            Messages.PronounMaleHis = gameData["messages"]["meta"]stats_page.pronouns.male_his;
+            Messages.PronounMaleHe = gameData["messages"]["meta"]["stats_page"]["pronouns"]male_he;
+            Messages.PronounMaleHis = gameData["messages"]["meta"]["stats_page"]["pronouns"]male_his;
 
-            Messages.PronounNeutralYour = gameData["messages"]["meta"]stats_page.pronouns.neutral_your;
+            Messages.PronounNeutralYour = gameData["messages"]["meta"]["stats_page"]["pronouns"]neutral_your;
 
-            Messages.PronounNeutralThey = gameData["messages"]["meta"]stats_page.pronouns.neutral_they;
-            Messages.PronounNeutralTheir = gameData["messages"]["meta"]stats_page.pronouns.neutral_their;
+            Messages.PronounNeutralThey = gameData["messages"]["meta"]["stats_page"]["pronouns"]neutral_they;
+            Messages.PronounNeutralTheir = gameData["messages"]["meta"]["stats_page"]["pronouns"]neutral_their;
 
             // Stats
-            Messages.StatsBarFormat = gameData["messages"]["meta"]stats_page.stats_bar_format;
-            Messages.StatsAreaFormat = gameData["messages"]["meta"]stats_page.stats_area_format;
-            Messages.StatsMoneyFormat = gameData["messages"]["meta"]stats_page.stats_money_format;
-            Messages.StatsFreeTimeFormat = gameData["messages"]["meta"]stats_page.stats_freetime_format;
-            Messages.StatsDescriptionFormat = gameData["messages"]["meta"]stats_page.stats_description_format;
-            Messages.StatsExpFormat = gameData["messages"]["meta"]stats_page.stats_experience;
-            Messages.StatsQuestpointsFormat = gameData["messages"]["meta"]stats_page.stats_questpoints;
-            Messages.StatsHungerFormat = gameData["messages"]["meta"]stats_page.stats_hunger;
-            Messages.StatsThirstFormat = gameData["messages"]["meta"]stats_page.stats_thisrt;
-            Messages.StatsTiredFormat = gameData["messages"]["meta"]stats_page.stats_tiredness;
-            Messages.StatsGenderFormat = gameData["messages"]["meta"]stats_page.stats_gender;
-            Messages.StatsJewelFormat = gameData["messages"]["meta"]stats_page.stats_equipped;
-            Messages.StatsCompetitionGearFormat = gameData["messages"]["meta"]stats_page.stats_competion_gear;
+            Messages.StatsBarFormat = gameData["messages"]["meta"]["stats_page"]stats_bar_format;
+            Messages.StatsAreaFormat = gameData["messages"]["meta"]["stats_page"]stats_area_format;
+            Messages.StatsMoneyFormat = gameData["messages"]["meta"]["stats_page"]stats_money_format;
+            Messages.StatsFreeTimeFormat = gameData["messages"]["meta"]["stats_page"]stats_freetime_format;
+            Messages.StatsDescriptionFormat = gameData["messages"]["meta"]["stats_page"]stats_description_format;
+            Messages.StatsExpFormat = gameData["messages"]["meta"]["stats_page"]stats_experience;
+            Messages.StatsQuestpointsFormat = gameData["messages"]["meta"]["stats_page"]stats_questpoints;
+            Messages.StatsHungerFormat = gameData["messages"]["meta"]["stats_page"]stats_hunger;
+            Messages.StatsThirstFormat = gameData["messages"]["meta"]["stats_page"]stats_thisrt;
+            Messages.StatsTiredFormat = gameData["messages"]["meta"]["stats_page"]stats_tiredness;
+            Messages.StatsGenderFormat = gameData["messages"]["meta"]["stats_page"]stats_gender;
+            Messages.StatsJewelFormat = gameData["messages"]["meta"]["stats_page"]stats_equipped;
+            Messages.StatsCompetitionGearFormat = gameData["messages"]["meta"]["stats_page"]stats_competion_gear;
 
-            Messages.JewelrySlot1Format = gameData["messages"]["meta"]stats_page.jewelry.slot_1;
-            Messages.JewelrySlot2Format = gameData["messages"]["meta"]stats_page.jewelry.slot_2;
-            Messages.JewelrySlot3Format = gameData["messages"]["meta"]stats_page.jewelry.slot_3;
-            Messages.JewelrySlot4Format = gameData["messages"]["meta"]stats_page.jewelry.slot_4;
+            Messages.JewelrySlot1Format = gameData["messages"]["meta"]["stats_page"]jewelry.slot_1;
+            Messages.JewelrySlot2Format = gameData["messages"]["meta"]["stats_page"]jewelry.slot_2;
+            Messages.JewelrySlot3Format = gameData["messages"]["meta"]["stats_page"]jewelry.slot_3;
+            Messages.JewelrySlot4Format = gameData["messages"]["meta"]["stats_page"]jewelry.slot_4;
 
-            Messages.JewelryRemoveSlot1Button = gameData["messages"]["meta"]stats_page.jewelry.remove_slot_1;
-            Messages.JewelryRemoveSlot2Button = gameData["messages"]["meta"]stats_page.jewelry.remove_slot_2;
-            Messages.JewelryRemoveSlot3Button = gameData["messages"]["meta"]stats_page.jewelry.remove_slot_3;
-            Messages.JewelryRemoveSlot4Button = gameData["messages"]["meta"]stats_page.jewelry.remove_slot_4;
+            Messages.JewelryRemoveSlot1Button = gameData["messages"]["meta"]["stats_page"]jewelry.remove_slot_1;
+            Messages.JewelryRemoveSlot2Button = gameData["messages"]["meta"]["stats_page"]jewelry.remove_slot_2;
+            Messages.JewelryRemoveSlot3Button = gameData["messages"]["meta"]["stats_page"]jewelry.remove_slot_3;
+            Messages.JewelryRemoveSlot4Button = gameData["messages"]["meta"]["stats_page"]jewelry.remove_slot_4;
 
-            Messages.CompetitionGearHeadFormat = gameData["messages"]["meta"]stats_page.competition_gear.head_format;
-            Messages.CompetitionGearBodyFormat = gameData["messages"]["meta"]stats_page.competition_gear.body_format;
-            Messages.CompetitionGearLegsFormat = gameData["messages"]["meta"]stats_page.competition_gear.legs_format;
-            Messages.CompetitionGearFeetFormat = gameData["messages"]["meta"]stats_page.competition_gear.feet_format;
+            Messages.CompetitionGearHeadFormat = gameData["messages"]["meta"]["stats_page"]competition_gear.head_format;
+            Messages.CompetitionGearBodyFormat = gameData["messages"]["meta"]["stats_page"]competition_gear.body_format;
+            Messages.CompetitionGearLegsFormat = gameData["messages"]["meta"]["stats_page"]competition_gear.legs_format;
+            Messages.CompetitionGearFeetFormat = gameData["messages"]["meta"]["stats_page"]competition_gear.feet_format;
 
-            Messages.CompetitionGearRemoveHeadButton = gameData["messages"]["meta"]stats_page.competition_gear.remove_head;
-            Messages.CompetitionGearRemoveBodyButton = gameData["messages"]["meta"]stats_page.competition_gear.remove_body;
-            Messages.CompetitionGearRemoveLegsButton = gameData["messages"]["meta"]stats_page.competition_gear.remove_legs;
-            Messages.CompetitionGearRemoveFeetButton = gameData["messages"]["meta"]stats_page.competition_gear.remove_feet;
+            Messages.CompetitionGearRemoveHeadButton = gameData["messages"]["meta"]["stats_page"]competition_gear.remove_head;
+            Messages.CompetitionGearRemoveBodyButton = gameData["messages"]["meta"]["stats_page"]competition_gear.remove_body;
+            Messages.CompetitionGearRemoveLegsButton = gameData["messages"]["meta"]["stats_page"]competition_gear.remove_legs;
+            Messages.CompetitionGearRemoveFeetButton = gameData["messages"]["meta"]["stats_page"]competition_gear.remove_feet;
 
-            Messages.StatsPrivateNotesButton = gameData["messages"]["meta"]stats_page.stats_private_notes;
-            Messages.StatsQuestsButton = gameData["messages"]["meta"]stats_page.stats_quests;
-            Messages.StatsMinigameRankingButton = gameData["messages"]["meta"]stats_page.stats_minigame_ranking;
-            Messages.StatsAwardsButton = gameData["messages"]["meta"]stats_page.stats_awards;
-            Messages.StatsMiscButton = gameData["messages"]["meta"]stats_page.stats_misc;
+            Messages.StatsPrivateNotesButton = gameData["messages"]["meta"]["stats_page"]stats_private_notes;
+            Messages.StatsQuestsButton = gameData["messages"]["meta"]["stats_page"]stats_quests;
+            Messages.StatsMinigameRankingButton = gameData["messages"]["meta"]["stats_page"]stats_minigame_ranking;
+            Messages.StatsAwardsButton = gameData["messages"]["meta"]["stats_page"]stats_awards;
+            Messages.StatsMiscButton = gameData["messages"]["meta"]["stats_page"]stats_misc;
 
-            Messages.JewelrySelected = gameData["messages"]["meta"]stats_page.msg.jewelry_selected;
-            Messages.JewelrySelectedOther = gameData["messages"]["meta"]stats_page.msg.jewelry_other;
+            Messages.JewelrySelected = gameData["messages"]["meta"]["stats_page"]msg.jewelry_selected;
+            Messages.JewelrySelectedOther = gameData["messages"]["meta"]["stats_page"]msg.jewelry_other;
 
-            Messages.NoJewerlyEquipped = gameData["messages"]["meta"]stats_page.msg.no_jewelry_equipped;
-            Messages.NoJewerlyEquippedOther = gameData["messages"]["meta"]stats_page.msg.no_jewelry_other;
+            Messages.NoJewerlyEquipped = gameData["messages"]["meta"]["stats_page"]msg.no_jewelry_equipped;
+            Messages.NoJewerlyEquippedOther = gameData["messages"]["meta"]["stats_page"]msg.no_jewelry_other;
 
-            Messages.NoCompetitionGear = gameData["messages"]["meta"]stats_page.msg.no_competition_gear;
-            Messages.NoCompetitionGearOther = gameData["messages"]["meta"]stats_page.msg.no_competition_gear_other;
+            Messages.NoCompetitionGear = gameData["messages"]["meta"]["stats_page"]msg.no_competition_gear;
+            Messages.NoCompetitionGearOther = gameData["messages"]["meta"]["stats_page"]msg.no_competition_gear_other;
 
-            Messages.CompetitionGearSelected = gameData["messages"]["meta"]stats_page.msg.competition_gear_selected;
-            Messages.CompetitionGearSelectedOther = gameData["messages"]["meta"]stats_page.msg.competition_gear_other_selected;
+            Messages.CompetitionGearSelected = gameData["messages"]["meta"]["stats_page"]msg.competition_gear_selected;
+            Messages.CompetitionGearSelectedOther = gameData["messages"]["meta"]["stats_page"]msg.competition_gear_other_selected;
 
-            Messages.StatHunger = gameData["messages"]["meta"]stats_page.hunger_stat_name;
-            Messages.StatThirst = gameData["messages"]["meta"]stats_page.thirst_stat_name;
-            Messages.StatTired = gameData["messages"]["meta"]stats_page.tired_stat_name;
+            Messages.StatHunger = gameData["messages"]["meta"]["stats_page"]hunger_stat_name;
+            Messages.StatThirst = gameData["messages"]["meta"]["stats_page"]thirst_stat_name;
+            Messages.StatTired = gameData["messages"]["meta"]["stats_page"]tired_stat_name;
 
-            Messages.StatsOtherHorses = gameData["messages"]["meta"]stats_page.msg.other_horses;
-            Messages.StatPlayerFormats = gameData["messages"]["meta"]stats_page.player_stats.Deserialize<string[]>();
+            Messages.StatsOtherHorses = gameData["messages"]["meta"]["stats_page"]msg.other_horses;
+            Messages.StatPlayerFormats = gameData["messages"]["meta"]["stats_page"]player_stats.Deserialize<string[]>();
 
-            Messages.StatThirstDizzy = gameData["messages"]movement_key.thirsty;
-            Messages.StatHungerStumble = gameData["messages"]movement_key.hungery;
+            Messages.StatThirstDizzy = gameData["messages"]["movement_key"]thirsty;
+            Messages.StatHungerStumble = gameData["messages"]["movement_key"]hungery;
 
             // Misc Stats
-            Messages.StatMiscHeader = gameData["messages"]["meta"]misc_stats.header;
-            Messages.StatMiscNoneRecorded = gameData["messages"]["meta"]misc_stats.no_stats_recorded;
-            Messages.StatMiscEntryFormat = gameData["messages"]["meta"]misc_stats.stat_format;
+            Messages.StatMiscHeader = gameData["messages"]["meta"]["misc_stats"]header;
+            Messages.StatMiscNoneRecorded = gameData["messages"]["meta"]["misc_stats"]no_stats_recorded;
+            Messages.StatMiscEntryFormat = gameData["messages"]["meta"]["misc_stats"]stat_format;
 
             // Books (Libary)
-            Messages.BooksOfHorseIsle = gameData["messages"]["meta"]libary.books.books_of_horseisle;
-            Messages.BookEntryFormat = gameData["messages"]["meta"]libary.books.book_entry;
-            Messages.BookReadFormat = gameData["messages"]["meta"]libary.books.book_read;
+            Messages.BooksOfHorseIsle = gameData["messages"]["meta"]["libary"]["books"]books_of_horseisle;
+            Messages.BookEntryFormat = gameData["messages"]["meta"]["libary"]["books"]book_entry;
+            Messages.BookReadFormat = gameData["messages"]["meta"]["libary"]["books"]book_read;
 
             // Awards (Libary)
-            Messages.AwardsAvalible = gameData["messages"]["meta"]libary.awards.all_earnable_awards;
-            Messages.AwardEntryFormat = gameData["messages"]["meta"]libary.awards.award_entry;
+            Messages.AwardsAvalible = gameData["messages"]["meta"]["libary"]["awards"]all_earnable_awards;
+            Messages.AwardEntryFormat = gameData["messages"]["meta"]["libary"]["awards"]award_entry;
 
             // Locations (Libary)
-            Messages.LocationKnownIslands = gameData["messages"]["meta"]libary.locations.known_islands;
-            Messages.LocationKnownTowns = gameData["messages"]["meta"]libary.locations.known_towns;
-            Messages.LocationIslandFormat = gameData["messages"]["meta"]libary.locations.isle_entry;
-            Messages.LocationTownFormat = gameData["messages"]["meta"]libary.locations.town_entry;
-            Messages.LocationDescriptionFormat = gameData["messages"]["meta"]libary.locations.location_description;
+            Messages.LocationKnownIslands = gameData["messages"]["meta"]["libary"]["locations"]known_islands;
+            Messages.LocationKnownTowns = gameData["messages"]["meta"]["libary"]["locations"]known_towns;
+            Messages.LocationIslandFormat = gameData["messages"]["meta"]["libary"]["locations"]isle_entry;
+            Messages.LocationTownFormat = gameData["messages"]["meta"]["libary"]["locations"]town_entry;
+            Messages.LocationDescriptionFormat = gameData["messages"]["meta"]["libary"]["locations"]location_description;
 
             // Minigame (Libary)
-            Messages.MinigameSingleplayer = gameData["messages"]["meta"]libary.minigames.singleplayer;
-            Messages.MinigameTwoplayer = gameData["messages"]["meta"]libary.minigames.twoplayer;
-            Messages.MinigameMultiplayer = gameData["messages"]["meta"]libary.minigames.multiplayer;
-            Messages.MinigameCompetitions = gameData["messages"]["meta"]libary.minigames.competitions;
-            Messages.MinigameEntryFormat = gameData["messages"]["meta"]libary.minigames.minigame_entry;
+            Messages.MinigameSingleplayer = gameData["messages"]["meta"]["libary"]["minigames"]singleplayer;
+            Messages.MinigameTwoplayer = gameData["messages"]["meta"]["libary"]["minigames"]twoplayer;
+            Messages.MinigameMultiplayer = gameData["messages"]["meta"]["libary"]["minigames"]multiplayer;
+            Messages.MinigameCompetitions = gameData["messages"]["meta"]["libary"]["minigames"]competitions;
+            Messages.MinigameEntryFormat = gameData["messages"]["meta"]["libary"]["minigames"]minigame_entry;
 
             // Companion (Libary)
-            Messages.CompanionViewFormat = gameData["messages"]["meta"]libary.companion.view_button;
-            Messages.CompanionEntryFormat = gameData["messages"]["meta"]libary.companion.entry_format;
+            Messages.CompanionViewFormat = gameData["messages"]["meta"]["libary"]["companion"]view_button;
+            Messages.CompanionEntryFormat = gameData["messages"]["meta"]["libary"]["companion"]entry_format;
 
             // Tack (Libary)
-            Messages.TackViewSetFormat = gameData["messages"]["meta"]libary.tack.view_tack_set;
-            Messages.TackSetPeiceFormat = gameData["messages"]["meta"]libary.tack.set_peice_format;
+            Messages.TackViewSetFormat = gameData["messages"]["meta"]["libary"]["tack"]view_tack_set;
+            Messages.TackSetPeiceFormat = gameData["messages"]["meta"]["libary"]["tack"]set_peice_format;
 
             // Groomer
-            Messages.GroomerBestToHisAbilitiesFormat = gameData["messages"]["meta"]groomer.groomed_best_it_can;
-            Messages.GroomerCannotAffordMessage = gameData["messages"]["meta"]groomer.cannot_afford_service;
-            Messages.GroomerCannotImprove = gameData["messages"]["meta"]groomer.cannot_improve;
-            Messages.GroomerBestToHisAbilitiesALL = gameData["messages"]["meta"]groomer.groomed_best_all;
-            Messages.GroomerDontNeed = gameData["messages"]["meta"]groomer.dont_need;
+            Messages.GroomerBestToHisAbilitiesFormat = gameData["messages"]["meta"]["groomer"]groomed_best_it_can;
+            Messages.GroomerCannotAffordMessage = gameData["messages"]["meta"]["groomer"]cannot_afford_service;
+            Messages.GroomerCannotImprove = gameData["messages"]["meta"]["groomer"]cannot_improve;
+            Messages.GroomerBestToHisAbilitiesALL = gameData["messages"]["meta"]["groomer"]groomed_best_all;
+            Messages.GroomerDontNeed = gameData["messages"]["meta"]["groomer"]dont_need;
 
-            Messages.GroomerHorseCurrentlyAtFormat = gameData["messages"]["meta"]groomer.currently_at;
-            Messages.GroomerApplyServiceFormat = gameData["messages"]["meta"]groomer.apply_service;
-            Messages.GroomerApplyServiceForAllFormat = gameData["messages"]["meta"]groomer.apply_all;
+            Messages.GroomerHorseCurrentlyAtFormat = gameData["messages"]["meta"]["groomer"]currently_at;
+            Messages.GroomerApplyServiceFormat = gameData["messages"]["meta"]["groomer"]apply_service;
+            Messages.GroomerApplyServiceForAllFormat = gameData["messages"]["meta"]["groomer"]apply_all;
 
             // Barn
-            Messages.BarnHorseFullyFedFormat = gameData["messages"]["meta"]barn.fully_fed;
-            Messages.BarnCantAffordService = gameData["messages"]["meta"]barn.cant_afford;
-            Messages.BarnAllHorsesFullyFed = gameData["messages"]["meta"]barn.rested_all;
-            Messages.BarnServiceNotNeeded = gameData["messages"]["meta"]barn.not_needed;
+            Messages.BarnHorseFullyFedFormat = gameData["messages"]["meta"]["barn"]fully_fed;
+            Messages.BarnCantAffordService = gameData["messages"]["meta"]["barn"]cant_afford;
+            Messages.BarnAllHorsesFullyFed = gameData["messages"]["meta"]["barn"]rested_all;
+            Messages.BarnServiceNotNeeded = gameData["messages"]["meta"]["barn"]not_needed;
 
-            Messages.BarnHorseStatusFormat = gameData["messages"]["meta"]barn.horse_status;
-            Messages.BarnHorseMaxed = gameData["messages"]["meta"]barn.horse_maxed;
-            Messages.BarnLetHorseRelaxFormat = gameData["messages"]["meta"]barn.let_relax;
-            Messages.BarnLetAllHorsesReleaxFormat = gameData["messages"]["meta"]barn.relax_all;
+            Messages.BarnHorseStatusFormat = gameData["messages"]["meta"]["barn"]horse_status;
+            Messages.BarnHorseMaxed = gameData["messages"]["meta"]["barn"]horse_maxed;
+            Messages.BarnLetHorseRelaxFormat = gameData["messages"]["meta"]["barn"]let_relax;
+            Messages.BarnLetAllHorsesReleaxFormat = gameData["messages"]["meta"]["barn"]relax_all;
 
             // Farrier
-            Messages.FarrierCurrentShoesFormat = gameData["messages"]["meta"]farrier.current_shoes;
-            Messages.FarrierApplyIronShoesFormat = gameData["messages"]["meta"]farrier.apply_iron;
-            Messages.FarrierApplySteelShoesFormat = gameData["messages"]["meta"]farrier.apply_steel;
-            Messages.FarrierShoeAllFormat = gameData["messages"]["meta"]farrier.shoe_all;
+            Messages.FarrierCurrentShoesFormat = gameData["messages"]["meta"]["farrier"]current_shoes;
+            Messages.FarrierApplyIronShoesFormat = gameData["messages"]["meta"]["farrier"]apply_iron;
+            Messages.FarrierApplySteelShoesFormat = gameData["messages"]["meta"]["farrier"]apply_steel;
+            Messages.FarrierShoeAllFormat = gameData["messages"]["meta"]["farrier"]shoe_all;
 
-            Messages.FarrierPutOnSteelShoesMessageFormat = gameData["messages"]["meta"]farrier.put_on_steel_shoes;
-            Messages.FarrierPutOnIronShoesMessageFormat = gameData["messages"]["meta"]farrier.put_on_iron_shoes;
-            Messages.FarrierPutOnSteelShoesAllMesssageFormat = gameData["messages"]["meta"]farrier.put_on_steel_all;
-            Messages.FarrierShoesCantAffordMessage = gameData["messages"]["meta"]farrier.cant_afford_farrier;
+            Messages.FarrierPutOnSteelShoesMessageFormat = gameData["messages"]["meta"]["farrier"]put_on_steel_shoes;
+            Messages.FarrierPutOnIronShoesMessageFormat = gameData["messages"]["meta"]["farrier"]put_on_iron_shoes;
+            Messages.FarrierPutOnSteelShoesAllMesssageFormat = gameData["messages"]["meta"]["farrier"]put_on_steel_all;
+            Messages.FarrierShoesCantAffordMessage = gameData["messages"]["meta"]["farrier"]cant_afford_farrier;
 
             // Trainng Pen
-            Messages.TrainedInStatFormat = gameData["messages"]["meta"]trainer_pen.train_success;
-            Messages.TrainerHeaderFormat = gameData["messages"]["meta"]trainer_pen.train_header;
-            Messages.TrainerHorseEntryFormat = gameData["messages"]["meta"]trainer_pen.train_format;
-            Messages.TrainerHorseFullyTrainedFormat = gameData["messages"]["meta"]trainer_pen.fully_trained;
-            Messages.TrainerCantTrainAgainInFormat = gameData["messages"]["meta"]trainer_pen.train_again_in;
-            Messages.TrainerCantAfford = gameData["messages"]["meta"]trainer_pen.cant_afford;
+            Messages.TrainedInStatFormat = gameData["messages"]["meta"]["trainer_pen"]train_success;
+            Messages.TrainerHeaderFormat = gameData["messages"]["meta"]["trainer_pen"]train_header;
+            Messages.TrainerHorseEntryFormat = gameData["messages"]["meta"]["trainer_pen"]train_format;
+            Messages.TrainerHorseFullyTrainedFormat = gameData["messages"]["meta"]["trainer_pen"]fully_trained;
+            Messages.TrainerCantTrainAgainInFormat = gameData["messages"]["meta"]["trainer_pen"]train_again_in;
+            Messages.TrainerCantAfford = gameData["messages"]["meta"]["trainer_pen"]cant_afford;
 
             // Santa
-            Messages.SantaHiddenText = gameData["messages"]["meta"]santa.hidden_text;
-            Messages.SantaWrapItemFormat = gameData["messages"]["meta"]santa.wrap_format;
-            Messages.SantaWrappedObjectMessage = gameData["messages"]["meta"]santa.wrapped_object;
-            Messages.SantaCantWrapInvFull = gameData["messages"]["meta"]santa.wrap_fail_inv_full;
-            Messages.SantaCantOpenNothingInside = gameData["messages"]["meta"]santa.open_fail_empty;
-            Messages.SantaItemOpenedFormat = gameData["messages"]["meta"]santa.open_format;
-            Messages.SantaItemCantOpenInvFull = gameData["messages"]["meta"]santa.open_fail_inv_full;
+            Messages.SantaHiddenText = gameData["messages"]["meta"]["santa"]hidden_text;
+            Messages.SantaWrapItemFormat = gameData["messages"]["meta"]["santa"]wrap_format;
+            Messages.SantaWrappedObjectMessage = gameData["messages"]["meta"]["santa"]wrapped_object;
+            Messages.SantaCantWrapInvFull = gameData["messages"]["meta"]["santa"]wrap_fail_inv_full;
+            Messages.SantaCantOpenNothingInside = gameData["messages"]["meta"]["santa"]open_fail_empty;
+            Messages.SantaItemOpenedFormat = gameData["messages"]["meta"]["santa"]open_format;
+            Messages.SantaItemCantOpenInvFull = gameData["messages"]["meta"]["santa"]open_fail_inv_full;
 
             // Pawneer
-            Messages.PawneerUntackedHorsesICanBuy = gameData["messages"]["meta"]pawneer.untacked_i_can_buy;
-            Messages.PawneerHorseFormat = gameData["messages"]["meta"]pawneer.pawn_horse;
-            Messages.PawneerOrderMeta = gameData["messages"]["meta"]pawneer.pawneer_order;
-            Messages.PawneerHorseConfirmationFormat = gameData["messages"]["meta"]pawneer.are_you_sure;
-            Messages.PawneerHorseSoldMessagesFormat = gameData["messages"]["meta"]pawneer.horse_sold;
-            Messages.PawneerHorseNotFound = gameData["messages"]["meta"]pawneer.horse_not_found;
+            Messages.PawneerUntackedHorsesICanBuy = gameData["messages"]["meta"]["pawneer"]untacked_i_can_buy;
+            Messages.PawneerHorseFormat = gameData["messages"]["meta"]["pawneer"]pawn_horse;
+            Messages.PawneerOrderMeta = gameData["messages"]["meta"]["pawneer"]pawneer_order;
+            Messages.PawneerHorseConfirmationFormat = gameData["messages"]["meta"]["pawneer"]are_you_sure;
+            Messages.PawneerHorseSoldMessagesFormat = gameData["messages"]["meta"]["pawneer"]horse_sold;
+            Messages.PawneerHorseNotFound = gameData["messages"]["meta"]["pawneer"]horse_not_found;
 
-            Messages.PawneerOrderSelectBreed = gameData["messages"]["meta"]pawneer.order.select_breed;
-            Messages.PawneerOrderBreedEntryFormat = gameData["messages"]["meta"]pawneer.order.breed_entry;
+            Messages.PawneerOrderSelectBreed = gameData["messages"]["meta"]["pawneer"]["order"]select_breed;
+            Messages.PawneerOrderBreedEntryFormat = gameData["messages"]["meta"]["pawneer"]["order"]breed_entry;
 
-            Messages.PawneerOrderSelectColorFormat = gameData["messages"]["meta"]pawneer.order.select_color;
-            Messages.PawneerOrderColorEntryFormat = gameData["messages"]["meta"]pawneer.order.color_entry;
+            Messages.PawneerOrderSelectColorFormat = gameData["messages"]["meta"]["pawneer"]["order"]select_color;
+            Messages.PawneerOrderColorEntryFormat = gameData["messages"]["meta"]["pawneer"]["order"]color_entry;
 
-            Messages.PawneerOrderSelectGenderFormat = gameData["messages"]["meta"]pawneer.order.select_gender;
-            Messages.PawneerOrderGenderEntryFormat = gameData["messages"]["meta"]pawneer.order.gender_entry;
+            Messages.PawneerOrderSelectGenderFormat = gameData["messages"]["meta"]["pawneer"]["order"]select_gender;
+            Messages.PawneerOrderGenderEntryFormat = gameData["messages"]["meta"]["pawneer"]["order"]gender_entry;
 
-            Messages.PawneerOrderHorseFoundFormat = gameData["messages"]["meta"]pawneer.order.found;
+            Messages.PawneerOrderHorseFoundFormat = gameData["messages"]["meta"]["pawneer"]["order"]found;
 
             // Vet
-            Messages.VetServiceHorseFormat = gameData["messages"]["meta"]vet.service_horse;
-            Messages.VetSerivcesNotNeeded = gameData["messages"]["meta"]vet.not_needed;
-            Messages.VetApplyServicesFormat = gameData["messages"]["meta"]vet.apply;
+            Messages.VetServiceHorseFormat = gameData["messages"]["meta"]["vet"]service_horse;
+            Messages.VetSerivcesNotNeeded = gameData["messages"]["meta"]["vet"]not_needed;
+            Messages.VetApplyServicesFormat = gameData["messages"]["meta"]["vet"]apply;
 
-            Messages.VetApplyServicesForAllFormat = gameData["messages"]["meta"]vet.apply_all;
-            Messages.VetFullHealthRecoveredMessageFormat = gameData["messages"]["meta"]vet.now_full_health;
-            Messages.VetServicesNotNeededAll = gameData["messages"]["meta"]vet.not_needed_all;
-            Messages.VetAllFullHealthRecoveredMessage = gameData["messages"]["meta"]vet.all_full;
-            Messages.VetCannotAffordMessage = gameData["messages"]["meta"]vet.cant_afford;
+            Messages.VetApplyServicesForAllFormat = gameData["messages"]["meta"]["vet"]apply_all;
+            Messages.VetFullHealthRecoveredMessageFormat = gameData["messages"]["meta"]["vet"]now_full_health;
+            Messages.VetServicesNotNeededAll = gameData["messages"]["meta"]["vet"]not_needed_all;
+            Messages.VetAllFullHealthRecoveredMessage = gameData["messages"]["meta"]["vet"]all_full;
+            Messages.VetCannotAffordMessage = gameData["messages"]["meta"]["vet"]cant_afford;
 
             // Pond
-            Messages.PondHeader = gameData["messages"]["meta"]pond.header;
-            Messages.PondGoFishing = gameData["messages"]["meta"]pond.go_fishing;
-            Messages.PondNoFishingPole = gameData["messages"]["meta"]pond.no_fishing_pole;
-            Messages.PondDrinkHereIfSafe = gameData["messages"]["meta"]pond.drink_here;
-            Messages.PondHorseDrinkFormat = gameData["messages"]["meta"]pond.horse_drink_format;
-            Messages.PondNoEarthWorms = gameData["messages"]["meta"]pond.no_earth_worms;
+            Messages.PondHeader = gameData["messages"]["meta"]["pond"]header;
+            Messages.PondGoFishing = gameData["messages"]["meta"]["pond"]go_fishing;
+            Messages.PondNoFishingPole = gameData["messages"]["meta"]["pond"]no_fishing_pole;
+            Messages.PondDrinkHereIfSafe = gameData["messages"]["meta"]["pond"]drink_here;
+            Messages.PondHorseDrinkFormat = gameData["messages"]["meta"]["pond"]horse_drink_format;
+            Messages.PondNoEarthWorms = gameData["messages"]["meta"]["pond"]no_earth_worms;
 
-            Messages.PondDrinkFullFormat = gameData["messages"]["meta"]pond.drank_full;
-            Messages.PondCantDrinkHpLowFormat = gameData["messages"]["meta"]pond.cant_drink_hp_low;
-            Messages.PondDrinkOhNoesFormat = gameData["messages"]["meta"]pond.drank_something_bad;
-            Messages.PondNotThirstyFormat = gameData["messages"]["meta"]pond.not_thirsty;
+            Messages.PondDrinkFullFormat = gameData["messages"]["meta"]["pond"]drank_full;
+            Messages.PondCantDrinkHpLowFormat = gameData["messages"]["meta"]["pond"]cant_drink_hp_low;
+            Messages.PondDrinkOhNoesFormat = gameData["messages"]["meta"]["pond"]drank_something_bad;
+            Messages.PondNotThirstyFormat = gameData["messages"]["meta"]["pond"]not_thirsty;
 
             // Horse Whisperer
-            Messages.WhispererHorseLocateButtonFormat = gameData["messages"]["meta"]whisperer.horse_locate_meta;
-            Messages.WhispererServiceCostYouFormat = gameData["messages"]["meta"]whisperer.service_cost;
-            Messages.WhispererServiceCannotAfford = gameData["messages"]["meta"]whisperer.cant_afford;
-            Messages.WhispererSearchingAmoungHorses = gameData["messages"]["meta"]whisperer.searching_amoung_horses;
-            Messages.WhispererNoneFound = gameData["messages"]["meta"]whisperer.none_found_meta;
-            Messages.WhispererHorsesFoundFormat = gameData["messages"]["meta"]whisperer.horse_found_meta;
+            Messages.WhispererHorseLocateButtonFormat = gameData["messages"]["meta"]["whisperer"]horse_locate_meta;
+            Messages.WhispererServiceCostYouFormat = gameData["messages"]["meta"]["whisperer"]service_cost;
+            Messages.WhispererServiceCannotAfford = gameData["messages"]["meta"]["whisperer"]cant_afford;
+            Messages.WhispererSearchingAmoungHorses = gameData["messages"]["meta"]["whisperer"]searching_amoung_horses;
+            Messages.WhispererNoneFound = gameData["messages"]["meta"]["whisperer"]none_found_meta;
+            Messages.WhispererHorsesFoundFormat = gameData["messages"]["meta"]["whisperer"]horse_found_meta;
 
             // Mud Hole
-            Messages.MudHoleNoHorses = gameData["messages"]["meta"]mud_hole.no_horses;
-            Messages.MudHoleRuinedGroomFormat = gameData["messages"]["meta"]mud_hole.ruined_groom;
+            Messages.MudHoleNoHorses = gameData["messages"]["meta"]["mud_hole"]no_horses;
+            Messages.MudHoleRuinedGroomFormat = gameData["messages"]["meta"]["mud_hole"]ruined_groom;
 
             // Movement
             Messages.RandomMovement = gameData["messages"]random_movement;
 
             // Quests Log
-            Messages.QuestLogHeader = gameData["messages"]["meta"]quest_log.header_meta;
-            Messages.QuestFormat = gameData["messages"]["meta"]quest_log.quest_format;
+            Messages.QuestLogHeader = gameData["messages"]["meta"]["quest_log"]header_meta;
+            Messages.QuestFormat = gameData["messages"]["meta"]["quest_log"]quest_format;
 
-            Messages.QuestNotCompleted = gameData["messages"]["meta"]quest_log.not_complete;
-            Messages.QuestNotAvalible = gameData["messages"]["meta"]quest_log.not_avalible;
-            Messages.QuestCompleted = gameData["messages"]["meta"]quest_log.completed;
+            Messages.QuestNotCompleted = gameData["messages"]["meta"]["quest_log"]not_complete;
+            Messages.QuestNotAvalible = gameData["messages"]["meta"]["quest_log"]not_avalible;
+            Messages.QuestCompleted = gameData["messages"]["meta"]["quest_log"]completed;
 
-            Messages.QuestFooterFormat = gameData["messages"]["meta"]quest_log.footer_format;
+            Messages.QuestFooterFormat = gameData["messages"]["meta"]["quest_log"]footer_format;
             // Transport
 
-            Messages.CantAffordTransport = gameData["messages"]transport.not_enough_money;
-            Messages.WelcomeToAreaFormat = gameData["messages"]transport.welcome_to_format;
+            Messages.CantAffordTransport = gameData["messages"]["transport"]not_enough_money;
+            Messages.WelcomeToAreaFormat = gameData["messages"]["transport"]welcome_to_format;
             Messages.TransportFormat = gameData["messages"]["meta"]transport_format;
             Messages.TransportCostFormat = gameData["messages"]["meta"]transport_cost;
             Messages.TransportWagonFree = gameData["messages"]["meta"]transport_free;
 
             // Abuse Reports
-            Messages.AbuseReportMetaFormat = gameData["messages"]["meta"]["abuse_report"].options_format;
-            Messages.AbuseReportReasonFormat = gameData["messages"]["meta"]["abuse_report"].report_reason_format;
+            Messages.AbuseReportMetaFormat = gameData["messages"]["meta"]["abuse_report"]options_format;
+            Messages.AbuseReportReasonFormat = gameData["messages"]["meta"]["abuse_report"]report_reason_format;
 
-            Messages.AbuseReportPlayerNotFoundFormat = gameData["messages"]["abuse_report"].player_not_found_format;
-            Messages.AbuseReportFiled = gameData["messages"]["abuse_report"].report_filed;
-            Messages.AbuseReportProvideValidReason = gameData["messages"]["abuse_report"].valid_reason;
+            Messages.AbuseReportPlayerNotFoundFormat = gameData["messages"]["abuse_report"]player_not_found_format;
+            Messages.AbuseReportFiled = gameData["messages"]["abuse_report"]report_filed;
+            Messages.AbuseReportProvideValidReason = gameData["messages"]["abuse_report"]valid_reason;
 
             // Bank
-            Messages.BankMadeInIntrestFormat = gameData["messages"]["meta"]bank.made_interest;
-            Messages.BankCarryingFormat = gameData["messages"]["meta"]bank.carrying_message;
-            Messages.BankWhatToDo = gameData["messages"]["meta"]bank.what_to_do;
-            Messages.BankOptionsFormat = gameData["messages"]["meta"]bank.options;
+            Messages.BankMadeInIntrestFormat = gameData["messages"]["meta"]["bank"]made_interest;
+            Messages.BankCarryingFormat = gameData["messages"]["meta"]["bank"]carrying_message;
+            Messages.BankWhatToDo = gameData["messages"]["meta"]["bank"]what_to_do;
+            Messages.BankOptionsFormat = gameData["messages"]["meta"]["bank"]options;
 
 
-            Messages.BankDepositedMoneyFormat = gameData["messages"]bank.deposit_format;
-            Messages.BankWithdrewMoneyFormat = gameData["messages"]bank.withdraw_format;
+            Messages.BankDepositedMoneyFormat = gameData["messages"]["bank"]deposit_format;
+            Messages.BankWithdrewMoneyFormat = gameData["messages"]["bank"]withdraw_format;
 
-            Messages.BankCantHoldThisMuch = gameData["messages"]bank.cant_hold_that_much;
-            Messages.BankYouCantHoldThisMuch = gameData["messages"]bank.cant_withdraw_that_much;
+            Messages.BankCantHoldThisMuch = gameData["messages"]["bank"]cant_hold_that_much;
+            Messages.BankYouCantHoldThisMuch = gameData["messages"]["bank"]cant_withdraw_that_much;
 
             // Riddler
             Messages.RiddlerAnsweredAll = gameData["messages"]["meta"]riddler.riddle_all_complete;
@@ -1926,164 +1927,164 @@ namespace HISP.Server
             Messages.WorkshopCannotAfford = gameData["messages"]["meta"]workshop.no_money;
 
             // Horses
-            Messages.AdvancedStatFormat = gameData["messages"]["meta"]horse.stat_format;
-            Messages.BasicStatFormat = gameData["messages"]["meta"]horse.basic_stat_format;
-            Messages.HorsesHere = gameData["messages"]["meta"]horse.horses_here;
-            Messages.WildHorseFormat = gameData["messages"]["meta"]horse.wild_horse;
-            Messages.HorseCaptureTimer = gameData["messages"]["meta"]horse.horse_timer;
+            Messages.AdvancedStatFormat = gameData["messages"]["meta"]["horse"]stat_format;
+            Messages.BasicStatFormat = gameData["messages"]["meta"]["horse"]basic_stat_format;
+            Messages.HorsesHere = gameData["messages"]["meta"]["horse"]horses_here;
+            Messages.WildHorseFormat = gameData["messages"]["meta"]["horse"]wild_horse;
+            Messages.HorseCaptureTimer = gameData["messages"]["meta"]["horse"]horse_timer;
 
-            Messages.YouCapturedTheHorse = gameData["messages"]["meta"]horse.horse_caught;
-            Messages.HorseEvadedCapture = gameData["messages"]["meta"]horse.horse_escaped;
-            Messages.HorseEscapedAnyway = gameData["messages"]["meta"]horse.horse_escaped_anyway;
+            Messages.YouCapturedTheHorse = gameData["messages"]["meta"]["horse"]horse_caught;
+            Messages.HorseEvadedCapture = gameData["messages"]["meta"]["horse"]horse_escaped;
+            Messages.HorseEscapedAnyway = gameData["messages"]["meta"]["horse"]horse_escaped_anyway;
 
-            Messages.HorsesMenuHeader = gameData["messages"]["meta"]horse.horses_menu;
-            Messages.TooManyHorses = gameData["messages"]["meta"]horse.too_many_horses;
-            Messages.UpdateHorseCategory = gameData["messages"]["meta"]horse.update_category;
-            Messages.HorseEntryFormat = gameData["messages"]["meta"]horse.horse_format;
-            Messages.ViewBaiscStats = gameData["messages"]["meta"]horse.view_basic_stats;
-            Messages.ViewAdvancedStats = gameData["messages"]["meta"]horse.view_advanced_stats;
-            Messages.HorseBuckedYou = gameData["messages"]["meta"]horse.horse_bucked;
-            Messages.HorseLlamaBuckedYou = gameData["messages"]["meta"]horse.llama_bucked;
-            Messages.HorseCamelBuckedYou = gameData["messages"]["meta"]horse.camel_bucked;
+            Messages.HorsesMenuHeader = gameData["messages"]["meta"]["horse"]horses_menu;
+            Messages.TooManyHorses = gameData["messages"]["meta"]["horse"]too_many_horses;
+            Messages.UpdateHorseCategory = gameData["messages"]["meta"]["horse"]update_category;
+            Messages.HorseEntryFormat = gameData["messages"]["meta"]["horse"]horse_format;
+            Messages.ViewBaiscStats = gameData["messages"]["meta"]["horse"]view_basic_stats;
+            Messages.ViewAdvancedStats = gameData["messages"]["meta"]["horse"]view_advanced_stats;
+            Messages.HorseBuckedYou = gameData["messages"]["meta"]["horse"]horse_bucked;
+            Messages.HorseLlamaBuckedYou = gameData["messages"]["meta"]["horse"]llama_bucked;
+            Messages.HorseCamelBuckedYou = gameData["messages"]["meta"]["horse"]camel_bucked;
 
-            Messages.HorseRidingMessageFormat = gameData["messages"]["meta"]horse.riding_message;
-            Messages.HorseNameYoursFormat = gameData["messages"]["meta"]horse.horse_inventory.your_horse_format;
-            Messages.HorseNameOthersFormat = gameData["messages"]["meta"]horse.horse_inventory.horse_others_format;
-            Messages.HorseDescriptionFormat = gameData["messages"]["meta"]horse.horse_inventory.description_format;
-            Messages.HorseHandsHeightFormat = gameData["messages"]["meta"]horse.horse_inventory.hands_high;
-            Messages.HorseExperienceEarnedFormat = gameData["messages"]["meta"]horse.horse_inventory.experience;
+            Messages.HorseRidingMessageFormat = gameData["messages"]["meta"]["horse"]riding_message;
+            Messages.HorseNameYoursFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]your_horse_format;
+            Messages.HorseNameOthersFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]horse_others_format;
+            Messages.HorseDescriptionFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]description_format;
+            Messages.HorseHandsHeightFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]hands_high;
+            Messages.HorseExperienceEarnedFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]experience;
             
-            Messages.HorseTrainableInFormat = gameData["messages"]["meta"]horse.horse_inventory.trainable_in;
-            Messages.HorseIsTrainable = gameData["messages"]["meta"]horse.horse_inventory.currently_trainable;
-            Messages.HorseLeasedRemainingTimeFormat = gameData["messages"]["meta"]horse.horse_inventory.leased_horse;
+            Messages.HorseTrainableInFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]trainable_in;
+            Messages.HorseIsTrainable = gameData["messages"]["meta"]["horse"]["horse_inventory"]currently_trainable;
+            Messages.HorseLeasedRemainingTimeFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]leased_horse;
 
-            Messages.HorseCannotMountUntilTackedMessage = gameData["messages"]["meta"]horse.cannot_mount_tacked;
-            Messages.HorseDismountedBecauseNotTackedMessageFormat = gameData["messages"]["meta"]horse.dismount_because_tack;
-            Messages.HorseMountButtonFormat = gameData["messages"]["meta"]horse.horse_inventory.mount_button;
-            Messages.HorseDisMountButtonFormat = gameData["messages"]["meta"]horse.horse_inventory.dismount_button;
-            Messages.HorseFeedButtonFormat = gameData["messages"]["meta"]horse.horse_inventory.feed_button;
-            Messages.HorseTackButtonFormat = gameData["messages"]["meta"]horse.horse_inventory.tack_button;
-            Messages.HorsePetButtonFormat = gameData["messages"]["meta"]horse.horse_inventory.pet_button;
-            Messages.HorseProfileButtonFormat = gameData["messages"]["meta"]horse.horse_inventory.profile_button;
+            Messages.HorseCannotMountUntilTackedMessage = gameData["messages"]["meta"]["horse"]cannot_mount_tacked;
+            Messages.HorseDismountedBecauseNotTackedMessageFormat = gameData["messages"]["meta"]["horse"]dismount_because_tack;
+            Messages.HorseMountButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]mount_button;
+            Messages.HorseDisMountButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]dismount_button;
+            Messages.HorseFeedButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]feed_button;
+            Messages.HorseTackButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]tack_button;
+            Messages.HorsePetButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]pet_button;
+            Messages.HorseProfileButtonFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]profile_button;
 
-            Messages.HorseSavedProfileMessageFormat = gameData["messages"]["meta"]horse.profile.saved;
-            Messages.HorseProfileMessageTooLongError = gameData["messages"]["meta"]horse.profile.desc_too_long;
-            Messages.HorseNameTooLongError = gameData["messages"]["meta"]horse.profile.name_too_long;
-            Messages.HorseNameViolationsError = gameData["messages"]["meta"]horse.profile.name_profanity_detected;
-            Messages.HorseProfileMessageProfileError = gameData["messages"]["meta"]horse.profile.profile_profanity_detected;
+            Messages.HorseSavedProfileMessageFormat = gameData["messages"]["meta"]["horse"]["profile"]saved;
+            Messages.HorseProfileMessageTooLongError = gameData["messages"]["meta"]["horse"]["profile"]desc_too_long;
+            Messages.HorseNameTooLongError = gameData["messages"]["meta"]["horse"]["profile"]name_too_long;
+            Messages.HorseNameViolationsError = gameData["messages"]["meta"]["horse"]["profile"]name_profanity_detected;
+            Messages.HorseProfileMessageProfileError = gameData["messages"]["meta"]["horse"]["profile"]profile_profanity_detected;
 
-            Messages.HorseCatchTooManyHorsesMessage = gameData["messages"]["meta"]horse.horse_inventory.horse_cannot_catch_max;
-            Messages.HorseNoAutoSell = gameData["messages"]["meta"]horse.horse_inventory.no_auto_sell;
-            Messages.HorseAutoSellPriceFormat = gameData["messages"]["meta"]horse.horse_inventory.auto_sell_format;
-            Messages.HorseAutoSellOthersFormat = gameData["messages"]["meta"]horse.horse_inventory.auto_sell_others;
-            Messages.HorseAutoSellFormat = gameData["messages"]["meta"]horse.horse_inventory.auto_sell;
-            Messages.HorseCantAutoSellTacked = gameData["messages"]["meta"]horse.horse_inventory.cannot_auto_sell_tacked;
+            Messages.HorseCatchTooManyHorsesMessage = gameData["messages"]["meta"]["horse"]["horse_inventory"]horse_cannot_catch_max;
+            Messages.HorseNoAutoSell = gameData["messages"]["meta"]["horse"]["horse_inventory"]no_auto_sell;
+            Messages.HorseAutoSellPriceFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]auto_sell_format;
+            Messages.HorseAutoSellOthersFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]auto_sell_others;
+            Messages.HorseAutoSellFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]auto_sell;
+            Messages.HorseCantAutoSellTacked = gameData["messages"]["meta"]["horse"]["horse_inventory"]cannot_auto_sell_tacked;
 
-            Messages.HorseCurrentlyCategoryFormat = gameData["messages"]["meta"]horse.horse_inventory.marked_as;
-            Messages.HorseMarkAsCategory = gameData["messages"]["meta"]horse.horse_inventory.marking_options;
-            Messages.HorseStats = gameData["messages"]["meta"]horse.horse_inventory.horse_stats;
-            Messages.HorseTacked = gameData["messages"]["meta"]horse.horse_inventory.wearing_tacked;
-            Messages.HorseTackFormat = gameData["messages"]["meta"]horse.horse_inventory.tacked_format;
+            Messages.HorseCurrentlyCategoryFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]marked_as;
+            Messages.HorseMarkAsCategory = gameData["messages"]["meta"]["horse"]["horse_inventory"]marking_options;
+            Messages.HorseStats = gameData["messages"]["meta"]["horse"]["horse_inventory"]horse_stats;
+            Messages.HorseTacked = gameData["messages"]["meta"]["horse"]["horse_inventory"]wearing_tacked;
+            Messages.HorseTackFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]tacked_format;
 
-            Messages.HorseCompanion = gameData["messages"]["meta"]horse.horse_inventory.companion;
-            Messages.HorseCompanionFormat = gameData["messages"]["meta"]horse.horse_inventory.companion_selected;
-            Messages.HorseCompanionChangeButton = gameData["messages"]["meta"]horse.horse_inventory.companion_change_button;
-            Messages.HorseNoCompanion = gameData["messages"]["meta"]horse.horse_inventory.no_companion;
+            Messages.HorseCompanion = gameData["messages"]["meta"]["horse"]["horse_inventory"]companion;
+            Messages.HorseCompanionFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]companion_selected;
+            Messages.HorseCompanionChangeButton = gameData["messages"]["meta"]["horse"]["horse_inventory"]companion_change_button;
+            Messages.HorseNoCompanion = gameData["messages"]["meta"]["horse"]["horse_inventory"]no_companion;
 
-            Messages.HorseAdvancedStatsFormat = gameData["messages"]["meta"]horse.horse_inventory.advanced_stats;
-            Messages.HorseBreedDetailsFormat = gameData["messages"]["meta"]horse.horse_inventory.breed_details;
-            Messages.HorseHeightRangeFormat = gameData["messages"]["meta"]horse.horse_inventory.height_range;
-            Messages.HorsePossibleColorsFormat = gameData["messages"]["meta"]horse.horse_inventory.possible_colors;
-            Messages.HorseReleaseButton = gameData["messages"]["meta"]horse.horse_inventory.release_horse;
-            Messages.HorseOthers = gameData["messages"]["meta"]horse.horse_inventory.other_horses;
+            Messages.HorseAdvancedStatsFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]advanced_stats;
+            Messages.HorseBreedDetailsFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]breed_details;
+            Messages.HorseHeightRangeFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]height_range;
+            Messages.HorsePossibleColorsFormat = gameData["messages"]["meta"]["horse"]["horse_inventory"]possible_colors;
+            Messages.HorseReleaseButton = gameData["messages"]["meta"]["horse"]["horse_inventory"]release_horse;
+            Messages.HorseOthers = gameData["messages"]["meta"]["horse"]["horse_inventory"]other_horses;
 
-            Messages.HorseDescriptionEditFormat = gameData["messages"]["meta"]horse.description_edit;
-            Messages.HorseEquipTackMessageFormat = gameData["messages"]["meta"]horse.equip_tack_message;
-            Messages.HorseUnEquipTackMessageFormat = gameData["messages"]["meta"]horse.unequip_tack_message;
-            Messages.HorseStopRidingMessage = gameData["messages"]["meta"]horse.stop_riding_message;
+            Messages.HorseDescriptionEditFormat = gameData["messages"]["meta"]["horse"]description_edit;
+            Messages.HorseEquipTackMessageFormat = gameData["messages"]["meta"]["horse"]equip_tack_message;
+            Messages.HorseUnEquipTackMessageFormat = gameData["messages"]["meta"]["horse"]unequip_tack_message;
+            Messages.HorseStopRidingMessage = gameData["messages"]["meta"]["horse"]stop_riding_message;
 
-            Messages.HorsePetMessageFormat = gameData["messages"]["meta"]horse.pet_horse;
-            Messages.HorsePetTooHappy = gameData["messages"]["meta"]horse.pet_horse_too_happy;
-            Messages.HorsePetTooTired = gameData["messages"]["meta"]horse.pet_horse_too_sleepy;
-            Messages.HorseSetNewCategoryMessageFormat = gameData["messages"]["meta"]horse.horse_set_new_category;
+            Messages.HorsePetMessageFormat = gameData["messages"]["meta"]["horse"]pet_horse;
+            Messages.HorsePetTooHappy = gameData["messages"]["meta"]["horse"]pet_horse_too_happy;
+            Messages.HorsePetTooTired = gameData["messages"]["meta"]["horse"]pet_horse_too_sleepy;
+            Messages.HorseSetNewCategoryMessageFormat = gameData["messages"]["meta"]["horse"]horse_set_new_category;
 
-            Messages.HorseAutoSellMenuFormat = gameData["messages"]["meta"]horse.auto_sell.auto_sell_meta;
-            Messages.HorseIsAutoSell = gameData["messages"]["meta"]horse.auto_sell.is_auto_sell;
-            Messages.HorseAutoSellConfirmedFormat = gameData["messages"]["meta"]horse.auto_sell.auto_sell_confirmed;
-            Messages.HorseAutoSellValueTooHigh = gameData["messages"]["meta"]horse.auto_sell.auto_sell_to_high;
-            Messages.HorseAutoSellRemoved = gameData["messages"]["meta"]horse.auto_sell.auto_sell_remove;
+            Messages.HorseAutoSellMenuFormat = gameData["messages"]["meta"]["horse"]["auto_sell"]auto_sell_meta;
+            Messages.HorseIsAutoSell = gameData["messages"]["meta"]["horse"]["auto_sell"]is_auto_sell;
+            Messages.HorseAutoSellConfirmedFormat = gameData["messages"]["meta"]["horse"]["auto_sell"]auto_sell_confirmed;
+            Messages.HorseAutoSellValueTooHigh = gameData["messages"]["meta"]["horse"]["auto_sell"]auto_sell_to_high;
+            Messages.HorseAutoSellRemoved = gameData["messages"]["meta"]["horse"]["auto_sell"]auto_sell_remove;
 
-            Messages.HorseSetAutoSell = gameData["messages"]["meta"]horse.horse_inventory.set_auto_sell;
-            Messages.HorseChangeAutoSell = gameData["messages"]["meta"]horse.horse_inventory.change_auto_sell;
-            Messages.HorseTackFailAutoSell = gameData["messages"]["meta"]horse.tack_fail_autosell;
+            Messages.HorseSetAutoSell = gameData["messages"]["meta"]["horse"]["horse_inventory"]set_auto_sell;
+            Messages.HorseChangeAutoSell = gameData["messages"]["meta"]["horse"]["horse_inventory"]change_auto_sell;
+            Messages.HorseTackFailAutoSell = gameData["messages"]["meta"]["horse"]tack_fail_autosell;
 
-            Messages.HorseAreYouSureYouWantToReleaseFormat = gameData["messages"]["meta"]horse.horse_release;
-            Messages.HorseCantReleaseTheHorseYourRidingOn = gameData["messages"]["meta"]horse.cant_release_currently_riding;
-            Messages.HorseReleasedMeta = gameData["messages"]["meta"]horse.released_horse;
-            Messages.HorseReleasedBy = gameData["messages"]["meta"]horse.released_by_message;
+            Messages.HorseAreYouSureYouWantToReleaseFormat = gameData["messages"]["meta"]["horse"]horse_release;
+            Messages.HorseCantReleaseTheHorseYourRidingOn = gameData["messages"]["meta"]["horse"]cant_release_currently_riding;
+            Messages.HorseReleasedMeta = gameData["messages"]["meta"]["horse"]released_horse;
+            Messages.HorseReleasedBy = gameData["messages"]["meta"]["horse"]released_by_message;
 
             // All Stats (basic)
 
-            Messages.HorseAllBasicStats = gameData["messages"]["meta"]horse.allstats_basic.all_baisc_stats;
-            Messages.HorseBasicStatEntryFormat = gameData["messages"]["meta"]horse.allstats_basic.horse_entry;
+            Messages.HorseAllBasicStats = gameData["messages"]["meta"]["horse"]["allstats_basic"]all_baisc_stats;
+            Messages.HorseBasicStatEntryFormat = gameData["messages"]["meta"]["horse"]["allstats_basic"]horse_entry;
 
             // All Stats (all)
-            Messages.HorseAllStatsHeader = gameData["messages"]["meta"]horse.allstats.all_stats_header;
-            Messages.HorseNameEntryFormat = gameData["messages"]["meta"]horse.allstats.horse_name_entry;
-            Messages.HorseBasicStatsCompactedFormat = gameData["messages"]["meta"]horse.allstats.basic_stats_compact;
-            Messages.HorseAdvancedStatsCompactedFormat = gameData["messages"]["meta"]horse.allstats.advanced_stats_compact;
-            Messages.HorseAllStatsLegend = gameData["messages"]["meta"]horse.allstats.legend;
+            Messages.HorseAllStatsHeader = gameData["messages"]["meta"]["horse"]["allstats"]all_stats_header;
+            Messages.HorseNameEntryFormat = gameData["messages"]["meta"]["horse"]["allstats"]horse_name_entry;
+            Messages.HorseBasicStatsCompactedFormat = gameData["messages"]["meta"]["horse"]["allstats"]basic_stats_compact;
+            Messages.HorseAdvancedStatsCompactedFormat = gameData["messages"]["meta"]["horse"]["allstats"]advanced_stats_compact;
+            Messages.HorseAllStatsLegend = gameData["messages"]["meta"]["horse"]["allstats"]legend;
 
 
             // Horse companion menu
-            Messages.HorseCompanionMenuHeaderFormat = gameData["messages"]["meta"]horse.companion_menu.menu_header;
-            Messages.HorseCompnaionMenuCurrentCompanionFormat = gameData["messages"]["meta"]horse.companion_menu.selected_companion;
-            Messages.HorseCompanionEntryFormat = gameData["messages"]["meta"]horse.companion_menu.companion_entry;
-            Messages.HorseCompanionEquipMessageFormat = gameData["messages"]["meta"]horse.companion_menu.companion_equip_message;
-            Messages.HorseCompanionRemoveMessageFormat = gameData["messages"]["meta"]horse.companion_menu.companion_remove_message;
-            Messages.HorseCompanionMenuCurrentlyAvalibleCompanions = gameData["messages"]["meta"]horse.companion_menu.companions_avalible;
+            Messages.HorseCompanionMenuHeaderFormat = gameData["messages"]["meta"]["horse"]["companion_menu"]menu_header;
+            Messages.HorseCompnaionMenuCurrentCompanionFormat = gameData["messages"]["meta"]["horse"]["companion_menu"]selected_companion;
+            Messages.HorseCompanionEntryFormat = gameData["messages"]["meta"]["horse"]["companion_menu"]companion_entry;
+            Messages.HorseCompanionEquipMessageFormat = gameData["messages"]["meta"]["horse"]["companion_menu"]companion_equip_message;
+            Messages.HorseCompanionRemoveMessageFormat = gameData["messages"]["meta"]["horse"]["companion_menu"]companion_remove_message;
+            Messages.HorseCompanionMenuCurrentlyAvalibleCompanions = gameData["messages"]["meta"]["horse"]["companion_menu"]companions_avalible;
 
             // Horse Feed Menu
-            Messages.HorseCurrentStatusFormat = gameData["messages"]["meta"]horse.feed_horse.current_status;
-            Messages.HorseHoldingHorseFeed = gameData["messages"]["meta"]horse.feed_horse.holding_horse_feed;
-            Messages.HorsefeedFormat = gameData["messages"]["meta"]horse.feed_horse.horsefeed_format;
-            Messages.HorseNeighsThanks = gameData["messages"]["meta"]horse.feed_horse.horse_neigh;
-            Messages.HorseCouldNotFinish = gameData["messages"]["meta"]horse.feed_horse.horse_could_not_finish;
+            Messages.HorseCurrentStatusFormat = gameData["messages"]["meta"]["horse"]["feed_horse"]current_status;
+            Messages.HorseHoldingHorseFeed = gameData["messages"]["meta"]["horse"]["feed_horse"]holding_horse_feed;
+            Messages.HorsefeedFormat = gameData["messages"]["meta"]["horse"]["feed_horse"]horsefeed_format;
+            Messages.HorseNeighsThanks = gameData["messages"]["meta"]["horse"]["feed_horse"]horse_neigh;
+            Messages.HorseCouldNotFinish = gameData["messages"]["meta"]["horse"]["feed_horse"]horse_could_not_finish;
 
-            Messages.HorseFeedPersonalityIncreased = gameData["messages"]["meta"]horse.feed_horse.feed_special_personality;
-            Messages.HorseFeedInteligenceIncreased = gameData["messages"]["meta"]horse.feed_horse.feed_special_inteligence;
-            Messages.HorseFeedMagicBeanFormat = gameData["messages"]["meta"]horse.feed_horse.feed_special_magic_bean;
-            Messages.HorseFeedMagicDropletFormat = gameData["messages"]["meta"]horse.feed_horse.feed_special_magic_droplet;
+            Messages.HorseFeedPersonalityIncreased = gameData["messages"]["meta"]["horse"]["feed_horse"]feed_special_personality;
+            Messages.HorseFeedInteligenceIncreased = gameData["messages"]["meta"]["horse"]["feed_horse"]feed_special_inteligence;
+            Messages.HorseFeedMagicBeanFormat = gameData["messages"]["meta"]["horse"]["feed_horse"]feed_special_magic_bean;
+            Messages.HorseFeedMagicDropletFormat = gameData["messages"]["meta"]["horse"]["feed_horse"]feed_special_magic_droplet;
 
             // Tack menu (horses)
-            Messages.HorseTackedAsFollowsFormat = gameData["messages"]["meta"]horse.tack_menu.tacked_as_follows;
-            Messages.HorseUnEquipSaddleFormat = gameData["messages"]["meta"]horse.tack_menu.dequip_saddle;
-            Messages.HorseUnEquipSaddlePadFormat = gameData["messages"]["meta"]horse.tack_menu.dequip_saddle_pad;
-            Messages.HorseUnEquipBridleFormat = gameData["messages"]["meta"]horse.tack_menu.dequip_bridle;
-            Messages.HorseTackInInventory = gameData["messages"]["meta"]horse.tack_menu.you_have_following_tack;
-            Messages.HorseLlamaTackInInventory = gameData["messages"]["meta"]horse.tack_menu.you_have_following_llama_tack;
-            Messages.HorseCamelTackInInventory = gameData["messages"]["meta"]horse.tack_menu.you_have_following_camel_tack;
-            Messages.HorseEquipFormat = gameData["messages"]["meta"]horse.tack_menu.equip_tack;
-            Messages.BackToHorse = gameData["messages"]["meta"]horse.back_to_horse;
+            Messages.HorseTackedAsFollowsFormat = gameData["messages"]["meta"]["horse"]["tack_menu"]tacked_as_follows;
+            Messages.HorseUnEquipSaddleFormat = gameData["messages"]["meta"]["horse"]["tack_menu"]dequip_saddle;
+            Messages.HorseUnEquipSaddlePadFormat = gameData["messages"]["meta"]["horse"]["tack_menu"]dequip_saddle_pad;
+            Messages.HorseUnEquipBridleFormat = gameData["messages"]["meta"]["horse"]["tack_menu"]dequip_bridle;
+            Messages.HorseTackInInventory = gameData["messages"]["meta"]["horse"]["tack_menu"]you_have_following_tack;
+            Messages.HorseLlamaTackInInventory = gameData["messages"]["meta"]["horse"]["tack_menu"]you_have_following_llama_tack;
+            Messages.HorseCamelTackInInventory = gameData["messages"]["meta"]["horse"]["tack_menu"]you_have_following_camel_tack;
+            Messages.HorseEquipFormat = gameData["messages"]["meta"]["horse"]["tack_menu"]equip_tack;
+            Messages.BackToHorse = gameData["messages"]["meta"]["horse"]back_to_horse;
 
 
             // Libary
-            Messages.LibaryMainMenu = gameData["messages"]["meta"]libary.main_menu;
-            Messages.LibaryFindNpc = gameData["messages"]["meta"]libary.find_npc;
-            Messages.LibaryFindNpcSearchResultsHeader = gameData["messages"]["meta"]libary.find_npc_results_header;
-            Messages.LibaryFindNpcSearchResultFormat = gameData["messages"]["meta"]libary.find_npc_results_format;
-            Messages.LibaryFindNpcSearchNoResults = gameData["messages"]["meta"]libary.find_npc_no_results;
-            Messages.LibaryFindNpcLimit5 = gameData["messages"]["meta"]libary.find_npc_limit5;
+            Messages.LibaryMainMenu = gameData["messages"]["meta"]["libary"]main_menu;
+            Messages.LibaryFindNpc = gameData["messages"]["meta"]["libary"]find_npc;
+            Messages.LibaryFindNpcSearchResultsHeader = gameData["messages"]["meta"]["libary"]find_npc_results_header;
+            Messages.LibaryFindNpcSearchResultFormat = gameData["messages"]["meta"]["libary"]find_npc_results_format;
+            Messages.LibaryFindNpcSearchNoResults = gameData["messages"]["meta"]["libary"]find_npc_no_results;
+            Messages.LibaryFindNpcLimit5 = gameData["messages"]["meta"]["libary"]find_npc_limit5;
 
-            Messages.LibaryFindRanch = gameData["messages"]["meta"]libary.find_ranch;
-            Messages.LibaryFindRanchResultsHeader = gameData["messages"]["meta"]libary.find_ranch_match_closely;
-            Messages.LibaryFindRanchResultFormat = gameData["messages"]["meta"]libary.find_ranch_result;
-            Messages.LibaryFindRanchResultsNoResults = gameData["messages"]["meta"]libary.find_ranch_no_results;
+            Messages.LibaryFindRanch = gameData["messages"]["meta"]["libary"]find_ranch;
+            Messages.LibaryFindRanchResultsHeader = gameData["messages"]["meta"]["libary"]find_ranch_match_closely;
+            Messages.LibaryFindRanchResultFormat = gameData["messages"]["meta"]["libary"]find_ranch_result;
+            Messages.LibaryFindRanchResultsNoResults = gameData["messages"]["meta"]["libary"]find_ranch_no_results;
 
-            Messages.HorseBreedFormat = gameData["messages"]["meta"]libary.horse_breed_format;
-            Messages.HorseRelativeFormat = gameData["messages"]["meta"]libary.horse_relative_format;
-            Messages.BreedViewerFormat = gameData["messages"]["meta"]libary.breed_preview_format;
-            Messages.BreedViewerMaximumStats = gameData["messages"]["meta"]libary.maximum_stats;
+            Messages.HorseBreedFormat = gameData["messages"]["meta"]["libary"]horse_breed_format;
+            Messages.HorseRelativeFormat = gameData["messages"]["meta"]["libary"]horse_relative_format;
+            Messages.BreedViewerFormat = gameData["messages"]["meta"]["libary"]breed_preview_format;
+            Messages.BreedViewerMaximumStats = gameData["messages"]["meta"]["libary"]maximum_stats;
 
             // Chat
 
@@ -2199,7 +2200,7 @@ namespace HISP.Server
             Messages.PlayerListOfPlayersAlphabetically = gameData["messages"]["meta"]player_list.list_of_all_players_alphabetically;
             Messages.PlayerListMapAllBuddiesForamt = gameData["messages"]["meta"]player_list.map_all_buddies_format;
             Messages.PlayerListMapAllPlayersFormat = gameData["messages"]["meta"]player_list.map_all_players_format;
-            Messages.PlayerListAbuseReport = gameData["messages"]["meta"]player_list.["abuse_report"];
+            Messages.PlayerListAbuseReport = gameData["messages"]["meta"]player_list["abuse_report"];
 
             Messages.MuteButton = gameData["messages"]["meta"]player_list.mute_button;
             Messages.HearButton = gameData["messages"]["meta"]player_list.hear_button;
@@ -2361,12 +2362,12 @@ namespace HISP.Server
 
             // Disconnect Reasons
 
-            Messages.KickReasonKicked = gameData["messages"]disconnect.kicked;
-            Messages.KickReasonBanned = gameData["messages"]disconnect.banned;
-            Messages.KickReasonIdleFormat = gameData["messages"]disconnect.client_timeout.kick_message;
-            Messages.KickReasonNoTime = gameData["messages"]disconnect.no_playtime;
-            Messages.IdleWarningFormat = gameData["messages"]disconnect.client_timeout.warn_message;
-            Messages.KickReasonDuplicateLogin = gameData["messages"]disconnect.dupe_login;
+            Messages.KickReasonKicked = gameData["messages"]["disconnect"]kicked;
+            Messages.KickReasonBanned = gameData["messages"]["disconnect"]banned;
+            Messages.KickReasonIdleFormat = gameData["messages"]["disconnect"]["client_timeout"]kick_message;
+            Messages.KickReasonNoTime = gameData["messages"]["disconnect"]no_playtime;
+            Messages.IdleWarningFormat = gameData["messages"]["disconnect"]["client_timeout"]warn_message;
+            Messages.KickReasonDuplicateLogin = gameData["messages"]["disconnect"]dupe_login;
 
             // Competition Gear
 
@@ -2382,9 +2383,9 @@ namespace HISP.Server
             Messages.NothingInterestingHere = gameData["messages"]click_nothing_message;
 
             // Swf
-            Messages.WagonCutscene = gameData["transport"].wagon_cutscene;
-            Messages.BoatCutscene = gameData["transport"].boat_cutscene;
-            Messages.BallonCutscene = gameData["transport"].ballon_cutscene;
+            Messages.WagonCutscene = (string)gameData["transport"]["wagon_cutscene"];
+            Messages.BoatCutscene = (string)gameData["transport"]["boat_cutscene"];
+            Messages.BallonCutscene = (string)gameData["transport"]["ballon_cutscene"];
 
             gameData.Dispose();
             GC.Collect();
