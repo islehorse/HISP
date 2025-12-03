@@ -51,17 +51,16 @@ jobs:
     - name: Build arm64 deb package
       continue-on-error: false
       run: |
-        mkdir /tmp/debpkg
-        mkdir /tmp/debpkg/DebianArm64
-        mkdir /tmp/debpkg/DebianArm64/etc
-        mkdir /tmp/debpkg/DebianArm64/usr
-        mkdir /tmp/debpkg/DebianArm64/etc/hisp
-        mkdir /tmp/debpkg/DebianArm64/etc/hisp/gamedata
-        mkdir /tmp/debpkg/DebianArm64/etc/systemd
-        mkdir /tmp/debpkg/DebianArm64/etc/systemd/system
-        mkdir /tmp/debpkg/DebianArm64/usr/bin
-        mkdir /tmp/debpkg/DebianArm64/usr/lib
-        mkdir /tmp/debpkg/DebianArm64/DEBIAN
+        mkdir -p /tmp/debpkg/DebianArm64
+        mkdir -p /tmp/debpkg/DebianArm64/etc
+        mkdir -p /tmp/debpkg/DebianArm64/usr
+        mkdir -p /tmp/debpkg/DebianArm64/etc/hisp
+        mkdir -p /tmp/debpkg/DebianArm64/etc/hisp/gamedata
+        mkdir -p /tmp/debpkg/DebianArm64/etc/systemd
+        mkdir -p /tmp/debpkg/DebianArm64/etc/systemd/system
+        mkdir -p /tmp/debpkg/DebianArm64/usr/bin
+        mkdir -p /tmp/debpkg/DebianArm64/usr/lib
+        mkdir -p /tmp/debpkg/DebianArm64/DEBIAN
         cp LibHISP/Resources/server.properties /tmp/debpkg/DebianArm64/etc/hisp/server.properties
         cp LibHISP/Resources/default_cross_domain.xml /tmp/debpkg/DebianArm64/etc/hisp/CrossDomainPolicy.xml
         cp -r HISPd/Resources/DEBIAN/* /tmp/debpkg/DebianArm64/DEBIAN
@@ -87,17 +86,16 @@ jobs:
     - name: Build arm deb package
       continue-on-error: false
       run: |
-        mkdir /tmp/debpkg
-        mkdir /tmp/debpkg/DebianArm
-        mkdir /tmp/debpkg/DebianArm/etc
-        mkdir /tmp/debpkg/DebianArm/usr
-        mkdir /tmp/debpkg/DebianArm/etc/hisp
-        mkdir /tmp/debpkg/DebianArm/etc/hisp/gamedata
-        mkdir /tmp/debpkg/DebianArm/etc/systemd
-        mkdir /tmp/debpkg/DebianArm/etc/systemd/system
-        mkdir /tmp/debpkg/DebianArm/usr/bin
-        mkdir /tmp/debpkg/DebianArm/usr/lib
-        mkdir /tmp/debpkg/DebianArm/DEBIAN
+        mkdir -p /tmp/debpkg/DebianArm
+        mkdir -p /tmp/debpkg/DebianArm/etc
+        mkdir -p /tmp/debpkg/DebianArm/usr
+        mkdir -p /tmp/debpkg/DebianArm/etc/hisp
+        mkdir -p /tmp/debpkg/DebianArm/etc/hisp/gamedata
+        mkdir -p /tmp/debpkg/DebianArm/etc/systemd
+        mkdir -p /tmp/debpkg/DebianArm/etc/systemd/system
+        mkdir -p /tmp/debpkg/DebianArm/usr/bin
+        mkdir -p /tmp/debpkg/DebianArm/usr/lib
+        mkdir -p /tmp/debpkg/DebianArm/DEBIAN
         cp LibHISP/Resources/server.properties /tmp/debpkg/DebianArm/etc/hisp/server.properties
         cp LibHISP/Resources/default_cross_domain.xml /tmp/debpkg/DebianArm/etc/hisp/CrossDomainPolicy.xml
         cp -r HISPd/Resources/DEBIAN/* /tmp/debpkg/DebianArm/DEBIAN
@@ -174,17 +172,16 @@ jobs:
     - name: Build deb package
       continue-on-error: false
       run: |
-        mkdir /tmp/debpkg
-        mkdir /tmp/debpkg/Debian64
-        mkdir /tmp/debpkg/Debian64/etc
-        mkdir /tmp/debpkg/Debian64/usr
-        mkdir /tmp/debpkg/Debian64/etc/hisp
-        mkdir /tmp/debpkg/Debian64/etc/hisp/gamedata
-        mkdir /tmp/debpkg/Debian64/etc/systemd
-        mkdir /tmp/debpkg/Debian64/etc/systemd/system
-        mkdir /tmp/debpkg/Debian64/usr/bin
-        mkdir /tmp/debpkg/Debian64/usr/lib
-        mkdir /tmp/debpkg/Debian64/DEBIAN
+        mkdir -p /tmp/debpkg/Debian64
+        mkdir -p /tmp/debpkg/Debian64/etc
+        mkdir -p /tmp/debpkg/Debian64/usr
+        mkdir -p /tmp/debpkg/Debian64/etc/hisp
+        mkdir -p /tmp/debpkg/Debian64/etc/hisp/gamedata
+        mkdir -p /tmp/debpkg/Debian64/etc/systemd
+        mkdir -p /tmp/debpkg/Debian64/etc/systemd/system
+        mkdir -p /tmp/debpkg/Debian64/usr/bin
+        mkdir -p /tmp/debpkg/Debian64/usr/lib
+        mkdir -p /tmp/debpkg/Debian64/DEBIAN
         cp LibHISP/Resources/server.properties /tmp/debpkg/Debian64/etc/hisp/server.properties
         cp LibHISP/Resources/default_cross_domain.xml /tmp/debpkg/Debian64/etc/hisp/CrossDomainPolicy.xml
         cp -r HISPd/Resources/DEBIAN/* /tmp/debpkg/Debian64/DEBIAN
