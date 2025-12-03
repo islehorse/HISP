@@ -1,11 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 namespace HISP.Util
 {
-    public class ThreadSafeList<T> : List<T>, IEnumerable<T>
+    public class ThreadSafeList<T> : List<T>
     {
         private Mutex listLock = new Mutex();
 
@@ -13,68 +12,73 @@ namespace HISP.Util
         {
             get
             {
-                listLock.WaitOne();
-                T val = base[key];
-                listLock.ReleaseMutex();
-                return val;
+                lock(listLock)
+                {
+                    T val = base[key];
+                    return val;
+                }
             }
         }
 
-
         new public void AddRange(IEnumerable<T> collection)
         {
-            listLock.WaitOne();
-            base.AddRange(collection);
-            listLock.ReleaseMutex();
+            lock(listLock)
+            {
+                base.AddRange(collection);
+            }
         }
         new public void Add(T value)
         {
-            listLock.WaitOne();
-            base.Add(value);
-            listLock.ReleaseMutex();
+            lock (listLock)
+            {
+                base.Add(value);
+            }
         }
         new public void Clear()
         {
-            listLock.WaitOne();
-            base.Clear();
-            listLock.ReleaseMutex();
+            lock(listLock)
+            {
+                base.Clear();
+            }
         }
 
         new public bool Contains(T value)
         {
-            listLock.WaitOne();
-            bool test = base.Contains(value);
-            listLock.ReleaseMutex();
-            
-            return test;
+            lock(listLock)
+            {
+                return base.Contains(value);
+            }
         }
         new public IEnumerator GetEnumerator()
         {
-            listLock.WaitOne();
-            ThreadSafeEnumerator<T> res = new ThreadSafeEnumerator<T>(base.GetEnumerator());
-            listLock.ReleaseMutex();
-            return res;
+            lock(listLock)
+            {
+                return new ThreadSafeEnumerator<T>(base.GetEnumerator());
+            }
         }
 
         new public void Insert(int index, T value)
         {
-            listLock.WaitOne();
-            base.Insert(index, value);
-            listLock.ReleaseMutex();
+            lock(listLock)
+            {
+                base.Insert(index, value);
+            }
         }
 
         new public void Remove(T value)
         {
-            listLock.WaitOne();
-            base.Remove(value);
-            listLock.ReleaseMutex();
+            lock(listLock)
+            {
+                base.Remove(value);
+            }
         }
 
         new public void RemoveAt(int index)
         {
-            listLock.WaitOne();
-            base.RemoveAt(index);
-            listLock.ReleaseMutex();
+            lock(listLock)
+            {
+                base.RemoveAt(index);
+            }
         }
 
     }
