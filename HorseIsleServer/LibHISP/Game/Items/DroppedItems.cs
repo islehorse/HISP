@@ -12,8 +12,7 @@ namespace HISP.Game.Items
         {
             public DroppedItem(ItemInstance itmInstance)
             {
-                if (itmInstance == null)
-                    throw new NullReferenceException("How could this happen?");
+                if (itmInstance == null) throw new NullReferenceException("How could this happen?");
                 Instance = itmInstance;
             }
             public int X;
@@ -32,18 +31,17 @@ namespace HISP.Game.Items
         }
         public static int GetCountOfItem(Item.ItemInformation item)
         {
-            return Items.Count(o => o.Instance.ItemId == item.Id);
+            return droppedItemsList.Count(o => o.Instance.ItemId == item.Id);
         }
 
         public static DroppedItem[] GetItemsAt(int x, int y)
         {
-            return Items.Where(o => (o.X == x && o.Y == y)).ToArray();
+            return droppedItemsList.Where(o => (o.X == x && o.Y == y)).ToArray();
         }
         public static void ReadFromDatabase()
         {
             DroppedItem[] items = Database.GetDroppedItems();
-            foreach (DroppedItem droppedItem in items)
-                droppedItemsList.Add(droppedItem); 
+            foreach (DroppedItem droppedItem in items) droppedItemsList.Add(droppedItem); 
         }
         public static void RemoveDroppedItem(DroppedItem item)
         {
@@ -55,11 +53,11 @@ namespace HISP.Game.Items
 
         public static bool IsDroppedItemExist(int randomId)
         {
-            return Items.Any(o => o.Instance.RandomId == randomId);
+            return droppedItemsList.Any(o => o.Instance.RandomId == randomId);
         }
         public static DroppedItem GetDroppedItemById(int randomId)
         {
-            return Items.First(o => o.Instance.RandomId == randomId);
+            return droppedItemsList.First(o => o.Instance.RandomId == randomId);
         }
         public static void DespawnItems()
         {
@@ -290,9 +288,7 @@ namespace HISP.Game.Items
         public static void DeleteAllItemsWithId(int itemId)
         {
             Database.DeleteAllDroppedItemsWithId(itemId);
-            foreach (DroppedItem itm in droppedItemsList.ToArray())
-                if (itm.Instance.ItemId == itemId)
-                    droppedItemsList.Remove(itm);
+            droppedItemsList.RemoveAll(o => o.Instance.ItemId == itemId);
         }
 
         public static void Init()
