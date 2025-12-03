@@ -8,6 +8,7 @@ using HISP.Game.SwfModules;
 using HISP.Player;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -76,17 +77,18 @@ namespace HISP.Server
             return jsonBase;
         }
 
-        /// <summary>
-        /// Merges the specified Dictionary of values into the base JsonNode for which this method is called.
-        /// </summary>
-        /// <typeparam name="TKey"></typeparam>
-        /// <typeparam name="TValue"></typeparam>
-        /// <param name="jsonBase"></param>
-        /// <param name="dictionary"></param>
-        /// <param name="options"></param>
-        /// <returns></returns>
-        public static JsonNode MergeDictionary<TKey, TValue>(this JsonNode jsonBase, IDictionary<TKey, TValue> dictionary, JsonSerializerOptions options = null)
-            => jsonBase.Merge(JsonSerializer.SerializeToNode(dictionary, options));
+        public static T[] AsArray<T>(this JsonNode jnode)
+        {
+            JsonArray jarr = jnode.AsArray();
+
+            T[] array = new T[jarr.Count];
+
+            for (int i = 0; i < jarr.Count; i++)
+                array[i] = jarr[i].AsValue().GetValue<T>();
+
+            return array;
+        }
+
     }
     public class GameDataJson
     {
@@ -175,7 +177,7 @@ namespace HISP.Server
                 area.EndY   = ((int)gameData["places"]["areas"].AsArray()[i]["end_y"]);
                 area.Name   = ((string)gameData["places"]["areas"].AsArray()[i]["name"]);
 
-                Logger.DebugPrint("Registered Area: " + area.Name + " X " + area.StartX + "-" + area.EndX + " Y " + area.StartY + "-" + area.EndY);
+                Logger.DebugPrint("Registered Area: " + area.Name + " X " + area.StartX + "," + area.EndX + " Y " + area.StartY + "," + area.EndY);
                 World.Areas.Add(area);
             }
         }
@@ -209,7 +211,7 @@ namespace HISP.Server
                 waypoint.PosY = ((int)gameData["places"]["waypoints"].AsArray()[i]["pos_y"]);
                 waypoint.Type = ((string)gameData["places"]["waypoints"].AsArray()[i]["type"]);
                 waypoint.Description = ((string)gameData["places"]["waypoints"].AsArray()[i]["description"]);
-                waypoint.WeatherTypesAvalible = gameData["places"]["waypoints"].AsArray()[i]["weather_avalible"].Deserialize<string[]>();
+                waypoint.WeatherTypesAvalible = gameData["places"]["waypoints"].AsArray()[i]["weather_avalible"].AsArray<string>();
                 Logger.DebugPrint("Registered Waypoint: " + waypoint.PosX.ToString() + ", " + waypoint.PosY.ToString() + " TYPE: " + waypoint.Type);
                 World.Waypoints.Add(waypoint);
             }
@@ -286,7 +288,7 @@ namespace HISP.Server
                 Transport.TransportPoint transportPoint = new Transport.TransportPoint();
                 transportPoint.X = ((int)gameData["transport"]["transport_points"].AsArray()[i]["x"]);
                 transportPoint.Y = ((int)gameData["transport"]["transport_points"].AsArray()[i]["y"]);
-                transportPoint.Locations = gameData["transport"]["transport_points"].AsArray()[i]["places"].Deserialize<int[]>();
+                transportPoint.Locations = gameData["transport"]["transport_points"].AsArray()[i]["places"].AsArray<int>();
                 Transport.TransportPoints.Add(transportPoint);
 
                 Logger.DebugPrint("Registered Transport Point: At X: " + transportPoint.X + " Y: " + transportPoint.Y);
@@ -326,7 +328,7 @@ namespace HISP.Server
                 iteminfo.EmbedSwf = ((string)gameData["item"]["item_list"].AsArray()[i]["embed_swf"]);
                 iteminfo.WishingWell = ((bool)gameData["item"]["item_list"].AsArray()[i]["wishing_well"]);
                 iteminfo.Type = ((string)gameData["item"]["item_list"].AsArray()[i]["type"]);
-                iteminfo.MiscFlags = gameData["item"]["item_list"].AsArray()[i]["misc_flags"].Deserialize<int[]>();
+                iteminfo.MiscFlags = gameData["item"]["item_list"].AsArray()[i]["misc_flags"].AsArray<int>();
                 int effectsCount = gameData["item"]["item_list"].AsArray()[i]["effects"].AsArray().Count;
 
                 Item.Effects[] effectsList = new Item.Effects[effectsCount];
@@ -452,7 +454,7 @@ namespace HISP.Server
                 quest.Notes = (string)gameData["quest_list"].AsArray()[i]["notes"];
                 if (gameData["quest_list"].AsArray()[i]["title"] != null)
                     quest.Title = (string)gameData["quest_list"].AsArray()[i]["title"];
-                quest.RequiresQuestIdCompleteStatsMenu = gameData["quest_list"].AsArray()[i]["requires_questid_statsmenu"].Deserialize<int[]>();
+                quest.RequiresQuestIdCompleteStatsMenu = gameData["quest_list"].AsArray()[i]["requires_questid_statsmenu"].AsArray<int>();
                 if (gameData["quest_list"].AsArray()[i]["alt_activation"] != null)
                 {
                     quest.AltActivation = new Quest.QuestAltActivation();
@@ -502,8 +504,8 @@ namespace HISP.Server
                     quest.SuccessNpcChat = (string)gameData["quest_list"].AsArray()[i]["success_npc_chat"];
                 if (gameData["quest_list"].AsArray()[i]["requires_awardid"] != null)
                     quest.AwardRequired = (int)gameData["quest_list"].AsArray()[i]["requires_awardid"];
-                quest.RequiresQuestIdCompleted = gameData["quest_list"].AsArray()[i]["requires_questid_completed"].Deserialize<int[]>();
-                quest.RequiresQuestIdNotCompleted = gameData["quest_list"].AsArray()[i]["requires_questid_not_completed"].Deserialize<int[]>();
+                quest.RequiresQuestIdCompleted = gameData["quest_list"].AsArray()[i]["requires_questid_completed"].AsArray<int>();
+                quest.RequiresQuestIdNotCompleted = gameData["quest_list"].AsArray()[i]["requires_questid_not_completed"].AsArray<int>();
                 quest.HideReplyOnFail = (bool)gameData["quest_list"].AsArray()[i]["hide_reply_on_fail"];
                 if (gameData["quest_list"].AsArray()[i]["difficulty"] != null)
                     quest.Difficulty = (string)gameData["quest_list"].AsArray()[i]["difficulty"];
@@ -525,11 +527,11 @@ namespace HISP.Server
             for (int i = 0; i < totalShops; i++)
             {
                 int id = (int)gameData["shop_list"].AsArray()[i]["id"];
-                int[] item_list = gameData["shop_list"].AsArray()[i]["stocks_itemids"].Deserialize<int[]>();
+                int[] item_list = gameData["shop_list"].AsArray()[i]["stocks_itemids"].AsArray<int>();
                 Shop shop = new Shop(item_list, id);
                 shop.BuyPricePercentage = (int)gameData["shop_list"].AsArray()[i]["buy_percent"];
                 shop.SellPricePercentage = (int)gameData["shop_list"].AsArray()[i]["sell_percent"];
-                shop.BuysItemTypes = gameData["shop_list"].AsArray()[i]["buys_item_types"].Deserialize<string[]>();
+                shop.BuysItemTypes = gameData["shop_list"].AsArray()[i]["buys_item_types"].AsArray<string>();
 
                 Logger.DebugPrint("Registered Shop ID: " + shop.Id + " Selling items at " + shop.SellPricePercentage + "% and buying at " + shop.BuyPricePercentage);
             }
@@ -603,8 +605,8 @@ namespace HISP.Server
             for (int i = 0; i < totalInns; i++)
             {
                 int id = (int)gameData["inns"].AsArray()[i]["id"];
-                int[] restsOffered = gameData["inns"].AsArray()[i]["rests_offered"].Deserialize<int[]>();
-                int[] mealsOffered = gameData["inns"].AsArray()[i]["meals_offered"].Deserialize<int[]>();
+                int[] restsOffered = gameData["inns"].AsArray()[i]["rests_offered"].AsArray<int>();
+                int[] mealsOffered = gameData["inns"].AsArray()[i]["meals_offered"].AsArray<int>();
                 int buyPercent = (int)gameData["inns"].AsArray()[i]["buy_percent"];
                 Inn inn = new Inn(id, restsOffered, mealsOffered, buyPercent);
 
@@ -650,7 +652,7 @@ namespace HISP.Server
                 horseBreed.BaseStats.MinHeight = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["min_height"];
                 horseBreed.BaseStats.MaxHeight = (int)gameData["horses"]["breeds"].AsArray()[i]["base_stats"]["max_height"];
 
-                horseBreed.Colors = gameData["horses"]["breeds"].AsArray()[i]["colors"].Deserialize<string[]>();
+                horseBreed.Colors = gameData["horses"]["breeds"].AsArray()[i]["colors"].AsArray<string>();
                 horseBreed.SpawnOn = (string)gameData["horses"]["breeds"].AsArray()[i]["spawn_on"];
                 horseBreed.SpawnInArea = (string)gameData["horses"]["breeds"].AsArray()[i]["spawn_area"];
                 horseBreed.Swf = (string)gameData["horses"]["breeds"].AsArray()[i]["swf"];
@@ -876,7 +878,7 @@ namespace HISP.Server
             {
                 int id = (int)gameData["riddle_room"].AsArray()[i]["id"];
                 string riddle = (string)gameData["riddle_room"].AsArray()[i]["riddle"];
-                string[] answers = gameData["riddle_room"].AsArray()[i]["answers"].Deserialize<string[]>();
+                string[] answers = gameData["riddle_room"].AsArray()[i]["answers"].AsArray<string>();
                 string reason = (string)gameData["riddle_room"].AsArray()[i]["reason"];
                 Riddler riddlerRiddle = new Riddler(id, riddle, answers, reason);
                 Logger.DebugPrint("Registered Riddler Riddle: " + riddlerRiddle.Riddle);
@@ -930,7 +932,7 @@ namespace HISP.Server
                 Arena arena = new Arena(arenaId, arenaType, arenaEntryCost, raceEvery, slots, timeout);
                 Logger.DebugPrint("Registered Arena: " + arena.Id.ToString() + " as " + arena.Type);
             }
-            Arena.ExpRewards = gameData["arena"]["arena_exp"].Deserialize<int[]>();
+            Arena.ExpRewards = gameData["arena"]["arena_exp"].AsArray<int>();
         }
 
         private static void registerLeasers()
@@ -1019,7 +1021,7 @@ namespace HISP.Server
             {
                 int id = (int)gameData["events"]["real_time_riddle"].AsArray()[i]["id"];
                 string riddleText = (string)gameData["events"]["real_time_riddle"].AsArray()[i]["text"];
-                string[] riddleAnswers = gameData["events"]["real_time_riddle"].AsArray()[i]["answers"].Deserialize<string[]>();
+                string[] riddleAnswers = gameData["events"]["real_time_riddle"].AsArray()[i]["answers"].AsArray<string>();
                 int reward = (int)gameData["events"]["real_time_riddle"].AsArray()[i]["money_reward"];
 
                 RealTimeRiddle riddle = new RealTimeRiddle(id, riddleText, riddleAnswers, reward);
@@ -1045,7 +1047,7 @@ namespace HISP.Server
                 {
                     quizCategory.Questions[ii] = new RealTimeQuiz.QuizQuestion(quizCategory);
                     quizCategory.Questions[ii].Question = (string)gameData["events"]["real_time_quiz"].AsArray()[i]["questons"].AsArray()[ii]["question"];
-                    quizCategory.Questions[ii].Answers = gameData["events"]["real_time_quiz"].AsArray()[i]["questons"].AsArray()[ii]["answers"].Deserialize<string[]>();
+                    quizCategory.Questions[ii].Answers = gameData["events"]["real_time_quiz"].AsArray()[i]["questons"].AsArray()[ii]["answers"].AsArray<string>();
                     Logger.DebugPrint("Registered Real Time Quiz Question: " + quizCategory.Questions[ii].Question);
                 }
 
@@ -1130,7 +1132,7 @@ namespace HISP.Server
 
             // the rest is easier;
 
-            HorseInfo.HorseNames = gameData["horses"]["names"].Deserialize<string[]>(); 
+            HorseInfo.HorseNames = gameData["horses"]["names"].AsArray<string>(); 
 
             Item.Present = (int)gameData["item"]["special"]["present"];
             Item.MailMessage = (int)gameData["item"]["special"]["mail_message"];
@@ -1170,7 +1172,7 @@ namespace HISP.Server
             // Timed Messages
 
             Messages.PlaytimeMessageFormat = (string)gameData["messages"]["timed_messages"]["playtime_message"];
-            Messages.RngMessages = gameData["messages"]["timed_messages"]["rng_message"].Deserialize<string[]>();
+            Messages.RngMessages = gameData["messages"]["timed_messages"]["rng_message"].AsArray<string>();
 
             // Auto Sell
             Messages.AutoSellNotStandingInSamePlace = (string)gameData["messages"]["meta"]["auto_sell"]["not_standing_sameplace"];
@@ -1720,7 +1722,7 @@ namespace HISP.Server
             Messages.StatTired = (string)gameData["messages"]["meta"]["stats_page"]["tired_stat_name"];
 
             Messages.StatsOtherHorses = (string)gameData["messages"]["meta"]["stats_page"]["msg"]["other_horses"];
-            Messages.StatPlayerFormats = gameData["messages"]["meta"]["stats_page"]["player_stats"].Deserialize<string[]>();
+            Messages.StatPlayerFormats = gameData["messages"]["meta"]["stats_page"]["player_stats"].AsArray<string>();
 
             Messages.StatThirstDizzy = (string)gameData["messages"]["movement_key"]["thirsty"];
             Messages.StatHungerStumble = (string)gameData["messages"]["movement_key"]["hungery"];
