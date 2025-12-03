@@ -81,7 +81,7 @@ jobs:
         mkdir debpackage-arm64
         dpkg-deb --build /tmp/debpkg/DebianArm64
         mv /tmp/debpkg/DebianArm64.deb debpackage-arm64/HISP-Debian-ARM64.deb
-        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm64/HISP-Debian-ARM64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/main/upload
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm64/HISP-Debian-ARM64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/arm64/upload
         
     - name: Build arm deb package
       continue-on-error: false
@@ -116,7 +116,7 @@ jobs:
         mkdir debpackage-arm
         dpkg-deb --build /tmp/debpkg/DebianArm
         mv /tmp/debpkg/DebianArm.deb debpackage-arm/HISP-Debian-ARM64.deb
-        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm/HISP-Debian-ARM.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/main/upload
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm/HISP-Debian-ARM64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/arm/upload
         
 # Upload LINUX
 
@@ -202,7 +202,7 @@ jobs:
         mkdir debpackage-x64
         dpkg-deb --build /tmp/debpkg/Debian64
         mv /tmp/debpkg/Debian64.deb debpackage-x64/HISP-Debian-AMD64.deb
-        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-x64/HISP-Debian-AMD64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/main/upload
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-x64/HISP-Debian-AMD64.deb https://silica.codes/api/packages/islehorse/debian/pool/debian/x64/upload
         
 # Upload LINUX
     - name: Upload linux-x64
