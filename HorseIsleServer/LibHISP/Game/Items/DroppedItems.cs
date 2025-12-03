@@ -22,6 +22,7 @@ namespace HISP.Game.Items
             public int Data;
         }
         private static ThreadSafeList<DroppedItem> droppedItemsList = new ThreadSafeList<DroppedItem>();
+
         public static DroppedItem[] Items
         {
             get
