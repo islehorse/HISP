@@ -14,8 +14,7 @@ namespace HISP.Util
             {
                 lock(listLock)
                 {
-                    T val = base[key];
-                    return val;
+                    return base[key];
                 }
             }
         }

@@ -9,6 +9,7 @@ namespace HISP.Game.Items
 {
     public class DroppedItems
     {
+        private static Mutex dropLock = new Mutex();
         public class DroppedItem
         {
             public DroppedItem(ItemInstance itmInstance)
@@ -23,12 +24,11 @@ namespace HISP.Game.Items
             public int Data;
         }
         private static ThreadSafeList<DroppedItem> droppedItemsList = new ThreadSafeList<DroppedItem>();
-        private static Mutex droppedItemsLock = new Mutex();
         public static DroppedItem[] Items
         {
             get
             {
-                lock (droppedItemsLock)
+                lock (dropLock)
                 {
                     return droppedItemsList.ToArray();
                 }
@@ -36,7 +36,7 @@ namespace HISP.Game.Items
         }
         public static int GetCountOfItem(Item.ItemInformation item)
         {
-            lock (droppedItemsLock)
+            lock (dropLock)
             {
                 return droppedItemsList.Count(o => o.Instance.ItemId == item.Id);
             }
@@ -44,22 +44,22 @@ namespace HISP.Game.Items
 
         public static DroppedItem[] GetItemsAt(int x, int y)
         {
-            lock (droppedItemsLock)
+            lock (dropLock)
             {
                 return droppedItemsList.Where(o => (o.X == x && o.Y == y)).ToArray();
             }
         }
         public static void ReadFromDatabase()
         {
-            lock (droppedItemsLock)
+            lock (dropLock)
             {
                 DroppedItem[] items = Database.GetDroppedItems();
-                foreach (DroppedItem droppedItem in items) droppedItemsList.Add(droppedItem);
+                droppedItemsList.AddRange(items);
             }
         }
         public static void RemoveDroppedItem(DroppedItem item)
         {
-            lock(droppedItemsLock)
+            lock(dropLock)
             {
                 int randomId = item.Instance.RandomId;
                 Database.RemoveDroppedItem(randomId);
@@ -70,49 +70,33 @@ namespace HISP.Game.Items
 
         public static bool IsDroppedItemExist(int randomId)
         {
-            lock (droppedItemsLock)
+            lock (dropLock)
             {
                 return droppedItemsList.Any(o => o.Instance.RandomId == randomId);
             }
         }
         public static DroppedItem GetDroppedItemById(int randomId)
         {
-            lock (droppedItemsLock)
+            lock (dropLock)
             {
                 return droppedItemsList.First(o => o.Instance.RandomId == randomId);
             }
         }
         public static void DespawnItems()
         {
-            lock(droppedItemsLock)
+            lock (dropLock)
             {
                 Database.DecrementDroppedItemDespawnTimer();
-                Database.RemoveDespawningItems(); // GO-GO-GO-GOGOGOGO GOTTA GO FAST!!!
+                Database.RemoveDespawningItems();
 
-                for (int i = 0; i < droppedItemsList.Count; i++)
-                {
-                    if (droppedItemsList[i] == null) // Item removed in another thread.
-                        continue;
-
-                    droppedItemsList[i].DespawnTimer -= 5;
-
-                    if (droppedItemsList[i].DespawnTimer <= 0)
-                    {
-                        if (User.GetUsersAt(droppedItemsList[i].X, droppedItemsList[i].Y, true, true).Length > 0) // Dont despawn items players are standing on
-                            continue;
-
-                        Logger.DebugPrint("Despawned Item at " + droppedItemsList[i].X + ", " + droppedItemsList[i].Y);
-                        droppedItemsList.Remove(droppedItemsList[i]);
-
-                    }
-                }
+                foreach (DroppedItem item in droppedItemsList) item.DespawnTimer -= 5;
+                droppedItemsList.RemoveAll(o => (o.DespawnTimer <= 0 && !User.GetUsersAt(o.X, o.Y, true, true).Any()));
             }
-
         }
 
         public static void AddItem(ItemInstance item, int x, int y, int despawnTimer=1500)
         {
-            lock(droppedItemsLock)
+            lock(dropLock)
             {
                 DroppedItem droppedItem = new DroppedItem(item);
                 droppedItem.X = x;
@@ -124,7 +108,7 @@ namespace HISP.Game.Items
         }
         public static void GenerateItems()
         {
-            lock (droppedItemsLock)
+            lock (dropLock)
             {
                 Logger.DebugPrint("Generating items.");
 
@@ -133,43 +117,74 @@ namespace HISP.Game.Items
                 {
                     int count = GetCountOfItem(item);
 #if !OS_DEBUG
-                do
-                {
-#endif
-                    if (count < item.SpawnParamaters.SpawnCap)
+                    do
                     {
-
-                        count++;
-                        int despawnTimer = 1440;
-
-                        if (item.SpawnParamaters.SpawnInZone != null)
+#endif
+                        if (count < item.SpawnParamaters.SpawnCap)
                         {
-                            World.Zone spawnArea = World.GetZoneByName(item.SpawnParamaters.SpawnInZone);
 
-                            while (true)
+                            count++;
+                            int despawnTimer = 1440;
+
+                            if (item.SpawnParamaters.SpawnInZone != null)
                             {
-                                // Pick a random location inside the zone
-                                int tryX = GameServer.RandomNumberGenerator.Next(spawnArea.StartX, spawnArea.EndX);
-                                int tryY = GameServer.RandomNumberGenerator.Next(spawnArea.StartY, spawnArea.EndY);
+                                World.Zone spawnArea = World.GetZoneByName(item.SpawnParamaters.SpawnInZone);
 
-
-                                if (World.InSpecialTile(tryX, tryY))
-                                    continue;
-
-
-                                if (Map.CheckPassable(tryX, tryY)) // Can the player walk here?
+                                while (true)
                                 {
-                                    int TileID = Map.GetTileId(tryX, tryY, false);
-                                    string TileType = Map.TerrainTiles[TileID - 1].Type; // Is it the right type?
+                                    // Pick a random location inside the zone
+                                    int tryX = GameServer.RandomNumberGenerator.Next(spawnArea.StartX, spawnArea.EndX);
+                                    int tryY = GameServer.RandomNumberGenerator.Next(spawnArea.StartY, spawnArea.EndY);
 
-                                    if (item.SpawnParamaters.SpawnOnTileType == TileType)
+
+                                    if (World.InSpecialTile(tryX, tryY))
+                                        continue;
+
+
+                                    if (Map.CheckPassable(tryX, tryY)) // Can the player walk here?
                                     {
-                                        if (GetItemsAt(tryX, tryY).Length > 25) // Max items in one tile.
+                                        int TileID = Map.GetTileId(tryX, tryY, false);
+                                        string TileType = Map.TerrainTiles[TileID - 1].Type; // Is it the right type?
+
+                                        if (item.SpawnParamaters.SpawnOnTileType == TileType)
+                                        {
+                                            if (GetItemsAt(tryX, tryY).Length > 25) // Max items in one tile.
+                                                continue;
+
+                                            ItemInstance instance = new ItemInstance(item.Id);
+                                            AddItem(instance, tryX, tryY, despawnTimer);
+                                            Logger.DebugPrint("Created Item ID: " + instance.ItemId + " in ZONE: " + spawnArea.Name + " at: X: " + tryX + " Y: " + tryY);
+                                            newItems++;
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        continue;
+                                    }
+                                }
+
+                            }
+                            else if (item.SpawnParamaters.SpawnOnSpecialTile != null)
+                            {
+                                while (true)
+                                {
+                                    // Pick a random special tile
+                                    World.SpecialTile[] possileTiles = World.GetSpecialTilesByName(item.SpawnParamaters.SpawnOnSpecialTile);
+                                    World.SpecialTile spawnOn = possileTiles[GameServer.RandomNumberGenerator.Next(0, possileTiles.Length)];
+
+                                    if (Map.CheckPassable(spawnOn.X, spawnOn.Y))
+                                    {
+                                        if (GetItemsAt(spawnOn.X, spawnOn.Y).Length > 25) // Max items in one tile.
                                             continue;
 
                                         ItemInstance instance = new ItemInstance(item.Id);
-                                        AddItem(instance, tryX, tryY, despawnTimer);
-                                        Logger.DebugPrint("Created Item ID: " + instance.ItemId + " in ZONE: " + spawnArea.Name + " at: X: " + tryX + " Y: " + tryY);
+                                        AddItem(instance, spawnOn.X, spawnOn.Y, despawnTimer);
+                                        Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + spawnOn.X + " Y: " + spawnOn.Y);
                                         newItems++;
                                         break;
                                     }
@@ -178,115 +193,49 @@ namespace HISP.Game.Items
                                         continue;
                                     }
                                 }
-                                else
-                                {
-                                    continue;
-                                }
+
                             }
-
-                        }
-                        else if (item.SpawnParamaters.SpawnOnSpecialTile != null)
-                        {
-                            while (true)
+                            else if (item.SpawnParamaters.SpawnNearSpecialTile != null)
                             {
-                                // Pick a random special tile
-                                World.SpecialTile[] possileTiles = World.GetSpecialTilesByName(item.SpawnParamaters.SpawnOnSpecialTile);
-                                World.SpecialTile spawnOn = possileTiles[GameServer.RandomNumberGenerator.Next(0, possileTiles.Length)];
-
-                                if (Map.CheckPassable(spawnOn.X, spawnOn.Y))
+                                while (true)
                                 {
-                                    if (GetItemsAt(spawnOn.X, spawnOn.Y).Length > 25) // Max items in one tile.
-                                        continue;
+                                    // Pick a random special tile
+                                    World.SpecialTile[] possileTiles = World.GetSpecialTilesByName(item.SpawnParamaters.SpawnNearSpecialTile);
+                                    World.SpecialTile spawnNearTile = possileTiles[GameServer.RandomNumberGenerator.Next(0, possileTiles.Length)];
 
-                                    ItemInstance instance = new ItemInstance(item.Id);
-                                    AddItem(instance, spawnOn.X, spawnOn.Y, despawnTimer);
-                                    Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + spawnOn.X + " Y: " + spawnOn.Y);
-                                    newItems++;
-                                    break;
-                                }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
+                                    // Pick a direction to try spawn in
 
-                        }
-                        else if (item.SpawnParamaters.SpawnNearSpecialTile != null)
-                        {
-                            while (true)
-                            {
-                                // Pick a random special tile
-                                World.SpecialTile[] possileTiles = World.GetSpecialTilesByName(item.SpawnParamaters.SpawnNearSpecialTile);
-                                World.SpecialTile spawnNearTile = possileTiles[GameServer.RandomNumberGenerator.Next(0, possileTiles.Length)];
+                                    int direction = GameServer.RandomNumberGenerator.Next(0, 4);
+                                    int tryX = 0;
+                                    int tryY = 0;
+                                    if (direction == 0)
+                                    {
+                                        tryX = spawnNearTile.X + 1;
+                                        tryY = spawnNearTile.Y;
+                                    }
+                                    else if (direction == 1)
+                                    {
+                                        tryX = spawnNearTile.X - 1;
+                                        tryY = spawnNearTile.Y;
+                                    }
+                                    else if (direction == 3)
+                                    {
+                                        tryX = spawnNearTile.X;
+                                        tryY = spawnNearTile.Y + 1;
+                                    }
+                                    else if (direction == 4)
+                                    {
+                                        tryX = spawnNearTile.X;
+                                        tryY = spawnNearTile.Y - 1;
+                                    }
+                                    if (World.InSpecialTile(tryX, tryY))
+                                    {
+                                        World.SpecialTile tile = World.GetSpecialTile(tryX, tryY);
+                                        if (tile.Code != null)
+                                            continue;
+                                    }
 
-                                // Pick a direction to try spawn in
-
-                                int direction = GameServer.RandomNumberGenerator.Next(0, 4);
-                                int tryX = 0;
-                                int tryY = 0;
-                                if (direction == 0)
-                                {
-                                    tryX = spawnNearTile.X + 1;
-                                    tryY = spawnNearTile.Y;
-                                }
-                                else if (direction == 1)
-                                {
-                                    tryX = spawnNearTile.X - 1;
-                                    tryY = spawnNearTile.Y;
-                                }
-                                else if (direction == 3)
-                                {
-                                    tryX = spawnNearTile.X;
-                                    tryY = spawnNearTile.Y + 1;
-                                }
-                                else if (direction == 4)
-                                {
-                                    tryX = spawnNearTile.X;
-                                    tryY = spawnNearTile.Y - 1;
-                                }
-                                if (World.InSpecialTile(tryX, tryY))
-                                {
-                                    World.SpecialTile tile = World.GetSpecialTile(tryX, tryY);
-                                    if (tile.Code != null)
-                                        continue;
-                                }
-
-                                if (Map.CheckPassable(tryX, tryY))
-                                {
-                                    if (GetItemsAt(tryX, tryY).Length > 25) // Max here
-                                        continue;
-
-                                    ItemInstance instance = new ItemInstance(item.Id);
-                                    AddItem(instance, tryX, tryY, despawnTimer);
-                                    Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + tryX + " Y: " + tryY);
-                                    newItems++;
-                                    break;
-                                }
-                                else
-                                {
-                                    continue;
-                                }
-                            }
-
-                        }
-                        else if (item.SpawnParamaters.SpawnOnTileType != null)
-                        {
-
-                            while (true)
-                            {
-                                // Pick a random location:
-                                int tryX = GameServer.RandomNumberGenerator.Next(0, Map.Width);
-                                int tryY = GameServer.RandomNumberGenerator.Next(0, Map.Height);
-
-                                if (World.InSpecialTile(tryX, tryY))
-                                    continue;
-
-                                if (Map.CheckPassable(tryX, tryY)) // Can the player walk here?
-                                {
-                                    int TileID = Map.GetTileId(tryX, tryY, false);
-                                    string TileType = Map.TerrainTiles[TileID - 1].Type; // Is it the right type?
-
-                                    if (item.SpawnParamaters.SpawnOnTileType == TileType)
+                                    if (Map.CheckPassable(tryX, tryY))
                                     {
                                         if (GetItemsAt(tryX, tryY).Length > 25) // Max here
                                             continue;
@@ -296,32 +245,65 @@ namespace HISP.Game.Items
                                         Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + tryX + " Y: " + tryY);
                                         newItems++;
                                         break;
-
                                     }
                                     else
                                     {
                                         continue;
                                     }
                                 }
-                                else
+
+                            }
+                            else if (item.SpawnParamaters.SpawnOnTileType != null)
+                            {
+
+                                while (true)
                                 {
-                                    continue;
+                                    // Pick a random location:
+                                    int tryX = GameServer.RandomNumberGenerator.Next(0, Map.Width);
+                                    int tryY = GameServer.RandomNumberGenerator.Next(0, Map.Height);
+
+                                    if (World.InSpecialTile(tryX, tryY))
+                                        continue;
+
+                                    if (Map.CheckPassable(tryX, tryY)) // Can the player walk here?
+                                    {
+                                        int TileID = Map.GetTileId(tryX, tryY, false);
+                                        string TileType = Map.TerrainTiles[TileID - 1].Type; // Is it the right type?
+
+                                        if (item.SpawnParamaters.SpawnOnTileType == TileType)
+                                        {
+                                            if (GetItemsAt(tryX, tryY).Length > 25) // Max here
+                                                continue;
+
+                                            ItemInstance instance = new ItemInstance(item.Id);
+                                            AddItem(instance, tryX, tryY, despawnTimer);
+                                            Logger.DebugPrint("Created Item ID: " + instance.ItemId + " at: X: " + tryX + " Y: " + tryY);
+                                            newItems++;
+                                            break;
+
+                                        }
+                                        else
+                                        {
+                                            continue;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        continue;
+                                    }
                                 }
                             }
                         }
-                    }
 #if !OS_DEBUG
-                } while (count < item.SpawnParamaters.SpawnCap);
+                    } while (count < item.SpawnParamaters.SpawnCap);
 #endif
-
                 }
             }
-
         }
 
         public static void DeleteAllItemsWithId(int itemId)
         {
-            lock(droppedItemsLock)
+            lock(dropLock)
             {
                 Database.DeleteAllDroppedItemsWithId(itemId);
                 droppedItemsList.RemoveAll(o => o.Instance.ItemId == itemId);
@@ -330,7 +312,7 @@ namespace HISP.Game.Items
 
         public static void Init()
         {
-            lock(droppedItemsLock)
+            lock(dropLock)
             {
                 ReadFromDatabase();
                 GenerateItems();
