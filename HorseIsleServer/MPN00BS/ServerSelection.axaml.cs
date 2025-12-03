@@ -12,15 +12,9 @@ namespace MPN00BS
     {
         public ServerSelection()
         {
-            InitializeComponent();
+            InitializeComponent(true);
         }
 
-        private void InitializeComponent()
-        {
-            AvaloniaXamlLoader.Load(this);
-            serverIp = this.FindControl<TextBox>("serverIp");
-            serverPort = this.FindControl<NumericUpDown>("serverPort");
-        }
         private void joinServer_Click(object sender, RoutedEventArgs e)
         {
             this.Hide();

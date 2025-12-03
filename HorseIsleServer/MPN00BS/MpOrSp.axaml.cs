@@ -1,6 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.Markup.Xaml;
 
 namespace MPN00BS
 {
@@ -8,7 +8,7 @@ namespace MPN00BS
     {
         public MpOrSp()
         {
-            InitializeComponent();
+            InitializeComponent(true);
         }
         private void playSingleplayerClick(object sender, RoutedEventArgs e)
         {
