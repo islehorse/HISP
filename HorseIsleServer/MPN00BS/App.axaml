@@ -6,7 +6,7 @@
              x:Class="MPN00BS.App"
 			 RequestedThemeVariant="Light">
     <Application.Styles>
-	    <FluentTheme/>
+	    <SimpleTheme/>
     </Application.Styles>
   
   <TrayIcon.Icons>
