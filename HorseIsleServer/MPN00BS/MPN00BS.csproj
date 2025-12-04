@@ -141,8 +141,6 @@
 
   <ItemGroup>
     <None Remove=".gitignore" />
-    <None Remove="HispLogo.gif" />
-    <None Remove="icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <!--This helps with theme dll-s trimming.
@@ -206,7 +204,13 @@
     </AvaloniaResource>
   </ItemGroup>
 
-  <ItemGroup>
+    <ItemGroup>
+	    <AvaloniaResource Include="icon.ico">
+		    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	    </AvaloniaResource>
+    </ItemGroup>
+	
+   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.9" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.9" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.9" />
@@ -237,13 +241,6 @@
     </ContentWithTargetPath>
   </ItemGroup>
 
-  <ItemGroup>
-    <AvaloniaResource Remove="icon.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <AvaloniaResource Remove="icon.ico" />
-  </ItemGroup>
 
 
 </Project>
