@@ -82,7 +82,7 @@
     <Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>OS_LINUX;ARCH_X86_64</DefineConstants>
-    <DebugType>portable</DebugType>
+    <DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM'">
     <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
@@ -132,11 +132,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|x64'">
-    <DebugType>portable</DebugType>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='iOS|x64'">
-    <DebugType>portable</DebugType>
+    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <ItemGroup>
@@ -213,7 +213,6 @@
    <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.3.9" />
     <PackageReference Include="Avalonia.Desktop" Version="11.3.9" />
-    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.9" />
     <PackageReference Include="Avalonia.Themes.Simple" Version="11.3.9" />
   </ItemGroup>
 

@@ -39,6 +39,7 @@ namespace MPN00BS
         public override void OnFrameworkInitializationCompleted()
         {
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop) desktop.MainWindow = new MpOrSp();
+            ServerStarter.SetConfigDir();
             ConfigReader.OpenConfig();
 
             TrayIcon.GetIcons(Application.Current).First().Menu.Select(o => (NativeMenuItem)o).First(o => o.Header == "Server").Menu.Select(o => (NativeMenuItem)o).First(o => o.Header == "Chat").Menu.Select(o => (NativeMenuItem)o).First(o => o.Header == "Swear Filter").IsChecked = ConfigReader.EnableSwearFilter;
