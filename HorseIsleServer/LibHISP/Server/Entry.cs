@@ -90,7 +90,6 @@ namespace HISP.Server
 
             Exception execpt = (Exception)e.ExceptionObject;
 
-
             string crashMsg = becauseRustWont[execpt.GetHashCode() % becauseRustWont.Length] + "\n";
             crashMsg += "HISP HAS CRASHED" + "\n";
             crashMsg += "Build: " + ServerVersion.GetBuildString() + "\n";
