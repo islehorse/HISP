@@ -21,13 +21,13 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: 10.0.x
         include-prerelease: false
         
     - name: Install utils
       run: |
         sudo apt update
-        sudo apt install -y clang build-essential zlib1g-dev dos2unix gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf gcc-arm-none-eabi gcc-aarch64-linux-gnu
+        sudo apt install -y clang build-essential zlib1g-dev dos2unix gcc-arm-linux-gnueabi gcc-arm-linux-gnueabihf
         dotnet tool install -g dotnet-script
         
     - name: Restore dependencies
@@ -157,7 +157,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: 10.0.x
         include-prerelease: false
     - name: Install utils
       run: |
@@ -240,7 +240,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: 10.0.x
         include-prerelease: false
     
     - name: Install utils
@@ -313,7 +313,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: 10.0.x
         include-prerelease: false
         
     - name: Install utils
