@@ -125,24 +125,28 @@ jobs:
       with:
         name: HISP-LinuxARM
         path: HorseIsleServer/HISPd/build/Linux-ARM
+        compression-level: 9
     
     - name: Upload linux-arm64
       uses: actions/upload-artifact@v4
       with:
         name: HISP-LinuxARM64
         path: HorseIsleServer/HISPd/build/Linux-ARM64
+        compression-level: 9
 
     - name: Upload deb package arm64
       uses: actions/upload-artifact@v4
       with:
         name: HISP-Debian-ARM64
         path: HorseIsleServer/debpackage-arm64
+        compression-level: 9
         
     - name: Upload deb package arm
       uses: actions/upload-artifact@v4
       with:
         name: HISP-Debian-ARM
         path: HorseIsleServer/debpackage-arm
+        compression-level: 9
         
   build-linux:
     runs-on: ubuntu-latest
@@ -216,18 +220,21 @@ jobs:
       with:
         name: HISP-Linux64
         path: HorseIsleServer/HISPd/build/Linux-x64
+        compression-level: 9
 
     - name: Upload linux-x64-noobs
       uses: actions/upload-artifact@v4
       with:
         name: HISP-Linux64-Noobs
         path: HorseIsleServer/MPN00BS/build/Linux-x64
+        compression-level: 9
 
     - name: Upload deb package x64
       uses: actions/upload-artifact@v4
       with:
         name: HISP-Debian-x64
         path: HorseIsleServer/debpackage-x64
+        compression-level: 9
         
   build-win:
     runs-on: windows-latest
@@ -277,30 +284,35 @@ jobs:
       with:
         name: HISP-Win64
         path: HorseIsleServer/HISPd/build/Windows-x64
+        compression-level: 9
     
     - name: Upload win-x86
       uses: actions/upload-artifact@v4
       with:
         name: HISP-Win32
         path: HorseIsleServer/HISPd/build/Windows-x86
+        compression-level: 9
         
     - name: Upload win-arm64
       uses: actions/upload-artifact@v4
       with:
         name: HISP-WinARM64
         path: HorseIsleServer/HISPd/build/Windows-ARM64
+        compression-level: 9
 
     - name: Upload win-x86-noobs
       uses: actions/upload-artifact@v4
       with:
         name: HISP-Win32-Noobs
         path: HorseIsleServer/MPN00BS/build/Windows-x86
+        compression-level: 9
 
     - name: Upload win-x64-noobs
       uses: actions/upload-artifact@v4
       with:
         name: HISP-Win64-Noobs
         path: HorseIsleServer/MPN00BS/build/Windows-x64
+        compression-level: 9
 
   build-mac:
     runs-on: macos-latest
@@ -340,18 +352,21 @@ jobs:
       with:
         name: HISP-Mac64
         path: HorseIsleServer/HISPd/build/MacOS-x64
+        compression-level: 9
 
     - name: Upload mac-arm64
       uses: actions/upload-artifact@v4
       with:
         name: HISP-MacARM64
         path: HorseIsleServer/HISPd/build/MacOS-ARM64
+        compression-level: 9
         
     - name: Upload mac-x64-noobs
       uses: actions/upload-artifact@v4
       with:
         name: HISP-Mac-Noobs
         path: HorseIsleServer/MPN00BS/build/MacOS-x64
+        compression-level: 9
 
   build-web:
     runs-on: ubuntu-latest
@@ -373,9 +388,11 @@ jobs:
       with:
         name: HISP-Web-Master
         path: HorseIsleWeb/master-site
+        compression-level: 9
         
     - name: Upload Website (game)
       uses: actions/upload-artifact@v4
       with:
         name: HISP-Web-Game
         path: HorseIsleWeb/game-site
+        compression-level: 9
