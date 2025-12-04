@@ -101,9 +101,7 @@ namespace MPN00BS
 
             // Compatibility patch
             if (File.Exists(Path.Combine(ConfigReader.ConfigDirectory, "game1.db.db")))
-            {
                 File.Move(Path.Combine(ConfigReader.ConfigDirectory, "game1.db.db"), Path.Combine(ConfigReader.ConfigDirectory, "game1.db"));
-            }
         }
         public static void StartHispServer(Action ProgressCallback, Action UserCreationCallback, Action ServerStartedCallback, Action OnShutdown)
         {
