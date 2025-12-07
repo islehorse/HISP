@@ -36,7 +36,16 @@ namespace HISP.Server
         {
             // Add LastLoadedInVersion column to World.
             Database.TryExecuteSqlQuery("ALTER TABLE World ADD COLUMN LastLoadedInVersion TEXT(64)");
-            Database.TryExecuteSqlQuery("UPDATE World SET LastLoadedInVersion=\"v1.7.20\";");
+        }
+
+
+        private static void fixupVersion2_2_4()
+        {
+            Database.TryExecuteSqlQuery("UPDATE DroppedItems SET X=X-4, Y=Y-4;");
+            Database.TryExecuteSqlQuery("UPDATE NpcPos SET X=X-4, Y=Y-4;");
+            Database.TryExecuteSqlQuery("UPDATE Treasure SET x=x-4, y=y-4;");
+            Database.TryExecuteSqlQuery("UPDATE UserExt SET X=X-4, Y=Y-4;");
+            Database.TryExecuteSqlQuery("UPDATE WildHorse SET x=x-4, y=y-4;");
         }
 
         public static void FixUpDb()
@@ -44,19 +53,21 @@ namespace HISP.Server
             string lastVersionStr = Database.GetLastLoadedVersion();
             string currentVersionStr = ServerVersion.GetVersionString();
 
-            int lastVersion = Convert.ToInt32(Int32.Parse(lastVersionStr.ToLower().Replace("v", "").Replace(".", "")));
-            int currentVersion = Convert.ToInt32(Int32.Parse(currentVersionStr.ToLower().Replace("v", "").Replace(".", "")));
+            int lastVersion = Convert.ToInt32(Int32.Parse(lastVersionStr.ToLower().Replace("v", "").Replace(".", "").PadRight(4, '0')));
+            int currentVersion = Convert.ToInt32(Int32.Parse(currentVersionStr.ToLower().Replace("v", "").Replace(".", "").PadRight(4,'0')));
 
-            if(currentVersion > lastVersion)
+            if (currentVersion > lastVersion)
             {
                 Logger.WarnPrint("Migrating Database from " + lastVersionStr + " to " + currentVersionStr);
+                if (lastVersion < 10) fixupVersion1_0();
+                if (lastVersion < 11) fixupVersion1_1();
+                if (lastVersion < 1720) fixupVersion1_7_20();
+                if (lastVersion < 2240) fixupVersion2_2_4();
 
-                if (lastVersion <= 10) fixupVersion1_0();
-                if (lastVersion <= 11) fixupVersion1_1();
-                if (lastVersion <= 1720) fixupVersion1_7_20();
-
-                Database.SetLastLoadedVersion(ServerVersion.GetVersionString());
+                Database.SetLastLoadedVersion(currentVersionStr);
             }
+
+
         }
     }
 }

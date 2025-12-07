@@ -10,7 +10,7 @@ namespace HISP.Server.Network
 {
     public class WebSocket : Transport
     {
-        private const string WEBSOCKET_SEED = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
+        private static string websocketSeed = Guid.NewGuid().ToString();
 
         private const byte WEBSOCKET_CONTINUE = 0x0;
         private const byte WEBSOCKET_TEXT = 0x1;
@@ -65,7 +65,7 @@ namespace HISP.Server.Network
 
         private string deriveWebsocketSecKey(string webSocketKey)
         {
-            byte[] derivedKey = Authentication.Sha1Digest(Encoding.UTF8.GetBytes(webSocketKey.Trim() + WEBSOCKET_SEED.Trim()));
+            byte[] derivedKey = Authentication.Sha1Digest(Encoding.UTF8.GetBytes(webSocketKey.Trim() + websocketSeed.Trim()));
             return Convert.ToBase64String(derivedKey);
         }
         private byte[] createHandshakeResponse(string secWebsocketKey)
