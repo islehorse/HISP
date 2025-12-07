@@ -12,7 +12,7 @@ namespace HISP.Game
     {
         // HISP specific
         public static string HISPHelpCommandUsageFormat;
-        
+
         // extended config
         public static int RequiredChatViolations;
 
@@ -1224,12 +1224,11 @@ namespace HISP.Game
         // Click
         public static string NothingInterestingHere;
 
-        // HISP Help Command
+        // HISP Commands
         public static string FormatHispHelpUsage(char commandPrefix, string commandName, string commandUsage)
         {
             return HISPHelpCommandUsageFormat.Replace("%PREFIX%", commandPrefix.ToString()).Replace("%COMMANDNAME%", commandName).Replace("%USAGE%", ChatMsg.EscapeMessage(commandUsage));
         }
-
         // Violations
         public static string FormatProfileSavedBlocked(string reasons)
         {

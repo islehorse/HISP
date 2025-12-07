@@ -8,11 +8,9 @@ using HISP.Game.SwfModules;
 using HISP.Player;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 
 namespace HISP.Server
@@ -574,12 +572,12 @@ namespace HISP.Server
         private static void registerOverlayTileDepth()
         {
             List<Map.TileDepth> overlayTilesDepth = new List<Map.TileDepth>();
-            int totalOverlayTileDepth = gameData["tile_paramaters"]["overlay_tiles"].AsArray().Count;
+            int totalOverlayTileDepth = gameData["tile_parameters"]["overlay_tiles"].AsArray().Count;
             for (int i = 0; i < totalOverlayTileDepth; i++)
             {
                 Map.TileDepth tileDepth = new Map.TileDepth();
-                tileDepth.Passable = (bool)gameData["tile_paramaters"]["overlay_tiles"].AsArray()[i]["passable"];
-                tileDepth.ShowPlayer = (bool)gameData["tile_paramaters"]["overlay_tiles"].AsArray()[i]["show_player"];
+                tileDepth.Passable = (bool)gameData["tile_parameters"]["overlay_tiles"].AsArray()[i]["passable"];
+                tileDepth.ShowPlayer = (bool)gameData["tile_parameters"]["overlay_tiles"].AsArray()[i]["show_player"];
                 Logger.DebugPrint("Registered Overlay Tile: " + i + " Depth; Passable: " + tileDepth.Passable + " ShowPlayer: " + tileDepth.ShowPlayer);
                 overlayTilesDepth.Add(tileDepth);
             }
@@ -588,12 +586,12 @@ namespace HISP.Server
         private static void registerTerrianTileTypes()
         {
             List<Map.TerrainTile> terrainTiles = new List<Map.TerrainTile>();
-            int totalTerrainTiles = gameData["tile_paramaters"]["terrain_tiles"].AsArray().Count;
+            int totalTerrainTiles = gameData["tile_parameters"]["terrain_tiles"].AsArray().Count;
             for (int i = 0; i < totalTerrainTiles; i++)
             {
                 Map.TerrainTile tile = new Map.TerrainTile();
-                tile.Passable = (bool)gameData["tile_paramaters"]["terrain_tiles"].AsArray()[i]["passable"];
-                tile.Type = (string)gameData["tile_paramaters"]["terrain_tiles"].AsArray()[i]["tile_type"];
+                tile.Passable = (bool)gameData["tile_parameters"]["terrain_tiles"].AsArray()[i]["passable"];
+                tile.Type = (string)gameData["tile_parameters"]["terrain_tiles"].AsArray()[i]["tile_type"];
                 Logger.DebugPrint("Registered Tile Information: " + i + " Passable: " + tile.Passable + " Type: " + tile.Type);
                 terrainTiles.Add(tile);
             }
@@ -1162,7 +1160,7 @@ namespace HISP.Server
 
             // HISP Specific ...
             Messages.HISPHelpCommandUsageFormat = (string)gameData["hisp_specific"]["HISP_help_command_usage_format"];
-
+            
             // New Users
 
             Messages.NewUserMessage = (string)gameData["messages"]["new_user"]["starting_message"];

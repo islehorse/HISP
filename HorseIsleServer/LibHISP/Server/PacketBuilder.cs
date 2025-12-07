@@ -497,11 +497,11 @@ namespace HISP.Server
 
             packet.Add(PACKET_MOVE); // 0x0
 
-            packet.Add((byte)(((x-4) / 64) + 20)); //0x1
-            packet.Add((byte)(((x-4) % 64) + 20)); //0x2
+            packet.Add((byte)(((x) / 64) + 20)); //0x1
+            packet.Add((byte)(((x) % 64) + 20)); //0x2
 
-            packet.Add((byte)(((y-1) / 64) + 20)); //0x3
-            packet.Add((byte)(((y-1) % 64) + 20)); //0x4
+            packet.Add((byte)(((y) / 64) + 20)); //0x3
+            packet.Add((byte)(((y) % 64) + 20)); //0x4
 
             packet.Add((byte)(facing + 20)); //0x5
 

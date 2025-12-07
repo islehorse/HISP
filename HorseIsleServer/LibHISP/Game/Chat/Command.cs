@@ -27,6 +27,9 @@ namespace HISP.Game.Chat
             new CommandRegister('%', "MESSAGE", "<message>", Command.Message, true, false);
             new CommandRegister('%', "PERMISSION", "<username> <admin / moderator / normal>", Command.Permission, true, false);
 
+            new CommandRegister('%', "POSITION", "", Command.Position, true, false);
+            new CommandRegister('%', "%", "", Command.Position, true, false);
+
             // Moderator commands
             new CommandRegister('%', "RULES", "<username>", Command.Rules, false, true);
             new CommandRegister('%', "PRISON", "<username>", Command.Prison, false, true);
@@ -131,6 +134,15 @@ namespace HISP.Game.Chat
             return true;
         }
 
+        public static bool Position(string message, string[] args, User user)
+        {
+
+            byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message)+"Position: " + user.X + "," + user.Y + " Tile: " + Map.GetTileId(user.X, user.Y, false) + " Overlay: " + Map.GetTileId(user.X, user.Y, true), PacketBuilder.CHAT_BOTTOM_LEFT);
+            user.Client.SendPacket(chatPacket);
+
+
+            return true;
+        }
         public static bool Message(string message, string[] args, User user)
         {
 
