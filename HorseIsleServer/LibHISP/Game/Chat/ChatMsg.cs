@@ -216,7 +216,6 @@ namespace HISP.Game.Chat
                         (o.Friends.List.Contains(user.Id)) &&
                         (!o.MutePlayer.IsUserMuted(user)))
                         .Select(o => o.Client).ToArray();
-
             }
             else if (channel == ChatChannel.Isle)
             {

@@ -6,6 +6,12 @@ namespace HISP.Game
 {
     public class Map
     {
+
+        public const byte BLANK_TILE = 1;
+        public const byte RANCH_TILE = 170;
+        public const byte POT_OF_GOLD_TILE = 186;
+        public const byte BURRIED_TREASURE_TILE = 193;
+
         public struct TerrainTile
         {
             public bool Passable;
@@ -40,24 +46,33 @@ namespace HISP.Game
         public static int PrisonIsleX;
         public static int PrisonIsleY;
 
+
         public static int GetTileId(int x, int y, bool overlay)
         {
             int pos = ((x * Height) + y);
 
+            Logger.DebugPrint("Get tile at pos: " + x + ", " + y + " overlay: " + overlay);
+
+            if (x < 0 || x >= Width)
+                return BLANK_TILE;
+            if (y < 0 || y >= Height)
+                return BLANK_TILE;
+
             if ((pos <= 0 || pos >= oMapData.Length) && overlay)
-                return 1;
+                return BLANK_TILE;
             else if ((pos <= 0 || pos >= MapData.Length) && !overlay) 
-                return 1;
+                return BLANK_TILE;
+
             else if (overlay && Treasure.IsTileBuiredTreasure(x, y))
-                return 193; // Burried Treasure tile.
+                return BURRIED_TREASURE_TILE; // Burried Treasure tile.
             else if (overlay && Treasure.IsTilePotOfGold(x, y))
-                return 186; // Pot of Gold tile.
+                return POT_OF_GOLD_TILE; // Pot of Gold tile.
             else if (overlay && Ranch.IsRanchHere(x, y))
             {
                 int upgradeLevel = Ranch.GetRanchAt(x, y).UpgradedLevel;
                 if (upgradeLevel > 7)
                     upgradeLevel = 7;
-                return 170 + upgradeLevel;
+                return RANCH_TILE + upgradeLevel; // ranch tile
             }
             else if (overlay)
                 return oMapData[pos];
@@ -77,8 +92,7 @@ namespace HISP.Game
 
             if (otileId > 192)
             {
-                if (World.InIsle(x, y))
-                    tileset = World.GetIsle(x, y).Tileset;
+                if (World.InIsle(x, y)) tileset = World.GetIsle(x, y).Tileset;
                 otileId = otileId + 64 * tileset;
             }
 
@@ -115,13 +129,13 @@ namespace HISP.Game
             
             MapData = new byte[Width * Height];
             oMapData = new byte[Width * Height];
-            int ii = 8;
+            int pos = 8;
 
             for (int i = 0; i < MapData.Length; i++)
             {
-                oMapData[i] = worldMap[ii];
-                MapData[i] = worldMap[ii+ 1];
-                ii += 2;
+                oMapData[i] = worldMap[pos];
+                MapData[i] = worldMap[pos+ 1];
+                pos += 2;
             }
 
             worldMap = null;

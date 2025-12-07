@@ -3730,7 +3730,7 @@ namespace HISP.Server
                         }
                         else
                         {
-                            byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000+4, 1000+1, client.User.Facing, client.User.CharacterId, client.User.Username);
+                            byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, client.User.Facing, client.User.CharacterId, client.User.Username);
                             sender.SendPacket(PlayerInfo);
                         }
                     }
@@ -5179,14 +5179,16 @@ namespace HISP.Server
                     loggedInUser.TradingWith.CancelTradeMoved();
             
             // Pac-man the world.
-            if (loggedInUser.X > Map.Width)
+            if (loggedInUser.X > Map.Width-3)
                 loggedInUser.Teleport(2, loggedInUser.Y);
+
             else if (loggedInUser.X < 2)
-                loggedInUser.Teleport(Map.Width - 2, loggedInUser.Y);
-            else if (loggedInUser.Y > Map.Height - 2)
+                loggedInUser.Teleport(Map.Width-3, loggedInUser.Y);
+
+            else if (loggedInUser.Y > Map.Height - 3)
                 loggedInUser.Teleport(loggedInUser.X, 2);
             else if (loggedInUser.Y < 2)
-                loggedInUser.Teleport(loggedInUser.X, Map.Height - 2);
+                loggedInUser.Teleport(loggedInUser.X, Map.Height - 3);
 
 
             User[] onScreenNow = User.GetOnScreenUsers(loggedInUser.X, loggedInUser.Y, true, true);
@@ -6060,8 +6062,8 @@ namespace HISP.Server
 
                 try
                 {
-                    x = int.Parse(xy[0])+4;
-                    y = int.Parse(xy[1])+1;
+                    x = int.Parse(xy[0]);
+                    y = int.Parse(xy[1]);
                 }
                 catch(FormatException)
                 {
@@ -6110,8 +6112,9 @@ namespace HISP.Server
                     returnedMsg = Messages.FormatPlayerHereMessage(usernameStr);
                 }
                 byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo(returnedMsg);
-                // Debug tile id information
-                //byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo("ground: " + (Map.GetTileId(x, y, false)-1).ToString() + ", overlay: " + (Map.GetTileId(x, y, true)-1).ToString());
+#if OS_DEBUG
+                tileInfoPacket = PacketBuilder.CreateTileClickInfo(x + "," + y + " tile: " + Map.GetTileId(x, y, false) + " overlay: " + Map.GetTileId(x, y, true));
+#endif
                 sender.SendPacket(tileInfoPacket);
             }
         }
