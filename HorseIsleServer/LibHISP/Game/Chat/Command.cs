@@ -26,7 +26,6 @@ namespace HISP.Game.Chat
             new CommandRegister('%', "CALL", "HORSE", Command.CallHorse, true, false);
             new CommandRegister('%', "MESSAGE", "<message>", Command.Message, true, false);
             new CommandRegister('%', "PERMISSION", "<username> <admin / moderator / normal>", Command.Permission, true, false);
-
             new CommandRegister('%', "POSITION", "", Command.Position, true, false);
             new CommandRegister('%', "%", "", Command.Position, true, false);
 
