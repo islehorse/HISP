@@ -16,6 +16,7 @@ using Microsoft.Data.Sqlite;
 using SQLitePCL;
 using HISP.Util;
 using System.IO;
+using HISP.Game.Chat;
 
 namespace HISP.Server
 {
@@ -25,6 +26,12 @@ namespace HISP.Server
         public const string SQL_BACKEND_SQLITE = "sqllite";
 
         public static string ConnectionString = "";
+        private static DbCommand createCommand(DbConnection db, string command)
+        {
+            DbCommand sqlCommand = db.CreateCommand();
+            sqlCommand.CommandText = command;
+            return sqlCommand;
+        }
         private static int addWithValue(DbCommand cmd, string param, object value)
         {
             DbParameter parameter = cmd.CreateParameter();
@@ -40,11 +47,28 @@ namespace HISP.Server
 
         private static DbConnection connectDb()
         {
-            if (ConfigReader.SqlBackend.Equals(Database.SQL_BACKEND_MARIADB, StringComparison.InvariantCultureIgnoreCase))
-                return new MySqlConnection(ConnectionString);
-            else if (ConfigReader.SqlBackend.Equals(Database.SQL_BACKEND_SQLITE, StringComparison.InvariantCultureIgnoreCase))
-                return new SqliteConnection(ConnectionString);
+            try
+            {
+                if (ConfigReader.SqlBackend.Equals(Database.SQL_BACKEND_MARIADB, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    DbConnection conn = new MySqlConnection(ConnectionString);
+                    conn.Open();
+                    return conn;
+                }
+                else if (ConfigReader.SqlBackend.Equals(Database.SQL_BACKEND_SQLITE, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    DbConnection conn = new SqliteConnection(ConnectionString);
+                    conn.Open();
+                    return conn;
+                }
+            }
+            catch (DbException e)
+            {
+                Logger.ErrorPrint("Failed to connect to " + ConfigReader.SqlBackend + " Database: " + e.Message);
+                Environment.Exit(1);
+            }
             
+
             Logger.ErrorPrint("SqlBackend has invalid value: " + ConfigReader.SqlBackend);
             Environment.Exit(1);
             return null;
@@ -52,18 +76,16 @@ namespace HISP.Server
 
         public static void OnShutdown()
         {
-            if (ConfigReader.SqlBackend == Database.SQL_BACKEND_MARIADB)
+            if (ConfigReader.SqlBackend.Equals(Database.SQL_BACKEND_MARIADB, StringComparison.InvariantCultureIgnoreCase))
                 MySqlConnection.ClearAllPools();
-            else if (ConfigReader.SqlBackend == Database.SQL_BACKEND_SQLITE)
-                SqliteConnection.ClearAllPools();
-            
+            else if (ConfigReader.SqlBackend.Equals(Database.SQL_BACKEND_SQLITE, StringComparison.InvariantCultureIgnoreCase))
+                SqliteConnection.ClearAllPools();   
         }
 
         public static bool TryExecuteSqlQuery(DbConnection db, string query)
         {
 
-            DbCommand sqlCommand = db.CreateCommand();
-            sqlCommand.CommandText = query;
+            DbCommand sqlCommand = createCommand(db, query);
             try
             {
                 sqlCommand.ExecuteNonQuery();
@@ -79,7 +101,6 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
                 return TryExecuteSqlQuery(db, query);
             }
         }
@@ -93,23 +114,13 @@ namespace HISP.Server
             else if(ConfigReader.SqlBackend == Database.SQL_BACKEND_SQLITE)
             {
                 ConnectionString = "Data Source=\"" + Path.GetFullPath(ConfigReader.DatabaseName + ".db", ConfigReader.ConfigDirectory) + "\";";
+                SqliteConnection s = new SqliteConnection(ConnectionString);
                 Batteries.Init();
             }
 
 
             using (DbConnection db = connectDb())
             {
-
-                try
-                {
-                    db.Open();
-                }
-                catch (DbException e)
-                {
-                    Logger.ErrorPrint("Failed to connect to Database: " + e.Message);
-                    Environment.Exit(1);
-                }
-
                 if (ConfigReader.SqlBackend == Database.SQL_BACKEND_SQLITE) TryExecuteSqlQuery(db, "PRAGMA journal_mode=WAL");
 
 
@@ -174,9 +185,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -188,9 +197,7 @@ namespace HISP.Server
             List<int> MutedPlayerIds = new List<int>();
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT mutePlayerId FROM MutedPlayers WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "SELECT mutePlayerId FROM MutedPlayers WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
@@ -204,9 +211,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO MutedPlayers VALUES(@playerId, @mutedPlayerId)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO MutedPlayers VALUES(@playerId, @mutedPlayerId)");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@mutedPlayerId", playerToMute);
                 sqlCommand.Prepare();
@@ -219,9 +224,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM MutedPlayers WHERE playerId=@playerId AND mutePlayerId=@mutedPlayerId";
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM MutedPlayers WHERE playerId=@playerId AND mutePlayerId=@mutedPlayerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@mutedPlayerId", playerToMute);
                 sqlCommand.Prepare();
@@ -234,9 +237,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(1) FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -249,9 +250,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM ItemPurchaseQueue WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM ItemPurchaseQueue WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -265,9 +264,7 @@ namespace HISP.Server
 
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM ItemPurchaseQueue WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM ItemPurchaseQueue WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
@@ -287,9 +284,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO DressupRooms VALUES(@roomId, @peiceId, @active, @x, @y)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO DressupRooms VALUES(@roomId, @peiceId, @active, @x, @y)");
                 addWithValue(sqlCommand, "@roomId", roomId);
                 addWithValue(sqlCommand, "@peiceId", peiceId);
                 addWithValue(sqlCommand, "@active", active ? "YES" : "NO");
@@ -305,9 +300,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO MessageQueue VALUES(@id,@message)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO MessageQueue VALUES(@id,@message)");
                 addWithValue(sqlCommand, "@id", userId);
                 addWithValue(sqlCommand, "@message", message);
                 sqlCommand.Prepare();
@@ -319,9 +312,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM MessageQueue WHERE Id=@id";
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM MessageQueue WHERE Id=@id");
                 addWithValue(sqlCommand, "@id", userId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -333,9 +324,7 @@ namespace HISP.Server
             List<string> msgQueue = new List<string>();
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT message FROM MessageQueue WHERE Id=@id";
+                DbCommand sqlCommand = createCommand(db, "SELECT message FROM MessageQueue WHERE Id=@id");
                 addWithValue(sqlCommand, "@id", userId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
@@ -352,9 +341,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE DressupRooms SET x=@x WHERE roomId=@roomId AND peiceId=@peiceId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE DressupRooms SET x=@x WHERE roomId=@roomId AND peiceId=@peiceId");
                 addWithValue(sqlCommand, "@roomId", roomId);
                 addWithValue(sqlCommand, "@peiceId", peiceId);
                 addWithValue(sqlCommand, "@x", newX);
@@ -368,9 +355,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE DressupRooms SET y=@y WHERE roomId=@roomId AND peiceId=@peiceId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE DressupRooms SET y=@y WHERE roomId=@roomId AND peiceId=@peiceId");
                 addWithValue(sqlCommand, "@roomId", roomId);
                 addWithValue(sqlCommand, "@peiceId", peiceId);
                 addWithValue(sqlCommand, "@y", newY);
@@ -384,9 +369,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE DressupRooms SET active=@active WHERE roomId=@roomId AND peiceId=@peiceId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE DressupRooms SET active=@active WHERE roomId=@roomId AND peiceId=@peiceId");
                 addWithValue(sqlCommand, "@roomId", roomId);
                 addWithValue(sqlCommand, "@peiceId", peiceId);
                 addWithValue(sqlCommand, "@active", active ? "YES" : "NO");
@@ -401,9 +384,7 @@ namespace HISP.Server
             List<Dressup.DressupPeice> peices = new List<Dressup.DressupPeice>();
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM DressupRooms WHERE roomId=@roomId";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM DressupRooms WHERE roomId=@roomId");
                 addWithValue(sqlCommand, "@roomId", room.RoomId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
@@ -426,9 +407,7 @@ namespace HISP.Server
             List<int> solvedRiddleId = new List<int>();
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT riddleId FROM SolvedRealTimeRiddles WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "SELECT riddleId FROM SolvedRealTimeRiddles WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
@@ -445,9 +424,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT investedMoney FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT investedMoney FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int invested = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -459,9 +436,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET upgradeLevel=@upgradeLevel WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET upgradeLevel=@upgradeLevel WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@upgradeLevel", upgradeLevel);
                 sqlCommand.Prepare();
@@ -473,9 +448,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET investedMoney=@investedMoney WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET investedMoney=@investedMoney WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@investedMoney", investedMoney);
                 sqlCommand.Prepare();
@@ -487,9 +460,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET playerId=@ownerId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET playerId=@ownerId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@ownerId", ownerId);
                 sqlCommand.Prepare();
@@ -501,9 +472,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET description=@description WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET description=@description WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@description", description);
                 sqlCommand.Prepare();
@@ -515,9 +484,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET title=@title WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET title=@title WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@title", title);
                 sqlCommand.Prepare();
@@ -529,9 +496,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building16=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building16=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -543,9 +508,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building15=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building15=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -557,9 +520,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building14=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building14=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -571,9 +532,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building13=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building13=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -585,9 +544,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building12=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building12=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -599,9 +556,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building11=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building11=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -613,9 +568,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building10=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building10=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -627,9 +580,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building9=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building9=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -641,9 +592,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building8=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building8=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -655,9 +604,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building7=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building7=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -669,9 +616,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building6=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building6=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -683,9 +628,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building5=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building5=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -697,9 +640,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building4=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building4=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -711,9 +652,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building3=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building3=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -725,9 +664,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building2=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building2=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -739,9 +676,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Ranches SET building1=@buildingId WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Ranches SET building1=@buildingId WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@buildingId", buildingId);
                 sqlCommand.Prepare();
@@ -753,9 +688,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building16 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building16 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -767,9 +700,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building15 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building15 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -781,9 +712,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building14 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building14 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -795,9 +724,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building13 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building13 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -809,9 +736,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building12 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building12 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -823,9 +748,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building11 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building11 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -837,9 +760,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building10 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building10 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -851,9 +772,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building9 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building9 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -865,9 +784,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building8 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building8 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -879,9 +796,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building7 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building7 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -893,9 +808,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building6 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building6 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -907,9 +820,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building5 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building5 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -921,9 +832,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building4 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building4 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -935,9 +844,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building3 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building3 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -949,9 +856,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building2 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building2 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -963,9 +868,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT building1 FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT building1 FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int building = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -977,9 +880,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT upgradeLevel FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT upgradeLevel FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int upgradeLevel = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -992,9 +893,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT description FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT description FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 string description = sqlCommand.ExecuteScalar().ToString();
@@ -1006,9 +905,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT title FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT title FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 string title = sqlCommand.ExecuteScalar().ToString();
@@ -1020,9 +917,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT playerId FROM Ranches WHERE ranchId=@ranchId";
+                DbCommand sqlCommand = createCommand(db, "SELECT playerId FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
                 int playerId = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1050,9 +945,7 @@ namespace HISP.Server
             
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(*) FROM SolvedRealTimeRiddles WHERE riddleId=@riddleId AND playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(*) FROM SolvedRealTimeRiddles WHERE riddleId=@riddleId AND playerId=@playerId");
                 addWithValue(sqlCommand, "@riddleId", riddleId);
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
@@ -1066,9 +959,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO SolvedRealTimeRiddles VALUES(@playerId, @riddleId)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO SolvedRealTimeRiddles VALUES(@playerId, @riddleId)");
                 addWithValue(sqlCommand, "@riddleId", riddleId);
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
@@ -1110,9 +1001,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Ranches VALUES(@ranchId, @playerId, @title, @description, @upgradeLevel, @building1, @building2, @building3, @building4, @building5, @building6, @building7, @building8, @building9, @building10, @building11, @building12, @building13, @building14, @building15, @building16, @investedMoney)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Ranches VALUES(@ranchId, @playerId, @title, @description, @upgradeLevel, @building1, @building2, @building3, @building4, @building5, @building6, @building7, @building8, @building9, @building10, @building11, @building12, @building13, @building14, @building15, @building16, @investedMoney)");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@title", title);
@@ -1145,9 +1034,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Treasure SET value=@value WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Treasure SET value=@value WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", randomId);
                 addWithValue(sqlCommand, "@value", value);
                 sqlCommand.Prepare();
@@ -1161,9 +1048,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM Treasure  WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM Treasure  WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -1176,9 +1061,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Treasure VALUES(@randomId, @x, @y, @value, @type)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Treasure VALUES(@randomId, @x, @y, @value, @type)");
                 addWithValue(sqlCommand, "@randomId", randomId);
                 addWithValue(sqlCommand, "@x", x);
                 addWithValue(sqlCommand, "@y", y);
@@ -1195,9 +1078,7 @@ namespace HISP.Server
             List<Treasure> treasures = new List<Treasure>();
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Treasure";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Treasure");
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while(reader.Read())
                 {
@@ -1218,9 +1099,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Tracking VALUES(@playerId, @what, @count)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Tracking VALUES(@playerId, @what, @count)");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@what", what.ToString());
                 addWithValue(sqlCommand, "@count", count);
@@ -1235,9 +1114,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(*) FROM Tracking WHERE playerId=@playerId AND what=@what";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(*) FROM Tracking WHERE playerId=@playerId AND what=@what");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@what", what.ToString());
                 sqlCommand.Prepare();
@@ -1252,9 +1129,7 @@ namespace HISP.Server
 
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT count FROM Tracking WHERE playerId=@playerId AND what=@what";
+                DbCommand sqlCommand = createCommand(db, "SELECT count FROM Tracking WHERE playerId=@playerId AND what=@what");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@what", what.ToString());
                 sqlCommand.Prepare();
@@ -1301,9 +1176,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Tracking SET count=@count WHERE playerId=@playerId AND what=@what";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Tracking SET count=@count WHERE playerId=@playerId AND what=@what");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@what", what.ToString());
                 addWithValue(sqlCommand, "@count", count);
@@ -1318,9 +1191,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO LastPlayer VALUES(@roomId,@playerId)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO LastPlayer VALUES(@roomId,@playerId)");
                 addWithValue(sqlCommand, "@roomId", roomId);
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
@@ -1334,9 +1205,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE WildHorse SET x=@x WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE WildHorse SET x=@x WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", randomId);
                 addWithValue(sqlCommand, "@x", x);
                 sqlCommand.ExecuteNonQuery();
@@ -1347,9 +1216,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE WildHorse SET timeout=@timeout WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE WildHorse SET timeout=@timeout WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", randomId);
                 addWithValue(sqlCommand, "@timeout", timeout);
                 sqlCommand.ExecuteNonQuery();
@@ -1360,9 +1227,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM WildHorse WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM WildHorse WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", randomId);
                 sqlCommand.ExecuteNonQuery();
                 
@@ -1373,9 +1238,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE WildHorse SET y=@y WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE WildHorse SET y=@y WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", randomId);
                 addWithValue(sqlCommand, "@y", x);
                 sqlCommand.ExecuteNonQuery();
@@ -1387,9 +1250,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM Horses WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM Horses WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", randomId);
                 sqlCommand.ExecuteNonQuery();
                 
@@ -1401,9 +1262,7 @@ namespace HISP.Server
 
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Horses VALUES(@randomId,@originalOwner,@leaseTime,@leaser,@breed,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@autosell,@training,@category,@spoiled,@magicused,@hidden)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Horses VALUES(@randomId,@originalOwner,@leaseTime,@leaser,@breed,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@autosell,@training,@category,@spoiled,@magicused,@hidden)");
 
                 addWithValue(sqlCommand, "@randomId", horse.RandomId);
                 addWithValue(sqlCommand, "@originalOwner", horse.Owner);
@@ -1535,9 +1394,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Horses WHERE ownerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Horses WHERE ownerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
@@ -1555,9 +1412,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Auctions WHERE roomId=@roomId";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Auctions WHERE roomId=@roomId");
                 addWithValue(sqlCommand, "@roomId", roomId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
@@ -1588,9 +1443,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM Auctions WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM Auctions WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", randomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -1601,9 +1454,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Auctions VALUES(@roomId, @randomId, @horseRandomId, @ownerId, @timeRemaining, @highestBid, @highestBidder, @done)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Auctions VALUES(@roomId, @randomId, @horseRandomId, @ownerId, @timeRemaining, @highestBid, @highestBidder, @done)");
                 addWithValue(sqlCommand, "@roomId", roomId);
                 addWithValue(sqlCommand, "@randomId", entry.RandomId);
                 addWithValue(sqlCommand, "@horseRandomId", entry.Horse.RandomId);
@@ -1622,9 +1473,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO BannedPlayers VALUES(@playerId,@ipAddress,@reason)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO BannedPlayers VALUES(@playerId,@ipAddress,@reason)");
                 addWithValue(sqlCommand, "@playerId", userId);
                 addWithValue(sqlCommand, "@ipAddress", ip);
                 addWithValue(sqlCommand, "@reason", reason);
@@ -1637,9 +1486,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM BannedPlayers WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM BannedPlayers WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", userId);
                 sqlCommand.ExecuteNonQuery();
                 
@@ -1651,9 +1498,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM BannedPlayers WHERE ipAddress=@ipAddr";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(1) FROM BannedPlayers WHERE ipAddress=@ipAddr");
                 addWithValue(sqlCommand, "@ipAddr", ip);
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 
@@ -1664,9 +1509,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM BannedPlayers WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(1) FROM BannedPlayers WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", userId);
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 
@@ -1680,9 +1523,7 @@ namespace HISP.Server
 
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO WildHorse VALUES(@randomId,@originalOwner,@breed,@x,@y,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@timeout,@autosell,@training,@category,@spoiled,@magicused)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO WildHorse VALUES(@randomId,@originalOwner,@breed,@x,@y,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@timeout,@autosell,@training,@category,@spoiled,@magicused)");
 
                 addWithValue(sqlCommand, "@randomId", horse.Instance.RandomId);
                 addWithValue(sqlCommand, "@originalOwner", horse.Instance.Owner);
@@ -1756,9 +1597,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM WildHorse";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM WildHorse");
 
 
                 sqlCommand.Prepare();
@@ -1824,9 +1663,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM LastPlayer WHERE roomId=@roomId";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(1) FROM LastPlayer WHERE roomId=@roomId");
                 addWithValue(sqlCommand, "@roomId", roomId);
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1843,9 +1680,7 @@ namespace HISP.Server
 
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT playerId FROM LastPlayer WHERE roomId=@roomId";
+                DbCommand sqlCommand = createCommand(db, "SELECT playerId FROM LastPlayer WHERE roomId=@roomId");
                 addWithValue(sqlCommand, "@roomId", roomId);
                 sqlCommand.Prepare();
                 int playerId = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1862,9 +1697,7 @@ namespace HISP.Server
                 Database.AddLastPlayer(roomId, -1);
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE LastPlayer SET playerId=@playerId WHERE roomId=@roomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE LastPlayer SET playerId=@playerId WHERE roomId=@roomId");
                 addWithValue(sqlCommand, "@roomId", roomId);
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
@@ -1878,9 +1711,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO PoetryRooms VALUES(@id,@x,@y,@room)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO PoetryRooms VALUES(@id,@x,@y,@room)");
                 addWithValue(sqlCommand, "@id", id);
                 addWithValue(sqlCommand, "@x", x);
                 addWithValue(sqlCommand, "@y", y);
@@ -1896,9 +1727,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE PoetryRooms SET X=@x, Y=@y WHERE poetId=@id AND roomId=@room";
+                DbCommand sqlCommand = createCommand(db, "UPDATE PoetryRooms SET X=@x, Y=@y WHERE poetId=@id AND roomId=@room");
                 addWithValue(sqlCommand, "@id", id);
                 addWithValue(sqlCommand, "@x", x);
                 addWithValue(sqlCommand, "@y", y);
@@ -1914,9 +1743,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM PoetryRooms WHERE poetId=@id AND roomId=@room";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(1) FROM PoetryRooms WHERE poetId=@id AND roomId=@room");
                 addWithValue(sqlCommand, "@id", id);
                 addWithValue(sqlCommand, "@room", room);
                 sqlCommand.Prepare();
@@ -1930,9 +1757,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT X FROM PoetryRooms WHERE poetId=@id AND roomId=@room";
+                DbCommand sqlCommand = createCommand(db, "SELECT X FROM PoetryRooms WHERE poetId=@id AND roomId=@room");
                 addWithValue(sqlCommand, "@id", id);
                 addWithValue(sqlCommand, "@room", room);
                 sqlCommand.Prepare();
@@ -1947,9 +1772,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Y FROM PoetryRooms WHERE poetId=@id AND roomId=@room";
+                DbCommand sqlCommand = createCommand(db, "SELECT Y FROM PoetryRooms WHERE poetId=@id AND roomId=@room");
                 addWithValue(sqlCommand, "@id", id);
                 addWithValue(sqlCommand, "@room", room);
                 sqlCommand.Prepare();
@@ -1964,9 +1787,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(*) FROM SavedDrawings WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(*) FROM SavedDrawings WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -1979,9 +1800,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO SavedDrawings VALUES(@playerId,'','','')";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO SavedDrawings VALUES(@playerId,'','','')");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -1994,9 +1813,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(*) FROM DrawingRooms WHERE roomId=@room";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(*) FROM DrawingRooms WHERE roomId=@room");
                 addWithValue(sqlCommand, "@room", room);
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -2010,9 +1827,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO DrawingRooms VALUES(@roomId,'')";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO DrawingRooms VALUES(@roomId,'')");
                 addWithValue(sqlCommand, "@roomId", room);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -2025,9 +1840,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE DrawingRooms SET Drawing=@drawing WHERE roomId=@room";
+                DbCommand sqlCommand = createCommand(db, "UPDATE DrawingRooms SET Drawing=@drawing WHERE roomId=@room");
                 addWithValue(sqlCommand, "@drawing", Drawing);
                 addWithValue(sqlCommand, "@room", room);
                 sqlCommand.Prepare();
@@ -2040,9 +1853,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Drawing FROM DrawingRooms WHERE roomId=@room";
+                DbCommand sqlCommand = createCommand(db, "SELECT Drawing FROM DrawingRooms WHERE roomId=@room");
                 addWithValue(sqlCommand, "@room", room);
                 sqlCommand.Prepare();
                 string drawing = sqlCommand.ExecuteScalar().ToString();
@@ -2058,9 +1869,7 @@ namespace HISP.Server
 
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Drawing3 FROM SavedDrawings WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "SELECT Drawing3 FROM SavedDrawings WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 string drawing = sqlCommand.ExecuteScalar().ToString();
@@ -2076,9 +1885,7 @@ namespace HISP.Server
 
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Drawing2 FROM SavedDrawings WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "SELECT Drawing2 FROM SavedDrawings WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 string drawing = sqlCommand.ExecuteScalar().ToString();
@@ -2094,9 +1901,7 @@ namespace HISP.Server
 
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Drawing1 FROM SavedDrawings WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "SELECT Drawing1 FROM SavedDrawings WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 string drawing = sqlCommand.ExecuteScalar().ToString();
@@ -2112,9 +1917,7 @@ namespace HISP.Server
 
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE SavedDrawings SET Drawing1=@drawing WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE SavedDrawings SET Drawing1=@drawing WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@drawing", drawing);
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
@@ -2130,9 +1933,7 @@ namespace HISP.Server
                 CreateSavedDrawings(playerId);
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE SavedDrawings SET Drawing2=@drawing WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE SavedDrawings SET Drawing2=@drawing WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@drawing", drawing);
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
@@ -2148,9 +1949,7 @@ namespace HISP.Server
                 CreateSavedDrawings(playerId);
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE SavedDrawings SET Drawing3=@drawing WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE SavedDrawings SET Drawing3=@drawing WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@drawing", drawing);
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
@@ -2163,9 +1962,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE World SET LastLoadedInVersion=@version";
+                DbCommand sqlCommand = createCommand(db, "UPDATE World SET LastLoadedInVersion=@version");
                 addWithValue(sqlCommand, "@version", version);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -2180,9 +1977,7 @@ namespace HISP.Server
             {
                 using (DbConnection db = connectDb())
                 {
-                    db.Open();
-                    DbCommand sqlCommand = db.CreateCommand();
-                    sqlCommand.CommandText = "SELECT TotalLogins FROM UserExt LIMIT 1;";
+                    DbCommand sqlCommand = createCommand(db, "SELECT TotalLogins FROM UserExt LIMIT 1;");
                     sqlCommand.ExecuteNonQuery();
                 }
                 return false;
@@ -2199,9 +1994,7 @@ namespace HISP.Server
             {
                 using (DbConnection db = connectDb())
                 {
-                    db.Open();
-                    DbCommand sqlCommand = db.CreateCommand();
-                    sqlCommand.CommandText = "SELECT Data FROM ShopInventory LIMIT 1;";
+                    DbCommand sqlCommand = createCommand(db, "SELECT Data FROM ShopInventory LIMIT 1;");
                     sqlCommand.ExecuteNonQuery();
                 }
                 return false;
@@ -2218,9 +2011,7 @@ namespace HISP.Server
             {
                 using (DbConnection db = connectDb())
                 {
-                    db.Open();
-                    DbCommand sqlCommand = db.CreateCommand();
-                    sqlCommand.CommandText = "SELECT LastLoadedInVersion FROM World";
+                    DbCommand sqlCommand = createCommand(db, "SELECT LastLoadedInVersion FROM World");
                     string lastVersion = sqlCommand.ExecuteScalar().ToString();
 
                     return lastVersion;
@@ -2238,9 +2029,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE World SET StartTime=@startTimer";
+                DbCommand sqlCommand = createCommand(db, "UPDATE World SET StartTime=@startTimer");
                 addWithValue(sqlCommand, "@startTimer", startTime);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -2252,9 +2041,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE World SET Time=@time,Day=@day,Year=@year";
+                DbCommand sqlCommand = createCommand(db, "UPDATE World SET Time=@time,Day=@day,Year=@year");
                 addWithValue(sqlCommand, "@time", time);
                 addWithValue(sqlCommand, "@day", day);
                 addWithValue(sqlCommand, "@year", year);
@@ -2268,9 +2055,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Time FROM World";
+                DbCommand sqlCommand = createCommand(db, "SELECT Time FROM World");
                 int serverTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 
                 return serverTime;
@@ -2281,9 +2066,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT StartTime FROM World";
+                DbCommand sqlCommand = createCommand(db, "SELECT StartTime FROM World");
                 int startTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 
                 return startTime;
@@ -2294,9 +2077,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Day FROM World";
+                DbCommand sqlCommand = createCommand(db, "SELECT Day FROM World");
                 int serverTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 
                 return serverTime;
@@ -2307,9 +2088,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Year FROM World";
+                DbCommand sqlCommand = createCommand(db, "SELECT Year FROM World");
                 int creationTime = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 
                 return creationTime;
@@ -2323,9 +2102,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(*) FROM Weather WHERE Area=@area";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(*) FROM Weather WHERE Area=@area");
                 addWithValue(sqlCommand, "@area", Area);
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 
@@ -2337,9 +2114,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Weather VALUES(@area,@weather)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Weather VALUES(@area,@weather)");
                 addWithValue(sqlCommand, "@weather", Weather);
                 addWithValue(sqlCommand, "@area", Area);
                 sqlCommand.ExecuteNonQuery();
@@ -2350,9 +2125,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Weather SET Weather=@weather WHERE Area=@area";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Weather SET Weather=@weather WHERE Area=@area");
                 addWithValue(sqlCommand, "@weather", Weather);
                 addWithValue(sqlCommand, "@area", Area);
                 sqlCommand.Prepare();
@@ -2365,9 +2138,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT Weather FROM Weather WHERE Area=@area";
+                DbCommand sqlCommand = createCommand(db, "SELECT Weather FROM Weather WHERE Area=@area");
                 addWithValue(sqlCommand, "@area", Area);
                 string Weather = sqlCommand.ExecuteScalar().ToString();
                 
@@ -2379,9 +2150,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET trainTimer=trainTimer-1 WHERE trainTimer-1 > -1";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET trainTimer=trainTimer-1 WHERE trainTimer-1 > -1");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
@@ -2395,9 +2164,7 @@ namespace HISP.Server
             List<HorseInstance> instances = new List<HorseInstance>();
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Horses WHERE ownerId=@playerId AND category=@category";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Horses WHERE ownerId=@playerId AND category=@category");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@category", category);
                 sqlCommand.Prepare();
@@ -2416,9 +2183,7 @@ namespace HISP.Server
             HorseInstance instance = null;
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Horses WHERE randomId=@horseRandomId";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Horses WHERE randomId=@horseRandomId");
                 addWithValue(sqlCommand, "@horseRandomId", horseRandomId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
@@ -2439,9 +2204,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT trainTimer FROM Horses WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "SELECT trainTimer FROM Horses WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 int trainTimer = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -2454,9 +2217,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Auctions SET done=@done WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET done=@done WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@done", done ? "YES" : "NO");
                 addWithValue(sqlCommand, "@randomId", randomId);
                 sqlCommand.Prepare();
@@ -2469,9 +2230,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Auctions SET timeRemaining=@timeRemaining WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET timeRemaining=@timeRemaining WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@timeRemaining", timeRemaining);
                 addWithValue(sqlCommand, "@randomId", randomId);
                 sqlCommand.Prepare();
@@ -2484,9 +2243,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Auctions SET highestBid=@highestBid WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET highestBid=@highestBid WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@highestBid", highestBid);
                 addWithValue(sqlCommand, "@randomId", randomId);
                 sqlCommand.Prepare();
@@ -2499,9 +2256,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Auctions SET highestBidder=@highestBidder WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET highestBidder=@highestBidder WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@highestBidder", highestBidder);
                 addWithValue(sqlCommand, "@randomId", randomId);
                 sqlCommand.Prepare();
@@ -2515,9 +2270,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET ownerId=@owner WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET ownerId=@owner WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@owner", owner);
                 addWithValue(sqlCommand, "@randomId", randomId);
                 sqlCommand.Prepare();
@@ -2530,9 +2283,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET hidden=@hidden WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET hidden=@hidden WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@hidden", hidden ? "YES" : "NO");
                 addWithValue(sqlCommand, "@randomId", randomId);
                 sqlCommand.Prepare();
@@ -2544,9 +2295,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET trainTimer=@trainTimer WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET trainTimer=@trainTimer WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@trainTimer", trainTimeout);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2558,9 +2307,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET color=@color WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET color=@color WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@color", Color);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2572,9 +2319,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET category=@category WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET category=@category WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@category", Category);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2587,9 +2332,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET autosell=@autosell WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET autosell=@autosell WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@autosell", AutoSell);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2601,9 +2344,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET magicused=@magicused WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET magicused=@magicused WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@magicused", MagicUsed);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2615,9 +2356,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET leaseTime=@leaseTime WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET leaseTime=@leaseTime WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@leaseTime", leaseTime);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2630,9 +2369,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET name=@name WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET name=@name WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@name", Name);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2644,9 +2381,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET description=@description WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET description=@description WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@description", Description);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2658,9 +2393,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET tiredness=@tiredness WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET tiredness=@tiredness WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@tiredness", Tiredness);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2672,9 +2405,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET speed=@speed WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET speed=@speed WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@speed", Speed);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2686,9 +2417,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET strength=@strength WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET strength=@strength WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@strength", Strength);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2700,9 +2429,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET conformation=@conformation WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET conformation=@conformation WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@conformation", Conformation);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2714,9 +2441,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET agility=@agility WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET agility=@agility WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@agility", Agility);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2728,9 +2453,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET endurance=@endurance WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET endurance=@endurance WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@endurance", Endurance);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2742,9 +2465,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET personality=@personality WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET personality=@personality WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@personality", Personality);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2756,9 +2477,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET inteligence=@inteligence WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET inteligence=@inteligence WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@inteligence", Inteligence);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2770,9 +2489,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET spoiled=@spoiled WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET spoiled=@spoiled WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@spoiled", Spoiled);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2784,9 +2501,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET experience=@experience WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET experience=@experience WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@experience", Experience);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2798,9 +2513,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET shoes=@shoes WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET shoes=@shoes WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@shoes", Shoes);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2812,9 +2525,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET height=@height WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET height=@height WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@height", Height);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2826,9 +2537,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET mood=@mood WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET mood=@mood WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@mood", Mood);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2840,9 +2549,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET groom=@groom WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET groom=@groom WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@groom", Groom);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2855,9 +2562,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET hunger=@hunger WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET hunger=@hunger WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@hunger", Hunger);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2869,9 +2574,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET thirst=@thirst WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET thirst=@thirst WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@thirst", Thirst);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2883,9 +2586,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET health=@health WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET health=@health WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@health", Health);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2898,9 +2599,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET saddle=@saddle WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddle=@saddle WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@saddle", saddleItemId);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2913,9 +2612,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET saddlepad=@saddlepad WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddlepad=@saddlepad WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@saddlepad", saddlePadItemId);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2928,9 +2625,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET bridle=@bridle WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET bridle=@bridle WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@bridle", bridleItemId);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2942,9 +2637,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET companion=@companion WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET companion=@companion WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@companion", companionItemId);
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
@@ -2957,9 +2650,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET saddle=NULL WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddle=NULL WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -2971,9 +2662,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET saddlepad=NULL WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddlepad=NULL WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -2985,9 +2674,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET bridle=NULL WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET bridle=NULL WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -2999,9 +2686,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET companion=NULL WHERE randomId=@randomId";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET companion=NULL WHERE randomId=@randomId");
                 addWithValue(sqlCommand, "@randomId", horseRandomId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -4226,9 +3911,7 @@ namespace HISP.Server
             List<DroppedItems.DroppedItem> itemList = new List<DroppedItems.DroppedItem>();
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM DroppedItems";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM DroppedItems");
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while(reader.Read())
@@ -4388,9 +4071,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM Users WHERE Id=@id";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(1) FROM Users WHERE Id=@id");
                 addWithValue(sqlCommand, "@id", id);
                 sqlCommand.Prepare();
 
@@ -4403,9 +4084,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM Users WHERE Username=@name";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(1) FROM Users WHERE Username=@name");
                 addWithValue(sqlCommand, "@name", username);
                 sqlCommand.Prepare();
 
@@ -4419,9 +4098,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM UserExt WHERE Id=@id";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(1) FROM UserExt WHERE Id=@id");
                 addWithValue(sqlCommand, "@id", id);
                 sqlCommand.Prepare();
 
@@ -4484,9 +4161,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT COUNT(1) FROM BuddyList WHERE Id=@id OR IdFriend=@id";
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(1) FROM BuddyList WHERE Id=@id OR IdFriend=@id");
                 addWithValue(sqlCommand, "@id", id);
                 sqlCommand.Prepare();
 
@@ -4532,9 +4207,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM BuddyList WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id)";
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM BuddyList WHERE (Id=@id AND IdFriend=@friendId) OR (Id=@friendid AND IdFriend=@Id)");
                 addWithValue(sqlCommand, "@id", id);
                 addWithValue(sqlCommand, "@friendId", friendId);
                 sqlCommand.Prepare();
@@ -4547,9 +4220,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO BuddyList VALUES(@id,@friendId)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO BuddyList VALUES(@id,@friendId)");
                 addWithValue(sqlCommand, "@id", id);
                 addWithValue(sqlCommand, "@friendId", friendId);
                 sqlCommand.Prepare();
@@ -4598,9 +4269,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT MAX(Id)+1 FROM Users";
+                DbCommand sqlCommand = createCommand(db, "SELECT MAX(Id)+1 FROM Users");
                 sqlCommand.Prepare();
 
                 object res = sqlCommand.ExecuteScalar();
@@ -4615,9 +4284,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Users VALUES(@id,@username,@passhash,@salt,@gender,@admin,@moderator)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Users VALUES(@id,@username,@passhash,@salt,@gender,@admin,@moderator)");
                 addWithValue(sqlCommand, "@id", id);
                 addWithValue(sqlCommand, "@username", username);
                 addWithValue(sqlCommand, "@passhash", passhash);
@@ -4981,9 +4648,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Horses ORDER BY experience DESC LIMIT 25";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Horses ORDER BY experience DESC LIMIT 25");
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
@@ -5000,9 +4665,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT DISTINCT playerId, SUM(timesplayed) OVER (PARTITION BY playerId) AS totalPlays FROM Leaderboards ORDER BY totalPlays DESC LIMIT 25";
+                DbCommand sqlCommand = createCommand(db, "SELECT DISTINCT playerId, SUM(timesplayed) OVER (PARTITION BY playerId) AS totalPlays FROM Leaderboards ORDER BY totalPlays DESC LIMIT 25");
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
@@ -5021,9 +4684,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT id FROM UserExt ORDER BY Experience DESC LIMIT 25";
+                DbCommand sqlCommand = createCommand(db, "SELECT id FROM UserExt ORDER BY Experience DESC LIMIT 25");
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
@@ -5041,9 +4702,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT id FROM UserExt ORDER BY QuestPoints DESC LIMIT 25";
+                DbCommand sqlCommand = createCommand(db, "SELECT id FROM UserExt ORDER BY QuestPoints DESC LIMIT 25");
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
@@ -5061,9 +4720,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT id FROM UserExt ORDER BY Money+BankBalance DESC LIMIT 25";
+                DbCommand sqlCommand = createCommand(db, "SELECT id FROM UserExt ORDER BY Money+BankBalance DESC LIMIT 25");
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
@@ -5081,9 +4738,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Horses ORDER BY spoiled DESC LIMIT 100";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Horses ORDER BY spoiled DESC LIMIT 100");
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
@@ -5100,9 +4755,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Horses WHERE autoSell > 0 ORDER BY experience DESC LIMIT 50";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Horses WHERE autoSell > 0 ORDER BY experience DESC LIMIT 50");
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
@@ -5119,9 +4772,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Horses WHERE autoSell > 0 ORDER BY autoSell LIMIT 100";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Horses WHERE autoSell > 0 ORDER BY autoSell LIMIT 100");
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while(reader.Read())
@@ -5137,9 +4788,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT SUM(timesplayed) FROM Leaderboards WHERE playerId=@playerId";
+                DbCommand sqlCommand = createCommand(db, "SELECT SUM(timesplayed) FROM Leaderboards WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
@@ -5154,9 +4803,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Leaderboards VALUES(@playerId,@gameTitle,@wins,@loose,1,0,@type)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Leaderboards VALUES(@playerId,@gameTitle,@wins,@loose,1,0,@type)");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@gameTitle", gameTitle);
                 addWithValue(sqlCommand, "@wins", wins);
@@ -5174,9 +4821,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
                 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "INSERT INTO Leaderboards VALUES(@playerId,@gameTitle,0,0,1,@score,@type)";
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Leaderboards VALUES(@playerId,@gameTitle,0,0,1,@score,@type)");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@gameTitle", gameTitle);
                 addWithValue(sqlCommand, "@score", score);
@@ -5194,9 +4839,7 @@ namespace HISP.Server
             List<Highscore.HighscoreTableEntry> entires = new List<Highscore.HighscoreTableEntry>();
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Leaderboards WHERE playerId=@playerId ORDER BY score DESC";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Leaderboards WHERE playerId=@playerId ORDER BY score DESC");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
@@ -5225,9 +4868,7 @@ namespace HISP.Server
             List<Highscore.HighscoreTableEntry> entires = new List<Highscore.HighscoreTableEntry>();
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "SELECT * FROM Leaderboards WHERE minigame=@gameTitle ORDER BY wins DESC LIMIT @limit";
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Leaderboards WHERE minigame=@gameTitle ORDER BY wins DESC LIMIT @limit");
                 addWithValue(sqlCommand, "@gameTitle", gameTitle);
                 addWithValue(sqlCommand, "@limit", limit);
                 sqlCommand.Prepare();
@@ -5318,9 +4959,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Leaderboards SET wins=wins+1, timesplayed=timesplayed+1 WHERE playerId=@playerId AND minigame=@gameTitle";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Leaderboards SET wins=wins+1, timesplayed=timesplayed+1 WHERE playerId=@playerId AND minigame=@gameTitle");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@gameTitle", gameTitle);
                 sqlCommand.Prepare();
@@ -5335,9 +4974,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Leaderboards SET looses=looses+1, timesplayed=timesplayed+1 WHERE playerId=@playerId AND minigame=@gameTitle";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Leaderboards SET looses=looses+1, timesplayed=timesplayed+1 WHERE playerId=@playerId AND minigame=@gameTitle");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@gameTitle", gameTitle);
                 sqlCommand.Prepare();
@@ -5352,9 +4989,7 @@ namespace HISP.Server
             using (DbConnection db = connectDb())
             {
 
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Leaderboards SET score=@score, timesplayed=timesplayed+1 WHERE playerId=@playerId AND minigame=@gameTitle";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Leaderboards SET score=@score, timesplayed=timesplayed+1 WHERE playerId=@playerId AND minigame=@gameTitle");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@gameTitle", gameTitle);
                 addWithValue(sqlCommand, "@score", score);
@@ -5370,9 +5005,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "DELETE FROM Horses WHERE ownerId NOT IN (SELECT playerId FROM OnlineUsers) AND leaseTime <= 0 AND leaser > 0";
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM Horses WHERE ownerId NOT IN (SELECT playerId FROM OnlineUsers) AND leaseTime <= 0 AND leaser > 0");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
@@ -5427,9 +5060,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE Horses SET leaseTime = leaseTime - 1 WHERE ownerId NOT IN (SELECT playerId FROM OnlineUsers) AND leaseTime > 0 AND leaser > 0";
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET leaseTime = leaseTime - 1 WHERE ownerId NOT IN (SELECT playerId FROM OnlineUsers) AND leaseTime > 0 AND leaser > 0");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
@@ -5442,9 +5073,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE UserExt SET tiredness = tiredness + 1 WHERE id NOT IN (SELECT playerId FROM OnlineUsers) AND NOT tiredness +1 > 1000";
+                DbCommand sqlCommand = createCommand(db, "UPDATE UserExt SET tiredness = tiredness + 1 WHERE id NOT IN (SELECT playerId FROM OnlineUsers) AND NOT tiredness +1 > 1000");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
@@ -5717,9 +5346,7 @@ namespace HISP.Server
             }
             using (DbConnection db = connectDb())
             {
-                db.Open();
-                DbCommand sqlCommand = db.CreateCommand();
-                sqlCommand.CommandText = "UPDATE UserExt SET BankInterest = BankInterest + (BankInterest * (1/@interestRate)) WHERE NOT BankInterest + (BankInterest * (1/@interestRate)) > 9999999999.9999";
+                DbCommand sqlCommand = createCommand(db, "UPDATE UserExt SET BankInterest = BankInterest + (BankInterest * (1/@interestRate)) WHERE NOT BankInterest + (BankInterest * (1/@interestRate)) > 9999999999.9999");
                 addWithValue(sqlCommand, "@interestRate", intrestRate);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
