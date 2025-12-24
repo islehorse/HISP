@@ -123,7 +123,6 @@ namespace HISP.Server
             {
                 if (ConfigReader.SqlBackend == Database.SQL_BACKEND_SQLITE) TryExecuteSqlQuery(db, "PRAGMA journal_mode=WAL");
 
-
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16), PassHash TEXT(128), Salt TEXT(128), Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE PRECISION, BankInterest DOUBLE PRECISION, ProfilePage TEXT(4000),IpAddress TEXT(1028),PrivateNotes TEXT(65535), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT, Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT, TotalLogins INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(100), Message TEXT(65535), TimeSent INT, BeenRead TEXT(3))");
