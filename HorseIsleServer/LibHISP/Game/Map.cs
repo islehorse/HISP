@@ -67,6 +67,7 @@ namespace HISP.Game
                 return BURRIED_TREASURE_TILE; // Burried Treasure tile.
             else if (overlay && Treasure.IsTilePotOfGold(x, y))
                 return POT_OF_GOLD_TILE; // Pot of Gold tile.
+
             else if (overlay && Ranch.IsRanchHere(x, y))
             {
                 int upgradeLevel = Ranch.GetRanchAt(x, y).UpgradedLevel;
