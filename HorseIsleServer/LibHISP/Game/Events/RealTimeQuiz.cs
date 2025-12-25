@@ -8,7 +8,7 @@ using System.Threading;
 
 namespace HISP.Game.Events
 {
-    public class RealTimeQuiz
+    public class RealTimeQuiz : IEvent
     {
         public class QuizQuestion
         {
@@ -88,10 +88,11 @@ namespace HISP.Game.Events
             public QuizQuestion OnQuestion;
         }
 
+        public const int QUIZ_TIMEOUT = 5;
+
         public static QuizCategory[] Categories;
         public QuizQuestion[] Questions;
         public bool Active;
-        public const int QUIZ_TIMEOUT = 5;
         private Timer quizTimer;
         public Participent[] Participents
         {
@@ -171,8 +172,6 @@ namespace HISP.Game.Events
                     client.SendPacket(quizStartMessage);
 
             Active = true;
-
-            GameServer.QuizEvent = this;
         }
 
         public void WinEvent(User winner)
@@ -190,19 +189,19 @@ namespace HISP.Game.Events
             if (winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.QuizWin).Count >= 25)
                 winner.Awards.AddAward(Award.GetAwardById(33)); // Quick Wit
 
-            stopEvent();
+            provideRewards();
         }
 
-        public void EndEvent()
+        public void StopEvent()
         {
             byte[] eventEndMessage = PacketBuilder.CreateChat(Messages.EventEndRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
             foreach (GameClient client in GameClient.ConnectedClients)
                 if(client.LoggedIn)
                     client.SendPacket(eventEndMessage);
             
-            stopEvent();
+            provideRewards();
         }
-        private void stopEvent()
+        private void provideRewards()
         {
             foreach(Participent participent in Participents)
             {
@@ -250,12 +249,11 @@ namespace HISP.Game.Events
             quizTimer.Dispose();
 
             Active = false;
-            GameServer.QuizEvent = null;
         }
 
         private void quizTimesUp(object state)
         {
-            EndEvent();
+            StopEvent();
         }
     }
 }

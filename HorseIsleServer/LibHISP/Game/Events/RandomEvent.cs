@@ -8,11 +8,11 @@ namespace HISP.Game.Events
 {
     public class RandomEvent
     {
-        public static List<RandomEvent> RandomEvents = new List<RandomEvent>();
+        private static List<RandomEvent> randomEvents = new List<RandomEvent>();
         public static RandomEvent GetRandomEvent()
         {
-            int randomEvent = GameServer.RandomNumberGenerator.Next(0, RandomEvents.Count);
-            return RandomEvents[randomEvent];
+            int randomEventIndex = GameServer.RandomNumberGenerator.Next(0, randomEvents.Count);
+            return randomEvents[randomEventIndex];
         }
 
         public static void ExecuteRandomEvent(User user)
@@ -74,7 +74,7 @@ namespace HISP.Game.Events
             HorseHealthDown = horseHealth;
             GiveObject = giveObject;
 
-            RandomEvents.Add(this);
+            randomEvents.Add(this);
         }
         public int Id;
         public string Text;

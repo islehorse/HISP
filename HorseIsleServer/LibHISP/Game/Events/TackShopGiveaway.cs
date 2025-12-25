@@ -10,38 +10,21 @@ using HISP.Player;
 
 namespace HISP.Game.Events
 {
-    public class TackShopGiveaway
+    public class TackShopGiveaway : IEvent
     {
+        public const int TACKSHOP_TIMEOUT = 1;
         public string ShopName;
         public World.SpecialTile Location;
         public HorseInstance HorseGiveaway;
         public World.Town Town;
         public bool Active = false;
-        public const int TACKSHOP_TIMEOUT = 1;
         private Timer giveAwayTimer;
         private int timesTicked = 0;
 
-        private void giveawayTick(object state)
-        {
-            timesTicked++;
-            if (timesTicked >= 2)
-            {
-                EndEvent();
-                return;
-            }
-            if (timesTicked >= 1)
-            {
-                byte[] giveAwayMessage = PacketBuilder.CreateChat(Messages.FormatEventTackShopGiveaway1Min(HorseGiveaway.Color, HorseGiveaway.Breed.Name, HorseGiveaway.Gender, ShopName, Town.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                foreach (GameClient client in GameClient.ConnectedClients)
-                    if (client.LoggedIn)
-                        client.SendPacket(giveAwayMessage);
-            }
-            giveAwayTimer.Change(TACKSHOP_TIMEOUT * 60 * 1000, TACKSHOP_TIMEOUT * 60 * 1000);
-        }
 
         public TackShopGiveaway()
         {
-            List<World.SpecialTile> specialTiles = new List<World.SpecialTile>();
+            List<World.SpecialTile> tackShops = new List<World.SpecialTile>();
 
             foreach (World.SpecialTile sTile in World.SpecialTiles)
             {
@@ -58,7 +41,7 @@ namespace HISP.Game.Events
                             Npc.NpcEntry[] npcShop = Npc.GetNpcsByXAndY(sTile.X, sTile.Y);
                             if (npcShop.Length > 0)
                             {
-                                specialTiles.Add(sTile);
+                                tackShops.Add(sTile);
                             }
                         }
                     }
@@ -68,8 +51,8 @@ namespace HISP.Game.Events
             string npcName = "ERROR";
             string npcDesc = "OBTAINING NAME";
 
-            int shpIdx = GameServer.RandomNumberGenerator.Next(0, specialTiles.Count);
-            Location = specialTiles[shpIdx];
+            int shpIdx = GameServer.RandomNumberGenerator.Next(0, tackShops.Count);
+            Location = tackShops[shpIdx];
             Npc.NpcEntry[] npcShops = Npc.GetNpcsByXAndY(Location.X, Location.Y);
 
             npcName = npcShops[0].Name.Split(" ")[0];
@@ -99,22 +82,38 @@ namespace HISP.Game.Events
             if (World.InTown(Location.X, Location.Y))
                 Town = World.GetTown(Location.X, Location.Y);
         }
-
+        private void giveawayTick(object state)
+        {
+            timesTicked++;
+            if (timesTicked >= 2)
+            {
+                StopEvent();
+                return;
+            }
+            if (timesTicked >= 1)
+            {
+                byte[] giveAwayMessage = PacketBuilder.CreateChat(Messages.FormatEventTackShopGiveaway1Min(HorseGiveaway.Color, HorseGiveaway.Breed.Name, HorseGiveaway.Gender, ShopName, Town.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                
+                foreach (User user in User.OnlineUsers)
+                    user.Client.SendPacket(giveAwayMessage);
+            }
+            giveAwayTimer.Change(TACKSHOP_TIMEOUT * 60 * 1000, TACKSHOP_TIMEOUT * 60 * 1000);
+        }
         public void StartEvent()
         {
             giveAwayTimer = new Timer(new TimerCallback(giveawayTick), null, TACKSHOP_TIMEOUT * 60 * 1000, TACKSHOP_TIMEOUT * 60 * 1000);
 
             byte[] giveAwayMessage = PacketBuilder.CreateChat(Messages.FormatEventTackShopGiveawayStart(HorseGiveaway.Color, HorseGiveaway.Breed.Name, HorseGiveaway.Gender, ShopName, Town.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-            foreach (GameClient client in GameClient.ConnectedClients)
-                if (client.LoggedIn)
-                    client.SendPacket(giveAwayMessage);
+
+            foreach (User user in User.OnlineUsers)
+                user.Client.SendPacket(giveAwayMessage);
 
             Active = true;
 
             GameServer.TackShopGiveawayEvent = this;
         }
 
-        public void EndEvent()
+        public void StopEvent()
         {
             giveAwayTimer.Dispose();
 
@@ -143,11 +142,6 @@ namespace HISP.Game.Events
                     user.Client.SendPacket(eventEndedMessage);
             }
         }
-
-
-
-
-
 
     }
 }
