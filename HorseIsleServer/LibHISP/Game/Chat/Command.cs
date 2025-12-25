@@ -149,13 +149,10 @@ namespace HISP.Game.Chat
             byte[] chatLeftPacket = PacketBuilder.CreateChat(Messages.FormatServerAnnoucement(serverAnnoucement), PacketBuilder.CHAT_BOTTOM_LEFT);
             byte[] chatRightPacket = PacketBuilder.CreateChat(Messages.FormatServerAnnoucement(serverAnnoucement), PacketBuilder.CHAT_BOTTOM_RIGHT);
 
-            foreach (GameClient client in GameClient.ConnectedClients)
+            foreach (User u in User.OnlineUsers)
             {
-                if (client.LoggedIn)
-                {
-                    client.SendPacket(chatLeftPacket);
-                    client.SendPacket(chatRightPacket);
-                }
+                u.Client.SendPacket(chatLeftPacket);
+                u.Client.SendPacket(chatRightPacket);
             }
 
             return true;
@@ -199,17 +196,14 @@ namespace HISP.Game.Chat
                     {
                         if(args[2] == "ALL")
                         {
-                            foreach (GameClient client in GameClient.ConnectedClients)
+                            foreach (User u in User.OnlineUsers)
                             {
-                                if (client.LoggedIn)
-                                {
-                                    ItemInstance itmInstance = new ItemInstance(itemId);
+                                ItemInstance itmInstance = new ItemInstance(itemId);
 
-                                    if (itemId == Item.Present)
-                                        itmInstance.Data = Item.GetRandomItem().Id;
+                                if (itemId == Item.Present)
+                                    itmInstance.Data = Item.GetRandomItem().Id;
 
-                                    client.User.Inventory.AddIgnoringFull(itmInstance);
-                                }
+                                user.Inventory.AddIgnoringFull(itmInstance);
                             }
                         }
                         else
@@ -337,11 +331,8 @@ namespace HISP.Game.Chat
                 byte[] packetBytes = PacketBuilder.CreateSwfModule(swfName, PacketBuilder.PACKET_SWF_MODULE_FORCE);
                 if (swfUser.ToUpper() == "ALL")
                 {
-                    foreach (GameClient client in GameClient.ConnectedClients)
-                    {
-                        if (client.LoggedIn)
-                            client.SendPacket(packetBytes);
-                    }
+                    foreach (User u in User.OnlineUsers)
+                        u.Client.SendPacket(packetBytes);
                 }
                 else
                 {

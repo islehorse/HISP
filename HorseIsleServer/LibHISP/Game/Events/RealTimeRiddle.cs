@@ -5,9 +5,19 @@ using System.Threading;
 
 namespace HISP.Game.Events
 {
-    public class RealTimeRiddle
+    public class RealTimeRiddle : IEvent
     {
-        public static List<RealTimeRiddle> RealTimeRiddles = new List<RealTimeRiddle>();
+        private const int RIDDLE_TIMEOUT = 5;
+
+        public int RiddleId;
+        public string RiddleText;
+        public string[] Answers;
+        public bool Active;
+        public int Reward;
+
+        public static bool LastRiddleWon = false;
+        private Timer riddleTimeout;
+        private static List<RealTimeRiddle> realTimeRiddles = new List<RealTimeRiddle>();
         public RealTimeRiddle(int riddleId, string riddleText, string[] answers, int reward)
         {
             RiddleId = riddleId;
@@ -15,21 +25,13 @@ namespace HISP.Game.Events
             Answers = answers;
             Reward = reward;
             Active = false;
-            RealTimeRiddles.Add(this);
+            realTimeRiddles.Add(this);
         }
-        public int RiddleId;
-        public string RiddleText;
-        public string[] Answers;
-        public bool Active;
-        public int Reward;
-        public static bool LastWon = false;
-        private Timer riddleTimeout;
-        private const int RIDDLE_TIMEOUT = 5;
 
         public static RealTimeRiddle GetRandomRiddle()
         {
-            int randomRiddleIndex = GameServer.RandomNumberGenerator.Next(0, RealTimeRiddles.Count);
-            return RealTimeRiddles[randomRiddleIndex];
+            int randomRiddleIndex = GameServer.RandomNumberGenerator.Next(0, realTimeRiddles.Count);
+            return realTimeRiddles[randomRiddleIndex];
         }
         public void StartEvent()
         {
@@ -63,7 +65,7 @@ namespace HISP.Game.Events
                 return;
             }
 
-            LastWon = true;
+            LastRiddleWon = true;
 
             Database.CompleteRealTimeRiddle(RiddleId, winner.Id);
 
@@ -86,13 +88,13 @@ namespace HISP.Game.Events
                     else
                         client.SendPacket(riddleYouWonMessage);
             }
-            EndEvent();
+            StopEvent();
         }
-        public void EndEvent()
+        public void StopEvent()
         {
-            if(Active)
+            if(this.Active)
             {
-                Active = false;
+                this.Active = false;
 
                 riddleTimeout.Dispose();
                 riddleTimeout = null;
@@ -107,8 +109,8 @@ namespace HISP.Game.Events
                 if (client.LoggedIn)
                     client.SendPacket(riddleTimedOutMessage);
             }
-            LastWon = false;
-            EndEvent();
+            LastRiddleWon = false;
+            StopEvent();
         }
 
         public bool CheckRiddle(string message)
