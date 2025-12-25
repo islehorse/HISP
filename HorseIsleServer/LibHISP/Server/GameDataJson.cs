@@ -1908,21 +1908,21 @@ namespace HISP.Server
             Messages.BankYouCantHoldThisMuch = (string)gameData["messages"]["bank"]["cant_withdraw_that_much"];
 
             // Riddler
-            Messages.RiddlerAnsweredAll = (string)gameData["messages"]["meta"]["riddler.riddle_all_complete"];
-            Messages.RiddlerIncorrectAnswer = (string)gameData["messages"]["meta"]["riddler.riddle_incorrect"];
-            Messages.RiddlerCorrectAnswerFormat = (string)gameData["messages"]["meta"]["riddler.riddle_correct"];
-            Messages.RiddlerEnterAnswerFormat = (string)gameData["messages"]["meta"]["riddler.riddle_format"];
+            Messages.RiddlerAnsweredAll = (string)gameData["messages"]["meta"]["riddler"]["riddle_all_complete"];
+            Messages.RiddlerIncorrectAnswer = (string)gameData["messages"]["meta"]["riddler"]["riddle_incorrect"];
+            Messages.RiddlerCorrectAnswerFormat = (string)gameData["messages"]["meta"]["riddler"]["riddle_correct"];
+            Messages.RiddlerEnterAnswerFormat = (string)gameData["messages"]["meta"]["riddler"]["riddle_format"];
 
             // Workshop
-            Messages.WorkshopCraftEntryFormat = (string)gameData["messages"]["meta"]["workshop.craft_entry"];
-            Messages.WorkshopRequiresFormat = (string)gameData["messages"]["meta"]["workshop.requires"];
-            Messages.WorkshopRequireEntryFormat = (string)gameData["messages"]["meta"]["workshop.require"];
-            Messages.WorkshopAnd = (string)gameData["messages"]["meta"]["workshop.and"];
+            Messages.WorkshopCraftEntryFormat = (string)gameData["messages"]["meta"]["workshop"]["craft_entry"];
+            Messages.WorkshopRequiresFormat = (string)gameData["messages"]["meta"]["workshop"]["requires"];
+            Messages.WorkshopRequireEntryFormat = (string)gameData["messages"]["meta"]["workshop"]["require"];
+            Messages.WorkshopAnd = (string)gameData["messages"]["meta"]["workshop"]["and"];
 
-            Messages.WorkshopNoRoomInInventory = (string)gameData["messages"]["meta"]["workshop.no_room"];
-            Messages.WorkshopMissingRequiredItem = (string)gameData["messages"]["meta"]["workshop.missing_item"];
-            Messages.WorkshopCraftingSuccess = (string)gameData["messages"]["meta"]["workshop.craft_success"];
-            Messages.WorkshopCannotAfford = (string)gameData["messages"]["meta"]["workshop.no_money"];
+            Messages.WorkshopNoRoomInInventory = (string)gameData["messages"]["meta"]["workshop"]["no_room"];
+            Messages.WorkshopMissingRequiredItem = (string)gameData["messages"]["meta"]["workshop"]["missing_item"];
+            Messages.WorkshopCraftingSuccess = (string)gameData["messages"]["meta"]["workshop"]["craft_success"];
+            Messages.WorkshopCannotAfford = (string)gameData["messages"]["meta"]["workshop"]["no_money"];
 
             // Horses
             Messages.AdvancedStatFormat = (string)gameData["messages"]["meta"]["horse"]["stat_format"];
