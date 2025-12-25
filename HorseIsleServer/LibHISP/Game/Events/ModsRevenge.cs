@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace HISP.Game.Events
 {
-    public class ModsRevenge
+    public class ModsRevenge : IEvent
     {
         public class ThrowTracker
         {
@@ -32,8 +32,8 @@ namespace HISP.Game.Events
             }
         }
 
-        public bool Active = false;
         public const int REVENGE_TIMEOUT = 10;
+        public bool Active = false;
         private ThreadSafeList<ThrowTracker> trackedThrows;
         private Timer revengeTimeout;
         public ThrowTracker[] TrackedThrows
@@ -73,25 +73,26 @@ namespace HISP.Game.Events
 
             byte[] annoucePacket = PacketBuilder.CreateChat(Messages.EventStartModsRevenge, PacketBuilder.CHAT_BOTTOM_RIGHT);
 
-            foreach (GameClient client in GameClient.ConnectedClients)
-                if (client.LoggedIn)
-                    client.SendPacket(annoucePacket);
+            foreach (User user in User.OnlineUsers)
+                user.Client.SendPacket(annoucePacket);
+
         }
 
-        public void EndEvent()
+        public void StopEvent()
         {
             GameServer.RemoveAllItemsOfIdInTheGame(Item.ModSplatterball);
 
             byte[] annoucePacket = PacketBuilder.CreateChat(Messages.EventEndModsRevenge, PacketBuilder.CHAT_BOTTOM_RIGHT);
 
-            foreach (GameClient client in GameClient.ConnectedClients)
-                if (client.LoggedIn)
-                    client.SendPacket(annoucePacket);
+            foreach(User user in User.OnlineUsers)
+                user.Client.SendPacket(annoucePacket);
+
+            resetEvent();
         }
         private void revengeTimedOut(object state)
         {
             resetEvent();
-            EndEvent();
+            StopEvent();
         }
 
         private void resetEvent()
@@ -154,7 +155,6 @@ namespace HISP.Game.Events
                 throwCounter.AddThrownAt(throwAt);
             }
         }
-
 
     }
 }

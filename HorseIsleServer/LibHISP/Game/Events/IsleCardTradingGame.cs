@@ -5,13 +5,11 @@ using System.Threading;
 
 namespace HISP.Game.Events
 {
-    public class IsleCardTradingGame
+    public class IsleCardTradingGame : IEvent
     {
         public bool Active;
         private Timer tradingTimeout;
         private const int TRADING_TIMEOUT = 5;
-
-
 
         public void StartEvent()
         {
@@ -43,7 +41,7 @@ namespace HISP.Game.Events
 
         }
 
-        public void EndEvent()
+        public void StopEvent()
         {
             Active = false; 
 
@@ -117,7 +115,7 @@ namespace HISP.Game.Events
 
         private void tradeTimedOut(object state)
         {
-            EndEvent();
+            StopEvent();
         }
     }
 

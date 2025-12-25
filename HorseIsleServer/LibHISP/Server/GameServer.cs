@@ -30,15 +30,15 @@ namespace HISP.Server
         public static int IdleTimeout;
         public static int IdleWarning;
 
-        public static Random RandomNumberGenerator = new Random();
+        public static Random RandomNumberGenerator = new Random(Guid.NewGuid().GetHashCode());
 
         // Events
-        public static RealTimeRiddle RiddleEvent = RealTimeRiddle.GetRandomRiddle();
+        public static RealTimeRiddle RiddleEvent = null;
         public static TackShopGiveaway TackShopGiveawayEvent = null;
         public static RealTimeQuiz QuizEvent = null;
-        public static WaterBalloonGame WaterBalloonEvent = new WaterBalloonGame();
-        public static IsleCardTradingGame IsleCardTrading;
-        public static ModsRevenge ModsRevengeEvent = new ModsRevenge();
+        public static WaterBalloonGame WaterBalloonEvent = null;
+        public static IsleCardTradingGame IsleCardTrading = null;
+        public static ModsRevenge ModsRevengeEvent = null;
 
         /*
          *  Private stuff 
@@ -144,6 +144,7 @@ namespace HISP.Server
             // Mods Revenge
             if(totalMinutesElapsed % ((60*8)+15) == 0)
             {
+                ModsRevengeEvent = new ModsRevenge();
                 ModsRevengeEvent.StartEvent();
             }
             
@@ -157,6 +158,7 @@ namespace HISP.Server
             // Water Balloon Game
             if(totalMinutesElapsed % (60 * 2) == 0)
             {
+                WaterBalloonEvent = new WaterBalloonGame();
                 WaterBalloonEvent.StartEvent();
             }
             
@@ -168,10 +170,10 @@ namespace HISP.Server
             }
             
             // Real Time Riddle
-            if(totalMinutesElapsed % (RealTimeRiddle.LastWon ? 20 : 15) == 0)
+            if(totalMinutesElapsed % (RealTimeRiddle.LastRiddleWon ? 20 : 15) == 0)
             {
                 RiddleEvent = RealTimeRiddle.GetRandomRiddle();
-                RiddleEvent.StartEvent();   
+                RiddleEvent.StartEvent();
             }
 
             // Real Time Quiz
@@ -199,22 +201,16 @@ namespace HISP.Server
             }
 
 
-            foreach (GameClient client in GameClient.ConnectedClients)
+            foreach (User user in User.OnlineUsers)
             {
-                if (client == null)
-                    continue;
+                if (!user.MajorPriority && !user.MinorPriority)
+                    UpdateArea(user.Client);
 
-                if (client.LoggedIn)
-                {
-                    if (!client.User.MajorPriority && !client.User.MinorPriority)
-                        UpdateArea(client);
+                byte[] BaseStatsPacketData = PacketBuilder.CreateMoneyPlayerCountAndMail(user.Money, GameServer.GetNumberOfPlayers(), user.MailBox.UnreadMailCount);
+                user.Client.SendPacket(BaseStatsPacketData);
 
-                    byte[] BaseStatsPacketData = PacketBuilder.CreateMoneyPlayerCountAndMail(client.User.Money, GameServer.GetNumberOfPlayers(), client.User.MailBox.UnreadMailCount);
-                    client.SendPacket(BaseStatsPacketData);
-
-                    UpdateWorld(client);
-                    UpdatePlayer(client);
-                }
+                UpdateWorld(user.Client);
+                UpdatePlayer(user.Client);
             }
 
             foreach(Auction auction in Auction.AuctionRooms.ToArray())
@@ -2770,7 +2766,7 @@ namespace HISP.Server
                         case 15: // Real Time Quiz
                             if (dynamicInput.Length >= 2)
                             {
-                                if(QuizEvent != null)
+                                if(QuizEvent != null && QuizEvent.Active)
                                 {
                                     if (sender.User.InRealTimeQuiz)
                                     {
@@ -3681,14 +3677,13 @@ namespace HISP.Server
             Database.AddOnlineUser(sender.User.Id, sender.User.Administrator, sender.User.Moderator, sender.User.Subscribed, sender.User.NewPlayer);
             
             Logger.DebugPrint(sender.User.Username + " Requested user information.");
-            User user = sender.User;
-
+            
             // Send player current location & map data
-            byte[] MovementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+            byte[] MovementPacket = PacketBuilder.CreateMovement(sender.User.X, sender.User.Y, sender.User.CharacterId, sender.User.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
             sender.SendPacket(MovementPacket);
 
             // Send "Welcome to the Secret Land of Horses" message.
-            byte[] WelcomeMessage = PacketBuilder.CreateChat(Messages.FormatWelcomeMessage(user.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+            byte[] WelcomeMessage = PacketBuilder.CreateChat(Messages.FormatWelcomeMessage(sender.User.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
             sender.SendPacket(WelcomeMessage);
 
             // Send weather effects, and current server time.
@@ -3703,11 +3698,11 @@ namespace HISP.Server
             }
 
             // Send Security Codes, used (badly) to verify Minigame Rewards
-            byte[] SecCodePacket = PacketBuilder.CreateSecCode(user.SecCodeSeeds, user.SecCodeInc, user.Administrator, user.Moderator);
+            byte[] SecCodePacket = PacketBuilder.CreateSecCode(sender.User.SecCodeSeeds, sender.User.SecCodeInc, sender.User.Administrator, sender.User.Moderator);
             sender.SendPacket(SecCodePacket);
 
             // Send player money count, total players and total unread mail.
-            byte[] BaseStatsPacketData = PacketBuilder.CreateMoneyPlayerCountAndMail(user.Money, GameServer.GetNumberOfPlayers(), user.MailBox.UnreadMailCount);
+            byte[] BaseStatsPacketData = PacketBuilder.CreateMoneyPlayerCountAndMail(sender.User.Money, GameServer.GetNumberOfPlayers(), sender.User.MailBox.UnreadMailCount);
             sender.SendPacket(BaseStatsPacketData);
 
             // Sends Meta Window information (Nearby, current tile, etc)
@@ -3717,23 +3712,17 @@ namespace HISP.Server
              *  Send all nearby players locations to the client
              *  if there not nearby, say there at 1000,1000.
              */
-            foreach (GameClient client in GameClient.ConnectedClients)
+            foreach (User u in User.OnlineUsers.Where(o => o.Id != sender.User.Id))
             {
-                if (client.LoggedIn)
+                if(World.IsPointOnScreen(sender.User.X, sender.User.Y, sender.User.X, sender.User.Y))
                 {
-                    if (client.User.Id != user.Id)
-                    {
-                        if(World.IsPointOnScreen(client.User.X, client.User.Y, sender.User.X, sender.User.Y))
-                        {
-                            byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(client.User.X, client.User.Y, client.User.Facing, client.User.CharacterId, client.User.Username);
-                            sender.SendPacket(PlayerInfo);
-                        }
-                        else
-                        {
-                            byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, client.User.Facing, client.User.CharacterId, client.User.Username);
-                            sender.SendPacket(PlayerInfo);
-                        }
-                    }
+                    byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.User.X, sender.User.Y, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
+                    sender.SendPacket(PlayerInfo);
+                }
+                else
+                {
+                    byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
+                    sender.SendPacket(PlayerInfo);
                 }
             }
 
@@ -3741,11 +3730,8 @@ namespace HISP.Server
              *  Update all nearby users 
              *  that the new player logged in.
              */
-            foreach (User nearbyUser in User.GetNearbyUsers(sender.User.X, sender.User.Y, false, false))
-                if (nearbyUser.Id != sender.User.Id)
-                    if(!nearbyUser.MajorPriority)
-                        if(!nearbyUser.MinorPriority)
-                            UpdateArea(nearbyUser.Client);
+            foreach (User nearbyUser in User.GetNearbyUsers(sender.User.X, sender.User.Y, false, false).Where(o => (o.Id != sender.User.Id) && (!o.MajorPriority && !o.MinorPriority)))
+                UpdateArea(nearbyUser.Client);
 
             /*
              * Send a list of isles, towns and areas to the player
@@ -3765,8 +3751,12 @@ namespace HISP.Server
 
             // Send riddle annoucement
             if (RiddleEvent != null)
+            {
                 if (RiddleEvent.Active)
+                {
                     RiddleEvent.ShowStartMessage(sender);
+                }
+            }
 
             /*
              *  Gives Queued Items
@@ -3786,11 +3776,8 @@ namespace HISP.Server
 
             // Send "Playername Logged in" message
             byte[] loginMessageBytes = PacketBuilder.CreateChat(Messages.FormatLoginMessage(sender.User.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
-            foreach (GameClient client in GameClient.ConnectedClients)
-                if (client.LoggedIn)
-                    if (!client.User.MuteLogins && !client.User.MuteAll)
-                        if (client.User.Id != sender.User.Id)
-                            client.SendPacket(loginMessageBytes);
+            foreach (User u in User.OnlineUsers.Where(o => (!o.MuteLogins && !o.MuteAll) && (o.Id != sender.User.Id)))
+                u.Client.SendPacket(loginMessageBytes);
 
 
             /*
@@ -3800,18 +3787,12 @@ namespace HISP.Server
             byte[] yourPlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.User.X, sender.User.Y, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
             byte[] yourPlayerInfoOffscreen = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
 
-            foreach (GameClient client in GameClient.ConnectedClients)
+            foreach (User u in User.OnlineUsers.Where(o => o.Id != sender.User.Id))
             {
-                if (client.LoggedIn)
-                {
-                    if (client.User.Id != sender.User.Id)
-                    {
-                        if (World.IsPointOnScreen(client.User.X, client.User.Y, sender.User.X, sender.User.Y))
-                            client.SendPacket(yourPlayerInfo);
-                        else
-                            client.SendPacket(yourPlayerInfoOffscreen);
-                    }
-                }
+                if (World.IsPointOnScreen(u.X, u.Y, sender.User.X, sender.User.Y))
+                    u.Client.SendPacket(yourPlayerInfo);
+                else
+                    u.Client.SendPacket(yourPlayerInfoOffscreen);
             }
 
         }
@@ -3820,7 +3801,7 @@ namespace HISP.Server
         {
             if (!sender.LoggedIn)
             {
-                Logger.ErrorPrint(sender.RemoteIp + " tried to send swf communication when not logged in.");
+                Logger.ErrorPrint(sender.RemoteIp + " Tried to send swf communication when not logged in.");
                 return;
             }
             if (packet.Length < 3)
@@ -4130,9 +4111,9 @@ namespace HISP.Server
                         }
 
                         int roomId = packet[2] - 40;
-                        int peiceId;
-                        int x;
-                        int y;
+                        int peiceId = 0;
+                        int x = 0;
+                        int y = 0;
                         Brickpoet.PoetryPeice[] room;
                         Brickpoet.PoetryPeice peice;
 
@@ -4176,7 +4157,7 @@ namespace HISP.Server
                     }
                     else
                     {
-                        Logger.DebugPrint(" packet dump: " + BitConverter.ToString(packet).Replace("-", " "));
+                        Logger.DebugPrint(" Packet dump: " + BitConverter.ToString(packet).Replace("-", " "));
                         break;
                     }
 
@@ -7428,7 +7409,7 @@ namespace HISP.Server
                         WaterBalloonEvent.LeaveEvent(sender.User);
 
                 // Leave open quiz.
-                if (QuizEvent != null)
+                if (QuizEvent != null && QuizEvent.Active)
                     QuizEvent.LeaveEvent(sender.User);
 
                 ModsRevengeEvent.LeaveEvent(sender.User);
@@ -7716,7 +7697,7 @@ namespace HISP.Server
                     forClient.SendPacket(swfModulePacket);
                 }
 
-                if (forClient.User.InRealTimeQuiz && QuizEvent != null)
+                if (forClient.User.InRealTimeQuiz && (QuizEvent != null && QuizEvent.Active))
                 {
                     QuizEvent.JoinEvent(forClient.User).UpdateParticipent();
                     return;
@@ -7769,16 +7750,13 @@ namespace HISP.Server
         public static void RemoveAllItemsOfIdInTheGame(int id)
         {
             // Remove from all online players
-            foreach (GameClient connectedClient in GameClient.ConnectedClients)
+            foreach (User user in User.OnlineUsers)
             {
-                if (connectedClient.LoggedIn)
+                if (user.Inventory.HasItemId(id))
                 {
-                    if (connectedClient.User.Inventory.HasItemId(id))
-                    {
-                        InventoryItem invItm = connectedClient.User.Inventory.GetItemByItemId(id);
-                        foreach (ItemInstance itm in invItm.ItemInstances.ToArray())
-                            connectedClient.User.Inventory.Remove(itm);
-                    }
+                    InventoryItem invItm = user.Inventory.GetItemByItemId(id);
+                    foreach (ItemInstance itm in invItm.ItemInstances.ToArray())
+                        user.Inventory.Remove(itm);
                 }
             }
 

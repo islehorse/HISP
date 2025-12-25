@@ -7,8 +7,9 @@ using System.Threading;
 namespace HISP.Game.Events
 {
 
-    public class WaterBalloonGame
+    public class WaterBalloonGame : IEvent
     {
+        public const int WATER_BALLOON_GAME_TIMEOUT = 5;
         public WaterBalloonGame()
         {
             thrownWaterBalloonMemory = new List<ThrownCounter>();
@@ -18,7 +19,6 @@ namespace HISP.Game.Events
         private List<ThrownCounter> thrownWaterBalloonMemory;
         public bool Active;
         private Timer gameTimeout;
-        private const int WATER_BALLOON_GAME_TIMEOUT = 5;
         public ThrownCounter[] ThrownWaterBalloonMemory
         {
             get
@@ -42,6 +42,7 @@ namespace HISP.Game.Events
             public int NumThrown;
         }
 
+
         public void StartEvent()
         {
             Active = true;
@@ -55,7 +56,7 @@ namespace HISP.Game.Events
             GameServer.AddItemToAllUsersEvenOffline(Item.WaterBalloon, 8);
         }
 
-        public void EndEvent()
+        public void StopEvent()
         {
             ThrownCounter[] winnerCounter = getWinners();
             resetEvent();
@@ -88,7 +89,7 @@ namespace HISP.Game.Events
         }
         private void gameTimedOut(object state)
         {
-            EndEvent();
+            StopEvent();
         }
 
         private void resetEvent()
