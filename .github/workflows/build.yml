@@ -414,7 +414,7 @@ jobs:
       - name: Zip release folders
         run: |
             mkdir -p Zips
-            find * -type d -exec zip -r Zips/{}.zip Artifacts/{} \;
+            find Artifacts/* -type d -exec zip -r Zips/{}.zip Artifacts/{} \;
         working-directory: ./
       - name: Checkout uploadtool
         uses: actions/checkout@v4
