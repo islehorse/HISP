@@ -1,6 +1,4 @@
-﻿using HISP.Player;
-
-namespace HISP.Game.Events
+﻿namespace HISP.Game.Events
 {
     internal interface IEvent
     {

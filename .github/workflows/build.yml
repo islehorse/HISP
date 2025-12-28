@@ -424,7 +424,5 @@ jobs:
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             UPLOADTOOL_ISPRERELEASE: true
-        run: |
-            export UPLOADTOOL_ISPRERELEASE=true
-            ./uploadtool/upload.sh Artifacts/*
+        run: ./uploadtool/upload.sh Artifacts/*
         working-directory: ./
