@@ -396,3 +396,30 @@ jobs:
         name: HISP-Web-Game
         path: HorseIsleWeb/game-site
         compression-level: 9
+  update_continuous:
+    name: Update Continuous Release
+    runs-on: ubuntu-latest
+    needs:
+      - build-linux-arm
+      - build-linux
+      - build-win
+      - build-mac
+      - build-web
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@main
+        with:
+            pattern: "HISP-*"
+            path: Release
+            merge-multiple: true
+      - name: Checkout uploadtool
+        uses: actions/checkout@v4
+        with:
+            repository: 'probonopd/uploadtool'
+            path: 'uploadtool'
+
+      - name: Upload Releases
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+            ./uploadtool/upload.sh Release/*
