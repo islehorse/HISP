@@ -412,10 +412,8 @@ jobs:
             pattern: "*"
             path: Artifacts
       - name: Zip release folders
-        run: |
-            mkdir -p Zips
-            find Artifacts/* -type d -exec zip -r Zips/{}.zip Artifacts/{} \;
-        working-directory: ./
+        run: find * -type d -exec zip -r {}.zip {} \;
+        working-directory: ./Artifacts
       - name: Checkout uploadtool
         uses: actions/checkout@v4
         with:
@@ -425,5 +423,5 @@ jobs:
       - name: Upload Continuious Release
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./uploadtool/upload.sh Zips/*
+        run: ./uploadtool/upload.sh Artifacts/*
         working-directory: ./
