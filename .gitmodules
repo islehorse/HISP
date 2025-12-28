@@ -1,8 +1,6 @@
 [submodule "HorseIsleWeb"]
 	path = HorseIsleWeb
 	url = https://github.com/islehorse/HorseIsleWeb.git
-	branch = master
 [submodule "HorseIsleData"]
 	path = HorseIsleData
 	url = https://github.com/islehorse/HorseIsleData.git
-	branch = master
