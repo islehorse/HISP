@@ -41,7 +41,7 @@ commit_branch  = "master"
 # Run git to determine version info
 try:
     commit_hash     =  subprocess.run(['git', 'rev-parse', '--verify', 'HEAD'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
-    commit_tag      =  subprocess.run(['git', 'describe', '--abbrev=0', '--tags'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
+    commit_tag      =  subprocess.run(['git', 'describe', '--abbrev=0', '--exclude=continuous', '--tags'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
     commit_tag      += "." + subprocess.run(['git', 'rev-list', commit_tag+'..HEAD', '--count'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
     commit_branch   =  subprocess.run(['git', 'branch', '--show-current'], stdout=subprocess.PIPE).stdout.replace(b"\r", b"").replace(b"\n", b"").decode("UTF-8")
 except FileNotFoundError:
