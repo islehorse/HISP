@@ -423,5 +423,8 @@ jobs:
       - name: Upload Continuious Release
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./uploadtool/upload.sh Artifacts/*
+            UPLOADTOOL_ISPRERELEASE: true
+        run: |
+            export UPLOADTOOL_ISPRERELEASE=true
+            ./uploadtool/upload.sh Artifacts/*
         working-directory: ./
