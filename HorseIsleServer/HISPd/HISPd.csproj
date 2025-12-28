@@ -33,7 +33,7 @@
     <ApplicationIcon>icon.ico</ApplicationIcon>
     <StartupObject>HISP.Cli.Program</StartupObject>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <DebugType>embedded</DebugType>
+    <DebugType>full</DebugType>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
     <AnalysisLevel>none</AnalysisLevel>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
