@@ -413,7 +413,7 @@ jobs:
             path: Release
       - name: Zip release folders
         run: find * -type d -exec zip -r {}.zip {} \;
-        working-directory: ./
+        working-directory: ./Release
       - name: Checkout uploadtool
         uses: actions/checkout@v4
         with:
