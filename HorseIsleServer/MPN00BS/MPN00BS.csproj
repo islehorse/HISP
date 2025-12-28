@@ -16,6 +16,7 @@
 	<TrimMode>partial</TrimMode>
 	<EnableTrimAnalyzer>false</EnableTrimAnalyzer>
 	<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+	<DebugType>full</DebugType>
 	
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x86'">
@@ -128,7 +129,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <DebugType>portable</DebugType>
+    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|x64'">
