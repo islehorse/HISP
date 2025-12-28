@@ -407,11 +407,13 @@ jobs:
       - build-web
     steps:
       - name: Download Artifacts
-        uses: actions/download-artifact@main
+        uses: actions/download-artifact@v7
         with:
-            pattern: "HISP-*"
+            pattern: "*"
             path: Release
-            merge-multiple: true
+      - name: Zip release folders
+        run: find * -type d -exec zip -r {}.zip {} \;
+        working-directory: ./
       - name: Checkout uploadtool
         uses: actions/checkout@v4
         with:
