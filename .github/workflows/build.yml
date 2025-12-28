@@ -418,8 +418,8 @@ jobs:
             repository: 'probonopd/uploadtool'
             path: 'uploadtool'
 
-      - name: Upload Releases
+      - name: Upload Continuious Release
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-            ./uploadtool/upload.sh Release/*
+        run: ./uploadtool/upload.sh Release/*
+        working-directory: ./
