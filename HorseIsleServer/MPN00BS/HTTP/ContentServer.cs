@@ -11,14 +11,14 @@ namespace HTTP
     class ContentItem
     {
 
-        public String name;
-        public String filePath;
-        public ContentItem(string Name,string FilePath)
+        public String Name;
+        public String FilePath;
+        public ContentItem(string name,string filePath)
         {
-            if(File.Exists(FilePath))
+            if(File.Exists(filePath))
             {
-                filePath = FilePath;
-                name = Name;
+                this.FilePath = filePath;
+                this.Name = name;
             }   
             else
             {
@@ -30,19 +30,18 @@ namespace HTTP
     
     class ContentClient
     {
+        private ContentServer baseServ;
+        private Socket clientSock;
 
-        public ContentClient(ContentServer Server, Socket ClientSocket)
+        public ContentClient(ContentServer server, Socket clientSock)
         {
-            clientSock = ClientSocket;
-            baseServ = Server;
+            this.clientSock = clientSock;
+            this.baseServ = server;
             ProcessRequests();
-            clientSock.Close();
+            this.clientSock.Close();
             
         }
 
-        private ContentServer baseServ;
-        private Socket clientSock;
-        
 
         private byte[] ReadData()
         {
@@ -111,10 +110,10 @@ namespace HTTP
             if (ContentItemExists(name))
             {
                 ContentItem ci = GetContentItem(name);
-                FileStream fs = File.OpenRead(ci.filePath);
+                FileStream fs = File.OpenRead(ci.FilePath);
                 try
                 {
-                    string requestStr = GenerateHeaders(ci.filePath, fs.Length - fs.Position);
+                    string requestStr = GenerateHeaders(ci.FilePath, fs.Length - fs.Position);
                    
                     SendString(requestStr);
                     
@@ -159,7 +158,7 @@ namespace HTTP
             if (ContentItemExists(name))
             {
                 ContentItem ci = GetContentItem(name);
-                string requestStr = GenerateHeaders(ci.filePath);
+                string requestStr = GenerateHeaders(ci.FilePath);
                 SendString(requestStr);
             }
             else
@@ -178,7 +177,7 @@ namespace HTTP
 
             foreach (ContentItem ci in baseServ.Contents)
             {
-                if (ci.name == name)
+                if (ci.Name == name)
                 {
                     exists = true;
                 }
@@ -191,7 +190,7 @@ namespace HTTP
 
             foreach (ContentItem ci in baseServ.Contents)
             {
-                if (ci.name == name)
+                if (ci.Name == name)
                 {
                     return ci;
                 }
@@ -203,7 +202,7 @@ namespace HTTP
         {
             if (path == "/")
             {
-                string body = "Horse Isle Web Server..<br>Fork of SilicaAndPina's \"Content Server\"";
+                string body = "Horse Isle Web Server..<br>Fork of LiEnby's \"Content Server\"";
                 return body;
             }
             else
@@ -260,6 +259,10 @@ namespace HTTP
     {
         public List<ContentItem> Contents = new List<ContentItem>();
         public Socket ServerSocket;
+        public string IpAddr;
+        public short Port;
+
+        private bool shutdownServer = false;
 
 
         public void CreateClient(object sender, SocketAsyncEventArgs e)
@@ -284,14 +287,11 @@ namespace HTTP
                 ServerSocket = null;
             }
         }
-        private bool shutdownServer = false;
-        public string ipaddr;
-        public short portnum;
-        
+
         public ContentServer(string ip, short port)
         {
-	    ipaddr = ip;
-	    portnum = port;
+	        this.IpAddr = ip;
+	        this.Port = port;
 	    
             IPEndPoint ep = new IPEndPoint(IPAddress.Parse(ip), port);
             ServerSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
