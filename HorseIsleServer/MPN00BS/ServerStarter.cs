@@ -1,10 +1,4 @@
-using HISP.Game;
-using HISP.Game.Chat;
-using HISP.Game.Horse;
-using HISP.Game.Items;
-using HISP.Game.Services;
-using HISP.Game.SwfModules;
-using HISP.Security;
+
 using HISP.Server;
 using HTTP;
 using System;
@@ -18,8 +12,6 @@ namespace MPN00BS
 
     public class ServerStarter
     {
-
-        public static bool HasServerStarted = false;
         private static Process fp = null;
         private static ContentServer cs = null;
 
@@ -100,6 +92,7 @@ namespace MPN00BS
         {
             AppDomain.CurrentDomain.ProcessExit += HorseIsleClientExited;
             Logger.SetCallback(ShowCrash);
+            Entry.SetShutdownCallback(OnShutdown);
             UpdateServerProperties();
 
 
@@ -122,7 +115,6 @@ namespace MPN00BS
                 return;
             }
 
-            HasServerStarted = true;
             ServerStartedCallback();
 
             if (Database.GetUsers().Length <= 0)

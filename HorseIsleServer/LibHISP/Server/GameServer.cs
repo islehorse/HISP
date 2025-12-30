@@ -24,9 +24,8 @@ namespace HISP.Server
 {
     public class GameServer
     {
+        public static bool IsRunning = false;
         public static Socket ServerSocket;
-
-
         public static int IdleTimeout;
         public static int IdleWarning;
 
@@ -46,8 +45,8 @@ namespace HISP.Server
         private static int gameTickSpeed = 4800; // Changing this to ANYTHING else will cause desync with the client.
         private static int totalMinutesElapsed = 0;
         private static int oneMinute = 1000 * 60;
-        private static Timer gameTimer; // Controls in-game time.
-        private static Timer minuteTimer; // ticks every real world minute.
+        private static Timer gameTimer = null; // Controls in-game time.
+        private static Timer minuteTimer = null; // ticks every real world minute.
         private static void onGameTick(object state)
         {
             // Tick the game clock.
@@ -104,7 +103,8 @@ namespace HISP.Server
  
             }
 
-            gameTimer.Change(gameTickSpeed, gameTickSpeed);
+            if(gameTimer != null)
+                gameTimer.Change(gameTickSpeed, gameTickSpeed);
 
         }
         private static void onMinuteTick(object state)
@@ -243,7 +243,8 @@ namespace HISP.Server
 
             WildHorse.Update();
             Npc.WanderNpcs();
-            minuteTimer.Change(oneMinute, oneMinute);
+            if(minuteTimer != null) 
+                minuteTimer.Change(oneMinute, oneMinute);
         }
 
         /*
@@ -7967,24 +7968,38 @@ namespace HISP.Server
         public static void OnShutdown()
         {
             if(ServerSocket != null)
+            {
                 ServerSocket.Dispose();
+                ServerSocket = null;
+            }
             if (gameTimer != null)
+            {
                 gameTimer.Dispose();
+                gameTimer = null;
+            }
             if (minuteTimer != null)
+            {
                 minuteTimer.Dispose();
+                minuteTimer = null;
+            }
+
+            IsRunning = false;
         }
         public static void ShutdownServer(string shutdownReason = "No reason provided.")
         {
-            Logger.InfoPrint("Server shutting down; " + shutdownReason);
-            try
+            if(GameServer.IsRunning)
             {
-                GameClient.OnShutdown(shutdownReason);
-                GameServer.OnShutdown();
-                Database.OnShutdown();
-            }
-            catch (Exception) { }
+                Logger.InfoPrint("Server shutting down; " + shutdownReason);
+                try
+                {
+                    GameClient.OnShutdown(shutdownReason);
+                    GameServer.OnShutdown();
+                    Database.OnShutdown();
+                }
+                catch (Exception) { }
 
-            Entry.OnShutdown();
+                Entry.OnShutdown();
+            }
         }
 
 
@@ -8003,6 +8018,8 @@ namespace HISP.Server
             SocketAsyncEventArgs e = new SocketAsyncEventArgs();
             e.Completed += GameClient.CreateClient;
             GameClient.CreateClient(null, e);
+
+            IsRunning = true;
         }
 
     }

@@ -29,7 +29,7 @@ namespace MPN00BS
 
         public bool CheckServerRunningAndShowMessage()
         {
-            if (!ServerStarter.HasServerStarted)
+            if (!GameServer.IsRunning)
             {
                 MessageBox.Show(null, "There is no Horse Isle Server running yet.", "Server not Started.", MessageBox.MessageBoxButtons.Ok);
                 return true;
@@ -61,12 +61,7 @@ namespace MPN00BS
 
         public void resetPasswordCommand(object? sender, EventArgs e)
         {
-            if (!ServerStarter.HasServerStarted)
-            {
-                if (CheckServerRunningAndShowMessage()) return;
-                MessageBox.Show(null, "There is no Horse Isle Server running yet.", "Server not Started.", MessageBox.MessageBoxButtons.Ok);
-                return;
-            }
+            if (CheckServerRunningAndShowMessage()) return;
 
             new ResetWindow().Show();
         }
