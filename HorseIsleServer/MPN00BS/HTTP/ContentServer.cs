@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Web;
 
 namespace HTTP
 {
@@ -222,7 +223,7 @@ namespace HTTP
         }
         private string ExtractRelativeUrl(string header)
         {
-            return header.Split(' ')[1];
+            return HttpUtility.UrlDecode(header.Split(' ')[1]);
         }
         private void ProcessRequests()
         {

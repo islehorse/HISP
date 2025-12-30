@@ -33,12 +33,12 @@ namespace HISP.Server
         public static Random RandomNumberGenerator = new Random(Guid.NewGuid().GetHashCode());
 
         // Events
-        public static RealTimeRiddle RiddleEvent = null;
-        public static TackShopGiveaway TackShopGiveawayEvent = null;
-        public static RealTimeQuiz QuizEvent = null;
-        public static WaterBalloonGame WaterBalloonEvent = null;
-        public static IsleCardTradingGame IsleCardTrading = null;
-        public static ModsRevenge ModsRevengeEvent = null;
+        public static RealTimeRiddle RiddleEvent = RealTimeRiddle.GetRandomRiddle();
+        public static TackShopGiveaway TackShopGiveawayEvent = new TackShopGiveaway();
+        public static RealTimeQuiz QuizEvent = new RealTimeQuiz();
+        public static WaterBalloonGame WaterBalloonEvent = new WaterBalloonGame();
+        public static IsleCardTradingGame IsleCardTrading = new IsleCardTradingGame();
+        public static ModsRevenge ModsRevengeEvent = new ModsRevenge();
 
         /*
          *  Private stuff 
