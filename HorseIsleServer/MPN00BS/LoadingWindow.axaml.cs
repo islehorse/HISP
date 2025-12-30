@@ -59,6 +59,9 @@ namespace MPN00BS
         {
             InitializeComponent(true);
             ServerStarter.StartHttpServer();
+
+            // specify maximum length to be amount of steps in the startup process
+            startupProgress.Maximum = Entry.StartupSteps.Length;
             new Task( () => ServerStarter.StartHispServer(ProgressUpdate, OnNoUsersFound, OnServerStarted, OnShutdown)).Start();
         }
 

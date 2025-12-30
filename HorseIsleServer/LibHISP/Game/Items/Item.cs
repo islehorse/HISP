@@ -238,10 +238,7 @@ namespace HISP.Game.Items
         {
             return Items.Any(o => o.Id == id);
         }
-        public static void DoSpecialCases()
-        {
-            Tack.GenerateTackSets();
-        }
+
         public static ItemInformation GetItemById(int id)
         {
             return Items.First(o => o.Id == id);

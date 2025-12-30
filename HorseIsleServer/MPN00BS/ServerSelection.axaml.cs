@@ -1,9 +1,7 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using Avalonia.Threading;
-
+using HISP.Server;
 using System;
 using System.IO;
 
@@ -11,7 +9,14 @@ namespace MPN00BS
 {
     public partial class ServerSelection : Window
     {
-        const string lastserver = "lastserver.ini";
+        private string lastServerPath
+        {
+            get{
+                ServerStarter.SetConfigDir();
+                return Path.Combine(ConfigReader.ConfigDirectory, "lastserver.ini");
+            }
+        }
+
         private void readLastServer(string config)
         {
             if (File.Exists(config))
@@ -45,13 +50,13 @@ namespace MPN00BS
         public ServerSelection()
         {
             InitializeComponent(true);
-            readLastServer(lastserver);
+            readLastServer(lastServerPath);
         }
 
         private void joinServer_Click(object sender, RoutedEventArgs e)
         {
             this.Hide();
-            writeLastServer(lastserver);
+            writeLastServer(lastServerPath);
             ServerStarter.StartHttpServer();
             ServerStarter.StartHorseIsleClient(OnClientExit, serverIp.Text, Convert.ToInt32(serverPort.Value));
         }

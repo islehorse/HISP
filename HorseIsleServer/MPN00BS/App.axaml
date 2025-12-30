@@ -40,8 +40,8 @@
                 </NativeMenuItem> 
                 <NativeMenuItem Header="Advanced">
                   <NativeMenu>
-                    <NativeMenuItem Header="Edit &quot;server.properties&quot;" ToggleType="CheckBox" Click="editServerPropertiesCommand"/>
-                    <NativeMenuItem Header="Open Server Folder" ToggleType="CheckBox" Click="openServerFolderCommand"/>
+                    <NativeMenuItem Header="Edit &quot;server.properties&quot;" Click="editServerPropertiesCommand"/>
+                    <NativeMenuItem Header="Open Server Folder" Click="openServerFolderCommand"/>
                   </NativeMenu>
                 </NativeMenuItem>
               </NativeMenu>

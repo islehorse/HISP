@@ -14,7 +14,7 @@
     </Grid.ColumnDefinitions>
     <Image Name="hispLogo" HorizontalAlignment="Left" Height="128" Margin="20,0,0,0" VerticalAlignment="Center" Width="128" Source="/HispLogo.gif" Grid.Column="0"/>
     <Label Name="startingServer" Content="Starting Server ..." HorizontalAlignment="Left" Margin="20,52,0,0" VerticalAlignment="Top" Grid.Column="1" />
-    <ProgressBar Name="startupProgress"  HorizontalAlignment="Left" Maximum="18" Height="27" Margin="20,83,0,0" VerticalAlignment="Top" Width="637" Grid.Column="1"/>
+    <ProgressBar Name="startupProgress"  HorizontalAlignment="Left" Height="27" Margin="20,83,0,0" VerticalAlignment="Top" Width="637" Grid.Column="1"/>
   </Grid>
 </Window>
 

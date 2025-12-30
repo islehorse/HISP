@@ -34,12 +34,43 @@ namespace HISP.Server
 #endif
         }
 
-        public static void Start()
+        public static Action[] StartupSteps = {
+            // setup crash handler
+            Entry.CreateSignals,
+            Entry.RegisterCrashHandler,
+
+            // config
+            ConfigReader.OpenConfig,
+            Database.OpenDatabase,
+            GameDataJson.ReadGamedata,
+            
+            // map
+            Map.OpenMap,
+            World.ReadWorldData,
+            Treasure.Init,
+
+            // load / setup data
+            Drawingroom.LoadAllDrawingRooms,
+            Brickpoet.LoadPoetryRooms,
+            Multiroom.CreateMultirooms,
+            Auction.LoadAllAuctionRooms,
+            Tack.GenerateTackSets,
+            Command.RegisterCommands,
+
+            // server
+            PacketSigning.Init,
+            GameServer.StartServer
+        };
+
+        public static void CreateSignals()
         {
             PosixSignalRegistration.Create(PosixSignal.SIGTERM, (_) => { GameServer.ShutdownServer("Server process received SIGTERM."); });
             PosixSignalRegistration.Create(PosixSignal.SIGQUIT, (_) => { GameServer.ShutdownServer("Server process received SIGQUIT."); });
+        }
 
-            RegisterCrashHandler();
+
+        public static void Start()
+        {
             Directory.SetCurrentDirectory(ConfigReader.ConfigDirectory);
             Console.Title = ServerVersion.GetBuildString();
 
@@ -47,29 +78,7 @@ namespace HISP.Server
             Logger.InfoPrint("Config Directory: "+ ConfigReader.ConfigDirectory);
             Logger.InfoPrint("Assets Directory: " + ConfigReader.AssetsDirectory);
 
-            ConfigReader.OpenConfig();
-            Database.OpenDatabase();
-            GameDataJson.ReadGamedata();
-
-            Map.OpenMap();
-            World.ReadWorldData();
-            Treasure.Init();
-
-            DroppedItems.Init();
-            WildHorse.Init();
-
-            Drawingroom.LoadAllDrawingRooms();
-            Brickpoet.LoadPoetryRooms();
-            Multiroom.CreateMultirooms();
-
-            Auction.LoadAllAuctionRooms();
-
-            Item.DoSpecialCases();
-            Command.RegisterCommands();
-
-            PacketSigning.GenerateHmacKey();
-
-            GameServer.StartServer();
+            foreach(Action startupStep in StartupSteps) startupStep();
 
             GC.Collect();
             GC.WaitForPendingFinalizers();

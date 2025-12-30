@@ -17,6 +17,11 @@ namespace HISP.Security
             }
         }
 
+        public static void Init()
+        {
+            _ = GenerateHmacKey();
+        }
+
         public static byte[] GenerateHmacKey()
         {
             string hmacKeyEnv = Environment.GetEnvironmentVariable("HISP_HMAC_KEY");

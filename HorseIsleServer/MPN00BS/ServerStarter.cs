@@ -20,9 +20,10 @@ namespace MPN00BS
     {
 
         public static bool HasServerStarted = false;
-        private static Process clientProcess = new Process();
-        private static Action HorseIsleClientExitCallback;
+        private static Process fp = null;
         private static ContentServer cs = null;
+
+        private static Action HorseIsleClientExitCallback;
         private static void addToList(string path)
         {
             string Name = path.Remove(0, Path.Combine(Directory.GetCurrentDirectory(), "client").Length);
@@ -53,15 +54,16 @@ namespace MPN00BS
 
         public static void CloseHorseIsleClient()
         {
-            if (!clientProcess.HasExited)
-                clientProcess.Kill();
+            if(fp != null)
+                if (!fp.HasExited)
+                    fp.Kill();
         }
         public static void StartHorseIsleClient(Action callback, string serverIp, int serverPort)
         {
             HorseIsleClientExitCallback = callback;
 
 
-            clientProcess = new Process();
+            fp = new Process();
 #if OS_WINDOWS || DEBUG
             string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
 #elif OS_LINUX
@@ -78,94 +80,48 @@ namespace MPN00BS
                 MessageBox.Show(null, "ERROR: Cannot find file: \"" + executable + "\"", "File not Found error", MessageBoxButtons.Ok);
             }
 
-            clientProcess.StartInfo.FileName = executable;
-            clientProcess.StartInfo.Arguments = "http://" + cs.IpAddr + ":" + cs.Port + "/horseisle.swf" + "?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
-            clientProcess.StartInfo.RedirectStandardOutput = true;
-            clientProcess.StartInfo.RedirectStandardError = true;
-            clientProcess.EnableRaisingEvents = true;
-            clientProcess.Exited += HorseIsleClientExited;
-            clientProcess.Start();
+            fp.StartInfo.FileName = executable;
+            fp.StartInfo.Arguments = "http://" + cs.IpAddr + ":" + cs.Port + "/horseisle.swf" + "?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
+            fp.StartInfo.RedirectStandardOutput = true;
+            fp.StartInfo.RedirectStandardError = true;
+            fp.EnableRaisingEvents = true;
+            fp.Exited += HorseIsleClientExited;
+            fp.Start();
         }
 
-        public static void ReadServerProperties()
+        public static void UpdateServerProperties()
         {
             SetConfigDir();
-            ConfigReader.OpenConfig();
-            ConfigReader.SqlBackend = Database.SQL_BACKEND_SQLITE;
-            ConfigReader.LogLevel = 0;
+            ServerStarter.ModifyConfig("sql_backend", "sqllite");
+            ServerStarter.ModifyConfig("log_level", "0");
 
-            // Compatibility patch
-            if (File.Exists(Path.Combine(ConfigReader.ConfigDirectory, "game1.db.db")))
-                File.Move(Path.Combine(ConfigReader.ConfigDirectory, "game1.db.db"), Path.Combine(ConfigReader.ConfigDirectory, "game1.db"));
         }
         public static void StartHispServer(Action ProgressCallback, Action UserCreationCallback, Action ServerStartedCallback, Action OnShutdown)
         {
             AppDomain.CurrentDomain.ProcessExit += HorseIsleClientExited;
-            PosixSignalRegistration.Create(PosixSignal.SIGTERM, (_) => { GameServer.ShutdownServer("Server process received SIGTERM."); });
-            PosixSignalRegistration.Create(PosixSignal.SIGQUIT, (_) => { GameServer.ShutdownServer("Server process received SIGQUIT."); });
-
-            Entry.RegisterCrashHandler();
             Logger.SetCallback(ShowCrash);
-            ReadServerProperties();
+            UpdateServerProperties();
 
-            ProgressCallback();
-            Database.OpenDatabase();
-            ProgressCallback();
 
-            // Start HI1 Server
-            ProgressCallback();
+            // Compatibility patch
+            if (File.Exists(Path.Combine(ConfigReader.ConfigDirectory, "game1.db.db"))) File.Move(Path.Combine(ConfigReader.ConfigDirectory, "game1.db.db"), Path.Combine(ConfigReader.ConfigDirectory, "game1.db"));
 
-            Entry.SetShutdownCallback(OnShutdown);
-            ProgressCallback();
-
-            SocketDomainPolicy.GetPolicyFile();
-            ProgressCallback();
-
-            GameDataJson.ReadGamedata();
-            ProgressCallback();
-
-            Map.OpenMap();
-            ProgressCallback();
-
-            World.ReadWorldData();
-            ProgressCallback();
-
-            Treasure.Init();
-            ProgressCallback();
-
-            DroppedItems.Init();
-            ProgressCallback();
-
-            WildHorse.Init();
-            ProgressCallback();
-
-            Drawingroom.LoadAllDrawingRooms();
-            ProgressCallback();
-
-            Brickpoet.LoadPoetryRooms();
-            ProgressCallback();
-
-            Multiroom.CreateMultirooms();
-            ProgressCallback();
-
-            Auction.LoadAllAuctionRooms();
-            ProgressCallback();
-
-            Command.RegisterCommands();
-            ProgressCallback();
-
-            Item.DoSpecialCases();
-            ProgressCallback();
             try
             {
-                GameServer.StartServer();
+                // start the server ...
+                foreach (Action startupStep in Entry.StartupSteps)
+                {
+                    startupStep();
+                    ProgressCallback();
+                }
+
             }
             catch (Exception e)
             {
-                MessageBox.Show(null, "Horse Isle server failed to start: " + e.Message, "Error starting hi1 server", MessageBoxButtons.Ok);
+                MessageBox.Show(null, "Horse Isle server failed to start: " + Environment.NewLine + e.Message, "Error starting hi1 server", MessageBoxButtons.Ok);
                 return;
             }
-            ProgressCallback();
+
             HasServerStarted = true;
             ServerStartedCallback();
 
