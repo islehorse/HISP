@@ -79,7 +79,7 @@ namespace MPN00BS
             }
 
             clientProcess.StartInfo.FileName = executable;
-            clientProcess.StartInfo.Arguments = "http://" + cs.IpAddr + ":" + cs.Port + "/horseisle_mapfix.swf" + "?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
+            clientProcess.StartInfo.Arguments = "http://" + cs.IpAddr + ":" + cs.Port + "/horseisle.swf" + "?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
             clientProcess.StartInfo.RedirectStandardOutput = true;
             clientProcess.StartInfo.RedirectStandardError = true;
             clientProcess.EnableRaisingEvents = true;
