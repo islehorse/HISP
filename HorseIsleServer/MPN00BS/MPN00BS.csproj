@@ -4,99 +4,56 @@
     <!--Avalonia doesen't support TrimMode=link currently,but we are working on that https://github.com/AvaloniaUI/Avalonia/issues/6892 -->
     <TrimMode>copyused</TrimMode>
     <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
-    <Platforms>x64;x86;ARM;ARM64</Platforms>
-    <Configurations>Debug;Windows;Linux;MacOS;Android;iOS</Configurations>
+    <Platforms>x64;x86;</Platforms>
+    <Configurations>Debug;Windows;Linux;MacOS</Configurations>
     <WarningLevel>3</WarningLevel>
     <NoWarn>1701;1702;2026;IL2026</NoWarn>
     <ApplicationIcon>icon.ico</ApplicationIcon>
 	<BuiltInComInteropSupport>false</BuiltInComInteropSupport>
   </PropertyGroup>
+
   <PropertyGroup>
-  	
-	<TrimMode>partial</TrimMode>
-	<EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+	<TargetFramework>net10.0</TargetFramework>
+	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+	<NoWin32Manifest>true</NoWin32Manifest>
+	<RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+	<DebugType>none</DebugType>
+	<ProduceReferenceAssembly>False</ProduceReferenceAssembly>
+	<AnalysisLevel>none</AnalysisLevel>
+	<EnableNETAnalyzers>False</EnableNETAnalyzers>
+	<Copyright>Public Domain, 2026</Copyright>
+	<PackageProjectUrl>https://islehorse.com</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/islehorse/HISP</RepositoryUrl>
+	<RepositoryType>git</RepositoryType>
+	<WarningLevel>3</WarningLevel>
+	<NoWarn>1701;1702;2026;IL2026</NoWarn>
+	<TrimMode>full</TrimMode>
 	<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
-	<DebugType>full</DebugType>
-	
+	<DebugType>none</DebugType>
   </PropertyGroup>
+
+	
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x86'">
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <Optimize>true</Optimize>
-    <Platforms>x86</Platforms>
     <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>OS_WINDOWS;ARCH_X86</DefineConstants>
     <DebugType>none</DebugType>
   </PropertyGroup>
+	
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x64'">
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Optimize>true</Optimize>
-    <Platforms>x64</Platforms>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>OS_WINDOWS;ARCH_X86_64</DefineConstants>
-    <DebugType>portable</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|ARM64'">
-    <RuntimeIdentifier>win-arm64</RuntimeIdentifier>
-    <Optimize>true</Optimize>
-    <PlatformTarget>ARM64</PlatformTarget>
-    <DefineConstants>OS_WINDOWS;ARCH_ARM64</DefineConstants>
     <DebugType>none</DebugType>
   </PropertyGroup>
 
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|ARM'">
-    <RuntimeIdentifier>android-arm</RuntimeIdentifier>
-    <Optimize>true</Optimize>
-    <PlatformTarget>ARM</PlatformTarget>
-    <DefineConstants>OS_ANDROID;ARCH_ARM</DefineConstants>
-    <WarningLevel>3</WarningLevel>
-    <NoWarn></NoWarn>
-    <DebugType>none</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|ARM64'">
-    <RuntimeIdentifier>android-arm64</RuntimeIdentifier>
-    <Optimize>true</Optimize>
-    <PlatformTarget>ARM64</PlatformTarget>
-    <DefineConstants>OS_ANDROID;ARCH_ARM64</DefineConstants>
-    <DebugType>none</DebugType>
-  </PropertyGroup>
-  
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <NoWin32Manifest>true</NoWin32Manifest>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <DebugType>none</DebugType>
-    <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
-    <AnalysisLevel>none</AnalysisLevel>
-    <EnableNETAnalyzers>False</EnableNETAnalyzers>
-    <Copyright>Public Domain, 2022</Copyright>
-    <PackageProjectUrl>https://islehorse.com</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/islehorse/HISP</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <WarningLevel>3</WarningLevel>
-    <NoWarn>1701;1702;2026;IL2026</NoWarn>
-  </PropertyGroup>
-  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|x64'">
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>OS_LINUX;ARCH_X86_64</DefineConstants>
-    <DebugType>none</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM'">
-    <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
-    <PlatformTarget>ARM</PlatformTarget>
-    <Optimize>true</Optimize>
-    <DefineConstants>OS_LINUX;ARCH_ARM</DefineConstants>
-    <DebugType>none</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM64'">
-    <RuntimeIdentifier>linux-arm64</RuntimeIdentifier>
-    <PlatformTarget>ARM64</PlatformTarget>
-    <Optimize>true</Optimize>
-    <DefineConstants>OS_LINUX;ARCH_ARM64</DefineConstants>
     <DebugType>none</DebugType>
   </PropertyGroup>
 
@@ -105,41 +62,16 @@
     <Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>OS_MACOS;ARCH_X86_64</DefineConstants>
-    
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacOS|ARM64'">
-    <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
-    <Optimize>true</Optimize>
-    <DefineConstants>OS_MACOS;ARCH_ARM64</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='iOS|ARM'">
-    <RuntimeIdentifier>ios-arm</RuntimeIdentifier>
-    <Optimize>true</Optimize>
-    <PlatformTarget>ARM</PlatformTarget>
-    <DefineConstants>OS_IOS;ARCH_ARM</DefineConstants>
-    <DebugType>none</DebugType>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='iOS|ARM64'">
-    <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
-    <Optimize>true</Optimize>
-    <PlatformTarget>ARM64</PlatformTarget>
-    <DefineConstants>OS_IOS;ARCH_ARM64</DefineConstants>
-  </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <DebugType>full</DebugType>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|x64'">
-    <DebugType>none</DebugType>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x86'">
+	<DebugType>full</DebugType>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='iOS|x64'">
-    <DebugType>none</DebugType>
-  </PropertyGroup>
-
+	
   <ItemGroup>
     <None Remove=".gitignore" />
   </ItemGroup>
@@ -222,26 +154,32 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ContentWithTargetPath Include="flashplayer/LINUX/flash.elf">
+    <ContentWithTargetPath Condition="'$(Configuration)'=='Linux'" Include="flashplayer/LINUX/flash.elf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>flashplayer/LINUX/flash.elf</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
   
   <ItemGroup>
-    <ContentWithTargetPath Include="flashplayer\WINDOWS\flash.exe">
+    <ContentWithTargetPath Condition="'$(Configuration)'=='Windows'" Include="flashplayer\WINDOWS\flash.exe">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>flashplayer\WINDOWS\flash.exe</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
 
   <ItemGroup>
-    <ContentWithTargetPath Include="flashplayer\MACOS\**">
+    <ContentWithTargetPath Condition="'$(Configuration)'=='MacOS'" Include="flashplayer\MACOS\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>flashplayer\MACOS\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
-
+	
+  <ItemGroup>
+    <ContentWithTargetPath Condition="'$(Configuration)'=='Debug'" Include="flashplayer\**">
+	  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  <TargetPath>flashplayer\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
+	</ContentWithTargetPath>
+  </ItemGroup>
 
 
 </Project>

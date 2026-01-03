@@ -40,24 +40,19 @@
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
     <AnalysisLevel>none</AnalysisLevel>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
-    <Copyright>Public Domain, 2022</Copyright>
+    <Copyright>Public Domain, 2026</Copyright>
     <PackageProjectUrl>https://islehorse.com</PackageProjectUrl>
     <RepositoryUrl>https://github.com/islehorse/HISP</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <WarningLevel>3</WarningLevel>
     <NoWarn>1701;1702;2026;IL2026</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup>
-
-    <TrimMode>partial</TrimMode>
-    <EnableTrimAnalyzer>false</EnableTrimAnalyzer>
-    <TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
-
+	<TrimMode>full</TrimMode>
+	<EnableTrimAnalyzer>false</EnableTrimAnalyzer>
+	<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x86'">
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <Optimize>true</Optimize>
-    <Platforms>x86</Platforms>
     <PlatformTarget>x86</PlatformTarget>
     <DefineConstants>OS_WINDOWS;ARCH_X86</DefineConstants>
     <DebugType>none</DebugType>
@@ -65,7 +60,6 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x64'">
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Optimize>true</Optimize>
-    <Platforms>x64</Platforms>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>OS_WINDOWS;ARCH_X86_64</DefineConstants>
     <DebugType>none</DebugType>
