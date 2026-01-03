@@ -157,16 +157,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ContentWithTargetPath Condition="'$(Configuration)'=='Linux'" Include="flashplayer/LINUX/flash.elf">
+    <ContentWithTargetPath Condition="'$(Configuration)'=='Linux'" Include="flashplayer\LINUX\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>flashplayer/LINUX/flash.elf</TargetPath>
+      <TargetPath>flashplayer\LINUX\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
   
   <ItemGroup>
-    <ContentWithTargetPath Condition="'$(Configuration)'=='Windows'" Include="flashplayer\WINDOWS\flash.exe">
+    <ContentWithTargetPath Condition="'$(Configuration)'=='Windows'" Include="flashplayer\WINDOWS\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>flashplayer\WINDOWS\flash.exe</TargetPath>
+      <TargetPath>flashplayer\WINDOWS\%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
     </ContentWithTargetPath>
   </ItemGroup>
 

@@ -107,31 +107,31 @@ namespace MPN00BS
             ValidateInput();
         }
 
-        private void adminChecked(object sender, RoutedEventArgs e)
+        private void adminCheckChanged(object sender, RoutedEventArgs e)
         {
-            if (modCheckbox == null)
-                return;
-
-            modCheckbox.IsChecked = true;
+            if (adminCheckbox == null) return;
+            if (adminCheckbox.IsChecked == true)
+                modCheckbox.IsChecked = true;
         }
 
-        private void modUnchecked(object sender, RoutedEventArgs e)
+        private void modCheckChanged(object sender, RoutedEventArgs e)
         {
-            if (adminCheckbox == null)
-                return;
-            adminCheckbox.IsChecked = false;
+            if (modCheckbox == null) return;
+            if (modCheckbox.IsChecked == false)
+                adminCheckbox.IsChecked = false;
         }
+
 
         private void CreateAccount(object sender, RoutedEventArgs e)
         {
-            
+
             // GENDer? I hardly knew THEM!
             string gender = ((ComboBoxItem)genderSelectionBox.SelectedItem).Content.ToString();
-            
+
             // Permissions 
             bool admin = (bool)adminCheckbox.IsChecked;
             bool mod = (bool)modCheckbox.IsChecked;
-            
+
             // Credentials
             string password = passwordBox.Text;
             string username = usernameBox.Text;

@@ -19,7 +19,6 @@ namespace MPN00BS
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
-
         }
 
         public bool CheckServerRunningAndShowMessage()

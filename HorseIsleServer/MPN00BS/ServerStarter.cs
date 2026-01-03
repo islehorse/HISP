@@ -23,7 +23,6 @@ namespace MPN00BS
 #if OS_LINUX || OS_MACOS
         [DllImport("libc", SetLastError = true)]
         private static extern int chmod(string pathname, int mode);
-
 #endif
         private static void addToList(string path)
         {
@@ -114,6 +113,7 @@ namespace MPN00BS
 
 
             // Compatibility patch
+            // move game1.db.db to game1.db ...
             if (File.Exists(Path.Combine(ConfigReader.ConfigDirectory, "game1.db.db"))) File.Move(Path.Combine(ConfigReader.ConfigDirectory, "game1.db.db"), Path.Combine(ConfigReader.ConfigDirectory, "game1.db"));
 
             try
@@ -188,7 +188,6 @@ namespace MPN00BS
             SetConfigDir();
             try
             {
-
                 cs = new ContentServer("127.0.0.1", 12322);
 
                 string[] fileList = Directory.GetFiles(clientFolder, "*", SearchOption.AllDirectories);

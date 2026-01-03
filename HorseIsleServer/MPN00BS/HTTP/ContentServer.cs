@@ -240,7 +240,6 @@ namespace HTTP
                 {
                     string relUrl = ExtractRelativeUrl(line);
                     string path = ExtractPath(relUrl);
-                    //Dictionary<string,string> query = ExtractQuery(relUrl);
                     RespondGet(path);
                     return;
                 }
