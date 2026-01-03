@@ -17,7 +17,7 @@ namespace MPN00BS
         private static ContentServer cs = null;
         private static Action HorseIsleClientExitCallback;
 
-        private static string startupFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        private static string startupFolder = AppContext.BaseDirectory;
         private static string clientFolder = Path.Combine(startupFolder, "client");
 
 #if OS_LINUX || OS_MACOS
