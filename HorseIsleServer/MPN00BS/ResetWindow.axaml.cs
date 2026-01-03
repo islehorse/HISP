@@ -1,10 +1,8 @@
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
 using HISP.Security;
 using HISP.Server;
-using System;
 using System.Text.RegularExpressions;
 
 namespace MPN00BS

@@ -7,24 +7,19 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace MPN00BS
 {
     public partial class App : Application
     {
-#if OS_LINUX
-        [DllImport("libc", SetLastError = true)]
-        private static extern int chmod(string pathname, int mode);
 
-#endif
 
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
-#if OS_LINUX
-            chmod(Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf"), 511);
-#endif
+
         }
 
         public bool CheckServerRunningAndShowMessage()
@@ -54,12 +49,12 @@ namespace MPN00BS
             base.OnFrameworkInitializationCompleted();
         }
 
-        public void createAccountCommand(object? sender, EventArgs e)
+        public void createAccountCommand(object sender, EventArgs e)
         {
             new RegisterWindow().Show();
         }
 
-        public void resetPasswordCommand(object? sender, EventArgs e)
+        public void resetPasswordCommand(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
 
@@ -67,7 +62,7 @@ namespace MPN00BS
         }
 
 
-        public void editServerPropertiesCommand(object? sender, EventArgs e)
+        public void editServerPropertiesCommand(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
 
@@ -78,7 +73,7 @@ namespace MPN00BS
 
         }
 
-        public void openServerFolderCommand(object? sender, EventArgs e)
+        public void openServerFolderCommand(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
 
@@ -89,7 +84,7 @@ namespace MPN00BS
         }
 
 
-        public void shutdownServerCommand(object? sender, EventArgs e)
+        public void shutdownServerCommand(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
 
@@ -97,7 +92,7 @@ namespace MPN00BS
 
         }
 
-        public void toggleSwearFilter(object? sender, EventArgs e)
+        public void toggleSwearFilter(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
 
@@ -109,7 +104,7 @@ namespace MPN00BS
 
         }
 
-        public void toggleCorrections(object? sender, EventArgs e)
+        public void toggleCorrections(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
 
@@ -122,7 +117,7 @@ namespace MPN00BS
         }
 
 
-        public void toggleNonVioChecks(object? sender, EventArgs e)
+        public void toggleNonVioChecks(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
 
@@ -134,7 +129,7 @@ namespace MPN00BS
 
         }
 
-        public void toggleSpamFilter(object? sender, EventArgs e)
+        public void toggleSpamFilter(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
 
@@ -146,7 +141,7 @@ namespace MPN00BS
 
         }
 
-        public void toggleAllUsersSubbed(object? sender, EventArgs e)
+        public void toggleAllUsersSubbed(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
 
@@ -157,7 +152,7 @@ namespace MPN00BS
             ((NativeMenuItem)sender).IsChecked = enab;
         }
 
-        public void toggleFixOfficalBugs(object? sender, EventArgs e)
+        public void toggleFixOfficalBugs(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
 
@@ -168,7 +163,7 @@ namespace MPN00BS
             ((NativeMenuItem)sender).IsChecked = enab;
         }
 
-        public void toggleEolFeatures(object? sender, EventArgs e)
+        public void toggleEolFeatures(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
 

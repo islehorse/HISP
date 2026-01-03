@@ -42,3 +42,5 @@ HorseIsleServer/Installer/Windows/*
 
 
 HorseIsleServer/.vs/*
+
+*.i64

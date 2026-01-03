@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Reflection;
 
 namespace HISP.Server
 {
@@ -12,8 +13,8 @@ namespace HISP.Server
         private static string mapFileName = "HI1.MAP";
         private static string gamedataDirname = "gamedata";
         private static string socketPolicyFileName = "internal";
-        private static string configPath = Directory.GetCurrentDirectory();
-        private static string assetsPath = Directory.GetCurrentDirectory();
+        private static string configPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        private static string assetsPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 
         public static short Port = 12321;
         public static string BindIP = "0.0.0.0";

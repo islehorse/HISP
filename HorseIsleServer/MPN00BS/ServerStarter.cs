@@ -4,6 +4,7 @@ using HTTP;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using static MPN00BS.MessageBox;
 
@@ -14,11 +15,19 @@ namespace MPN00BS
     {
         private static Process fp = null;
         private static ContentServer cs = null;
-
         private static Action HorseIsleClientExitCallback;
+
+        private static string startupFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        private static string clientFolder = Path.Combine(startupFolder, "client");
+
+#if OS_LINUX || OS_MACOS
+        [DllImport("libc", SetLastError = true)]
+        private static extern int chmod(string pathname, int mode);
+
+#endif
         private static void addToList(string path)
         {
-            string Name = path.Remove(0, Path.Combine(Directory.GetCurrentDirectory(), "client").Length);
+            string Name = path.Remove(0, clientFolder.Length);
             Name = Name.Replace("\\", "/");
 
             ContentItem ci = new ContentItem(Name, path);
@@ -54,28 +63,36 @@ namespace MPN00BS
         {
             HorseIsleClientExitCallback = callback;
 
-
             fp = new Process();
+
+            // find executable
 #if OS_WINDOWS || DEBUG
-            string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
+            string executable = Path.Combine(startupFolder, "flashplayer", "WINDOWS", "flash.exe");
 #elif OS_LINUX
-            string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "LINUX", "flash.elf");
+            string executable = Path.Combine(startupFolder, "flashplayer", "LINUX", "flash.elf");
 #elif OS_MACOS
-            string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "MACOS", "flash.app", "Contents", "MacOS", "Flash Player");
+            string executable = Path.Combine(startupFolder, "flashplayer", "MACOS", "flash.app", "Contents", "MacOS", "Flash Player");
 #else
             MessageBox.Show(null,"ERROR: No path for flash projector specified on this platform", "Porting error", MessageBoxButtons.Ok);
-            string executable = Path.Combine(Directory.GetCurrentDirectory(), "flashplayer", "WINDOWS", "flash.exe");
+            string executable = Path.Combine(startupFolder, "flashplayer", "WINDOWS", "flash.exe");
+#endif
+
+            // make file executable
+#if OS_LINUX || OS_MACOS
+            chmod(executable, 755);
 #endif
 
             if (!File.Exists(executable))
             {
                 MessageBox.Show(null, "ERROR: Cannot find file: \"" + executable + "\"", "File not Found error", MessageBoxButtons.Ok);
+                return;
             }
 
             fp.StartInfo.FileName = executable;
             fp.StartInfo.Arguments = "http://" + cs.IpAddr + ":" + cs.Port + "/horseisle.swf" + "?SERVER=" + serverIp + "&PORT=" + serverPort.ToString();
             fp.StartInfo.RedirectStandardOutput = true;
             fp.StartInfo.RedirectStandardError = true;
+            fp.StartInfo.WorkingDirectory = Path.GetDirectoryName(executable);
             fp.EnableRaisingEvents = true;
             fp.Exited += HorseIsleClientExited;
             fp.Start();
@@ -174,12 +191,8 @@ namespace MPN00BS
 
                 cs = new ContentServer("127.0.0.1", 12322);
 
-                string clientFolder = Path.Combine(Directory.GetCurrentDirectory(), "client");
                 string[] fileList = Directory.GetFiles(clientFolder, "*", SearchOption.AllDirectories);
-                foreach (string file in fileList)
-                {
-                    addToList(file);
-                }
+                foreach (string file in fileList) addToList(file);
             }
             catch (Exception e)
             {
