@@ -48,7 +48,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <NoWin32Manifest>true</NoWin32Manifest>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <DebugType>full</DebugType>
+    <DebugType>none</DebugType>
     <ProduceReferenceAssembly>False</ProduceReferenceAssembly>
     <AnalysisLevel>none</AnalysisLevel>
     <EnableNETAnalyzers>False</EnableNETAnalyzers>
@@ -68,21 +68,18 @@
     <Optimize>true</Optimize>
     <PlatformTarget>x86</PlatformTarget>
   	<DefineConstants>OS_WINDOWS;ARCH_X86</DefineConstants>
-  	<DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x64'">
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>OS_WINDOWS;ARCH_X86_64</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|ARM64'">
     <RuntimeIdentifier>win-arm64</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <PlatformTarget>ARM64</PlatformTarget>
     <DefineConstants>OS_WINDOWS;ARCH_ARM64</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='iOS|ARM'">
@@ -90,14 +87,12 @@
     <Optimize>true</Optimize>
     <PlatformTarget>ARM</PlatformTarget>
     <DefineConstants>OS_IOS;ARCH_ARM</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='iOS|ARM64'">
     <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
     <Optimize>True</Optimize>
     <PlatformTarget>ARM64</PlatformTarget>
     <DefineConstants>OS_IOS;ARCH_ARM64</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|ARM'">
@@ -105,14 +100,12 @@
     <Optimize>true</Optimize>
     <PlatformTarget>ARM</PlatformTarget>
     <DefineConstants>OS_ANDROID;ARCH_ARM</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|ARM64'">
     <RuntimeIdentifier>android-arm64</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <PlatformTarget>ARM64</PlatformTarget>
     <DefineConstants>OS_ANDROID;ARCH_ARM64</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
   
@@ -121,21 +114,18 @@
     <Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>OS_LINUX;ARCH_X86_64</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM'">
     <RuntimeIdentifier>linux-arm</RuntimeIdentifier>
     <PlatformTarget>ARM</PlatformTarget>
     <Optimize>true</Optimize>
     <DefineConstants>OS_LINUX;ARCH_ARM</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|ARM64'">
     <RuntimeIdentifier>linux-arm64</RuntimeIdentifier>
     <PlatformTarget>ARM64</PlatformTarget>
     <Optimize>true</Optimize>
     <DefineConstants>OS_LINUX;ARCH_ARM64</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacOS|x64'">
@@ -143,14 +133,12 @@
     <Optimize>true</Optimize>
     <PlatformTarget>x64</PlatformTarget>
     <DefineConstants>OS_MACOS;ARCH_X86_64</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacOS|ARM64'">
     <RuntimeIdentifier>osx-arm64</RuntimeIdentifier>
     <Optimize>true</Optimize>
     <DefineConstants>OS_MACOS;ARCH_ARM64</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM64'">
@@ -178,50 +166,42 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacOS|x86'">
     <Optimize>True</Optimize>
     <DefineConstants>OS_MACOS;ARCH_X86</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Linux|x86'">
     <Optimize>True</Optimize>
     <DefineConstants>OS_LINUX;ARCH_X86</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MacOS|ARM'">
     <Optimize>True</Optimize>
     <DefineConstants>OS_MACOS;ARCH_ARM</DefineConstants>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|x64'">
-    <DebugType>none</DebugType>
     <Optimize>True</Optimize>
   </PropertyGroup>
 
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='iOS|x64'">
-    <DebugType>none</DebugType>
     <Optimize>True</Optimize>
   </PropertyGroup>
 
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Android|x86'">
-    <DebugType>none</DebugType>
     <Optimize>True</Optimize>
   </PropertyGroup>
 
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='iOS|x86'">
-    <DebugType>none</DebugType>
     <Optimize>True</Optimize>
   </PropertyGroup>
 
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|ARM'">
     <Optimize>True</Optimize>
-    <DebugType>none</DebugType>
   </PropertyGroup>
 
 
