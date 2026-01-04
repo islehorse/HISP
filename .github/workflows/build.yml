@@ -80,8 +80,8 @@ jobs:
         chmod +x /tmp/debpkg/DebianArm64/usr/bin/HISPd
         mkdir debpackage-arm64
         dpkg-deb --build /tmp/debpkg/DebianArm64
-        mv /tmp/debpkg/DebianArm64.deb debpackage-arm64/HISP-Debian-ARM64.deb
-        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm64/HISP-Debian-ARM64.deb https://git.silica.codes/api/packages/islehorse/debian/pool/debian/arm64/upload
+        mv /tmp/debpkg/DebianArm64.deb debpackage-arm64/HISP-DebianARM64.deb
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm64/HISP-DebianARM64.deb https://git.silica.codes/api/packages/islehorse/debian/pool/debian/arm64/upload
         
     - name: Build arm deb package
       continue-on-error: false
@@ -115,8 +115,8 @@ jobs:
         chmod +x /tmp/debpkg/DebianArm/usr/bin/HISPd
         mkdir debpackage-arm
         dpkg-deb --build /tmp/debpkg/DebianArm
-        mv /tmp/debpkg/DebianArm.deb debpackage-arm/HISP-Debian-ARM.deb
-        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm/HISP-Debian-ARM.deb https://git.silica.codes/api/packages/islehorse/debian/pool/debian/arm/upload
+        mv /tmp/debpkg/DebianArm.deb debpackage-arm/HISP-DebianARM.deb
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-arm/HISP-DebianARM.deb https://git.silica.codes/api/packages/islehorse/debian/pool/debian/arm/upload
         
 # Upload LINUX
 
@@ -137,14 +137,14 @@ jobs:
     - name: Upload deb package arm64
       uses: actions/upload-artifact@v4
       with:
-        name: HISP-Debian-ARM64
+        name: HISP-DebianARM64
         path: HorseIsleServer/debpackage-arm64
         compression-level: 9
         
     - name: Upload deb package arm
       uses: actions/upload-artifact@v4
       with:
-        name: HISP-Debian-ARM
+        name: HISP-DebianARM
         path: HorseIsleServer/debpackage-arm
         compression-level: 9
         
@@ -211,8 +211,8 @@ jobs:
         chmod +x /tmp/debpkg/Debian64/usr/bin/HISPd
         mkdir debpackage-x64
         dpkg-deb --build /tmp/debpkg/Debian64
-        mv /tmp/debpkg/Debian64.deb debpackage-x64/HISP-Debian-AMD64.deb
-        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-x64/HISP-Debian-AMD64.deb https://git.silica.codes/api/packages/islehorse/debian/pool/debian/x64/upload
+        mv /tmp/debpkg/Debian64.deb debpackage-x64/HISP-Debian64.deb
+        curl --user $AUTHENTICATION_TOKEN --upload-file debpackage-x64/HISP-Debian64.deb https://git.silica.codes/api/packages/islehorse/debian/pool/debian/x64/upload
         
 # Upload LINUX
     - name: Upload linux-x64
@@ -232,7 +232,7 @@ jobs:
     - name: Upload deb package x64
       uses: actions/upload-artifact@v4
       with:
-        name: HISP-Debian-x64
+        name: HISP-Debian64
         path: HorseIsleServer/debpackage-x64
         compression-level: 9
         
@@ -412,7 +412,11 @@ jobs:
             pattern: "*"
             path: Artifacts
       - name: Zip release folders
-        run: find * -type d -exec zip -9 -r {}.zip {} \;
+        run: |
+            mv -v HISP-Debian*/* ./ ; rm -vrf HISP-Debian*/
+            find HISP-Linux* -maxdepth 0 -type d -exec chmod +x {} -Rv \; -exec tar -cvzf {}.tar.gz {}/ \; -exec rm -vrf {} \;
+            find HISP-Mac* -maxdepth 0 -type d -exec chmod +x {} -Rv \; -exec tar -cvzf {}.tar.gz {}/ \; -exec rm -vrf {} \;
+            find * -type d -exec zip -9 -r {}.zip {} \;
         working-directory: ./Artifacts
       - name: Checkout uploadtool
         uses: actions/checkout@v4

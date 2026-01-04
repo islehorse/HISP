@@ -78,7 +78,7 @@ namespace MPN00BS
 
             // make file executable
 #if OS_LINUX || OS_MACOS
-            chmod(executable, 755);
+            chmod(executable, 775);
 #endif
 
             if (!File.Exists(executable))
