@@ -364,7 +364,7 @@ jobs:
     - name: Upload mac-x64-noobs
       uses: actions/upload-artifact@v4
       with:
-        name: HISP-Mac-Noobs
+        name: HISP-Mac64-Noobs
         path: HorseIsleServer/MPN00BS/build/MacOS-x64
         compression-level: 9
 
