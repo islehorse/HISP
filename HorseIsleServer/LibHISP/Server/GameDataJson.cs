@@ -1234,15 +1234,15 @@ namespace HISP.Server
 
             // Tag
 
-            Messages.TagYourItFormat = (string)jdata["messages"]["meta"]["player_interaction"]["tag.tag_player"];
-            Messages.TagOtherBuddiesOnlineFormat = (string)jdata["messages"]["meta"]["player_interaction"]["tag.total_buddies"];
+            Messages.TagYourItFormat = (string)jdata["messages"]["meta"]["player_interaction"]["tag"]["tag_player"];
+            Messages.TagOtherBuddiesOnlineFormat = (string)jdata["messages"]["meta"]["player_interaction"]["tag"]["total_buddies"];
 
             // Add Buddy
 
-            Messages.AddBuddyPending = (string)jdata["messages"]["meta"]["player_interaction"]["add_buddy.add_pending"];
-            Messages.AddBuddyOtherPendingFormat = (string)jdata["messages"]["meta"]["player_interaction"]["add_buddy.other_pending"];
-            Messages.AddBuddyYourNowBuddiesFormat = (string)jdata["messages"]["meta"]["player_interaction"]["add_buddy.add_confirmed"];
-            Messages.AddBuddyDeleteBuddyFormat = (string)jdata["messages"]["meta"]["player_interaction"]["add_buddy.deleted"];
+            Messages.AddBuddyPending = (string)jdata["messages"]["meta"]["player_interaction"]["add_buddy"]["add_pending"];
+            Messages.AddBuddyOtherPendingFormat = (string)jdata["messages"]["meta"]["player_interaction"]["add_buddy"]["other_pending"];
+            Messages.AddBuddyYourNowBuddiesFormat = (string)jdata["messages"]["meta"]["player_interaction"]["add_buddy"]["add_confirmed"];
+            Messages.AddBuddyDeleteBuddyFormat = (string)jdata["messages"]["meta"]["player_interaction"]["add_buddy"]["deleted"];
 
             // Socials
 
@@ -2127,8 +2127,8 @@ namespace HISP.Server
             Messages.CapsNotice = (string)jdata["messages"]["chat"]["caps_notice"];
 
             // AutoReply
-            Messages.AutoReplyTooLong = (string)jdata["messages"]["auto_reply.too_long"];
-            Messages.AutoReplyHasViolations = (string)jdata["messages"]["auto_reply.contains_violations"];
+            Messages.AutoReplyTooLong = (string)jdata["messages"]["auto_reply"]["too_long"];
+            Messages.AutoReplyHasViolations = (string)jdata["messages"]["auto_reply"]["contains_violations"];
 
             // Drawing Rooms
             Messages.DrawingLastToDrawFormat = (string)jdata["messages"]["meta"]["drawing_rooms"]["last_draw"];

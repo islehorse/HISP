@@ -432,7 +432,7 @@ namespace HISP.Server
              *  this prevents the entire server from crashing
              *  if theres an error in handling a particular packet.
              */
-#if !OS_DEBUG
+#if !DEBUG
             try
             {
 #endif
@@ -528,7 +528,7 @@ namespace HISP.Server
                             break;
                     }
                 }
-#if !OS_DEBUG
+#if !DEBUG
             }
             catch (Exception e)
             {

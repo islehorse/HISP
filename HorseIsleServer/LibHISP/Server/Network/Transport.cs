@@ -33,8 +33,10 @@ namespace HISP.Server.Network
         }
         internal virtual void receivePackets(object sender, SocketAsyncEventArgs e)
         {
+#if !DEBUG
             try
             {
+#endif
                 do
                 {
                     if (checkForError(e)) break;
@@ -42,12 +44,13 @@ namespace HISP.Server.Network
                     if (checkForError(e)) break;
 
                 } while (!socket.ReceiveAsync(e));
-            }
+#if !DEBUG
+        }
             catch (Exception ex) { 
                 Logger.ErrorPrint(ex.StackTrace); 
                 try { this.Disconnect(); } catch (Exception) { }; 
             };
-
+#endif
         }
 
         public virtual string Ip
