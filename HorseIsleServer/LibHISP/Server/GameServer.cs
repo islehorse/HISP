@@ -4607,7 +4607,7 @@ namespace HISP.Server
                         Highscore.HighscoreTableEntry[] scores = Database.GetTopScores(gameTitle, 5, !time);
                         bool bestScoreEver = false;
                         if (scores.Length >= 1)
-                            bestScoreEver = scores[0].Score <= value;
+                            bestScoreEver = time ? value <= scores.First().Score : value >= scores.First().Score;
 
                         bool newHighscore = sender.User.Highscores.UpdateHighscore(gameTitle, value, time);
                         if(bestScoreEver && !time)
