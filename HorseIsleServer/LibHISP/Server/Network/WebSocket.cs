@@ -1,5 +1,4 @@
-﻿#define WEBSOCKET_DEBUG
-using HISP.Security;
+﻿using HISP.Security;
 using HISP.Util;
 using System;
 using System.Collections.Generic;
@@ -10,7 +9,7 @@ namespace HISP.Server.Network
 {
     public class WebSocket : Transport
     {
-        private static string websocketSeed = Guid.NewGuid().ToString();
+        private const string WEBSOCKET_SEED = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
         private const byte WEBSOCKET_CONTINUE = 0x0;
         private const byte WEBSOCKET_TEXT = 0x1;
@@ -34,9 +33,9 @@ namespace HISP.Server.Network
         private bool handshakeDone = false;
         private void webSocketLog(string msg)
         {
-#if WEBSOCKET_DEBUG
+#if DEBUG
             foreach(string str in msg.Replace("\r", "").Split("\n"))
-                Logger.InfoPrint("[WEBSOCKET] " + str);
+                Logger.DebugPrint("[WEBSOCKET] " + str);
 #endif
         }
 
@@ -65,7 +64,7 @@ namespace HISP.Server.Network
 
         private string deriveWebsocketSecKey(string webSocketKey)
         {
-            byte[] derivedKey = Authentication.Sha1Digest(Encoding.UTF8.GetBytes(webSocketKey.Trim() + websocketSeed.Trim()));
+            byte[] derivedKey = Authentication.Sha1Digest(Encoding.UTF8.GetBytes(webSocketKey.Trim() + WEBSOCKET_SEED.Trim()));
             return Convert.ToBase64String(derivedKey);
         }
         private byte[] createHandshakeResponse(string secWebsocketKey)
@@ -147,6 +146,7 @@ namespace HISP.Server.Network
                 {
                     string httpHandshake = Encoding.UTF8.GetString(currentPacket);
                     byte[] handshakeResponse = parseHandshake(httpHandshake);
+
                     base.Send(handshakeResponse);
 
                     Array.Resize(ref currentPacket, 0);
