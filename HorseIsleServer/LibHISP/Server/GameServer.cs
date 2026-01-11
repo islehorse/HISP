@@ -3785,15 +3785,19 @@ namespace HISP.Server
              *  Send players nearby to you 
              *  your position, otherwise just send 1000,1000
              */
-            byte[] yourPlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.User.X, sender.User.Y, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
-            byte[] yourPlayerInfoOffscreen = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
 
             foreach (User u in User.OnlineUsers.Where(o => o.Id != sender.User.Id))
             {
                 if (World.IsPointOnScreen(u.X, u.Y, sender.User.X, sender.User.Y))
+                {
+                    byte[] yourPlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.User.X, sender.User.Y, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
                     u.Client.SendPacket(yourPlayerInfo);
+                }
                 else
+                {
+                    byte[] yourPlayerInfoOffscreen = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
                     u.Client.SendPacket(yourPlayerInfoOffscreen);
+                }
             }
 
         }
@@ -4914,37 +4918,35 @@ namespace HISP.Server
             }
 
 
-            User loggedInUser = sender.User;
-
             /*
              *  Player stuff
              */
 
             // Store this for later... do it now to avoid TOCTOU.
-            User[] onScreenBefore = User.GetOnScreenUsers(loggedInUser.X, loggedInUser.Y, true, true);
+            User[] onScreenBefore = User.GetOnScreenUsers(sender.User.X, sender.User.Y, true, true);
 
             // Leave Multirooms 
-            Multiroom.LeaveAllMultirooms(loggedInUser);
+            Multiroom.LeaveAllMultirooms(sender.User);
 
-            loggedInUser.PendingBuddyRequestTo = null;
+            sender.User.PendingBuddyRequestTo = null;
 
             // Close Social Windows
-            foreach (User sUser in loggedInUser.BeingSocializedBy)
+            foreach (User sUser in sender.User.BeingSocializedBy)
                 UpdateArea(sUser.Client);
-            loggedInUser.ClearSocailizedWith();
+            sender.User.ClearSocailizedWith();
 
 
-            if (loggedInUser.CurrentlyRidingHorse != null)
+            if (sender.User.CurrentlyRidingHorse != null)
             {
-                if(loggedInUser.CurrentlyRidingHorse.BasicStats.Experience < 25)
+                if(sender.User.CurrentlyRidingHorse.BasicStats.Experience < 25)
                 {
                     if(GameServer.RandomNumberGenerator.Next(0, 100) == 97)
                     {
-                        loggedInUser.CurrentlyRidingHorse.BasicStats.Experience++;
+                        sender.User.CurrentlyRidingHorse.BasicStats.Experience++;
                         byte[] horseBuckedMessage;
-                        if(loggedInUser.CurrentlyRidingHorse.Breed.Type == "llama")
+                        if(sender.User.CurrentlyRidingHorse.Breed.Type == "llama")
                             horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseLlamaBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        else if (loggedInUser.CurrentlyRidingHorse.Breed.Type == "camel")
+                        else if (sender.User.CurrentlyRidingHorse.Breed.Type == "camel")
                             horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseCamelBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         else
                             horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -4960,7 +4962,7 @@ namespace HISP.Server
 
             byte movementDirection = packet[1];
 
-            if (loggedInUser.Thirst <= 0 || loggedInUser.Hunger <= 0 || loggedInUser.Tiredness <= 0)
+            if (sender.User.Thirst <= 0 || sender.User.Hunger <= 0 || sender.User.Tiredness <= 0)
             {
                 if (RandomNumberGenerator.Next(0, 10) == 7)
                 {
@@ -4972,20 +4974,20 @@ namespace HISP.Server
                         if (newDirection != movementDirection)
                         {
                             movementDirection = newDirection;
-                            if (loggedInUser.Thirst <= 0)
+                            if (sender.User.Thirst <= 0)
                             {
                                 byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatThirst.ToUpper(), Messages.StatThirstDizzy), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(chatMessage);
                             }
-                            else if (loggedInUser.Hunger <= 0)
+                            else if (sender.User.Hunger <= 0)
                             {
                                 byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatHunger.ToUpper(), Messages.StatHungerStumble), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(chatMessage);
                             }
                             /*
-                             * Doesnt appear to acturally exist.
+                             * Doesnt appear to actually exist.
                              * 
-                            else if (loggedInUser.Tiredness <= 0)
+                            else if (sender.User.Tiredness <= 0)
                             {
                                 byte[] chatMessage = PacketBuilder.CreateChat(Messages.FormatRandomMovementMessage(Messages.StatTired.ToUpper()), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(chatMessage);
@@ -5006,8 +5008,8 @@ namespace HISP.Server
                 onHorse++;
             }
             byte direction = 0;
-            int newX = loggedInUser.X;
-            int newY = loggedInUser.Y;
+            int newX = sender.User.X;
+            int newY = sender.User.Y;
 
 
             bool moveTwo = false;
@@ -5016,47 +5018,47 @@ namespace HISP.Server
             {
 
                 byte Direction;
-                if (World.InSpecialTile(loggedInUser.X, loggedInUser.Y))
+                if (World.InSpecialTile(sender.User.X, sender.User.Y))
                 {
 
-                    World.SpecialTile tile = World.GetSpecialTile(loggedInUser.X, loggedInUser.Y);
+                    World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
                     if (tile.ExitX != 0)
                         newX = tile.ExitX;
                     if (tile.ExitY != 0)
                         newY = tile.ExitY;
                     else
-                        if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1) || loggedInUser.NoClip)
+                        if (Map.CheckPassable(sender.User.X, sender.User.Y + 1) || sender.User.NoClip)
                             newY += 1;
 
 
 
-                    if (loggedInUser.X + 1 == newX && loggedInUser.Y == newY)
+                    if (sender.User.X + 1 == newX && sender.User.Y == newY)
                         Direction = PacketBuilder.DIRECTION_RIGHT;
-                    else if (loggedInUser.X - 1 == newX && loggedInUser.Y == newY)
+                    else if (sender.User.X - 1 == newX && sender.User.Y == newY)
                         Direction = PacketBuilder.DIRECTION_LEFT;
-                    else if (loggedInUser.Y + 1 == newY && loggedInUser.X == newX)
+                    else if (sender.User.Y + 1 == newY && sender.User.X == newX)
                         Direction = PacketBuilder.DIRECTION_DOWN;
-                    else if (loggedInUser.Y - 1 == newY && loggedInUser.X == newX)
+                    else if (sender.User.Y - 1 == newY && sender.User.X == newX)
                         Direction = PacketBuilder.DIRECTION_UP;
                     else
                         Direction = PacketBuilder.DIRECTION_TELEPORT;
 
-                    loggedInUser.X = newX;
-                    loggedInUser.Y = newY;
+                    sender.User.X = newX;
+                    sender.User.Y = newY;
 
 
                 }
                 else
                 {
-                    if (Map.CheckPassable(loggedInUser.X, loggedInUser.Y + 1) || loggedInUser.NoClip)
-                        loggedInUser.Y += 1;
+                    if (Map.CheckPassable(sender.User.X, sender.User.Y + 1) || sender.User.NoClip)
+                        sender.User.Y += 1;
 
                     Direction = PacketBuilder.DIRECTION_DOWN;
                 }
 
-                loggedInUser.Facing = Direction + (onHorse * 5);
-                Logger.DebugPrint("Exiting player: " + loggedInUser.Username + " to: " + loggedInUser.X + "," + loggedInUser.Y);
-                byte[] moveResponse = PacketBuilder.CreateMovement(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, Direction, true);
+                sender.User.Facing = Direction + (onHorse * 5);
+                Logger.DebugPrint("Exiting player: " + sender.User.Username + " to: " + sender.User.X + "," + sender.User.Y);
+                byte[] moveResponse = PacketBuilder.CreateMovement(sender.User.X, sender.User.Y, sender.User.CharacterId, sender.User.Facing, Direction, true);
                 sender.SendPacket(moveResponse);
                 goto movementComplete;               
             }
@@ -5064,12 +5066,12 @@ namespace HISP.Server
             if (movementDirection == PacketBuilder.MOVE_UP)
             {
                 direction = PacketBuilder.DIRECTION_UP;
-                if (Map.CheckPassable(newX, newY - 1) || loggedInUser.NoClip)
+                if (Map.CheckPassable(newX, newY - 1) || sender.User.NoClip)
                     newY -= 1;
                 
 
-                if (loggedInUser.Facing == (direction + (onHorse * 5)) && loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
-                    if (Map.CheckPassable(newX, newY - 1) || loggedInUser.NoClip)
+                if (sender.User.Facing == (direction + (onHorse * 5)) && sender.User.CurrentlyRidingHorse != null && !World.InTown(sender.User.X, sender.User.Y)) // Double move
+                    if (Map.CheckPassable(newX, newY - 1) || sender.User.NoClip)
                     {
                         newY -= 1;
                         moveTwo = true;
@@ -5078,12 +5080,12 @@ namespace HISP.Server
             else if (movementDirection == PacketBuilder.MOVE_LEFT)
             {
                 direction = PacketBuilder.DIRECTION_LEFT;
-                if (Map.CheckPassable(newX - 1, newY) || loggedInUser.NoClip)
+                if (Map.CheckPassable(newX - 1, newY) || sender.User.NoClip)
                     newX -= 1;
 
 
-                if (loggedInUser.Facing == (direction + (onHorse * 5)) && loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
-                    if (Map.CheckPassable(newX - 1, newY) || loggedInUser.NoClip)
+                if (sender.User.Facing == (direction + (onHorse * 5)) && sender.User.CurrentlyRidingHorse != null && !World.InTown(sender.User.X, sender.User.Y)) // Double move
+                    if (Map.CheckPassable(newX - 1, newY) || sender.User.NoClip)
                     {
                         newX -= 1;
                         moveTwo = true;
@@ -5092,12 +5094,12 @@ namespace HISP.Server
             else if (movementDirection == PacketBuilder.MOVE_RIGHT)
             {
                 direction = PacketBuilder.DIRECTION_RIGHT;
-                if (Map.CheckPassable(newX + 1, newY) || loggedInUser.NoClip)
+                if (Map.CheckPassable(newX + 1, newY) || sender.User.NoClip)
                     newX += 1;
 
 
-                if (loggedInUser.Facing == (direction + (onHorse * 5)) && loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
-                    if (Map.CheckPassable(newX + 1, newY) || loggedInUser.NoClip)
+                if (sender.User.Facing == (direction + (onHorse * 5)) && sender.User.CurrentlyRidingHorse != null && !World.InTown(sender.User.X, sender.User.Y)) // Double move
+                    if (Map.CheckPassable(newX + 1, newY) || sender.User.NoClip)
                     {
                         newX += 1;
                         moveTwo = true;
@@ -5106,12 +5108,12 @@ namespace HISP.Server
             else if (movementDirection == PacketBuilder.MOVE_DOWN)
             {
                 direction = PacketBuilder.DIRECTION_DOWN;
-                if (Map.CheckPassable(newX, newY + 1) || loggedInUser.NoClip)
+                if (Map.CheckPassable(newX, newY + 1) || sender.User.NoClip)
                     newY += 1;
 
 
-                if (loggedInUser.Facing == (direction + (onHorse * 5)) && loggedInUser.CurrentlyRidingHorse != null && !World.InTown(loggedInUser.X, loggedInUser.Y)) // Double move
-                    if (Map.CheckPassable(newX, newY + 1) || loggedInUser.NoClip)
+                if (sender.User.Facing == (direction + (onHorse * 5)) && sender.User.CurrentlyRidingHorse != null && !World.InTown(sender.User.X, sender.User.Y)) // Double move
+                    if (Map.CheckPassable(newX, newY + 1) || sender.User.NoClip)
                     {
                         newY += 1;
                         moveTwo = true;
@@ -5125,75 +5127,69 @@ namespace HISP.Server
 
 
 
-            loggedInUser.Facing = direction + (onHorse * 5);
-            if (loggedInUser.Y != newY || loggedInUser.X != newX)
+            sender.User.Facing = direction + (onHorse * 5);
+            if (sender.User.Y != newY || sender.User.X != newX)
             {
                 if (moveTwo)
                     direction += 20;
 
-                loggedInUser.Y = newY;
-                loggedInUser.X = newX;
+                sender.User.Y = newY;
+                sender.User.X = newX;
 
                 // Check Treasures
-                if (Treasure.IsTileTreasure(loggedInUser.X, loggedInUser.Y))
+                if (Treasure.IsTileTreasure(sender.User.X, sender.User.Y))
                 {
-                    Treasure treasure = Treasure.GetTreasureAt(loggedInUser.X, loggedInUser.Y);
+                    Treasure treasure = Treasure.GetTreasureAt(sender.User.X, sender.User.Y);
                     if (treasure.Type == "RAINBOW")
                     {
-                        treasure.CollectTreasure(loggedInUser);
+                        treasure.CollectTreasure(sender.User);
                         goto movementComplete;
                     }
                 }
 
-                byte[] moveResponse = PacketBuilder.CreateMovement(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, direction, true);
+                byte[] moveResponse = PacketBuilder.CreateMovement(sender.User.X, sender.User.Y, sender.User.CharacterId, sender.User.Facing, direction, true);
                 sender.SendPacket(moveResponse);
             }
             else
             {
-                byte[] moveResponse = PacketBuilder.CreateMovement(loggedInUser.X, loggedInUser.Y, loggedInUser.CharacterId, loggedInUser.Facing, PacketBuilder.DIRECTION_NONE, false);
+                byte[] moveResponse = PacketBuilder.CreateMovement(sender.User.X, sender.User.Y, sender.User.CharacterId, sender.User.Facing, PacketBuilder.DIRECTION_NONE, false);
                 sender.SendPacket(moveResponse);
             }
             movementComplete:
 
             // Cancel Trades
-            if (loggedInUser.TradingWith != null)
-                if ((loggedInUser.TradingWith.Trader.X != loggedInUser.X) && (loggedInUser.TradingWith.Trader.Y != loggedInUser.Y))
-                    loggedInUser.TradingWith.CancelTradeMoved();
+            if (sender.User.TradingWith != null)
+                if ((sender.User.TradingWith.Trader.X != sender.User.X) && (sender.User.TradingWith.Trader.Y != sender.User.Y))
+                    sender.User.TradingWith.CancelTradeMoved();
             
             // Pac-man the world.
-            if (loggedInUser.X > Map.Width-3)
-                loggedInUser.Teleport(2, loggedInUser.Y);
+            if (sender.User.X > Map.Width-3)
+                sender.User.Teleport(2, sender.User.Y);
 
-            else if (loggedInUser.X < 2)
-                loggedInUser.Teleport(Map.Width-3, loggedInUser.Y);
+            else if (sender.User.X < 2)
+                sender.User.Teleport(Map.Width-3, sender.User.Y);
 
-            else if (loggedInUser.Y > Map.Height - 3)
-                loggedInUser.Teleport(loggedInUser.X, 2);
-            else if (loggedInUser.Y < 2)
-                loggedInUser.Teleport(loggedInUser.X, Map.Height - 3);
+            else if (sender.User.Y > Map.Height - 3)
+                sender.User.Teleport(sender.User.X, 2);
+            else if (sender.User.Y < 2)
+                sender.User.Teleport(sender.User.X, Map.Height - 3);
 
 
-            User[] onScreenNow = User.GetOnScreenUsers(loggedInUser.X, loggedInUser.Y, true, true);
+            User[] onScreenNow = User.GetOnScreenUsers(sender.User.X, sender.User.Y, true, true);
 
-            User[] goneOffScreen = onScreenBefore.Except(onScreenNow).ToArray();
-            User[] goneOnScreen = onScreenNow.Except(onScreenBefore).ToArray();
+            User[] goneOffScreen = onScreenBefore.Except(onScreenNow).Where(o => o.Id != sender.User.Id).ToArray();
+            User[] goneOnScreen = onScreenNow.Except(onScreenBefore).Where(o => o.Id != sender.User.Id).ToArray();
 
             foreach (User offScreenUsers in goneOffScreen)
             {
-                if (offScreenUsers.Id == loggedInUser.Id)
-                    continue;
-
-                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, loggedInUser.Facing, loggedInUser.CharacterId, loggedInUser.Username);
+                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
                 offScreenUsers.Client.SendPacket(playerInfoBytes);
             }
 
             foreach (User onScreenUsers in goneOnScreen)
             {
-                if (onScreenUsers.Id == loggedInUser.Id)
-                    continue;
-
                 byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenUsers.X, onScreenUsers.Y, onScreenUsers.Facing, onScreenUsers.CharacterId, onScreenUsers.Username);
-                loggedInUser.Client.SendPacket(playerInfoBytes);
+                sender.User.Client.SendPacket(playerInfoBytes);
             }
 
             Update(sender);
@@ -7625,8 +7621,7 @@ namespace HISP.Server
         {
             byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
 
-            foreach (User onScreenUser in User.GetOnScreenUsers(user.X, user.Y, true, true))
-                if (onScreenUser.Id != user.Id)
+            foreach (User onScreenUser in User.GetOnScreenUsers(user.X, user.Y, true, true).Where(o => o.Id != user.Id))
                     onScreenUser.Client.SendPacket(playerInfoBytes);
         }
         public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPrio=false, User exceptMe=null)

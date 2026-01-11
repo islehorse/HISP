@@ -778,26 +778,20 @@ namespace HISP.Player
             GameServer.UpdateWeather(Client);
 
 
-            User[] goneOffScreen = onScreenBefore.Except(onScreenNow).ToArray();
-            User[] goneOnScreen = onScreenNow.Except(onScreenBefore).ToArray();
+            User[] goneOffScreen = onScreenBefore.Except(onScreenNow).Where(o => o.Id != this.Id).ToArray();
+            User[] goneOnScreen = onScreenNow.Except(onScreenBefore).Where(o => o.Id != this.Id).ToArray();
 
 
             // Players now offscreen tell the client is at 1000,1000.
             foreach (User offScreenUsers in goneOffScreen)
             {
-                if (offScreenUsers.Id == this.Id)
-                    continue;
-
-                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, this.Facing, this.CharacterId, this.Username);
+                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, this.Facing, this.CharacterId, this.Username);
                 offScreenUsers.Client.SendPacket(playerInfoBytes);
             }
 
             // Tell players now on screen there locations
             foreach (User onScreenUsers in goneOnScreen)
             {
-                if (onScreenUsers.Id == this.Id)
-                    continue;
-
                 byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenUsers.X, onScreenUsers.Y, onScreenUsers.Facing, onScreenUsers.CharacterId, onScreenUsers.Username);
                 Client.SendPacket(playerInfoBytes);
             }
