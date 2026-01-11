@@ -3795,7 +3795,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    byte[] yourPlayerInfoOffscreen = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
+                    byte[] yourPlayerInfoOffscreen = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
                     u.Client.SendPacket(yourPlayerInfoOffscreen);
                 }
             }
