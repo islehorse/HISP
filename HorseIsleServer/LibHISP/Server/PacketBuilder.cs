@@ -437,11 +437,11 @@ namespace HISP.Server
             packet[0] = PACKET_PLAYERINFO;
             packet[1] = PLAYERINFO_UPDATE_OR_CREATE;
 
-            packet[2] = (byte)(((x - 4) / 64) + 20);
-            packet[3] = (byte)(((x - 4) % 64) + 20);
+            packet[2] = (byte)(((x) / 64) + 20);
+            packet[3] = (byte)(((x) % 64) + 20);
 
-            packet[4] = (byte)(((y - 1) / 64) + 20);
-            packet[5] = (byte)(((y - 1) % 64) + 20);
+            packet[4] = (byte)(((y) / 64) + 20);
+            packet[5] = (byte)(((y) % 64) + 20);
 
             packet[6] = (byte)(facing + 20);
 
@@ -718,17 +718,17 @@ namespace HISP.Server
                 packet.Add(AREA_SEPERATOR);
                 packet.Add(AREA_TOWN);
                 
-                packet.Add((byte)(((town.StartX - 4) / 64) + 20));
-                packet.Add((byte)(((town.StartX - 4) % 64) + 20));
+                packet.Add((byte)(((town.StartX) / 64) + 20));
+                packet.Add((byte)(((town.StartX) % 64) + 20));
                 
-                packet.Add((byte)(((town.EndX - 4) / 64) + 20));
-                packet.Add((byte)(((town.EndX - 4) % 64) + 20));
+                packet.Add((byte)(((town.EndX) / 64) + 20));
+                packet.Add((byte)(((town.EndX) % 64) + 20));
                 
-                packet.Add((byte)(((town.StartY - 1) / 64) + 20));
-                packet.Add((byte)(((town.StartY - 1) % 64) + 20));
+                packet.Add((byte)(((town.StartY) / 64) + 20));
+                packet.Add((byte)(((town.StartY) % 64) + 20));
                 
-                packet.Add((byte)(((town.EndY - 1) / 64) + 20));
-                packet.Add((byte)(((town.EndY - 1) % 64) + 20));
+                packet.Add((byte)(((town.EndY) / 64) + 20));
+                packet.Add((byte)(((town.EndY) % 64) + 20));
 
 
                 Helper.ByteArrayToByteList(townBytes, packet);
@@ -743,17 +743,17 @@ namespace HISP.Server
                 packet.Add(AREA_SEPERATOR);
                 packet.Add(AREA_AREA);
 
-                packet.Add((byte)(((area.StartX - 4) / 64) + 20));
-                packet.Add((byte)(((area.StartX - 4) % 64) + 20));
+                packet.Add((byte)(((area.StartX) / 64) + 20));
+                packet.Add((byte)(((area.StartX) % 64) + 20));
 
-                packet.Add((byte)(((area.EndX - 4) / 64) + 20));
-                packet.Add((byte)(((area.EndX - 4) % 64) + 20));
+                packet.Add((byte)(((area.EndX) / 64) + 20));
+                packet.Add((byte)(((area.EndX) % 64) + 20));
                 
-                packet.Add((byte)(((area.StartY - 1) / 64) + 20));
-                packet.Add((byte)(((area.StartY - 1) % 64) + 20));
+                packet.Add((byte)(((area.StartY) / 64) + 20));
+                packet.Add((byte)(((area.StartY) % 64) + 20));
                 
-                packet.Add((byte)(((area.EndY - 1) / 64) + 20));
-                packet.Add((byte)(((area.EndY - 1) % 64) + 20));
+                packet.Add((byte)(((area.EndY) / 64) + 20));
+                packet.Add((byte)(((area.EndY) % 64) + 20));
 
 
                 Helper.ByteArrayToByteList(areaBytes, packet);
@@ -768,17 +768,17 @@ namespace HISP.Server
                 packet.Add(AREA_SEPERATOR);
                 packet.Add(AREA_ISLE);
 
-                packet.Add((byte)(((isle.StartX - 4) / 64) + 20));
-                packet.Add((byte)(((isle.StartX - 4) % 64) + 20));
+                packet.Add((byte)(((isle.StartX) / 64) + 20));
+                packet.Add((byte)(((isle.StartX) % 64) + 20));
 
-                packet.Add((byte)(((isle.EndX - 4) / 64) + 20));
-                packet.Add((byte)(((isle.EndX - 4) % 64) + 20));
+                packet.Add((byte)(((isle.EndX) / 64) + 20));
+                packet.Add((byte)(((isle.EndX) % 64) + 20));
 
-                packet.Add((byte)(((isle.StartY - 1) / 64) + 20));
-                packet.Add((byte)(((isle.StartY - 1) % 64) + 20));
+                packet.Add((byte)(((isle.StartY) / 64) + 20));
+                packet.Add((byte)(((isle.StartY) % 64) + 20));
 
-                packet.Add((byte)(((isle.EndY - 1) / 64) + 20));
-                packet.Add((byte)(((isle.EndY - 1) % 64) + 20));
+                packet.Add((byte)(((isle.EndY) / 64) + 20));
+                packet.Add((byte)(((isle.EndY) % 64) + 20));
 
                 packet.Add((byte)isle.Tileset.ToString()[0]);
                 

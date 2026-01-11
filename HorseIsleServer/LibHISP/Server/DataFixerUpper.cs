@@ -41,11 +41,11 @@ namespace HISP.Server
 
         private static void fixupVersion2_2_4()
         {
-            Database.TryExecuteSqlQuery("UPDATE DroppedItems SET X=X-4, Y=Y-4;");
-            Database.TryExecuteSqlQuery("UPDATE NpcPos SET X=X-4, Y=Y-4;");
-            Database.TryExecuteSqlQuery("UPDATE Treasure SET x=x-4, y=y-4;");
-            Database.TryExecuteSqlQuery("UPDATE UserExt SET X=X-4, Y=Y-4;");
-            Database.TryExecuteSqlQuery("UPDATE WildHorse SET x=x-4, y=y-4;");
+            Database.TryExecuteSqlQuery("UPDATE DroppedItems SET X=X-4, Y=Y-1;");
+            Database.TryExecuteSqlQuery("UPDATE NpcPos SET X=X-4, Y=Y-1;");
+            Database.TryExecuteSqlQuery("UPDATE Treasure SET x=x-4, y=y-1;");
+            Database.TryExecuteSqlQuery("UPDATE UserExt SET X=X-4, Y=Y-1;");
+            Database.TryExecuteSqlQuery("UPDATE WildHorse SET x=x-4, y=y-1;");
         }
 
         public static void FixUpDb()

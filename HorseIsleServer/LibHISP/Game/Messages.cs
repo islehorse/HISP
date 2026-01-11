@@ -2894,11 +2894,11 @@ namespace HISP.Game
         public static string FormatMapLocation(int x, int y)
         {
             string xy = "";
-            xy += (char)(((x - 4) / 64) + 20);
-            xy += (char)(((x - 4) % 64) + 20);
+            xy += (char)(((x) / 64) + 20);
+            xy += (char)(((x) % 64) + 20);
 
-            xy += (char)(((y - 1) / 64) + 20);
-            xy += (char)(((y - 1) % 64) + 20);
+            xy += (char)(((y) / 64) + 20);
+            xy += (char)(((y) % 64) + 20);
             return xy;
         }
 
