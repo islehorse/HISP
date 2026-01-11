@@ -3717,13 +3717,13 @@ namespace HISP.Server
             {
                 if(World.IsPointOnScreen(sender.User.X, sender.User.Y, sender.User.X, sender.User.Y))
                 {
-                    byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.User.X, sender.User.Y, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
-                    sender.SendPacket(PlayerInfo);
+                    byte[] playerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.User.X, sender.User.Y, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
+                    sender.SendPacket(playerInfo);
                 }
                 else
                 {
-                    byte[] PlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
-                    sender.SendPacket(PlayerInfo);
+                    byte[] playerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
+                    sender.SendPacket(playerInfo);
                 }
             }
 
@@ -4923,7 +4923,7 @@ namespace HISP.Server
              */
 
             // Store this for later... do it now to avoid TOCTOU.
-            User[] onScreenBefore = User.GetOnScreenUsers(sender.User.X, sender.User.Y, true, true);
+            User[] onScreenBefore = User.GetOnScreenUsers(sender.User.X, sender.User.Y, true, true).Where(o => o.Id != sender.User.Id).ToArray();
 
             // Leave Multirooms 
             Multiroom.LeaveAllMultirooms(sender.User);
@@ -5175,14 +5175,14 @@ namespace HISP.Server
                 sender.User.Teleport(sender.User.X, Map.Height - 3);
 
 
-            User[] onScreenNow = User.GetOnScreenUsers(sender.User.X, sender.User.Y, true, true);
+            User[] onScreenNow = User.GetOnScreenUsers(sender.User.X, sender.User.Y, true, true).Where(o => o.Id != sender.User.Id).ToArray();
 
-            User[] goneOffScreen = onScreenBefore.Except(onScreenNow).Where(o => o.Id != sender.User.Id).ToArray();
-            User[] goneOnScreen = onScreenNow.Except(onScreenBefore).Where(o => o.Id != sender.User.Id).ToArray();
+            User[] goneOffScreen = onScreenBefore.Except(onScreenNow).ToArray();
+            User[] goneOnScreen = onScreenNow.Except(onScreenBefore).ToArray();
 
             foreach (User offScreenUsers in goneOffScreen)
             {
-                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000 + 4, 1000 + 1, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
+                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
                 offScreenUsers.Client.SendPacket(playerInfoBytes);
             }
 

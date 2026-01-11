@@ -176,14 +176,10 @@ namespace HISP.Player
 
             foreach (User user in OnlineUsers)
             {
-                if (!includeStealth && user.Stealth)
-                    continue;
-                if (!includeMuted && user.MuteNear)
-                    continue;
-                if (World.IsPointOnScreen(x, y, user.X, user.Y))
-                    usersOnScreen.Add(user);
+                if (!includeStealth && user.Stealth) continue;
+                if (!includeMuted && user.MuteNear) continue;
+                if (World.IsPointOnScreen(x, y, user.X, user.Y)) usersOnScreen.Add(user);
             }
-
 
             return usersOnScreen.ToArray();
         }
