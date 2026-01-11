@@ -149,7 +149,7 @@ public bool Win(string gameTitle)
             else
             {
                 int currentScore = GetHighscore(gameTitle).Score;
-                if (score < currentScore)
+                if (time ? score > currentScore : score < currentScore)
                 {
                     score = currentScore;
                     isNewScore = false;
