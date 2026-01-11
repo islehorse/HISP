@@ -4931,8 +4931,7 @@ namespace HISP.Server
             sender.User.PendingBuddyRequestTo = null;
 
             // Close Social Windows
-            foreach (User sUser in sender.User.BeingSocializedBy)
-                UpdateArea(sUser.Client);
+            foreach (User sUser in sender.User.BeingSocializedBy) UpdateArea(sUser.Client);
             sender.User.ClearSocailizedWith();
 
 
