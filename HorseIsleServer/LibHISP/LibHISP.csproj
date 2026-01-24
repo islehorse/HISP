@@ -61,6 +61,7 @@
 	<TrimMode>full</TrimMode>
 	<EnableTrimAnalyzer>false</EnableTrimAnalyzer>
 	<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
+	  
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x86'">

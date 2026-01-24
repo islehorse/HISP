@@ -1,14 +1,14 @@
-﻿using System;
+﻿using HISP.Game;
+using HISP.Game.Horse;
+using HISP.Game.Inventory;
+using HISP.Game.Services;
+using HISP.Player.Equips;
+using HISP.Server;
+using HISP.Util;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using HISP.Game;
-using HISP.Server;
-using HISP.Player.Equips;
-using HISP.Game.Services;
-using HISP.Game.Inventory;
-using HISP.Game.Horse;
-using HISP.Util;
+using System.Runtime.ConstrainedExecution;
 
 
 namespace HISP.Player
@@ -171,17 +171,7 @@ namespace HISP.Player
 
         public static User[] GetOnScreenUsers(int x, int y, bool includeStealth = false, bool includeMuted = false)
         {
-
-            List<User> usersOnScreen = new List<User>();
-
-            foreach (User user in OnlineUsers)
-            {
-                if (!includeStealth && user.Stealth) continue;
-                if (!includeMuted && user.MuteNear) continue;
-                if (World.IsPointOnScreen(x, y, user.X, user.Y)) usersOnScreen.Add(user);
-            }
-
-            return usersOnScreen.ToArray();
+            return OnlineUsers.Where(o => (includeStealth ? true : !o.Stealth) && (includeMuted ? true : !o.MuteNear) && World.IsPointOnScreen(x, y, o.X, o.Y)).ToArray();
         }
 
         public static User[] GetNearbyUsers(int x, int y, bool includeStealth = false, bool includeMuted = false)
@@ -190,19 +180,9 @@ namespace HISP.Player
             int endX = x + 15;
             int startY = y - 19;
             int endY = y + 19;
-            List<User> usersNearby = new List<User>();
 
-            foreach (User user in OnlineUsers)
-            {
-                if (!includeStealth && user.Stealth)
-                    continue;
-                if (!includeMuted && user.MuteNear)
-                    continue;
-                if (startX <= user.X && endX >= user.X && startY <= user.Y && endY >= user.Y)
-                    usersNearby.Add(user);
-            }
+            return OnlineUsers.Where(o => (includeStealth ? true : !o.Stealth) && (includeMuted ? true : !o.MuteNear) && (startX <= o.X && endX >= o.X && startY <= o.Y && endY >= o.Y)).ToArray();
 
-            return usersNearby.ToArray();
         }
         public bool NoClip
         {
@@ -216,7 +196,7 @@ namespace HISP.Player
                         {
                             return true;
                         }
-                        if (CurrentlyRidingHorse.Breed.Id == 170)
+                        if (CurrentlyRidingHorse.Breed.Id == 170) // unipeg
                         {
                             return true;
                         }
@@ -759,41 +739,24 @@ namespace HISP.Player
 
             return icon;
         }
+
+
         public void Teleport(int newX, int newY)
         {
             Logger.DebugPrint("Teleporting: " + Username + " to: " + newX.ToString() + "," + newY.ToString());
 
-            User[] onScreenBefore = GetOnScreenUsers(X, Y, true, true);
-            User[] onScreenNow = GetOnScreenUsers(newX, newY, true, true);
+            Client.SendPacket(PacketBuilder.CreateMovement(newX, newY, CharacterId, Facing, PacketBuilder.DIRECTION_TELEPORT, true));
 
-            X = newX;
-            Y = newY;
+            GameServer.UpdatePlayersOnScreen(this, this.X, this.Y, newX, newY);
 
-            byte[] MovementPacket = PacketBuilder.CreateMovement(X, Y, CharacterId, Facing, PacketBuilder.DIRECTION_TELEPORT, true);
-            Client.SendPacket(MovementPacket);
+            this.X = newX;
+            this.Y = newY;
+
             GameServer.UpdateWeather(Client);
 
 
-            User[] goneOffScreen = onScreenBefore.Except(onScreenNow).Where(o => o.Id != this.Id).ToArray();
-            User[] goneOnScreen = onScreenNow.Except(onScreenBefore).Where(o => o.Id != this.Id).ToArray();
 
-
-            // Players now offscreen tell the client is at 1000,1000.
-            foreach (User offScreenUsers in goneOffScreen)
-            {
-                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, this.Facing, this.CharacterId, this.Username);
-                offScreenUsers.Client.SendPacket(playerInfoBytes);
-            }
-
-            // Tell players now on screen there locations
-            foreach (User onScreenUsers in goneOnScreen)
-            {
-                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenUsers.X, onScreenUsers.Y, onScreenUsers.Facing, onScreenUsers.CharacterId, onScreenUsers.Username);
-                Client.SendPacket(playerInfoBytes);
-            }
-
-
-            GameServer.Update(Client);
+            GameServer.UpdateAll(Client);
         }
 
         // Insert LGBT Patch here
@@ -880,7 +843,6 @@ namespace HISP.Player
             HorseInventory = new HorseInventory(this);
 
             // Generate SecCodes
-
 
             SecCodeSeeds[0] = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
             SecCodeSeeds[1] = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');

@@ -86,7 +86,7 @@ namespace HISP.Game
         {
             string playersNearby = "";
 
-            User[] nearbyUsers = User.GetNearbyUsers(x, y, true, true);
+            User[] nearbyUsers = User.GetNearbyUsers(x, y, false, true);
             int count = 0;
             if (nearbyUsers.Length > 1)
             {

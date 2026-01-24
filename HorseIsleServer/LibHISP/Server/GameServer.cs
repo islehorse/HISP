@@ -1,24 +1,24 @@
-﻿using System;
+﻿using HISP.Game;
+using HISP.Game.Chat;
+using HISP.Game.Events;
+using HISP.Game.Horse;
+using HISP.Game.Inventory;
+using HISP.Game.Items;
+using HISP.Game.Services;
+using HISP.Game.SwfModules;
+using HISP.Player;
+using HISP.Player.Equips;
+using HISP.Security;
+using HISP.Util;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
-using System.Drawing;
-
-using HISP.Player;
-using HISP.Game;
-using HISP.Security;
-using HISP.Game.Chat;
-using HISP.Player.Equips;
-using HISP.Game.Services;
-using HISP.Game.Inventory;
-using HISP.Game.SwfModules;
-using HISP.Game.Horse;
-using HISP.Game.Events;
-using HISP.Game.Items;
-using HISP.Util;
 
 namespace HISP.Server
 {
@@ -3709,30 +3709,12 @@ namespace HISP.Server
             // Sends Meta Window information (Nearby, current tile, etc)
             UpdateArea(sender);
 
-            /*
-             *  Send all nearby players locations to the client
-             *  if there not nearby, say there at 1000,1000.
-             */
-            foreach (User u in User.OnlineUsers.Where(o => o.Id != sender.User.Id))
-            {
-                if(World.IsPointOnScreen(sender.User.X, sender.User.Y, sender.User.X, sender.User.Y))
-                {
-                    byte[] playerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.User.X, sender.User.Y, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
-                    sender.SendPacket(playerInfo);
-                }
-                else
-                {
-                    byte[] playerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
-                    sender.SendPacket(playerInfo);
-                }
-            }
 
             /*
              *  Update all nearby users 
              *  that the new player logged in.
              */
-            foreach (User nearbyUser in User.GetNearbyUsers(sender.User.X, sender.User.Y, false, false).Where(o => (o.Id != sender.User.Id) && (!o.MajorPriority && !o.MinorPriority)))
-                UpdateArea(nearbyUser.Client);
+            UpdateNearbyArea(sender);
 
             /*
              * Send a list of isles, towns and areas to the player
@@ -3780,27 +3762,10 @@ namespace HISP.Server
             foreach (User u in User.OnlineUsers.Where(o => (!o.MuteLogins && !o.MuteAll) && (o.Id != sender.User.Id)))
                 u.Client.SendPacket(loginMessageBytes);
 
-
-            /*
-             *  Send players nearby to you 
-             *  your position, otherwise just send 1000,1000
-             */
-
-            foreach (User u in User.OnlineUsers.Where(o => o.Id != sender.User.Id))
-            {
-                if (World.IsPointOnScreen(u.X, u.Y, sender.User.X, sender.User.Y))
-                {
-                    byte[] yourPlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(sender.User.X, sender.User.Y, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
-                    u.Client.SendPacket(yourPlayerInfo);
-                }
-                else
-                {
-                    byte[] yourPlayerInfoOffscreen = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
-                    u.Client.SendPacket(yourPlayerInfoOffscreen);
-                }
-            }
+            InitalizeNewPlayerPositionInfo(sender);
 
         }
+
 
         public static void OnSwfModuleCommunication(GameClient sender, byte[] packet)
         {
@@ -4495,7 +4460,7 @@ namespace HISP.Server
                 sender.SendPacket(chatPacket);
 
                 UpdateArea(sender);
-                UpdateUserFacingAndLocation(sender.User);
+                UpdatePlayerInfoAndPosition(sender.User);
             }
             else if (method == PacketBuilder.SECCODE_AWARD)
             {
@@ -4922,9 +4887,7 @@ namespace HISP.Server
              *  Player stuff
              */
 
-            // Store this for later... do it now to avoid TOCTOU.
-            User[] onScreenBefore = User.GetOnScreenUsers(sender.User.X, sender.User.Y, true, true).Where(o => o.Id != sender.User.Id).ToArray();
-
+            
             // Leave Multirooms 
             Multiroom.LeaveAllMultirooms(sender.User);
 
@@ -4984,7 +4947,7 @@ namespace HISP.Server
                                 sender.SendPacket(chatMessage);
                             }
                             /*
-                             * Doesnt appear to actually exist.
+                             * This isn't actually a thing?
                              * 
                             else if (sender.User.Tiredness <= 0)
                             {
@@ -5007,6 +4970,10 @@ namespace HISP.Server
                 onHorse++;
             }
             byte direction = 0;
+
+            int oldX = sender.User.X;
+            int oldY = sender.User.Y;
+            
             int newX = sender.User.X;
             int newY = sender.User.Y;
 
@@ -5164,34 +5131,15 @@ namespace HISP.Server
             // Pac-man the world.
             if (sender.User.X > Map.Width-3)
                 sender.User.Teleport(2, sender.User.Y);
-
             else if (sender.User.X < 2)
                 sender.User.Teleport(Map.Width-3, sender.User.Y);
-
             else if (sender.User.Y > Map.Height - 3)
                 sender.User.Teleport(sender.User.X, 2);
             else if (sender.User.Y < 2)
                 sender.User.Teleport(sender.User.X, Map.Height - 3);
 
-
-            User[] onScreenNow = User.GetOnScreenUsers(sender.User.X, sender.User.Y, true, true).Where(o => o.Id != sender.User.Id).ToArray();
-
-            User[] goneOffScreen = onScreenBefore.Except(onScreenNow).ToArray();
-            User[] goneOnScreen = onScreenNow.Except(onScreenBefore).ToArray();
-
-            foreach (User offScreenUsers in goneOffScreen)
-            {
-                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, sender.User.Facing, sender.User.CharacterId, sender.User.Username);
-                offScreenUsers.Client.SendPacket(playerInfoBytes);
-            }
-
-            foreach (User onScreenUsers in goneOnScreen)
-            {
-                byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenUsers.X, onScreenUsers.Y, onScreenUsers.Facing, onScreenUsers.CharacterId, onScreenUsers.Username);
-                sender.User.Client.SendPacket(playerInfoBytes);
-            }
-
-            Update(sender);
+            UpdatePlayersOnScreen(sender.User, oldX, oldY, newX, newY);
+            UpdateAll(sender);
 
         }
         public static void OnQuitPacket(GameClient sender, byte[] packet)
@@ -7265,12 +7213,12 @@ namespace HISP.Server
                     }
                     if (packet[2] == PacketBuilder.ITEM_INFORMATON_ID)
                     {
-                        sender.User.MajorPriority = true;
                         if (!Item.ItemIdExist(value))
                         {
-                            Logger.HackerPrint(sender.User.Username + " asked for details of non existiant item.");
+                            Logger.HackerPrint(sender.User.Username + " asked for details of non existent item.");
                             return;
                         }
+                        sender.User.MajorPriority = true;
 
                         Item.ItemInformation info = Item.GetItemById(value);
                         string infoMessage = Meta.BuildItemInfo(info);
@@ -7519,16 +7467,19 @@ namespace HISP.Server
          *  Update game state functions.
          */
 
-        public static void Update(GameClient client)
+        public static void UpdateNearbyArea(GameClient client)
+        {
+            foreach (User nearbyUser in User.GetNearbyUsers(client.User.X, client.User.Y, false, true).Where(o => (o.Id != client.User.Id) && !o.MajorPriority && !o.MinorPriority))
+                UpdateArea(nearbyUser.Client);
+            
+        }
+
+        public static void UpdateAll(GameClient client)
         {
             UpdateArea(client);
-            foreach (User nearbyUser in User.GetNearbyUsers(client.User.X, client.User.Y, false, false))
-                if (nearbyUser.Id != client.User.Id)
-                    if(!nearbyUser.MajorPriority)
-                        if(!nearbyUser.MinorPriority)
-                            UpdateArea(nearbyUser.Client);
+            UpdateNearbyArea(client);
 
-            UpdateUserFacingAndLocation(client.User);
+            UpdatePlayerInfoAndPosition(client.User);
         }
 
         public static void UpdateDrawingForAll(string id, GameClient sender, string drawing, bool includingSender=false)
@@ -7616,24 +7567,80 @@ namespace HISP.Server
             forClient.SendPacket(PlayerData);
         }
 
-        public static void UpdateUserFacingAndLocation(User user)
+
+        public static void InitalizeNewPlayerPositionInfo(GameClient newClient)
+        {
+            // send the newly logged in user info about other players
+            foreach (User user in User.OnlineUsers.Where(o => o.Id != newClient.User.Id))
+            {
+                if (World.IsPointOnScreen(newClient.User.X, newClient.User.Y, user.X, user.Y))
+                {
+                    byte[] playerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
+                    newClient.SendPacket(playerInfo);
+                }
+                else
+                {
+                    byte[] playerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, user.Facing, user.CharacterId, user.Username);
+                    newClient.SendPacket(playerInfo);
+                }
+            }
+
+            // send other players info about the newly logged in user
+            foreach (User user in User.OnlineUsers.Where(o => o.Id != newClient.User.Id))
+            {
+                if (World.IsPointOnScreen(user.X, user.Y, newClient.User.X, newClient.User.Y))
+                {
+                    byte[] yourPlayerInfo = PacketBuilder.CreatePlayerInfoUpdateOrCreate(newClient.User.X, newClient.User.Y, newClient.User.Facing, newClient.User.CharacterId, newClient.User.Username);
+                    user.Client.SendPacket(yourPlayerInfo);
+                }
+                else
+                {
+                    byte[] yourPlayerInfoOffscreen = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, newClient.User.Facing, newClient.User.CharacterId, newClient.User.Username);
+                    user.Client.SendPacket(yourPlayerInfoOffscreen);
+                }
+            }
+        }
+        public static void UpdatePlayersOnScreen(User forUser, int oldX, int oldY, int newX, int newY)
+        {
+            User[] onScreenBefore = User.GetOnScreenUsers(oldX, oldY, true, true);
+            User[] onScreenNow = User.GetOnScreenUsers(newX, newY, true, true);
+
+            User[] goneOffScreen = onScreenBefore.Except(onScreenNow).Where(o => o.Id != forUser.Id).ToArray();
+            User[] goneOnScreen = onScreenNow.Except(onScreenBefore).Where(o => o.Id != forUser.Id).ToArray();
+
+
+            // Update your position for players who are now offscreen, and their position for the current user.
+            foreach (User offScreenUser in goneOffScreen)
+            {
+                // For players now offscreen, tell their clients, and your client their position is 1000,1000;
+                byte[] youLeftScreenPacket = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, forUser.Facing, forUser.CharacterId, forUser.Username);
+                offScreenUser.Client.SendPacket(youLeftScreenPacket);
+
+                // Also tell your own client that their positions is now 1000,1000;
+                byte[] playerLeftScreenPacket = PacketBuilder.CreatePlayerInfoUpdateOrCreate(1000, 1000, offScreenUser.Facing, offScreenUser.CharacterId, offScreenUser.Username);
+                forUser.Client.SendPacket(playerLeftScreenPacket);
+            }
+
+
+            // For players now onscreen, tell the client their position.
+            foreach (User onScreenUser in goneOnScreen)
+            {
+                byte[] playerEnteredScreenPacket = PacketBuilder.CreatePlayerInfoUpdateOrCreate(onScreenUser.X, onScreenUser.Y, onScreenUser.Facing, onScreenUser.CharacterId, onScreenUser.Username);
+                forUser.Client.SendPacket(playerEnteredScreenPacket);
+            }
+        }
+        public static void UpdatePlayerInfoAndPosition(User user)
         {
             byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
 
             foreach (User onScreenUser in User.GetOnScreenUsers(user.X, user.Y, true, true).Where(o => o.Id != user.Id))
                     onScreenUser.Client.SendPacket(playerInfoBytes);
         }
-        public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPrio=false, User exceptMe=null)
+
+        public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPriority=false, User exceptMe=null)
         {
-            foreach(GameClient client in GameClient.ConnectedClients)
-            {
-                if (client.LoggedIn)
-                    if (client.User.X == x && client.User.Y == y)
-                        if(!client.User.MinorPriority || ignoreMetaPrio)
-                            if(!client.User.MajorPriority)
-                                if(client.User != exceptMe)
-                                    UpdateArea(client);
-            }
+            foreach (User user in User.OnlineUsers.Where(o => (o.X == x && o.Y == y) && (ignoreMetaPriority ? true : !o.MinorPriority) && (!o.MajorPriority) && (exceptMe != null ? true : o.Id != exceptMe.Id)))
+                UpdateArea(user.Client);
         }
         
         public static void UpdateArea(GameClient forClient)
@@ -7868,7 +7875,7 @@ namespace HISP.Server
             sender.User.Facing += incBy;
             sender.User.LastRiddenHorse = horseRandomId;
 
-            UpdateUserFacingAndLocation(sender.User);
+            UpdatePlayerInfoAndPosition(sender.User);
 
             byte[] updatePlayer = PacketBuilder.CreateMovement(sender.User.X, sender.User.Y, sender.User.CharacterId, sender.User.Facing, PacketBuilder.DIRECTION_NONE, true);
             sender.SendPacket(updatePlayer);
@@ -7897,7 +7904,7 @@ namespace HISP.Server
             sender.User.CurrentlyRidingHorse = null;
 
             sender.User.Facing %= 5;
-            UpdateUserFacingAndLocation(sender.User);
+            UpdatePlayerInfoAndPosition(sender.User);
 
             byte[] updatePlayer = PacketBuilder.CreateMovement(sender.User.X, sender.User.Y, sender.User.CharacterId, sender.User.Facing, PacketBuilder.DIRECTION_NONE, true);
             sender.SendPacket(updatePlayer);

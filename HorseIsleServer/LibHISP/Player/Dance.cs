@@ -65,7 +65,7 @@ namespace HISP.Player
             byte[] moveResponse = PacketBuilder.CreateMovement(baseUser.X, baseUser.Y, baseUser.CharacterId, baseUser.Facing, PacketBuilder.DIRECTION_NONE, false);
             baseUser.Client.SendPacket(moveResponse);
 
-            GameServer.UpdateUserFacingAndLocation(baseUser);
+            GameServer.UpdatePlayerInfoAndPosition(baseUser);
 
             done:;
             if (MoveIndex < Moves.Length)
