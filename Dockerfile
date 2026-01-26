@@ -4,7 +4,7 @@ WORKDIR /Build
 # Copy everything
 COPY . ./
 # update and install python
-RUN apt update && apt install python3 git build-essential zlib1g-dev dos2unix binutils-dev -y
+RUN apt update && apt install python3 git build-essential zlib1g-dev dos2unix binutils binutils-dev -y
 # Build and publish a release
 WORKDIR /Build/HorseIsleServer
 RUN dotnet publish -c Linux -p:PublishProfile=Linux64 HISPd
