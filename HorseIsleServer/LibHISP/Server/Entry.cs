@@ -44,10 +44,14 @@ namespace HISP.Server
             Database.OpenDatabase,
             GameDataJson.ReadGamedata,
             
-            // map
+            // map, game time, etc
             Map.OpenMap,
             World.ReadWorldData,
+
+            // initalize map objects 
             Treasure.Init,
+            DroppedItems.Init,
+            WildHorse.Init,
 
             // load / setup data
             Drawingroom.LoadAllDrawingRooms,
