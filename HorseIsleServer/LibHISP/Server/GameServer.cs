@@ -7637,9 +7637,9 @@ namespace HISP.Server
                     onScreenUser.Client.SendPacket(playerInfoBytes);
         }
 
-        public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPriority=false, User exceptMe=null)
+        public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPriority=false, User exceptUser=null)
         {
-            foreach (User user in User.OnlineUsers.Where(o => (o.X == x && o.Y == y) && (ignoreMetaPriority ? true : !o.MinorPriority) && (!o.MajorPriority) && (exceptMe != null ? true : o.Id != exceptMe.Id)))
+            foreach (User user in User.OnlineUsers.Where(o => (o.X == x && o.Y == y) && (ignoreMetaPriority ? true : !o.MinorPriority) && (!o.MajorPriority) && (exceptUser == null ? true : o.Id != exceptUser.Id)))
                 UpdateArea(user.Client);
         }
         
