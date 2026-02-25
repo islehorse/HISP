@@ -48,13 +48,21 @@ namespace HISP.Server
             Database.TryExecuteSqlQuery("UPDATE WildHorse SET x=x-4, y=y-1;");
         }
 
+        private static void fixupVersion2_2_36()
+        {
+            Database.TryExecuteSqlQuery("DELETE FROM DroppedItems WHERE randomId IN (SELECT randomId FROM DroppedItems GROUP BY RandomId HAVING COUNT(*)>1);");
+            Database.TryExecuteSqlQuery("DELETE FROM WildHorse WHERE randomId IN (SELECT randomId FROM WildHorse GROUP BY RandomId HAVING COUNT(*)>1);");
+            Database.TryExecuteSqlQuery("DELETE FROM Inventory WHERE randomId IN (SELECT randomId FROM Inventory GROUP BY RandomId HAVING COUNT(*)>1);");
+            Database.TryExecuteSqlQuery("DELETE FROM Horses WHERE randomId IN (SELECT randomId FROM Horses GROUP BY RandomId HAVING COUNT(*)>1);");   
+        }
+
         public static void FixUpDb()
         {
             string lastVersionStr = Database.GetLastLoadedVersion();
             string currentVersionStr = ServerVersion.GetVersionString();
 
-            int lastVersion = Convert.ToInt32(Int32.Parse(lastVersionStr.ToLower().Replace("v", "").Replace(".", "").PadRight(4, '0')));
-            int currentVersion = Convert.ToInt32(Int32.Parse(currentVersionStr.ToLower().Replace("v", "").Replace(".", "").PadRight(4,'0')));
+            int lastVersion = Convert.ToInt32(Int32.Parse(lastVersionStr.ToLower().Replace("v", "").Replace(".", "")));
+            int currentVersion = Convert.ToInt32(Int32.Parse(currentVersionStr.ToLower().Replace("v", "").Replace(".", "")));
 
             if (currentVersion > lastVersion)
             {
@@ -63,9 +71,17 @@ namespace HISP.Server
                 if (lastVersion < 11) fixupVersion1_1();
                 if (lastVersion < 1720) fixupVersion1_7_20();
                 if (lastVersion < 2240) fixupVersion2_2_4();
+                if (lastVersion < 2436) fixupVersion2_2_36();
 
-                Database.SetLastLoadedVersion(currentVersionStr);
             }
+
+            if (Database.GetTotalWorldEntries() != 1)
+            {
+                Database.TryExecuteSqlQuery("DELETE FROM World");
+                Database.InitWorldData();
+            }
+
+            Database.SetLastLoadedVersion(currentVersionStr);
 
 
         }

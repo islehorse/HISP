@@ -16,7 +16,6 @@ using Microsoft.Data.Sqlite;
 using SQLitePCL;
 using HISP.Util;
 using System.IO;
-using HISP.Game.Chat;
 
 namespace HISP.Server
 {
@@ -128,7 +127,6 @@ namespace HISP.Server
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(100), Message TEXT(65535), TimeSent INT, BeenRead TEXT(3))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS BuddyList(Id INT, IdFriend INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS MessageQueue(Id INT, Message TEXT(1028))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS World(Time INT, Day INT, Year INT, StartTime INT, LastLoadedInVersion TEXT(64))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Weather(Area TEXT(1028), Weather TEXT(64))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, RandomID INT, ItemID INT, Data INT)");
@@ -158,11 +156,31 @@ namespace HISP.Server
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS MutedPlayers(playerId INT, mutePlayerId INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS ItemPurchaseQueue(playerId INT, itemId INT, count INT)");
-
-                TryExecuteSqlQuery(db, "DROP TABLE OnlineUsers");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS OnlineUsers(playerId INT, Admin TEXT(3), Moderator TEXT(3), Subscribed TEXT(3), New TEXT(3))");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS World(Time INT, Day INT, Year INT, StartTime INT, LastLoadedInVersion TEXT(64))");
 
-                try
+                // clear online users
+                TryExecuteSqlQuery(db, "DELETE FROM OnlineUsers");
+
+            }
+            DataFixerUpper.FixUpDb();
+        }
+        public static int GetTotalWorldEntries()
+        {
+            using (DbConnection db = connectDb())
+            {
+                DbCommand sqlCommand = createCommand(db, "SELECT COUNT(*) FROM World");
+                int count = Convert.ToInt32(sqlCommand.ExecuteScalar());
+
+                return count;
+            }
+        }
+
+        public static void InitWorldData()
+        {
+            if (GetTotalWorldEntries() <= 0)
+            {
+                using (DbConnection db = connectDb())
                 {
                     DbCommand sqlCommand = createCommand(db, "INSERT INTO World VALUES(0,0,0,@startDate,@version)");
                     addWithValue(sqlCommand, "@startDate", Convert.ToInt32((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds));
@@ -170,14 +188,9 @@ namespace HISP.Server
                     sqlCommand.Prepare();
                     sqlCommand.ExecuteNonQuery();
                 }
-                catch (Exception e)
-                {
-                    Logger.WarnPrint(e.Message);
-                };
-
             }
-            DataFixerUpper.FixUpDb();
         }
+
 
         public static void DeleteRanchOwner(int ranchId)
         {
@@ -1940,6 +1953,8 @@ namespace HISP.Server
                 
             }
         }
+
+
         public static void SetLastLoadedVersion(string version)
         {
             using (DbConnection db = connectDb())
@@ -1948,7 +1963,6 @@ namespace HISP.Server
                 addWithValue(sqlCommand, "@version", version);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-
             }
         }
 
@@ -1993,7 +2007,7 @@ namespace HISP.Server
             {
                 using (DbConnection db = connectDb())
                 {
-                    DbCommand sqlCommand = createCommand(db, "SELECT LastLoadedInVersion FROM World");
+                    DbCommand sqlCommand = createCommand(db, "SELECT LastLoadedInVersion FROM World ORDER BY StartTime DESC");
                     string lastVersion = sqlCommand.ExecuteScalar().ToString();
 
                     return lastVersion;
