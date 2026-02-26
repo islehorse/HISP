@@ -143,7 +143,7 @@ namespace HISP.Game
             return playersNearby;
 
         }
-        private static string buildShopInfo(Shop shop, IInventory shopperInventory)
+        private static string buildShopInfo(Shop shop, InventoryBase shopperInventory)
         {
             string message = "";
             InventoryItem[] itemList = shop.Inventory.Items;

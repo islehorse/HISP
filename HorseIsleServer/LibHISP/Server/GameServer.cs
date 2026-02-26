@@ -6702,46 +6702,46 @@ namespace HISP.Server
                     if(Workshop.CraftIdExists(craftId))
                     {
                         Workshop.CraftableItem itm = Workshop.GetCraftId(craftId);
-                        if(itm.MoneyCost <= sender.User.Money) // Check money
+                        if(itm.MoneyCost <= sender.User.Money) // Continue only if the user has enough money
                         {
-                            foreach(Workshop.RequiredItem reqItem in itm.RequiredItems)
+                            // Continue only if no items are missing ..
+                            if(!itm.RequiredItems.Any(o => ( !sender.User.Inventory.HasItemId(o.RequiredItemId) || sender.User.Inventory.GetItemCountById(o.RequiredItemId) < o.RequiredItemCount) ))
                             {
-                                if (sender.User.Inventory.HasItemId(reqItem.RequiredItemId))
-                                    if (sender.User.Inventory.GetItemByItemId(reqItem.RequiredItemId).ItemInstances.Length < reqItem.RequiredItemCount)
-                                        goto failMissingItem;
-                                else
-                                    goto failMissingItem;
-                            }
+                                // Finally create the items
+                                try
+                                {
+                                    sender.User.Inventory.Add(new ItemInstance(itm.GiveItemId));
+                                }
+                                catch (InventoryException)
+                                {
+                                    byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.WorkshopNoRoomInInventory, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(inventoryFullMessage);
+                                    break;
+                                }
+                                sender.User.TakeMoney(itm.MoneyCost);
 
-                            // Finally create the items
-                            try
-                            {
-                                sender.User.Inventory.Add(new ItemInstance(itm.GiveItemId));
-                            }
-                            catch(InventoryException)
-                            {
-                                byte[] inventoryFullMessage = PacketBuilder.CreateChat(Messages.WorkshopNoRoomInInventory, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                sender.SendPacket(inventoryFullMessage);
+                                // Remove the required items..
+                                foreach (Workshop.RequiredItem reqItem in itm.RequiredItems)
+                                    for (int i = 0; i < reqItem.RequiredItemCount; i++)
+                                        sender.User.Inventory.Remove(sender.User.Inventory.GetItemByItemId(reqItem.RequiredItemId).ItemInstances[0]);
+
+                                sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count++;
+
+                                if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count >= 100)
+                                    sender.User.Awards.AddAward(Award.GetAwardById(22)); // Craftiness
+                                if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count >= 1000)
+                                    sender.User.Awards.AddAward(Award.GetAwardById(23)); // Workmanship
+
+                                byte[] itemCraftSuccess = PacketBuilder.CreateChat(Messages.WorkshopCraftingSuccess, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(itemCraftSuccess);
                                 break;
                             }
-                            sender.User.TakeMoney(itm.MoneyCost);
-
-                            // Remove the required items..
-                            foreach(Workshop.RequiredItem reqItem in itm.RequiredItems) 
-                                for(int i = 0; i < reqItem.RequiredItemCount; i++)
-                                    sender.User.Inventory.Remove(sender.User.Inventory.GetItemByItemId(reqItem.RequiredItemId).ItemInstances[0]);
-
-                            sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count++;
-
-                            if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count >= 100)
-                                sender.User.Awards.AddAward(Award.GetAwardById(22)); // Craftiness
-                            if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count >= 1000)
-                                sender.User.Awards.AddAward(Award.GetAwardById(23)); // Workmanship
-
-                            byte[] itemCraftSuccess = PacketBuilder.CreateChat(Messages.WorkshopCraftingSuccess, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(itemCraftSuccess);
-                            break;
-                            
+                            else
+                            {
+                                byte[] missingItemMessage = PacketBuilder.CreateChat(Messages.WorkshopMissingRequiredItem, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(missingItemMessage);
+                                break;
+                            }
                         }
                         else
                         {
@@ -6750,12 +6750,6 @@ namespace HISP.Server
                             break;
                         }
 
-                        failMissingItem:
-                        {
-                            byte[] missingItemMessage = PacketBuilder.CreateChat(Messages.WorkshopMissingRequiredItem, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                            sender.SendPacket(missingItemMessage);
-                            break;
-                        }
                     }
 
                     break;
@@ -6984,7 +6978,7 @@ namespace HISP.Server
                         }
                         if (shop.Inventory.HasItemId(itemId))
                         {
-                            if (shop.Inventory.GetItemByItemId(itemId).ItemInstances.Length < count)
+                            if (shop.Inventory.GetItemCountById(itemId) < count)
                             {
                                 Logger.HackerPrint(sender.User.Username + " Tried to buy more of an item than is in stock.");
                                 break;

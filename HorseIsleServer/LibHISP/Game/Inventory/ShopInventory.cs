@@ -8,11 +8,11 @@ using System;
 
 namespace HISP.Game.Inventory
 {
-    public class ShopInventory : IInventory
+    public class ShopInventory : InventoryBase
     {
         private Shop baseShop;
         private ThreadSafeList<InventoryItem> inventoryItems;
-        public int Count
+        public override int Count
         {
             get
             {
@@ -82,19 +82,9 @@ namespace HISP.Game.Inventory
             addItem(item, addToDb);
         }
 
-        public void Add(ItemInstance item)
+        public override void Add(ItemInstance item)
         {
             addItem(item, true);
-        }
-
-        public InventoryItem GetItemByItemId(int itemId)
-        {
-            return Items.First(o => o.ItemId == itemId);
-        }
-
-        public InventoryItem GetItemByRandomid(int randomId)
-        {
-            return Items.First(o => o.ItemInstances.Any(o => o.RandomId == randomId));
         }
         public Int64 GetSortPos(InventoryItem item)
         {
@@ -113,7 +103,7 @@ namespace HISP.Game.Inventory
 
             return sortBy;
         }
-        public InventoryItem[] Items
+        public override InventoryItem[] Items
         {
             get
             {
@@ -121,18 +111,7 @@ namespace HISP.Game.Inventory
             }
         }
 
-        public bool HasItem(int randomId)
-        {
-            return Items.Any(o => o.ItemInstances.Any(o => o.RandomId == randomId));
-        }
-
-        public bool HasItemId(int itemId)
-        {
-            return Items.Any(o => o.ItemId == itemId);
-        }
-
-
-        public void Remove(ItemInstance item)
+        public override void Remove(ItemInstance item)
         {
             foreach (InventoryItem inventoryItem in inventoryItems)
             {

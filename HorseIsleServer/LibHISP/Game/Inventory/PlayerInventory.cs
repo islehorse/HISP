@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
+﻿using System.Linq;
 using HISP.Player;
 using HISP.Server;
 using HISP.Game.Items;
@@ -9,9 +7,8 @@ using HISP.Util;
 namespace HISP.Game.Inventory
 {
 
-    public class PlayerInventory : IInventory
+    public class PlayerInventory : InventoryBase
     {
-        
         public User BaseUser;
         private ThreadSafeList<InventoryItem> inventoryItems;
         public PlayerInventory(User forUser)
@@ -26,7 +23,7 @@ namespace HISP.Game.Inventory
             }
         }
         
-        public int Count
+        public override int Count
         {
             get
             {
@@ -57,7 +54,7 @@ namespace HISP.Game.Inventory
 
 
 
-        public InventoryItem[] Items
+        public override InventoryItem[] Items
         {
             get
             {
@@ -67,11 +64,11 @@ namespace HISP.Game.Inventory
 
 
 
-        public void Remove(ItemInstance item)
+        public override void Remove(ItemInstance item)
         {
 
             Database.RemoveItemFromInventory(BaseUser.Id, item);
-
+            
             foreach (InventoryItem inventoryItem in inventoryItems)
             {
                 if(item.ItemId == inventoryItem.ItemId)
@@ -94,26 +91,6 @@ namespace HISP.Game.Inventory
             Logger.ErrorPrint("Tried to remove item : " + item.RandomId + " from inventory when it was not in it");
         }
 
-        public bool HasItem(int randomId)
-        {
-            return Items.SelectMany(o => o.ItemInstances).Any(o => o.RandomId == randomId);
-        }
-
-        public bool HasItemId(int itemId)
-        {
-            return Items.Any(o => o.ItemId == itemId);
-        }
-    
-
-        public InventoryItem GetItemByItemId(int itemId)
-        {
-            return Items.First(o => o.ItemId == itemId);
-        }
-
-        public InventoryItem GetItemByRandomid(int randomId)
-        {
-            return Items.First(o => o.ItemInstances.Any(o => o.RandomId == randomId));
-        }
         public void AddWithoutDatabase(ItemInstance item)
         {
             addItem(item, false);
@@ -123,7 +100,7 @@ namespace HISP.Game.Inventory
         {
             addItem(item, true);
         }
-        public void Add(ItemInstance item)
+        public override void Add(ItemInstance item)
         {
             // Check if has max allready
             if(HasItemId(item.ItemId))
@@ -138,7 +115,6 @@ namespace HISP.Game.Inventory
             {
                 throw new InventoryFullException();
             }
-
 
             addItem(item, true);
         }
