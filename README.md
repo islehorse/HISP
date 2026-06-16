@@ -1,4 +1,4 @@
-# HISP - Horse Isle Server Protocol
+# HISP - Horse Isle Server Project
 
 [![Build](https://github.com/islehorse/HISP/workflows/build/badge.svg)](https://github.com/islehorse/HISP/actions?query=workflow%3Abuild)
 
