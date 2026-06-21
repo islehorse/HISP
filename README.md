@@ -81,7 +81,7 @@ or the command line arguments:
 any value in the server.properties file, can be overridden by creating an environment variable, prefixed with HISP_ and then the configuration name
 (eg; `HISP_FIX_OFFICIAL_BUGS=true`)
 
-### Debian APT:
+### Debian APT (systemd service):
 
 Install on Ubuntu or Debian via APT:
 ```
