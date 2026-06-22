@@ -259,9 +259,17 @@ namespace HISP.Server.Network
                 if (finished)
                 {
                     if (lastOpcode != WEBSOCKET_PING && currentMessage.LongLength > 0)
+                    {
+                        // strip leading 0
+                        Array.Resize(ref currentMessage, currentMessage.Length - 1);
+
+                        Logger.DebugPrint("[WEBSOCKET] [RECV] " + BitConverter.ToString(currentMessage).Replace("-", " "));
                         onReceiveCallback(currentMessage);
+                    }
                     else
+                    {
                         Send(currentMessage);
+                    }
 
                     Array.Resize(ref currentMessage, 0);
                     Array.Resize(ref currentPacket, 0);
@@ -311,9 +319,11 @@ namespace HISP.Server.Network
         // encode data into websocket frames and send over network
         public override void Send(byte[] data)
         {
-            Array.Resize(ref data, data.Length + 1);
 
-            if(this.Disconnected) return;
+            Array.Resize(ref data, data.Length + 1);
+            Logger.DebugPrint("[WEBSOCKET] [SEND] " + BitConverter.ToString(data).Replace("-", " "));
+
+            if (this.Disconnected) return;
             if (data == null) return;
 
             // apparently you cant mask responses? chrome gets mad when i do it,

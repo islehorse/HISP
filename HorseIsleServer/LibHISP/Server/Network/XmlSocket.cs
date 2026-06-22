@@ -3,13 +3,13 @@ using HISP.Util;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace HISP.Server.Network
 {
     public class XmlSocket : Transport
     {
         private List<byte> currentPacket = new List<byte>();
-        private const byte XMLSOCKET_PACKET_TERMINATOR = 0x00;
         private static byte[] XMLSOCKET_POLICY_FILE = Encoding.UTF8.GetBytes("<policy-file-request/>");
         public override void ProcessReceivedPackets(int available, byte[] buffer)
         {
@@ -17,7 +17,7 @@ namespace HISP.Server.Network
 
             for (int i = 0; i < available; i++)
             {
-                if (buffer[i] == XMLSOCKET_PACKET_TERMINATOR) // Read until \0...
+                if (buffer[i] == 0) // Read until \0...
                 {
                     byte[] packet = currentPacket.ToArray();
                     
@@ -25,6 +25,7 @@ namespace HISP.Server.Network
                         this.Send(SocketDomainPolicy.GetPolicyFile());
                     }
                     else {
+                        Logger.DebugPrint("[WEBSOCKET] [RECV] " + BitConverter.ToString(packet).Replace("-", " "));
                         onReceiveCallback(packet);
                     }
                     
@@ -51,8 +52,7 @@ namespace HISP.Server.Network
             // Resize the array to be 1 extra byte in size;
             Array.Resize(ref data, oldLength + 1);
 
-            // add \0 to the end of the buffer
-            data[oldLength] = XMLSOCKET_PACKET_TERMINATOR;
+            Logger.DebugPrint("[XMLSOCKET] [SEND] " + BitConverter.ToString(data).Replace("-", " "));
 
             // send to the server
             base.Send(data);
