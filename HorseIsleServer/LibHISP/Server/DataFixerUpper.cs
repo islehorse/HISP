@@ -1,9 +1,31 @@
 ﻿using System;
+using System.Linq;
 
 namespace HISP.Server
 {
     static class DataFixerUpper
     {
+
+        private static UInt32 verToNum(string version)
+        {
+            UInt32 val = 0;
+
+            string[] points = version.ToLower().Replace("v", "").Split('.');
+            int pointsLocation = points.Length; 
+
+            Array.Resize(ref points, 4);
+            for (int i = pointsLocation; i < points.Length; i++)
+                points[i] = "0";
+
+            
+            foreach (string point in points)
+            {
+                val <<= 8;
+                val |= Byte.Parse(point);
+            }
+
+            return val;
+        }
         private static void fixupVersion1_0()
         {
             // Add total logins column to UserExt
@@ -56,23 +78,25 @@ namespace HISP.Server
             Database.TryExecuteSqlQuery("DELETE FROM Horses WHERE randomId IN (SELECT randomId FROM Horses GROUP BY RandomId HAVING COUNT(*)>1);");   
         }
 
+
         public static void FixUpDb()
         {
             string lastVersionStr = Database.GetLastLoadedVersion();
             string currentVersionStr = ServerVersion.GetVersionString();
 
-            int lastVersion = Convert.ToInt32(Int32.Parse(lastVersionStr.ToLower().Replace("v", "").Replace(".", "")));
-            int currentVersion = Convert.ToInt32(Int32.Parse(currentVersionStr.ToLower().Replace("v", "").Replace(".", "")));
+            lastVersionStr.Split('.');
+
+            UInt32 lastVersion = verToNum(lastVersionStr);
+            UInt32 currentVersion = verToNum(currentVersionStr);
 
             if (currentVersion > lastVersion)
             {
                 Logger.WarnPrint("Migrating Database from " + lastVersionStr + " to " + currentVersionStr);
-                if (lastVersion < 10) fixupVersion1_0();
-                if (lastVersion < 11) fixupVersion1_1();
-                if (lastVersion < 1720) fixupVersion1_7_20();
-                if (lastVersion < 2240) fixupVersion2_2_4();
-                if (lastVersion < 2436) fixupVersion2_2_36();
-
+                if (lastVersion <= verToNum("v1.0")) fixupVersion1_0();
+                if (lastVersion <= verToNum("v1.1")) fixupVersion1_1();
+                if (lastVersion <= verToNum("v1.7.20")) fixupVersion1_7_20();
+                if (lastVersion <= verToNum("v2.2.4")) fixupVersion2_2_4();
+                if (lastVersion <= verToNum("v2.2.36")) fixupVersion2_2_36();
             }
 
             if (Database.GetTotalWorldEntries() != 1)

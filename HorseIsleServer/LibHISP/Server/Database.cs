@@ -2005,11 +2005,12 @@ namespace HISP.Server
         {
             try
             {
+                if (Database.GetTotalWorldEntries() <= 0) return ServerVersion.GetVersionString();
+
                 using (DbConnection db = connectDb())
                 {
                     DbCommand sqlCommand = createCommand(db, "SELECT LastLoadedInVersion FROM World ORDER BY StartTime DESC");
-                    string lastVersion = sqlCommand.ExecuteScalar().ToString();
-
+                    string lastVersion = sqlCommand.ExecuteScalar().ToString();             
                     return lastVersion;
                 }
             }
