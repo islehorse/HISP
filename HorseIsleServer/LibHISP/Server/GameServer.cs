@@ -32,7 +32,7 @@ namespace HISP.Server
         public static Random RandomNumberGenerator = new Random(Guid.NewGuid().GetHashCode());
 
         // Events
-        public static RealTimeRiddle riddleEvent = RealTimeRiddle.GetRandomRiddle();
+        public static RealTimeRiddle RiddleEvent = RealTimeRiddle.GetRandomRiddle();
         public static TackShopGiveaway TackShopGiveawayEvent = new TackShopGiveaway();
         public static RealTimeQuiz QuizEvent = new RealTimeQuiz();
         public static WaterBalloonGame WaterBalloonEvent = new WaterBalloonGame();
@@ -172,8 +172,8 @@ namespace HISP.Server
             // Real Time Riddle
             if(totalMinutesElapsed % (RealTimeRiddle.LastRiddleWon ? 20 : 15) == 0)
             {
-                riddleEvent = RealTimeRiddle.GetRandomRiddle();
-                riddleEvent.StartEvent();
+                RiddleEvent = RealTimeRiddle.GetRandomRiddle();
+                RiddleEvent.StartEvent();
             }
 
             // Real Time Quiz
@@ -3733,11 +3733,11 @@ namespace HISP.Server
             sender.SendPacket(motdData);
 
             // Send riddle annoucement
-            if (riddleEvent != null)
+            if (RiddleEvent != null)
             {
-                if (riddleEvent.Active)
+                if (RiddleEvent.Active)
                 {
-                    riddleEvent.ShowStartMessage(sender);
+                    RiddleEvent.ShowStartMessage(sender);
                 }
             }
 
@@ -5799,9 +5799,9 @@ namespace HISP.Server
             }
 
             // Check events
-            if (riddleEvent.Active) 
-                if(riddleEvent.CheckRiddle(message))
-                    riddleEvent.Win(sender.User);
+            if (RiddleEvent.Active) 
+                if(RiddleEvent.CheckRiddle(message))
+                    RiddleEvent.Win(sender.User);
                 
            
 

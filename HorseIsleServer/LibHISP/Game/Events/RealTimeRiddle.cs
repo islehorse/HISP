@@ -1,6 +1,7 @@
 ﻿using HISP.Player;
 using HISP.Server;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace HISP.Game.Events
@@ -30,8 +31,14 @@ namespace HISP.Game.Events
 
         public static RealTimeRiddle GetRandomRiddle()
         {
-            int randomRiddleIndex = GameServer.RandomNumberGenerator.Next(0, realTimeRiddles.Count);
-            return realTimeRiddles[randomRiddleIndex];
+            if(realTimeRiddles.Count >= 0)
+            {
+                int randomRiddleIndex = GameServer.RandomNumberGenerator.Next(0, realTimeRiddles.Count);
+                return realTimeRiddles[randomRiddleIndex];
+            }
+
+            Logger.ErrorPrint("Cannot locate any real time riddles (check gamedata)");
+            return realTimeRiddles.First();
         }
         public void StartEvent()
         {
