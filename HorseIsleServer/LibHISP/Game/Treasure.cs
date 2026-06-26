@@ -37,7 +37,7 @@ namespace HISP.Game
         public string Type;
         public Treasure(int x, int y, string type, int randomId = -1,  int moneyValue=-1)
         {
-            RandomId = Security.RandomID.NextRandomId(randomId);
+            RandomId = RandomID.NextRandomId(randomId);
 
             if(type == "BURIED")
             {

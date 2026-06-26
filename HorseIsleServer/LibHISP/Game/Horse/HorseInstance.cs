@@ -1,6 +1,4 @@
-﻿
-using HISP.Security;
-using HISP.Server;
+﻿using HISP.Server;
 
 namespace HISP.Game.Horse
 {

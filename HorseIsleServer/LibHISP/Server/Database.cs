@@ -7,7 +7,6 @@ using HISP.Player;
 using HISP.Game.Horse;
 using HISP.Game.Inventory;
 using HISP.Game.Items;
-using HISP.Security;
 using HISP.Game.Services;
 using HISP.Game.SwfModules;
 

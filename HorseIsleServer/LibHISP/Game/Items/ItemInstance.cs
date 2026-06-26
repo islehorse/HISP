@@ -1,6 +1,4 @@
-﻿using HISP.Security;
-using HISP.Game;
-namespace HISP.Game.Items
+﻿namespace HISP.Game.Items
 {
     public class ItemInstance 
     {

@@ -2,7 +2,6 @@
 using HISP.Game.Horse;
 using HISP.Game.Inventory;
 using HISP.Game.Items;
-using HISP.Security;
 using HISP.Server;
 using System.Collections.Generic;
 
