@@ -3,7 +3,6 @@ using HISP.Game.Inventory;
 using HISP.Game.Items;
 using HISP.Server;
 using HISP.Util;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace HISP.Player
@@ -26,10 +25,7 @@ namespace HISP.Player
                 int i = 0;
                 foreach (Mail mail in MailMessages)
                 {
-                    if (!mail.Read)
-                    {
-                        i++;
-                    }
+                    if (!mail.Read) i++;
                 }
                 return i;
             }
@@ -107,9 +103,7 @@ namespace HISP.Player
         {
             baseUser = user;
             Mail[] mailMessages = Database.LoadMailbox(user.Id);
-            foreach (Mail mailMessage in mailMessages)
-                mails.Add(mailMessage);
-
+            foreach (Mail mailMessage in mailMessages) mails.Add(mailMessage);
         }
     }
 }
