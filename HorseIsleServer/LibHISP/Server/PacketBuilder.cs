@@ -319,8 +319,6 @@ namespace HISP.Server
         // using the telescope item in game 
         public static byte[] CreateBirdMap(int X, int Y)
         {
-            // The size is always fixed in this case, but i still have to use a List<byte> because
-            // encodeTileDataAndAddToPacket expects packet as a List<byte>.
             List<byte> packet = new List<byte>();
 
             // Calculate top left corner of BirdMap viewport
@@ -343,9 +341,9 @@ namespace HISP.Server
             return packet.ToArray();
         }
         // Creates a byte array for a packet to inform the client that the image in a drawing room has changed.
-        public static byte[] CreateDrawingUpdate(string Drawing)
+        public static byte[] CreateDrawingUpdate(string drawing)
         {
-            byte[] drawingBytes = Encoding.UTF8.GetBytes(Drawing);
+            byte[] drawingBytes = Encoding.UTF8.GetBytes(drawing);
             byte[] packet = new byte[1 + drawingBytes.Length];
 
             packet[0] = PACKET_SWFMODULE;
@@ -369,8 +367,6 @@ namespace HISP.Server
             packet[1] = BRICKPOET_MOVE;
 
             Array.Copy(infoBytes, 0, packet, 2, infoBytes.Length);
-
-
             return packet;
         }
         // Creates a byte array for a packet to inform the client of all all Poetry Peices in a Brick Poet room

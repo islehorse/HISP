@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 
 namespace HISP.Server
 {
@@ -106,8 +105,6 @@ namespace HISP.Server
             }
 
             Database.SetLastLoadedVersion(currentVersionStr);
-
-
         }
     }
 }

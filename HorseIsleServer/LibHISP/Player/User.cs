@@ -8,7 +8,6 @@ using HISP.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.ConstrainedExecution;
 
 
 namespace HISP.Player
@@ -18,6 +17,11 @@ namespace HISP.Player
         private ThreadSafeList<Auction.AuctionBid> bids = new ThreadSafeList<Auction.AuctionBid>();
         private ThreadSafeList<User> beingSocializedBy = new ThreadSafeList<User>();
 
+        // security codes
+        public byte[] SecCodeSeeds = new byte[3];
+        public int SecCodeInc = 0;
+        private int secCodeCount = 0;
+
         private int chatViolations;
         private int charId;
         private int subscribedUntil;
@@ -25,8 +29,8 @@ namespace HISP.Player
         private string profilePage;
         private string privateNotes;
         private int x;
-        private bool stealth = false;
         private int y;
+        private bool stealth = false;
         private int questPoints;
         private double bankMoney;
         private int experience;
@@ -239,12 +243,9 @@ namespace HISP.Player
             }
         }
 
-        public Trade TradingWith = null;
+        public Trade CurrentTrade = null;
         public int AttemptingToOfferItem;
         public bool TradeMenuPriority = false;
-        public byte[] SecCodeSeeds = new byte[3];
-        public int SecCodeInc = 0;
-        public int SecCodeCount = 0;
         public int Id;
         public string Username;
         public bool NewPlayer = false;
@@ -416,7 +417,6 @@ namespace HISP.Player
                     foreach (HorseInstance horse in HorseInventory.HorseList)
                         horse.BasicStats.Thirst = 1000;
                 }
-
                 if (OwnedRanch.GetBuildingCount(3) > 0)
                 {
                     foreach (HorseInstance horse in HorseInventory.HorseList)
@@ -426,9 +426,8 @@ namespace HISP.Player
                 {
                     Hunger = 1000;
                 }
-                if( (OwnedRanch.GetBuildingCount(1) > 0)|| (OwnedRanch.GetBuildingCount(10) > 0) || (OwnedRanch.GetBuildingCount(11) > 0))
+                if( (OwnedRanch.GetBuildingCount(1) > 0) || (OwnedRanch.GetBuildingCount(10) > 0) || (OwnedRanch.GetBuildingCount(11) > 0))
                 {
-
                     foreach (HorseInstance horse in HorseInventory.HorseList)
                         horse.BasicStats.Tiredness = 1000;
                 }
@@ -473,8 +472,7 @@ namespace HISP.Player
                 if(timestamp > subscribedUntil && subscribed) // sub expired.
                 {
                     Logger.InfoPrint(Username + "'s Subscription expired. (timestamp now: " + timestamp + " exp date: " + subscribedUntil+" )");
-                    Database.SetUserSubscriptionStatus(this.Id, false);
-                    subscribed = false;
+                    this.Subscribed = false;
                 }
 
                 return subscribed;
@@ -759,7 +757,7 @@ namespace HISP.Player
             GameServer.UpdateAll(Client);
         }
 
-        // Insert LGBT Patch here
+        // TODO: Insert LGBT Patch here
         public string GetPronouns(bool possessive)
         {
             if (Gender == "FEMALE")
@@ -772,10 +770,10 @@ namespace HISP.Player
 
         public byte[] GenerateSecCode()
         {
-            SecCodeCount = ((SecCodeCount + 1) % 3);
+            secCodeCount = ((secCodeCount + 1) % 3);
             
-            SecCodeSeeds[SecCodeCount] = (byte)(SecCodeSeeds[SecCodeCount] + SecCodeInc);
-            SecCodeSeeds[SecCodeCount] = (byte)(SecCodeSeeds[SecCodeCount] % '\\');
+            SecCodeSeeds[secCodeCount] = (byte)(SecCodeSeeds[secCodeCount] + SecCodeInc);
+            SecCodeSeeds[secCodeCount] = (byte)(SecCodeSeeds[secCodeCount] % '\\');
             
             double i = SecCodeSeeds[0] + SecCodeSeeds[1] * SecCodeSeeds[2] - SecCodeSeeds[1];
             i = Math.Abs(i);
@@ -793,48 +791,48 @@ namespace HISP.Player
         }
 
         
-        public User(GameClient baseClient, int UserId)
+        public User(GameClient baseClient, int userId)
         {
-            if (!Database.CheckUserExist(UserId))
-                throw new InvalidOperationException("User " + UserId + " not found in database!");
+            if (!Database.CheckUserExist(userId))
+                throw new InvalidOperationException("User " + userId + " not found in database!");
 
-            if (!Database.CheckUserExtExists(UserId))
+            if (!Database.CheckUserExtExists(userId))
             {
-                Database.CreateUserExt(UserId);
+                Database.CreateUserExt(userId);
                 NewPlayer = true;
             }
 
-            EquipedCompetitionGear = new CompetitionGear(UserId);
-            EquipedJewelry = new Jewelry(UserId);
+            EquipedCompetitionGear = new CompetitionGear(userId);
+            EquipedJewelry = new Jewelry(userId);
 
-            Id = UserId;
-            Username = Database.GetUsername(UserId);
+            Id = userId;
+            Username = Database.GetUsername(userId);
             
             administrator = Database.GetUserAdmin(Id);
             moderator = Database.GetUserModerator(Id);
 
-            chatViolations = Database.GetChatViolations(UserId);
-            x = Database.GetPlayerX(UserId);
-            y = Database.GetPlayerY(UserId);
-            charId = Database.GetPlayerCharId(UserId);
+            chatViolations = Database.GetChatViolations(userId);
+            x = Database.GetPlayerX(userId);
+            y = Database.GetPlayerY(userId);
+            charId = Database.GetPlayerCharId(userId);
 
             Facing = PacketBuilder.DIRECTION_DOWN;
-            experience = Database.GetExperience(UserId);
+            experience = Database.GetExperience(userId);
             
-            bankMoney = Database.GetPlayerBankMoney(UserId);
-            questPoints = Database.GetPlayerQuestPoints(UserId);
-            subscribed = Database.GetUserSubscribed(UserId);
-            subscribedUntil = Database.GetUserSubscriptionExpireDate(UserId);
-            profilePage = Database.GetPlayerProfile(UserId);
-            privateNotes = Database.GetPlayerNotes(UserId);
-            hunger = Database.GetPlayerHunger(UserId);
-            thirst = Database.GetPlayerThirst(UserId);
-            tired = Database.GetPlayerTiredness(UserId);
+            bankMoney = Database.GetPlayerBankMoney(userId);
+            questPoints = Database.GetPlayerQuestPoints(userId);
+            subscribed = Database.GetUserSubscribed(userId);
+            subscribedUntil = Database.GetUserSubscriptionExpireDate(userId);
+            profilePage = Database.GetPlayerProfile(userId);
+            privateNotes = Database.GetPlayerNotes(userId);
+            hunger = Database.GetPlayerHunger(userId);
+            thirst = Database.GetPlayerThirst(userId);
+            tired = Database.GetPlayerTiredness(userId);
 
             if(Ranch.GetOwnedRanch(this.Id))
                 OwnedRanch = Ranch.GetRanchOwnedBy(this.Id);
 
-            Gender = Database.GetGender(UserId);
+            Gender = Database.GetGender(userId);
             MailBox = new Mailbox(this);
             Highscores = new Highscore(this);
             Awards = new Award(this);
@@ -848,7 +846,6 @@ namespace HISP.Player
             SecCodeSeeds[1] = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
             SecCodeSeeds[2] = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
             SecCodeInc      = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
-
 
             Friends = new Friends(this);
             LoginTime = DateTime.UtcNow;

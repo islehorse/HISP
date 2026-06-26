@@ -17,7 +17,6 @@ namespace HISP.Server.Network
             }
         }
 
-
         public override bool Disconnected
         {
             get

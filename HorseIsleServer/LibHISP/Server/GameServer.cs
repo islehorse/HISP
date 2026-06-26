@@ -32,7 +32,7 @@ namespace HISP.Server
         public static Random RandomNumberGenerator = new Random(Guid.NewGuid().GetHashCode());
 
         // Events
-        public static RealTimeRiddle RiddleEvent = RealTimeRiddle.GetRandomRiddle();
+        public static RealTimeRiddle riddleEvent = RealTimeRiddle.GetRandomRiddle();
         public static TackShopGiveaway TackShopGiveawayEvent = new TackShopGiveaway();
         public static RealTimeQuiz QuizEvent = new RealTimeQuiz();
         public static WaterBalloonGame WaterBalloonEvent = new WaterBalloonGame();
@@ -172,8 +172,8 @@ namespace HISP.Server
             // Real Time Riddle
             if(totalMinutesElapsed % (RealTimeRiddle.LastRiddleWon ? 20 : 15) == 0)
             {
-                RiddleEvent = RealTimeRiddle.GetRandomRiddle();
-                RiddleEvent.StartEvent();
+                riddleEvent = RealTimeRiddle.GetRandomRiddle();
+                riddleEvent.StartEvent();
             }
 
             // Real Time Quiz
@@ -267,12 +267,12 @@ namespace HISP.Server
                 switch (method)
                 {
                     case PacketBuilder.PLAYER_INTERACTION_TRADE_REJECT:
-                        if (sender.User.TradingWith != null)
-                            sender.User.TradingWith.CancelTrade();
+                        if (sender.User.CurrentTrade != null)
+                            sender.User.CurrentTrade.CancelTrade();
                         break;
                     case PacketBuilder.PLAYER_INTERACTION_ACCEPT:
-                        if (sender.User.TradingWith != null)
-                            sender.User.TradingWith.AcceptTrade();
+                        if (sender.User.CurrentTrade != null)
+                            sender.User.CurrentTrade.AcceptTrade();
                         break;
                     case PacketBuilder.PLAYER_INTERACTION_PROFILE:
                         string packetStr = Encoding.UTF8.GetString(packet);
@@ -440,7 +440,7 @@ namespace HISP.Server
                         }
                         break;
                     case PacketBuilder.PLAYER_INTERACTION_ADD_ITEM:
-                        if (sender.User.TradingWith == null)
+                        if (sender.User.CurrentTrade == null)
                             break;
                         if (packet.Length < 4)
                             break;
@@ -461,7 +461,7 @@ namespace HISP.Server
 
                                 sender.User.TradeMenuPriority = true;
                                 sender.User.AttemptingToOfferItem = -1;
-                                byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildTradeAddMoney(sender.User.TradingWith.MoneyOffered));
+                                byte[] metaPacket = PacketBuilder.CreateMeta(Meta.BuildTradeAddMoney(sender.User.CurrentTrade.MoneyOffered));
                                 sender.SendPacket(metaPacket);
 
                                 break;
@@ -481,14 +481,14 @@ namespace HISP.Server
                                     break;
 
                                 HorseInstance horse = sender.User.HorseInventory.GetHorseById(horseRandomId);
-                                if (!sender.User.TradingWith.HorsesOffered.Contains(horse))
-                                    sender.User.TradingWith.OfferHorse(horse);
+                                if (!sender.User.CurrentTrade.HorsesOffered.Contains(horse))
+                                    sender.User.CurrentTrade.OfferHorse(horse);
 
                                 UpdateArea(sender);
 
-                                if (sender.User.TradingWith != null)
-                                    if (!sender.User.TradingWith.OtherTrade.Trader.TradeMenuPriority)
-                                        UpdateArea(sender.User.TradingWith.OtherTrade.Trader.Client);
+                                if (sender.User.CurrentTrade != null)
+                                    if (!sender.User.CurrentTrade.OtherTrade.Trader.TradeMenuPriority)
+                                        UpdateArea(sender.User.CurrentTrade.OtherTrade.Trader.Client);
 
                                 break;
                             case '1': // Trade Item
@@ -546,8 +546,8 @@ namespace HISP.Server
                                 tradeWithYou.OtherTrade = tradeWithOther;
                                 tradeWithOther.OtherTrade = tradeWithYou;
 
-                                sender.User.TradingWith = tradeWithYou;
-                                user.TradingWith = tradeWithOther;
+                                sender.User.CurrentTrade = tradeWithYou;
+                                user.CurrentTrade = tradeWithOther;
 
                                 UpdateArea(sender);
                                 UpdateArea(user.Client);
@@ -2390,12 +2390,12 @@ namespace HISP.Server
                                             break;
                                         }
 
-                                        sender.User.TradingWith.MoneyOffered = amountMoney;
+                                        sender.User.CurrentTrade.MoneyOffered = amountMoney;
 
                                         UpdateArea(sender);
-                                        if(sender.User.TradingWith != null)
-                                            if (!sender.User.TradingWith.OtherTrade.Trader.TradeMenuPriority)
-                                                UpdateArea(sender.User.TradingWith.OtherTrade.Trader.Client);
+                                        if(sender.User.CurrentTrade != null)
+                                            if (!sender.User.CurrentTrade.OtherTrade.Trader.TradeMenuPriority)
+                                                UpdateArea(sender.User.CurrentTrade.OtherTrade.Trader.Client);
                                         break;
                                     }
 
@@ -2429,11 +2429,11 @@ namespace HISP.Server
                                             break;
                                         }
 
-                                        foreach(ItemInstance[] existingItems in sender.User.TradingWith.ItemsOffered)
+                                        foreach(ItemInstance[] existingItems in sender.User.CurrentTrade.ItemsOffered)
                                         {
                                             if(existingItems[0].ItemId == sender.User.AttemptingToOfferItem)
                                             {
-                                                sender.User.TradingWith.RemoveOfferedItems(existingItems);
+                                                sender.User.CurrentTrade.RemoveOfferedItems(existingItems);
                                                 break;
                                             }
                                         }
@@ -2445,12 +2445,12 @@ namespace HISP.Server
                                         {
                                             items[i] = item.ItemInstances[i];
                                         }
-                                        sender.User.TradingWith.OfferItems(items);
+                                        sender.User.CurrentTrade.OfferItems(items);
 
                                         UpdateArea(sender);
-                                        if (sender.User.TradingWith != null)
-                                            if (!sender.User.TradingWith.OtherTrade.Trader.TradeMenuPriority)
-                                                UpdateArea(sender.User.TradingWith.OtherTrade.Trader.Client);
+                                        if (sender.User.CurrentTrade != null)
+                                            if (!sender.User.CurrentTrade.OtherTrade.Trader.TradeMenuPriority)
+                                                UpdateArea(sender.User.CurrentTrade.OtherTrade.Trader.Client);
                                     }
                                     break;
                                 }
@@ -3186,21 +3186,21 @@ namespace HISP.Server
                     sender.SendPacket(metaPacket);
                     break;
                 case "58": // Add new item to trade
-                    if(sender.User.TradingWith != null)
+                    if(sender.User.CurrentTrade != null)
                     {
                         sender.User.TradeMenuPriority = true;
-                        metaPacket = PacketBuilder.CreateMeta(Meta.BuildTradeAdd(sender.User.TradingWith));
+                        metaPacket = PacketBuilder.CreateMeta(Meta.BuildTradeAdd(sender.User.CurrentTrade));
                         sender.SendPacket(metaPacket);
                     }
                     break;
                 case "59": // Done
-                    if (sender.User.TradingWith != null)
+                    if (sender.User.CurrentTrade != null)
                     {
-                        sender.User.TradingWith.Stage = "DONE";
+                        sender.User.CurrentTrade.Stage = "DONE";
 
-                        if (sender.User.TradingWith != null)
-                            if (sender.User.TradingWith.OtherTrade.Trader.TradeMenuPriority == false)
-                                UpdateArea(sender.User.TradingWith.OtherTrade.Trader.Client);
+                        if (sender.User.CurrentTrade != null)
+                            if (sender.User.CurrentTrade.OtherTrade.Trader.TradeMenuPriority == false)
+                                UpdateArea(sender.User.CurrentTrade.OtherTrade.Trader.Client);
                         UpdateArea(sender);
 
                     }
@@ -3680,31 +3680,31 @@ namespace HISP.Server
             Logger.DebugPrint(sender.User.Username + " Requested user information.");
             
             // Send player current location & map data
-            byte[] MovementPacket = PacketBuilder.CreateMovement(sender.User.X, sender.User.Y, sender.User.CharacterId, sender.User.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
-            sender.SendPacket(MovementPacket);
+            byte[] movementPacket = PacketBuilder.CreateMovement(sender.User.X, sender.User.Y, sender.User.CharacterId, sender.User.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+            sender.SendPacket(movementPacket);
 
             // Send "Welcome to the Secret Land of Horses" message.
-            byte[] WelcomeMessage = PacketBuilder.CreateChat(Messages.FormatWelcomeMessage(sender.User.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-            sender.SendPacket(WelcomeMessage);
+            byte[] welcomeMessage = PacketBuilder.CreateChat(Messages.FormatWelcomeMessage(sender.User.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+            sender.SendPacket(welcomeMessage);
 
             // Send weather effects, and current server time.
-            byte[] WorldData = PacketBuilder.CreateTimeAndWeatherUpdate(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, sender.User.GetWeatherSeen());
-            sender.SendPacket(WorldData);
+            byte[] worldData = PacketBuilder.CreateTimeAndWeatherUpdate(World.ServerTime.Minutes, World.ServerTime.Days, World.ServerTime.Years, sender.User.GetWeatherSeen());
+            sender.SendPacket(worldData);
 
             // if the player is logging in for the first time, send Welcome newest rider of Horse Isle message.
             if (sender.User.NewPlayer)
             {
-                byte[] NewUserMessage = PacketBuilder.CreateChat(Messages.NewUserMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                sender.SendPacket(NewUserMessage);
+                byte[] newUserMessage = PacketBuilder.CreateChat(Messages.NewUserMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                sender.SendPacket(newUserMessage);
             }
 
             // Send Security Codes, used (badly) to verify Minigame Rewards
-            byte[] SecCodePacket = PacketBuilder.CreateSecCode(sender.User.SecCodeSeeds, sender.User.SecCodeInc, sender.User.Administrator, sender.User.Moderator);
-            sender.SendPacket(SecCodePacket);
+            byte[] secCodePacket = PacketBuilder.CreateSecCode(sender.User.SecCodeSeeds, sender.User.SecCodeInc, sender.User.Administrator, sender.User.Moderator);
+            sender.SendPacket(secCodePacket);
 
             // Send player money count, total players and total unread mail.
-            byte[] BaseStatsPacketData = PacketBuilder.CreateMoneyPlayerCountAndMail(sender.User.Money, GameServer.GetNumberOfPlayers(), sender.User.MailBox.UnreadMailCount);
-            sender.SendPacket(BaseStatsPacketData);
+            byte[] baseStatsPacketData = PacketBuilder.CreateMoneyPlayerCountAndMail(sender.User.Money, GameServer.GetNumberOfPlayers(), sender.User.MailBox.UnreadMailCount);
+            sender.SendPacket(baseStatsPacketData);
 
             // Sends Meta Window information (Nearby, current tile, etc)
             UpdateArea(sender);
@@ -3721,23 +3721,23 @@ namespace HISP.Server
              * This is used for the world map.
              */
 
-            byte[] IsleData = PacketBuilder.CreatePlaceData(World.Isles.ToArray(), World.Towns.ToArray(), World.Areas.ToArray());
-            sender.SendPacket(IsleData);
+            byte[] isleData = PacketBuilder.CreatePlaceData(World.Isles.ToArray(), World.Towns.ToArray(), World.Areas.ToArray());
+            sender.SendPacket(isleData);
 
             // Tells the client which tiles are passable, which the player should appear ontop of and which it should be below.
-            byte[] TileFlags = PacketBuilder.CreateTileOverlayFlags(Map.OverlayTileDepth);
-            sender.SendPacket(TileFlags);
+            byte[] tileFlags = PacketBuilder.CreateTileOverlayFlags(Map.OverlayTileDepth);
+            sender.SendPacket(tileFlags);
 
             // Send Todays Note:
-            byte[] MotdData = PacketBuilder.CreateMotd(Messages.FormatMotd(ConfigReader.Motd));
-            sender.SendPacket(MotdData);
+            byte[] motdData = PacketBuilder.CreateMotd(Messages.FormatMotd(ConfigReader.Motd));
+            sender.SendPacket(motdData);
 
             // Send riddle annoucement
-            if (RiddleEvent != null)
+            if (riddleEvent != null)
             {
-                if (RiddleEvent.Active)
+                if (riddleEvent.Active)
                 {
-                    RiddleEvent.ShowStartMessage(sender);
+                    riddleEvent.ShowStartMessage(sender);
                 }
             }
 
@@ -5096,8 +5096,7 @@ namespace HISP.Server
             sender.User.Facing = direction + (onHorse * 5);
             if (sender.User.Y != newY || sender.User.X != newX)
             {
-                if (moveTwo)
-                    direction += 20;
+                if (moveTwo) direction += 20;
 
                 sender.User.Y = newY;
                 sender.User.X = newX;
@@ -5124,9 +5123,8 @@ namespace HISP.Server
             movementComplete:
 
             // Cancel Trades
-            if (sender.User.TradingWith != null)
-                if ((sender.User.TradingWith.Trader.X != sender.User.X) && (sender.User.TradingWith.Trader.Y != sender.User.Y))
-                    sender.User.TradingWith.CancelTradeMoved();
+            if (sender.User.CurrentTrade != null && (sender.User.CurrentTrade.Trader.X != sender.User.CurrentTrade.OtherTrade.Trader.X || sender.User.CurrentTrade.Trader.Y != sender.User.CurrentTrade.OtherTrade.Trader.Y))
+                sender.User.CurrentTrade.CancelTradeMoved();
             
             // Pac-man the world.
             if (sender.User.X > Map.Width-3)
@@ -5801,9 +5799,9 @@ namespace HISP.Server
             }
 
             // Check events
-            if (RiddleEvent.Active) 
-                if(RiddleEvent.CheckRiddle(message))
-                    RiddleEvent.Win(sender.User);
+            if (riddleEvent.Active) 
+                if(riddleEvent.CheckRiddle(message))
+                    riddleEvent.Win(sender.User);
                 
            
 
@@ -7338,7 +7336,7 @@ namespace HISP.Server
                 TwoPlayer.TwoPlayerRemove(sender.User);
 
                 // Remove Trade Reference
-                sender.User.TradingWith = null;
+                sender.User.CurrentTrade = null;
                 sender.User.PendingTradeTo = 0;
 
                 // Leave open water balloon game
@@ -7650,23 +7648,23 @@ namespace HISP.Server
                 return;
             }
 
-            if(forClient.User.TradingWith != null)
+            if(forClient.User.CurrentTrade != null)
             {
-                if (!forClient.User.TradingWith.OtherTrade.Trader.Client.LoggedIn)
+                if (!forClient.User.CurrentTrade.OtherTrade.Trader.Client.LoggedIn)
                 {
-                    forClient.User.TradingWith.InteruptTrade();
+                    forClient.User.CurrentTrade.InteruptTrade();
                     return;
                 }
 
-                if (forClient.User.TradingWith.OtherTrade.Trader.TradingWith == null)
+                if (forClient.User.CurrentTrade.OtherTrade.Trader.CurrentTrade == null)
                 {
-                    forClient.User.TradingWith.InteruptTrade();
+                    forClient.User.CurrentTrade.InteruptTrade();
                     return;
                 }
 
                 forClient.User.MajorPriority = true;
                 forClient.User.TradeMenuPriority = false;
-                byte[] tradeMeta = PacketBuilder.CreateMeta(Meta.BuildTrade(forClient.User.TradingWith));
+                byte[] tradeMeta = PacketBuilder.CreateMeta(Meta.BuildTrade(forClient.User.CurrentTrade));
                 forClient.SendPacket(tradeMeta);
                 return;
             }

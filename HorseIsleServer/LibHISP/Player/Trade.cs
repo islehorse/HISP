@@ -4,11 +4,7 @@ using HISP.Game.Inventory;
 using HISP.Game.Items;
 using HISP.Security;
 using HISP.Server;
-using System;
 using System.Collections.Generic;
-
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HISP.Player
 {
@@ -24,8 +20,8 @@ namespace HISP.Player
         public User Trader;
         public Trade OtherTrade;
 
+        public bool Fail = false;
         public string Stage = "OPEN";
-
         public int MoneyOffered = 0;
         private List<HorseInstance> horsesOffered = new List<HorseInstance>();
         private List<ItemInstance[]> itemsOffered = new List<ItemInstance[]>();
@@ -63,16 +59,15 @@ namespace HISP.Player
         private void endTrade()
         {
             Trader.PendingTradeTo = 0;
-            Trader.TradingWith = null;
+            Trader.CurrentTrade = null;
 
             OtherTrade.Trader.PendingTradeTo = 0;
-            OtherTrade.Trader.TradingWith = null;
+            OtherTrade.Trader.CurrentTrade = null;
 
             GameServer.UpdateArea(Trader.Client);
             GameServer.UpdateArea(OtherTrade.Trader.Client);
         }
 
-        public bool Fail = false;
         public void CompleteTrade()
         {
             
@@ -98,7 +93,7 @@ namespace HISP.Player
                 OtherTrade.Fail = true;
             }
             
-            // Check if other player has any bids
+            // Check if other player has any active bids
             if (OtherTrade.Trader.Bids.Length > 0)
             {
                 byte[] tradeNotAllowedWhileOtherBidding = PacketBuilder.CreateChat(Messages.TradeNotAllowedWhileOtherBidding, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -107,7 +102,7 @@ namespace HISP.Player
                 OtherTrade.Fail = true;
             }
 
-            // check if current player has bids'
+            // check if current player has active bids
             if (Trader.Bids.Length > 0)
             {
                 byte[] tradeNotAllowedWhileBidding = PacketBuilder.CreateChat(Messages.TradeNotAllowedWhileBidding, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -161,6 +156,7 @@ namespace HISP.Player
             *      Item Checks
             */
 
+            // fail if you would get more than the maximum amount of an item.
             if (OtherTrade.ItemsOffered.Length > 0)
             {
                 foreach (ItemInstance[] inst in OtherTrade.ItemsOffered)
@@ -179,6 +175,7 @@ namespace HISP.Player
                 }
             }
 
+            // fail if other player would get more than the maximum amount of an item.
             if (ItemsOffered.Length > 0)
             {
                 foreach (ItemInstance[] inst in ItemsOffered)
@@ -204,20 +201,23 @@ namespace HISP.Player
                 goto acceptTrade;
 
             
-            acceptTrade:;
+            acceptTrade:
             byte[] tradeAccepted = PacketBuilder.CreateChat(Messages.TradeAcceptedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
             Trader.Client.SendPacket(tradeAccepted);
 
             // Transfer Money
+            
 
-            if (MoneyOffered > 0) 
+            // if you are offering money to the other player, delete it from your balance
+            if (MoneyOffered > 0)
             {
                 Trader.TakeMoney(MoneyOffered);
                 byte[] tradeSpentMoney = PacketBuilder.CreateChat(Messages.FormatTradeYouSpent(MoneyOffered), PacketBuilder.CHAT_BOTTOM_RIGHT);
                 Trader.Client.SendPacket(tradeSpentMoney);
             }
 
-            if(OtherTrade.MoneyOffered > 0)
+            // if you are receiving money, add it to your balance.
+            if (OtherTrade.MoneyOffered > 0)
             {
                 Trader.AddMoney(OtherTrade.MoneyOffered);
                 byte[] tradeReceivedMoney = PacketBuilder.CreateChat(Messages.FormatTradeYouReceived(OtherTrade.MoneyOffered), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -233,10 +233,10 @@ namespace HISP.Player
                 {
                     if (Trader.CurrentlyRidingHorse.RandomId == inst.RandomId)
                     {
-                        byte[] disMounted = PacketBuilder.CreateChat(Messages.TradeRiddenHorse, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        byte[] dismountedPacket = PacketBuilder.CreateChat(Messages.TradeRiddenHorse, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         Trader.Facing %= 5;
                         Trader.CurrentlyRidingHorse = null;
-                        Trader.Client.SendPacket(disMounted);
+                        Trader.Client.SendPacket(dismountedPacket);
                     }
                 }
 
@@ -265,7 +265,7 @@ namespace HISP.Player
             endTrade();
             return;
 
-            cancelTrade:;
+            cancelTrade:
             InteruptTrade();
             return;
 
