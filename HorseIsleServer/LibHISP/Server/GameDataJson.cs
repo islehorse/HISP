@@ -120,8 +120,7 @@ namespace HISP.Server
             }
             else
             {
-                Logger.ErrorPrint("Could not find GAMEDATA, configured as; " + ConfigReader.GameData + " But no file or directory exists!");
-                GameServer.ShutdownServer("Unable to find GAMEDATA");
+                Entry.Shutdown("Could not find GAMEDATA!! configured as: " + ConfigReader.GameData + " but no file or directory exists!");
                 return;
             }
         }

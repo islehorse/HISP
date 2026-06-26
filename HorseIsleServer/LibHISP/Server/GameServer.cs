@@ -12,11 +12,11 @@ using HISP.Security;
 using HISP.Util;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Reflection;
 using System.Text;
 using System.Threading;
 
@@ -31,7 +31,7 @@ namespace HISP.Server
 
         public static Random RandomNumberGenerator = new Random(Guid.NewGuid().GetHashCode());
 
-        // Events
+        // Real Time Events
         public static RealTimeRiddle RiddleEvent = RealTimeRiddle.GetRandomRiddle();
         public static TackShopGiveaway TackShopGiveawayEvent = new TackShopGiveaway();
         public static RealTimeQuiz QuizEvent = new RealTimeQuiz();
@@ -39,9 +39,7 @@ namespace HISP.Server
         public static IsleCardTradingGame IsleCardTrading = new IsleCardTradingGame();
         public static ModsRevenge ModsRevengeEvent = new ModsRevenge();
 
-        /*
-         *  Private stuff 
-         */
+        // Private stuff 
         private static int gameTickSpeed = 4800; // Changing this to ANYTHING else will cause desync with the client.
         private static int totalMinutesElapsed = 0;
         private static int oneMinute = 1000 * 60;
@@ -7977,22 +7975,6 @@ namespace HISP.Server
             }
 
             IsRunning = false;
-        }
-        public static void ShutdownServer(string shutdownReason = "No reason provided.")
-        {
-            if(GameServer.IsRunning)
-            {
-                Logger.InfoPrint("Server shutting down; " + shutdownReason);
-                try
-                {
-                    GameClient.OnShutdown(shutdownReason);
-                    GameServer.OnShutdown();
-                    Database.OnShutdown();
-                }
-                catch (Exception) { }
-
-                Entry.OnShutdown();
-            }
         }
 
 

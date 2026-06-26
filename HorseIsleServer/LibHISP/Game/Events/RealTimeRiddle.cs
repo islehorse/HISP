@@ -31,14 +31,8 @@ namespace HISP.Game.Events
 
         public static RealTimeRiddle GetRandomRiddle()
         {
-            if(realTimeRiddles.Count >= 0)
-            {
-                int randomRiddleIndex = GameServer.RandomNumberGenerator.Next(0, realTimeRiddles.Count);
-                return realTimeRiddles[randomRiddleIndex];
-            }
-
-            Logger.ErrorPrint("Cannot locate any real time riddles (check gamedata)");
-            return realTimeRiddles.First();
+            int randomRiddleIndex = GameServer.RandomNumberGenerator.Next(0, realTimeRiddles.Count);
+            return realTimeRiddles[randomRiddleIndex];
         }
         public void StartEvent()
         {

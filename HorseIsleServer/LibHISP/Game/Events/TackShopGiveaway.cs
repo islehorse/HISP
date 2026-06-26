@@ -24,35 +24,21 @@ namespace HISP.Game.Events
 
         public TackShopGiveaway()
         {
-            List<World.SpecialTile> tackShops = new List<World.SpecialTile>();
 
-            foreach (World.SpecialTile sTile in World.SpecialTiles)
-            {
-                if (sTile.Code != null)
-                {
-                    if (sTile.Code.StartsWith("STORE-"))
-                    {
+            World.SpecialTile[] tackShops = World.SpecialTiles.Where(o =>
+                                                        (o.Code != null &&
+                                                        o.Code.StartsWith("STORE-", StringComparison.InvariantCultureIgnoreCase) &&
+                                                        Shop.GetShopById(int.Parse(o.Code.Split('-')[1])).BuysItemTypes.Contains("TACK") &&
+                                                        Npc.GetNpcsByXAndY(o.X, o.Y).Length > 0)
+                                                      ).ToArray();
 
-                        int storeId = int.Parse(sTile.Code.Split("-")[1]);
-                        Shop shopData = Shop.GetShopById(storeId);
-
-                        if (shopData.BuysItemTypes.Contains("TACK"))
-                        {
-                            Npc.NpcEntry[] npcShop = Npc.GetNpcsByXAndY(sTile.X, sTile.Y);
-                            if (npcShop.Length > 0)
-                            {
-                                tackShops.Add(sTile);
-                            }
-                        }
-                    }
-                }
-            }
 
             string npcName = "ERROR";
             string npcDesc = "OBTAINING NAME";
 
-            int shpIdx = GameServer.RandomNumberGenerator.Next(0, tackShops.Count);
-            Location = tackShops[shpIdx];
+            int shopIndex = GameServer.RandomNumberGenerator.Next(0, tackShops.Length);
+            this.Location = tackShops[shopIndex];
+
             Npc.NpcEntry[] npcShops = Npc.GetNpcsByXAndY(Location.X, Location.Y);
 
             npcName = npcShops[0].Name.Split(" ")[0];

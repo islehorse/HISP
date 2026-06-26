@@ -1,5 +1,4 @@
-﻿using HISP.Cli.Properties;
-using HISP.Server;
+﻿using HISP.Server;
 using System;
 using System.IO;
 using System.Threading;
@@ -177,7 +176,7 @@ namespace HISP.Cli
 
         private static void ProcessQuitHandler(object sender, EventArgs e)
         {
-            GameServer.ShutdownServer("HISPd process quitting.");
+            Entry.Shutdown("HISPd process closing.");
         }
     }
 }

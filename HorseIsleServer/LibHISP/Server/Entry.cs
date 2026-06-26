@@ -17,7 +17,7 @@ namespace HISP.Server
         // "Entry Point"
         private static void defaultOnShutdownCallback()
         {
-            Process.GetCurrentProcess().Close();
+            Process.GetCurrentProcess().Kill();
         }
 
         public static Action OnShutdown = defaultOnShutdownCallback;
@@ -33,6 +33,15 @@ namespace HISP.Server
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(HispCrashHandler);
 #endif
         }
+
+        public static Action[] ShutdownSteps =
+        {
+            GameServer.OnShutdown,
+            GameClient.OnShutdown,
+            Database.OnShutdown,
+
+            Entry.OnShutdown,
+        };
 
         public static Action[] StartupSteps = {
             // setup crash handler
@@ -68,11 +77,25 @@ namespace HISP.Server
 
         public static void CreateSignals()
         {
-            PosixSignalRegistration.Create(PosixSignal.SIGTERM, (_) => { GameServer.ShutdownServer("Server process received SIGTERM."); });
-            PosixSignalRegistration.Create(PosixSignal.SIGQUIT, (_) => { GameServer.ShutdownServer("Server process received SIGQUIT."); });
+            PosixSignalRegistration.Create(PosixSignal.SIGTERM, (_) => { Entry.Shutdown("Server process received SIGTERM."); });
+            PosixSignalRegistration.Create(PosixSignal.SIGQUIT, (_) => { Entry.Shutdown("Server process received SIGQUIT."); });
         }
 
 
+        public static void Shutdown(string shutdownReason = "No reason provided.")
+        {
+            Logger.InfoPrint(shutdownReason);
+            Logger.InfoPrint("Shutting down server ...");
+
+            try
+            {
+                foreach (Action shutdownStep in ShutdownSteps) shutdownStep();
+            }
+            catch (Exception)
+            {
+                Process.GetCurrentProcess().Kill();
+            }
+        }
         public static void Start()
         {
             Directory.SetCurrentDirectory(ConfigReader.ConfigDirectory);
@@ -86,7 +109,6 @@ namespace HISP.Server
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
-
         }
 
         private static void HispCrashHandler(object sender, UnhandledExceptionEventArgs e)

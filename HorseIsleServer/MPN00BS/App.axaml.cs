@@ -86,9 +86,7 @@ namespace MPN00BS
         public void shutdownServerCommand(object sender, EventArgs e)
         {
             if (CheckServerRunningAndShowMessage()) return;
-
-            GameServer.ShutdownServer();
-
+            Entry.Shutdown();
         }
 
         public void toggleSwearFilter(object sender, EventArgs e)

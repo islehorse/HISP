@@ -10,15 +10,7 @@ namespace MPN00BS
     {
         private void OnClientExit()
         {
-            Logger.InfoPrint("Client closed, shutting down server.");
-            try
-            {
-                GameServer.ShutdownServer();
-            }
-            catch(Exception) 
-            { 
-                Environment.Exit(-1); 
-            }
+            Entry.Shutdown("Singleplayer Client closed!");
         }
         public void OnServerStarted()
         {
@@ -65,7 +57,7 @@ namespace MPN00BS
 
         private void OnServerClose(object sender, WindowClosingEventArgs e)
         {
-            GameServer.ShutdownServer();
+            Entry.Shutdown("Server Closed");
         }
 
     }

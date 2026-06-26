@@ -77,24 +77,21 @@ namespace HISP.Server
             Logger.DebugPrint(networkTransport.Name + " : Client connected @ " + networkTransport.Ip);
         }
 
-        public static void OnShutdown(string reason)
+        public static void OnShutdown()
         {
-            try
+            foreach (User user in User.OnlineUsers)
             {
-                foreach (User user in User.OnlineUsers)
+                // add rubys
+                for (int i = 0; i < 2; i++)
                 {
-                    for (int i = 0; i < 2; i++)
-                    {
-                        ItemInstance rubyItem = new ItemInstance(Item.Ruby);
-                        user.Inventory.AddIgnoringFull(rubyItem);
-                    }
-
-                    user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.GameUpdates).Count++;
-                    Logger.DebugPrint("Kicking: " + user.Username);
-                    user.Client.Kick("Server shutdown: "+reason);
+                    ItemInstance rubyItem = new ItemInstance(Item.Ruby);
+                    user.Inventory.AddIgnoringFull(rubyItem);
                 }
+
+                user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.GameUpdates).Count++;
+                Logger.DebugPrint("Kicking: " + user.Username);
+                user.Client.Kick("Server is shutting down.");
             }
-            catch (Exception) { };
         }
 
         private static bool acceptConnections(SocketAsyncEventArgs e)
@@ -538,13 +535,13 @@ namespace HISP.Server
 #endif
         }
 
-        public void Kick(string Reason)
+        public void Kick(string reason)
         {
-            byte[] kickPacket = PacketBuilder.CreateKickMessage(Reason);
+            byte[] kickPacket = PacketBuilder.CreateKickMessage(reason);
             SendPacket(kickPacket);
             Disconnect();
 
-            Logger.DebugPrint("CLIENT: "+this.RemoteIp+" KICKED for: "+Reason);
+            Logger.DebugPrint("CLIENT: "+this.RemoteIp+" KICKED for: "+reason);
         }
 
        public void SendPacket(byte[] packetData)

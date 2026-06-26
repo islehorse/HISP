@@ -63,13 +63,11 @@ namespace HISP.Server
             }
             catch (DbException e)
             {
-                Logger.ErrorPrint("Failed to connect to " + ConfigReader.SqlBackend + " Database: " + e.Message);
-                Environment.Exit(1);
+                Entry.Shutdown("Failed to connect to " + ConfigReader.SqlBackend + " database: " + e.Message);
             }
             
 
-            Logger.ErrorPrint("SqlBackend has invalid value: " + ConfigReader.SqlBackend);
-            Environment.Exit(1);
+            Entry.Shutdown("SqlBackend has invalid value: " + ConfigReader.SqlBackend);
             return null;
         }
 

@@ -163,7 +163,7 @@ namespace HISP.Game.Chat
             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT);
             user.Client.SendPacket(chatPacket);
 
-            GameServer.ShutdownServer("Administrator initiated");
+            Entry.Shutdown(user.Username + " ran %SHUTDOWN");
 
             return true;
         }
