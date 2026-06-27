@@ -119,7 +119,7 @@ namespace HISP.Game.Inventory
                 {
                     foreach (ItemInstance instance in inventoryItem.ItemInstances)
                     {
-                        if (instance.RandomId == item.RandomId)
+                        if (instance.UniqueId == item.UniqueId)
                         {
                             inventoryItem.RemoveItem(instance);
 
@@ -137,7 +137,7 @@ namespace HISP.Game.Inventory
                 }
             }
 
-            Logger.ErrorPrint("Tried to remove item : " + item.RandomId + " from inventory when it was not in it");
+            Logger.ErrorPrint("Tried to remove item : " + item.UniqueId + " from inventory when it was not in it");
         }
     }
 }

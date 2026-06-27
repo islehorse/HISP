@@ -1511,17 +1511,17 @@ namespace HISP.Game
         {
             return TradeOfferItemFormat.Replace("%ICONID%", itemIconId.ToString()).Replace("%ITEMNAME%", itemName).Replace("%ITEMCOUNT%", itemCount.ToString()).Replace("%ITEMID%", itemId.ToString());
         }
-        public static string FormatTradeOfferHorse(string horseName, bool tacked, int horseRandomId)
+        public static string FormatTradeOfferHorse(string horseName, bool tacked, int horseUniqueId)
         {
-            return TradeOfferHorseFormat.Replace("%HORSENAME%", horseName).Replace("%ISTACKED%", tacked ? Messages.TradeOfferHorseTacked : "").Replace("%HORSERANDOMID%", horseRandomId.ToString());
+            return TradeOfferHorseFormat.Replace("%HORSENAME%", horseName).Replace("%ISTACKED%", tacked ? Messages.TradeOfferHorseTacked : "").Replace("%HORSEUNIQUEID%", horseUniqueId.ToString());
         }
         public static string FormatTradeWhatToOffer(string playerName)
         {
             return TradeWhatToOfferFormat.Replace("%PLAYERNAME%", playerName);
         }
-        public static string FormatTradeHorseOffer(string horseName, int horseRandomId)
+        public static string FormatTradeHorseOffer(string horseName, int horseUniqueId)
         {
-            return TradeOfferingHorseFormat.Replace("%HORSENAME%", horseName).Replace("%HORSERANDOMID%", horseRandomId.ToString());
+            return TradeOfferingHorseFormat.Replace("%HORSENAME%", horseName).Replace("%HORSEUNIQUEID%", horseUniqueId.ToString());
         }
         public static string FormatTradeItemOffer(int iconId, int quantity, string item)
         {
@@ -1582,9 +1582,9 @@ namespace HISP.Game
         {
             return AuctionSoldToFormat.Replace("%PLAYERNAME%", playerName).Replace("%PRICE%", money.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatAuctionGoingTo(int timeRemaining, string winningPlayer, int winningBid, int auctionRandomId)
+        public static string FormatAuctionGoingTo(int timeRemaining, string winningPlayer, int winningBid, int auctionUniqueId)
         {
-            return AuctionGoingToFormat.Replace("%TIME%", timeRemaining.ToString()).Replace("%WINNINGPLAYER%", winningPlayer).Replace("%WINNINGBID%", winningBid.ToString("N0", CultureInfo.InvariantCulture)).Replace("%AUCTIONRANDOMID%", auctionRandomId.ToString());
+            return AuctionGoingToFormat.Replace("%TIME%", timeRemaining.ToString()).Replace("%WINNINGPLAYER%", winningPlayer).Replace("%WINNINGBID%", winningBid.ToString("N0", CultureInfo.InvariantCulture)).Replace("%AUCTIONUNIQUEID%", auctionUniqueId.ToString());
         }
         public static string FormatAuctionHorseSold(int money)
         {
@@ -1602,18 +1602,18 @@ namespace HISP.Game
         {
             return AuctionBidRaisedFormat.Replace("%AMOUNT%", prevAmount.ToString("N0", CultureInfo.InvariantCulture)).Replace("%NEWAMOUNT%", newAmount.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatAuctionHorseListEntry(string horseName, bool tacked, int randomId)
+        public static string FormatAuctionHorseListEntry(string horseName, bool tacked, int uniqueId)
         {
-            return AuctionHorseListEntryFormat.Replace("%HORSENAME%", horseName).Replace("%TACKEDORNO%", tacked ? Messages.AuctionHorseIsTacked : "").Replace("%RANDOMID%", randomId.ToString());
+            return AuctionHorseListEntryFormat.Replace("%HORSENAME%", horseName).Replace("%TACKEDORNO%", tacked ? Messages.AuctionHorseIsTacked : "").Replace("%UNIQUEID%", uniqueId.ToString());
         }
         public static string FormatAuctionHorseEntry(string username, string color, string breedName, string gender, int experience, string lookButton)
         {
             return AuctionHorseEntryFormat.Replace("%USERNAME%", username).Replace("%COLOR%", color).Replace("%BREED%", breedName).Replace("%GENDER%", gender).Replace("%EXP%", experience.ToString("N0", CultureInfo.InvariantCulture)).Replace("%LOOKBUTTON%", lookButton);
 
         }
-        public static string FormatAuctionViewHorseButton(int randomId)
+        public static string FormatAuctionViewHorseButton(int uniqueId)
         {
-            return AuctionHorseViewButton.Replace("%RANDOMID%", randomId.ToString());
+            return AuctionHorseViewButton.Replace("%UNIQUEID%", uniqueId.ToString());
         }
         public static string FormatAuctionPlayersHere(string usernames)
         {
@@ -1630,13 +1630,13 @@ namespace HISP.Game
             return HorseLeaserReturnedToUniterFormat.Replace("%HORSENAME%", horseName);
         }
 
-        public static string FormatArenaCompetingHorseEntry(string userName, string horseName, int horseRandomId)
+        public static string FormatArenaCompetingHorseEntry(string userName, string horseName, int horseUniqueId)
         {
-            return ArenaCompetingHorseFormat.Replace("%USERNAME%", userName).Replace("%HORSENAME%", horseName).Replace("%HORSERANDOMID%", horseRandomId.ToString());
+            return ArenaCompetingHorseFormat.Replace("%USERNAME%", userName).Replace("%HORSENAME%", horseName).Replace("%HORSEUNIQUEID%", horseUniqueId.ToString());
         }
-        public static string FormatArenaEnterHorseButton(string horseName, int entryCost, int horseRandomId)
+        public static string FormatArenaEnterHorseButton(string horseName, int entryCost, int horseUniqueId)
         {
-            return ArenaEnterHorseFormat.Replace("%HORSENAME%", horseName).Replace("%ENTRYCOST%", entryCost.ToString("N0", CultureInfo.InvariantCulture)).Replace("%HORSERANDOMID%", horseRandomId.ToString());
+            return ArenaEnterHorseFormat.Replace("%HORSENAME%", horseName).Replace("%ENTRYCOST%", entryCost.ToString("N0", CultureInfo.InvariantCulture)).Replace("%HORSEUNIQUEID%", horseUniqueId.ToString());
         }
         public static string FormatArenaCurrentlyTakingEntries(int hour, int minute, string amOrPm, int timeUntil)
         {
@@ -1718,13 +1718,13 @@ namespace HISP.Game
 
 
 
-        public static string FormatMailReadMessage(string fromUser, string date, string subject, string message, int randomId)
+        public static string FormatMailReadMessage(string fromUser, string date, string subject, string message, int uniqueId)
         {
-            return MailReadMetaFormat.Replace("%PLAYERNAME%", fromUser).Replace("%DATE%", date).Replace("%SUBJECT%", subject).Replace("%MESSAGE%", message).Replace("%RANDOMID%", randomId.ToString());
+            return MailReadMetaFormat.Replace("%PLAYERNAME%", fromUser).Replace("%DATE%", date).Replace("%SUBJECT%", subject).Replace("%MESSAGE%", message).Replace("%UNIQUEID%", uniqueId.ToString());
         }
-        public static string FormatMailEntry(string subject, string fromUser, int randomId)
+        public static string FormatMailEntry(string subject, string fromUser, int uniqueId)
         {
-            return MailEntryFormat.Replace("%SUBJECT%", subject).Replace("%PLAYERNAME%", fromUser).Replace("%RANDOMID%", randomId.ToString());
+            return MailEntryFormat.Replace("%SUBJECT%", subject).Replace("%PLAYERNAME%", fromUser).Replace("%UNIQUEID%", uniqueId.ToString());
         }
 
         public static string FormatTrainerCantTrainAgainIn(int time)
@@ -1735,9 +1735,9 @@ namespace HISP.Game
         {
             return TrainerHorseFullyTrainedFormat.Replace("%HORSENAME%", horseName).Replace("%STAT%", curStat.ToString());
         }
-        public static string FormatTrainerTrainInEntry(string horseName, int curStat, int maxStat, int randomId)
+        public static string FormatTrainerTrainInEntry(string horseName, int curStat, int maxStat, int uniqueId)
         {
-            return TrainerHorseEntryFormat.Replace("%HORSENAME%", horseName).Replace("%CURSTAT%", curStat.ToString()).Replace("%MAXSTAT%", maxStat.ToString()).Replace("%RANDOMID%", randomId.ToString());
+            return TrainerHorseEntryFormat.Replace("%HORSENAME%", horseName).Replace("%CURSTAT%", curStat.ToString()).Replace("%MAXSTAT%", maxStat.ToString()).Replace("%UNIQUEID%", uniqueId.ToString());
         }
         public static string FormatTrainerHeaderFormat(string stat, int price, int amountInStat, int expamount)
         {
@@ -1759,9 +1759,9 @@ namespace HISP.Game
         {
             return SantaItemOpenedFormat.Replace("%ITEM%", itemName);
         }
-        public static string FormatSantaItemEntry(int iconId, string itemName, int randomId)
+        public static string FormatSantaItemEntry(int iconId, string itemName, int uniqueId)
         {
-            return SantaWrapItemFormat.Replace("%ICONID%", iconId.ToString()).Replace("%NAME%", itemName).Replace("%RANDOMID%", randomId.ToString());
+            return SantaWrapItemFormat.Replace("%ICONID%", iconId.ToString()).Replace("%NAME%", itemName).Replace("%UNIQUEID%", uniqueId.ToString());
         }
         public static string FormatPawneerOrderHorseFound(string breedName, string color, string gender, int height, int personality, int inteligence)
         {
@@ -1788,13 +1788,13 @@ namespace HISP.Game
         {
             return PawneerOrderBreedEntryFormat.Replace("%BREEDNAME%", breedName).Replace("%BREEDID%", breedId.ToString());
         }
-        public static string FormatPawneerHorseEntry(string horseName, int price, int randomId)
+        public static string FormatPawneerHorseEntry(string horseName, int price, int uniqueId)
         {
-            return PawneerHorseFormat.Replace("%HORSENAME%", horseName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%RANDOMID%", randomId.ToString());
+            return PawneerHorseFormat.Replace("%HORSENAME%", horseName).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%UNIQUEID%", uniqueId.ToString());
         }
-        public static string FormatPawneerConfirmPawn(string breedName, int randomId)
+        public static string FormatPawneerConfirmPawn(string breedName, int uniqueId)
         {
-            return PawneerHorseConfirmationFormat.Replace("%BREEDNAME%", breedName).Replace("%RANDOMID%", randomId.ToString());
+            return PawneerHorseConfirmationFormat.Replace("%BREEDNAME%", breedName).Replace("%UNIQUEID%", uniqueId.ToString());
         }
         public static string FormatPawneerSold(string horseName, int price)
         {
@@ -1812,9 +1812,9 @@ namespace HISP.Game
         {
             return BarnLetAllHorsesReleaxFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatBarnLetHorseRelax(int price, int randomId)
+        public static string FormatBarnLetHorseRelax(int price, int uniqueId)
         {
-            return BarnLetHorseRelaxFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%RANDOMID%", randomId.ToString());
+            return BarnLetHorseRelaxFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%UNIQUEID%", uniqueId.ToString());
         }
         public static string FormatBarnHorseStatus(string horseName, int tiredness, int hunger, int thirst)
         {
@@ -1843,11 +1843,11 @@ namespace HISP.Game
         }
         public static string FormatFarrierApplySteel(int price, int incBy, int horseRandomid)
         {
-            return FarrierApplySteelShoesFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%INCBY%", incBy.ToString()).Replace("%HORSERANDOMID%", horseRandomid.ToString());
+            return FarrierApplySteelShoesFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%INCBY%", incBy.ToString()).Replace("%HORSEUNIQUEID%", horseRandomid.ToString());
         }
         public static string FormatFarrierApplyIron(int price, int incBy, int horseRandomid)
         {
-            return FarrierApplyIronShoesFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%INCBY%", incBy.ToString()).Replace("%HORSERANDOMID%", horseRandomid.ToString());
+            return FarrierApplyIronShoesFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%INCBY%", incBy.ToString()).Replace("%HORSEUNIQUEID%", horseRandomid.ToString());
         }
         public static string FormatFarrierCurrentShoes(string horseName, int curShoes, int maxShoes)
         {
@@ -2002,9 +2002,9 @@ namespace HISP.Game
         {
             return GroomerApplyServiceForAllFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%COUNT%", count.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatGroomerApplyService(int price, int randomid)
+        public static string FormatGroomerApplyService(int price, int uniqueId)
         {
-            return GroomerApplyServiceFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%RANDOMID%", randomid.ToString());
+            return GroomerApplyServiceFormat.Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture)).Replace("%UNIQUEID%", uniqueId.ToString());
         }
         public static string FormatHorseGroomCurrentlyAt(string horseName, int currentGroom, int maxGroom)
         {
@@ -2086,9 +2086,9 @@ namespace HISP.Game
             return VetServiceHorseFormat.Replace("%HORSENAME%", horseName).Replace("%CURHEALTH%", currentHealth.ToString()).Replace("%MAXHEALTH%", maxHealth.ToString());
         }
 
-        public static string FormatVetApplyServiceMeta(int price, int randomId)
+        public static string FormatVetApplyServiceMeta(int price, int uniqueId)
         {
-            return VetApplyServicesFormat.Replace("%PRICE%", price.ToString()).Replace("%RANDOMID%", randomId.ToString());
+            return VetApplyServicesFormat.Replace("%PRICE%", price.ToString()).Replace("%UNIQUEID%", uniqueId.ToString());
         }
 
         public static string FormatVetApplyAllServiceMeta(int price)
@@ -2119,9 +2119,9 @@ namespace HISP.Game
             return PondCantDrinkHpLowFormat.Replace("%HORSENAME%", horseName);
         }
 
-        public static string FormatPondDrinkHorseFormat(string horseName, int thirst, int maxThirst, int randomId)
+        public static string FormatPondDrinkHorseFormat(string horseName, int thirst, int maxThirst, int uniqueId)
         {
-            return PondHorseDrinkFormat.Replace("%HORSENAME%", horseName).Replace("%THIRST%", thirst.ToString()).Replace("%MAXTHIRST%", maxThirst.ToString()).Replace("%RANDOMID%", randomId.ToString());
+            return PondHorseDrinkFormat.Replace("%HORSENAME%", horseName).Replace("%THIRST%", thirst.ToString()).Replace("%MAXTHIRST%", maxThirst.ToString()).Replace("%UNIQUEID%", uniqueId.ToString());
         }
         public static string FormatMudHoleGroomDestroyed(string horseName)
         {
@@ -2159,9 +2159,9 @@ namespace HISP.Game
         {
             return HorseReleasedBy.Replace("%USERNAME%", username);
         }
-        public static string FormatHorseAreYouSureMessage(int randomId)
+        public static string FormatHorseAreYouSureMessage(int uniqueId)
         {
-            return HorseAreYouSureYouWantToReleaseFormat.Replace("%RANDOMID%", randomId.ToString());
+            return HorseAreYouSureYouWantToReleaseFormat.Replace("%UNIQUEID%", uniqueId.ToString());
         }
         public static string FormatHorseCompanionRemoveMessage(string horseName)
         {
@@ -2220,9 +2220,9 @@ namespace HISP.Game
             return HorseCurrentStatusFormat.Replace("%HORSENAME%", name);
         }
 
-        public static string FormatHorseFeedEntry(int icon, int count, string name, int randomId)
+        public static string FormatHorseFeedEntry(int icon, int count, string name, int uniqueId)
         {
-            return HorsefeedFormat.Replace("%ICONID%", icon.ToString()).Replace("%COUNT%", count.ToString("N0", CultureInfo.InvariantCulture)).Replace("%NAME%", name).Replace("%RANDOMID%", randomId.ToString());
+            return HorsefeedFormat.Replace("%ICONID%", icon.ToString()).Replace("%COUNT%", count.ToString("N0", CultureInfo.InvariantCulture)).Replace("%NAME%", name).Replace("%UNIQUEID%", uniqueId.ToString());
         }
 
         public static string FormatHorseRidingMessage(string name)
@@ -2290,29 +2290,29 @@ namespace HISP.Game
             return HorseLeasedRemainingTimeFormat.Replace("%TIME%", minutes.ToString());
         }
 
-        public static string FormatDisMountButton(int randomId)
+        public static string FormatDisMountButton(int uniqueId)
         {
-            return HorseDisMountButtonFormat.Replace("%ID%", randomId.ToString());
+            return HorseDisMountButtonFormat.Replace("%UNIQUEID%", uniqueId.ToString());
         }
-        public static string FormatMountButton(int randomId)
+        public static string FormatMountButton(int uniqueId)
         {
-            return HorseMountButtonFormat.Replace("%ID%", randomId.ToString());
+            return HorseMountButtonFormat.Replace("%UNIQUEID%", uniqueId.ToString());
         }
-        public static string FormatFeedButton(int randomId)
+        public static string FormatFeedButton(int uniqueId)
         {
-            return HorseFeedButtonFormat.Replace("%ID%", randomId.ToString());
+            return HorseFeedButtonFormat.Replace("%UNIQUEID%", uniqueId.ToString());
         }
-        public static string FormatTackButton(int randomId)
+        public static string FormatTackButton(int uniqueId)
         {
-            return HorseTackButtonFormat.Replace("%ID%", randomId.ToString());
+            return HorseTackButtonFormat.Replace("%UNIQUEID%", uniqueId.ToString());
         }
-        public static string FormatPetButton(int randomId)
+        public static string FormatPetButton(int uniqueId)
         {
-            return HorsePetButtonFormat.Replace("%ID%", randomId.ToString());
+            return HorsePetButtonFormat.Replace("%UNIQUEID%", uniqueId.ToString());
         }
-        public static string FormatProfileButton(int randomId)
+        public static string FormatProfileButton(int uniqueId)
         {
-            return HorseProfileButtonFormat.Replace("%ID%", randomId.ToString());
+            return HorseProfileButtonFormat.Replace("%UNIQUEID%", uniqueId.ToString());
         }
 
         public static string FormatAutoSellPrice(int money)
@@ -2366,9 +2366,9 @@ namespace HISP.Game
         {
             return UpdateHorseCategory.Replace("%CATEGORY%", newCategory);
         }
-        public static string FormatHorseEntry(int numb, string horseName, string breedName, int randomId, bool hasAutoSell)
+        public static string FormatHorseEntry(int numb, string horseName, string breedName, int uniqueId, bool hasAutoSell)
         {
-            return HorseEntryFormat.Replace("%NUMB%", numb.ToString()).Replace("%NAME%", horseName).Replace("%BREED%", breedName).Replace("%ID%", randomId.ToString()).Replace("%ISAUTOSELL%", hasAutoSell ? HorseIsAutoSell : "");
+            return HorseEntryFormat.Replace("%NUMB%", numb.ToString()).Replace("%NAME%", horseName).Replace("%BREED%", breedName).Replace("%ID%", uniqueId.ToString()).Replace("%ISAUTOSELL%", hasAutoSell ? HorseIsAutoSell : "");
         }
         public static string FormatHorseHeader(int maxHorses, int numHorses)
         {
@@ -2376,9 +2376,9 @@ namespace HISP.Game
         }
 
 
-        public static string FormatWildHorse(string name, string breed, int randomId, bool vowel)
+        public static string FormatWildHorse(string name, string breed, int uniqueId, bool vowel)
         {
-            return WildHorseFormat.Replace("%NAME%", name).Replace("%BREED%", breed).Replace("%RANDOMID%", randomId.ToString()).Replace("%N%", vowel ? "n" : "");
+            return WildHorseFormat.Replace("%NAME%", name).Replace("%BREED%", breed).Replace("%UNIQUEID%", uniqueId.ToString()).Replace("%N%", vowel ? "n" : "");
         }
         public static string FormatHorseBreedPreview(string name, string description)
         {
@@ -2747,9 +2747,9 @@ namespace HISP.Game
         {
             return ShopEntryFormat.Replace("%ICONID%", iconid.ToString()).Replace("%COUNT%", count).Replace("%TITLE%", name).Replace("%PRICE%", price.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatWearButton(int randomId)
+        public static string FormatWearButton(int uniqueId)
         {
-            return ItemWearButton.Replace("%RANDOMID%", randomId.ToString());
+            return ItemWearButton.Replace("%UNIQUEID%", uniqueId.ToString());
         }
         public static string FormatItemInformationByIdButton(int itemId)
         {
@@ -2767,9 +2767,9 @@ namespace HISP.Game
         {
             return ShopBuy25Button.Replace("%ITEMID%", itemId.ToString());
         }
-        public static string FormatSellButton(int randomId)
+        public static string FormatSellButton(int uniqueId)
         {
-            return SellButton.Replace("%RANDOMID%", randomId.ToString());
+            return SellButton.Replace("%UNIQUEID%", uniqueId.ToString());
         }
         public static string FormatSellAllButton(int itemId)
         {
@@ -2827,30 +2827,30 @@ namespace HISP.Game
         {
             return ItemThrowButton.Replace("%ITEMID%", itemId.ToString());
         }
-        public static string FormatItemConsumeButton(int randomid)
+        public static string FormatItemConsumeButton(int uniqueId)
         {
-            return ItemConsumeButton.Replace("%RANDOMID%", randomid.ToString());
+            return ItemConsumeButton.Replace("%UNIQUEID%", uniqueId.ToString());
         }
-        public static string FormatItemInformationButton(int randomid)
+        public static string FormatItemInformationButton(int uniqueId)
         {
-            return ItemInformationButton.Replace("%RANDOMID%", randomid.ToString());
+            return ItemInformationButton.Replace("%UNIQUEID%", uniqueId.ToString());
         }
 
-        public static string FormatItemDropButton(int randomid)
+        public static string FormatItemDropButton(int uniqueId)
         {
-            return ItemDropButton.Replace("%RANDOMID%", randomid.ToString());
+            return ItemDropButton.Replace("%UNIQUEID%", uniqueId.ToString());
         }
-        public static string FormatItemOpenButton(int randomId)
+        public static string FormatItemOpenButton(int uniqueId)
         {
-            return ItemOpenButton.Replace("%RANDOMID%", randomId.ToString());
+            return ItemOpenButton.Replace("%UNIQUEID%", uniqueId.ToString());
         }
-        public static string FormatItemUseButton(int randomid)
+        public static string FormatItemUseButton(int uniqueId)
         {
-            return ItemUseButton.Replace("%RANDOMID%", randomid.ToString());
+            return ItemUseButton.Replace("%UNIQUEID%", uniqueId.ToString());
         }
-        public static string FormatItemReadButton(int randomid)
+        public static string FormatItemReadButton(int uniqueId)
         {
-            return ItemReadButton.Replace("%ITEMID%", randomid.ToString());
+            return ItemReadButton.Replace("%ITEMID%", uniqueId.ToString());
         }
 
         // Meta
@@ -2858,9 +2858,9 @@ namespace HISP.Game
         {
             return Messages.TileFormat.Replace("%TILENAME%", name);
         }
-        public static string FormatGrabItemMessage(string name, int randomid, int iconid)
+        public static string FormatGrabItemMessage(string name, int uniqueId, int iconid)
         {
-            return GrabItemFormat.Replace("%ICONID%",iconid.ToString()).Replace("%ITEMNAME%", name).Replace("%RANDOMID%", randomid.ToString());
+            return GrabItemFormat.Replace("%ICONID%",iconid.ToString()).Replace("%ITEMNAME%", name).Replace("%UNIQUEID%", uniqueId.ToString());
         }
 
         public static string FormatPlayerBuddyList(int amount)

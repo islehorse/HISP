@@ -178,7 +178,7 @@ namespace HISP.Tests.UnitTests
                 HorseInstance horse = new HorseInstance(HorseInfo.GetBreedById(170));
                 horse.BasicStats.Thirst = 0;
                 horse.BasicStats.Hunger = 0;
-                int horseId = horse.RandomId;
+                int horseId = horse.UniqueId;
 
                 user.HorseInventory.AddHorse(horse);
 

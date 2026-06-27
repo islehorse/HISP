@@ -19,7 +19,7 @@ namespace HISP.Game
         public int Id;
         public string Type;
         public int EntryCost;
-        public int RandomId;
+        public int UniqueId;
         public int RaceEvery;
         public int Slots;
         public string Mode;
@@ -49,7 +49,7 @@ namespace HISP.Game
         }
         public Arena(int id, string type, int entryCost, int raceEvery, int slots, int timeOut)
         {
-            RandomId = RandomID.NextRandomId();
+            UniqueId = UniqueID.NextUniqueId();
             Mode = "TAKINGENTRIES";
             Id = id;
             Type = type;
@@ -237,7 +237,7 @@ namespace HISP.Game
         {
             // Delete all entries
             entries.Clear();
-            RandomId = RandomID.NextRandomId();
+            UniqueId = UniqueID.NextUniqueId();
             Mode = "TAKINGENTRIES";
             if (arenaTimeout != null)
                 arenaTimeout.Dispose();

@@ -142,9 +142,9 @@ namespace HISP.Game.Items
         }
         public static void UseItem(User user, ItemInstance item)
         {
-            if (user.Inventory.HasItem(item.RandomId))
+            if (user.Inventory.HasItem(item.UniqueId))
             {
-                InventoryItem itm = user.Inventory.GetItemByRandomid(item.RandomId);
+                InventoryItem itm = user.Inventory.GetItemByRandomid(item.UniqueId);
                 if (itm.ItemId == Item.DorothyShoes)
                 {
                     if (World.InIsle(user.X, user.Y))

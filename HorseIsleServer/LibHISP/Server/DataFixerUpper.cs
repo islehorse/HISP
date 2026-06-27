@@ -4,7 +4,6 @@ namespace HISP.Server
 {
     static class DataFixerUpper
     {
-
         private static UInt32 verToNum(string version)
         {
             UInt32 val = 0;
@@ -74,7 +73,20 @@ namespace HISP.Server
             Database.TryExecuteSqlQuery("DELETE FROM DroppedItems WHERE randomId IN (SELECT randomId FROM DroppedItems GROUP BY RandomId HAVING COUNT(*)>1);");
             Database.TryExecuteSqlQuery("DELETE FROM WildHorse WHERE randomId IN (SELECT randomId FROM WildHorse GROUP BY RandomId HAVING COUNT(*)>1);");
             Database.TryExecuteSqlQuery("DELETE FROM Inventory WHERE randomId IN (SELECT randomId FROM Inventory GROUP BY RandomId HAVING COUNT(*)>1);");
-            Database.TryExecuteSqlQuery("DELETE FROM Horses WHERE randomId IN (SELECT randomId FROM Horses GROUP BY RandomId HAVING COUNT(*)>1);");   
+            Database.TryExecuteSqlQuery("DELETE FROM Horses WHERE randomId IN (SELECT randomId FROM Horses GROUP BY RandomId HAVING COUNT(*)>1);");
+        }
+
+        private static void fixupVersion2_5_6()
+        {
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN RandomId to uniqueId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Inventory RENAME COLUMN RandomID to uniqueId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE ShopInventory RENAME COLUMN RandomID to uniqueId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE DroppedItems RENAME COLUMN RandomID to uniqueId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Horses RENAME COLUMN randomId to uniqueId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE WildHorse RENAME COLUMN randomId to uniqueId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Treasure RENAME COLUMN randomId to uniqueId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Auctions RENAME COLUMN randomId to uniqueId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Auctions RENAME COLUMN horseRandomId to horseUniqueId;");
         }
 
 
@@ -96,6 +108,7 @@ namespace HISP.Server
                 if (lastVersion <= verToNum("v1.7.20")) fixupVersion1_7_20();
                 if (lastVersion <= verToNum("v2.2.4")) fixupVersion2_2_4();
                 if (lastVersion <= verToNum("v2.2.36")) fixupVersion2_2_36();
+                if (lastVersion <= verToNum("v2.5.6")) fixupVersion2_5_6();
             }
 
             if (Database.GetTotalWorldEntries() != 1)

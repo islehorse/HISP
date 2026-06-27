@@ -220,18 +220,18 @@ namespace HISP.Game.Horse
             return WildHorses.Where(o => o.X == x && o.Y == y).ToArray();
         }
         
-        public static bool DoesHorseExist(int randomId)
+        public static bool DoesHorseExist(int uniqueId)
         {
-            return WildHorses.Any(o => o.Instance.RandomId == randomId);
+            return WildHorses.Any(o => o.Instance.UniqueId == uniqueId);
         }
-        public static WildHorse GetHorseById(int randomId)
+        public static WildHorse GetHorseById(int uniqueId)
         {
-            return WildHorses.First(o => o.Instance.RandomId == randomId);
+            return WildHorses.First(o => o.Instance.UniqueId == uniqueId);
         }
 
         public static void Despawn(WildHorse horse)
         {
-            Database.RemoveWildHorse(horse.Instance.RandomId);
+            Database.RemoveWildHorse(horse.Instance.UniqueId);
             wildHorses.Remove(horse);
         }
 
@@ -265,7 +265,7 @@ namespace HISP.Game.Horse
             }
             set
             {
-                Database.SetWildHorseX(this.Instance.RandomId, value);
+                Database.SetWildHorseX(this.Instance.UniqueId, value);
                 x = value;
             }
         }
@@ -277,7 +277,7 @@ namespace HISP.Game.Horse
             }
             set
             {
-                Database.SetWildHorseY(this.Instance.RandomId, value);
+                Database.SetWildHorseY(this.Instance.UniqueId, value);
                 y = value;
             }
         }
@@ -289,7 +289,7 @@ namespace HISP.Game.Horse
             }
             set
             {
-                Database.SetWildHorseTimeout(this.Instance.RandomId, value);
+                Database.SetWildHorseTimeout(this.Instance.UniqueId, value);
                 timeout = value;
             }
         }

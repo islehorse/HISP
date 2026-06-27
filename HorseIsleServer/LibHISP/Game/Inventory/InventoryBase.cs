@@ -17,9 +17,9 @@ namespace HISP.Game.Inventory
             get;
         }
 
-        public virtual bool HasItem(int randomId)
+        public virtual bool HasItem(int uniqueId)
         {
-            return Items.SelectMany(o => o.ItemInstances).Any(o => o.RandomId == randomId);
+            return Items.SelectMany(o => o.ItemInstances).Any(o => o.UniqueId == uniqueId);
         }
 
         public virtual bool HasItemId(int itemId)
@@ -32,14 +32,14 @@ namespace HISP.Game.Inventory
             return Items.First(o => o.ItemId == itemId);
         }
 
-        public virtual InventoryItem GetItemByRandomid(int randomId)
+        public virtual InventoryItem GetItemByRandomid(int uniqueId)
         {
-            return Items.First(o => o.ItemInstances.Any(o => o.RandomId == randomId));
+            return Items.First(o => o.ItemInstances.Any(o => o.UniqueId == uniqueId));
         }
 
-        public virtual int GetItemCount(int randomId)
+        public virtual int GetItemCount(int uniqueId)
         {
-            return GetItemByRandomid(randomId).ItemInstances.Length;
+            return GetItemByRandomid(uniqueId).ItemInstances.Length;
         }
         public virtual int GetItemCountById(int itemId)
         {

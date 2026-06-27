@@ -293,7 +293,7 @@ namespace HISP.Server
 
                             if (this.User.CurrentlyRidingHorse != null)
                             {
-                                if(this.User.CurrentlyRidingHorse.RandomId == horse.RandomId)
+                                if(this.User.CurrentlyRidingHorse.UniqueId == horse.UniqueId)
                                 {
                                     GameServer.StopRidingHorse(this);
                                 }
@@ -302,7 +302,7 @@ namespace HISP.Server
 
                             if(this.User.LastViewedHorse != null)
                             {
-                                if(this.User.LastViewedHorse.RandomId == horse.RandomId)
+                                if(this.User.LastViewedHorse.UniqueId == horse.UniqueId)
                                 {
                                     this.User.LastViewedHorse = null;
                                 }

@@ -56,12 +56,14 @@ namespace HISP.Game
                     }
                 }
             }
-            private int id;
             public string Name;
             public string AdminDescription;
             public string ShortDescription;
             public string LongDescription;
             public bool Moves;
+
+
+            private int id;
             private int x;
             private int y;
             public int Id

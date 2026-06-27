@@ -253,7 +253,7 @@ namespace HISP.Game.Horse
                 {
                     if (value > ((baseHorse.Breed.BaseStats.Speed * 2) - baseHorse.Breed.BaseStats.Speed))
                         value = ((baseHorse.Breed.BaseStats.Speed * 2) - baseHorse.Breed.BaseStats.Speed);
-                    Database.SetHorseSpeed(baseHorse.RandomId, value);
+                    Database.SetHorseSpeed(baseHorse.UniqueId, value);
                     speed = value;
                 }
             }
@@ -268,7 +268,7 @@ namespace HISP.Game.Horse
                 {
                     if (value > ((baseHorse.Breed.BaseStats.Strength * 2) - baseHorse.Breed.BaseStats.Strength))
                         value = ((baseHorse.Breed.BaseStats.Strength * 2) - baseHorse.Breed.BaseStats.Strength);
-                    Database.SetHorseStrength(baseHorse.RandomId, value);
+                    Database.SetHorseStrength(baseHorse.UniqueId, value);
                     strength = value;
                 }
             }
@@ -283,7 +283,7 @@ namespace HISP.Game.Horse
                 {
                     if (value > ((baseHorse.Breed.BaseStats.Conformation * 2) - baseHorse.Breed.BaseStats.Conformation))
                         value = ((baseHorse.Breed.BaseStats.Conformation * 2) - baseHorse.Breed.BaseStats.Conformation);
-                    Database.SetHorseConformation(baseHorse.RandomId, value);
+                    Database.SetHorseConformation(baseHorse.UniqueId, value);
                     conformation = value;
                 }
             }
@@ -297,7 +297,7 @@ namespace HISP.Game.Horse
                 {
                     if (value > ((baseHorse.Breed.BaseStats.Agility * 2) - baseHorse.Breed.BaseStats.Agility))
                         value = ((baseHorse.Breed.BaseStats.Agility * 2) - baseHorse.Breed.BaseStats.Agility);
-                    Database.SetHorseAgility(baseHorse.RandomId, value);
+                    Database.SetHorseAgility(baseHorse.UniqueId, value);
                     agility = value;
                 }
             }
@@ -311,7 +311,7 @@ namespace HISP.Game.Horse
                 {
                     if (value > ((baseHorse.Breed.BaseStats.Endurance * 2) - baseHorse.Breed.BaseStats.Endurance))
                         value = ((baseHorse.Breed.BaseStats.Endurance * 2) - baseHorse.Breed.BaseStats.Endurance);
-                    Database.SetHorseEndurance(baseHorse.RandomId, value);
+                    Database.SetHorseEndurance(baseHorse.UniqueId, value);
                     endurance = value;
                 }
             }
@@ -325,7 +325,7 @@ namespace HISP.Game.Horse
                 {
                     if (value > ((baseHorse.Breed.BaseStats.Inteligence* 2) - baseHorse.Breed.BaseStats.Inteligence))
                         value = ((baseHorse.Breed.BaseStats.Inteligence * 2) - baseHorse.Breed.BaseStats.Inteligence);
-                    Database.SetHorseInteligence(baseHorse.RandomId, value);
+                    Database.SetHorseInteligence(baseHorse.UniqueId, value);
                     inteligence = value;
                 }
             }
@@ -339,7 +339,7 @@ namespace HISP.Game.Horse
                 {
                     if (value > ((baseHorse.Breed.BaseStats.Personality * 2) - baseHorse.Breed.BaseStats.Personality))
                         value = ((baseHorse.Breed.BaseStats.Personality * 2) - baseHorse.Breed.BaseStats.Personality);
-                    Database.SetHorsePersonality(baseHorse.RandomId, value);
+                    Database.SetHorsePersonality(baseHorse.UniqueId, value);
                     personality = value;
                 }
             }
@@ -352,7 +352,7 @@ namespace HISP.Game.Horse
                 set
                 {
                     height = value;
-                    Database.SetHorseHeight(baseHorse.RandomId, value);
+                    Database.SetHorseHeight(baseHorse.UniqueId, value);
                 }
             }
             public int MinHeight;
@@ -396,7 +396,7 @@ namespace HISP.Game.Horse
                     if (value < 0)
                         value = 0;
                     health = value;
-                    Database.SetHorseHealth(baseHorse.RandomId, value);
+                    Database.SetHorseHealth(baseHorse.UniqueId, value);
                 }
             }
             public int Shoes
@@ -412,7 +412,7 @@ namespace HISP.Game.Horse
                     if (value < 0)
                         value = 0;
                     shoes = value;
-                    Database.SetHorseShoes(baseHorse.RandomId, value);
+                    Database.SetHorseShoes(baseHorse.UniqueId, value);
                 }
             }
             public int Hunger {
@@ -427,7 +427,7 @@ namespace HISP.Game.Horse
                     if (value < 0)
                         value = 0;
                     hunger = value;
-                    Database.SetHorseHunger(baseHorse.RandomId, value);
+                    Database.SetHorseHunger(baseHorse.UniqueId, value);
                 }
             }
             public int Thirst
@@ -443,7 +443,7 @@ namespace HISP.Game.Horse
                     if (value < 0)
                         value = 0;
                     thirst = value;
-                    Database.SetHorseThirst(baseHorse.RandomId, value);
+                    Database.SetHorseThirst(baseHorse.UniqueId, value);
                 }
             }
             public int Mood
@@ -463,7 +463,7 @@ namespace HISP.Game.Horse
                     */
 
                     mood = value;
-                    Database.SetHorseMood(baseHorse.RandomId, value);
+                    Database.SetHorseMood(baseHorse.UniqueId, value);
                 }
             }
             public int Groom
@@ -479,7 +479,7 @@ namespace HISP.Game.Horse
                     if (value < 0)
                         value = 0;
                     groom = value;
-                    Database.SetHorseGroom(baseHorse.RandomId, value);
+                    Database.SetHorseGroom(baseHorse.UniqueId, value);
                 }
             }
             public int Tiredness
@@ -495,7 +495,7 @@ namespace HISP.Game.Horse
                     if (value < 0)
                         value = 0;
                     tiredness = value;
-                    Database.SetHorseTiredness(baseHorse.RandomId, value);
+                    Database.SetHorseTiredness(baseHorse.UniqueId, value);
                 }
             }
             public int Experience
@@ -509,7 +509,7 @@ namespace HISP.Game.Horse
                     if (value < 0)
                         value = 0;
                     experience = value;
-                    Database.SetHorseExperience(baseHorse.RandomId, value);
+                    Database.SetHorseExperience(baseHorse.UniqueId, value);
                 }
             }
 

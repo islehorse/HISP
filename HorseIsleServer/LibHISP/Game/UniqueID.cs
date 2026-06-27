@@ -2,24 +2,23 @@
 
 namespace HISP.Game
 {
-    public class RandomID
+    public class UniqueID
     {
-        private static Mutex rndmIdMutex = new Mutex();
+        private static Mutex uniqueIdMutex = new Mutex();
         private static int prevId = 0;
-        public static int NextRandomId(int randomId=-1)
+        public static int NextUniqueId(int uniqueId=-1)
         {
-            lock(rndmIdMutex)
+            lock(uniqueIdMutex)
             {
                 int rndmId = 0;
 
-                if (randomId == -1)
+                if (uniqueId == -1)
                     rndmId = prevId + 1;
                 else
-                    rndmId = randomId;
+                    rndmId = uniqueId;
 
                 if (rndmId >= prevId)
                     prevId = rndmId;
-
 
                 return rndmId;
             }

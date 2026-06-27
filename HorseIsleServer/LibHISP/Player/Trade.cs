@@ -11,11 +11,11 @@ namespace HISP.Player
     {
         public Trade(User me)
         {
-            RandomId = RandomID.NextRandomId();
+            UniqueId = UniqueID.NextUniqueId();
             Trader = me;
         }
 
-        public int RandomId;
+        public int UniqueId;
         public User Trader;
         public Trade OtherTrade;
 
@@ -230,7 +230,7 @@ namespace HISP.Player
                 // Dismount horse if its traded
                 if (Trader.CurrentlyRidingHorse != null)
                 {
-                    if (Trader.CurrentlyRidingHorse.RandomId == inst.RandomId)
+                    if (Trader.CurrentlyRidingHorse.UniqueId == inst.UniqueId)
                     {
                         byte[] dismountedPacket = PacketBuilder.CreateChat(Messages.TradeRiddenHorse, PacketBuilder.CHAT_BOTTOM_RIGHT);
                         Trader.Facing %= 5;

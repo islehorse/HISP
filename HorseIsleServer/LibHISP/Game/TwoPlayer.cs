@@ -52,9 +52,9 @@ namespace HISP.Game
             return TwoPlayerGames.First(o => (o.Invitee.Id == user.Id || o.Inviting.Id == user.Id) && o.Accepted);
         }
 
-        public TwoPlayer(User inviting, User invitee, bool accepted, int randomId=-1)
+        public TwoPlayer(User inviting, User invitee, bool accepted, int uniqueId=-1)
         {
-            RandomId = RandomID.NextRandomId(randomId);
+            UniqueId = UniqueID.NextUniqueId(uniqueId);
             Inviting = inviting;
             Invitee = invitee;
             Accepted = accepted;
@@ -139,7 +139,7 @@ namespace HISP.Game
             return "test";
         }
 
-        public int RandomId = 0;
+        public int UniqueId = 0;
         public User Inviting = null;
         public User Invitee = null;
         public bool Accepted = false;

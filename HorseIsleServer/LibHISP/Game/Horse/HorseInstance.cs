@@ -4,9 +4,9 @@ namespace HISP.Game.Horse
 {
     public class HorseInstance
     {
-        public HorseInstance(HorseInfo.Breed breed, int randomId = -1, string loadColor = null ,string loadName=null, string loadDescription = "", int loadSpoiled=0, string loadCategory="KEEPER", int loadMagicUsed=0, int loadAutoSell=0, int leaseTimer=0, bool loadHidden=false, int loadOwner=0)
+        public HorseInstance(HorseInfo.Breed breed, int uniqueId = -1, string loadColor = null ,string loadName=null, string loadDescription = "", int loadSpoiled=0, string loadCategory="KEEPER", int loadMagicUsed=0, int loadAutoSell=0, int leaseTimer=0, bool loadHidden=false, int loadOwner=0)
         {
-            RandomId = RandomID.NextRandomId(randomId);
+            UniqueId = UniqueID.NextUniqueId(uniqueId);
             owner = loadOwner;
             if(loadName == null)
             {
@@ -63,7 +63,7 @@ namespace HISP.Game.Horse
             Leaser = 0;
         }
         public int Leaser;
-        public int RandomId;
+        public int UniqueId;
         public int Owner 
         {
             get
@@ -73,7 +73,7 @@ namespace HISP.Game.Horse
             set
             {
                 owner = value;
-                Database.SetHorseOwner(RandomId, owner);
+                Database.SetHorseOwner(UniqueId, owner);
             }
         }
 
@@ -86,7 +86,7 @@ namespace HISP.Game.Horse
             set
             {
                 hidden = value;
-                Database.SetHorseHidden(RandomId, value);
+                Database.SetHorseHidden(UniqueId, value);
             }
         }
         public int LeaseTime
@@ -98,7 +98,7 @@ namespace HISP.Game.Horse
             set
             {
                 leaseTime = value;
-                Database.SetLeaseTime(this.RandomId, leaseTime);
+                Database.SetLeaseTime(this.UniqueId, leaseTime);
             }
         }
         public string Name
@@ -110,7 +110,7 @@ namespace HISP.Game.Horse
             set
             {
                 name = value.Trim();
-                Database.SetHorseName(this.RandomId, name);
+                Database.SetHorseName(this.UniqueId, name);
             }
         }
         public string Description
@@ -122,7 +122,7 @@ namespace HISP.Game.Horse
             set
             {
                 description = value.Trim();
-                Database.SetHorseDescription(this.RandomId, description);
+                Database.SetHorseDescription(this.UniqueId, description);
             }
         }
         public string Gender;
@@ -135,14 +135,14 @@ namespace HISP.Game.Horse
             set
             {
                 color = value;
-                Database.SetHorseColor(this.RandomId, color);
+                Database.SetHorseColor(this.UniqueId, color);
             }
         }
         public int TrainTimer
         {
             get
             {
-                int timeout = Database.GetHorseTrainTimeout(this.RandomId);
+                int timeout = Database.GetHorseTrainTimeout(this.UniqueId);
                 if (timeout < 0)
                     return 0;
                 else
@@ -150,7 +150,7 @@ namespace HISP.Game.Horse
             }
             set
             {
-                Database.SetHorseTrainTimeout(this.RandomId, value);
+                Database.SetHorseTrainTimeout(this.UniqueId, value);
             }
         }
         public HorseInfo.Breed Breed;
@@ -165,7 +165,7 @@ namespace HISP.Game.Horse
             }
             set
             {
-                Database.SetHorseAutoSell(RandomId, value);
+                Database.SetHorseAutoSell(UniqueId, value);
                 autosell = value;
             }
         }
@@ -177,7 +177,7 @@ namespace HISP.Game.Horse
             }
             set
             {
-                Database.SetHorseSpoiled(RandomId, value);
+                Database.SetHorseSpoiled(UniqueId, value);
                 spoiled = value;
             }
         }
@@ -189,7 +189,7 @@ namespace HISP.Game.Horse
             }
             set
             {
-                Database.SetHorseMagicUsed(RandomId, value);
+                Database.SetHorseMagicUsed(UniqueId, value);
                 magicUsed = value;
             }
         }
@@ -201,7 +201,7 @@ namespace HISP.Game.Horse
             }
             set
             {
-                Database.SetHorseCategory(RandomId, value);
+                Database.SetHorseCategory(UniqueId, value);
                 category = value;
             }
         }

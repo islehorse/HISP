@@ -61,25 +61,25 @@ namespace HISP.Game.Items
         {
             lock(dropLock)
             {
-                int randomId = item.Instance.RandomId;
-                Database.RemoveDroppedItem(randomId);
+                int uniqueId = item.Instance.UniqueId;
+                Database.RemoveDroppedItem(uniqueId);
                 droppedItemsList.Remove(item);
             }
 
         }
 
-        public static bool IsDroppedItemExist(int randomId)
+        public static bool IsDroppedItemExist(int uniqueId)
         {
             lock (dropLock)
             {
-                return droppedItemsList.Any(o => o.Instance.RandomId == randomId);
+                return droppedItemsList.Any(o => o.Instance.UniqueId == uniqueId);
             }
         }
-        public static DroppedItem GetDroppedItemById(int randomId)
+        public static DroppedItem GetDroppedItemById(int uniqueId)
         {
             lock (dropLock)
             {
-                return droppedItemsList.First(o => o.Instance.RandomId == randomId);
+                return droppedItemsList.First(o => o.Instance.UniqueId == uniqueId);
             }
         }
         public static void DespawnItems()

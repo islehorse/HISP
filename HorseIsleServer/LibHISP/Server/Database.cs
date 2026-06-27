@@ -121,13 +121,13 @@ namespace HISP.Server
 
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Users(Id INT, Username TEXT(16), PassHash TEXT(128), Salt TEXT(128), Gender TEXT(16), Admin TEXT(3), Moderator TEXT(3))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS UserExt(Id INT, X INT, Y INT, LastLogin INT, Money INT, QuestPoints INT, BankBalance DOUBLE PRECISION, BankInterest DOUBLE PRECISION, ProfilePage TEXT(4000),IpAddress TEXT(1028),PrivateNotes TEXT(65535), CharId INT, ChatViolations INT,Subscriber TEXT(3), SubscribedUntil INT, Experience INT, Tiredness INT, Hunger INT, Thirst INT, FreeMinutes INT, TotalLogins INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Mailbox(RandomId INT, IdTo INT, IdFrom INT, Subject TEXT(100), Message TEXT(65535), TimeSent INT, BeenRead TEXT(3))");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Mailbox(uniqueId INT, IdTo INT, IdFrom INT, Subject TEXT(100), Message TEXT(65535), TimeSent INT, BeenRead TEXT(3))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS BuddyList(Id INT, IdFriend INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS MessageQueue(Id INT, Message TEXT(1028))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Weather(Area TEXT(1028), Weather TEXT(64))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Inventory(PlayerID INT, RandomID INT, ItemID INT, Data INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, RandomID INT, ItemID INT, Data INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DroppedItems(X INT, Y INT, RandomID INT, ItemID INT, DespawnTimer INT, Data INT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Inventory(PlayerID INT, uniqueId INT, ItemID INT, Data INT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS ShopInventory(ShopID INT, uniqueId INT, ItemID INT, Data INT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DroppedItems(X INT, Y INT, uniqueId INT, ItemID INT, DespawnTimer INT, Data INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS TrackedQuest(playerId INT, questId INT, timesCompleted INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS CompetitionGear(playerId INT, headItem INT, bodyItem INT, legItem INT, feetItem INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Awards(playerId INT, awardId INT)");
@@ -140,16 +140,16 @@ namespace HISP.Server
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS SavedDrawings(playerId INT, Drawing1 TEXT(65535), Drawing2 TEXT(65535), Drawing3 TEXT(65535))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DrawingRooms(roomId INT, Drawing TEXT(65535))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS DressupRooms(roomId INT, peiceId INT, active TEXT(3), x INT, y INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Horses(randomId INT, ownerId INT, leaseTime INT, leaser INT, breed INT, name TEXT(128), description TEXT(4000), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT, hidden TEXT(3))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS WildHorse(randomId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(4000), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Horses(uniqueId INT, ownerId INT, leaseTime INT, leaser INT, breed INT, name TEXT(128), description TEXT(4000), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT, hidden TEXT(3))");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS WildHorse(uniqueId INT, originalOwner INT, breed INT, x INT, y INT, name TEXT(128), description TEXT(4000), sex TEXT(128), color TEXT(128), health INT, shoes INT, hunger INT, thirst INT, mood INT, groom INT, tiredness INT, experience INT, speed INT, strength INT, conformation INT, agility INT, endurance INT, inteligence INT, personality INT, height INT, saddle INT, saddlepad INT, bridle INT, companion INT, timeout INT, autoSell INT, trainTimer INT, category TEXT(128), spoiled INT, magicUsed INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS LastPlayer(roomId TEXT(1028), playerId INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Tracking(playerId INT, what TEXT(128), count INT)");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Treasure(randomId INT, x INT, y INT, value INT, type TEXT(128))");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Treasure(uniqueId INT, x INT, y INT, value INT, type TEXT(128))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Ranches(ranchId INT, playerId INT, title TEXT(50), description TEXT(250), upgradeLevel INT, building1 INT, building2 INT, building3 INT, building4 INT, building5 INT, building6 INT, building7 INT, building8 INT, building9 INT, building10 INT, building11 INT, building12 INT, building13 INT, building14 INT, building15 INT, building16 INT, investedMoney INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS BannedPlayers(playerId INT, ipAddress TEXT(1028), reason TEXT(1028))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS RiddlesComplete(playerId INT, riddleId INT, solved TEXT(1028))");
-                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Auctions(roomId INT, randomId INT, horseRandomId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT, Done TEXT(3))");
+                TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS Auctions(roomId INT, uniqueId INT, horseUniqueId INT, ownerId INT, timeRemaining INT, highestBid INT, highestBidder INT, Done TEXT(3))");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS SolvedRealTimeRiddles(playerId INT, riddleId INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS MutedPlayers(playerId INT, mutePlayerId INT)");
                 TryExecuteSqlQuery(db, "CREATE TABLE IF NOT EXISTS ItemPurchaseQueue(playerId INT, itemId INT, count INT)");
@@ -1032,12 +1032,12 @@ namespace HISP.Server
                 
             }
         }
-        public static void SetTreasureValue(int randomId, int value)
+        public static void SetTreasureValue(int uniqueId, int value)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Treasure SET value=@value WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "UPDATE Treasure SET value=@value WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 addWithValue(sqlCommand, "@value", value);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
@@ -1046,12 +1046,12 @@ namespace HISP.Server
             }
         }
 
-        public static void DeleteTreasure(int randomId)
+        public static void DeleteTreasure(int uniqueId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "DELETE FROM Treasure  WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM Treasure  WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
 
@@ -1059,12 +1059,12 @@ namespace HISP.Server
             }
         }
 
-        public static void AddTreasure(int randomId, int x, int y, int value, string type)
+        public static void AddTreasure(int uniqueId, int x, int y, int value, string type)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "INSERT INTO Treasure VALUES(@randomId, @x, @y, @value, @type)");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Treasure VALUES(@uniqueId, @x, @y, @value, @type)");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 addWithValue(sqlCommand, "@x", x);
                 addWithValue(sqlCommand, "@y", y);
                 addWithValue(sqlCommand, "@value", value);
@@ -1084,12 +1084,12 @@ namespace HISP.Server
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while(reader.Read())
                 {
-                    int randomId = reader.GetInt32(0);
+                    int uniqueId = reader.GetInt32(0);
                     int x = reader.GetInt32(1);
                     int y = reader.GetInt32(2);
                     int value = reader.GetInt32(3);
                     string type = reader.GetString(4);
-                    Treasure treasure = new Treasure(x, y, type, randomId, value);
+                    Treasure treasure = new Treasure(x, y, type, uniqueId, value);
                     treasures.Add(treasure);
                 }
                 
@@ -1193,57 +1193,57 @@ namespace HISP.Server
             }
         }
 
-        public static void SetWildHorseX(int randomId, int x)
+        public static void SetWildHorseX(int uniqueId, int x)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE WildHorse SET x=@x WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "UPDATE WildHorse SET x=@x WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 addWithValue(sqlCommand, "@x", x);
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetWildHorseTimeout(int randomId, int timeout)
+        public static void SetWildHorseTimeout(int uniqueId, int timeout)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE WildHorse SET timeout=@timeout WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "UPDATE WildHorse SET timeout=@timeout WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 addWithValue(sqlCommand, "@timeout", timeout);
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void RemoveWildHorse(int randomId)
+        public static void RemoveWildHorse(int uniqueId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "DELETE FROM WildHorse WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM WildHorse WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void SetWildHorseY(int randomId, int x)
+        public static void SetWildHorseY(int uniqueId, int x)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE WildHorse SET y=@y WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "UPDATE WildHorse SET y=@y WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 addWithValue(sqlCommand, "@y", x);
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void RemoveHorse(int randomId)
+        public static void RemoveHorse(int uniqueId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "DELETE FROM Horses WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM Horses WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.ExecuteNonQuery();
                 
             }
@@ -1254,9 +1254,9 @@ namespace HISP.Server
 
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "INSERT INTO Horses VALUES(@randomId,@originalOwner,@leaseTime,@leaser,@breed,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@autosell,@training,@category,@spoiled,@magicused,@hidden)");
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Horses VALUES(@uniqueId,@originalOwner,@leaseTime,@leaser,@breed,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@autosell,@training,@category,@spoiled,@magicused,@hidden)");
 
-                addWithValue(sqlCommand, "@randomId", horse.RandomId);
+                addWithValue(sqlCommand, "@uniqueId", horse.UniqueId);
                 addWithValue(sqlCommand, "@originalOwner", horse.Owner);
                 addWithValue(sqlCommand, "@leaseTime", horse.LeaseTime);
                 addWithValue(sqlCommand, "@leaser", horse.Leaser);
@@ -1326,7 +1326,7 @@ namespace HISP.Server
 
         public static HorseInstance ReadHorseInstance(DbDataReader reader)
         {
-            int randomId = reader.GetInt32(0);
+            int uniqueId = reader.GetInt32(0);
             int breedId = reader.GetInt32(4);
 
             HorseInfo.Breed horseBreed = HorseInfo.GetBreedById(breedId);
@@ -1341,7 +1341,7 @@ namespace HISP.Server
             int owner = reader.GetInt32(1);
             string color = reader.GetString(8);
 
-            HorseInstance inst = new HorseInstance(horseBreed, randomId, color, name, description, spoiled, category, magicUsed, autosell, leaseTime, hidden, owner);
+            HorseInstance inst = new HorseInstance(horseBreed, uniqueId, color, name, description, spoiled, category, magicUsed, autosell, leaseTime, hidden, owner);
             
             inst.Leaser = reader.GetInt32(3);
             inst.Gender = reader.GetString(7);
@@ -1411,13 +1411,13 @@ namespace HISP.Server
 
                 while (reader.Read())
                 {
-                    int randomId = reader.GetInt32(1);
+                    int uniqueId = reader.GetInt32(1);
                     int timeRemaining = reader.GetInt32(4);
                     int highestBid = reader.GetInt32(5);
                     int highestBidder = reader.GetInt32(6);
                     int horseId = reader.GetInt32(2);
 
-                    Auction.AuctionEntry auctionEntry = new Auction.AuctionEntry(timeRemaining, highestBid, highestBidder, randomId);
+                    Auction.AuctionEntry auctionEntry = new Auction.AuctionEntry(timeRemaining, highestBid, highestBidder, uniqueId);
 
                     auctionEntry.Horse = GetPlayerHorse(horseId);
                     auctionEntry.OwnerId = reader.GetInt32(3);
@@ -1431,12 +1431,12 @@ namespace HISP.Server
             }
         }
 
-        public static void DeleteAuctionRoom(int randomId)
+        public static void DeleteAuctionRoom(int uniqueId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "DELETE FROM Auctions WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM Auctions WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
@@ -1446,10 +1446,10 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "INSERT INTO Auctions VALUES(@roomId, @randomId, @horseRandomId, @ownerId, @timeRemaining, @highestBid, @highestBidder, @done)");
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Auctions VALUES(@roomId, @uniqueId, @horseUniqueId, @ownerId, @timeRemaining, @highestBid, @highestBidder, @done)");
                 addWithValue(sqlCommand, "@roomId", roomId);
-                addWithValue(sqlCommand, "@randomId", entry.RandomId);
-                addWithValue(sqlCommand, "@horseRandomId", entry.Horse.RandomId);
+                addWithValue(sqlCommand, "@uniqueId", entry.UniqueId);
+                addWithValue(sqlCommand, "@horseUniqueId", entry.Horse.UniqueId);
                 addWithValue(sqlCommand, "@ownerId", entry.OwnerId);
                 addWithValue(sqlCommand, "@timeRemaining", entry.TimeRemaining);
                 addWithValue(sqlCommand, "@highestBid", entry.HighestBid);
@@ -1515,9 +1515,9 @@ namespace HISP.Server
 
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "INSERT INTO WildHorse VALUES(@randomId,@originalOwner,@breed,@x,@y,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@timeout,@autosell,@training,@category,@spoiled,@magicused)");
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO WildHorse VALUES(@uniqueId,@originalOwner,@breed,@x,@y,@name,@description,@sex,@color,@health,@shoes,@hunger,@thirst,@mood,@groom,@tiredness,@experience,@speed,@strength,@conformation,@agility,@endurance,@inteligence,@personality,@height,@saddle,@saddlepad,@bridle,@companion,@timeout,@autosell,@training,@category,@spoiled,@magicused)");
 
-                addWithValue(sqlCommand, "@randomId", horse.Instance.RandomId);
+                addWithValue(sqlCommand, "@uniqueId", horse.Instance.UniqueId);
                 addWithValue(sqlCommand, "@originalOwner", horse.Instance.Owner);
                 addWithValue(sqlCommand, "@breed", horse.Instance.Breed.Id);
                 addWithValue(sqlCommand, "@x", horse.X);
@@ -1597,10 +1597,10 @@ namespace HISP.Server
 
                 while (reader.Read())
                 {
-                    int randomId = reader.GetInt32(0);
+                    int uniqueId = reader.GetInt32(0);
                     int breedId = reader.GetInt32(2);
                     HorseInfo.Breed horseBreed = HorseInfo.GetBreedById(breedId);
-                    HorseInstance inst = new HorseInstance(horseBreed, randomId);
+                    HorseInstance inst = new HorseInstance(horseBreed, uniqueId);
                     inst.Owner = reader.GetInt32(1);
                     inst.Name = reader.GetString(5);
                     inst.Description = reader.GetString(6);
@@ -2172,13 +2172,13 @@ namespace HISP.Server
             }
         }
 
-        public static HorseInstance GetPlayerHorse(int horseRandomId)
+        public static HorseInstance GetPlayerHorse(int horseUniqueId)
         {
             HorseInstance instance = null;
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Horses WHERE randomId=@horseRandomId");
-                addWithValue(sqlCommand, "@horseRandomId", horseRandomId);
+                DbCommand sqlCommand = createCommand(db, "SELECT * FROM Horses WHERE uniqueId=@horseUniqueId");
+                addWithValue(sqlCommand, "@horseUniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while (reader.Read())
@@ -2194,12 +2194,12 @@ namespace HISP.Server
             }
         }
 
-        public static int GetHorseTrainTimeout(int horseRandomId)
+        public static int GetHorseTrainTimeout(int horseUniqueId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "SELECT trainTimer FROM Horses WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                DbCommand sqlCommand = createCommand(db, "SELECT trainTimer FROM Horses WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 int trainTimer = Convert.ToInt32(sqlCommand.ExecuteScalar());
                 
@@ -2207,52 +2207,52 @@ namespace HISP.Server
             }
         }
 
-        public static void SetAuctionDone(int randomId, bool done)
+        public static void SetAuctionDone(int uniqueId, bool done)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET done=@done WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET done=@done WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@done", done ? "YES" : "NO");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void SetAuctionTimeout(int randomId, int timeRemaining)
+        public static void SetAuctionTimeout(int uniqueId, int timeRemaining)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET timeRemaining=@timeRemaining WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET timeRemaining=@timeRemaining WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@timeRemaining", timeRemaining);
-                addWithValue(sqlCommand, "@randomId", randomId);
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void SetAuctionHighestBid(int randomId, int highestBid)
+        public static void SetAuctionHighestBid(int uniqueId, int highestBid)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET highestBid=@highestBid WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET highestBid=@highestBid WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@highestBid", highestBid);
-                addWithValue(sqlCommand, "@randomId", randomId);
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void SetAuctionHighestBidder(int randomId, int highestBidder)
+        public static void SetAuctionHighestBidder(int uniqueId, int highestBidder)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET highestBidder=@highestBidder WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Auctions SET highestBidder=@highestBidder WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@highestBidder", highestBidder);
-                addWithValue(sqlCommand, "@randomId", randomId);
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
@@ -2260,428 +2260,428 @@ namespace HISP.Server
         }
 
 
-        public static void SetHorseOwner(int randomId, int owner)
+        public static void SetHorseOwner(int uniqueId, int owner)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET ownerId=@owner WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET ownerId=@owner WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@owner", owner);
-                addWithValue(sqlCommand, "@randomId", randomId);
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void SetHorseHidden(int randomId, bool hidden)
+        public static void SetHorseHidden(int uniqueId, bool hidden)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET hidden=@hidden WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET hidden=@hidden WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@hidden", hidden ? "YES" : "NO");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseTrainTimeout(int horseRandomId, int trainTimeout)
+        public static void SetHorseTrainTimeout(int horseUniqueId, int trainTimeout)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET trainTimer=@trainTimer WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET trainTimer=@trainTimer WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@trainTimer", trainTimeout);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseColor(int horseRandomId, string Color)
+        public static void SetHorseColor(int horseUniqueId, string Color)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET color=@color WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET color=@color WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@color", Color);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseCategory(int horseRandomId, string Category)
+        public static void SetHorseCategory(int horseUniqueId, string Category)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET category=@category WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET category=@category WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@category", Category);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void SetHorseAutoSell(int horseRandomId, int AutoSell)
+        public static void SetHorseAutoSell(int horseUniqueId, int AutoSell)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET autosell=@autosell WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET autosell=@autosell WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@autosell", AutoSell);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseMagicUsed(int horseRandomId, int MagicUsed)
+        public static void SetHorseMagicUsed(int horseUniqueId, int MagicUsed)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET magicused=@magicused WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET magicused=@magicused WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@magicused", MagicUsed);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetLeaseTime(int horseRandomId, int leaseTime)
+        public static void SetLeaseTime(int horseUniqueId, int leaseTime)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET leaseTime=@leaseTime WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET leaseTime=@leaseTime WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@leaseTime", leaseTime);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void SetHorseName(int horseRandomId, string Name)
+        public static void SetHorseName(int horseUniqueId, string Name)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET name=@name WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET name=@name WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@name", Name);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseDescription(int horseRandomId, string Description)
+        public static void SetHorseDescription(int horseUniqueId, string Description)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET description=@description WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET description=@description WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@description", Description);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseTiredness(int horseRandomId, int Tiredness)
+        public static void SetHorseTiredness(int horseUniqueId, int Tiredness)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET tiredness=@tiredness WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET tiredness=@tiredness WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@tiredness", Tiredness);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseSpeed(int horseRandomId, int Speed)
+        public static void SetHorseSpeed(int horseUniqueId, int Speed)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET speed=@speed WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET speed=@speed WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@speed", Speed);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseStrength(int horseRandomId, int Strength)
+        public static void SetHorseStrength(int horseUniqueId, int Strength)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET strength=@strength WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET strength=@strength WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@strength", Strength);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseConformation(int horseRandomId, int Conformation)
+        public static void SetHorseConformation(int horseUniqueId, int Conformation)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET conformation=@conformation WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET conformation=@conformation WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@conformation", Conformation);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseAgility(int horseRandomId, int Agility)
+        public static void SetHorseAgility(int horseUniqueId, int Agility)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET agility=@agility WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET agility=@agility WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@agility", Agility);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseEndurance(int horseRandomId, int Endurance)
+        public static void SetHorseEndurance(int horseUniqueId, int Endurance)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET endurance=@endurance WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET endurance=@endurance WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@endurance", Endurance);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorsePersonality(int horseRandomId, int Personality)
+        public static void SetHorsePersonality(int horseUniqueId, int Personality)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET personality=@personality WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET personality=@personality WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@personality", Personality);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseInteligence(int horseRandomId, int Inteligence)
+        public static void SetHorseInteligence(int horseUniqueId, int Inteligence)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET inteligence=@inteligence WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET inteligence=@inteligence WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@inteligence", Inteligence);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseSpoiled(int horseRandomId, int Spoiled)
+        public static void SetHorseSpoiled(int horseUniqueId, int Spoiled)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET spoiled=@spoiled WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET spoiled=@spoiled WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@spoiled", Spoiled);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseExperience(int horseRandomId, int Experience)
+        public static void SetHorseExperience(int horseUniqueId, int Experience)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET experience=@experience WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET experience=@experience WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@experience", Experience);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseShoes(int horseRandomId, int Shoes)
+        public static void SetHorseShoes(int horseUniqueId, int Shoes)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET shoes=@shoes WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET shoes=@shoes WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@shoes", Shoes);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseHeight(int horseRandomId, int Height)
+        public static void SetHorseHeight(int horseUniqueId, int Height)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET height=@height WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET height=@height WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@height", Height);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseMood(int horseRandomId, int Mood)
+        public static void SetHorseMood(int horseUniqueId, int Mood)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET mood=@mood WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET mood=@mood WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@mood", Mood);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseGroom(int horseRandomId, int Groom)
+        public static void SetHorseGroom(int horseUniqueId, int Groom)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET groom=@groom WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET groom=@groom WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@groom", Groom);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void SetHorseHunger(int horseRandomId, int Hunger)
+        public static void SetHorseHunger(int horseUniqueId, int Hunger)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET hunger=@hunger WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET hunger=@hunger WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@hunger", Hunger);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseThirst(int horseRandomId, int Thirst)
+        public static void SetHorseThirst(int horseUniqueId, int Thirst)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET thirst=@thirst WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET thirst=@thirst WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@thirst", Thirst);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetHorseHealth(int horseRandomId, int Health)
+        public static void SetHorseHealth(int horseUniqueId, int Health)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET health=@health WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET health=@health WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@health", Health);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void SetSaddle(int horseRandomId, int saddleItemId)
+        public static void SetSaddle(int horseUniqueId, int saddleItemId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddle=@saddle WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddle=@saddle WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@saddle", saddleItemId);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void SetSaddlePad(int horseRandomId, int saddlePadItemId)
+        public static void SetSaddlePad(int horseUniqueId, int saddlePadItemId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddlepad=@saddlepad WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddlepad=@saddlepad WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@saddlepad", saddlePadItemId);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void SetBridle(int horseRandomId, int bridleItemId)
+        public static void SetBridle(int horseUniqueId, int bridleItemId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET bridle=@bridle WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET bridle=@bridle WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@bridle", bridleItemId);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void SetCompanion(int horseRandomId, int companionItemId)
+        public static void SetCompanion(int horseUniqueId, int companionItemId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET companion=@companion WHERE randomId=@randomId");
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET companion=@companion WHERE uniqueId=@uniqueId");
                 addWithValue(sqlCommand, "@companion", companionItemId);
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void ClearSaddle(int horseRandomId)
+        public static void ClearSaddle(int horseUniqueId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddle=NULL WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddle=NULL WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void ClearSaddlePad(int horseRandomId)
+        public static void ClearSaddlePad(int horseUniqueId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddlepad=NULL WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET saddlepad=NULL WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void ClearBridle(int horseRandomId)
+        public static void ClearBridle(int horseUniqueId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET bridle=NULL WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET bridle=NULL WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
 
-        public static void ClearCompanion(int horseRandomId)
+        public static void ClearCompanion(int horseUniqueId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET companion=NULL WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", horseRandomId);
+                DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET companion=NULL WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", horseUniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
@@ -3326,7 +3326,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "SELECT ItemId,RandomId,Data FROM ShopInventory WHERE ShopID=@shopId");
+                DbCommand sqlCommand = createCommand(db, "SELECT ItemId,UniqueId,Data FROM ShopInventory WHERE ShopID=@shopId");
                 addWithValue(sqlCommand, "@shopId", shopId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
@@ -3345,9 +3345,9 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "INSERT INTO ShopInventory VALUES(@shopId,@randomId,@itemId,@data)");
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO ShopInventory VALUES(@shopId,@uniqueId,@itemId,@data)");
                 addWithValue(sqlCommand, "@shopId", shopId);
-                addWithValue(sqlCommand, "@randomId", instance.RandomId);
+                addWithValue(sqlCommand, "@uniqueId", instance.UniqueId);
                 addWithValue(sqlCommand, "@itemId", instance.ItemId);
                 addWithValue(sqlCommand, "@data", instance.Data);
                 sqlCommand.Prepare();
@@ -3360,9 +3360,9 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "DELETE FROM ShopInventory WHERE (ShopID=@shopId AND RandomId=@randomId)");
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM ShopInventory WHERE (ShopID=@shopId AND UniqueId=@uniqueId)");
                 addWithValue(sqlCommand, "@shopId", shopId);
-                addWithValue(sqlCommand, "@randomId", instance.RandomId);
+                addWithValue(sqlCommand, "@uniqueId", instance.UniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
@@ -3373,7 +3373,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "SELECT ItemId,RandomId,Data FROM Inventory WHERE PlayerId=@playerId");
+                DbCommand sqlCommand = createCommand(db, "SELECT ItemId,UniqueId,Data FROM Inventory WHERE PlayerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
                 DbDataReader reader = sqlCommand.ExecuteReader();
@@ -3438,9 +3438,9 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "INSERT INTO Inventory VALUES(@playerId,@randomId,@itemId, @data)");
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Inventory VALUES(@playerId,@uniqueId,@itemId, @data)");
                 addWithValue(sqlCommand, "@playerId", playerId);
-                addWithValue(sqlCommand, "@randomId", instance.RandomId);
+                addWithValue(sqlCommand, "@uniqueId", instance.UniqueId);
                 addWithValue(sqlCommand, "@itemId", instance.ItemId);
                 addWithValue(sqlCommand, "@data", instance.Data);
                 sqlCommand.Prepare();
@@ -3465,9 +3465,9 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "DELETE FROM Inventory WHERE (PlayerId=@playerId AND RandomId=@randomId)");
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM Inventory WHERE (PlayerId=@playerId AND UniqueId=@uniqueId)");
                 addWithValue(sqlCommand, "@playerId", playerId);
-                addWithValue(sqlCommand, "@randomId", instance.RandomId);
+                addWithValue(sqlCommand, "@uniqueId", instance.UniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
@@ -3673,12 +3673,12 @@ namespace HISP.Server
         }
 
 
-        public static void RemoveDroppedItem(int randomId)
+        public static void RemoveDroppedItem(int uniqueId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "DELETE FROM DroppedItems WHERE (RandomId=@randomId)");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM DroppedItems WHERE (UniqueId=@uniqueId)");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
@@ -3721,10 +3721,10 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "INSERT INTO DroppedItems VALUES(@x, @y, @randomId, @itemId, @despawnTimer, @data)");
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO DroppedItems VALUES(@x, @y, @uniqueId, @itemId, @despawnTimer, @data)");
                 addWithValue(sqlCommand, "@x", item.X);
                 addWithValue(sqlCommand, "@y", item.Y);
-                addWithValue(sqlCommand, "@randomId", item.Instance.RandomId);
+                addWithValue(sqlCommand, "@uniqueId", item.Instance.UniqueId);
                 addWithValue(sqlCommand, "@itemId", item.Instance.ItemId);
                 addWithValue(sqlCommand, "@despawnTimer", item.DespawnTimer);
                 addWithValue(sqlCommand, "@data", item.Data);
@@ -3762,15 +3762,15 @@ namespace HISP.Server
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while(reader.Read())
                 {
-                    Mailbox.Mail MailMessage = new Mailbox.Mail();
-                    MailMessage.RandomId = RandomID.NextRandomId(reader.GetInt32(0));
-                    MailMessage.ToUser = reader.GetInt32(1);
-                    MailMessage.FromUser = reader.GetInt32(2);
-                    MailMessage.Subject = reader.GetString(3);
-                    MailMessage.Message = reader.GetString(4);
-                    MailMessage.Timestamp = reader.GetInt32(5);
-                    MailMessage.Read = reader.GetString(6) == "YES";
-                    mailList.Add(MailMessage);
+                    Mailbox.Mail mailMessage = new Mailbox.Mail();
+                    mailMessage.UniqueId = UniqueID.NextUniqueId(reader.GetInt32(0));
+                    mailMessage.ToUser = reader.GetInt32(1);
+                    mailMessage.FromUser = reader.GetInt32(2);
+                    mailMessage.Subject = reader.GetString(3);
+                    mailMessage.Message = reader.GetString(4);
+                    mailMessage.Timestamp = reader.GetInt32(5);
+                    mailMessage.Read = reader.GetString(6) == "YES";
+                    mailList.Add(mailMessage);
                 }
                 
             }
@@ -3787,23 +3787,23 @@ namespace HISP.Server
                 
             }
         }
-        public static void DeleteMail(int randomId)
+        public static void DeleteMail(int uniqueId)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "DELETE FROM Mailbox WHERE randomId=@randomId");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM Mailbox WHERE uniqueId=@uniqueId");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
                 
             }
         }
-        public static void AddMail(int randomId, int toId, int fromId, string subject, string message, int timestamp, bool read)
+        public static void AddMail(int uniqueId, int toId, int fromId, string subject, string message, int timestamp, bool read)
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "INSERT INTO Mailbox VALUES(@randomId, @toId,@from,@subject,@message,@time,@read)");
-                addWithValue(sqlCommand, "@randomId", randomId);
+                DbCommand sqlCommand = createCommand(db, "INSERT INTO Mailbox VALUES(@uniqueId, @toId,@from,@subject,@message,@time,@read)");
+                addWithValue(sqlCommand, "@uniqueId", uniqueId);
                 addWithValue(sqlCommand, "@toId", toId);
                 addWithValue(sqlCommand, "@from", fromId);
                 addWithValue(sqlCommand, "@subject", subject);

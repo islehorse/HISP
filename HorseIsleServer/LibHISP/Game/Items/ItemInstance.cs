@@ -2,7 +2,7 @@
 {
     public class ItemInstance 
     {
-        public int RandomId;
+        public int UniqueId;
         public int ItemId;
         public int Data;
 
@@ -13,9 +13,9 @@
 
         }
 
-        public ItemInstance(int id,int randomId = -1, int data=0)
+        public ItemInstance(int id,int uniqueId = -1, int data=0)
         {
-            RandomId = RandomID.NextRandomId(randomId);
+            UniqueId = UniqueID.NextUniqueId(uniqueId);
             Data = data;
             ItemId = id; 
 

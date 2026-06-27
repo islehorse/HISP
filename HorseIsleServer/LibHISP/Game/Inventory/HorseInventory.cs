@@ -32,11 +32,11 @@ namespace HISP.Game.Inventory
             Database.LoadHorseInventory(this, baseUser.Id);
         }
 
-        public void UnHide(int randomId)
+        public void UnHide(int uniqueId)
         {
             foreach(HorseInstance inst in horsesList)
             {
-                if (inst.RandomId == randomId)
+                if (inst.UniqueId == uniqueId)
                 {
                     inst.Hidden = false;
                     break;
@@ -58,10 +58,10 @@ namespace HISP.Game.Inventory
         {
             foreach(HorseInstance horse in HorseList)
             {
-                if(horse.RandomId == id)
+                if(horse.UniqueId == id)
                 {
                     if (removeFromDb)
-                        Database.RemoveHorse(horse.RandomId);
+                        Database.RemoveHorse(horse.UniqueId);
                     horsesList.Remove(horse);
 
                 }
@@ -70,16 +70,16 @@ namespace HISP.Game.Inventory
 
         public void DeleteHorse(HorseInstance horse, bool removeFromDb=true)
         {
-            DeleteHorseId(horse.RandomId, removeFromDb);
+            DeleteHorseId(horse.UniqueId, removeFromDb);
         }
         
-        public bool HorseIdExist(int randomId)
+        public bool HorseIdExist(int uniqueId)
         {
-            return HorseList.Any(o => o.RandomId == randomId);
+            return HorseList.Any(o => o.UniqueId == uniqueId);
         }
-        public HorseInstance GetHorseById(int randomId)
+        public HorseInstance GetHorseById(int uniqueId)
         {
-            return HorseList.First(o => o.RandomId == randomId);
+            return HorseList.First(o => o.UniqueId == uniqueId);
         }
 
         public HorseInstance[] GetHorsesInCategory(HorseInfo.Category category)

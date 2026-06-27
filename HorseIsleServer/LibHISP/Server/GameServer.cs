@@ -464,21 +464,21 @@ namespace HISP.Server
 
                                 break;
                             case '2': // Trade Horse
-                                string horseRandomIdStr = idStr.Substring(1);
-                                int horseRandomId = -1;
+                                string horseUniqueIdStr = idStr.Substring(1);
+                                int horseUniqueId = -1;
                                 try
                                 {
-                                    horseRandomId = int.Parse(horseRandomIdStr);
+                                    horseUniqueId = int.Parse(horseUniqueIdStr);
                                 }
                                 catch (FormatException)
                                 {
                                     break;
                                 }
 
-                                if (!sender.User.HorseInventory.HorseIdExist(horseRandomId))
+                                if (!sender.User.HorseInventory.HorseIdExist(horseUniqueId))
                                     break;
 
-                                HorseInstance horse = sender.User.HorseInventory.GetHorseById(horseRandomId);
+                                HorseInstance horse = sender.User.HorseInventory.GetHorseById(horseUniqueId);
                                 if (!sender.User.CurrentTrade.HorsesOffered.Contains(horse))
                                     sender.User.CurrentTrade.OfferHorse(horse);
 
@@ -833,22 +833,22 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.HORSE_FEED:
-                    int randomId = 0;
+                    int uniqueId = 0;
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    string uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
 
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        HorseInstance horseFeedInst = sender.User.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseFeedInst = sender.User.HorseInventory.GetHorseById(uniqueId);
 
                         sender.User.LastViewedHorse = horseFeedInst;
                         sender.User.MajorPriority = true;
@@ -862,22 +862,22 @@ namespace HISP.Server
                         break;
                     }
                 case PacketBuilder.HORSE_PET:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
 
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        HorseInstance horsePetInst = sender.User.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horsePetInst = sender.User.HorseInventory.GetHorseById(uniqueId);
                         sender.User.LastViewedHorse = horsePetInst;
                         int randMoodAddition = RandomNumberGenerator.Next(1, 20);
                         int randTiredMinus = RandomNumberGenerator.Next(1, 10);
@@ -952,25 +952,25 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.HORSE_VET_SERVICE:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
-                    if (randomIdStr == "NaN")
+                    if (uniqueIdStr == "NaN")
                         break;
                         
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        HorseInstance horseVetServiceInst = sender.User.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseVetServiceInst = sender.User.HorseInventory.GetHorseById(uniqueId);
                         sender.User.LastViewedHorse = horseVetServiceInst;
 
                         if(World.InSpecialTile(sender.User.X, sender.User.Y))
@@ -1013,25 +1013,25 @@ namespace HISP.Server
                     }
                 case PacketBuilder.HORSE_SHOE_STEEL:
                 case PacketBuilder.HORSE_SHOE_IRON:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
-                    if (randomIdStr == "NaN")
+                    if (uniqueIdStr == "NaN")
                         break;
 
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        HorseInstance horseFarrierServiceInst = sender.User.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseFarrierServiceInst = sender.User.HorseInventory.GetHorseById(uniqueId);
                         sender.User.LastViewedHorse = horseFarrierServiceInst;
 
                         if (World.InSpecialTile(sender.User.X, sender.User.Y))
@@ -1137,25 +1137,25 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.HORSE_GROOM_SERVICE:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
-                    if (randomIdStr == "NaN")
+                    if (uniqueIdStr == "NaN")
                         break;
 
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        HorseInstance groomHorseInst = sender.User.HorseInventory.GetHorseById(randomId);
+                        HorseInstance groomHorseInst = sender.User.HorseInventory.GetHorseById(uniqueId);
                         sender.User.LastViewedHorse = groomHorseInst;
 
                         if (World.InSpecialTile(sender.User.X, sender.User.Y))
@@ -1251,25 +1251,25 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.HORSE_BARN_SERVICE:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
-                    if (randomIdStr == "NaN")
+                    if (uniqueIdStr == "NaN")
                         break;
 
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        HorseInstance barnHorseInst = sender.User.HorseInventory.GetHorseById(randomId);
+                        HorseInstance barnHorseInst = sender.User.HorseInventory.GetHorseById(uniqueId);
                         sender.User.LastViewedHorse = barnHorseInst;
 
                         if (World.InSpecialTile(sender.User.X, sender.User.Y))
@@ -1367,25 +1367,25 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.HORSE_TRAIN:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
-                    if (randomIdStr == "NaN")
+                    if (uniqueIdStr == "NaN")
                         break;
 
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        HorseInstance trainHorseInst = sender.User.HorseInventory.GetHorseById(randomId);
+                        HorseInstance trainHorseInst = sender.User.HorseInventory.GetHorseById(uniqueId);
                         sender.User.LastViewedHorse = trainHorseInst;
 
                         if (World.InSpecialTile(sender.User.X, sender.User.Y))
@@ -1472,17 +1472,17 @@ namespace HISP.Server
                         break;
                     }
                 case PacketBuilder.HORSE_GIVE_FEED:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
 
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
                     if(sender.User.LastViewedHorse == null)
@@ -1490,9 +1490,9 @@ namespace HISP.Server
                         Logger.InfoPrint(sender.User.Username + " Tried to feed a non existant horse.");
                         break;
                     }
-                    if (sender.User.Inventory.HasItem(randomId))
+                    if (sender.User.Inventory.HasItem(uniqueId))
                     {
-                        InventoryItem item = sender.User.Inventory.GetItemByRandomid(randomId);
+                        InventoryItem item = sender.User.Inventory.GetItemByRandomid(uniqueId);
                         Item.ItemInformation itemInfo = item.ItemInstances[0].GetItemInfo();
                         HorseInstance horseInstance = sender.User.LastViewedHorse;
                         bool tooMuch = false;
@@ -1612,22 +1612,22 @@ namespace HISP.Server
                         break;
                     }
                 case PacketBuilder.HORSE_ENTER_ARENA:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
 
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        HorseInstance horseInstance = sender.User.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseInstance = sender.User.HorseInventory.GetHorseById(uniqueId);
                         if(World.InSpecialTile(sender.User.X, sender.User.Y))
                         {
                             World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
@@ -1700,20 +1700,20 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.HORSE_RELEASE:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
 
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
                         if(World.InTown(sender.User.X, sender.User.Y))
                         {
@@ -1722,10 +1722,10 @@ namespace HISP.Server
                         }
 
 
-                        HorseInstance horseReleaseInst = sender.User.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseReleaseInst = sender.User.HorseInventory.GetHorseById(uniqueId);
                         if(sender.User.CurrentlyRidingHorse != null)
                         {
-                            if(horseReleaseInst.RandomId == sender.User.CurrentlyRidingHorse.RandomId) 
+                            if(horseReleaseInst.UniqueId == sender.User.CurrentlyRidingHorse.UniqueId) 
                             {
                                 byte[] errorChatPacket = PacketBuilder.CreateChat(Messages.HorseCantReleaseTheHorseYourRidingOn, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(errorChatPacket);
@@ -1754,22 +1754,22 @@ namespace HISP.Server
                         break;
                     }
                 case PacketBuilder.HORSE_TACK:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
 
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        HorseInstance horseTackInst = sender.User.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseTackInst = sender.User.HorseInventory.GetHorseById(uniqueId);
                         
                         sender.User.LastViewedHorse = horseTackInst;
                         sender.User.MajorPriority = true;
@@ -1793,22 +1793,22 @@ namespace HISP.Server
                         }
                     }
 
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
 
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        HorseInstance horseDrinkInst = sender.User.HorseInventory.GetHorseById(randomId);
+                        HorseInstance horseDrinkInst = sender.User.HorseInventory.GetHorseById(uniqueId);
 
                         if(horseDrinkInst.BasicStats.Health < 200)
                         {
@@ -1856,7 +1856,7 @@ namespace HISP.Server
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
                     if(Item.ItemIdExist(itemId))
@@ -1880,19 +1880,19 @@ namespace HISP.Server
                                         case 1: // Saddle
                                             if(sender.User.LastViewedHorse.Equipment.Saddle != null)
                                                 sender.User.Inventory.AddIgnoringFull(new ItemInstance(sender.User.LastViewedHorse.Equipment.Saddle.Id));
-                                            Database.SetSaddle(sender.User.LastViewedHorse.RandomId, itemInfo.Id);
+                                            Database.SetSaddle(sender.User.LastViewedHorse.UniqueId, itemInfo.Id);
                                             sender.User.LastViewedHorse.Equipment.Saddle = itemInfo;
                                             break;
                                         case 2: // Saddle Pad
                                             if (sender.User.LastViewedHorse.Equipment.SaddlePad != null)
                                                 sender.User.Inventory.AddIgnoringFull(new ItemInstance(sender.User.LastViewedHorse.Equipment.SaddlePad.Id));
-                                            Database.SetSaddlePad(sender.User.LastViewedHorse.RandomId, itemInfo.Id);
+                                            Database.SetSaddlePad(sender.User.LastViewedHorse.UniqueId, itemInfo.Id);
                                             sender.User.LastViewedHorse.Equipment.SaddlePad = itemInfo;
                                             break;
                                         case 3: // Bridle
                                             if (sender.User.LastViewedHorse.Equipment.Bridle != null)
                                                 sender.User.Inventory.AddIgnoringFull(new ItemInstance(sender.User.LastViewedHorse.Equipment.Bridle.Id));
-                                            Database.SetBridle(sender.User.LastViewedHorse.RandomId, itemInfo.Id);
+                                            Database.SetBridle(sender.User.LastViewedHorse.UniqueId, itemInfo.Id);
                                             sender.User.LastViewedHorse.Equipment.Bridle = itemInfo;
                                             break;
                                     }
@@ -1912,7 +1912,7 @@ namespace HISP.Server
                                 {
                                     if (sender.User.LastViewedHorse.Equipment.Companion != null)
                                         sender.User.Inventory.AddIgnoringFull(new ItemInstance(sender.User.LastViewedHorse.Equipment.Companion.Id));
-                                    Database.SetCompanion(sender.User.LastViewedHorse.RandomId, itemInfo.Id);
+                                    Database.SetCompanion(sender.User.LastViewedHorse.UniqueId, itemInfo.Id);
                                     sender.User.LastViewedHorse.Equipment.Companion = itemInfo;
 
                                     sender.User.Inventory.Remove(sender.User.Inventory.GetItemByItemId(itemId).ItemInstances[0]); // Remove item from inventory.
@@ -1957,25 +1957,25 @@ namespace HISP.Server
                             case 0x31: // Saddle
                                 if (sender.User.LastViewedHorse.Equipment.Saddle != null)
                                     sender.User.Inventory.AddIgnoringFull(new ItemInstance(sender.User.LastViewedHorse.Equipment.Saddle.Id));
-                                Database.ClearSaddle(sender.User.LastViewedHorse.RandomId);
+                                Database.ClearSaddle(sender.User.LastViewedHorse.UniqueId);
                                 sender.User.LastViewedHorse.Equipment.Saddle = null;
                                 break;
                             case 0x32: // Saddle Pad
                                 if (sender.User.LastViewedHorse.Equipment.SaddlePad != null)
                                     sender.User.Inventory.AddIgnoringFull(new ItemInstance(sender.User.LastViewedHorse.Equipment.SaddlePad.Id));
-                                Database.ClearSaddlePad(sender.User.LastViewedHorse.RandomId);
+                                Database.ClearSaddlePad(sender.User.LastViewedHorse.UniqueId);
                                 sender.User.LastViewedHorse.Equipment.SaddlePad = null;
                                 break;
                             case 0x33: // Bridle
                                 if (sender.User.LastViewedHorse.Equipment.Bridle != null)
                                     sender.User.Inventory.AddIgnoringFull(new ItemInstance(sender.User.LastViewedHorse.Equipment.Bridle.Id));
-                                Database.ClearBridle(sender.User.LastViewedHorse.RandomId);
+                                Database.ClearBridle(sender.User.LastViewedHorse.UniqueId);
                                 sender.User.LastViewedHorse.Equipment.Bridle = null;
                                 break;
                             case 0x34: // Companion
                                 if (sender.User.LastViewedHorse.Equipment.Companion != null)
                                     sender.User.Inventory.AddIgnoringFull(new ItemInstance(sender.User.LastViewedHorse.Equipment.Companion.Id));
-                                Database.ClearCompanion(sender.User.LastViewedHorse.RandomId);
+                                Database.ClearCompanion(sender.User.LastViewedHorse.UniqueId);
                                 sender.User.LastViewedHorse.Equipment.Companion = null;
                                 goto companionRemove;
                             default:
@@ -1987,7 +1987,7 @@ namespace HISP.Server
 
                         if(sender.User.CurrentlyRidingHorse != null)
                         {
-                            if(sender.User.CurrentlyRidingHorse.RandomId == sender.User.LastViewedHorse.RandomId)
+                            if(sender.User.CurrentlyRidingHorse.UniqueId == sender.User.LastViewedHorse.UniqueId)
                             {
                                 byte[] disMounted = PacketBuilder.CreateChat(Messages.FormatHorseDismountedBecauseTackedMessage(sender.User.CurrentlyRidingHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.User.Facing %= 5;
@@ -2016,11 +2016,11 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.HORSE_DISMOUNT:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
-                    if(randomIdStr == "") // F7 Shortcut
+                    if(uniqueIdStr == "") // F7 Shortcut
                     { 
                         if(sender.User.CurrentlyRidingHorse != null)
                         {
@@ -2040,15 +2040,15 @@ namespace HISP.Server
 
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
 
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
 
                         byte[] stopRidingHorseMessagePacket = PacketBuilder.CreateChat(Messages.HorseStopRidingMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -2063,22 +2063,22 @@ namespace HISP.Server
                     }
                     break;
                 case PacketBuilder.HORSE_MOUNT:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
 
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         break;
                     }
-                    if (sender.User.HorseInventory.HorseIdExist(randomId))
+                    if (sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        StartRidingHorse(sender, randomId);
+                        StartRidingHorse(sender, uniqueId);
                         break;
                     }
                     else
@@ -2087,30 +2087,30 @@ namespace HISP.Server
                         break;
                     }
                 case PacketBuilder.HORSE_LOOK:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     HorseInstance horseInst;
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
 
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         return;
                     }
-                    if(sender.User.HorseInventory.HorseIdExist(randomId))
+                    if(sender.User.HorseInventory.HorseIdExist(uniqueId))
                     {
-                        horseInst = sender.User.HorseInventory.GetHorseById(randomId);
+                        horseInst = sender.User.HorseInventory.GetHorseById(uniqueId);
                         UpdateHorseMenu(sender, horseInst);
                     }
                     else
                     {
                         try
                         { // Not your horse? possibly viewed inside a ranch?
-                            horseInst = Database.GetPlayerHorse(randomId);
+                            horseInst = Database.GetPlayerHorse(uniqueId);
                             UpdateHorseMenu(sender, horseInst);
                             break;
                         }
@@ -2179,20 +2179,20 @@ namespace HISP.Server
                     sender.SendPacket(horseAllreadyCaught);
                     break;
                 case PacketBuilder.HORSE_TRY_CAPTURE:
-                    randomId = 0;
+                    uniqueId = 0;
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
                     try
                     {
-                        randomId = int.Parse(randomIdStr);
+                        uniqueId = int.Parse(uniqueIdStr);
                         
                     }
                     catch (Exception)
                     {
-                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid randomid to horse interaction packet ");
+                        Logger.ErrorPrint(sender.User.Username + " Sent an invalid uniqueId to horse interaction packet ");
                         return;
                     }
-                    if (!WildHorse.DoesHorseExist(randomId))
+                    if (!WildHorse.DoesHorseExist(uniqueId))
                     {
                         Logger.HackerPrint(sender.User.Username + " Tried to catch a horse that doesnt exist.");
                         return;
@@ -2205,7 +2205,7 @@ namespace HISP.Server
                         return;
                     }
 
-                    sender.User.CapturingHorseId = randomId;
+                    sender.User.CapturingHorseId = uniqueId;
                     byte[] chatPacket = PacketBuilder.CreateChat(Messages.HorseCaptureTimer, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(chatPacket);
                     byte[] swfModulePacket = PacketBuilder.CreateSwfModule("catchhorse", PacketBuilder.PACKET_SWF_MODULE_FORCE);
@@ -2324,7 +2324,7 @@ namespace HISP.Server
 
                                         sender.User.TakeMoney(3);
                                         Mailbox.Mail mailMessage = new Mailbox.Mail();
-                                        mailMessage.RandomId = RandomID.NextRandomId();
+                                        mailMessage.UniqueId = UniqueID.NextUniqueId();
                                         mailMessage.FromUser = sender.User.Id;
                                         mailMessage.ToUser = playerId;
                                         mailMessage.Timestamp = Convert.ToInt32((DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds);
@@ -2342,7 +2342,7 @@ namespace HISP.Server
                                         }
                                         else
                                         {
-                                            Database.AddMail(mailMessage.RandomId, mailMessage.ToUser, mailMessage.FromUser, mailMessage.Subject, mailMessage.Message, mailMessage.Timestamp, mailMessage.Read);
+                                            Database.AddMail(mailMessage.UniqueId, mailMessage.ToUser, mailMessage.FromUser, mailMessage.Subject, mailMessage.Message, mailMessage.Timestamp, mailMessage.Read);
                                         }
 
                                         byte[] mailMessageSent = PacketBuilder.CreateChat(Messages.FormatCityHallSendMailMessage(to.ToLower()),PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -6080,12 +6080,12 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_PICKUP:
                     string packetStr = Encoding.UTF8.GetString(packet);
-                    string randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                    int randomId = 0;
+                    string uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    int uniqueId = 0;
 
                     try
                     {
-                        randomId = Int32.Parse(randomIdStr);
+                        uniqueId = Int32.Parse(uniqueIdStr);
                     }
                     catch(FormatException)
                     {
@@ -6095,7 +6095,7 @@ namespace HISP.Server
 
                     try
                     {
-                        DroppedItems.DroppedItem item = DroppedItems.GetDroppedItemById(randomId);
+                        DroppedItems.DroppedItem item = DroppedItems.GetDroppedItemById(uniqueId);
                         try
                         {
                             sender.User.Inventory.Add(item.Instance);
@@ -6311,21 +6311,21 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_WRAP:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                    randomId = 0;
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueId = 0;
 
                     try
                     {
-                        randomId = Int32.Parse(randomIdStr);
+                        uniqueId = Int32.Parse(uniqueIdStr);
                     }
                     catch (FormatException)
                     {
                         Logger.ErrorPrint(sender.User.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                         return;
                     }
-                    if (sender.User.Inventory.HasItem(randomId))
+                    if (sender.User.Inventory.HasItem(uniqueId))
                     {
-                        ItemInstance curItem = sender.User.Inventory.GetItemByRandomid(randomId).ItemInstances[0];
+                        ItemInstance curItem = sender.User.Inventory.GetItemByRandomid(uniqueId).ItemInstances[0];
                         ItemInstance wrappedItem = new ItemInstance(Item.Present, -1, curItem.ItemId);
 
                         try
@@ -6347,21 +6347,21 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_OPEN:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packet.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                    randomId = 0;
+                    uniqueIdStr = packetStr.Substring(2, (packet.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueId = 0;
 
                     try
                     {
-                        randomId = Int32.Parse(randomIdStr);
+                        uniqueId = Int32.Parse(uniqueIdStr);
                     }
                     catch (FormatException)
                     {
                         Logger.ErrorPrint(sender.User.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                         return;
                     }
-                    if (sender.User.Inventory.HasItem(randomId))
+                    if (sender.User.Inventory.HasItem(uniqueId))
                     {
-                        InventoryItem item = sender.User.Inventory.GetItemByRandomid(randomId);
+                        InventoryItem item = sender.User.Inventory.GetItemByRandomid(uniqueId);
                         int newItem = item.ItemInstances[0].Data;
                         if(newItem == 0)
                         {
@@ -6393,9 +6393,9 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_USE:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
 
-                    if(randomIdStr == "") // f12 ranch shortcut
+                    if(uniqueIdStr == "") // f12 ranch shortcut
                     {
                         if (sender.User.Inventory.HasItemId(Item.DorothyShoes))
                         {
@@ -6411,40 +6411,40 @@ namespace HISP.Server
                         }
                     }
 
-                    randomId = 0;
+                    uniqueId = 0;
 
                     try
                     {
-                        randomId = Int32.Parse(randomIdStr);
+                        uniqueId = Int32.Parse(uniqueIdStr);
                     }
                     catch (FormatException)
                     {
                         Logger.ErrorPrint(sender.User.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                         return;
                     }
-                    if (sender.User.Inventory.HasItem(randomId))
+                    if (sender.User.Inventory.HasItem(uniqueId))
                     {
-                        InventoryItem itm = sender.User.Inventory.GetItemByRandomid(randomId);
+                        InventoryItem itm = sender.User.Inventory.GetItemByRandomid(uniqueId);
                         Item.UseItem(sender.User, itm.ItemInstances[0]);
                     }
                     break;
                 case PacketBuilder.ITEM_WEAR:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                    randomId = 0;
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueId = 0;
 
                     try
                     {
-                        randomId = Int32.Parse(randomIdStr);
+                        uniqueId = Int32.Parse(uniqueIdStr);
                     }
                     catch (FormatException)
                     {
                         Logger.ErrorPrint(sender.User.Username + " Sent an invalid object interaction packet. " + BitConverter.ToString(packet));
                         return;
                     }
-                    if (sender.User.Inventory.HasItem(randomId))
+                    if (sender.User.Inventory.HasItem(uniqueId))
                     {
-                        InventoryItem itm = sender.User.Inventory.GetItemByRandomid(randomId);
+                        InventoryItem itm = sender.User.Inventory.GetItemByRandomid(uniqueId);
                         ItemInstance instance = itm.ItemInstances[0];
                      
                         Item.ItemInformation itemInf = instance.GetItemInfo();
@@ -6571,12 +6571,12 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_CONSUME:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                    randomId = 0;
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueId = 0;
 
                     try
                     {
-                        randomId = Int32.Parse(randomIdStr);
+                        uniqueId = Int32.Parse(uniqueIdStr);
                     }
                     catch (FormatException)
                     {
@@ -6584,9 +6584,9 @@ namespace HISP.Server
                         return;
                     }
 
-                    if (sender.User.Inventory.HasItem(randomId))
+                    if (sender.User.Inventory.HasItem(uniqueId))
                     {
-                        InventoryItem itm = sender.User.Inventory.GetItemByRandomid(randomId);
+                        InventoryItem itm = sender.User.Inventory.GetItemByRandomid(uniqueId);
                         ItemInstance instance = itm.ItemInstances[0];
                         sender.User.Inventory.Remove(instance);
                         Item.ItemInformation itmInfo = instance.GetItemInfo();
@@ -6609,12 +6609,12 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_DROP:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                    randomId = 0;
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueId = 0;
 
                     try
                     {
-                        randomId = Int32.Parse(randomIdStr);
+                        uniqueId = Int32.Parse(uniqueIdStr);
                     }
                     catch (FormatException)
                     {
@@ -6622,9 +6622,9 @@ namespace HISP.Server
                         return;
                     }
 
-                    if(sender.User.Inventory.HasItem(randomId))
+                    if(sender.User.Inventory.HasItem(uniqueId))
                     {
-                        InventoryItem itm = sender.User.Inventory.GetItemByRandomid(randomId);
+                        InventoryItem itm = sender.User.Inventory.GetItemByRandomid(uniqueId);
                         ItemInstance instance = itm.ItemInstances[0];
                         if(DroppedItems.GetItemsAt(sender.User.X, sender.User.Y).Length > 25)
                         {
@@ -6754,12 +6754,12 @@ namespace HISP.Server
                     int message = 1;
 
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                    randomId = 0;
+                    uniqueIdStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueId = 0;
                     // Prevent crashing on non-int string.
                     try
                     {
-                        randomId = Int32.Parse(randomIdStr);
+                        uniqueId = Int32.Parse(uniqueIdStr);
                     }
                     catch (FormatException)
                     {
@@ -6767,13 +6767,13 @@ namespace HISP.Server
                         return;
                     }
 
-                    if (!sender.User.Inventory.HasItem(randomId))
+                    if (!sender.User.Inventory.HasItem(uniqueId))
                     {
                         Logger.HackerPrint(sender.User.Username + " Tried to sell a item that they doesnt have in there inventory");
                         return;
                     }
 
-                    InventoryItem invItem = sender.User.Inventory.GetItemByRandomid(randomId);
+                    InventoryItem invItem = sender.User.Inventory.GetItemByRandomid(uniqueId);
                     itemId = invItem.ItemId;
                     goto doSell;
                 case PacketBuilder.ITEM_SELL_ALL:
@@ -7067,11 +7067,11 @@ namespace HISP.Server
                     break;
                 case PacketBuilder.ITEM_RIP:
                     packetStr = Encoding.UTF8.GetString(packet);
-                    randomIdStr = packetStr.Substring(2, (packet.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                    randomId = 0;
+                    uniqueIdStr = packetStr.Substring(2, (packet.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                    uniqueId = 0;
                     try
                     {
-                        randomId = Int32.Parse(randomIdStr);
+                        uniqueId = Int32.Parse(uniqueIdStr);
                     }
                     catch (FormatException)
                     {
@@ -7079,20 +7079,20 @@ namespace HISP.Server
                         return;
                     }
 
-                    if (!sender.User.Inventory.HasItem(randomId))
+                    if (!sender.User.Inventory.HasItem(uniqueId))
                     {
-                        Logger.HackerPrint(sender.User.Username + " Tried to rip someone elses mail. " + randomId.ToString());
+                        Logger.HackerPrint(sender.User.Username + " Tried to rip someone elses mail. " + uniqueId.ToString());
                         return;
                     }
 
-                    InventoryItem ripItems = sender.User.Inventory.GetItemByRandomid(randomId);
+                    InventoryItem ripItems = sender.User.Inventory.GetItemByRandomid(uniqueId);
                     foreach (ItemInstance item in ripItems.ItemInstances)
                     {
-                        if (item.RandomId == randomId)
+                        if (item.UniqueId == uniqueId)
                         {
                             if (item.Data == 0)
                                 continue;
-                            sender.User.MailBox.RipUpMessage(sender.User.MailBox.GetMessageByRandomId(item.Data));
+                            sender.User.MailBox.RipUpMessage(sender.User.MailBox.GetMessageByUniqueId(item.Data));
                             break;
                         }
                     }
@@ -7131,11 +7131,11 @@ namespace HISP.Server
                     else if(method == PacketBuilder.ITEM_READ)
                     {
                         packetStr = Encoding.UTF8.GetString(packet);
-                        randomIdStr = packetStr.Substring(3, (packetStr.Length - 3) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                        randomId = 0;
+                        uniqueIdStr = packetStr.Substring(3, (packetStr.Length - 3) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                        uniqueId = 0;
                         try
                         {
-                            randomId = Int32.Parse(randomIdStr);
+                            uniqueId = Int32.Parse(uniqueIdStr);
                         }
                         catch (FormatException)
                         {
@@ -7143,22 +7143,22 @@ namespace HISP.Server
                             return;
                         }
 
-                        if (!sender.User.Inventory.HasItem(randomId))
+                        if (!sender.User.Inventory.HasItem(uniqueId))
                         {
-                            Logger.HackerPrint(sender.User.Username + " Tried to view someone elses mail. " + randomId.ToString());
+                            Logger.HackerPrint(sender.User.Username + " Tried to view someone elses mail. " + uniqueId.ToString());
                             return;
                         }
 
-                        InventoryItem items = sender.User.Inventory.GetItemByRandomid(randomId);
+                        InventoryItem items = sender.User.Inventory.GetItemByRandomid(uniqueId);
                         foreach (ItemInstance item in items.ItemInstances)
                         {
-                            if (item.RandomId == randomId)
+                            if (item.UniqueId == uniqueId)
                             {
                                 if (item.Data == 0)
                                     continue;
 
                                 sender.User.MajorPriority = true;
-                                byte[] readMail = PacketBuilder.CreateMeta(Meta.BuildMailLetter(sender.User.MailBox.GetMessageByRandomId(item.Data), randomId));
+                                byte[] readMail = PacketBuilder.CreateMeta(Meta.BuildMailLetter(sender.User.MailBox.GetMessageByUniqueId(item.Data), uniqueId));
                                 sender.SendPacket(readMail);
                                 break;
                             }
@@ -7767,9 +7767,9 @@ namespace HISP.Server
             Database.DeleteAllItemsFromUsers(id); // Delete from offline players
         }
 
-        public static void StartRidingHorse(GameClient sender, int horseRandomId)
+        public static void StartRidingHorse(GameClient sender, int horseUniqueId)
         {
-            HorseInstance horseMountInst = sender.User.HorseInventory.GetHorseById(horseRandomId);
+            HorseInstance horseMountInst = sender.User.HorseInventory.GetHorseById(horseUniqueId);
 
             if (horseMountInst.Breed.Type != "unicorn" && horseMountInst.Breed.Type != "pegasus")
             {
@@ -7863,7 +7863,7 @@ namespace HISP.Server
             incBy *= 5;
             sender.User.Facing %= 5;
             sender.User.Facing += incBy;
-            sender.User.LastRiddenHorse = horseRandomId;
+            sender.User.LastRiddenHorse = horseUniqueId;
 
             UpdatePlayerInfoAndPosition(sender.User);
 

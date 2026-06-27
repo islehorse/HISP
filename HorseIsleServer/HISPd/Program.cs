@@ -98,8 +98,6 @@ namespace HISP.Cli
                     Console.Out.WriteLineAsync(formatMessage(type, text, true));
             }
             catch { };
-
-
         }
 
         public static void Main(string[] args)

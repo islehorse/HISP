@@ -192,9 +192,9 @@ namespace HISP.Game
 
                 message += Messages.R1;
                 message += Messages.FormatShopEntry(itemInfo.IconId, countStr, itemInfo.Name, shop.CalculateSellCost(itemInfo));
-                message += Messages.FormatSellButton(shopperitem.ItemInstances[0].RandomId);
+                message += Messages.FormatSellButton(shopperitem.ItemInstances[0].UniqueId);
                 message += Messages.FormatSellAllButton(itemInfo.Id);
-                message += Messages.FormatItemInformationButton(shopperitem.ItemInstances[0].RandomId);
+                message += Messages.FormatItemInformationButton(shopperitem.ItemInstances[0].UniqueId);
             }
 
             message += Messages.R1 + Messages.ExitThisPlace;
@@ -243,7 +243,7 @@ namespace HISP.Game
                 foreach (DroppedItems.DroppedItem item in Items)
                 {
                     Item.ItemInformation itemInfo = item.Instance.GetItemInfo();
-                    message += Messages.FormatGrabItemMessage(itemInfo.Name, item.Instance.RandomId, itemInfo.IconId);
+                    message += Messages.FormatGrabItemMessage(itemInfo.Name, item.Instance.UniqueId, itemInfo.IconId);
                 }
                 if (Items.Length > 1)
                     message += Messages.GrabAllItemsButton;
@@ -411,7 +411,7 @@ namespace HISP.Game
                     message += category.MetaOthers;
                     foreach (HorseInstance instance in horsesInCategory)
                     {
-                        message += Messages.FormatHorseEntry(i, instance.Name, instance.Breed.Name, instance.RandomId, instance.AutoSell > 0);
+                        message += Messages.FormatHorseEntry(i, instance.Name, instance.Breed.Name, instance.UniqueId, instance.AutoSell > 0);
                         i++;
                     }
                 }
@@ -510,7 +510,7 @@ namespace HISP.Game
                     continue;
 
                 bool tacked = (horse.Equipment.Saddle != null || horse.Equipment.SaddlePad != null || horse.Equipment.Bridle != null || horse.Equipment.Companion != null);
-                message += Messages.FormatTradeOfferHorse(horse.Name, tacked, horse.RandomId);
+                message += Messages.FormatTradeOfferHorse(horse.Name, tacked, horse.UniqueId);
             }
 
             if(trade.OtherTrade.Trader.Inventory.Count >= trade.OtherTrade.Trader.MaxItems)
@@ -596,7 +596,7 @@ namespace HISP.Game
                 message += Messages.FormatTradeMoneyOffer(trade.MoneyOffered);
             if(trade.HorsesOffered.Length > 0)
                 foreach(HorseInstance horse in trade.HorsesOffered)
-                    message += Messages.FormatTradeHorseOffer(horse.Name, horse.RandomId);
+                    message += Messages.FormatTradeHorseOffer(horse.Name, horse.UniqueId);
             if(trade.ItemsOffered.Length > 0)
                 foreach(ItemInstance[] item in trade.ItemsOffered)
                 {
@@ -618,7 +618,7 @@ namespace HISP.Game
                 message += Messages.FormatTradeMoneyOffer(trade.OtherTrade.MoneyOffered);
             if (trade.OtherTrade.HorsesOffered.Length > 0)
                 foreach (HorseInstance horse in trade.OtherTrade.HorsesOffered)
-                    message += Messages.FormatTradeHorseOffer(horse.Name, horse.RandomId);
+                    message += Messages.FormatTradeHorseOffer(horse.Name, horse.UniqueId);
             if (trade.OtherTrade.ItemsOffered.Length > 0)
                 foreach (ItemInstance[] item in trade.OtherTrade.ItemsOffered)
                 {
@@ -1059,7 +1059,7 @@ namespace HISP.Game
                 foreach (WildHorse horse in horses)
                 {
                     bool vowel = (horse.Instance.Breed.Name[0].ToString().ToLower() == "a" || horse.Instance.Breed.Name[0].ToString().ToLower() == "i" || horse.Instance.Breed.Name[0].ToString().ToLower() == "u" || horse.Instance.Breed.Name[0].ToString().ToLower() == "e" || horse.Instance.Breed.Name[0].ToString().ToLower() == "o");
-                    message += Messages.FormatWildHorse(horse.Instance.Name, horse.Instance.Breed.Name, horse.Instance.RandomId, vowel);
+                    message += Messages.FormatWildHorse(horse.Instance.Name, horse.Instance.Breed.Name, horse.Instance.UniqueId, vowel);
                 }
             }
             return message;
@@ -1384,7 +1384,7 @@ namespace HISP.Game
             message += Messages.PondDrinkHereIfSafe;
             foreach (HorseInstance horse in user.HorseInventory.HorseList)
             {
-                message += Messages.FormatPondDrinkHorseFormat(horse.Name, horse.BasicStats.Thirst, 1000, horse.RandomId);
+                message += Messages.FormatPondDrinkHorseFormat(horse.Name, horse.BasicStats.Thirst, 1000, horse.UniqueId);
             }
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
@@ -1575,7 +1575,7 @@ namespace HISP.Game
                 HorseInfo.StatCalculator inteligenceStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.INTELIGENCE, user);
                 HorseInfo.StatCalculator personalityStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.PERSONALITY, user);
 
-                message += Messages.FormatMultiHorses(placing, horse.Name, horse.Breed.Name, swf + ".swf?ID=" + horse.RandomId + "&PL=" + user.Username + "&SP=" + speedStat.Total + "&ST=" + strengthStat.Total + "&CO=" + conformationStat.Total + "&AG=" + agilityStat.Total + "&EN=" + enduranceStat.Total + "&IN=" + inteligenceStat.Total + "&PE=" + personalityStat.Total + "&");
+                message += Messages.FormatMultiHorses(placing, horse.Name, horse.Breed.Name, swf + ".swf?ID=" + horse.UniqueId + "&PL=" + user.Username + "&SP=" + speedStat.Total + "&ST=" + strengthStat.Total + "&CO=" + conformationStat.Total + "&AG=" + agilityStat.Total + "&EN=" + enduranceStat.Total + "&IN=" + inteligenceStat.Total + "&PE=" + personalityStat.Total + "&");
             }
 
             message += Messages.ExitThisPlace;
@@ -1602,7 +1602,7 @@ namespace HISP.Game
                 HorseInfo.StatCalculator personalityStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.PERSONALITY, user);
 
 
-                message += Messages.FormatHorseGamesEntry(placing, horse.Name, swf + ".swf?ID=" + horse.RandomId + "&SP=" + speedStat.Total + "&ST=" + strengthStat.Total + "&CO=" + conformationStat.Total + "&AG=" + agilityStat.Total + "&EN=" + enduranceStat.Total + "&IN=" + inteligenceStat.Total + "&PE=" + personalityStat.Total + "&");
+                message += Messages.FormatHorseGamesEntry(placing, horse.Name, swf + ".swf?ID=" + horse.UniqueId + "&SP=" + speedStat.Total + "&ST=" + strengthStat.Total + "&CO=" + conformationStat.Total + "&AG=" + agilityStat.Total + "&EN=" + enduranceStat.Total + "&IN=" + inteligenceStat.Total + "&PE=" + personalityStat.Total + "&");
             }
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
@@ -1825,7 +1825,7 @@ namespace HISP.Game
 
                 bool tacked = (horse.Equipment.Saddle != null || horse.Equipment.SaddlePad != null || horse.Equipment.Bridle != null || horse.Equipment.Companion != null);
 
-                message += Messages.FormatAuctionHorseListEntry(horse.Name, tacked, horse.RandomId);
+                message += Messages.FormatAuctionHorseListEntry(horse.Name, tacked, horse.UniqueId);
             }
 
             message += Messages.BackToMap;
@@ -1841,9 +1841,9 @@ namespace HISP.Game
             message += Messages.AuctionsRunning;
             foreach(Auction.AuctionEntry entry in auction.AuctionEntries.ToArray())
             {
-                message += Messages.FormatAuctionHorseEntry(Database.GetUsername(entry.OwnerId), entry.Horse.Color, entry.Horse.Breed.Name, entry.Horse.Gender, entry.Horse.BasicStats.Experience, entry.Completed ? "" : Messages.FormatAuctionViewHorseButton(entry.Horse.RandomId));
+                message += Messages.FormatAuctionHorseEntry(Database.GetUsername(entry.OwnerId), entry.Horse.Color, entry.Horse.Breed.Name, entry.Horse.Gender, entry.Horse.BasicStats.Experience, entry.Completed ? "" : Messages.FormatAuctionViewHorseButton(entry.Horse.UniqueId));
                 if (!entry.Completed)
-                    message += Messages.FormatAuctionGoingTo(entry.TimeRemaining, Database.GetUsername(entry.HighestBidder), entry.HighestBid, entry.RandomId);
+                    message += Messages.FormatAuctionGoingTo(entry.TimeRemaining, Database.GetUsername(entry.HighestBidder), entry.HighestBid, entry.UniqueId);
                 else
                 {
                     if (entry.HighestBidder == entry.OwnerId)
@@ -1905,7 +1905,7 @@ namespace HISP.Game
                     int price = groomer.CalculatePrice(horse.BasicStats.Groom);
                     totalPrice += price;
                     count++;
-                    message += Messages.FormatGroomerApplyService(price, horse.RandomId);
+                    message += Messages.FormatGroomerApplyService(price, horse.UniqueId);
                 }
             }
             message += Messages.FormatGroomerApplyAllService(count, totalPrice);
@@ -1930,7 +1930,7 @@ namespace HISP.Game
                     int price = vet.CalculatePrice(horse.BasicStats.Health);
                     totalPrice += price;
 
-                    message += Messages.FormatVetApplyServiceMeta(price, horse.RandomId);
+                    message += Messages.FormatVetApplyServiceMeta(price, horse.UniqueId);
                 }
 
             }
@@ -1952,7 +1952,7 @@ namespace HISP.Game
                 if(price > 0)
                 {
                     totalPrice += price;
-                    message += Messages.FormatBarnLetHorseRelax(price, horse.RandomId);
+                    message += Messages.FormatBarnLetHorseRelax(price, horse.UniqueId);
                 }
                 else
                 {
@@ -1974,12 +1974,12 @@ namespace HISP.Game
             {
                 message += Messages.FormatFarrierCurrentShoes(horse.Name, horse.BasicStats.Shoes, maxShoes);
                 if (horse.BasicStats.Shoes < farrier.IronShoesAmount)
-                    message += Messages.FormatFarrierApplyIron(farrier.IronCost, farrier.IronShoesAmount, horse.RandomId);
+                    message += Messages.FormatFarrierApplyIron(farrier.IronCost, farrier.IronShoesAmount, horse.UniqueId);
 
                 if (horse.BasicStats.Shoes < farrier.SteelShoesAmount)
                 {
                     totalPrice += farrier.SteelCost;
-                    message += Messages.FormatFarrierApplySteel(farrier.SteelCost, farrier.SteelShoesAmount, horse.RandomId);
+                    message += Messages.FormatFarrierApplySteel(farrier.SteelCost, farrier.SteelShoesAmount, horse.UniqueId);
                 }
 
             }
@@ -2057,7 +2057,7 @@ namespace HISP.Game
                         message += category.MetaOthers;
                     foreach (HorseInstance instance in horsesInCategory)
                     {
-                        message += Messages.FormatHorseEntry(i, instance.Name, instance.Breed.Name, instance.RandomId, instance.AutoSell > 0);
+                        message += Messages.FormatHorseEntry(i, instance.Name, instance.Breed.Name, instance.UniqueId, instance.AutoSell > 0);
                         i++;
                     }
                 }
@@ -2097,7 +2097,7 @@ namespace HISP.Game
 
             return message;
         }
-        public static string BuildMailLetter(Mailbox.Mail mailMessage, int itemRandomId)
+        public static string BuildMailLetter(Mailbox.Mail mailMessage, int itemUniqueId)
         {
             DateTime time = Helper.UnixTimeStampToDateTime(mailMessage.Timestamp);
             string amOrPm = "am";
@@ -2119,7 +2119,7 @@ namespace HISP.Game
 
            
             string date = months[time.Month-1] + " " + time.Day + ", " + time.Year + " " + hours + ":" + minutes + amOrPm;
-            string message = Messages.FormatMailReadMessage(Database.GetUsername(mailMessage.FromUser), date, mailMessage.Subject, mailMessage.Message, itemRandomId);
+            string message = Messages.FormatMailReadMessage(Database.GetUsername(mailMessage.FromUser), date, mailMessage.Subject, mailMessage.Message, itemUniqueId);
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;
@@ -2129,8 +2129,8 @@ namespace HISP.Game
             string message = Messages.MailSelectFromFollowing;
             foreach(ItemInstance inst in mailMessageForPlayer.ItemInstances)
             {
-                Mailbox.Mail mail = user.MailBox.GetMessageByRandomId(inst.Data);
-                message += Messages.FormatMailEntry(mail.Subject, Database.GetUsername(mail.FromUser), inst.RandomId);
+                Mailbox.Mail mail = user.MailBox.GetMessageByUniqueId(inst.Data);
+                message += Messages.FormatMailEntry(mail.Subject, Database.GetUsername(mail.FromUser), inst.UniqueId);
             }
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
@@ -2151,29 +2151,29 @@ namespace HISP.Game
 
                 message += Messages.FormatPlayerInventoryItemMeta(itemInfo.IconId, item.ItemInstances.Length, title);
 
-                int randomId = item.ItemInstances[0].RandomId;
+                int uniqueId = item.ItemInstances[0].UniqueId;
                 if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" &&  !(itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope) && World.CanDropItems(inv.BaseUser.X, inv.BaseUser.Y))
-                    message += Messages.FormatItemDropButton(randomId);
+                    message += Messages.FormatItemDropButton(uniqueId);
 
                 if (itemInfo.Id == Item.DorothyShoes || itemInfo.Id == Item.Telescope)
-                    message += Messages.FormatItemUseButton(randomId);
+                    message += Messages.FormatItemUseButton(uniqueId);
 
                 if (itemInfo.Id == Item.Present)
-                    message += Messages.FormatItemOpenButton(randomId);
+                    message += Messages.FormatItemOpenButton(uniqueId);
 
                 if (itemInfo.Type == "CLOTHES" || itemInfo.Type == "JEWELRY")
-                    message += Messages.FormatWearButton(randomId);
+                    message += Messages.FormatWearButton(uniqueId);
 
                 if (itemInfo.Type == "TEXT")
                     message += Messages.FormatItemReadButton(item.ItemId);
 
                 if (itemInfo.Type == "PLAYERFOOD")
-                    message += Messages.FormatItemConsumeButton(randomId);
+                    message += Messages.FormatItemConsumeButton(uniqueId);
 
                 if (Item.IsThrowable(itemInfo.Id))
                     message += Messages.FormatItemThrowButton(itemInfo.Id);
 
-                message += Messages.FormatItemInformationButton(randomId);
+                message += Messages.FormatItemInformationButton(uniqueId);
                 message += Messages.R1;
             }
 
@@ -2195,7 +2195,7 @@ namespace HISP.Game
                     isHorseFood = (itemInfo.Effects[1].EffectsWhat == "MOOD" && itemInfo.Effects[0].EffectsWhat == "HUNGER");
                 if (itemInfo.Type == "HORSEFOOD" || isHorseFood)
                 {
-                    message += Messages.FormatHorseFeedEntry(itemInfo.IconId, item.ItemInstances.Length, itemInfo.Name, item.ItemInstances[0].RandomId);
+                    message += Messages.FormatHorseFeedEntry(itemInfo.IconId, item.ItemInstances.Length, itemInfo.Name, item.ItemInstances[0].UniqueId);
                 }
                 
             }
@@ -2215,7 +2215,7 @@ namespace HISP.Game
 
         public static string BuildHorseReleaseConfirmationMessage(HorseInstance horse)
         {
-            string message = Messages.FormatHorseAreYouSureMessage(horse.RandomId);
+            string message = Messages.FormatHorseAreYouSureMessage(horse.UniqueId);
             message += Messages.BackToMapHorse;
             message += Messages.MetaTerminator;
             return message;
@@ -2286,20 +2286,20 @@ namespace HISP.Game
             if (isMyHorse)
             {
                 if (user.CurrentlyRidingHorse == null)
-                    message += Messages.FormatMountButton(horse.RandomId);
+                    message += Messages.FormatMountButton(horse.UniqueId);
                 else
-                    message += Messages.FormatDisMountButton(horse.RandomId);
+                    message += Messages.FormatDisMountButton(horse.UniqueId);
 
 
-                message += Messages.FormatFeedButton(horse.RandomId);
+                message += Messages.FormatFeedButton(horse.UniqueId);
                 if (horse.Leaser == 0)
                 {
-                    message += Messages.FormatTackButton(horse.RandomId);
+                    message += Messages.FormatTackButton(horse.UniqueId);
                 }
-                message += Messages.FormatPetButton(horse.RandomId);
+                message += Messages.FormatPetButton(horse.UniqueId);
                 if (horse.Leaser == 0)
                 {
-                    message += Messages.FormatProfileButton(horse.RandomId);
+                    message += Messages.FormatProfileButton(horse.UniqueId);
 
                     if (horse.Equipment.Saddle == null && horse.Equipment.SaddlePad == null && horse.Equipment.Bridle == null && horse.Equipment.Companion == null)
                     {
@@ -2611,7 +2611,7 @@ namespace HISP.Game
         public static string BuildPawneerConfimation(HorseInstance horse)
         {
             string message = "";
-            message += Messages.FormatPawneerConfirmPawn(horse.Breed.Name, horse.RandomId);
+            message += Messages.FormatPawneerConfirmPawn(horse.Breed.Name, horse.UniqueId);
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;
@@ -2623,9 +2623,9 @@ namespace HISP.Game
             foreach (InventoryItem item in items)
             {
                 Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
-                int randomId = item.ItemInstances[0].RandomId;
+                int uniqueId = item.ItemInstances[0].UniqueId;
                 if (itemInfo.Type != "QUEST" && itemInfo.Type != "TEXT" && itemInfo.Type != "COMPANION" && itemInfo.Id != Item.Present)
-                    message += Messages.FormatSantaItemEntry(itemInfo.IconId, itemInfo.Name, randomId);
+                    message += Messages.FormatSantaItemEntry(itemInfo.IconId, itemInfo.Name, uniqueId);
             }
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
@@ -2681,7 +2681,7 @@ namespace HISP.Game
                     allowed = ((statCalculator.BreedValue + trainer.ImprovesAmount) < statCalculator.MaxValue);
 
                 if(allowed)
-                    message += Messages.FormatTrainerTrainInEntry(horse.Name, statCalculator.BreedValue, statCalculator.MaxValue, horse.RandomId);
+                    message += Messages.FormatTrainerTrainInEntry(horse.Name, statCalculator.BreedValue, statCalculator.MaxValue, horse.UniqueId);
                 else
                     message += Messages.FormatTrainerFullyTrained(horse.Name, statCalculator.BreedValue);
 
@@ -2700,7 +2700,7 @@ namespace HISP.Game
             {
                 if(horse.Category == "TRADING" && horse.Equipment.Bridle == null && horse.Equipment.Saddle == null && horse.Equipment.SaddlePad == null && horse.Equipment.Companion == null)
                 {
-                    message += Messages.FormatPawneerHorseEntry(horse.Name, Pawneer.CalculateTotalPrice(horse), horse.RandomId);
+                    message += Messages.FormatPawneerHorseEntry(horse.Name, Pawneer.CalculateTotalPrice(horse), horse.UniqueId);
                 }
             }
             message += Messages.ExitThisPlace;
@@ -2831,7 +2831,7 @@ namespace HISP.Game
                             continue;
 
                         if(horseInstance.Equipment.Saddle != null && horseInstance.Equipment.SaddlePad != null && horseInstance.Equipment.Bridle != null)
-                            message += Messages.FormatArenaEnterHorseButton(horseInstance.Name, arena.EntryCost, horseInstance.RandomId);
+                            message += Messages.FormatArenaEnterHorseButton(horseInstance.Name, arena.EntryCost, horseInstance.UniqueId);
                     }
                 }
                 else
@@ -2848,7 +2848,7 @@ namespace HISP.Game
             message += Messages.ArenaCurrentCompetitors;
             foreach(Arena.ArenaEntry entries in arena.Entries)
             {
-                message += Messages.FormatArenaCompetingHorseEntry(entries.EnteredUser.Username, entries.EnteredHorse.Name, entries.EnteredHorse.RandomId);
+                message += Messages.FormatArenaCompetingHorseEntry(entries.EnteredUser.Username, entries.EnteredHorse.Name, entries.EnteredHorse.UniqueId);
             }
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;

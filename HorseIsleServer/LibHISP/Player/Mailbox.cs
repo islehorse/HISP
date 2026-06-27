@@ -40,7 +40,7 @@ namespace HISP.Player
 
         public class Mail
         {
-            public int RandomId;
+            public int UniqueId;
             public bool Read;
             public int FromUser;
             public int ToUser;
@@ -51,13 +51,13 @@ namespace HISP.Player
 
         public void RipUpMessage(Mail message)
         {
-            Database.DeleteMail(message.RandomId);
+            Database.DeleteMail(message.UniqueId);
             mails.Remove(message);
 
             InventoryItem item = baseUser.Inventory.GetItemByItemId(Item.MailMessage);
             foreach(ItemInstance instance in item.ItemInstances)
             {
-                if (instance.Data == message.RandomId)
+                if (instance.Data == message.UniqueId)
                 {
                     baseUser.Inventory.Remove(instance);
                     break;
@@ -78,7 +78,7 @@ namespace HISP.Player
             {
                 if(!mails[i].Read)
                 {
-                    ItemInstance mailMessageFromPlayer = new ItemInstance(Item.MailMessage, -1, mails[i].RandomId);
+                    ItemInstance mailMessageFromPlayer = new ItemInstance(Item.MailMessage, -1, mails[i].UniqueId);
                     baseUser.Inventory.AddIgnoringFull(mailMessageFromPlayer);
                 }
                 mails[i].Read = true;
@@ -89,15 +89,15 @@ namespace HISP.Player
         public void AddMail(Mail mailMessage)
         {
             mails.Add(mailMessage);
-            Database.AddMail(mailMessage.RandomId, mailMessage.ToUser, mailMessage.FromUser, mailMessage.Subject, mailMessage.Message, mailMessage.Timestamp, mailMessage.Read);
+            Database.AddMail(mailMessage.UniqueId, mailMessage.ToUser, mailMessage.FromUser, mailMessage.Subject, mailMessage.Message, mailMessage.Timestamp, mailMessage.Read);
         }
-        public bool MessageExists(int randomId)
+        public bool MessageExists(int uniqueId)
         {
-			return MailMessages.Any(o => o.RandomId == randomId);
+			return MailMessages.Any(o => o.UniqueId == uniqueId);
         }
-        public Mail GetMessageByRandomId(int randomId)
+        public Mail GetMessageByUniqueId(int uniqueId)
         {
-            return MailMessages.First(o => o.RandomId == randomId);
+            return MailMessages.First(o => o.UniqueId == uniqueId);
         }
         public Mailbox(User user)
         {

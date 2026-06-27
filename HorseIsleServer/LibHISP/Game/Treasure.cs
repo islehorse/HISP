@@ -18,7 +18,7 @@ namespace HISP.Game
 
         private int value;
 
-        public int RandomId;
+        public int UniqueId;
         public int X;
         public int Y;
         public int Value
@@ -30,14 +30,14 @@ namespace HISP.Game
             set
             {
                 this.value = value;
-                Database.SetTreasureValue(RandomId, value);
+                Database.SetTreasureValue(UniqueId, value);
             }
         }
 
         public string Type;
-        public Treasure(int x, int y, string type, int randomId = -1,  int moneyValue=-1)
+        public Treasure(int x, int y, string type, int uniqueId = -1,  int moneyValue=-1)
         {
-            RandomId = RandomID.NextRandomId(randomId);
+            UniqueId = UniqueID.NextUniqueId(uniqueId);
 
             if(type == "BURIED")
             {
@@ -98,7 +98,7 @@ namespace HISP.Game
         {
 
             treasures.Remove(this);
-            Database.DeleteTreasure(this.RandomId);
+            Database.DeleteTreasure(this.UniqueId);
             GenerateTreasure();
 
             byte[] MovementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
@@ -157,7 +157,7 @@ namespace HISP.Game
                 // Create Treasure
                 Treasure treasure = new Treasure(tryX, tryY, "BURIED");
                 treasures.Add(treasure);
-                Database.AddTreasure(treasure.RandomId, treasure.X, treasure.Y, treasure.Value, treasure.Type);
+                Database.AddTreasure(treasure.UniqueId, treasure.X, treasure.Y, treasure.Value, treasure.Type);
 
                 Logger.DebugPrint("Created Pirate Treasure at " + treasure.X + "," + treasure.Y + " with value: " + treasure.Value);
 
@@ -184,7 +184,7 @@ namespace HISP.Game
                 // Create Treasure
                 Treasure treasure = new Treasure(tryX, tryY, "RAINBOW");
                 treasures.Add(treasure);
-                Database.AddTreasure(treasure.RandomId, treasure.X, treasure.Y, treasure.Value, treasure.Type);
+                Database.AddTreasure(treasure.UniqueId, treasure.X, treasure.Y, treasure.Value, treasure.Type);
 
                 Logger.DebugPrint("Created Pot of Gold at " + treasure.X + "," + treasure.Y + " with value: " + treasure.Value);
 
