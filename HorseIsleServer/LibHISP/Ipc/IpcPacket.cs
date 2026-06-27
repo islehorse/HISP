@@ -16,7 +16,6 @@ namespace HISP.Ipc
         const byte IPC_MAKE_ADMIN = 0xFC;
         const byte IPC_MAKE_MOD = 0xFB;
 
-
         public static void OnIpcReceived(GameClient sender, byte[] packet)
         {
             if (packet.Length < 1) return;

@@ -10,17 +10,17 @@ namespace HISP.Game
         {
             lock(uniqueIdMutex)
             {
-                int rndmId = 0;
+                int newUniqueId = 0;
 
                 if (uniqueId == -1)
-                    rndmId = prevId + 1;
+                    newUniqueId = prevId + 1;
                 else
-                    rndmId = uniqueId;
+                    newUniqueId = uniqueId;
 
-                if (rndmId >= prevId)
-                    prevId = rndmId;
+                if (newUniqueId >= prevId)
+                    prevId = newUniqueId;
 
-                return rndmId;
+                return newUniqueId;
             }
         }
     }

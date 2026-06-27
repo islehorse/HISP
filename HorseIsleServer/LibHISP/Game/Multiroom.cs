@@ -1,7 +1,6 @@
 ﻿using HISP.Player;
 using HISP.Server;
 using HISP.Util;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace HISP.Game
@@ -45,16 +44,17 @@ namespace HISP.Game
         public static void CreateMultirooms()
         {
             Logger.InfoPrint("Creating Multirooms...");
-            foreach(World.SpecialTile tile in World.SpecialTiles)
+            foreach(World.SpecialTile tile in World.SpecialTiles.Where(
+                spTile => 
+                spTile.Code != null && 
+                spTile.Code.StartsWith("MULTIROOM") || 
+                spTile.Code.StartsWith("MULTIHORSES") || 
+                spTile.Code.StartsWith("2PLAYER") || 
+                spTile.Code.StartsWith("AUCTION"))
+            )
             {
-                if (tile.Code != null)
-                {
-                    if (tile.Code.StartsWith("MULTIROOM") || tile.Code.StartsWith("MULTIHORSES") || tile.Code.StartsWith("2PLAYER") || tile.Code.StartsWith("AUCTION"))
-                    {
-                        Logger.DebugPrint("Created Multiroom @ " + tile.X.ToString() + "," + tile.Y.ToString());
-                        new Multiroom(tile.X, tile.Y);
-                    }
-                }   
+                Logger.DebugPrint("Created Multiroom @ " + tile.X.ToString() + "," + tile.Y.ToString());
+                new Multiroom(tile.X, tile.Y);
             }
         }
         public Multiroom(int x, int y)
@@ -65,35 +65,34 @@ namespace HISP.Game
             multirooms.Add(this);
         }
 
-        public void Join(User user)
+        public void Join(User userToJoin)
         {
-            if (!JoinedUsers.Contains(user))
+            if (!JoinedUsers.Contains(userToJoin))
             {
-                Logger.DebugPrint(user.Username + " Joined multiroom @ " + x.ToString() + "," + y.ToString());
-                joinedUsers.Add(user);
+                Logger.DebugPrint(userToJoin.Username + " Joined multiroom @ " + x.ToString() + "," + y.ToString());
+                joinedUsers.Add(userToJoin);
 
-                foreach (User joinedUser in JoinedUsers)
-                    if (joinedUser.Id != user.Id)
-                        if(!TwoPlayer.IsPlayerInGame(joinedUser))
-                            if(!joinedUser.MajorPriority)
-                                GameServer.UpdateArea(joinedUser.Client);
+                foreach (User joinedUser in JoinedUsers.Where(userInGame => 
+                    userInGame.Id != userToJoin.Id && 
+                    !TwoPlayer.IsPlayerInGame(userInGame) &&
+                    !userInGame.MajorPriority)
+                ) GameServer.UpdateArea(joinedUser.Client);
             }
             
         }
 
-        public void Leave(User user)
+        public void Leave(User userToLeave)
         {
 
-            if(JoinedUsers.Contains(user))
+            if(JoinedUsers.Contains(userToLeave))
             {
-                Logger.DebugPrint(user.Username + " Left multiroom @ " + x.ToString() + "," + y.ToString());
-                joinedUsers.Remove(user);
+                Logger.DebugPrint(userToLeave.Username + " Left multiroom @ " + x.ToString() + "," + y.ToString());
+                joinedUsers.Remove(userToLeave);
 
-
-                foreach (User joinedUser in JoinedUsers)
-                    if (!TwoPlayer.IsPlayerInGame(joinedUser))
-                        if (!joinedUser.MajorPriority)
-                            GameServer.UpdateArea(joinedUser.Client);
+                foreach (User joinedUser in JoinedUsers.Where(
+                    userInGame => !TwoPlayer.IsPlayerInGame(userInGame) && 
+                    !userInGame.MajorPriority)
+                ) GameServer.UpdateArea(joinedUser.Client);
             }
 
         }
