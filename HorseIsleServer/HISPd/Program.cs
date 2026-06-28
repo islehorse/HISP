@@ -23,7 +23,8 @@ namespace HISP.Cli
             }
             set
             {
-                logFile = value;        
+                logFile = value;
+
                 if(sw != null)
                 {
                     sw.Flush();
@@ -160,12 +161,12 @@ namespace HISP.Cli
             {
                 Logger.SetCallback(LogStdout);
             }
-            else if (hispLogVar != null && hispLogVar != "")
+            else if (hispLogVar != null && hispLogVar != String.Empty)
             {
                 LogFile = hispLogVar;
                 Logger.SetCallback(LogToFile);
             }
-            if(LogFile == null || LogFile == "") LogFile = Path.Combine(ConfigReader.ConfigDirectory, "crash.log");
+            if(LogFile == null || LogFile == String.Empty) LogFile = Path.Combine(ConfigReader.ConfigDirectory, "crash.log");
 
             Entry.Start();
 
