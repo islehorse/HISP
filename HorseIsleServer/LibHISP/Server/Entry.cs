@@ -79,6 +79,7 @@ namespace HISP.Server
         {
             PosixSignalRegistration.Create(PosixSignal.SIGTERM, (_) => { Entry.Shutdown("Server process received SIGTERM."); });
             PosixSignalRegistration.Create(PosixSignal.SIGQUIT, (_) => { Entry.Shutdown("Server process received SIGQUIT."); });
+            PosixSignalRegistration.Create(PosixSignal.SIGINT, (_) => { Entry.Shutdown("Server process received SIGINT."); });
         }
 
 
