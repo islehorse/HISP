@@ -65,7 +65,7 @@ namespace HISP.Server
                 Logger.DebugPrint("Paying windmill owners . . . ");
                 foreach (Ranch ranch in Ranch.Ranches.Where(o => o.OwnerId != -1))
                 {
-                    int moneyToAdd = 5000 * ranch.GetBuildingCount(8); // Windmill
+                    int moneyToAdd = 5000 * ranch.GetBuildingCount(Ranch.BUILDING_WINDMILL); // Windmill
                     if (User.IsUserOnline(ranch.OwnerId))
                     {
                         User.GetUserById(ranch.OwnerId).AddMoney(moneyToAdd);
@@ -729,31 +729,28 @@ namespace HISP.Server
                     if(World.InSpecialTile(sender.User.X, sender.User.Y))
                     {
                         World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                        if(tile.Code != null)
+                        if(tile.Code != null && tile.Code.StartsWith("AUCTION-"))
                         {
-                            if(tile.Code.StartsWith("AUCTION-"))
+                            Auction auctionRoom = Auction.GetAuctionRoomById(int.Parse(tile.Code.Split('-')[1]));
+                            int auctionEntryId = -1;
+                            string packetStr = Encoding.UTF8.GetString(packet);
+                            string auctionEntryStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                            try
                             {
-                                Auction auctionRoom = Auction.GetAuctionRoomById(int.Parse(tile.Code.Split('-')[1]));
-                                int auctionEntryId = -1;
-                                string packetStr = Encoding.UTF8.GetString(packet);
-                                string auctionEntryStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                                try
-                                {
-                                    auctionEntryId = int.Parse(auctionEntryStr);
-                                }
-                                catch(FormatException)
-                                {
-                                    Logger.ErrorPrint("Cant find auciton entry id NaN.");
-                                    break;
-                                }
-                                if (!auctionRoom.HasAuctionEntry(auctionEntryId))
-                                    break;
-
-                                Auction.AuctionEntry entry = auctionRoom.GetAuctionEntry(auctionEntryId);
-                                entry.Bid(sender.User, bidAmount);
-
-                                UpdateAreaForAll(tile.X, tile.Y, true, null);
+                                auctionEntryId = int.Parse(auctionEntryStr);
                             }
+                            catch(FormatException)
+                            {
+                                Logger.ErrorPrint("Cant find auciton entry id NaN.");
+                                break;
+                            }
+                            if (!auctionRoom.HasAuctionEntry(auctionEntryId))
+                                break;
+
+                            Auction.AuctionEntry entry = auctionRoom.GetAuctionEntry(auctionEntryId);
+                            entry.Bid(sender.User, bidAmount);
+
+                            UpdateAreaForAll(tile.X, tile.Y, true, null);
                         }
                     }
                     break;
@@ -885,44 +882,40 @@ namespace HISP.Server
                     if (World.InSpecialTile(sender.User.X, sender.User.Y))
                     {
                         World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                        if(tile.Code != null)
+                        if(tile.Code != null && tile.Code.StartsWith("VET-"))
                         {
-                            if (tile.Code.StartsWith("VET-"))
+                            string[] vetInfo = tile.Code.Split('-');
+                            int vetId = int.Parse(vetInfo[1]);
+                            Vet vet = Vet.GetVetById(vetId);
+                            int price = 0;
+
+                            foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
+                                price += vet.CalculatePrice(horse.BasicStats.Health);
+
+                            if (price == 0)
                             {
-                                string[] vetInfo = tile.Code.Split('-');
-                                int vetId = int.Parse(vetInfo[1]);
-                                Vet vet = Vet.GetVetById(vetId);
-                                int price = 0;
-
-                                foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
-                                    price += vet.CalculatePrice(horse.BasicStats.Health);
-
-                                if (price == 0)
-                                {
-                                    byte[] notNeededMessagePacket = PacketBuilder.CreateChat(Messages.VetServicesNotNeededAll, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(notNeededMessagePacket);
-                                    break;
-                                }
-                                else if (sender.User.Money >= price)
-                                {
-                                    foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
-                                        horse.BasicStats.Health = 1000;
-
-                                    byte[] healedMessagePacket = PacketBuilder.CreateChat(Messages.VetAllFullHealthRecoveredMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(healedMessagePacket);
-
-                                    sender.User.TakeMoney(price);
-
-                                }
-                                else
-                                {
-                                    byte[] cannotAffordMessagePacket = PacketBuilder.CreateChat(Messages.VetCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(cannotAffordMessagePacket);
-                                    break;
-                                }
-                                UpdateArea(sender);
+                                byte[] notNeededMessagePacket = PacketBuilder.CreateChat(Messages.VetServicesNotNeededAll, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(notNeededMessagePacket);
+                                break;
                             }
+                            else if (sender.User.Money >= price)
+                            {
+                                foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
+                                    horse.BasicStats.Health = 1000;
 
+                                byte[] healedMessagePacket = PacketBuilder.CreateChat(Messages.VetAllFullHealthRecoveredMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(healedMessagePacket);
+
+                                sender.User.TakeMoney(price);
+
+                            }
+                            else
+                            {
+                                byte[] cannotAffordMessagePacket = PacketBuilder.CreateChat(Messages.VetCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cannotAffordMessagePacket);
+                                break;
+                            }
+                            UpdateArea(sender);
                         }
                     }
                     break;
@@ -951,31 +944,28 @@ namespace HISP.Server
                         if(World.InSpecialTile(sender.User.X, sender.User.Y))
                         {
                             World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                            if(tile.Code != null)
+                            if(tile.Code != null && tile.Code.StartsWith("VET-"))
                             {
-                                if (tile.Code.StartsWith("VET-"))
+                                string[] vetInfo = tile.Code.Split('-');
+                                int vetId = int.Parse(vetInfo[1]);
+
+                                Vet vet = Vet.GetVetById(vetId);
+                                int price = vet.CalculatePrice(horseVetServiceInst.BasicStats.Health);
+                                if (sender.User.Money >= price)
                                 {
-                                    string[] vetInfo = tile.Code.Split('-');
-                                    int vetId = int.Parse(vetInfo[1]);
+                                    horseVetServiceInst.BasicStats.Health = 1000;
+                                    sender.User.TakeMoney(price);
 
-                                    Vet vet = Vet.GetVetById(vetId);
-                                    int price = vet.CalculatePrice(horseVetServiceInst.BasicStats.Health);
-                                    if (sender.User.Money >= price)
-                                    {
-                                        horseVetServiceInst.BasicStats.Health = 1000;
-                                        sender.User.TakeMoney(price);
-
-                                        byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatVetHorseAtFullHealthMessage(horseVetServiceInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(messagePacket);
-                                    }
-                                    else
-                                    {
-                                        byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.VetCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(cantAffordMessage);
-                                        break;
-                                    }
-                                    UpdateArea(sender);
+                                    byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatVetHorseAtFullHealthMessage(horseVetServiceInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(messagePacket);
                                 }
+                                else
+                                {
+                                    byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.VetCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordMessage);
+                                    break;
+                                }
+                                UpdateArea(sender);
 
                             }
                         }
@@ -1012,47 +1002,44 @@ namespace HISP.Server
                         if (World.InSpecialTile(sender.User.X, sender.User.Y))
                         {
                             World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                            if(tile.Code != null)
+                            if(tile.Code != null && tile.Code.StartsWith("FARRIER-"))
                             {
-                                if (tile.Code.StartsWith("FARRIER-"))
+                                string[] farrierInfo = tile.Code.Split('-');
+                                int farrierId = int.Parse(farrierInfo[1]);
+
+                                Farrier farrier = Farrier.GetFarrierById(farrierId);
+                                int price = 0;
+                                int incAmount = 0;
+                                string msg = "";
+
+                                if (method == PacketBuilder.HORSE_SHOE_STEEL)
                                 {
-                                    string[] farrierInfo = tile.Code.Split('-');
-                                    int farrierId = int.Parse(farrierInfo[1]);
-
-                                    Farrier farrier = Farrier.GetFarrierById(farrierId);
-                                    int price = 0;
-                                    int incAmount = 0;
-                                    string msg = "";
-
-                                    if (method == PacketBuilder.HORSE_SHOE_STEEL)
-                                    {
-                                        price = farrier.SteelCost;
-                                        incAmount = farrier.SteelShoesAmount;
-                                        msg = Messages.FormatFarrierPutOnSteelShoesMessage(incAmount, 1000);
-                                    }
-                                    else
-                                    {
-                                        price = farrier.IronCost;
-                                        incAmount = farrier.IronShoesAmount;
-                                        msg = Messages.FormatFarrierPutOnIronShoesMessage(incAmount, 1000);
-                                    }
-
-                                    if (sender.User.Money >= price)
-                                    {
-                                        horseFarrierServiceInst.BasicStats.Shoes = incAmount;
-                                        sender.User.TakeMoney(price);
-
-                                        byte[] messagePacket = PacketBuilder.CreateChat(msg, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(messagePacket);
-                                    }
-                                    else
-                                    {
-                                        byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.FarrierShoesCantAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(cantAffordMessage);
-                                        break;
-                                    }
-                                    UpdateArea(sender);
+                                    price = farrier.SteelCost;
+                                    incAmount = farrier.SteelShoesAmount;
+                                    msg = Messages.FormatFarrierPutOnSteelShoesMessage(incAmount, 1000);
                                 }
+                                else
+                                {
+                                    price = farrier.IronCost;
+                                    incAmount = farrier.IronShoesAmount;
+                                    msg = Messages.FormatFarrierPutOnIronShoesMessage(incAmount, 1000);
+                                }
+
+                                if (sender.User.Money >= price)
+                                {
+                                    horseFarrierServiceInst.BasicStats.Shoes = incAmount;
+                                    sender.User.TakeMoney(price);
+
+                                    byte[] messagePacket = PacketBuilder.CreateChat(msg, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(messagePacket);
+                                }
+                                else
+                                {
+                                    byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.FarrierShoesCantAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordMessage);
+                                    break;
+                                }
+                                UpdateArea(sender);
 
                             }
                         }
@@ -1067,37 +1054,34 @@ namespace HISP.Server
                     if (World.InSpecialTile(sender.User.X, sender.User.Y))
                     {
                         World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                        if(tile.Code != null) 
+                        if(tile.Code != null && tile.Code.StartsWith("FARRIER-")) 
                         {
-                            if (tile.Code.StartsWith("FARRIER-"))
+                            string[] farrierInfo = tile.Code.Split('-');
+                            int farrierId = int.Parse(farrierInfo[1]);
+
+                            Farrier farrier = Farrier.GetFarrierById(farrierId);
+
+                            int totalPrice = 0;
+                            foreach (HorseInstance horse in sender.User.HorseInventory.HorseList.Where(o => o.BasicStats.Shoes < farrier.SteelShoesAmount))
+                                totalPrice += farrier.SteelCost;
+
+                            if (sender.User.Money >= totalPrice)
                             {
-                                string[] farrierInfo = tile.Code.Split('-');
-                                int farrierId = int.Parse(farrierInfo[1]);
-
-                                Farrier farrier = Farrier.GetFarrierById(farrierId);
-
-                                int totalPrice = 0;
                                 foreach (HorseInstance horse in sender.User.HorseInventory.HorseList.Where(o => o.BasicStats.Shoes < farrier.SteelShoesAmount))
-                                    totalPrice += farrier.SteelCost;
+                                    horse.BasicStats.Shoes = farrier.SteelShoesAmount;
 
-                                if (sender.User.Money >= totalPrice)
-                                {
-                                    foreach (HorseInstance horse in sender.User.HorseInventory.HorseList.Where(o => o.BasicStats.Shoes < farrier.SteelShoesAmount))
-                                        horse.BasicStats.Shoes = farrier.SteelShoesAmount;
+                                sender.User.TakeMoney(totalPrice);
 
-                                    sender.User.TakeMoney(totalPrice);
-
-                                    byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatFarrierPutOnSteelShoesAllMesssage(farrier.SteelShoesAmount, 1000), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(messagePacket);
-                                }
-                                else
-                                {
-                                    byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.FarrierShoesCantAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(cantAffordMessage);
-                                    break;
-                                }
-                                UpdateArea(sender);
+                                byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatFarrierPutOnSteelShoesAllMesssage(farrier.SteelShoesAmount, 1000), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(messagePacket);
                             }
+                            else
+                            {
+                                byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.FarrierShoesCantAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cantAffordMessage);
+                                break;
+                            }
+                            UpdateArea(sender);
                         }
                         
                     }
@@ -1127,33 +1111,30 @@ namespace HISP.Server
                         if (World.InSpecialTile(sender.User.X, sender.User.Y))
                         {
                             World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                            if(tile.Code != null)
+                            if(tile.Code != null && tile.Code.StartsWith("GROOMER-"))
                             {
-                                if (tile.Code.StartsWith("GROOMER-"))
+                                string[] groomerInfo = tile.Code.Split('-');
+                                int groomerId = int.Parse(groomerInfo[1]);
+
+                                Groomer groomer = Groomer.GetGroomerById(groomerId);
+                                int price = groomer.CalculatePrice(groomHorseInst.BasicStats.Groom);
+
+
+                                if (sender.User.Money >= price)
                                 {
-                                    string[] groomerInfo = tile.Code.Split('-');
-                                    int groomerId = int.Parse(groomerInfo[1]);
+                                    groomHorseInst.BasicStats.Groom = groomer.Max;
+                                    sender.User.TakeMoney(price);
 
-                                    Groomer groomer = Groomer.GetGroomerById(groomerId);
-                                    int price = groomer.CalculatePrice(groomHorseInst.BasicStats.Groom);
-
-
-                                    if (sender.User.Money >= price)
-                                    {
-                                        groomHorseInst.BasicStats.Groom = groomer.Max;
-                                        sender.User.TakeMoney(price);
-
-                                        byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatHorseGroomedToBestAbilities(groomHorseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(messagePacket);
-                                    }
-                                    else
-                                    {
-                                        byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.GroomerCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(cantAffordMessage);
-                                        break;
-                                    }
-                                    UpdateArea(sender);
+                                    byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatHorseGroomedToBestAbilities(groomHorseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(messagePacket);
                                 }
+                                else
+                                {
+                                    byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.GroomerCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordMessage);
+                                    break;
+                                }
+                                UpdateArea(sender);
 
                             }
                         }
@@ -1168,48 +1149,44 @@ namespace HISP.Server
                     if (World.InSpecialTile(sender.User.X, sender.User.Y))
                     {
                         World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                        if(tile.Code != null)
+                        if(tile.Code != null && tile.Code.StartsWith("GROOMER-"))
                         {
-                            if (tile.Code.StartsWith("GROOMER-"))
+                            string[] groomerInfo = tile.Code.Split('-');
+                            int groomId = int.Parse(groomerInfo[1]);
+                            Groomer groomer = Groomer.GetGroomerById(groomId);
+                            int price = 0;
+                            int count = 0;
+
+                            foreach (HorseInstance horse in sender.User.HorseInventory.HorseList.Where(o => o.BasicStats.Groom < groomer.Max))
                             {
-                                string[] groomerInfo = tile.Code.Split('-');
-                                int groomId = int.Parse(groomerInfo[1]);
-                                Groomer groomer = Groomer.GetGroomerById(groomId);
-                                int price = 0;
-                                int count = 0;
-
-                                foreach (HorseInstance horse in sender.User.HorseInventory.HorseList.Where(o => o.BasicStats.Groom < groomer.Max))
-                                {
-                                    price += groomer.CalculatePrice(horse.BasicStats.Groom);
-                                    count++;
-                                }
-
-                                if (count == 0)
-                                {
-                                    byte[] notNeededMessagePacket = PacketBuilder.CreateChat(Messages.GroomerDontNeed, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(notNeededMessagePacket);
-                                    break;
-                                }
-                                else if (sender.User.Money >= price)
-                                {
-                                    foreach (HorseInstance horse in sender.User.HorseInventory.HorseList.Where(o => o.BasicStats.Groom < groomer.Max))
-                                        horse.BasicStats.Groom = groomer.Max;
-
-                                    byte[] groomedAllHorsesPacket = PacketBuilder.CreateChat(Messages.GroomerBestToHisAbilitiesALL, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(groomedAllHorsesPacket);
-
-                                    sender.User.TakeMoney(price);
-
-                                }
-                                else
-                                {
-                                    byte[] cannotAffordMessagePacket = PacketBuilder.CreateChat(Messages.GroomerCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(cannotAffordMessagePacket);
-                                    break;
-                                }
-                                UpdateArea(sender);
+                                price += groomer.CalculatePrice(horse.BasicStats.Groom);
+                                count++;
                             }
 
+                            if (count == 0)
+                            {
+                                byte[] notNeededMessagePacket = PacketBuilder.CreateChat(Messages.GroomerDontNeed, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(notNeededMessagePacket);
+                                break;
+                            }
+                            else if (sender.User.Money >= price)
+                            {
+                                foreach (HorseInstance horse in sender.User.HorseInventory.HorseList.Where(o => o.BasicStats.Groom < groomer.Max))
+                                    horse.BasicStats.Groom = groomer.Max;
+
+                                byte[] groomedAllHorsesPacket = PacketBuilder.CreateChat(Messages.GroomerBestToHisAbilitiesALL, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(groomedAllHorsesPacket);
+
+                                sender.User.TakeMoney(price);
+
+                            }
+                            else
+                            {
+                                byte[] cannotAffordMessagePacket = PacketBuilder.CreateChat(Messages.GroomerCannotAffordMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cannotAffordMessagePacket);
+                                break;
+                            }
+                            UpdateArea(sender);
                         }
                     }
                     break;
@@ -1925,15 +1902,12 @@ namespace HISP.Server
                         byte[] itemUnequipedMessage = PacketBuilder.CreateChat(Messages.FormatUnEquipTackMessage(sender.User.LastViewedHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(itemUnequipedMessage);
 
-                        if(sender.User.CurrentlyRidingHorse != null)
+                        if(sender.User.CurrentlyRidingHorse != null && sender.User.CurrentlyRidingHorse.UniqueId == sender.User.LastViewedHorse.UniqueId)
                         {
-                            if(sender.User.CurrentlyRidingHorse.UniqueId == sender.User.LastViewedHorse.UniqueId)
-                            {
-                                byte[] disMounted = PacketBuilder.CreateChat(Messages.FormatHorseDismountedBecauseTackedMessage(sender.User.CurrentlyRidingHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                sender.User.Facing %= 5;
-                                sender.User.CurrentlyRidingHorse = null;
-                                sender.SendPacket(disMounted);
-                            }
+                            byte[] dismountedMessage = PacketBuilder.CreateChat(Messages.FormatHorseDismountedBecauseTackedMessage(sender.User.CurrentlyRidingHorse.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.User.Facing %= 5;
+                            sender.User.CurrentlyRidingHorse = null;
+                            sender.SendPacket(dismountedMessage);
                         }
 
                         sender.User.MajorPriority = true;
@@ -1964,7 +1938,6 @@ namespace HISP.Server
                     { 
                         if(sender.User.CurrentlyRidingHorse != null)
                         {
-
                             byte[] stopRidingHorseMessagePacket = PacketBuilder.CreateChat(Messages.HorseStopRidingMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(stopRidingHorseMessagePacket);
 
@@ -2380,9 +2353,8 @@ namespace HISP.Server
                                         sender.User.CurrentTrade.OfferItems(items);
 
                                         UpdateArea(sender);
-                                        if (sender.User.CurrentTrade != null)
-                                            if (!sender.User.CurrentTrade.OtherTrade.Trader.TradeMenuPriority)
-                                                UpdateArea(sender.User.CurrentTrade.OtherTrade.Trader.Client);
+                                        if (sender.User.CurrentTrade != null && !sender.User.CurrentTrade.OtherTrade.Trader.TradeMenuPriority)
+                                            UpdateArea(sender.User.CurrentTrade.OtherTrade.Trader.Client);
                                     }
                                     break;
                                 }
@@ -2648,39 +2620,36 @@ namespace HISP.Server
                                 if(World.InSpecialTile(sender.User.X, sender.User.Y))
                                 {
                                     World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                                    if(tile.Code != null)
+                                    if(tile.Code != null && tile.Code.StartsWith("PASSWORD-"))
                                     {
-                                        if (tile.Code.StartsWith("PASSWORD-"))
+                                        string[] args = tile.Code.Replace("!", "-").Split('-');
+                                        if (args.Length >= 3)
                                         {
-                                            string[] args = tile.Code.Replace("!", "-").Split('-');
-                                            if (args.Length >= 3)
+                                            string expectedPassword = args[1];
+                                            int questId = int.Parse(args[2]);
+                                            if (password.ToLower() == expectedPassword.ToLower())
                                             {
-                                                string expectedPassword = args[1];
-                                                int questId = int.Parse(args[2]);
-                                                if (password.ToLower() == expectedPassword.ToLower())
-                                                {
-                                                    Quest.CompleteQuest(sender.User, Quest.GetQuestById(questId), false);
-                                                }
-                                                else
-                                                {
-                                                    Quest.QuestResult result = Quest.FailQuest(sender.User, Quest.GetQuestById(questId), true);
-                                                    if (result.NpcChat == null || result.NpcChat == "")
-                                                        result.NpcChat = Messages.IncorrectPasswordMessage;
-                                                    byte[] ChatPacket = PacketBuilder.CreateChat(result.NpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                                    sender.SendPacket(ChatPacket);
-                                                }
+                                                Quest.CompleteQuest(sender.User, Quest.GetQuestById(questId), false);
                                             }
                                             else
                                             {
-                                                Logger.ErrorPrint(sender.User.Username + " Send invalid password input request. (Too few arguments!)");
-                                                break;
+                                                Quest.QuestResult result = Quest.FailQuest(sender.User, Quest.GetQuestById(questId), true);
+                                                if (result.NpcChat == null || result.NpcChat == "")
+                                                    result.NpcChat = Messages.IncorrectPasswordMessage;
+                                                byte[] ChatPacket = PacketBuilder.CreateChat(result.NpcChat, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                                sender.SendPacket(ChatPacket);
                                             }
                                         }
                                         else
                                         {
-                                            Logger.ErrorPrint(sender.User.Username + " Send password input request. (Not on password tile!)");
+                                            Logger.ErrorPrint(sender.User.Username + " Send invalid password input request. (Too few arguments!)");
                                             break;
                                         }
+                                    }
+                                    else
+                                    {
+                                        Logger.ErrorPrint(sender.User.Username + " Send password input request. (Not on password tile!)");
+                                        break;
                                     }
                                 }
                                 else
@@ -2804,7 +2773,7 @@ namespace HISP.Server
                 case "7": // TP To nearest wagon (ranch)
                     if(sender.User.OwnedRanch != null)
                     {
-                        if(sender.User.OwnedRanch.GetBuildingCount(7) > 0) // Wagon
+                        if(sender.User.OwnedRanch.GetBuildingCount(Ranch.BUILDING_WINDMILL) > 0) // Wagon
                         {
                             int ranchX = sender.User.OwnedRanch.X;
                             int ranchY = sender.User.OwnedRanch.Y;
@@ -2882,7 +2851,7 @@ namespace HISP.Server
                 case "13": // Train All (Ranch)
                     if (sender.User.OwnedRanch != null)
                     {
-                        if(sender.User.OwnedRanch.GetBuildingCount(6) > 0) // Training Pen
+                        if(sender.User.OwnedRanch.GetBuildingCount(Ranch.BUILDING_TRAINING_PEN) > 0) // Training Pen
                         {
                             sender.User.MajorPriority = true;
                             metaPacket = PacketBuilder.CreateMeta(Meta.BuildRanchTraining(sender.User));
@@ -3653,12 +3622,9 @@ namespace HISP.Server
             sender.SendPacket(motdData);
 
             // Send riddle annoucement
-            if (RiddleEvent != null)
+            if (RiddleEvent != null && RiddleEvent.Active)
             {
-                if (RiddleEvent.Active)
-                {
-                    RiddleEvent.ShowStartMessage(sender);
-                }
+                RiddleEvent.ShowStartMessage(sender);
             }
 
             /*
@@ -4802,26 +4768,23 @@ namespace HISP.Server
             sender.User.ClearSocailizedWith();
 
 
-            if (sender.User.CurrentlyRidingHorse != null)
-            {
-                if(sender.User.CurrentlyRidingHorse.BasicStats.Experience < 25)
-                {
-                    if(GameServer.RandomNumberGenerator.Next(0, 100) == 97)
-                    {
-                        sender.User.CurrentlyRidingHorse.BasicStats.Experience++;
-                        byte[] horseBuckedMessage;
-                        if(sender.User.CurrentlyRidingHorse.Breed.Type == "llama")
-                            horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseLlamaBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        else if (sender.User.CurrentlyRidingHorse.Breed.Type == "camel")
-                            horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseCamelBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                        else
-                            horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
+            if (sender.User.CurrentlyRidingHorse != null && (
+                    sender.User.CurrentlyRidingHorse.BasicStats.Experience < 25 &&
+                    GameServer.RandomNumberGenerator.Next(0, 100) == 97
+            ))
+            {              
+                sender.User.CurrentlyRidingHorse.BasicStats.Experience++;
+                byte[] horseBuckedMessage;
+                if(sender.User.CurrentlyRidingHorse.Breed.Type == "llama")
+                    horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseLlamaBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                else if (sender.User.CurrentlyRidingHorse.Breed.Type == "camel")
+                    horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseCamelBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                else
+                    horseBuckedMessage = PacketBuilder.CreateChat(Messages.HorseBuckedYou, PacketBuilder.CHAT_BOTTOM_RIGHT);
 
-                        sender.User.CurrentlyRidingHorse = null;
-                        sender.User.Facing %= 5;
-                        sender.SendPacket(horseBuckedMessage);
-                    }
-                }
+                sender.User.CurrentlyRidingHorse = null;
+                sender.User.Facing %= 5;
+                sender.SendPacket(horseBuckedMessage);
             }
 
             // Randomly move if thirst, hunger, tiredness too low-
@@ -4940,8 +4903,11 @@ namespace HISP.Server
                     newY -= 1;
                 
 
-                if (sender.User.Facing == (direction + (onHorse * 5)) && sender.User.CurrentlyRidingHorse != null && !World.InTown(sender.User.X, sender.User.Y)) // Double move
-                    if (Map.CheckPassable(newX, newY - 1) || sender.User.NoClip)
+                if (sender.User.Facing == (direction + (onHorse * 5)) && 
+                    sender.User.CurrentlyRidingHorse != null && 
+                    !World.InTown(sender.User.X, sender.User.Y) &&
+                    (Map.CheckPassable(newX, newY - 1) || sender.User.NoClip)
+                ) // Double move
                     {
                         newY -= 1;
                         moveTwo = true;
@@ -4954,9 +4920,11 @@ namespace HISP.Server
                     newX -= 1;
 
 
-                if (sender.User.Facing == (direction + (onHorse * 5)) && sender.User.CurrentlyRidingHorse != null && !World.InTown(sender.User.X, sender.User.Y)) // Double move
-                    if (Map.CheckPassable(newX - 1, newY) || sender.User.NoClip)
-                    {
+                if (sender.User.Facing == (direction + (onHorse * 5)) && 
+                    sender.User.CurrentlyRidingHorse != null && 
+                    !World.InTown(sender.User.X, sender.User.Y) && (
+                    Map.CheckPassable(newX - 1, newY) || sender.User.NoClip
+                    )) {
                         newX -= 1;
                         moveTwo = true;
                     }
@@ -4968,8 +4936,11 @@ namespace HISP.Server
                     newX += 1;
 
 
-                if (sender.User.Facing == (direction + (onHorse * 5)) && sender.User.CurrentlyRidingHorse != null && !World.InTown(sender.User.X, sender.User.Y)) // Double move
-                    if (Map.CheckPassable(newX + 1, newY) || sender.User.NoClip)
+                if (sender.User.Facing == (direction + (onHorse * 5)) && 
+                    sender.User.CurrentlyRidingHorse != null && 
+                    !World.InTown(sender.User.X, sender.User.Y) && (
+                    Map.CheckPassable(newX + 1, newY) || sender.User.NoClip
+                    )) // Double move
                     {
                         newX += 1;
                         moveTwo = true;
@@ -4982,8 +4953,11 @@ namespace HISP.Server
                     newY += 1;
 
 
-                if (sender.User.Facing == (direction + (onHorse * 5)) && sender.User.CurrentlyRidingHorse != null && !World.InTown(sender.User.X, sender.User.Y)) // Double move
-                    if (Map.CheckPassable(newX, newY + 1) || sender.User.NoClip)
+                if (sender.User.Facing == (direction + (onHorse * 5)) && 
+                    sender.User.CurrentlyRidingHorse != null && 
+                    !World.InTown(sender.User.X, sender.User.Y) && (
+                    Map.CheckPassable(newX, newY + 1) || sender.User.NoClip
+                    )) // Double move
                     {
                         newY += 1;
                         moveTwo = true;
@@ -5184,17 +5158,10 @@ namespace HISP.Server
                 Transport.TransportLocation transportLocation = Transport.GetTransportLocationById(transportid);
                 int cost = transportLocation.Cost;
 
-                if (transportLocation.Type == "WAGON")
-                {
-                    if(sender.User.OwnedRanch != null)
-                    {
-                        if(sender.User.OwnedRanch.GetBuildingCount(7) > 0) // Wagon
-                        {
-                            cost = 0;
-                        }
-                    }
-                }
-
+                // check if the user owns a wagon in their ranch, and if so the ride is free..
+                if (transportLocation.Type == "WAGON" && (sender.User.OwnedRanch != null && sender.User.OwnedRanch.GetBuildingCount(Ranch.BUILDING_WAGON) > 0))
+                    cost = 0;
+                
                 if (sender.User.Bids.Length > 0)
                 {
                     byte[] cantBuyWhileAuctioning = PacketBuilder.CreateChat(Messages.AuctionNoOtherTransactionAllowed, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -7528,9 +7495,8 @@ namespace HISP.Server
                     return;
                 }
 
-                if (specialTile.Code != null)
-                    if (!ProcessMapCodeWithArg(forClient, specialTile))
-                        return;
+                if (specialTile.Code != null && !ProcessMapCodeWithArg(forClient, specialTile))
+                    return;
                 locationStr = Meta.BuildSpecialTileInfo(forClient.User, specialTile);
             }
 

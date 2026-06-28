@@ -27,9 +27,9 @@ namespace HISP.Game.Events
 
             World.SpecialTile[] tackShops = World.SpecialTiles.Where(o =>
                                                         o.Code != null &&
-                                                        o.Code.StartsWith("STORE-", StringComparison.InvariantCultureIgnoreCase) &&
+                                                        (o.Code.StartsWith("STORE-", StringComparison.InvariantCultureIgnoreCase) &&
                                                         Shop.GetShopById(int.Parse(o.Code.Split('-')[1])).BuysItemTypes.Contains("TACK") &&
-                                                        Npc.GetNpcsByXAndY(o.X, o.Y).Length > 0
+                                                        Npc.GetNpcsByXAndY(o.X, o.Y).Length > 0)
                                                       ).ToArray();
 
 

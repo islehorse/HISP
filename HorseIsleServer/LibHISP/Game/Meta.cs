@@ -916,15 +916,9 @@ namespace HISP.Game
                 int transportLocationId = transportPoint.Locations[i];
                 Transport.TransportLocation transportLocation = Transport.GetTransportLocationById(transportLocationId);
                 string costFormat = Messages.FormatTransportCost(transportLocation.Cost);
-                if(transportLocation.Type == "WAGON")
+                if(transportLocation.Type == "WAGON" && (user.OwnedRanch != null && user.OwnedRanch.GetBuildingCount(Ranch.BUILDING_WAGON) > 0))
                 {
-                    if (user.OwnedRanch != null)
-                    {
-                        if (user.OwnedRanch.GetBuildingCount(7) > 0) // Wagon
-                        {
-                            costFormat = Messages.TransportWagonFree; 
-                        }
-                    }
+                    costFormat = Messages.TransportWagonFree; 
                 }
 
 
@@ -1587,7 +1581,7 @@ namespace HISP.Game
             byte[] moduleSwf = PacketBuilder.CreateSwfModule(swfModule, PacketBuilder.PACKET_SWF_MODULE_FORCE);
             user.Client.SendPacket(moduleSwf);
 
-            if (mine) // This is My DS.
+            if (mine)
             {
                 GameServer.CheckMail(user);
                 user.DoRanchActions();
@@ -1598,15 +1592,15 @@ namespace HISP.Game
                 message += Messages.FormatRanchTitle(Database.GetUsername(ranch.OwnerId), title);
                 message += Messages.BuildingRestHere;
 
-                int numbBarns = ranch.GetBuildingCount(1);
-                int numbWaterWell = ranch.GetBuildingCount(2);
-                int numbGrainSilo = ranch.GetBuildingCount(3);
-                int numbTrainingPen = ranch.GetBuildingCount(6);
-                int numbWagon = ranch.GetBuildingCount(7);
-                int numbWindmill = ranch.GetBuildingCount(8);
-                int numbGarden = ranch.GetBuildingCount(9);
-                int numbBigBarn = ranch.GetBuildingCount(10);
-                int numbGoldBarn = ranch.GetBuildingCount(11);
+                int numbBarns = ranch.GetBuildingCount(Ranch.BUILDING_BARN);
+                int numbWaterWell = ranch.GetBuildingCount(Ranch.BUILDING_WELL);
+                int numbGrainSilo = ranch.GetBuildingCount(Ranch.BUILDING_GRAIN_SILO);
+                int numbTrainingPen = ranch.GetBuildingCount(Ranch.BUILDING_TRAINING_PEN);
+                int numbWagon = ranch.GetBuildingCount(Ranch.BUILDING_WAGON);
+                int numbWindmill = ranch.GetBuildingCount(Ranch.BUILDING_WINDMILL);
+                int numbGarden = ranch.GetBuildingCount(Ranch.BUILDING_FLOWER_GARDEN);
+                int numbBigBarn = ranch.GetBuildingCount(Ranch.BUILDING_BIG_BARN);
+                int numbGoldBarn = ranch.GetBuildingCount(Ranch.BUILDING_GOLD_BARN);
                 
 
                 if (numbBarns > 0)
@@ -1632,7 +1626,7 @@ namespace HISP.Game
 
                 message += Messages.FormatRanchYoursDescription(ranch.Description);
             }
-            else if(ranch.OwnerId == -1) // No mans sky
+            else if(ranch.OwnerId == -1)
             {
 
                 message += Messages.FormatRanchUnownedMeta(ranch.Value);

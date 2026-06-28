@@ -204,9 +204,9 @@ namespace HISP.Game
         public static SpecialTile[] GetSpecialTileById(string tileType, int id)
         {
             return SpecialTiles.Where(spTile =>
-                spTile.Code != null &&
-                spTile.Code.StartsWith(tileType + "-") &&
-                int.Parse(spTile.Code.Split('-')[1]) == id).ToArray();
+                spTile.Code != null && 
+                (spTile.Code.StartsWith(tileType + "-") &&
+                int.Parse(spTile.Code.Split('-')[1]) == id)).ToArray();
         }
         public static void TickWorldClock() 
         {

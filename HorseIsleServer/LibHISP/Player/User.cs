@@ -299,7 +299,7 @@ namespace HISP.Player
                 {
                     if (OwnedRanch != null)
                     {
-                        baseValue += (20 * OwnedRanch.GetBuildingCount(4)); // Shed
+                        baseValue += (20 * OwnedRanch.GetBuildingCount(Ranch.BUILDING_SHED));
                         if (baseValue > 80) // 2 sheds max!
                             baseValue = 80;
                     }
@@ -316,9 +316,9 @@ namespace HISP.Player
                     int baseValue = 11;
                     if(OwnedRanch != null)
                     {
-                        baseValue += OwnedRanch.GetBuildingCount(1) * 4; // Barn
-                        baseValue += OwnedRanch.GetBuildingCount(10) * 8; // Big Barn
-                        baseValue += OwnedRanch.GetBuildingCount(11) * 12; // Gold Barn
+                        baseValue += OwnedRanch.GetBuildingCount(Ranch.BUILDING_BARN) * 4;
+                        baseValue += OwnedRanch.GetBuildingCount(Ranch.BUILDING_BIG_BARN) * 8;
+                        baseValue += OwnedRanch.GetBuildingCount(Ranch.BUILDING_GOLD_BARN) * 12;
                     }
                     return baseValue;
                 }
@@ -380,22 +380,22 @@ namespace HISP.Player
             {
                 Tiredness = 1000; // All ranches fully rest you.
                 
-                if(OwnedRanch.GetBuildingCount(2) > 0)
+                if(OwnedRanch.GetBuildingCount(Ranch.BUILDING_WELL) > 0)
                 {
                     Thirst = 1000;
                     foreach (HorseInstance horse in HorseInventory.HorseList)
                         horse.BasicStats.Thirst = 1000;
                 }
-                if (OwnedRanch.GetBuildingCount(3) > 0)
+                if (OwnedRanch.GetBuildingCount(Ranch.BUILDING_GRAIN_SILO) > 0)
                 {
                     foreach (HorseInstance horse in HorseInventory.HorseList)
                         horse.BasicStats.Hunger = 1000;
                 }
-                if(OwnedRanch.GetBuildingCount(9) > 0)
+                if(OwnedRanch.GetBuildingCount(Ranch.BUILDING_VEGETABLE_GARDEN) > 0)
                 {
                     Hunger = 1000;
                 }
-                if( (OwnedRanch.GetBuildingCount(1) > 0) || (OwnedRanch.GetBuildingCount(10) > 0) || (OwnedRanch.GetBuildingCount(11) > 0))
+                if( (OwnedRanch.GetBuildingCount(Ranch.BUILDING_BARN) > 0) || (OwnedRanch.GetBuildingCount(Ranch.BUILDING_BIG_BARN) > 0) || (OwnedRanch.GetBuildingCount(Ranch.BUILDING_GOLD_BARN) > 0))
                 {
                     foreach (HorseInstance horse in HorseInventory.HorseList)
                         horse.BasicStats.Tiredness = 1000;

@@ -11,6 +11,29 @@ namespace HISP.Game
 {
     public class Ranch
     {
+
+        public const int BUILDING_BARN = 1;
+        public const int BUILDING_WELL = 2;
+        public const int BUILDING_GRAIN_SILO = 3;
+        public const int BUILDING_SHED = 4;
+        public const int BUILDING_FLOWER_GARDEN = 5;
+        public const int BUILDING_TRAINING_PEN = 6;
+        public const int BUILDING_WAGON = 7;
+        public const int BUILDING_WINDMILL = 8;
+        public const int BUILDING_VEGETABLE_GARDEN = 9;
+        public const int BUILDING_BIG_BARN = 10;
+        public const int BUILDING_GOLD_BARN = 11;
+        
+        public const int UPGRADE_RANCH_HOUSE = 1;
+        public const int UPGRADE_RANCH_SHACK = 2;
+        public const int UPGRADE_SMALL_RANCH_CABIN = 3;
+        public const int UPGRADE_LARGE_RANCH_CABIN = 4;
+        public const int UPGRADE_SMALL_RANCH_HOUSE = 5;
+        public const int UPGRADE_MEDIUM_RANCH_HOUSE = 6;
+        public const int UPGRADE_LARGE_RANCH_HOUSE = 7;
+        public const int UPGRADE_HUGE_RANCH_ESTATE = 8;
+        public const int UPGRADE_ENORMOUS_RANCH_ESTATE = 9;
+
         public class RanchUpgrade
         {
             public static List<RanchUpgrade> RanchUpgrades = new List<RanchUpgrade>();
