@@ -23,7 +23,9 @@ game-server:
  - [x] Leaser
  - [x] Isle Trading Card Game
  - [x] Water Balloon Game
+ - [X] Telescope
  - [x] Dress-up game
+ - [X] Keyboard Shortcuts
  - [x] Drawing Room
  - [x] Poetry Room
  - [x] Wild Horse
@@ -70,7 +72,7 @@ game-server:
  - [x] Corrections
  - [x] Playtime Limits
  - [ ] Parental Controls
- - [ ] Admin Tile Place commands
+ - [ ] Admin Build Mode
  
  additional features:
  - [ ] Plugin support
