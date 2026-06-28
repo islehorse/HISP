@@ -5,9 +5,12 @@
 HISP is a "Server Emulator" for Horse Isle 1
 
 game-server: 
- - [x} Login
+
+ - [x] Login
  - [x] Chat
- - [x] Chat Commands
+ - [x] Player Commands
+ - [x] Moderator Commands
+ - [x] Admin Commands
  - [x] Mod Chat
  - [x] Admin Chat
  - [x] Dig, Rake, Search, and Search
@@ -56,6 +59,7 @@ game-server:
  - [x] Library
  - [x] Mail
  - [x] Real Time Riddles
+ = [x] Teleport Tiles
  - [x] Riddle Room
  - [x] Real Time Quiz
  - [x] Auctions
@@ -66,7 +70,7 @@ game-server:
  - [x] Corrections
  - [x] Playtime Limits
  - [ ] Parental Controls
- - [ ] Admin Build Packet
+ - [ ] Admin Tile Place commands
  
  additional features:
  - [ ] Plugin support
