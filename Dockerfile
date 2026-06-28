@@ -13,7 +13,7 @@ RUN dotnet publish -c Linux -p:PublishProfile=Linux64 HISPd
 # Build runtime image
 #
 
-FROM mcr.microsoft.com/dotnet/runtime:10.0-noble AS build-release
+FROM alpine:latest AS build-release
 COPY --from=build /Build/HorseIsleServer/HISPd/build/Linux-x64 /usr/bin/hisp
 
 ENV HISP_CONFIG_DIR /etc/hisp

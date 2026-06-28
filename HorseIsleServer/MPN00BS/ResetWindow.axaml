@@ -20,8 +20,8 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <TextBox Name="usernameBox" KeyUp="usernameChanged" HorizontalAlignment="Center" Grid.Row="0" TextWrapping="Wrap" Watermark="Username" VerticalAlignment="Center" Width="510"/>
-        <TextBox Name="passwordBox" KeyUp="passwordChanged" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" PasswordChar="*" Watermark="Password" VerticalAlignment="Center" Width="510"/>
+        <TextBox Name="usernameBox" KeyUp="usernameChanged" HorizontalAlignment="Center" Grid.Row="0" TextWrapping="Wrap" PlaceholderText="Username" VerticalAlignment="Center" Width="510"/>
+        <TextBox Name="passwordBox" KeyUp="passwordChanged" HorizontalAlignment="Center" Grid.Row="1" TextWrapping="Wrap" PasswordChar="*" PlaceholderText="Password" VerticalAlignment="Center" Width="510"/>
         <Label Name="usernameValidationFailReason" Content="- Username not found." HorizontalAlignment="Left" Grid.Row="2" VerticalAlignment="Center" Foreground="Red"/>
         <Label Name="passwordValidationFailReason" Content="- Password must be more than 6 characters." HorizontalAlignment="Left" Grid.Row="3" VerticalAlignment="Center" Foreground="Red"/>
         <Button Name="resetPasswordButton" Click="ResetPassword" IsEnabled="False" Content="Reset Password" HorizontalAlignment="Center" Grid.Row="4" Width="510"/>

@@ -1,6 +1,5 @@
 Package: hisp
-Version: 2.5.11
-Depends: libgcc-s1,libstdc++6,libc6,coreutils,systemd,zlib1g,libicu,libkrb5
+Version: 2.5.12
 Maintainer: Li
 Homepage: https://islehorse.com
 Architecture: amd64

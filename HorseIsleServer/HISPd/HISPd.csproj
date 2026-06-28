@@ -47,6 +47,7 @@
 	<EnableTrimAnalyzer>false</EnableTrimAnalyzer>
 	<TrimmerRemoveSymbols>true</TrimmerRemoveSymbols>
   </PropertyGroup>
+	
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Windows|x86'">
     <RuntimeIdentifier>win-x86</RuntimeIdentifier>
     <Optimize>true</Optimize>
