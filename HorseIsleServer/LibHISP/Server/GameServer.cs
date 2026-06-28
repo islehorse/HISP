@@ -86,11 +86,10 @@ namespace HISP.Server
 
             if((World.StartDate != -1)) // Birthday tokens
             {
-                int curTime = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                if (curTime >= World.StartDate + 378691200)
+                UInt32 curTime = (UInt32)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
+                if (curTime >= World.StartDate + 378691200u)
                 {
                     Logger.InfoPrint("Your server has been running for 12 years! Adding birthday tokens");
-                    Database.SetStartTime(-1);
                     World.StartDate = -1;
 
 

@@ -191,7 +191,19 @@ namespace HISP.Game
             public string TypeFlag;
         }
         public static Time ServerTime = new Time();
-        public static int StartDate;
+        private static int startDate = -1;
+        public static int StartDate
+        {
+            get
+            {
+                return startDate;
+            }
+            set
+            {
+                startDate = value;
+                Database.SetStartTime(startDate);
+            }
+        }
 
         public static ThreadSafeList<Waypoint> Waypoints = new ThreadSafeList<Waypoint>();
         public static ThreadSafeList<Isle> Isles = new ThreadSafeList<Isle>();
@@ -234,7 +246,7 @@ namespace HISP.Game
             ServerTime.Minutes = Database.GetServerTime();
             ServerTime.Days = Database.GetServerDay();
             ServerTime.Years = Database.GetServerYear();
-            StartDate = Database.GetServerStartTime();
+            startDate = Database.GetServerStartTime();
             Logger.InfoPrint("It is " + ServerTime.Minutes / 60 + ":" + ServerTime.Minutes % 60 + " on Day " + ServerTime.Days + " in Year " + ServerTime.Years + "!!!");
 
         }

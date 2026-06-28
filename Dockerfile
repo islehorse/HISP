@@ -13,7 +13,7 @@ RUN dotnet publish -c Linux -p:PublishProfile=Linux64 HISPd
 # Build runtime image
 #
 
-FROM debian:stable AS build-release
+FROM debian:latest AS build-release
 COPY --from=build /Build/HorseIsleServer/HISPd/build/Linux-x64 /usr/bin/hisp
 
 ENV HISP_CONFIG_DIR /etc/hisp

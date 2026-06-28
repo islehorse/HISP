@@ -10,6 +10,7 @@
     <NoWarn>1701;1702;2026;IL2026</NoWarn>
     <ApplicationIcon>icon.ico</ApplicationIcon>
 	<BuiltInComInteropSupport>false</BuiltInComInteropSupport>
+	<InvariantGlobalization>True</InvariantGlobalization>
   </PropertyGroup>
 
   <PropertyGroup>

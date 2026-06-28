@@ -1,5 +1,6 @@
 Package: hisp
 Version: 2.5.12
+Depends: libc6
 Maintainer: Li
 Homepage: https://islehorse.com
 Architecture: amd64

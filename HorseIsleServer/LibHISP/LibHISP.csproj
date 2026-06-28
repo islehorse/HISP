@@ -5,6 +5,7 @@
     <LangVersion>10.0</LangVersion>
     <Platforms>x64;x86;ARM;ARM64</Platforms>
     <Configurations>Debug;Windows;Linux;MacOS;Android;iOS</Configurations>
+	<InvariantGlobalization>True</InvariantGlobalization>
   </PropertyGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
