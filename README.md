@@ -59,7 +59,7 @@ game-server:
  - [x] Library
  - [x] Mail
  - [x] Real Time Riddles
- = [x] Teleport Tiles
+ - [x] Teleport Tiles
  - [x] Riddle Room
  - [x] Real Time Quiz
  - [x] Auctions
