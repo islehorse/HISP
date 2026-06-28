@@ -5,99 +5,100 @@
 HISP is a "Server Emulator" for Horse Isle 1
 
 game-server: 
- [x} Login
- [x] Chat
- [x] Chat Commands
- [x] Mod Chat
- [x] Admin Chat
- [x] Dig, Rake, Search, and Search
- [x] Dropped Items
- [x] Farrier
- [x] Groomer
- [x] Vet
- [x] Boat / Wagon
- [x] Barns
- [x] Leaser
- [x] Isle Trading Card Game
- [x] Water Balloon Game
- [x] Dress-up game
- [x] Drawing Room
- [x] Poetry Room
- [x] Wild Horse
- [x] Tack
- [x] Movement
- [x] Riding Horses
- [x] NPCs
- [x] Quests
- [x] Trading
- [x] Profile Page
- [x] Private Notes
- [x] Thirst, Hunger & Tiredness
- [x] Prison Isle
- [x] Rules Isle
- [x] Minigame Rewards
- [x] Arenas
- [x] Ranch
- [x] Subscriptions
- [x] Mods Revenge
- [x] Tack Shop Giveaway
- [x] 2-Player Minigames
- [x] Multiplayer Rooms
- [x] Training
- [x] Companions
- [x] Buddy Requests
- [x] Social
- [x] Private Messaging
- [x] Crafting
- [x] BBCode
- [x] Competition Arenas
- [x] Awards
- [x] Tracked Stats
- [x] Library
- [x] Mail
- [x] Real Time Riddles
- [x] Riddle Room
- [x] Real Time Quiz
- [x] Auctions
- [x] Pawneer orders
- [x] Shops
- [x] Fly Traps
- [x] Swear Filter
- [x] Corrections
- [ ] Parental Controls
- [ ] Admin Build Packet
+ - [x} Login
+ - [x] Chat
+ - [x] Chat Commands
+ - [x] Mod Chat
+ - [x] Admin Chat
+ - [x] Dig, Rake, Search, and Search
+ - [x] Dropped Items
+ - [x] Farrier
+ - [x] Groomer
+ - [x] Vet
+ - [x] Boat / Wagon
+ - [x] Barns
+ - [x] Leaser
+ - [x] Isle Trading Card Game
+ - [x] Water Balloon Game
+ - [x] Dress-up game
+ - [x] Drawing Room
+ - [x] Poetry Room
+ - [x] Wild Horse
+ - [x] Tack
+ - [x] Movement
+ - [x] Riding Horses
+ - [x] NPCs
+ - [x] Quests
+ - [x] Trading
+ - [x] Profile Page
+ - [x] Private Notes
+ - [x] Thirst, Hunger & Tiredness
+ - [x] Prison Isle
+ - [x] Rules Isle
+ - [x] Minigame Rewards
+ - [x] Arenas
+ - [x] Ranch
+ - [x] Subscriptions
+ - [x] Mods Revenge
+ - [x] Tack Shop Giveaway
+ - [x] 2-Player Minigames
+ - [x] Multiplayer Rooms
+ - [x] Training
+ - [x] Companions
+ - [x] Buddy Requests
+ - [x] Social
+ - [x] Private Messaging
+ - [x] Crafting
+ - [x] BBCode
+ - [x] Competition Arenas
+ - [x] Awards
+ - [x] Tracked Stats
+ - [x] Library
+ - [x] Mail
+ - [x] Real Time Riddles
+ - [x] Riddle Room
+ - [x] Real Time Quiz
+ - [x] Auctions
+ - [x] Pawneer orders
+ - [x] Shops
+ - [x] Fly Traps
+ - [x] Swear Filter
+ - [x] Corrections
+ - [x] Playtime Limits
+ - [ ] Parental Controls
+ - [ ] Admin Build Packet
  
  additional features:
- [ ] Plugin support
- [x] WebSocket transport
- [x] Fixing bugs in original server
+ - [ ] Plugin support
+ - [x] WebSocket transport
+ - [x] Fixing bugs in original server
  
 master-site:
- [x] Registration
- [x] Login
- [x] Forum
- [x] Server List
- [x] News page
- [x] Registration Quiz
- [x] Help Centre
- [x] Global Player Count
- [ ] Contact Form
- [ ] Reset Password
- [ ] Referral links
- [ ] Horse Bucks
- [ ] Change Password
- [ ] Email Verification
- [ ] Account Expiration
+ - [x] Registration
+ - [x] Login
+ - [x] Forum
+ - [x] Server List
+ - [x] News page
+ - [x] Registration Quiz
+ - [x] Help Centre
+ - [x] Global Player Count
+ - [ ] Contact Form
+ - [ ] Reset Password
+ - [ ] Referral links
+ - [ ] Horse Bucks
+ - [ ] Change Password
+ - [ ] Email Verification
+ - [ ] Account Expiration
 
 game-site
- [x] Login
- [x] Purchase subscription
- 
- [x] Gifting subscription
- [x] Online Buddies
+ - [x] Login
+ - [x] Purchase subscription
+
+ - [x] Gifting subscription
+ - [x] Online Buddies
  
  additional features:
- [x] Ruffle support (HTML5)
+ - [x] Ruffle support (HTML5)
  
 
 # Documentation
