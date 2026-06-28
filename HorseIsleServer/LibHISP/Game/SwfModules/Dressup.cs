@@ -1,6 +1,7 @@
 ﻿using HISP.Server;
 using HISP.Util;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HISP.Game.SwfModules
 {
@@ -115,16 +116,15 @@ namespace HISP.Game.SwfModules
 
         public static DressupRoom GetDressupRoom(int roomId)
         {
-            foreach(DressupRoom sRoom in DressupRooms)
+            DressupRoom room = DressupRooms.FirstOrDefault(o => o.RoomId == roomId, null);
+            if(room == null)
             {
-                if (sRoom.RoomId == roomId)
-                    return sRoom;
+                return new DressupRoom(roomId);
             }
-            
-            // Else create room
-
-            DressupRoom room = new DressupRoom(roomId);
-            return room;
+            else
+            {
+                return room;
+            }
         }
     }
 }
