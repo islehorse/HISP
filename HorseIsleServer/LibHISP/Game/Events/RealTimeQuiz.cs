@@ -177,9 +177,8 @@ namespace HISP.Game.Events
         public void WinEvent(User winner)
         {
             byte[] eventWinMessage = PacketBuilder.CreateChat(Messages.FormatEventRealTimeQuizWin(winner.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-            foreach (GameClient client in GameClient.ConnectedClients)
-                if (client.LoggedIn)
-                    client.SendPacket(eventWinMessage);
+            foreach(User user in User.OnlineUsers)
+                user.Client.SendPacket(eventWinMessage);
 
             getParticipent(winner.Id).Won = true;
 
@@ -193,24 +192,15 @@ namespace HISP.Game.Events
         public void StopEvent()
         {
             byte[] eventEndMessage = PacketBuilder.CreateChat(Messages.EventEndRealTimeQuiz, PacketBuilder.CHAT_BOTTOM_RIGHT);
-            foreach (GameClient client in GameClient.ConnectedClients)
-                if(client.LoggedIn)
-                    client.SendPacket(eventEndMessage);
+            foreach (User user in User.OnlineUsers)
+                user.Client.SendPacket(eventEndMessage);
             
             provideRewards();
         }
         private void provideRewards()
         {
-            foreach(Participent participent in Participents)
+            foreach(Participent participent in Participents.Where(o => o != null && !o.Quit))
             {
-
-                if (participent == null)
-                    continue;
-
-                if (participent.Quit)
-                    continue;
-
-
                 participent.UserInstance.InRealTimeQuiz = false;
                 GameServer.UpdateArea(participent.UserInstance.Client);
 

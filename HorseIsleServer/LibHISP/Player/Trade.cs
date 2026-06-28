@@ -257,9 +257,9 @@ namespace HISP.Player
 
 
             if (Trader.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Trading).Count >= 100)
-                Trader.Awards.AddAward(Award.GetAwardById(29)); // Trader
+                Trader.Awards.AddAward(Award.GetAwardById(Award.AWARD_TRADER)); // Trader
             if (Trader.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Trading).Count >= 1000)
-                Trader.Awards.AddAward(Award.GetAwardById(50)); // Pro Trader
+                Trader.Awards.AddAward(Award.GetAwardById(Award.AWARD_PRO_TRADER)); // Pro Trader
 
             endTrade();
             return;

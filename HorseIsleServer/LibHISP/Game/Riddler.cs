@@ -36,7 +36,7 @@ namespace HISP.Game
             user.AddMoney(10000);
 
             if(HasCompletedAllRiddles(user))
-                user.Awards.AddAward(Award.GetAwardById(11)); // Riddlers Riddles
+                user.Awards.AddAward(Award.GetAwardById(Award.AWARD_RIDDLER_RIDDLE)); // Riddlers Riddles
         }
 
         public void AnswerFail(User user)
@@ -73,9 +73,7 @@ namespace HISP.Game
 
                 int rng = GameServer.RandomNumberGenerator.Next(0, Riddles.Length);
                 if (Database.HasPlayerCompletedRiddle(Riddles[rng].Id, user.Id))
-                {
                     continue;
-                }
                 return Riddles[rng];
             }
         }
