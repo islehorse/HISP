@@ -4,7 +4,7 @@ WORKDIR /Build
 # Copy everything
 COPY . ./
 # update and install python
-RUN apt update && apt install python3 git build-essential zlib1g-dev dos2unix binutils binutils-dev llvm clang clang-tools lld -y
+RUN apt update && apt install python3 git build-essential zlib1g-dev dos2unix binutils binutils-dev llvm clang clang-tools lld musl-tools -y
 # Build and publish a release
 WORKDIR /Build/HorseIsleServer
 RUN dotnet publish -c Linux -p:PublishProfile=Linux64 HISPd
@@ -13,7 +13,7 @@ RUN dotnet publish -c Linux -p:PublishProfile=Linux64 HISPd
 # Build runtime image
 #
 
-FROM alpine:latest AS build-release
+FROM debian:stable AS build-release
 COPY --from=build /Build/HorseIsleServer/HISPd/build/Linux-x64 /usr/bin/hisp
 
 ENV HISP_CONFIG_DIR /etc/hisp
