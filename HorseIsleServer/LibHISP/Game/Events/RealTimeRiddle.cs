@@ -73,9 +73,9 @@ namespace HISP.Game.Events
             winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.RiddleWin).Count++;
 
             if (winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.RiddleWin).Count >= 25)
-                winner.Awards.AddAward(Award.GetAwardById(33)); // Quick Wit
+                winner.Awards.AddAward(Award.GetAwardById(Award.AWARD_QUICK_WIT)); // Quick Wit
             if (winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.RiddleWin).Count >= 250)
-                winner.Awards.AddAward(Award.GetAwardById(34)); // Riddle Genius
+                winner.Awards.AddAward(Award.GetAwardById(Award.AWARD_RIDDLE_GENIUS)); // Riddle Genius
 
 
             winner.AddMoney(Reward);

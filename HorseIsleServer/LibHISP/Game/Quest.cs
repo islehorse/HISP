@@ -253,13 +253,13 @@ namespace HISP.Game
             // Check if award unlocked
             int questPointsPercent = Convert.ToInt32(Math.Floor(((decimal)user.QuestPoints / (decimal)GetTotalQuestPoints()) * (decimal)100.0)); 
             if (questPointsPercent >= 25)
-                user.Awards.AddAward(Award.GetAwardById(1)); // 25% Quest Completion Award.
+                user.Awards.AddAward(Award.GetAwardById(Award.AWARD_25_QP)); // 25% Quest Completion Award.
             if (questPointsPercent >= 50)
-                user.Awards.AddAward(Award.GetAwardById(2)); // 50% Quest Completion Award.
+                user.Awards.AddAward(Award.GetAwardById(Award.AWARD_50_QP)); // 50% Quest Completion Award.
             if (questPointsPercent >= 75)
-                user.Awards.AddAward(Award.GetAwardById(3)); // 75% Quest Completion Award.
+                user.Awards.AddAward(Award.GetAwardById(Award.AWARD_75_QP)); // 75% Quest Completion Award.
             if (questPointsPercent >= 100)
-                user.Awards.AddAward(Award.GetAwardById(4)); // 100% Quest Completion Award.
+                user.Awards.AddAward(Award.GetAwardById(Award.AWARD_100_QP)); // 100% Quest Completion Award.
 
             // Is cloud isles quest?
             if (quest.Id == CloudIslesQuest)

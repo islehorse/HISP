@@ -185,9 +185,7 @@ namespace HISP.Game.Events
 
             winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.QuizWin).Count++;
             if (winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.QuizWin).Count >= 15)
-                winner.Awards.AddAward(Award.GetAwardById(54)); // Quiz Genius
-            if (winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.QuizWin).Count >= 25)
-                winner.Awards.AddAward(Award.GetAwardById(33)); // Quick Wit
+                winner.Awards.AddAward(Award.GetAwardById(Award.AWARD_QUIZ_GENIUS)); // Quiz Genius
 
             provideRewards();
         }

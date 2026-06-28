@@ -65,7 +65,7 @@ namespace HISP.Server
                 Logger.DebugPrint("Paying windmill owners . . . ");
                 foreach (Ranch ranch in Ranch.Ranches.Where(o => o.OwnerId != -1))
                 {
-                    int moneyToAdd = 5000 * ranch.GetBuildingCount(Ranch.BUILDING_WINDMILL); // Windmill
+                    int moneyToAdd = 5000 * ranch.GetBuildingCount(Ranch.BUILDING_WINDMILL);
                     if (User.IsUserOnline(ranch.OwnerId))
                     {
                         User.GetUserById(ranch.OwnerId).AddMoney(moneyToAdd);
@@ -1378,9 +1378,9 @@ namespace HISP.Server
                                     sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count++;
 
                                     if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 1000)
-                                        sender.User.Awards.AddAward(Award.GetAwardById(26)); // Pro Trainer
+                                        sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_PRO_TRAINER)); // Pro Trainer
                                     if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 10000)
-                                        sender.User.Awards.AddAward(Award.GetAwardById(53)); // Top Trainer
+                                        sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_TOP_TRAINER)); // Top Trainer
 
                                     UpdateArea(sender);
                                 }
@@ -2074,9 +2074,11 @@ namespace HISP.Server
                             sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count++;
 
                             if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count >= 100)
-                                sender.User.Awards.AddAward(Award.GetAwardById(24)); // Wrangler
+                                sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_WRANGLER)); // Wrangler
                             if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count >= 1000)
-                                sender.User.Awards.AddAward(Award.GetAwardById(25)); // Pro Wrangler
+                                sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_PRO_WRANGLER)); // Pro Wrangler
+                            if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorseCapture).Count >= 10000)
+                                sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_TOP_WRANGLER)); // Top Wrangler
 
                             Logger.InfoPrint(sender.User.Username + " Captured a: " + capturing.Instance.Breed.Name);
 
@@ -2773,7 +2775,7 @@ namespace HISP.Server
                 case "7": // TP To nearest wagon (ranch)
                     if(sender.User.OwnedRanch != null)
                     {
-                        if(sender.User.OwnedRanch.GetBuildingCount(Ranch.BUILDING_WINDMILL) > 0) // Wagon
+                        if(sender.User.OwnedRanch.GetBuildingCount(Ranch.BUILDING_WINDMILL) > 0)
                         {
                             int ranchX = sender.User.OwnedRanch.X;
                             int ranchY = sender.User.OwnedRanch.Y;
@@ -2851,7 +2853,7 @@ namespace HISP.Server
                 case "13": // Train All (Ranch)
                     if (sender.User.OwnedRanch != null)
                     {
-                        if(sender.User.OwnedRanch.GetBuildingCount(Ranch.BUILDING_TRAINING_PEN) > 0) // Training Pen
+                        if(sender.User.OwnedRanch.GetBuildingCount(Ranch.BUILDING_TRAINING_PEN) > 0)
                         {
                             sender.User.MajorPriority = true;
                             metaPacket = PacketBuilder.CreateMeta(Meta.BuildRanchTraining(sender.User));
@@ -3335,11 +3337,11 @@ namespace HISP.Server
 
                             sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorsePawn).Count++;
                             if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorsePawn).Count >= 100)
-                                sender.User.Awards.AddAward(Award.GetAwardById(44)); // Vendor
+                                sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_VENDOR)); // Vendor
                             if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorsePawn).Count >= 1000)
-                                sender.User.Awards.AddAward(Award.GetAwardById(45)); // Pro Vendor
+                                sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_PRO_VENDOR)); // Pro Vendor
                             if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.HorsePawn).Count >= 10000)
-                                sender.User.Awards.AddAward(Award.GetAwardById(52)); // Top Vendor
+                                sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_TOP_VENDOR)); // Top Vendor
 
                             UpdateArea(sender);
 
@@ -3463,19 +3465,19 @@ namespace HISP.Server
                                 {
                                     sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.UnipegTeamup).Count++;
                                     if(sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.UnipegTeamup).Count >= 5)
-                                        sender.User.Awards.AddAward(Award.GetAwardById(55)); // UniPeg Friend
+                                        sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_UNIPEG_FRIEND)); // UniPeg Friend
                                 }
                                 else if(leaseHorse.Breed.Type == "unicorn")
                                 {
                                     sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.UnicornTeamup).Count++;
                                     if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.UnicornTeamup).Count >= 5)
-                                        sender.User.Awards.AddAward(Award.GetAwardById(42)); // Unicorn Friend
+                                        sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_UNICORN_FRIEND)); // Unicorn Friend
                                 }
                                 else if(leaseHorse.Breed.Type == "pegasus")
                                 {
                                     sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PegasusTeamup).Count++;
                                     if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PegasusTeamup).Count >= 5)
-                                        sender.User.Awards.AddAward(Award.GetAwardById(43)); // Pegasus Friend
+                                        sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_PEGASUS_FRIEND)); // Pegasus Friend
                                 }
 
                                 sender.User.HorseInventory.AddHorse(leaseHorse);
@@ -4222,13 +4224,13 @@ namespace HISP.Server
             sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.WishingWell).Count++;
 
             if(sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.WishingWell).Count >= 100)
-                sender.User.Awards.AddAward(Award.GetAwardById(30)); // Well Wisher
+                sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_WELL_WISHER)); // Well Wisher
 
             if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.WishingWell).Count >= 1000)
-                sender.User.Awards.AddAward(Award.GetAwardById(31)); // Star Wisher
+                sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_STAR_WISHER)); // Star Wisher
 
             if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.WishingWell).Count >= 10000)
-                sender.User.Awards.AddAward(Award.GetAwardById(51)); // Extraordanary Wisher
+                sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_EXTRODINARY_WISHER)); // Extraordanary Wisher
 
             byte[] msg = PacketBuilder.CreateChat(message, PacketBuilder.CHAT_BOTTOM_RIGHT);
             sender.SendPacket(msg);
@@ -4409,16 +4411,16 @@ namespace HISP.Server
                         }
 
                         if (sender.User.Highscores.HighscoreList.Length >= 30)
-                            sender.User.Awards.AddAward(Award.GetAwardById(12)); // Minigame Player
+                            sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_MINIGAME_PLAYER)); // Minigame Player
 
                         if (sender.User.Highscores.HighscoreList.Length >= 60)
-                            sender.User.Awards.AddAward(Award.GetAwardById(13)); // Minigame Master
+                            sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_MINIGAME_MASTER)); // Minigame Master
 
                         if (Database.GetPlayerTotalMinigamesPlayed(sender.User.Id) >= 1000)
-                            sender.User.Awards.AddAward(Award.GetAwardById(14)); // Minigame Nut
+                            sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_MINIGAME_NUT)); // Minigame Nut
 
                         if (Database.GetPlayerTotalMinigamesPlayed(sender.User.Id) >= 10000)
-                            sender.User.Awards.AddAward(Award.GetAwardById(15)); // Minigame Crazy
+                            sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_MINIGAME_CRAZY)); // Minigame Crazy
                         return;
                     }
                     if (gameInfoStr.Contains("|"))
@@ -4471,16 +4473,16 @@ namespace HISP.Server
                         }
                         
                         if(sender.User.Highscores.HighscoreList.Length >= 30)
-                            sender.User.Awards.AddAward(Award.GetAwardById(12)); // Minigame Player
+                            sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_MINIGAME_PLAYER)); // Minigame Player
 
                         if (sender.User.Highscores.HighscoreList.Length >= 60)
-                            sender.User.Awards.AddAward(Award.GetAwardById(13)); // Minigame Master
+                            sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_MINIGAME_MASTER)); // Minigame Master
 
                         if (Database.GetPlayerTotalMinigamesPlayed(sender.User.Id) >= 1000)
-                            sender.User.Awards.AddAward(Award.GetAwardById(14)); // Minigame Nut
+                            sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_MINIGAME_NUT)); // Minigame Nut
 
                         if (Database.GetPlayerTotalMinigamesPlayed(sender.User.Id) >= 10000)
-                            sender.User.Awards.AddAward(Award.GetAwardById(15)); // Minigame Crazy
+                            sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_MINIGAME_CRAZY)); // Minigame Crazy
 
                     }
                     else
@@ -5187,9 +5189,9 @@ namespace HISP.Server
 
 
                     if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Transport).Count >= 500)
-                        sender.User.Awards.AddAward(Award.GetAwardById(27)); // Traveller
+                        sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_TRAVELER)); // Traveller
                     if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Transport).Count >= 5000)
-                        sender.User.Awards.AddAward(Award.GetAwardById(28)); // Globetrotter
+                        sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_GLOBETROTTER)); // Globetrotter
 
                     byte[] welcomeToIslePacket = PacketBuilder.CreateChat(Messages.FormatWelcomeToAreaMessage(transportLocation.LocationTitle), PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(welcomeToIslePacket);
@@ -6590,9 +6592,9 @@ namespace HISP.Server
                                 sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count++;
 
                                 if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count >= 100)
-                                    sender.User.Awards.AddAward(Award.GetAwardById(22)); // Craftiness
+                                    sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_CRAFTINESS)); // Craftiness
                                 if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Crafting).Count >= 1000)
-                                    sender.User.Awards.AddAward(Award.GetAwardById(23)); // Workmanship
+                                    sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_WORKMANSHIP)); // Workmanship
 
                                 byte[] itemCraftSuccess = PacketBuilder.CreateChat(Messages.WorkshopCraftingSuccess, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                 sender.SendPacket(itemCraftSuccess);
@@ -7630,13 +7632,13 @@ namespace HISP.Server
             }
             if (horseMountInst.Breed.Type == "camel")
             {
-                sender.User.Awards.AddAward(Award.GetAwardById(40)); // Camel Rider
+                sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_CAMEL_RIDER)); // Camel Rider
 
                 incBy = 13;
             }
             if(horseMountInst.Breed.Type == "llama")
             {
-                sender.User.Awards.AddAward(Award.GetAwardById(41)); // Llama Rider
+                sender.User.Awards.AddAward(Award.GetAwardById(Award.AWARD_LLAMA_RIDER)); // Llama Rider
 
                 incBy = 14;
             }

@@ -277,37 +277,37 @@ namespace HISP.Game
                             // Awards:
 
                             if (Entries.Length >= 2 && Type == "JUMPING")
-                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(5)); // Good Jumper
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(Award.AWARD_GOOD_JUMPER)); // Good Jumper
 
                             if (Entries.Length >= 4 && Type == "JUMPING")
-                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(6)); // Great Jumper
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(Award.AWARD_GREAT_JUMPER)); // Great Jumper
 
 
                             if (Entries.Length >= 2 && Type == "RACING")
-                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(7)); // Good Racer
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(Award.AWARD_GOOD_RACER)); // Good Racer
 
                             if (Entries.Length >= 4 && Type == "RACING")
-                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(8)); // Great Racer
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(Award.AWARD_GREAT_RACER)); // Great Racer
 
 
                             if (Entries.Length >= 2 && Type == "DRESSAGE")
-                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(9)); // Good Dressage
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(Award.AWARD_GOOD_DRESSAGE)); // Good Dressage
 
                             if (Entries.Length >= 4 && Type == "DRESSAGE")
-                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(10)); // Great Dressage
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(Award.AWARD_GREAT_DRESSAGE)); // Great Dressage
 
                             if (Entries.Length >= 2 && Type == "DRAFT")
-                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(38)); // Strong Horse Award
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(Award.AWARD_STRONG_HORSE_AWARD)); // Strong Horse Award
 
                             if (Entries.Length >= 4 && Type == "DRAFT")
-                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(39)); // Strongest Horse Award
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(Award.AWARD_STRONGEST_HORSE_AWARD)); // Strongest Horse Award
                         }
                         else
                         {
                             entry.EnteredUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.ArenaLoss).Count++;
 
                             if(entry.EnteredUser.TrackedItems.GetTrackedItem(Tracking.TrackableItem.ArenaLoss).Count >= 100)
-                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(32)); // Perseverance
+                                entry.EnteredUser.Awards.AddAward(Award.GetAwardById(Award.AWARD_PERSERVERANCE)); // Perseverance
 
                             byte[] youDONTWinMessage = PacketBuilder.CreateChat(Messages.FormatArenaOnlyWinnerWinsMessage(expReward), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             entry.EnteredUser.Client.SendPacket(youDONTWinMessage);

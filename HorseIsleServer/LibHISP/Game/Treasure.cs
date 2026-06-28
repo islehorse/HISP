@@ -113,10 +113,10 @@ namespace HISP.Game
                 user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PirateTreasure).Count++;
                 
                 if(user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PirateTreasure).Count >= 10)
-                    user.Awards.AddAward(Award.GetAwardById(18)); // Pirate Tracker
+                    user.Awards.AddAward(Award.GetAwardById(Award.AWARD_PIRATE_TRACKER)); // Pirate Tracker
 
                 if (user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PirateTreasure).Count >= 100)
-                    user.Awards.AddAward(Award.GetAwardById(19)); // Pirate Stalker
+                    user.Awards.AddAward(Award.GetAwardById(Award.AWARD_PRATE_STALKER)); // Pirate Stalker
             }
             else if(this.Type == "RAINBOW")
             {
@@ -126,10 +126,10 @@ namespace HISP.Game
                 user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PotOfGold).Count++;
 
                 if (user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PotOfGold).Count >= 3)
-                    user.Awards.AddAward(Award.GetAwardById(20)); // Leprechaun
+                    user.Awards.AddAward(Award.GetAwardById(Award.AWARD_LEPRECHAUN)); // Leprechaun
 
                 if (user.TrackedItems.GetTrackedItem(Tracking.TrackableItem.PirateTreasure).Count >= 20)
-                    user.Awards.AddAward(Award.GetAwardById(21)); // Lucky Leprechaun
+                    user.Awards.AddAward(Award.GetAwardById(Award.AWARD_LUCKY_LEPRECHAUN)); // Lucky Leprechaun
             }
 
         }
