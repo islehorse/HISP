@@ -150,8 +150,7 @@ namespace HISP.Game
                         if (User.GetUsersAt(this.X, this.Y, true, true).Length > 0)
                             return;
 
-                        int tries = 0;
-                        while(true)
+                        for(int i = 0; i < 500; i++)
                         {
                             int direction = GameServer.RandomNumberGenerator.Next(0, 4);
                             int tryX = this.X;
@@ -179,14 +178,14 @@ namespace HISP.Game
                                 Y = tryY;
                                 break;
                             }
-                            tries++;
-                            if (tries > 100) // yo stuck lol
-                            {
-                                Logger.ErrorPrint("NPC: " + this.Name + " is probably stuck (cant move after 100 tries)");
-                                break;
-                            }
+
+                            if (i + 1 > 500) // probably stuck lol
+                                Logger.ErrorPrint("NPC: " + this.Name + " is probably stuck (cant move after "+i+" tries)");
+
                         }
-                        
+
+
+
                     }
                     else // Is Scripted.
                     {
@@ -285,9 +284,7 @@ namespace HISP.Game
         {
             Logger.DebugPrint("Making NPC's randomly wander.");
             foreach(NpcEntry npc in NpcList)
-            {
                 npc.RandomWander();
-            }
         }
 
         public static NpcEntry[] GetNpcsByXAndY(int x, int y)

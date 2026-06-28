@@ -77,70 +77,39 @@ namespace HISP.Player
 
         public static User[] GetUsersInTown(World.Town town, bool includeStealth = false, bool includeMuted = false)
         {
-            List<User> usersInTown = new List<User>();
-            foreach (User user in OnlineUsers)
-            {
-                if (!includeStealth && user.Stealth)
-                    continue;
-                if (!includeMuted && user.MuteIsland)
-                    continue;
-                if (World.InTown(user.X, user.Y))
-                    if (World.GetIsle(user.X, user.Y).Name == town.Name)
-                        usersInTown.Add(user);
-            }
-
-            return usersInTown.ToArray();
+            return OnlineUsers.Where(o =>
+                includeStealth ? true : !o.Stealth &&
+                includeMuted ? true : !o.MuteIsland &&
+                World.InTown(o.X, o.Y) && 
+                World.GetTown(o.X, o.Y).Name == town.Name
+            ).ToArray();
         }
         public static User[] GetUsersInIsle(World.Isle isle, bool includeStealth = false, bool includeMuted = false)
         {
-            List<User> usersInIsle = new List<User>();
-            foreach (User user in OnlineUsers)
-            {
-                    if (!includeStealth && user.Stealth)
-                        continue;
-                    
-                    if (!includeMuted && user.MuteIsland)
-                        continue;
-
-                    if (World.InIsle(user.X, user.Y))
-                        if (World.GetIsle(user.X, user.Y).Name == isle.Name)
-                            usersInIsle.Add(user);
-            }
-
-            return usersInIsle.ToArray();
+            return OnlineUsers.Where(o =>
+                includeStealth ? true : !o.Stealth &&
+                includeMuted ? true : !o.MuteIsland &&
+                World.InTown(o.X, o.Y) &&
+                World.GetIsle(o.X, o.Y).Name == isle.Name
+            ).ToArray();
         }
 
         public static User[] GetUsersOnSpecialTileCode(string code)
         {
-            List<User> userList = new List<User>();
+            return OnlineUsers.Where(o =>
+                World.InSpecialTile(o.X, o.Y) &&
+                World.GetSpecialTile(o.X, o.Y).Code == code
+            ).ToArray();
 
-            foreach (User user in OnlineUsers)
-            {
-                if (World.InSpecialTile(user.X, user.Y))
-                {
-                    World.SpecialTile tile = World.GetSpecialTile(user.X, user.Y);
-
-                    if (tile.Code == code)
-                        userList.Add(user);
-                }
-            }
-            return userList.ToArray();
         }
         public static User[] GetUsersAt(int x, int y, bool includeStealth = false, bool includeMuted = false)
         {
-            List<User> usersHere = new List<User>();
-            foreach (User user in OnlineUsers)
-            {
-                if (!includeStealth && user.Stealth)
-                    continue;
+            return OnlineUsers.Where(o =>
+                includeStealth ? true : !o.Stealth &&
+                includeMuted ? true : !o.MuteIsland &&
+                o.X == x && o.Y == y
+            ).ToArray();
 
-                if (!includeMuted && user.MuteNear)
-                    continue;
-
-                if (user.X == x && user.Y == y)
-                    usersHere.Add(user);
-            }
-            return usersHere.ToArray();
         }
         public static User GetUserByNameStartswith(string username)
         {

@@ -67,7 +67,7 @@ namespace HISP.Player
 
             GameServer.UpdatePlayerInfoAndPosition(baseUser);
 
-            done:;
+            done:
             if (MoveIndex < Moves.Length)
             {
                 danceTimer.Change(DanceSpeed, DanceSpeed);

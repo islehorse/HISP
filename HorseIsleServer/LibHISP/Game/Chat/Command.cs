@@ -54,11 +54,8 @@ namespace HISP.Game.Chat
         public static bool Help(string message, string[] args, User user)
         {
 
-            foreach (CommandRegister cmd in CommandRegister.RegisteredCommands)
-            {
-                if (!cmd.HasPermission(user)) continue;
+            foreach (CommandRegister cmd in CommandRegister.RegisteredCommands.Where(o => o.HasPermission(user)))
                 user.Client.SendPacket(PacketBuilder.CreateChat(Messages.FormatHispHelpUsage(cmd.CmdLetter, cmd.CmdName, cmd.CmdUsage).Replace("\n", "<BR>\t"), PacketBuilder.CHAT_BOTTOM_LEFT));
-            }
 
             user.Client.SendPacket(PacketBuilder.CreateChat(Messages.FormatAdminCommandCompleteMessage(message), PacketBuilder.CHAT_BOTTOM_LEFT));
 

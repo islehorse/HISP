@@ -46,13 +46,12 @@ namespace HISP.Game
             Logger.InfoPrint("Creating Multirooms...");
             foreach(World.SpecialTile tile in World.SpecialTiles.Where(
                 spTile => 
-                spTile.Code != null && 
-                spTile.Code.StartsWith("MULTIROOM") || 
-                spTile.Code.StartsWith("MULTIHORSES") || 
+                spTile.Code != null &&
+                (spTile.Code.StartsWith("MULTIROOM") || 
+                spTile.Code.StartsWith("MULTIHORSES") ||
                 spTile.Code.StartsWith("2PLAYER") || 
-                spTile.Code.StartsWith("AUCTION"))
-            )
-            {
+                spTile.Code.StartsWith("AUCTION")))
+            ) {
                 Logger.DebugPrint("Created Multiroom @ " + tile.X.ToString() + "," + tile.Y.ToString());
                 new Multiroom(tile.X, tile.Y);
             }

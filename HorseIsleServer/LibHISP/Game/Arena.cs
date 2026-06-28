@@ -63,12 +63,8 @@ namespace HISP.Game
 
         public bool HaveAllPlayersCompleted()
         {
-            int playersCompleted = 0;
-            foreach(ArenaEntry entry in Entries)
-            {
-                if (entry.Done)
-                    playersCompleted++;
-            }
+            int playersCompleted = Entries.Count(o => o.Done);
+
             if (playersCompleted >= Entries.Length)
                 return true;
             else
@@ -76,14 +72,11 @@ namespace HISP.Game
         }
         public void SubmitScore(User user, int score)
         {
-            foreach(ArenaEntry entry in Entries)
+            ArenaEntry entry = Entries.FirstOrDefault(o => o.EnteredUser.Id == user.Id, null);
+            if(entry != null)
             {
-                if(entry.EnteredUser.Id == user.Id)
-                {
-                    entry.SubmitScore = score;
-                    entry.Done = true;
-                    break;
-                }
+                entry.SubmitScore = score;
+                entry.Done = true;
             }
 
             if (HaveAllPlayersCompleted())
@@ -108,7 +101,7 @@ namespace HISP.Game
                     int baseScore = conformationCalculator.Total + ((entry.EnteredHorse.BasicStats.Groom > 750) ? 1000 : 500);
                     string swf = "dressagearena.swf?BASESCORE=" + baseScore;
                     int i = 1;
-                    foreach (ArenaEntry ent in Entries.ToArray())
+                    foreach (ArenaEntry ent in Entries)
                     {
                         swf += "&HN" + i.ToString() + "=" + ent.EnteredUser.Username;
                         if (ent.EnteredUser.Id == entry.EnteredUser.Id)
@@ -121,7 +114,7 @@ namespace HISP.Game
                     int draftAbility = Convert.ToInt32(Math.Round((((double)entry.EnteredHorse.BasicStats.Health * 2.0 + (double)entry.EnteredHorse.BasicStats.Shoes * 2.0) + (double)entry.EnteredHorse.BasicStats.Hunger + (double)entry.EnteredHorse.BasicStats.Thirst) / 6.0 + (double)strengthCalculator.Total + ((double)enduranceCalculator.Total / 2.0)));
                     swf = "draftarena.swf?DRAFTABILITY=" + draftAbility;
                     i = 1;
-                    foreach (ArenaEntry ent in Entries.ToArray())
+                    foreach (ArenaEntry ent in Entries)
                     {
                         swf += "&HN" + i.ToString() + "=" + ent.EnteredUser.Username;
                         if (ent.EnteredUser.Id == entry.EnteredUser.Id)
@@ -134,7 +127,7 @@ namespace HISP.Game
                     int baseSpeed = Convert.ToInt32(Math.Round((((double)entry.EnteredHorse.BasicStats.Health * 2.0 + (double)entry.EnteredHorse.BasicStats.Shoes * 2.0) + (double)entry.EnteredHorse.BasicStats.Hunger + (double)entry.EnteredHorse.BasicStats.Thirst) / 6.0 + (double)speedCalculator.Total));
                     swf = "racingarena.swf?BASESPEED=" + baseSpeed + "&ENDURANCE=" + enduranceCalculator.Total;
                     i = 1;
-                    foreach (ArenaEntry ent in Entries.ToArray())
+                    foreach (ArenaEntry ent in Entries)
                     {
                         swf += "&HN" + i.ToString() + "=" + ent.EnteredUser.Username;
                         if (ent.EnteredUser.Id == entry.EnteredUser.Id)
@@ -214,17 +207,8 @@ namespace HISP.Game
 
         private void updateWaitingPlayers()
         {
-            foreach (World.SpecialTile tile in World.SpecialTiles)
-            {
-                if (tile.Code == null)
-                    continue;
-                if (tile.Code.StartsWith("ARENA-"))
-                {
-                    string arenaId = tile.Code.Split('-')[1];
-                    int id = int.Parse(arenaId);
-                    if (id == this.Id)
-                        GameServer.UpdateAreaForAll(tile.X, tile.Y, true);
-                }
+            foreach (World.SpecialTile tile in World.GetSpecialTileById("ARENA", this.Id)) {
+                GameServer.UpdateAreaForAll(tile.X, tile.Y, true);
             }
         }
 
@@ -346,12 +330,7 @@ namespace HISP.Game
             if (Mode == "COMPETING")
                 return;
 
-            foreach(ArenaEntry entry in Entries)
-                if(entry.EnteredUser.Id == user.Id)
-                {
-                    entries.Remove(entry);
-                    break;
-                }
+            entries.RemoveAll(o => o.EnteredUser.Id == user.Id);
         }
         public void AddEntry(User user, HorseInstance horse)
         {
@@ -392,17 +371,13 @@ namespace HISP.Game
             return Entries.Any(o => o.EnteredUser.Id == user.Id);
         }
 
-        public static void StartArenas(int Minutes)
+        public static void StartArenas(int minutes)
         {
-            foreach(Arena arena in Arenas)
-            {
-                if ((Minutes % arena.RaceEvery) == 1)
-                {
-                    if (arena.Mode == "TAKINGENTRIES")
-                    {
-                        arena.Start();
-                    }
-                }
+            foreach(Arena arena in Arenas.Where(o => 
+                ((minutes % o.RaceEvery) == 1) && 
+                (o.Mode == "TAKINGENTRIES")
+            )) {
+                arena.Start();
             }
 
         }

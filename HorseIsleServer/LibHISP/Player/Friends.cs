@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using HISP.Game;
 using HISP.Server;
 using HISP.Util;
@@ -50,10 +51,7 @@ namespace HISP.Player
 
         public bool IsFriend(int friendUserId)
         {
-            foreach (int userId in List)
-                if (userId == friendUserId)
-                    return true;
-            return false;
+            return List.Any(userId => userId == friendUserId);
         }
 
         public void RemoveFriend(int userid)
@@ -63,10 +61,8 @@ namespace HISP.Player
             // Remove buddy from there list if they are logged in
             try
             {
-
                 User removeFrom = User.GetUserById(userid);
                 removeFrom.Friends.RemoveFromLocalList(baseUser.Id);
-
             }
             catch (InvalidOperationException) { /* User is offline, remove from database is sufficent */ };
  

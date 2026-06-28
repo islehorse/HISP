@@ -15,6 +15,7 @@ using Microsoft.Data.Sqlite;
 using SQLitePCL;
 using HISP.Util;
 using System.IO;
+using System.Linq;
 
 namespace HISP.Server
 {
@@ -4745,27 +4746,15 @@ namespace HISP.Server
 
                     if(horseType == "pegasus" || horseType == "unicorn")
                     {
-                        foreach(World.SpecialTile tile in World.SpecialTiles)
-                        {
-                            if (tile.Code == null)
-                                continue;
-                            if(tile.Code.StartsWith("HORSELEASER-"))
-                            {
-                                int id = int.Parse(tile.Code.Split("-")[1]);
-                                if(leaserId == id)
-                                {
-                                    SetPlayerX(tile.X, playerId);
-                                    SetPlayerY(tile.Y, playerId);
-                                }
-                            }
-                        }
+                        // find the specific relevant special tile ..
+                        World.SpecialTile tile = World.GetSpecialTileById("HORSELEASER", leaserId).First();
+
+                        // set player position to it.
+                        SetPlayerX(tile.X, playerId);
+                        SetPlayerY(tile.Y, playerId);
+
                     }
-
-
                 }
-
-                
-                return;
             }
         }
 
@@ -4776,9 +4765,6 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "UPDATE Horses SET leaseTime = leaseTime - 1 WHERE ownerId NOT IN (SELECT playerId FROM OnlineUsers) AND leaseTime > 0 AND leaser > 0");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-
-                
-                return;
             }
             
         }
@@ -4789,9 +4775,6 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "UPDATE UserExt SET tiredness = tiredness + 1 WHERE id NOT IN (SELECT playerId FROM OnlineUsers) AND NOT tiredness +1 > 1000");
                 sqlCommand.Prepare();
                 sqlCommand.ExecuteNonQuery();
-
-                
-                return;
             }
         }
 

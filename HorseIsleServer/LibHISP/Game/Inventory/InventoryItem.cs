@@ -15,6 +15,14 @@ namespace HISP.Game.Inventory
         public int ItemId;
         public bool Infinite;
         private ThreadSafeList<ItemInstance> itemInstances;
+
+        public Item.ItemInformation ItemInfo 
+        { 
+            get
+            {
+                return Item.GetItemById(ItemId);
+            } 
+        }
         public void RemoveItem(ItemInstance itm)
         {
             itemInstances.Remove(itm);

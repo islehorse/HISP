@@ -63,24 +63,22 @@ namespace HISP.Server
             if (World.ServerTime.Minutes % 720 == 0) // every 12 hours
             {
                 Logger.DebugPrint("Paying windmill owners . . . ");
-                foreach (Ranch ranch in Ranch.Ranches)
+                foreach (Ranch ranch in Ranch.Ranches.Where(o => o.OwnerId != -1))
                 {
-                    int ranchOwner = ranch.OwnerId;
-                    if (ranchOwner != -1)
+                    int moneyToAdd = 5000 * ranch.GetBuildingCount(8); // Windmill
+                    if (User.IsUserOnline(ranch.OwnerId))
                     {
-                        int moneyToAdd = 5000 * ranch.GetBuildingCount(8); // Windmill
-                        if (User.IsUserOnline(ranchOwner))
-                            User.GetUserById(ranchOwner).AddMoney(moneyToAdd);
-                        else
+                        User.GetUserById(ranch.OwnerId).AddMoney(moneyToAdd);
+                    }
+                    else
+                    {
+                        try
                         {
-                            try
-                            {
-                                Database.SetPlayerMoney(Database.GetPlayerMoney(ranchOwner) + moneyToAdd, ranchOwner);
-                            }
-                            catch (OverflowException)
-                            {
-                                Database.SetPlayerMoney(2147483647, ranchOwner);
-                            }
+                            Database.SetPlayerMoney(Database.GetPlayerMoney(ranch.OwnerId) + moneyToAdd, ranch.OwnerId);
+                        }
+                        catch (OverflowException)
+                        {
+                            Database.SetPlayerMoney(int.MaxValue, ranch.OwnerId);
                         }
                     }
                 }
@@ -211,9 +209,9 @@ namespace HISP.Server
                 UpdatePlayer(user.Client);
             }
 
-            foreach(Auction auction in Auction.AuctionRooms.ToArray())
+            foreach(Auction auction in Auction.AuctionRooms)
             {
-                foreach(Auction.AuctionEntry entry in auction.AuctionEntries.ToArray())
+                foreach(Auction.AuctionEntry entry in auction.AuctionEntries)
                 {
                    entry.TimeRemaining--;
                    if (entry.Completed)
@@ -398,18 +396,12 @@ namespace HISP.Server
                             User user = User.GetUserById(playerId); ;
                             string TAGYourIT = Messages.FormatTagYourIt(user.Username, sender.User.Username);
                             int totalBuds = 0;
-                            foreach (int friendId in sender.User.Friends.List)
+                            foreach (int friendId in sender.User.Friends.List.Where(id => id != sender.User.Id && User.IsUserOnline(id)))
                             {
-                                if (friendId == sender.User.Id)
-                                    continue;
-
-                                if (User.IsUserOnline(friendId))
-                                {
-                                    User buddy = User.GetUserById(friendId);
-                                    byte[] tagYourItPacket = PacketBuilder.CreateChat(TAGYourIT, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    buddy.Client.SendPacket(tagYourItPacket);
-                                    totalBuds++;
-                                }
+                                User buddy = User.GetUserById(friendId);
+                                byte[] tagYourItPacket = PacketBuilder.CreateChat(TAGYourIT, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                buddy.Client.SendPacket(tagYourItPacket);
+                                totalBuds++;
                             }
                             string budStr = Messages.FormatTagTotalBuddies(totalBuds);
 
@@ -633,35 +625,23 @@ namespace HISP.Server
 
                     if(social.ForEveryone != null)
                     {
-                        foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true, true))
-                        {
-                            if (social.BaseSocialType.Type != "GROUP")
-                                if (user.Id == sender.User.SocializingWith.Id)
-                                    continue;
-
-                            if (user.Id == sender.User.Id)
-                                continue;
-
-                            if (user.MuteAll || user.MuteSocials)
-                                continue;
+                        foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true, true).Where(usr => 
+                            (social.BaseSocialType.Type != "GROUP" && usr.Id != sender.User.SocializingWith.Id) &&
+                            usr.Id != sender.User.Id && (!usr.MuteAll && !usr.MuteSocials)
+                        )) {
                             string socialTarget = "";
                             if(sender.User.SocializingWith != null)
                                 socialTarget = sender.User.SocializingWith.Username;
+
                             byte[] msgEveryone = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForEveryone, socialTarget, sender.User.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
                             user.Client.SendPacket(msgEveryone);
                         }
 
                     }
-                    if(social.ForTarget != null)
+                    if(social.ForTarget != null && sender.User.SocializingWith != null && social.BaseSocialType.Type != "GROUP")
                     {
-                        if(sender.User.SocializingWith != null)
-                        {
-                            if (social.BaseSocialType.Type != "GROUP")
-                            {
-                                byte[] msgTarget = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForTarget, sender.User.SocializingWith.Username, sender.User.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                sender.User.SocializingWith.Client.SendPacket(msgTarget);
-                            }
-                        }
+                        byte[] msgTarget = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForTarget, sender.User.SocializingWith.Username, sender.User.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                        sender.User.SocializingWith.Client.SendPacket(msgTarget);
                     }
                     if(social.ForSender != null)
                     {
@@ -671,18 +651,12 @@ namespace HISP.Server
 
                         byte[] msgSender = PacketBuilder.CreateChat(Messages.FormatSocialMessage(social.ForSender, socialTarget, sender.User.Username), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(msgSender);
-
-                        
                     }
 
                     if (social.SoundEffect != null)
                     {
-                        foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true, true))
+                        foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true, true).Where(o => !o.MuteAll && !o.MuteSocials))
                         {
-
-                            if (user.MuteAll || user.MuteSocials)
-                                continue;
-
                             byte[] soundEffect = PacketBuilder.CreatePlaySound(social.SoundEffect);
                             user.Client.SendPacket(soundEffect);
                         }
@@ -922,6 +896,7 @@ namespace HISP.Server
 
                                 foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
                                     price += vet.CalculatePrice(horse.BasicStats.Health);
+
                                 if (price == 0)
                                 {
                                     byte[] notNeededMessagePacket = PacketBuilder.CreateChat(Messages.VetServicesNotNeededAll, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -1102,23 +1077,14 @@ namespace HISP.Server
                                 Farrier farrier = Farrier.GetFarrierById(farrierId);
 
                                 int totalPrice = 0;
-                                foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
-                                {
-                                    if (horse.BasicStats.Shoes < farrier.SteelShoesAmount)
-                                    {
-                                        totalPrice += farrier.SteelCost;
-                                    }
-                                }
+                                foreach (HorseInstance horse in sender.User.HorseInventory.HorseList.Where(o => o.BasicStats.Shoes < farrier.SteelShoesAmount))
+                                    totalPrice += farrier.SteelCost;
 
                                 if (sender.User.Money >= totalPrice)
                                 {
-                                    foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
-                                    {
-                                        if (horse.BasicStats.Shoes < farrier.SteelShoesAmount)
-                                        {
-                                            horse.BasicStats.Shoes = farrier.SteelShoesAmount;
-                                        }
-                                    }
+                                    foreach (HorseInstance horse in sender.User.HorseInventory.HorseList.Where(o => o.BasicStats.Shoes < farrier.SteelShoesAmount))
+                                        horse.BasicStats.Shoes = farrier.SteelShoesAmount;
+
                                     sender.User.TakeMoney(totalPrice);
 
                                     byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatFarrierPutOnSteelShoesAllMesssage(farrier.SteelShoesAmount, 1000), PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -1212,14 +1178,12 @@ namespace HISP.Server
                                 int price = 0;
                                 int count = 0;
 
-                                foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
+                                foreach (HorseInstance horse in sender.User.HorseInventory.HorseList.Where(o => o.BasicStats.Groom < groomer.Max))
                                 {
-                                    if (horse.BasicStats.Groom < groomer.Max)
-                                    {
-                                        price += groomer.CalculatePrice(horse.BasicStats.Groom);
-                                        count++;
-                                    }
+                                    price += groomer.CalculatePrice(horse.BasicStats.Groom);
+                                    count++;
                                 }
+
                                 if (count == 0)
                                 {
                                     byte[] notNeededMessagePacket = PacketBuilder.CreateChat(Messages.GroomerDontNeed, PacketBuilder.CHAT_BOTTOM_RIGHT);
@@ -1228,9 +1192,8 @@ namespace HISP.Server
                                 }
                                 else if (sender.User.Money >= price)
                                 {
-                                    foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
-                                        if (horse.BasicStats.Groom < groomer.Max)
-                                            horse.BasicStats.Groom = groomer.Max;
+                                    foreach (HorseInstance horse in sender.User.HorseInventory.HorseList.Where(o => o.BasicStats.Groom < groomer.Max))
+                                        horse.BasicStats.Groom = groomer.Max;
 
                                     byte[] groomedAllHorsesPacket = PacketBuilder.CreateChat(Messages.GroomerBestToHisAbilitiesALL, PacketBuilder.CHAT_BOTTOM_RIGHT);
                                     sender.SendPacket(groomedAllHorsesPacket);
@@ -1275,36 +1238,32 @@ namespace HISP.Server
                         if (World.InSpecialTile(sender.User.X, sender.User.Y))
                         {
                             World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                            if (tile.Code != null)
+                            if (tile.Code != null && tile.Code.StartsWith("BARN-"))
                             {
-                                if (tile.Code.StartsWith("BARN-"))
+                                string[] barnInfo = tile.Code.Split('-');
+                                int barnId = int.Parse(barnInfo[1]);
+
+                                Barn barn = Barn.GetBarnById(barnId);
+                                int price = barn.CalculatePrice(barnHorseInst.BasicStats.Tiredness, barnHorseInst.BasicStats.Hunger, barnHorseInst.BasicStats.Thirst); ;
+
+
+                                if (sender.User.Money >= price)
                                 {
-                                    string[] barnInfo = tile.Code.Split('-');
-                                    int barnId = int.Parse(barnInfo[1]);
+                                    barnHorseInst.BasicStats.Tiredness = 1000;
+                                    barnHorseInst.BasicStats.Hunger = 1000;
+                                    barnHorseInst.BasicStats.Thirst = 1000;
+                                    sender.User.TakeMoney(price);
 
-                                    Barn barn = Barn.GetBarnById(barnId);
-                                    int price = barn.CalculatePrice(barnHorseInst.BasicStats.Tiredness, barnHorseInst.BasicStats.Hunger, barnHorseInst.BasicStats.Thirst); ;
-
-
-                                    if (sender.User.Money >= price)
-                                    {
-                                        barnHorseInst.BasicStats.Tiredness = 1000;
-                                        barnHorseInst.BasicStats.Hunger = 1000;
-                                        barnHorseInst.BasicStats.Thirst = 1000;
-                                        sender.User.TakeMoney(price);
-
-                                        byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatBarnHorseFullyFed(barnHorseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(messagePacket);
-                                    }
-                                    else
-                                    {
-                                        byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.BarnCantAffordService, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(cantAffordMessage);
-                                        break;
-                                    }
-                                    UpdateArea(sender);
+                                    byte[] messagePacket = PacketBuilder.CreateChat(Messages.FormatBarnHorseFullyFed(barnHorseInst.Name), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(messagePacket);
                                 }
-
+                                else
+                                {
+                                    byte[] cantAffordMessage = PacketBuilder.CreateChat(Messages.BarnCantAffordService, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordMessage);
+                                    break;
+                                }
+                                UpdateArea(sender);
                             }
                         }
                         break;
@@ -1318,51 +1277,47 @@ namespace HISP.Server
                     if (World.InSpecialTile(sender.User.X, sender.User.Y))
                     {
                         World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                        if(tile.Code != null)
+                        if(tile.Code != null && tile.Code.StartsWith("BARN-"))
                         {
-                            if (tile.Code.StartsWith("BARN-"))
-                            {
-                                string[] barnInfo = tile.Code.Split('-');
-                                int barnId = int.Parse(barnInfo[1]);
-                                Barn barn = Barn.GetBarnById(barnId);
-                                int totalPrice = 0;
+                            string[] barnInfo = tile.Code.Split('-');
+                            int barnId = int.Parse(barnInfo[1]);
+                            Barn barn = Barn.GetBarnById(barnId);
+                            int totalPrice = 0;
 
+                            foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
+                            {
+                                int price = barn.CalculatePrice(horse.BasicStats.Tiredness, horse.BasicStats.Hunger, horse.BasicStats.Thirst);
+                                if (price > 0)
+                                    totalPrice += price;
+                            }
+                            if (totalPrice == 0)
+                            {
+                                byte[] notNeededMessagePacket = PacketBuilder.CreateChat(Messages.BarnServiceNotNeeded, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(notNeededMessagePacket);
+                                break;
+                            }
+                            else if (sender.User.Money >= totalPrice)
+                            {
                                 foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
                                 {
-                                    int price = barn.CalculatePrice(horse.BasicStats.Tiredness, horse.BasicStats.Hunger, horse.BasicStats.Thirst);
-                                    if (price > 0)
-                                        totalPrice += price;
+                                    horse.BasicStats.Tiredness = 1000;
+                                    horse.BasicStats.Thirst = 1000;
+                                    horse.BasicStats.Hunger = 1000;
                                 }
-                                if (totalPrice == 0)
-                                {
-                                    byte[] notNeededMessagePacket = PacketBuilder.CreateChat(Messages.BarnServiceNotNeeded, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(notNeededMessagePacket);
-                                    break;
-                                }
-                                else if (sender.User.Money >= totalPrice)
-                                {
-                                    foreach (HorseInstance horse in sender.User.HorseInventory.HorseList)
-                                    {
-                                        horse.BasicStats.Tiredness = 1000;
-                                        horse.BasicStats.Thirst = 1000;
-                                        horse.BasicStats.Hunger = 1000;
-                                    }
 
-                                    byte[] barnedAllHorsesPacket = PacketBuilder.CreateChat(Messages.BarnAllHorsesFullyFed, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(barnedAllHorsesPacket);
+                                byte[] barnedAllHorsesPacket = PacketBuilder.CreateChat(Messages.BarnAllHorsesFullyFed, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(barnedAllHorsesPacket);
 
-                                    sender.User.TakeMoney(totalPrice);
+                                sender.User.TakeMoney(totalPrice);
 
-                                }
-                                else
-                                {
-                                    byte[] cannotAffordMessagePacket = PacketBuilder.CreateChat(Messages.BarnCantAffordService, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                    sender.SendPacket(cannotAffordMessagePacket);
-                                    break;
-                                }
-                                UpdateArea(sender);
                             }
-
+                            else
+                            {
+                                byte[] cannotAffordMessagePacket = PacketBuilder.CreateChat(Messages.BarnCantAffordService, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                sender.SendPacket(cannotAffordMessagePacket);
+                                break;
+                            }
+                            UpdateArea(sender);
                         }
                     }
                     break;
@@ -1391,75 +1346,71 @@ namespace HISP.Server
                         if (World.InSpecialTile(sender.User.X, sender.User.Y))
                         {
                             World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                            if (tile.Code != null)
+                            if (tile.Code != null && tile.Code.StartsWith("TRAINER-"))
                             {
-                                if (tile.Code.StartsWith("TRAINER-"))
+                                if (trainHorseInst.TrainTimer > 0)
                                 {
-                                    if (trainHorseInst.TrainTimer > 0)
+                                    byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainerCantTrainAgainIn(trainHorseInst.TrainTimer), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(trainSuccessfulMessage);
+                                    break;
+                                }
+                                string[] trainerInfo = tile.Code.Split('-');
+                                int trainerId = int.Parse(trainerInfo[1]);
+
+                                Trainer trainer = Trainer.GetTrainerById(trainerId);
+
+                                if (sender.User.Money >= trainer.MoneyCost)
+                                {
+                                    sender.User.TakeMoney(trainer.MoneyCost);
+                                    trainHorseInst.BasicStats.Mood -= trainer.MoodCost;
+                                    trainHorseInst.BasicStats.Thirst -= trainer.ThirstCost;
+                                    trainHorseInst.BasicStats.Hunger -= trainer.HungerCost;
+
+
+                                    switch (trainer.ImprovesStat.ToUpper())
                                     {
-                                        byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainerCantTrainAgainIn(trainHorseInst.TrainTimer), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(trainSuccessfulMessage);
-                                        break;
+                                        case "SPEED":
+                                            trainHorseInst.AdvancedStats.Speed += trainer.ImprovesAmount;
+                                            break;
+                                        case "STRENGTH":
+                                            trainHorseInst.AdvancedStats.Strength += trainer.ImprovesAmount;
+                                            break;
+                                        case "AGILITY":
+                                            trainHorseInst.AdvancedStats.Agility += trainer.ImprovesAmount;
+                                            break;
+                                        case "ENDURANCE":
+                                            trainHorseInst.AdvancedStats.Endurance += trainer.ImprovesAmount;
+                                            break;
+                                        case "CONFORMATION":
+                                            trainHorseInst.AdvancedStats.Conformation += trainer.ImprovesAmount;
+                                            break;
+                                        default:
+                                            trainHorseInst.AdvancedStats.Speed += trainer.ImprovesAmount;
+                                            break;
                                     }
-                                    string[] trainerInfo = tile.Code.Split('-');
-                                    int trainerId = int.Parse(trainerInfo[1]);
-
-                                    Trainer trainer = Trainer.GetTrainerById(trainerId);
-
-                                    if (sender.User.Money >= trainer.MoneyCost)
-                                    {
-                                        sender.User.TakeMoney(trainer.MoneyCost);
-                                        trainHorseInst.BasicStats.Mood -= trainer.MoodCost;
-                                        trainHorseInst.BasicStats.Thirst -= trainer.ThirstCost;
-                                        trainHorseInst.BasicStats.Hunger -= trainer.HungerCost;
-
-
-                                        switch (trainer.ImprovesStat.ToUpper())
-                                        {
-                                            case "SPEED":
-                                                trainHorseInst.AdvancedStats.Speed += trainer.ImprovesAmount;
-                                                break;
-                                            case "STRENGTH":
-                                                trainHorseInst.AdvancedStats.Strength += trainer.ImprovesAmount;
-                                                break;
-                                            case "AGILITY":
-                                                trainHorseInst.AdvancedStats.Agility += trainer.ImprovesAmount;
-                                                break;
-                                            case "ENDURANCE":
-                                                trainHorseInst.AdvancedStats.Endurance += trainer.ImprovesAmount;
-                                                break;
-                                            case "CONFORMATION":
-                                                trainHorseInst.AdvancedStats.Conformation += trainer.ImprovesAmount;
-                                                break;
-                                            default:
-                                                trainHorseInst.AdvancedStats.Speed += trainer.ImprovesAmount;
-                                                break;
-                                        }
-                                        trainHorseInst.BasicStats.Experience += trainer.ExperienceGained;
-                                        if (!sender.User.Subscribed)
-                                            trainHorseInst.TrainTimer = 1440;
-                                        else
-                                            trainHorseInst.TrainTimer = 720;
-
-                                        byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainedInStatFormat(trainHorseInst.Name, trainer.ImprovesStat), PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(trainSuccessfulMessage);
-
-
-                                        sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count++;
-
-                                        if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 1000)
-                                            sender.User.Awards.AddAward(Award.GetAwardById(26)); // Pro Trainer
-                                        if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 10000)
-                                            sender.User.Awards.AddAward(Award.GetAwardById(53)); // Top Trainer
-
-                                        UpdateArea(sender);
-                                    }
+                                    trainHorseInst.BasicStats.Experience += trainer.ExperienceGained;
+                                    if (!sender.User.Subscribed)
+                                        trainHorseInst.TrainTimer = 1440;
                                     else
-                                    {
-                                        byte[] cantAffordPacket = PacketBuilder.CreateChat(Messages.TrainerCantAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(cantAffordPacket);
-                                    }
+                                        trainHorseInst.TrainTimer = 720;
 
+                                    byte[] trainSuccessfulMessage = PacketBuilder.CreateChat(Messages.FormatTrainedInStatFormat(trainHorseInst.Name, trainer.ImprovesStat), PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(trainSuccessfulMessage);
+
+
+                                    sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count++;
+
+                                    if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 1000)
+                                        sender.User.Awards.AddAward(Award.GetAwardById(26)); // Pro Trainer
+                                    if (sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.Training).Count >= 10000)
+                                        sender.User.Awards.AddAward(Award.GetAwardById(53)); // Top Trainer
+
+                                    UpdateArea(sender);
+                                }
+                                else
+                                {
+                                    byte[] cantAffordPacket = PacketBuilder.CreateChat(Messages.TrainerCantAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(cantAffordPacket);
                                 }
 
                             }
@@ -1478,7 +1429,6 @@ namespace HISP.Server
                     try
                     {
                         uniqueId = int.Parse(uniqueIdStr);
-
                     }
                     catch (Exception)
                     {
@@ -1631,65 +1581,61 @@ namespace HISP.Server
                         if(World.InSpecialTile(sender.User.X, sender.User.Y))
                         {
                             World.SpecialTile tile = World.GetSpecialTile(sender.User.X, sender.User.Y);
-                            if(tile.Code != null)
+                            if(tile.Code != null && tile.Code.StartsWith("ARENA-"))
                             {
-                                if (tile.Code.StartsWith("ARENA-"))
+                                string[] arenaInfo = tile.Code.Split('-');
+                                int arenaId = int.Parse(arenaInfo[1]);
+                                Arena arena = Arena.GetAreaById(arenaId);
+                                if (!Arena.UserHasEnteredHorseInAnyArena(sender.User))
                                 {
-                                    string[] arenaInfo = tile.Code.Split('-');
-                                    int arenaId = int.Parse(arenaInfo[1]);
-                                    Arena arena = Arena.GetAreaById(arenaId);
-                                    if (!Arena.UserHasEnteredHorseInAnyArena(sender.User))
+                                    if (horseInstance.BasicStats.Thirst <= 200)
                                     {
-                                        if (horseInstance.BasicStats.Thirst <= 200)
-                                        {
-                                            byte[] tooThirsty = PacketBuilder.CreateChat(Messages.ArenaTooThirsty, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                            sender.SendPacket(tooThirsty);
-                                            break;
-                                        }
-                                        else if (horseInstance.BasicStats.Hunger <= 200)
-                                        {
-                                            byte[] tooHungry = PacketBuilder.CreateChat(Messages.ArenaTooHungry, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                            sender.SendPacket(tooHungry);
-                                            break;
-                                        }
-                                        else if (horseInstance.BasicStats.Shoes <= 200)
-                                        {
-                                            byte[] needsFarrier = PacketBuilder.CreateChat(Messages.ArenaNeedsFarrier, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                            sender.SendPacket(needsFarrier);
-                                            break;
-                                        }
-                                        else if (horseInstance.BasicStats.Tiredness <= 200)
-                                        {
-                                            byte[] tooTired = PacketBuilder.CreateChat(Messages.ArenaTooTired, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                            sender.SendPacket(tooTired);
-                                            break;
-                                        }
-                                        else if (horseInstance.BasicStats.Health <= 200)
-                                        {
-                                            byte[] needsVet = PacketBuilder.CreateChat(Messages.ArenaNeedsVet, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                            sender.SendPacket(needsVet);
-                                            break;
-                                        }
+                                        byte[] tooThirsty = PacketBuilder.CreateChat(Messages.ArenaTooThirsty, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(tooThirsty);
+                                        break;
+                                    }
+                                    else if (horseInstance.BasicStats.Hunger <= 200)
+                                    {
+                                        byte[] tooHungry = PacketBuilder.CreateChat(Messages.ArenaTooHungry, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(tooHungry);
+                                        break;
+                                    }
+                                    else if (horseInstance.BasicStats.Shoes <= 200)
+                                    {
+                                        byte[] needsFarrier = PacketBuilder.CreateChat(Messages.ArenaNeedsFarrier, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(needsFarrier);
+                                        break;
+                                    }
+                                    else if (horseInstance.BasicStats.Tiredness <= 200)
+                                    {
+                                        byte[] tooTired = PacketBuilder.CreateChat(Messages.ArenaTooTired, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(tooTired);
+                                        break;
+                                    }
+                                    else if (horseInstance.BasicStats.Health <= 200)
+                                    {
+                                        byte[] needsVet = PacketBuilder.CreateChat(Messages.ArenaNeedsVet, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(needsVet);
+                                        break;
+                                    }
 
-                                        if (sender.User.Money >= arena.EntryCost)
-                                        {
-                                            arena.AddEntry(sender.User, horseInstance);
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            byte[] cantAffordEntryFee = PacketBuilder.CreateChat(Messages.ArenaCantAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                            sender.SendPacket(cantAffordEntryFee);
-                                            break;
-                                        }
+                                    if (sender.User.Money >= arena.EntryCost)
+                                    {
+                                        arena.AddEntry(sender.User, horseInstance);
+                                        break;
                                     }
                                     else
                                     {
-                                        byte[] allreadyEntered = PacketBuilder.CreateChat(Messages.ArenaAlreadyEntered, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                        sender.SendPacket(allreadyEntered);
+                                        byte[] cantAffordEntryFee = PacketBuilder.CreateChat(Messages.ArenaCantAfford, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                        sender.SendPacket(cantAffordEntryFee);
+                                        break;
                                     }
                                 }
-
+                                else
+                                {
+                                    byte[] allreadyEntered = PacketBuilder.CreateChat(Messages.ArenaAlreadyEntered, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    sender.SendPacket(allreadyEntered);
+                                }
                             }
                         }
                     }
@@ -1706,7 +1652,6 @@ namespace HISP.Server
                     try
                     {
                         uniqueId = int.Parse(uniqueIdStr);
-
                     }
                     catch (Exception)
                     {
@@ -1723,15 +1668,11 @@ namespace HISP.Server
 
 
                         HorseInstance horseReleaseInst = sender.User.HorseInventory.GetHorseById(uniqueId);
-                        if(sender.User.CurrentlyRidingHorse != null)
-                        {
-                            if(horseReleaseInst.UniqueId == sender.User.CurrentlyRidingHorse.UniqueId) 
-                            {
-                                byte[] errorChatPacket = PacketBuilder.CreateChat(Messages.HorseCantReleaseTheHorseYourRidingOn, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                sender.SendPacket(errorChatPacket);
-                                break;
-                            }
-
+                        if(sender.User.CurrentlyRidingHorse != null && horseReleaseInst.UniqueId == sender.User.CurrentlyRidingHorse.UniqueId) 
+                        {  
+                            byte[] errorChatPacket = PacketBuilder.CreateChat(Messages.HorseCantReleaseTheHorseYourRidingOn, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                            sender.SendPacket(errorChatPacket);
+                            break;
                         }
 
                         if (horseReleaseInst.Description == "")
@@ -1760,7 +1701,6 @@ namespace HISP.Server
                     try
                     {
                         uniqueId = int.Parse(uniqueIdStr);
-
                     }
                     catch (Exception)
                     {
@@ -2391,9 +2331,9 @@ namespace HISP.Server
                                         sender.User.CurrentTrade.MoneyOffered = amountMoney;
 
                                         UpdateArea(sender);
-                                        if(sender.User.CurrentTrade != null)
-                                            if (!sender.User.CurrentTrade.OtherTrade.Trader.TradeMenuPriority)
-                                                UpdateArea(sender.User.CurrentTrade.OtherTrade.Trader.Client);
+                                        if(sender.User.CurrentTrade != null && !sender.User.CurrentTrade.OtherTrade.Trader.TradeMenuPriority)
+                                            UpdateArea(sender.User.CurrentTrade.OtherTrade.Trader.Client);
+
                                         break;
                                     }
 
@@ -2427,16 +2367,10 @@ namespace HISP.Server
                                             break;
                                         }
 
-                                        foreach(ItemInstance[] existingItems in sender.User.CurrentTrade.ItemsOffered)
+                                        foreach(ItemInstance[] existingItems in sender.User.CurrentTrade.ItemsOffered.Where(itmInst => itmInst.Any(itm => itm.ItemId == sender.User.AttemptingToOfferItem)))
                                         {
-                                            if(existingItems[0].ItemId == sender.User.AttemptingToOfferItem)
-                                            {
-                                                sender.User.CurrentTrade.RemoveOfferedItems(existingItems);
-                                                break;
-                                            }
+                                            sender.User.CurrentTrade.RemoveOfferedItems(existingItems);
                                         }
-
-
                                         
                                         ItemInstance[] items = new ItemInstance[itemCount];
                                         for (int i = 0; i < itemCount; i++)
@@ -3291,29 +3225,17 @@ namespace HISP.Server
                             break;
                         }
 
-                        List<WildHorse> horsesFound = new List<WildHorse>();
-                        foreach (WildHorse horse in WildHorse.WildHorses)
-                        {
-                            if (horse.Instance.Breed.Id == breedId)
-                            {
-                                horsesFound.Add(horse);
-                            }
-                        }
-                        int cost = 0;
-                        if (horsesFound.Count >= 1)
-                        {
+                        WildHorse[] horsesFound = WildHorse.WildHorses.Where(o => o.Instance.Breed.Id == breedId).ToArray();
+                        int cost = 10000;
+                        if (horsesFound.Length >= 1)
                             cost = 50000;
-                        }
-                        else
-                        {
-                            cost = 10000;
-                        }
+
                         sender.User.MajorPriority = true;
 
                         byte[] pricingMessage = PacketBuilder.CreateChat(Messages.FormatWhispererPrice(cost), PacketBuilder.CHAT_BOTTOM_RIGHT);
                         sender.SendPacket(pricingMessage);
 
-                        byte[] serachResultMeta = PacketBuilder.CreateMeta(Meta.BuildWhisperSearchResults(horsesFound.ToArray()));
+                        byte[] serachResultMeta = PacketBuilder.CreateMeta(Meta.BuildWhisperSearchResults(horsesFound));
                         sender.SendPacket(serachResultMeta);
 
                         sender.User.TakeMoney(cost);
@@ -4105,14 +4027,11 @@ namespace HISP.Server
                         peice.X = x;
                         peice.Y = y;
 
-                        foreach(User user in User.GetUsersOnSpecialTileCode("MULTIROOM-" + "P" + roomId.ToString())) // Send to each user!
+                        // update brickpoet for each user in the multiroom.
+                        foreach(User user in User.GetUsersOnSpecialTileCode("MULTIROOM-P" + roomId.ToString()).Where(o => o.Id != sender.User.Id))
                         {
-                            if (user.Id == sender.User.Id)
-                                continue;
-
                             byte[] updatePoetRoomPacket = PacketBuilder.CreateBrickPoetMove(peice);
                             user.Client.SendPacket(updatePoetRoomPacket);
-                            
                         }
 
                         if (Database.GetLastPlayer("P" + roomId) != sender.User.Id)
@@ -4209,21 +4128,14 @@ namespace HISP.Server
                         // Forward to other users
                         byte[] movePeicePacket = PacketBuilder.CreateDressupRoomPeiceMove(peice.PeiceId, moveToX, moveToY, peice.Active);
                         User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true, true);
-                        foreach(User user in users)
-                        {
-                            if (user.Id != sender.User.Id)
-                                user.Client.SendPacket(movePeicePacket);
-                        }
+                        foreach(User user in users.Where(o => o.Id != sender.User.Id))
+                            user.Client.SendPacket(movePeicePacket);
                     }
                     break;
                 case PacketBuilder.SWFMODULE_BROADCAST:
                     byte[] response = PacketBuilder.CreateForwardedSwfModule(packet);
-                    foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y))
-                    {
-                        if (user.Id == sender.User.Id)
-                            continue;
+                    foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y).Where(o => o.Id != sender.User.Id))
                         user.Client.SendPacket(response);
-                    }
                     break;
                 case PacketBuilder.SWFMODULE_OPPONENT: 
                     if(TwoPlayer.IsPlayerInGame(sender.User))
@@ -4264,14 +4176,8 @@ namespace HISP.Server
                     { 
                         Arena arena = Arena.GetArenaUserEnteredIn(sender.User);
                         response = PacketBuilder.CreateForwardedSwfModule(packet);
-                        foreach (Arena.ArenaEntry entry in arena.Entries.ToArray())
-                        {
-                            if (entry.EnteredUser.Id == sender.User.Id)
-                                continue;
-                            if(entry.EnteredUser.Client.LoggedIn)
-                            entry.EnteredUser.Client.SendPacket(response);
-                        }
-                        
+                        foreach (Arena.ArenaEntry entry in arena.Entries.Where(o => o.EnteredUser.Id != sender.User.Id && o.EnteredUser.Client.LoggedIn))
+                            entry.EnteredUser.Client.SendPacket(response);                        
                     }
                     break;
                 default:
@@ -5400,8 +5306,8 @@ namespace HISP.Server
                     User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true, true);
                     foreach (User user in users)
                     {
-                        byte[] MovementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
-                        user.Client.SendPacket(MovementPacket);
+                        byte[] movementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+                        user.Client.SendPacket(movementPacket);
                     }
                     UpdateAreaForAll(sender.User.X, sender.User.Y, true);
                 }
@@ -5440,8 +5346,8 @@ namespace HISP.Server
                             User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true, true);
                             foreach (User user in users)
                             {
-                                byte[] MovementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
-                                user.Client.SendPacket(MovementPacket);
+                                byte[] movementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
+                                user.Client.SendPacket(movementPacket);
                             }
                             UpdateAreaForAll(sender.User.X, sender.User.Y, true);
                         }
@@ -5941,19 +5847,16 @@ namespace HISP.Server
             // AutoReply
             if (channel == ChatMsg.ChatChannel.Dm)
             {
-                foreach (GameClient recipiant in recipiants)
+                foreach (GameClient recipiant in recipiants.Where(o => o.User.AutoReplyText != String.Empty))
                 {
-                    if (recipiant.User.AutoReplyText != "")
-                    {
-                        string formattedMessageAuto = ChatMsg.FormatChatForOthers(recipiant.User, channel, recipiant.User.AutoReplyText, true);
-                        string formattedMessageSenderAuto = ChatMsg.FormatChatForSender(recipiant.User, channel, recipiant.User.AutoReplyText, nameTo, true);
+                    string formattedMessageAuto = ChatMsg.FormatChatForOthers(recipiant.User, channel, recipiant.User.AutoReplyText, true);
+                    string formattedMessageSenderAuto = ChatMsg.FormatChatForSender(recipiant.User, channel, recipiant.User.AutoReplyText, nameTo, true);
 
-                        byte[] chatPacketAutoOthers = PacketBuilder.CreateChat(formattedMessageAuto, chatSide);
-                        sender.SendPacket(chatPacketAutoOthers);
+                    byte[] chatPacketAutoOthers = PacketBuilder.CreateChat(formattedMessageAuto, chatSide);
+                    sender.SendPacket(chatPacketAutoOthers);
 
-                        byte[] chatPacketAutoSender = PacketBuilder.CreateChat(formattedMessageSenderAuto, chatSide);
-                        recipiant.SendPacket(chatPacketAutoSender);
-                    }
+                    byte[] chatPacketAutoSender = PacketBuilder.CreateChat(formattedMessageSenderAuto, chatSide);
+                    recipiant.SendPacket(chatPacketAutoSender);
                 }
 
             }
@@ -6271,10 +6174,8 @@ namespace HISP.Server
                         while (true)
                         {
                             int userIndx = RandomNumberGenerator.Next(0, userAt.Length);
-
-                            if (userAt.Length > 1)
-                                if (userAt[userIndx].Id == sender.User.Id)
-                                    continue;
+                            if (userAt.Length > 1 && userAt[userIndx].Id == sender.User.Id)
+                                continue;
 
                             Item.ThrowableItem throwableItem = Item.GetThrowableItem(curItem.ItemId);
 
@@ -6284,11 +6185,9 @@ namespace HISP.Server
                                 sender.SendPacket(thrownHitYourself);
                                 break;
                             }
-                            if(itemId == Item.WaterBalloon)
+                            if(itemId == Item.WaterBalloon && WaterBalloonEvent != null && WaterBalloonEvent.Active)
                             {
-                                if (WaterBalloonEvent != null)
-                                    if (WaterBalloonEvent.Active)
-                                        WaterBalloonEvent.AddWaterBallon(userAt[userIndx]);
+                                WaterBalloonEvent.AddWaterBallon(userAt[userIndx]);
                             }
                             if(itemId == Item.ModSplatterball)
                             {
@@ -7085,17 +6984,10 @@ namespace HISP.Server
                         return;
                     }
 
-                    InventoryItem ripItems = sender.User.Inventory.GetItemByRandomid(uniqueId);
-                    foreach (ItemInstance item in ripItems.ItemInstances)
-                    {
-                        if (item.UniqueId == uniqueId)
-                        {
-                            if (item.Data == 0)
-                                continue;
-                            sender.User.MailBox.RipUpMessage(sender.User.MailBox.GetMessageByUniqueId(item.Data));
-                            break;
-                        }
-                    }
+                    ItemInstance itemToRip = sender.User.Inventory.GetItemByRandomid(uniqueId).ItemInstances.FirstOrDefault(o => o.UniqueId == uniqueId, null);
+                    if (itemToRip.Data != 0) sender.User.MailBox.RipUpMessage(sender.User.MailBox.GetMessageByUniqueId(itemToRip.Data));
+                    else sender.User.Inventory.Remove(itemToRip);
+
                     break;
                 case PacketBuilder.ITEM_VIEW:
                     byte method = packet[2];
@@ -7149,20 +7041,14 @@ namespace HISP.Server
                             return;
                         }
 
-                        InventoryItem items = sender.User.Inventory.GetItemByRandomid(uniqueId);
-                        foreach (ItemInstance item in items.ItemInstances)
+                        ItemInstance item = sender.User.Inventory.GetItemByRandomid(uniqueId).ItemInstances.FirstOrDefault(o => o.UniqueId == uniqueId && o.Data != 0, null);
+                        if(item != null)
                         {
-                            if (item.UniqueId == uniqueId)
-                            {
-                                if (item.Data == 0)
-                                    continue;
-
-                                sender.User.MajorPriority = true;
-                                byte[] readMail = PacketBuilder.CreateMeta(Meta.BuildMailLetter(sender.User.MailBox.GetMessageByUniqueId(item.Data), uniqueId));
-                                sender.SendPacket(readMail);
-                                break;
-                            }
+                            sender.User.MajorPriority = true;
+                            byte[] readMail = PacketBuilder.CreateMeta(Meta.BuildMailLetter(sender.User.MailBox.GetMessageByUniqueId(item.Data), uniqueId));
+                            sender.SendPacket(readMail);
                         }
+
                         break;
 
                     }
@@ -7358,18 +7244,13 @@ namespace HISP.Server
 
                 // Send disconnect message
                 byte[] logoutMessageBytes = PacketBuilder.CreateChat(Messages.FormatLogoutMessage(sender.User.Username), PacketBuilder.CHAT_BOTTOM_LEFT);
-                foreach (GameClient client in GameClient.ConnectedClients)
-                    if (client.LoggedIn)
-                        if (!client.User.MuteLogins && !client.User.MuteAll)
-                            if (client.User.Id != sender.User.Id)
-                                client.SendPacket(logoutMessageBytes);
+                foreach (User user in User.OnlineUsers.Where(o => (!o.MuteLogins && !o.MuteAll) && o.Id != sender.User.Id))
+                    user.Client.SendPacket(logoutMessageBytes);
 
                 // Tell clients of diconnect (remove from chat)
                 byte[] playerRemovePacket = PacketBuilder.CreatePlayerLeave(sender.User.Username);
-                foreach (GameClient client in GameClient.ConnectedClients)
-                    if (client.LoggedIn)
-                        if (client.User.Id != sender.User.Id)
-                            client.SendPacket(playerRemovePacket);
+                foreach (User user in User.OnlineUsers.Where(o => o.Id != sender.User.Id))
+                    user.Client.SendPacket(playerRemovePacket);
             }
 
         }
@@ -7378,65 +7259,21 @@ namespace HISP.Server
          *  Get(Some Information)
          */
 
-
-        
         public static int GetNumberOfPlayers(bool includeStealth=false)
         {
-            int count = 0;
-            foreach(GameClient client in GameClient.ConnectedClients)
-                if (client.LoggedIn)
-                {
-                    if (!includeStealth && client.User.Stealth)
-                        continue;
-                    if (!client.User.Stealth)
-                        count++;
-                }
-            
-            return count;
+            return User.OnlineUsers.Count(o => includeStealth ? !o.Stealth : true);
         }
 
         public static Point[] GetAllBuddyLocations(User caller)
         {
-            List<Point> allLocations = new List<Point>();
-
-            foreach (GameClient client in GameClient.ConnectedClients)
-            {
-                if (client.LoggedIn)
-                {
-
-                    if (!caller.Friends.List.Contains(client.User.Id))
-                        continue;
-                    
-
-                    if (!client.User.Stealth)
-                        allLocations.Add(new Point(client.User.X, client.User.Y));
-
-                }
-            }
-
-            return allLocations.ToArray();
+            return User.OnlineUsers.Where(o => caller.Friends.List.Contains(o.Id) && !o.Stealth)
+                .Select(o => new Point(o.X, o.Y)).ToArray();
         }
 
         public static Point[] GetAllPlayerLocations(User caller)
         {
-            List<Point> allLocations = new List<Point>();
-            
-            foreach (GameClient client in GameClient.ConnectedClients)
-            {
-                if (client.LoggedIn)
-                {
-
-                    if (client.User.Id == caller.Id) 
-                        continue;
-                    
-                    if (!client.User.Stealth)
-                        allLocations.Add(new Point(client.User.X, client.User.Y));
-                    
-                }
-
-                        
-            }
-            return allLocations.ToArray();
+            return User.OnlineUsers.Where(o => o.Id != caller.Id && !o.Stealth)
+                .Select(o => new Point(o.X, o.Y)).ToArray();
         }
         public static void CheckMail(User user)
         {
@@ -7479,12 +7316,8 @@ namespace HISP.Server
             {
                 UpdateAreaForAll(tile.X, tile.Y, true, null);
                 User[] usersHere = User.GetUsersAt(tile.X, tile.Y, true, true);
-                foreach (User user in usersHere)
+                foreach (User user in usersHere.Where(o => includingSender ? true : o.Id != sender.User.Id))
                 {
-                    if (!includingSender)
-                        if (user.Id == sender.User.Id)
-                            continue;
-
                     byte[] patchDrawing = PacketBuilder.CreateDrawingUpdate(drawing);
                     user.Client.SendPacket(patchDrawing);
                 }
@@ -7742,25 +7575,19 @@ namespace HISP.Server
         public static void RemoveAllItemsOfIdInTheGame(int id)
         {
             // Remove from all online players
-            foreach (User user in User.OnlineUsers)
+            foreach (User user in User.OnlineUsers.Where(o => o.Inventory.HasItemId(id)))
             {
-                if (user.Inventory.HasItemId(id))
-                {
-                    InventoryItem invItm = user.Inventory.GetItemByItemId(id);
-                    foreach (ItemInstance itm in invItm.ItemInstances.ToArray())
-                        user.Inventory.Remove(itm);
-                }
+                InventoryItem invItm = user.Inventory.GetItemByItemId(id);
+                foreach (ItemInstance itm in invItm.ItemInstances)
+                    user.Inventory.Remove(itm);
             }
 
             // Remove from shops
-            foreach(Shop shop in Shop.ShopList)
+            foreach(Shop shop in Shop.ShopList.Where(o => o.Inventory.HasItemId(id)))
             {
-                if (shop.Inventory.HasItemId(id))
-                {
-                    InventoryItem invItm = shop.Inventory.GetItemByItemId(id);
-                    foreach (ItemInstance itm in invItm.ItemInstances.ToArray())
-                        shop.Inventory.Remove(itm);
-                }
+                InventoryItem invItm = shop.Inventory.GetItemByItemId(id);
+                foreach (ItemInstance itm in invItm.ItemInstances)
+                    shop.Inventory.Remove(itm);
 
             }
             DroppedItems.DeleteAllItemsWithId(id); // Delete all dropped items

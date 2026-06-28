@@ -1,6 +1,7 @@
 ﻿using HISP.Player;
 using HISP.Server;
 using HISP.Util;
+using System;
 using System.Linq;
 namespace HISP.Game.Horse
 {
@@ -59,8 +60,6 @@ namespace HISP.Game.Horse
                 {
                     if (horse.Breed.SpawnInArea == null)
                     {
-
-
                         // Pick x/y
                         int tryX = GameServer.RandomNumberGenerator.Next(0, Map.Width);
                         int tryY = GameServer.RandomNumberGenerator.Next(0, Map.Height);
@@ -197,7 +196,7 @@ namespace HISP.Game.Horse
             while(wildHorses.Count < 40)
             {
                 HorseInfo.Breed horseBreed = HorseInfo.Breeds[GameServer.RandomNumberGenerator.Next(0, HorseInfo.Breeds.Length)];
-                if (horseBreed.Swf == "")
+                if (horseBreed.Swf == String.Empty)
                     continue;
                 if (horseBreed.SpawnInArea == "none") // no unipegs >_>
                     continue;

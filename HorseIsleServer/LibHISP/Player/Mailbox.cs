@@ -1,5 +1,4 @@
 ﻿using HISP.Game;
-using HISP.Game.Inventory;
 using HISP.Game.Items;
 using HISP.Server;
 using HISP.Util;
@@ -9,6 +8,17 @@ namespace HISP.Player
 {
     public class Mailbox
     {
+        public class Mail
+        {
+            public int UniqueId;
+            public bool Read;
+            public int FromUser;
+            public int ToUser;
+            public string Subject;
+            public string Message;
+            public int Timestamp;
+        }
+
         private User baseUser;
         private ThreadSafeList<Mail> mails = new ThreadSafeList<Mail>();
         public int MailCount 
@@ -22,12 +32,7 @@ namespace HISP.Player
         {
             get
             {
-                int i = 0;
-                foreach (Mail mail in MailMessages)
-                {
-                    if (!mail.Read) i++;
-                }
-                return i;
+                return MailMessages.Count(o => !o.Read);
             }
         }
         public Mail[] MailMessages 
@@ -38,31 +43,14 @@ namespace HISP.Player
             }
         }
 
-        public class Mail
-        {
-            public int UniqueId;
-            public bool Read;
-            public int FromUser;
-            public int ToUser;
-            public string Subject;
-            public string Message;
-            public int Timestamp;
-        }
 
         public void RipUpMessage(Mail message)
         {
             Database.DeleteMail(message.UniqueId);
             mails.Remove(message);
 
-            InventoryItem item = baseUser.Inventory.GetItemByItemId(Item.MailMessage);
-            foreach(ItemInstance instance in item.ItemInstances)
-            {
-                if (instance.Data == message.UniqueId)
-                {
-                    baseUser.Inventory.Remove(instance);
-                    break;
-                }
-            }
+            ItemInstance item = baseUser.Inventory.GetItemByItemId(Item.MailMessage).ItemInstances.FirstOrDefault(o => o.Data == message.UniqueId, null);
+            if(item != null) baseUser.Inventory.Remove(item);
 
             byte[] rippedUpMessage = PacketBuilder.CreateChat(Messages.MailRippedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
             baseUser.Client.SendPacket(rippedUpMessage);
@@ -103,7 +91,7 @@ namespace HISP.Player
         {
             baseUser = user;
             Mail[] mailMessages = Database.LoadMailbox(user.Id);
-            foreach (Mail mailMessage in mailMessages) mails.Add(mailMessage);
+            mails.AddRange(mailMessages);
         }
     }
 }

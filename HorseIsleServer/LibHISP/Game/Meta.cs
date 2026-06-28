@@ -1,17 +1,17 @@
-﻿using HISP.Game.Horse;
+﻿using HISP.Game.Chat;
+using HISP.Game.Events;
+using HISP.Game.Horse;
 using HISP.Game.Inventory;
+using HISP.Game.Items;
 using HISP.Game.Services;
 using HISP.Player;
 using HISP.Server;
-using HISP.Game.Items;
-using HISP.Game.Chat;
-using HISP.Game.Events;
-
+using HISP.Util;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Drawing;
-using HISP.Util;
+using System.Linq;
+using static HISP.Game.Horse.HorseInfo;
 
 namespace HISP.Game
 {
@@ -47,10 +47,8 @@ namespace HISP.Game
             {
                 playersHere += Messages.PlayersHere;
                 int count = 0;
-                foreach(User playerAt in playersAt)
+                foreach(User playerAt in playersAt.Where(o => o.Id != fromUser.Id))
                 {
-                    if (playerAt.Id == fromUser.Id)
-                        continue;
                     string buttons = "";
                     buttons += Messages.FormatPlayerHereProfileButton(playerAt.Id);
                     buttons += Messages.FormatPlayerHereSocialButtton(playerAt.Id);
@@ -100,10 +98,8 @@ namespace HISP.Game
                 string usersEast = "";
                 string usersSouth = "";
                 
-                foreach (User nearbyUser in nearbyUsers)
+                foreach (User nearbyUser in nearbyUsers.Where(o => o.X != x && o.Y != y))
                 {
-                    if (nearbyUser.X == x && nearbyUser.Y == y) // not yourself
-                        continue;
 
                     int xDiff = x - nearbyUser.X;
                     int yDiff = y - nearbyUser.Y;
@@ -177,14 +173,9 @@ namespace HISP.Game
             message += Messages.R1 + Messages.ThingsYouSellMe;
             InventoryItem[] shopperItemList = shopperInventory.Items;
 
-            foreach (InventoryItem shopperitem in shopperItemList)
+            foreach (InventoryItem shopperitem in shopperItemList.Where(o => shop.CanSell(Item.GetItemById(o.ItemId))))
             {
                 Item.ItemInformation itemInfo = Item.GetItemById(shopperitem.ItemId);
-
-                // Prevent items that cannot be sold to this shopkeeper.
-                if (!shop.CanSell(itemInfo))
-                    continue;
-
 
                 int count = shopperitem.ItemInstances.Length;
                 string countStr = count.ToString();
@@ -308,13 +299,8 @@ namespace HISP.Game
             Multiroom room = Multiroom.GetMultiroom(user.X, user.Y);
             room.Join(user);
 
-            foreach (User userOnTile in room.JoinedUsers)
-            {
-                if (userOnTile.Id == user.Id)
-                    continue;
-
+            foreach (User userOnTile in room.JoinedUsers.Where(o => o.Id != user.Id))
                 message += Messages.FormatMultiroomParticipent(userOnTile.Username);
-            }
 
             message += Messages.R1;
 
@@ -428,19 +414,11 @@ namespace HISP.Game
         {
             string message = "";
             Npc.NpcEntry[] entries = Npc.GetNpcsByXAndY(x, y);
-            foreach (Npc.NpcEntry ent in entries)
-            {
-                if (ent.AdminOnly && !user.Administrator)
-                    continue;
-
-                if (ent.RequiresQuestIdCompleted != 0)
-                    if (user.Quests.GetTrackedQuestAmount(ent.RequiresQuestIdCompleted) <= 0)
-                        continue;
-
-                if (ent.RequiresQuestIdNotCompleted != 0)
-                    if (user.Quests.GetTrackedQuestAmount(ent.RequiresQuestIdNotCompleted) >= 1)
-                        continue;
-
+            foreach (Npc.NpcEntry ent in entries.Where(o => 
+                user.Administrator ? true : !o.AdminOnly &&
+                (o.RequiresQuestIdCompleted != 0 && user.Quests.GetTrackedQuestAmount(o.RequiresQuestIdCompleted) <= 0) &&
+                (o.RequiresQuestIdNotCompleted != 0 && user.Quests.GetTrackedQuestAmount(o.RequiresQuestIdNotCompleted) >= 1)
+            )) {
                 message += Messages.FormatNpcStartChatMessage(ent.IconId, ent.Name, ent.ShortDescription, ent.Id);
                 if(ent.Chatpoints.Length > 0)
                 {
@@ -501,14 +479,8 @@ namespace HISP.Game
             string message = Messages.FormatTradeWhatToOffer(trade.OtherTrade.Trader.Username);
             message += Messages.TradeOfferMoney;
             message += Messages.TradeOfferHorse;
-            foreach(HorseInstance horse in trade.Trader.HorseInventory.HorseList.OrderBy(o => o.Name))
+            foreach(HorseInstance horse in trade.Trader.HorseInventory.HorseList.OrderBy(o => o.Name).Where(o => o.Leaser < 0 && o.Category == "TRADING"))
             {
-                if (horse.Leaser > 0)
-                    continue;
-
-                if (horse.Category != "TRADING")
-                    continue;
-
                 bool tacked = (horse.Equipment.Saddle != null || horse.Equipment.SaddlePad != null || horse.Equipment.Bridle != null || horse.Equipment.Companion != null);
                 message += Messages.FormatTradeOfferHorse(horse.Name, tacked, horse.UniqueId);
             }
@@ -520,13 +492,8 @@ namespace HISP.Game
             else
             {
                 message += Messages.TradeOfferItem;
-                foreach(InventoryItem item in trade.Trader.Inventory.Items)
-                {
-                    Item.ItemInformation itemInfo = Item.GetItemById(item.ItemId);
-                    if (itemInfo.Type == "QUEST" || itemInfo.Type == "TEXT" || itemInfo.Id == Item.DorothyShoes)
-                        continue;
-                    message += Messages.FormatTradeOfferItem(itemInfo.IconId, itemInfo.Name, item.ItemInstances.Length, item.ItemId);
-                }
+                foreach(InventoryItem item in trade.Trader.Inventory.Items.Where(o => o.ItemInfo.Type != "QUEST" && o.ItemInfo.Type != "TEXT" && o.ItemInfo.Id != Item.DorothyShoes ))
+                    message += Messages.FormatTradeOfferItem(item.ItemInfo.IconId, item.ItemInfo.Name, item.ItemInstances.Length, item.ItemId);
             }
 
             message += Messages.BackToMap;
@@ -537,19 +504,11 @@ namespace HISP.Game
         public static string BuildSocialMenu(bool onHorse)
         {
             string message = "";
-            foreach(SocialType sType in SocialType.SocialTypes)
+            foreach(SocialType sType in SocialType.SocialTypes.Where(o => o.Type != "GROUP" && (onHorse ? true : o.Type != "HORSE") ))
             {
-                if (sType.Type == "GROUP")
-                    continue;
-                if (sType.Type == "HORSE")
-                    if (!onHorse)
-                        continue;
-
                 message += Messages.FormatSocialMenuType(sType.Type);
                 foreach(SocialType.Social social in sType.Socials)
-                {
                     message += Messages.FormatSocialButton(social.Id, social.ButtonName);
-                }
                 message += Messages.R1;
             }
             message += Messages.BackToMap;
@@ -594,9 +553,10 @@ namespace HISP.Game
                 message += Messages.TradeOfferingNothing;
             if (trade.MoneyOffered > 0)
                 message += Messages.FormatTradeMoneyOffer(trade.MoneyOffered);
-            if(trade.HorsesOffered.Length > 0)
-                foreach(HorseInstance horse in trade.HorsesOffered)
-                    message += Messages.FormatTradeHorseOffer(horse.Name, horse.UniqueId);
+
+            foreach(HorseInstance horse in trade.HorsesOffered)
+                message += Messages.FormatTradeHorseOffer(horse.Name, horse.UniqueId);
+
             if(trade.ItemsOffered.Length > 0)
                 foreach(ItemInstance[] item in trade.ItemsOffered)
                 {
@@ -616,9 +576,10 @@ namespace HISP.Game
                 message += Messages.TradeOfferingNothing;
             if (trade.OtherTrade.MoneyOffered > 0)
                 message += Messages.FormatTradeMoneyOffer(trade.OtherTrade.MoneyOffered);
-            if (trade.OtherTrade.HorsesOffered.Length > 0)
-                foreach (HorseInstance horse in trade.OtherTrade.HorsesOffered)
-                    message += Messages.FormatTradeHorseOffer(horse.Name, horse.UniqueId);
+
+            foreach (HorseInstance horse in trade.OtherTrade.HorsesOffered)
+                message += Messages.FormatTradeHorseOffer(horse.Name, horse.UniqueId);
+
             if (trade.OtherTrade.ItemsOffered.Length > 0)
                 foreach (ItemInstance[] item in trade.OtherTrade.ItemsOffered)
                 {
@@ -685,40 +646,28 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.MinigameSingleplayer;
-            foreach (World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title))
+            foreach (World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title).Where(o => o.TypeFlag == "1PLAYER"))
             {
-                if (tile.TypeFlag == "1PLAYER")
-                {
-                    string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
-                    message += Messages.FormatMinigameEntry(tile.Title, mapXy);
-                }
+                string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
+                message += Messages.FormatMinigameEntry(tile.Title, mapXy);
             }
             message += Messages.MinigameTwoplayer;
-            foreach (World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title))
+            foreach (World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title).Where(o => o.TypeFlag == "2PLAYER"))
             {
-                if (tile.TypeFlag == "2PLAYER")
-                {
-                    string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
-                    message += Messages.FormatMinigameEntry(tile.Title, mapXy);
-                }
+                string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
+                message += Messages.FormatMinigameEntry(tile.Title, mapXy);
             }
             message += Messages.MinigameMultiplayer;
-            foreach (World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title))
+            foreach (World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title).Where(o => o.TypeFlag == "MULTIPLAYER"))
             {
-                if (tile.TypeFlag == "MULTIPLAYER")
-                {
-                    string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
-                    message += Messages.FormatMinigameEntry(tile.Title, mapXy);
-                }
+                string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
+                message += Messages.FormatMinigameEntry(tile.Title, mapXy);
             }
             message += Messages.MinigameCompetitions;
-            foreach (World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title))
+            foreach (World.SpecialTile tile in World.SpecialTiles.OrderBy(o => o.Title).Where(o => o.TypeFlag == "ARENA"))
             {
-                if (tile.TypeFlag == "ARENA")
-                {
-                    string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
-                    message += Messages.FormatMinigameEntry(tile.Title, mapXy);
-                }
+                string mapXy = Messages.FormatMapLocation(tile.X, tile.Y);
+                message += Messages.FormatMinigameEntry(tile.Title, mapXy);
             }
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
@@ -726,7 +675,7 @@ namespace HISP.Game
         }
         public static string BuildRealTimeQuiz(RealTimeQuiz.Participent participent) 
         {
-            // Uber Priority xD
+            // never close the quiz unless the player clicks close.
             participent.UserInstance.MinorPriority = true;
             participent.UserInstance.MajorPriority = true;
             return Messages.FormatEventRealTimeQuizMeta(participent.CorrectAnswers, participent.MistakenAnswers, participent.OnQuestion.BaseCategory.Name, participent.OnQuestion.Question);
@@ -734,14 +683,11 @@ namespace HISP.Game
         public static string BuildCompanionLibary()
         {
             string message = "";
-            foreach (Item.ItemInformation itm in Item.Items.OrderBy(o => o.GetMiscFlag(0)).ToArray())
+            foreach (Item.ItemInformation itemInfo in Item.Items.OrderBy(o => o.GetMiscFlag(0)).Where(o => o.Type == "COMPANION" && o.EmbedSwf != null))
             {
-                if (itm.Type == "COMPANION" && itm.EmbedSwf != null)
-                {
-                    string swf = "breedviewer.swf?terrain=book2&breed=tackonly&companion=" + itm.EmbedSwf + "&j=";
-                    message += Messages.FormatCompanionViewButton(itm.IconId, itm.Name, swf);
-                    message += Messages.FormatCompanionEntry(itm.Description);
-                }
+                string swf = "breedviewer.swf?terrain=book2&breed=tackonly&companion=" + itemInfo.EmbedSwf + "&j=";
+                message += Messages.FormatCompanionViewButton(itemInfo.IconId, itemInfo.Name, swf);
+                message += Messages.FormatCompanionEntry(itemInfo.Description);
             }
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
@@ -751,24 +697,18 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.LocationKnownIslands;
-            foreach (World.Waypoint waypoint in World.Waypoints.OrderBy(o => o.Name).ToArray())
+            foreach (World.Waypoint waypoint in World.Waypoints.OrderBy(o => o.Name).Where(o => o.Type == "ISLE"))
             {
-                if (waypoint.Type == "ISLE")
-                {
-                    string mapxy = Messages.FormatMapLocation(waypoint.PosX, waypoint.PosY);
-                    message += Messages.FormatIslandLocation(waypoint.Name, mapxy);
-                    message += Messages.FormatLocationDescription(waypoint.Description);
-                }
+                string mapxy = Messages.FormatMapLocation(waypoint.PosX, waypoint.PosY);
+                message += Messages.FormatIslandLocation(waypoint.Name, mapxy);
+                message += Messages.FormatLocationDescription(waypoint.Description);
             }
             message += Messages.LocationKnownTowns;
-            foreach (World.Waypoint waypoint in World.Waypoints.OrderBy(o => o.Name).ToArray())
+            foreach (World.Waypoint waypoint in World.Waypoints.OrderBy(o => o.Name).Where(o => o.Type == "TOWN"))
             {
-                if (waypoint.Type == "TOWN")
-                {
-                    string mapxy = Messages.FormatMapLocation(waypoint.PosX, waypoint.PosY);
-                    message += Messages.FormatTownLocation(waypoint.Name, mapxy);
-                    message += Messages.FormatLocationDescription(waypoint.Description);
-                }
+                string mapxy = Messages.FormatMapLocation(waypoint.PosX, waypoint.PosY);
+                message += Messages.FormatTownLocation(waypoint.Name, mapxy);
+                message += Messages.FormatLocationDescription(waypoint.Description);
             }
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
@@ -779,16 +719,13 @@ namespace HISP.Game
             string message = "";
             message += Messages.LibaryFindRanchResultsHeader;
             int totalResults = 0;
-            foreach(Ranch ranch in Ranch.Ranches)
+            foreach(Ranch ranch in Ranch.Ranches.Where(o => o.OwnerId != -1))
             {
-                if(ranch.OwnerId != -1)
+                string ranchOwnerName = Database.GetUsername(ranch.OwnerId);
+                if(ranchOwnerName.ToLower().Contains(search.ToLower()))
                 {
-                    string ranchOwnerName = Database.GetUsername(ranch.OwnerId);
-                    if(ranchOwnerName.ToLower().Contains(search.ToLower()))
-                    {
-                        message += Messages.FormatRanchSearchResult(ranchOwnerName, ranch.X, ranch.Y);
-                        totalResults++;
-                    }
+                    message += Messages.FormatRanchSearchResult(ranchOwnerName, ranch.X, ranch.Y);
+                    totalResults++;
                 }
                 if (totalResults >= 10)
                     break;
@@ -812,10 +749,8 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.AwardsAvalible;
-            foreach (Award.AwardEntry award in Award.GlobalAwardList.OrderBy(o => o.Sort).ToArray())
-            {
+            foreach (Award.AwardEntry award in Award.GlobalAwardList.OrderBy(o => o.Sort))
                 message += Messages.FormatAwardEntry(award.IconId, award.Title, award.MoneyBonus, award.Description);
-            }
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;
@@ -832,10 +767,8 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.BooksOfHorseIsle;
-            foreach (Book libaryBook in Book.LibaryBooks.OrderBy(o => o.Title).ToArray())
-            {
+            foreach (Book libaryBook in Book.LibaryBooks.OrderBy(o => o.Title))
                 message += Messages.FormatBookEntry(libaryBook.Title, libaryBook.Author, libaryBook.Id);
-            }
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;
@@ -861,9 +794,8 @@ namespace HISP.Game
             message += Messages.FormatHighscoreHeader(gameName);
 
             for (int i = 0; i < scores.Length; i++)
-            {
                 message += Messages.FormatHighscoreListEntry(i + 1, scores[i].Score, Database.GetUsername(scores[i].UserId), scores[i].TimesPlayed);
-            }
+
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;
@@ -1090,13 +1022,9 @@ namespace HISP.Game
                 else
                     fmsg = Messages.QuestNotCompleted;
 
-                foreach (int questId in quest.RequiresQuestIdCompleteStatsMenu)
-                {
-                    if (user.Quests.GetTrackedQuestAmount(questId) > 0)
-                        continue;
+                // set quest not avalible if stats menu quest not found.
+                if(quest.RequiresQuestIdCompleteStatsMenu.Any(o => user.Quests.GetTrackedQuestAmount(o) > 0))
                     fmsg = Messages.QuestNotAvalible;
-                    break;
-                }
 
                 message += Messages.FormatQuestLogQuest(quest.Title, quest.QuestPointsEarned, quest.Difficulty, fmsg);
             }
@@ -1118,23 +1046,14 @@ namespace HISP.Game
             string message = "";
             message += Messages.NearbyPlayersListHeader;
             User[] nearbyUsers = User.GetNearbyUsers(currentUser.X, currentUser.Y, false, true);
-            foreach (User nearbyUser in nearbyUsers)
+            foreach (User nearbyUser in nearbyUsers.Where(o => !o.Stealth && o.Id != currentUser.Id))
             {
-                if (nearbyUser.Stealth)
-                    continue;
-
-                if (nearbyUser.Id == currentUser.Id)
-                    continue;
-
-
-                bool isYou = (nearbyUser.Id == currentUser.Id);
-
                 int icon = nearbyUser.GetPlayerListIcon();
                 string iconFormat = "";
                 if (icon != -1)
                     iconFormat = Messages.FormatIconFormat(icon);
 
-                message += Messages.FormatPlayerEntry(iconFormat, nearbyUser.Username, nearbyUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - nearbyUser.LoginTime).TotalMinutes)), nearbyUser.X, nearbyUser.Y, nearbyUser.Idle, currentUser.MutePlayer.IsUserMuted(nearbyUser), isYou);
+                message += Messages.FormatPlayerEntry(iconFormat, nearbyUser.Username, nearbyUser.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - nearbyUser.LoginTime).TotalMinutes)), nearbyUser.X, nearbyUser.Y, nearbyUser.Idle, currentUser.MutePlayer.IsUserMuted(nearbyUser), false);
             }
 
             message += Messages.PlayerListIconInformation;
@@ -1147,22 +1066,8 @@ namespace HISP.Game
         public static string BuildPlayerListAlphabetical(User currentUser)
         {
             string message = Messages.PlayerListAllAlphabeticalHeader;
-            GameClient[] clients = GameClient.ConnectedClients;
-            List<User> onlineUsers = new List<User>();
 
-            foreach (GameClient client in clients)
-            {
-                if (client.LoggedIn)
-                {
-                    if (client.User.Stealth)
-                        continue;
-                    onlineUsers.Add(client.User);
-                }
-            }
-
-            onlineUsers = onlineUsers.OrderBy(o => o.Username).ToList();
-
-            foreach (User onlineUser in onlineUsers)
+            foreach (User onlineUser in User.OnlineUsers.OrderBy(o => o.Username).Where(o => !o.Stealth))
             {
 
                 bool isYou = (onlineUser.Id == currentUser.Id);
@@ -1184,23 +1089,17 @@ namespace HISP.Game
         public static string BuildPlayerList(User currentUser)
         {
             string message = Messages.PlayerListAllHeader;
-            GameClient[] clients = GameClient.ConnectedClients;
-            foreach (GameClient client in clients)
+            
+            foreach (User user in User.OnlineUsers.Where(o => !o.Stealth))
             {
-                if (client.LoggedIn)
-                {
-                    if (client.User.Stealth)
-                        continue;
+                bool isYou = (user.Id == currentUser.Id);
 
-                    bool isYou = (client.User.Id == currentUser.Id);
+                int icon = user.GetPlayerListIcon();
+                string iconFormat = "";
+                if (icon != -1)
+                    iconFormat = Messages.FormatIconFormat(icon);
 
-                    int icon = client.User.GetPlayerListIcon();
-                    string iconFormat = "";
-                    if (icon != -1)
-                        iconFormat = Messages.FormatIconFormat(icon);
-
-                    message += Messages.FormatPlayerEntry(iconFormat, client.User.Username, client.User.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - client.User.LoginTime).TotalMinutes)), client.User.X, client.User.Y, client.User.Idle, currentUser.MutePlayer.IsUserMuted(client.User), isYou);
-                }
+                message += Messages.FormatPlayerEntry(iconFormat, user.Username, user.Id, Convert.ToInt32(Math.Round((DateTime.UtcNow - user.LoginTime).TotalMinutes)), user.X, user.Y, user.Idle, currentUser.MutePlayer.IsUserMuted(user), isYou);
             }
 
             message += Messages.PlayerListIconInformation;
@@ -1213,14 +1112,10 @@ namespace HISP.Game
         public static string BuildBuddyList(User user)
         {
             string message = Messages.BuddyListHeader;
-            foreach (int id in user.Friends.List.ToArray())
+            foreach (User friend in user.Friends.List.Select(o => User.GetUserById(o)).Where(o => !o.Stealth))
             {
                 try
                 {
-                    User friend = User.GetUserById(id);
-                    if (friend.Stealth)
-                        continue;
-
                     int icon = friend.GetPlayerListIcon();
                     string iconFormat = "";
                     if (icon != -1)
@@ -1235,11 +1130,8 @@ namespace HISP.Game
             message += Messages.BuddyListOfflineBuddys;
 
 
-            foreach (int id in user.Friends.List.ToArray())
+            foreach (int id in user.Friends.List.Where(o => !User.IsUserOnline(o)))
             {
-                if (User.IsUserOnline(id))
-                    continue;
-
                 string username = Database.GetUsername(id);
                 int minutes = Convert.ToInt32(Math.Round(DateTime.UtcNow.Subtract(Helper.UnixTimeStampToDateTime(Database.GetPlayerLastLogin(id))).TotalMinutes));
 
@@ -1272,10 +1164,8 @@ namespace HISP.Game
         public static string BuildHorseBreedListLibary()
         {
             string message = "";
-            foreach (HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name).ToList())
+            foreach (HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name).Where(o => o.Swf != String.Empty))
             {
-                if (breed.Swf == "")
-                    continue;
                 if (breed.Type == "horse")
                     message += Messages.FormatHorseBreed(breed.Name, breed.Id);
                 else
@@ -1287,29 +1177,10 @@ namespace HISP.Game
         }
         public static string BuildNpcSearch(string search)
         {
-            List<Npc.NpcEntry> foundNpcs = new List<Npc.NpcEntry>();
-            foreach (Npc.NpcEntry npc in Npc.NpcList)
-            {
-                if (npc.Name.ToLower().Contains(search.ToLower()))
-                {
-                    if (npc.LibarySearchable)
-                    {
-                        if (foundNpcs.Count >= 5)
-                            break;
-                        foundNpcs.Add(npc);
-                    }
-                    else
-                    {
-                        continue;
-                    }
-                }
-                else
-                {
-                    continue;
-                }
-            }
+            Npc.NpcEntry[] foundNpcs = Npc.NpcList.Where(o => o.LibarySearchable && o.Name.Contains(search, StringComparison.CurrentCultureIgnoreCase)).ToArray();
+
             string message = Messages.LibaryFindNpcSearchNoResults;
-            if (foundNpcs.Count >= 1)
+            if (foundNpcs.Length >= 1)
             {
                 message = Messages.LibaryFindNpcSearchResultsHeader;
                 foreach (Npc.NpcEntry npc in foundNpcs)
@@ -1319,7 +1190,7 @@ namespace HISP.Game
                     message += searchResult;
                 }
             }
-            if (foundNpcs.Count >= 5)
+            if (foundNpcs.Length >= 5)
             {
                 message += Messages.LibaryFindNpcLimit5;
             }
@@ -1416,14 +1287,8 @@ namespace HISP.Game
         private static string buildHorseWhisperer()
         {
             string message = "";
-            foreach (HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name).ToList())
-            {
-                if (breed.Swf == "")
-                    continue;
-                if (breed.SpawnInArea == "none")
-                    continue;
+            foreach (HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name).Where(o => o.Swf != String.Empty && o.SpawnInArea != "none"))
                 message += Messages.FormatWhispererHorseBreedButton(breed.Name, breed.Id);
-            }
             message += Messages.ExitThisPlace;
             message += Messages.MetaTerminator;
             return message;
@@ -1550,23 +1415,15 @@ namespace HISP.Game
             Multiroom room = Multiroom.GetMultiroom(user.X, user.Y);
             room.Join(user);
 
-            foreach (User userOnTile in room.JoinedUsers)
-            {
-                if (userOnTile.Id == user.Id)
-                    continue;
-
+            foreach (User userOnTile in room.JoinedUsers.Where(o => o.Id != user.Id))
                 message += Messages.FormatMultiroomParticipent(userOnTile.Username);
-            }
 
             message += Messages.R1;
 
             message += Messages.MultiHorseSelectOneToJoinWith;
             int placing = 1;
-            foreach (HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).ToArray())
+            foreach (HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).Where(o => o.Leaser < 0))
             {
-                if (horse.Leaser > 0)
-                    continue;
-
                 HorseInfo.StatCalculator speedStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.SPEED, user);
                 HorseInfo.StatCalculator strengthStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.STRENGTH, user);
                 HorseInfo.StatCalculator conformationStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.CONFORMATION, user);
@@ -1587,11 +1444,8 @@ namespace HISP.Game
         {
             string message = Messages.HorseGamesSelectHorse;
             int placing = 1;
-            foreach(HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).ToArray())
+            foreach(HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).Where(o => o.Leaser < 0))
             {
-                if (horse.Leaser > 0)
-                    continue;
-
 
                 HorseInfo.StatCalculator speedStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.SPEED, user);
                 HorseInfo.StatCalculator strengthStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.STRENGTH, user);
@@ -1613,12 +1467,8 @@ namespace HISP.Game
             string message = Messages.CityHallTop25Ranches;
             int total = 1;
 
-            foreach(Ranch ranch in Ranch.Ranches.OrderByDescending(o => o.InvestedMoney).ToList())
+            foreach(Ranch ranch in Ranch.Ranches.OrderByDescending(o => o.InvestedMoney).Where(o => o.OwnerId != -1))
             {
-                if (ranch.OwnerId == -1)
-                    continue;
-
-
                 message += Messages.FormatCityHallTopRanchEntry(total, Database.GetUsername(ranch.OwnerId), ranch.InvestedMoney, Messages.FormatMapLocation(ranch.X, ranch.Y));
 
                 if (total > 26)
@@ -1816,15 +1666,9 @@ namespace HISP.Game
         public static string BuildAuctionHorseList(User user)
         {
             string message = Messages.AuctionListHorse;
-            foreach(HorseInstance horse in user.HorseInventory.HorseList)
+            foreach(HorseInstance horse in user.HorseInventory.HorseList.Where(o => o.Leaser < 0 && o.Category == "TRADING"))
             {
-                if (horse.Leaser > 0)
-                    continue;
-                if (horse.Category != "TRADING")
-                    continue;
-
                 bool tacked = (horse.Equipment.Saddle != null || horse.Equipment.SaddlePad != null || horse.Equipment.Bridle != null || horse.Equipment.Companion != null);
-
                 message += Messages.FormatAuctionHorseListEntry(horse.Name, tacked, horse.UniqueId);
             }
 
@@ -2504,7 +2348,7 @@ namespace HISP.Game
         }
         public static string BuildNpcChatpoint(User user, Npc.NpcEntry npc, Npc.NpcChat chatpoint)
         {
-            bool hideReplys = false;
+            bool hideReplies = false;
             if (chatpoint.ActivateQuestId != 0)
             {
                 Quest.QuestEntry quest = Quest.GetQuestById(chatpoint.ActivateQuestId);
@@ -2531,24 +2375,21 @@ namespace HISP.Game
                         chatpoint.ChatText = result.NpcChat;
                     
                     if (result.HideRepliesOnFail)
-                        hideReplys = true;
+                        hideReplies = true;
                 }
             }
 
 
             string message = "";
             message += Messages.FormatNpcChatpoint(npc.Name, npc.ShortDescription, chatpoint.ChatText);
-            foreach(Npc.NpcReply reply in chatpoint.Replies)
+            if (!hideReplies)
             {
-                if(reply.RequiresQuestIdCompleted != 0)
-                    if (user.Quests.GetTrackedQuestAmount(reply.RequiresQuestIdCompleted) <= 0)
-                        continue;
-                if (reply.RequiresQuestIdNotCompleted != 0)
-                    if (user.Quests.GetTrackedQuestAmount(reply.RequiresQuestIdNotCompleted) >= 1)
-                        continue;
-                if (hideReplys)
-                    continue;
-                message += Messages.FormatNpcReply(reply.ReplyText, reply.Id);
+                foreach (Npc.NpcReply reply in chatpoint.Replies.Where(o => 
+                    o.RequiresQuestIdCompleted != 0 && user.Quests.GetTrackedQuestAmount(o.RequiresQuestIdCompleted) <= 0 &&
+                    o.RequiresQuestIdNotCompleted != 0 && user.Quests.GetTrackedQuestAmount(o.RequiresQuestIdNotCompleted) >= 1
+                )) {
+                    message += Messages.FormatNpcReply(reply.ReplyText, reply.Id);
+                }
             }
             message += Messages.BackToMap + Messages.MetaTerminator;
             return message;
@@ -2594,16 +2435,8 @@ namespace HISP.Game
         public static string BuildPawneerOrderBreedList()
         {
             string message = Messages.PawneerOrderSelectBreed;
-            foreach (HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name))
-            {
-                if (breed.Swf == "")
-                    continue;
-
-                if (!ConfigReader.EnableEolFeatures && breed.SpawnInArea == "none")
-                    continue;
-
+            foreach (HorseInfo.Breed breed in HorseInfo.Breeds.OrderBy(o => o.Name).Where(o => o.Swf != String.Empty && ConfigReader.EnableEolFeatures ? true : o.SpawnInArea != "none"))
                 message += Messages.FormatPawneerOrderBreedEntry(breed.Name, breed.Id);
-            }
             message += Messages.BackToMap;
             message += Messages.MetaTerminator;
             return message;
@@ -2745,11 +2578,8 @@ namespace HISP.Game
             }
 
             string message = Messages.TwoPlayerOtherPlayer;
-            foreach(User userAt in room.JoinedUsers.ToArray())
+            foreach(User userAt in room.JoinedUsers.Where(o => o.Id != user.Id))
             {
-                if (userAt.Id == user.Id)
-                    continue;
-
                 message += Messages.Format2PlayerPlayerName(userAt.Username);
 
                 if(!TwoPlayer.IsPlayerInGame(userAt))
@@ -2825,13 +2655,13 @@ namespace HISP.Game
                 else if (!arena.UserHasHorseEntered(user))
                 {
                     
-                    foreach(HorseInstance horseInstance in user.HorseInventory.HorseList)
+                    foreach(HorseInstance horseInstance in user.HorseInventory.HorseList.Where(o => 
+                        o.Leaser < 0 && 
+                        o.Equipment.Saddle != null && 
+                        o.Equipment.SaddlePad != null && 
+                        o.Equipment.Bridle != null))
                     {
-                        if (horseInstance.Leaser > 0)
-                            continue;
-
-                        if(horseInstance.Equipment.Saddle != null && horseInstance.Equipment.SaddlePad != null && horseInstance.Equipment.Bridle != null)
-                            message += Messages.FormatArenaEnterHorseButton(horseInstance.Name, arena.EntryCost, horseInstance.UniqueId);
+                        message += Messages.FormatArenaEnterHorseButton(horseInstance.Name, arena.EntryCost, horseInstance.UniqueId);
                     }
                 }
                 else

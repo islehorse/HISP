@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 using HISP.Game;
@@ -285,11 +286,8 @@ namespace HISP.Server
         public static byte[] CreateDressupRoomPeiceLoad(Dressup.DressupPeice[] dressupPeices)
         {
             string peiceLoadStr = "";
-            foreach(Dressup.DressupPeice peice in dressupPeices)
+            foreach(Dressup.DressupPeice peice in dressupPeices.Where(o => o.Active))
             {
-                if (!peice.Active)
-                    continue;
-
                 peiceLoadStr += peice.PeiceId.ToString() + "|";
                 peiceLoadStr += peice.X.ToString() + "|";
                 peiceLoadStr += peice.Y.ToString() + "|";

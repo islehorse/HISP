@@ -8,6 +8,7 @@ using HISP.Game.Events;
 using HISP.Game.Items;
 using HISP.Util;
 using HISP.Server.Network;
+using System.Linq;
 
 namespace HISP.Server
 {
@@ -248,38 +249,28 @@ namespace HISP.Server
                             int tpY = 0;
                             if(horse.Breed.Type == "unicorn" || horse.Breed.Type == "pegasus")
                             {
-                                foreach (World.SpecialTile tile in World.SpecialTiles)
+                                foreach (World.SpecialTile tile in World.GetSpecialTileById("HORSELEASER", horse.Leaser))
                                 {
-                                    if (tile.Code == null)
-                                        continue;
+                                    string msg = Messages.FormatHorseReturnedToUniter(horse.Breed.Name);
+                                    if (horse.Breed.Type == "pegasus")
+                                        msg = Messages.HorseLeaserReturnedToUniterPegasus;
 
-                                    if (tile.Code.StartsWith("HORSELEASER-"))
+                                    byte[] youWereTeleportedToUniter = PacketBuilder.CreateChat(msg, PacketBuilder.CHAT_BOTTOM_RIGHT);
+                                    SendPacket(youWereTeleportedToUniter);
+
+                                    tpX = tile.X;
+                                    tpY = tile.Y;
+
+                                    if(tile.ExitX != 0 && tile.ExitY != 0)
                                     {
-                                        int id = int.Parse(tile.Code.Split("-")[1]);
-                                        if (horse.Leaser == id)
-                                        {
-                                            string msg = Messages.FormatHorseReturnedToUniter(horse.Breed.Name);
-                                            if (horse.Breed.Type == "pegasus")
-                                                msg = Messages.HorseLeaserReturnedToUniterPegasus;
-
-                                            byte[] youWereTeleportedToUniter = PacketBuilder.CreateChat(msg, PacketBuilder.CHAT_BOTTOM_RIGHT);
-                                            SendPacket(youWereTeleportedToUniter);
-
-                                            tpX = tile.X;
-                                            tpY = tile.Y;
-
-                                            if(tile.ExitX != 0 && tile.ExitY != 0)
-                                            {
-                                                tpX = tile.ExitX;
-                                                tpY = tile.ExitY;
-                                            }
-                                            else
-                                            {
-                                                tpY++;
-                                            }
-
-                                        }
+                                        tpX = tile.ExitX;
+                                        tpY = tile.ExitY;
                                     }
+                                    else
+                                    {
+                                        tpY++;
+                                    }
+
                                 }
                                 
                             }
@@ -291,21 +282,12 @@ namespace HISP.Server
                                 this.User.Teleport(tpX, tpY);
 
 
-                            if (this.User.CurrentlyRidingHorse != null)
-                            {
-                                if(this.User.CurrentlyRidingHorse.UniqueId == horse.UniqueId)
-                                {
-                                    GameServer.StopRidingHorse(this);
-                                }
-                                
-                             }
+                            if (this.User.CurrentlyRidingHorse != null && this.User.CurrentlyRidingHorse.UniqueId == horse.UniqueId)
+                                GameServer.StopRidingHorse(this);
 
-                            if(this.User.LastViewedHorse != null)
+                            if(this.User.LastViewedHorse != null && this.User.LastViewedHorse.UniqueId == horse.UniqueId)
                             {
-                                if(this.User.LastViewedHorse.UniqueId == horse.UniqueId)
-                                {
-                                    this.User.LastViewedHorse = null;
-                                }
+                                this.User.LastViewedHorse = null;
                             }    
 
 

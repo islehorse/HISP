@@ -83,9 +83,7 @@ namespace HISP.Game
                 {
                     Database.SetWeather(Name, value);
                     foreach(User user in User.GetUsersInIsle(this,true,true))
-                    {
                         GameServer.UpdateWorld(user.Client);
-                    }
                 }
             }
             
@@ -139,9 +137,7 @@ namespace HISP.Game
                 {
                     Database.SetWeather(Name, value);
                     foreach (User user in User.GetUsersInTown(this, true, true))
-                    {
                         GameServer.UpdateArea(user.Client);
-                    }
                 }
 
             }
@@ -205,6 +201,13 @@ namespace HISP.Game
 
         public static ThreadSafeList<SpecialTile> SpecialTiles = new ThreadSafeList<SpecialTile>();
 
+        public static SpecialTile[] GetSpecialTileById(string tileType, int id)
+        {
+            return SpecialTiles.Where(spTile =>
+                spTile.Code != null &&
+                spTile.Code.StartsWith(tileType + "-") &&
+                int.Parse(spTile.Code.Split('-')[1]) == id).ToArray();
+        }
         public static void TickWorldClock() 
         {
             ServerTime.Minutes++;

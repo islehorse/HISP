@@ -46,9 +46,14 @@ namespace HISP.Game.Services
             return Convert.ToUInt64(Math.Round((double)item.SellPrice * ((double)BuyPricePercentage / 100.0d)));
         }
 
+        public bool CanSell(int itemId)
+        {
+            return BuysItemTypes.Contains(Item.GetItemById(itemId).Type, StringComparer.InvariantCultureIgnoreCase);
+        }
+
         public bool CanSell(Item.ItemInformation item)
         {
-            return BuysItemTypes.Any(o => o == item.Type);
+            return BuysItemTypes.Contains(item.Type, StringComparer.InvariantCultureIgnoreCase);
         }
         // Static Functions 
         public static List<Shop> ShopList = new List<Shop>();

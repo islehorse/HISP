@@ -15,14 +15,7 @@ namespace HISP.Game.Inventory
         {
             get
             {
-                List<HorseInstance> filteredHorseList = new List<HorseInstance>();
-                foreach(HorseInstance horse in horsesList)
-                {
-                    if (!horse.Hidden)
-                        filteredHorseList.Add(horse);
-                }
-
-                return filteredHorseList.ToArray();
+                return horsesList.Where(o => !o.Hidden).ToArray();
             }
         }
 
@@ -34,14 +27,8 @@ namespace HISP.Game.Inventory
 
         public void UnHide(int uniqueId)
         {
-            foreach(HorseInstance inst in horsesList)
-            {
-                if (inst.UniqueId == uniqueId)
-                {
-                    inst.Hidden = false;
-                    break;
-                }
-            }
+            HorseInstance inst = horsesList.FirstOrDefault(o => o.UniqueId == uniqueId, null);
+            if(inst != null) inst.Hidden = false;
         }
         public void AddHorse(HorseInstance horse, bool addToDb=true, bool ignoreFull=false)
         {
@@ -56,16 +43,8 @@ namespace HISP.Game.Inventory
 
         public void DeleteHorseId(int id, bool removeFromDb = true)
         {
-            foreach(HorseInstance horse in HorseList)
-            {
-                if(horse.UniqueId == id)
-                {
-                    if (removeFromDb)
-                        Database.RemoveHorse(horse.UniqueId);
-                    horsesList.Remove(horse);
-
-                }
-            }
+            int rm = horsesList.RemoveAll(o => o.UniqueId == id);
+            if (removeFromDb && rm > 0) Database.RemoveHorse(id);
         }
 
         public void DeleteHorse(HorseInstance horse, bool removeFromDb=true)
@@ -84,15 +63,7 @@ namespace HISP.Game.Inventory
 
         public HorseInstance[] GetHorsesInCategory(HorseInfo.Category category)
         {
-            List<HorseInstance> instances = new List<HorseInstance>();
-            foreach(HorseInstance horse in HorseList)
-            {
-                if (horse.Category == category.Name)
-                {
-                    instances.Add(horse);
-                }
-            }
-            return instances.ToArray();
+            return HorseList.Where(o => o.Category == category.Name).ToArray();
         }
     }
 }

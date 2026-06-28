@@ -78,10 +78,8 @@ namespace HISP.Game
                 User user = User.GetUserById(Id);
                 user.OwnedRanch = null;
                 InventoryItem items = user.Inventory.GetItemByItemId(Item.DorothyShoes);
-                foreach (ItemInstance itm in items.ItemInstances)
-                {
-                    user.Inventory.Remove(itm);
-                }
+                foreach (ItemInstance itemInstance in items.ItemInstances)
+                    user.Inventory.Remove(itemInstance);
             }
             else
             {
@@ -229,14 +227,7 @@ namespace HISP.Game
         private RanchBuilding[] buildings = new RanchBuilding[16];
         public int GetBuildingCount(int buildingId)
         {
-            int count = 0;
-            foreach(RanchBuilding building in buildings)
-            {
-                if(building != null)
-                    if (building.Id == buildingId)
-                        count++;
-            }
-            return count;
+            return buildings.Count(o => o != null && o.Id == buildingId);
         }
         private void updateBuildings()
         {
