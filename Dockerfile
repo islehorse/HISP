@@ -21,7 +21,7 @@ ENV HISP_ASSETS_DIR /usr/bin/hisp
 ENV HISP_LOG_FILE stdout
 
 EXPOSE 12321
-STOPSIGNAL sigstop
+STOPSIGNAL sigint
 
 WORKDIR /usr/bin/hisp
 ENTRYPOINT /usr/bin/hisp/HISPd
