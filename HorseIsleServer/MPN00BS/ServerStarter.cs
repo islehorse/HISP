@@ -4,8 +4,7 @@ using HTTP;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
-using System.Runtime.InteropServices;
+using System.Reflection.Metadata;
 using static MPN00BS.MessageBox;
 
 namespace MPN00BS
@@ -16,6 +15,8 @@ namespace MPN00BS
         private static Process fp = null;
         private static ContentServer cs = null;
         private static Action HorseIsleClientExitCallback;
+
+        private static TextWriter logWriter = null;
 
         private static string startupFolder = AppContext.BaseDirectory;
         private static string clientFolder = Path.Combine(startupFolder, "client");
@@ -38,13 +39,10 @@ namespace MPN00BS
             cs.Shutdown();
         }
 
-        public static void ShowCrash(bool error, string type, string text)
+        public static void LogFile(bool error, string type, string text)
         {
-            if (type == "CRASH")
-            {
-                File.AppendAllText(Path.Combine(ConfigReader.ConfigDirectory, "crash.log"), text);
-                MessageBox.Show(null, text, type, MessageBoxButtons.Ok);
-            }
+            logWriter.WriteLine("[" + type + "]: " + text);
+            logWriter.Flush();
         }
 
         private static void HorseIsleClientExited(object sender, EventArgs e)
@@ -101,13 +99,13 @@ namespace MPN00BS
         {
             SetConfigDir();
             ServerStarter.ModifyConfig("sql_backend", "sqllite");
-            ServerStarter.ModifyConfig("log_level", "0");
-
         }
         public static void StartHispServer(Action ProgressCallback, Action UserCreationCallback, Action ServerStartedCallback, Action OnShutdown)
         {
             AppDomain.CurrentDomain.ProcessExit += HorseIsleClientExited;
-            Logger.SetCallback(ShowCrash);
+            logWriter = File.CreateText(Path.Combine(ConfigReader.ConfigDirectory, "hisp.log"));
+
+            Logger.SetCallback(LogFile);
             Entry.SetShutdownCallback(OnShutdown);
             UpdateServerProperties();
 
