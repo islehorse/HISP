@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection.Metadata;
+using System.Runtime.InteropServices;
 using static MPN00BS.MessageBox;
 
 namespace MPN00BS
