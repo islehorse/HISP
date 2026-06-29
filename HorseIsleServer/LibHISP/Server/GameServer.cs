@@ -749,7 +749,7 @@ namespace HISP.Server
                             Auction.AuctionEntry entry = auctionRoom.GetAuctionEntry(auctionEntryId);
                             entry.Bid(sender.User, bidAmount);
 
-                            UpdateAreaForAll(tile.X, tile.Y, true, null);
+                            UpdateAreaForAll(tile.X, tile.Y, true, false, null);
                         }
                     }
                     break;
@@ -5256,8 +5256,8 @@ namespace HISP.Server
             }
             else if (method == PacketBuilder.RANCH_SELL)
             {
-                string NanSTR = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                if (NanSTR == "NaN")
+                string nanStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                if (nanStr == "NaN")
                 {
                     if (sender.User.OwnedRanch == null)
                     {
@@ -5277,7 +5277,9 @@ namespace HISP.Server
                         byte[] movementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
                         user.Client.SendPacket(movementPacket);
                     }
-                    UpdateAreaForAll(sender.User.X, sender.User.Y, true);
+
+                    sender.User.MajorPriority = false;
+                    UpdateRanch(sender.User.OwnedRanch);
                 }
                 else
                 {
@@ -5287,8 +5289,8 @@ namespace HISP.Server
             }
             else if (method == PacketBuilder.RANCH_UPGRADE)
             {
-                string NanSTR = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
-                if (NanSTR == "NaN")
+                string nanStr = packetStr.Substring(2, (packetStr.Length - 2) - PacketBuilder.PACKET_CLIENT_TERMINATOR_LENGTH);
+                if (nanStr == "NaN")
                 {
                     if (sender.User.OwnedRanch != null)
                     {
@@ -5317,7 +5319,9 @@ namespace HISP.Server
                                 byte[] movementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
                                 user.Client.SendPacket(movementPacket);
                             }
-                            UpdateAreaForAll(sender.User.X, sender.User.Y, true);
+
+                            sender.User.MajorPriority = false;
+                            UpdateRanch(sender.User.OwnedRanch);
                         }
                         else
                         {
@@ -5376,7 +5380,9 @@ namespace HISP.Server
                             byte[] chatPacket = PacketBuilder.CreateChat(Messages.FormatBuildingTornDown(ranchBuilding.GetTeardownPrice()), PacketBuilder.CHAT_BOTTOM_RIGHT);
 
                             sender.SendPacket(chatPacket);
-                            UpdateAreaForAll(sender.User.X, sender.User.Y, true);
+
+                            sender.User.MajorPriority = false;
+                            UpdateRanch(sender.User.OwnedRanch);
                             return;
                         }
                         else
@@ -5428,7 +5434,9 @@ namespace HISP.Server
                             sender.User.TakeMoney(building.Cost);
                             byte[] chatPacket = PacketBuilder.CreateChat(Messages.RanchBuildingComplete, PacketBuilder.CHAT_BOTTOM_RIGHT);
                             sender.SendPacket(chatPacket);
-                            UpdateAreaForAll(sender.User.X, sender.User.Y, true);
+
+                            sender.User.MajorPriority = false;
+                            UpdateRanch(sender.User.OwnedRanch);
                             return;
 
                         }
@@ -5463,8 +5471,9 @@ namespace HISP.Server
                             sender.User.TakeMoney(ranch.Value);
                             ranch.OwnerId = sender.User.Id;
                             ranch.InvestedMoney += ranch.Value;
-                            UpdateAreaForAll(sender.User.X, sender.User.Y, true);
 
+                            sender.User.MajorPriority = false;
+                            UpdateRanch(sender.User.OwnedRanch);
                         }
                         else
                         {
@@ -5509,14 +5518,12 @@ namespace HISP.Server
                                 {
                                     byte[] buildingsAvalible = PacketBuilder.CreateMeta(Meta.BuildRanchUpgrade(ranch));
                                     sender.SendPacket(buildingsAvalible);
-
                                 }
                                 else
                                 {
                                     byte[] buildingsAvalible = PacketBuilder.CreateMeta(Meta.BuildRanchBuildingsAvalible(ranch, buildSlot));
                                     sender.SendPacket(buildingsAvalible);
                                 }
-
 
                                 return;
                             }
@@ -5715,12 +5722,12 @@ namespace HISP.Server
                 return;
             }
 
-            GameClient[] recipiants = ChatMsg.GetRecipiants(sender.User, channel, nameTo);
+            GameClient[] recipients = ChatMsg.GetRecipiants(sender.User, channel, nameTo);
 
             
             if(channel == ChatMsg.ChatChannel.Dm)
             {
-                if(recipiants.Length <= 0)
+                if(recipients.Length <= 0)
                 {
                     byte[] cantFindPlayer = PacketBuilder.CreateChat(Messages.CantFindPlayerToPrivateMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                     sender.SendPacket(cantFindPlayer);
@@ -5729,7 +5736,7 @@ namespace HISP.Server
                 }
                 else
                 {
-                    nameTo = recipiants[0].User.Username;
+                    nameTo = recipients[0].User.Username;
                 }
             }
             
@@ -5801,12 +5808,12 @@ namespace HISP.Server
             byte[] playDmSound = PacketBuilder.CreatePlaySound(ChatMsg.PrivateMessageSound);
 
             // Send to clients ...
-            foreach (GameClient recipiant in recipiants)
+            foreach (GameClient recipient in recipients)
             {
-                recipiant.SendPacket(chatPacketOthers);
+                recipient.SendPacket(chatPacketOthers);
                 
                 if (channel == ChatMsg.ChatChannel.Dm)
-                    recipiant.SendPacket(playDmSound);
+                    recipient.SendPacket(playDmSound);
             }
 
             // Send to sender
@@ -5815,7 +5822,7 @@ namespace HISP.Server
             // AutoReply
             if (channel == ChatMsg.ChatChannel.Dm)
             {
-                foreach (GameClient recipiant in recipiants.Where(o => o.User.AutoReplyText != String.Empty))
+                foreach (GameClient recipiant in recipients.Where(o => o.User.AutoReplyText != String.Empty))
                 {
                     string formattedMessageAuto = ChatMsg.FormatChatForOthers(recipiant.User, channel, recipiant.User.AutoReplyText, true);
                     string formattedMessageSenderAuto = ChatMsg.FormatChatForSender(recipiant.User, channel, recipiant.User.AutoReplyText, nameTo, true);
@@ -6505,7 +6512,7 @@ namespace HISP.Server
                         sender.SendPacket(chatPacket);
                         UpdateInventory(sender);
 
-                        UpdateAreaForAll(sender.User.X, sender.User.Y, false, sender.User);
+                        UpdateAreaForAll(sender.User.X, sender.User.Y, false, false, sender.User);
                     }
                     else
                     {
@@ -7248,8 +7255,8 @@ namespace HISP.Server
             if (user.MailBox.UnreadMailCount > 0)
             {
 
-                byte[] RipOffAOLSound = PacketBuilder.CreatePlaySound(Messages.MailSe);
-                user.Client.SendPacket(RipOffAOLSound);
+                byte[] ripOffAolSoundPacket = PacketBuilder.CreatePlaySound(Messages.MailSe);
+                user.Client.SendPacket(ripOffAolSoundPacket);
 
                 byte[] mailReceivedText = PacketBuilder.CreateChat(Messages.MailReceivedMessage, PacketBuilder.CHAT_BOTTOM_RIGHT);
                 user.Client.SendPacket(mailReceivedText);
@@ -7282,7 +7289,7 @@ namespace HISP.Server
             World.SpecialTile[] tiles = World.GetSpecialTilesByCode("MULTIROOM-" + id);
             foreach (World.SpecialTile tile in tiles)
             {
-                UpdateAreaForAll(tile.X, tile.Y, true, null);
+                UpdateAreaForAll(tile.X, tile.Y, true, false, null);
                 User[] usersHere = User.GetUsersAt(tile.X, tile.Y, true, true);
                 foreach (User user in usersHere.Where(o => includingSender ? true : o.Id != sender.User.Id))
                 {
@@ -7428,9 +7435,28 @@ namespace HISP.Server
                     onScreenUser.Client.SendPacket(playerInfoBytes);
         }
 
-        public static void UpdateAreaForAll(int x, int y, bool ignoreMetaPriority=false, User exceptUser=null)
+        public static void UpdateRanch(Ranch ranch)
         {
-            foreach (User user in User.OnlineUsers.Where(o => (o.X == x && o.Y == y) && (ignoreMetaPriority ? true : !o.MinorPriority) && (!o.MajorPriority) && (exceptUser == null ? true : o.Id != exceptUser.Id)))
+            foreach(User user in User.OnlineUsers.Where(o => o.X == ranch.X && o.Y == ranch.Y))
+            {
+                if (!user.MajorPriority)
+                {
+                    UpdateArea(user.Client);
+                }
+                else
+                {
+                    byte[] ranchUpdatePacket = PacketBuilder.CreateSwfModule(ranch.GetSwf(ranch.OwnerId == user.Id), PacketBuilder.PACKET_SWF_MODULE_FORCE);
+                    user.Client.SendPacket(ranchUpdatePacket);
+                }
+            }
+        }
+        public static void UpdateAreaForAll(int x, int y, bool ignoreMinorPriority=false, bool ignoreMajorPriority=false, User exceptUser=null)
+        {
+            foreach (User user in User.OnlineUsers.Where(o => 
+                (o.X == x && o.Y == y) && 
+                (ignoreMinorPriority ? true : !o.MinorPriority) && 
+                (ignoreMajorPriority ? true : !o.MajorPriority) && 
+                (exceptUser == null ? true : o.Id != exceptUser.Id)))
                 UpdateArea(user.Client);
         }
         

@@ -214,7 +214,6 @@ namespace HISP.Player
 
         public Trade CurrentTrade = null;
         public int AttemptingToOfferItem;
-        public bool TradeMenuPriority = false;
         public int Id;
         public string Username;
         public bool NewPlayer = false;
@@ -234,8 +233,11 @@ namespace HISP.Player
         public bool MuteLogins = false;
         public string Gender;
         public bool UserInfoSend = false;
+
         public bool MajorPriority = false;
         public bool MinorPriority = false;
+        public bool TradeMenuPriority = false;
+
         public bool HorseWindowOpen = false;
         public bool Idle;
         public int Facing;

@@ -479,7 +479,7 @@ namespace HISP.Game
             string message = Messages.FormatTradeWhatToOffer(trade.OtherTrade.Trader.Username);
             message += Messages.TradeOfferMoney;
             message += Messages.TradeOfferHorse;
-            foreach(HorseInstance horse in trade.Trader.HorseInventory.HorseList.OrderBy(o => o.Name).Where(o => o.Leaser < 0 && o.Category == "TRADING"))
+            foreach(HorseInstance horse in trade.Trader.HorseInventory.HorseList.OrderBy(o => o.Name).Where(o => o.Leaser <= 0 && o.Category == "TRADING"))
             {
                 bool tacked = (horse.Equipment.Saddle != null || horse.Equipment.SaddlePad != null || horse.Equipment.Bridle != null || horse.Equipment.Companion != null);
                 message += Messages.FormatTradeOfferHorse(horse.Name, tacked, horse.UniqueId);
@@ -1416,7 +1416,7 @@ namespace HISP.Game
 
             message += Messages.MultiHorseSelectOneToJoinWith;
             int placing = 1;
-            foreach (HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).Where(o => o.Leaser < 0))
+            foreach (HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).Where(o => o.Leaser <= 0))
             {
                 HorseInfo.StatCalculator speedStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.SPEED, user);
                 HorseInfo.StatCalculator strengthStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.STRENGTH, user);
@@ -1438,7 +1438,7 @@ namespace HISP.Game
         {
             string message = Messages.HorseGamesSelectHorse;
             int placing = 1;
-            foreach(HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).Where(o => o.Leaser < 0))
+            foreach(HorseInstance horse in user.HorseInventory.HorseList.OrderBy(o => o.Name).Where(o => o.Leaser <= 0))
             {
 
                 HorseInfo.StatCalculator speedStat = new HorseInfo.StatCalculator(horse, HorseInfo.StatType.SPEED, user);
@@ -1571,6 +1571,7 @@ namespace HISP.Game
             if(!Ranch.RanchExists(ranchId)) // Ghost ranchs exist.. apparently?
             {
                 user.MajorPriority = false;
+                user.MinorPriority = false;
                 return BuildMetaInfo(user, user.X, user.Y);
             }
 
@@ -1660,7 +1661,7 @@ namespace HISP.Game
         public static string BuildAuctionHorseList(User user)
         {
             string message = Messages.AuctionListHorse;
-            foreach(HorseInstance horse in user.HorseInventory.HorseList.Where(o => o.Leaser < 0 && o.Category == "TRADING"))
+            foreach(HorseInstance horse in user.HorseInventory.HorseList.Where(o => o.Leaser <= 0 && o.Category == "TRADING"))
             {
                 bool tacked = (horse.Equipment.Saddle != null || horse.Equipment.SaddlePad != null || horse.Equipment.Bridle != null || horse.Equipment.Companion != null);
                 message += Messages.FormatAuctionHorseListEntry(horse.Name, tacked, horse.UniqueId);
@@ -2650,7 +2651,7 @@ namespace HISP.Game
                 {
                     
                     foreach(HorseInstance horseInstance in user.HorseInventory.HorseList.Where(o => 
-                        o.Leaser < 0 && 
+                        o.Leaser <= 0 && 
                         o.Equipment.Saddle != null && 
                         o.Equipment.SaddlePad != null && 
                         o.Equipment.Bridle != null))
