@@ -13,14 +13,34 @@ game-server:
  - [x] Admin Commands
  - [x] Mod Chat
  - [x] Admin Chat
+ - [x] Inn
+ - [x] Horse Whisperer
  - [x] Dig, Rake, Search, and Search
  - [x] Dropped Items
  - [x] Farrier
  - [x] Groomer
  - [x] Vet
+ - [x] City Hall
+ - [x] Fountain
+ - [x] Password Tiles
+ - [x] Santa
  - [x] Boat / Wagon
  - [x] Barns
  - [x] Leaser
+ - [x] Mud Hole
+ - [x] Arenas
+ - [x] Pond
+ - [x] Ranch
+ - [x] Bank
+ - [x] Hay Piles
+ - [x] Shops
+ - [x] Exitable Tiles
+ - [x] Wishing Well
+ - [x] Auctions
+ - [x] Fly Traps
+ - [x] Subscriptions
+ - [x] Teleport Tiles
+ - [x] Riddle Room
  - [x] Isle Trading Card Game
  - [x] Water Balloon Game
  - [X] Telescope
@@ -34,6 +54,7 @@ game-server:
  - [x] Riding Horses
  - [x] NPCs
  - [x] Quests
+ - [x] Pawneer Orders
  - [x] Trading
  - [x] Profile Page
  - [x] Private Notes
@@ -41,14 +62,12 @@ game-server:
  - [x] Prison Isle
  - [x] Rules Isle
  - [x] Minigame Rewards
- - [x] Arenas
- - [x] Ranch
- - [x] Subscriptions
  - [x] Mods Revenge
  - [x] Tack Shop Giveaway
  - [x] 2-Player Minigames
  - [x] Multiplayer Rooms
- - [x] Training
+ - [x] Multiplayer Horse Games 
+ - [x] Training Pens
  - [x] Companions
  - [x] Buddy Requests
  - [x] Social
@@ -61,13 +80,7 @@ game-server:
  - [x] Library
  - [x] Mail
  - [x] Real Time Riddles
- - [x] Teleport Tiles
- - [x] Riddle Room
  - [x] Real Time Quiz
- - [x] Auctions
- - [x] Pawneer orders
- - [x] Shops
- - [x] Fly Traps
  - [x] Swear Filter
  - [x] Corrections
  - [x] Playtime Limits
