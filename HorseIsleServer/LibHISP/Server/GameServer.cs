@@ -7456,8 +7456,9 @@ namespace HISP.Server
                 (o.X == x && o.Y == y) && 
                 (ignoreMinorPriority ? true : !o.MinorPriority) && 
                 (ignoreMajorPriority ? true : !o.MajorPriority) && 
-                (exceptUser == null ? true : o.Id != exceptUser.Id)))
-                UpdateArea(user.Client);
+                (exceptUser == null ? true : o.Id != exceptUser.Id))) {
+                    UpdateArea(user.Client);
+            }
         }
         
         public static void UpdateArea(GameClient forClient)
