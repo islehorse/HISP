@@ -38,8 +38,8 @@ namespace HISP.Server
             // Alter sizes
             Database.TryExecuteSqlQuery("ALTER TABLE UserExt CHANGE COLUMN ProfilePage ProfilePage TEXT(4000);");
             Database.TryExecuteSqlQuery("ALTER TABLE UserExt CHANGE COLUMN PrivateNotes PrivateNotes TEXT(65535);");
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox CHANGE COLUMN Subject Subject TEXT(100);");
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox CHANGE COLUMN Message Message TEXT(65535);");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox CHANGE COLUMN Subject Subject TEXT(100);");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox CHANGE COLUMN Message Message TEXT(65535);");
             Database.TryExecuteSqlQuery("ALTER TABLE Horses CHANGE COLUMN description description TEXT(4000);");
             Database.TryExecuteSqlQuery("ALTER TABLE WildHorse CHANGE COLUMN description description TEXT(4000);");
             Database.TryExecuteSqlQuery("ALTER TABLE Ranches CHANGE COLUMN title title TEXT(50);");
@@ -139,12 +139,12 @@ namespace HISP.Server
             Database.TryExecuteSqlQuery("ALTER TABLE BuddyList RENAME COLUMN Id TO sendPlayerId;");
             Database.TryExecuteSqlQuery("ALTER TABLE BuddyList RENAME COLUMN IdFriend TO recvPlayerId;");
 
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox RENAME COLUMN IdTo TO toPlayerId;");
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox RENAME COLUMN IdFrom TO fromPlayerId;");
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox RENAME COLUMN Subject TO subject;");
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox RENAME COLUMN Message TO message;");
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox RENAME COLUMN TimeSent TO timeSent;");
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox RENAME COLUMN BeenRead TO beenRead;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN IdTo TO toPlayerId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN IdFrom TO fromPlayerId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN Subject TO subject;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN Message TO message;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN TimeSent TO timeSent;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN BeenRead TO beenRead;");
 
             Database.TryExecuteSqlQuery("ALTER TABLE UserExt RENAME COLUMN Id TO playerId;");
             Database.TryExecuteSqlQuery("ALTER TABLE UserExt RENAME COLUMN LastLogin TO lastLogin;");
@@ -193,8 +193,8 @@ namespace HISP.Server
             // add foreign keys ...
             Database.TryExecuteSqlQuery("ALTER TABLE UserExt ADD CONSTRAINT fk_playerId FOREIGN KEY (playerId) REFERENCES Users(playerId);");
             
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox ADD CONSTRAINT fk_toPlayerId FOREIGN KEY (toPlayerId) REFERENCES Users(playerId);");
-            Database.TryExecuteSqlQuery("ALTER TABLE MailBox ADD CONSTRAINT fk_fromPlayerId FOREIGN KEY (fromPlayerId) REFERENCES Users(playerId)");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox ADD CONSTRAINT fk_toPlayerId FOREIGN KEY (toPlayerId) REFERENCES Users(playerId);");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox ADD CONSTRAINT fk_fromPlayerId FOREIGN KEY (fromPlayerId) REFERENCES Users(playerId)");
 
             Database.TryExecuteSqlQuery("ALTER TABLE BuddyList ADD CONSTRAINT fk_sendPlayerId FOREIGN KEY (sendPlayerId) REFERENCES Users(playerId);");
             Database.TryExecuteSqlQuery("ALTER TABLE BuddyList ADD CONSTRAINT fk_recvPlayerId FOREIGN KEY (recvPlayerId) REFERENCES Users(playerId);");
@@ -229,6 +229,21 @@ namespace HISP.Server
 
         }
 
+        private static void fixupVersion2_5_32()
+        {
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN IdTo TO toPlayerId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN IdFrom TO fromPlayerId;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN Subject TO subject;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN Message TO message;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN TimeSent TO timeSent;");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox RENAME COLUMN BeenRead TO beenRead;");
+
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox ADD PRIMARY KEY (uniqueId);");
+
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox ADD CONSTRAINT fk_toPlayerId FOREIGN KEY (toPlayerId) REFERENCES Users(playerId);");
+            Database.TryExecuteSqlQuery("ALTER TABLE Mailbox ADD CONSTRAINT fk_fromPlayerId FOREIGN KEY (fromPlayerId) REFERENCES Users(playerId)");
+        }
+
         public static void FixUpDb()
         {
             string lastVersionStr = Database.GetLastLoadedVersion();
@@ -249,6 +264,7 @@ namespace HISP.Server
                 if (lastVersion <= verToNum("v2.2.36")) fixupVersion2_2_36();
                 if (lastVersion <= verToNum("v2.5.6")) fixupVersion2_5_6();
                 if (lastVersion <= verToNum("v2.5.26")) fixupVersion2_5_26();
+                if (lastVersion <= verToNum("v2.5.32")) fixupVersion2_5_32();
             }
 
             if (Database.GetTotalWorldEntries() != 1)

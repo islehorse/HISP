@@ -2003,7 +2003,7 @@ namespace HISP.Server
 
                 using (DbConnection db = connectDb())
                 {
-                    DbCommand sqlCommand = createCommand(db, "SELECT LastLoadedInVersion FROM World ORDER BY StartTime DESC");
+                    DbCommand sqlCommand = createCommand(db, "SELECT lastLoadedInVersion FROM World ORDER BY StartTime DESC");
                     string lastVersion = sqlCommand.ExecuteScalar().ToString();             
                     return lastVersion;
                 }
