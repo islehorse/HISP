@@ -1106,8 +1106,10 @@ namespace HISP.Game
         public static string BuildBuddyList(User user)
         {
             string message = Messages.BuddyListHeader;
-            foreach (User friend in user.Friends.List.Select(o => User.GetUserById(o)).Where(o => !o.Stealth))
-            {
+            foreach (User friend in user.Friends.List
+                            .Where(o => User.IsUserOnline(o))
+                            .Select(o => User.GetUserById(o))
+                            .Where(o => !o.Stealth)) {
                 try
                 {
                     int icon = friend.GetPlayerListIcon();

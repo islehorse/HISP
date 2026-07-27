@@ -59,13 +59,12 @@ namespace HISP.Player
             Database.RemoveBuddy(baseUser.Id, userid);
 
             // Remove buddy from there list if they are logged in
-            try
+            if(User.IsUserOnline(userid))
             {
                 User removeFrom = User.GetUserById(userid);
                 removeFrom.Friends.RemoveFromLocalList(baseUser.Id);
             }
-            catch (InvalidOperationException) { /* User is offline, remove from database is sufficent */ };
- 
+            
 
             baseUser.Friends.RemoveFromLocalList(userid);
         }
