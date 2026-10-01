@@ -2,7 +2,7 @@
 
 [![Build](https://github.com/islehorse/HISP/workflows/build/badge.svg)](https://github.com/islehorse/HISP/actions?query=workflow%3Abuild)
 
-HISP is a "Server Emulator" for Horse Isle 1
+HISP is a "Server Emulator" for the flash-based MMORPG Horse Isle: The Secret Land of Horses
 
 game-server: 
 
