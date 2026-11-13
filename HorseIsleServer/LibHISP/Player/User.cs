@@ -89,7 +89,7 @@ namespace HISP.Player
         {
             get
             {
-                return World.InIsle(this.X, this.Y) ? User.GetUsersInIsle(World.GetIsle(this.X, this.Y), false).Count(o => !o.MuteIsland) - 1 : 0;
+                return World.InIsle(this.X, this.Y) ? User.GetUsersInIsle(World.GetIsle(this.X, this.Y), false).Count(o => !o.MuteIsland) : 0;
             }
         }
        
