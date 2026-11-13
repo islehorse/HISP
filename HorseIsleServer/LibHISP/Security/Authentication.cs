@@ -5,80 +5,13 @@ using System.Text;
 using System.Linq;
 
 using HISP.Server;
-using HISP.Util;
 
 namespace HISP.Security
 {
 
-
+    // Handles Hash and Salt calculation for Login Authentication.
     public class Authentication
     {
-
-        public const string ROTPOOL = "bl7Jgk61IZdnY mfDN5zjM2XLqTCty4WSEoKR3BFVQsaUhHOAx0rPwp9uc8iGve";
-        public const string POSPOOL = "DQc3uxiGsKZatMmOS5qYveN71zoPTk8yU0H2w9VjprBXWn l4FJd6IRbhgACfEL";
-
-
-		// The horse isle client does some weird obfuscation to incoming user/pass
-		// this is mostly security-through-obscurity, but we have to play along
-		//
-		// The following handles:
-		// - deobfuscated a given user/pass combo
-		// - password hash/salt
-
-		public static string EncryptLogin(string plainpass)
-        {
-            string encrypt = "";
-
-            int i = 0;
-            while (i < plainpass.Length)
-            {
-                int rotation = GameServer.RandomNumberGenerator.Next(0, ROTPOOL.Length);
-                int position = ROTPOOL.IndexOf(plainpass[i]);
-
-                position = position + (rotation + i);
-                while (position >= ROTPOOL.Length)
-                    position -= ROTPOOL.Length;
-                encrypt += ROTPOOL[rotation];
-                encrypt += POSPOOL[position];
-
-                i++;
-            }
-            return encrypt;
-
-        }
-        public static string DecryptLogin(string encpass)
-        {
-            string decrypt = "";
-
-            int i = 0;
-            int rotationCycle = 0;
-            while (i < encpass.Length)
-            {
-                int rotation = ROTPOOL.IndexOf(encpass[i].ToString());
-                int position = POSPOOL.IndexOf(encpass[i + 1].ToString());
-                position -= (rotation + rotationCycle);
-                if (position < 0)
-                {
-                    position = (position / -1) - 1;
-
-                    while (position >= ROTPOOL.Length)
-                        position -= ROTPOOL.Length;
-
-                    decrypt += Helper.ReverseString(ROTPOOL)[position];
-                }
-                else
-                {
-                    while (position >= ROTPOOL.Length)
-                        position -= ROTPOOL.Length;
-
-                    decrypt += ROTPOOL[position];
-                }
-
-                i += 2;
-                rotationCycle++;
-            }
-            return decrypt.Replace(" ", "");
-        }
 
         public static byte[] Sha1Digest(byte[] message)
         {

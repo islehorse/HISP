@@ -6669,10 +6669,10 @@ namespace HISP.Server
                 }
 
                 int version = Helper.S2I(loginParts[0]);
-                string encryptedUsername = loginParts[1];
-                string encryptedPassword = loginParts[2];
-                string username = Authentication.DecryptLogin(encryptedUsername);
-                string password = Authentication.DecryptLogin(encryptedPassword);
+                string obfuscatedUsername = loginParts[1];
+                string obfuscatedPassword = loginParts[2];
+                string username = LoginObfuscation.DeobfuscateLogin(obfuscatedUsername);
+                string password = LoginObfuscation.DeobfuscateLogin(obfuscatedPassword);
 
                 if (Authentication.CheckPassword(username, password))
                 {
