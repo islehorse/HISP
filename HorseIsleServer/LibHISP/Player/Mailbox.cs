@@ -1,5 +1,6 @@
 ﻿using HISP.Game;
 using HISP.Game.Items;
+using HISP.Security;
 using HISP.Server;
 using HISP.Util;
 using System.Linq;
@@ -8,19 +9,10 @@ namespace HISP.Player
 {
     public class Mailbox
     {
-        public class Mail
-        {
-            public int UniqueId;
-            public bool Read;
-            public int FromUser;
-            public int ToUser;
-            public string Subject;
-            public string Message;
-            public int Timestamp;
-        }
+        
 
         private User baseUser;
-        private ThreadSafeList<Mail> mails = new ThreadSafeList<Mail>();
+        private ThreadSafeList<MailItem> mails = new ThreadSafeList<MailItem>();
         public int MailCount 
         {
             get
@@ -35,7 +27,7 @@ namespace HISP.Player
                 return MailMessages.Count(o => !o.Read);
             }
         }
-        public Mail[] MailMessages 
+        public MailItem[] MailMessages 
         { 
             get
             {
@@ -44,7 +36,7 @@ namespace HISP.Player
         }
 
 
-        public void RipUpMessage(Mail message)
+        public void RipUpMessage(MailItem message)
         {
             Database.DeleteMail(message.UniqueId);
             mails.Remove(message);
@@ -74,7 +66,7 @@ namespace HISP.Player
 
             GameServer.UpdatePlayer(baseUser.Client);
         }
-        public void AddMail(Mail mailMessage)
+        public void AddMail(MailItem mailMessage)
         {
             mails.Add(mailMessage);
             Database.AddMail(mailMessage.UniqueId, mailMessage.ToUser, mailMessage.FromUser, mailMessage.Subject, mailMessage.Message, mailMessage.Timestamp, mailMessage.Read);
@@ -83,14 +75,14 @@ namespace HISP.Player
         {
 			return MailMessages.Any(o => o.UniqueId == uniqueId);
         }
-        public Mail GetMessageByUniqueId(int uniqueId)
+        public MailItem GetMessageByUniqueId(int uniqueId)
         {
             return MailMessages.First(o => o.UniqueId == uniqueId);
         }
         public Mailbox(User user)
         {
             baseUser = user;
-            Mail[] mailMessages = Database.LoadMailbox(user.Id);
+            MailItem[] mailMessages = Database.LoadMailbox(user.Id);
             mails.AddRange(mailMessages);
         }
     }

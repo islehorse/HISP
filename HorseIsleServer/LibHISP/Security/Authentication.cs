@@ -9,6 +9,8 @@ using HISP.Util;
 
 namespace HISP.Security
 {
+
+
     public class Authentication
     {
 
@@ -16,7 +18,14 @@ namespace HISP.Security
         public const string POSPOOL = "DQc3uxiGsKZatMmOS5qYveN71zoPTk8yU0H2w9VjprBXWn l4FJd6IRbhgACfEL";
 
 
-        public static string EncryptLogin(string plainpass)
+		// The horse isle client does some weird obfuscation to incoming user/pass
+		// this is mostly security-through-obscurity, but we have to play along
+		//
+		// The following handles:
+		// - deobfuscated a given user/pass combo
+		// - password hash/salt
+
+		public static string EncryptLogin(string plainpass)
         {
             string encrypt = "";
 

@@ -1994,7 +1994,7 @@ namespace HISP.Server
                                         int playerId = Database.GetUserId(to);
 
                                         sender.User.TakeMoney(3);
-                                        Mailbox.Mail mailMessage = new Mailbox.Mail();
+                                        MailItem mailMessage = new MailItem();
                                         mailMessage.UniqueId = UniqueID.NextUniqueId();
                                         mailMessage.FromUser = sender.User.Id;
                                         mailMessage.ToUser = playerId;

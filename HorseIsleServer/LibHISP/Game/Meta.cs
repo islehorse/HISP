@@ -1938,7 +1938,7 @@ namespace HISP.Game
 
             return message;
         }
-        public static string BuildMailLetter(Mailbox.Mail mailMessage, int itemUniqueId)
+        public static string BuildMailLetter(MailItem mailMessage, int itemUniqueId)
         {
             DateTime time = Helper.UnixTimeStampToDateTime(mailMessage.Timestamp);
             string amOrPm = "am";
@@ -1970,7 +1970,7 @@ namespace HISP.Game
             string message = Messages.MailSelectFromFollowing;
             foreach(ItemInstance inst in mailMessageForPlayer.ItemInstances)
             {
-                Mailbox.Mail mail = user.MailBox.GetMessageByUniqueId(inst.Data);
+                MailItem mail = user.MailBox.GetMessageByUniqueId(inst.Data);
                 message += Messages.FormatMailEntry(mail.Subject, Database.GetUsername(mail.FromUser), inst.UniqueId);
             }
             message += Messages.BackToMap;

@@ -3736,9 +3736,9 @@ namespace HISP.Server
             }
 
         }
-        public static Mailbox.Mail[] LoadMailbox(int toId)
+        public static MailItem[] LoadMailbox(int toId)
         {
-            List<Mailbox.Mail> mailList = new List<Mailbox.Mail>();
+            List<MailItem> mailList = new List<MailItem>();
             using (DbConnection db = connectDb())
             {
                 DbCommand sqlCommand = createCommand(db, "SELECT * FROM Mailbox WHERE toPlayerId=@toId");
@@ -3747,7 +3747,7 @@ namespace HISP.Server
                 DbDataReader reader = sqlCommand.ExecuteReader();
                 while(reader.Read())
                 {
-                    Mailbox.Mail mailMessage = new Mailbox.Mail();
+					MailItem mailMessage = new MailItem();
                     mailMessage.UniqueId = UniqueID.NextUniqueId(reader.GetInt32(0));
                     mailMessage.ToUser = reader.GetInt32(1);
                     mailMessage.FromUser = reader.GetInt32(2);

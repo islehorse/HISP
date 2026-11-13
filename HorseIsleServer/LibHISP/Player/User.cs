@@ -3,6 +3,7 @@ using HISP.Game.Horse;
 using HISP.Game.Inventory;
 using HISP.Game.Services;
 using HISP.Player.Equips;
+using HISP.Security;
 using HISP.Server;
 using HISP.Util;
 using System;
@@ -27,6 +28,7 @@ namespace HISP.Player
         private int subscribedUntil;
         private bool subscribed;
         private string profilePage;
+        private string userName;
         private string privateNotes;
         private int x;
         private int y;
@@ -237,10 +239,17 @@ namespace HISP.Player
             }
         }
 
+        public string Username
+        {
+            get
+            {
+                return MetaSanitizer.Sanitize(userName);
+            }
+        }
+
         public Trade CurrentTrade = null;
         public int AttemptingToOfferItem;
         public int Id;
-        public string Username;
         public bool NewPlayer = false;
         public GameClient Client;
         public CompetitionGear EquipedCompetitionGear;
@@ -509,7 +518,7 @@ namespace HISP.Player
         {
             get
             {
-                return privateNotes;
+                return MetaSanitizer.Sanitize(privateNotes);
             }
             set
             {
@@ -522,7 +531,7 @@ namespace HISP.Player
         public string ProfilePage { 
             get 
             { 
-                return profilePage; 
+                return MetaSanitizer.Sanitize(profilePage); 
             }
             set 
             {
@@ -796,8 +805,7 @@ namespace HISP.Player
             EquipedJewelry = new Jewelry(userId);
 
             Id = userId;
-            Username = Database.GetUsername(userId);
-            
+
             administrator = Database.GetUserAdmin(Id);
             moderator = Database.GetUserModerator(Id);
 
@@ -814,6 +822,7 @@ namespace HISP.Player
             subscribed = Database.GetUserSubscribed(userId);
             subscribedUntil = Database.GetUserSubscriptionExpireDate(userId);
             profilePage = Database.GetPlayerProfile(userId);
+            userName = Database.GetUsername(userId);
             privateNotes = Database.GetPlayerNotes(userId);
             hunger = Database.GetPlayerHunger(userId);
             thirst = Database.GetPlayerThirst(userId);

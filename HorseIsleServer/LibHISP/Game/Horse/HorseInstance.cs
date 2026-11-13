@@ -1,4 +1,5 @@
-﻿using HISP.Server;
+﻿using HISP.Security;
+using HISP.Server;
 
 namespace HISP.Game.Horse
 {
@@ -105,7 +106,7 @@ namespace HISP.Game.Horse
         {
             get
             {
-                return name;
+                return MetaSanitizer.Sanitize(name);
             }
             set
             {
@@ -117,7 +118,7 @@ namespace HISP.Game.Horse
         {
             get
             {
-                return description;
+                return MetaSanitizer.Sanitize(description);
             }
             set
             {
