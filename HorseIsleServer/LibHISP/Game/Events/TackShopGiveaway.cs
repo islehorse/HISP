@@ -7,6 +7,7 @@ using HISP.Game.Services;
 using HISP.Server;
 using HISP.Game.Horse;
 using HISP.Player;
+using HISP.Util;
 
 namespace HISP.Game.Events
 {
@@ -28,7 +29,7 @@ namespace HISP.Game.Events
             World.SpecialTile[] tackShops = World.SpecialTiles.Where(o =>
                                                         o.Code != null &&
                                                         (o.Code.StartsWith("STORE-", StringComparison.InvariantCultureIgnoreCase) &&
-                                                        Shop.GetShopById(int.Parse(o.Code.Split('-')[1])).BuysItemTypes.Contains("TACK") &&
+                                                        Shop.GetShopById(Helper.S2I(o.Code.Split('-')[1])).BuysItemTypes.Contains("TACK") &&
                                                         Npc.GetNpcsByXAndY(o.X, o.Y).Length > 0)
                                                       ).ToArray();
 

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using HISP.Game;
 using HISP.Server;
 using HISP.Util;
@@ -11,6 +9,15 @@ namespace HISP.Player
     {
         private User baseUser;
         private ThreadSafeList<int> list;
+
+        public User[] Online
+        {
+            get
+            {
+                return List.Where(o => o != baseUser.Id && User.IsUserOnline(o)).Select(o => User.GetUserById(o)).ToArray();
+            }
+        }
+
         public int[] List
         {
             get

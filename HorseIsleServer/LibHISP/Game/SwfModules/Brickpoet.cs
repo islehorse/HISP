@@ -128,13 +128,23 @@ namespace HISP.Game.SwfModules
             return peices.ToArray();
         }
 
+        public static bool RoomExists(int roomId)
+        {
+            return PoetryRooms.Any(o => o.Any(o => o.RoomId == roomId));
+        }
         public static PoetryPeice[] GetPoetryRoom(int roomId)
         {
             return PoetryRooms.First(o => o.Any(o => o.RoomId == roomId));
         }
-        public static PoetryPeice GetPoetryPeice(PoetryPeice[] room, int id)
+
+        public static bool PeiceExists(PoetryPeice[] room, int peiceId)
         {
-            return room.First(o => o.Id == id);
+            return room.Any(o => o.Id == peiceId);
+        }
+
+        public static PoetryPeice GetPoetryPeice(PoetryPeice[] room, int peiceId)
+        {
+            return room.First(o => o.Id == peiceId);
         }
         public static void LoadPoetryRooms()
         {

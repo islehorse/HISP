@@ -1233,8 +1233,8 @@ namespace HISP.Server
 
             // Tag
 
-            Messages.TagYourItFormat = (string)jdata["messages"]["meta"]["player_interaction"]["tag"]["tag_player"];
-            Messages.TagOtherBuddiesOnlineFormat = (string)jdata["messages"]["meta"]["player_interaction"]["tag"]["total_buddies"];
+            Messages.TagOthersFormat = (string)jdata["messages"]["tag"]["for_others"];
+            Messages.TagSenderFormat = (string)jdata["messages"]["tag"]["for_sender"];
 
             // Add Buddy
 

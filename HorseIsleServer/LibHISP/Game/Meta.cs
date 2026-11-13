@@ -476,23 +476,23 @@ namespace HISP.Game
 
         public static string BuildTradeAdd(Trade trade)
         {
-            string message = Messages.FormatTradeWhatToOffer(trade.OtherTrade.Trader.Username);
+            string message = Messages.FormatTradeWhatToOffer(trade.OtherTrade.Tradee.Username);
             message += Messages.TradeOfferMoney;
             message += Messages.TradeOfferHorse;
-            foreach(HorseInstance horse in trade.Trader.HorseInventory.HorseList.OrderBy(o => o.Name).Where(o => o.Leaser <= 0 && o.Category == "TRADING"))
+            foreach(HorseInstance horse in trade.Tradee.HorseInventory.HorseList.OrderBy(o => o.Name).Where(o => o.Leaser <= 0 && o.Category == "TRADING"))
             {
                 bool tacked = (horse.Equipment.Saddle != null || horse.Equipment.SaddlePad != null || horse.Equipment.Bridle != null || horse.Equipment.Companion != null);
                 message += Messages.FormatTradeOfferHorse(horse.Name, tacked, horse.UniqueId);
             }
 
-            if(trade.OtherTrade.Trader.Inventory.Count >= trade.OtherTrade.Trader.MaxItems)
+            if(trade.OtherTrade.Tradee.Inventory.Count >= trade.OtherTrade.Tradee.MaxItems)
             {
                 message += Messages.TradeOfferItemOtherPlayerInvFull;
             }
             else
             {
                 message += Messages.TradeOfferItem;
-                foreach(InventoryItem item in trade.Trader.Inventory.Items.Where(o => o.ItemInfo.Type != "QUEST" && o.ItemInfo.Type != "TEXT" && o.ItemInfo.Id != Item.DorothyShoes ))
+                foreach(InventoryItem item in trade.Tradee.Inventory.Items.Where(o => o.ItemInfo.Type != "QUEST" && o.ItemInfo.Type != "TEXT" && o.ItemInfo.Id != Item.DorothyShoes ))
                     message += Messages.FormatTradeOfferItem(item.ItemInfo.IconId, item.ItemInfo.Name, item.ItemInstances.Length, item.ItemId);
             }
 
@@ -536,7 +536,7 @@ namespace HISP.Game
         {
 
             string message = "";
-            message += Messages.FormatTradeWithPlayer(trade.OtherTrade.Trader.Username);
+            message += Messages.FormatTradeWithPlayer(trade.OtherTrade.Tradee.Username);
 
 
 
@@ -548,7 +548,7 @@ namespace HISP.Game
                 message += Messages.TradeOtherPlayerIsDone;
 
 
-            message += Messages.FormatTradeYourOffering(trade.OtherTrade.Trader.Username);
+            message += Messages.FormatTradeYourOffering(trade.OtherTrade.Tradee.Username);
             if (trade.MoneyOffered == 0 && trade.ItemsOffered.Length == 0 && trade.HorsesOffered.Length == 0)
                 message += Messages.TradeOfferingNothing;
             if (trade.MoneyOffered > 0)
@@ -571,7 +571,7 @@ namespace HISP.Game
             if(trade.Stage == "OPEN")
                 message += Messages.TradeAddItems;
 
-            message += Messages.FormatTradeOtherOffering(trade.OtherTrade.Trader.Username);
+            message += Messages.FormatTradeOtherOffering(trade.OtherTrade.Tradee.Username);
             if (trade.OtherTrade.MoneyOffered == 0 && trade.OtherTrade.ItemsOffered.Length == 0 && trade.OtherTrade.HorsesOffered.Length == 0)
                 message += Messages.TradeOfferingNothing;
             if (trade.OtherTrade.MoneyOffered > 0)
@@ -1920,7 +1920,7 @@ namespace HISP.Game
         public static string BuildPlayerListMenu(User user)
         {
             string message = "";
-            int friendsOnline = user.GetNumberOfBuddiesOnline();
+            int friendsOnline = user.Friends.Online.Length;
             
             message += Messages.PlayerListHeader;
             message += Messages.PlayerListSelectFromFollowing;
@@ -2736,7 +2736,7 @@ namespace HISP.Game
                 }
                 else if (tileCode == "STORE")
                 {
-                    int shopId = int.Parse(tileArg);
+                    int shopId = Helper.S2I(tileArg);
                     Shop shop = Shop.GetShopById(shopId);
                     user.LastShoppedAt = shop;
                     message += buildShopInfo(shop, user.Inventory);
@@ -2748,19 +2748,19 @@ namespace HISP.Game
                 }
                 else if (tileCode == "VET")
                 {
-                    message += buildVet(user, Vet.GetVetById(int.Parse(tileArg)));
+                    message += buildVet(user, Vet.GetVetById(Helper.S2I(tileArg)));
                 }
                 else if (tileCode == "GROOMER")
                 {
-                    message += buildGroomer(user, Groomer.GetGroomerById(int.Parse(tileArg)));
+                    message += buildGroomer(user, Groomer.GetGroomerById(Helper.S2I(tileArg)));
                 }
                 else if (tileCode == "FARRIER")
                 {
-                    message += buildFarrier(user, Farrier.GetFarrierById(int.Parse(tileArg)));
+                    message += buildFarrier(user, Farrier.GetFarrierById(Helper.S2I(tileArg)));
                 }
                 else if (tileCode == "BARN")
                 {
-                    message += buildBarn(user, Barn.GetBarnById(int.Parse(tileArg)));
+                    message += buildBarn(user, Barn.GetBarnById(Helper.S2I(tileArg)));
                 }
                 else if (tileCode == "BANK")
                 {
@@ -2784,19 +2784,19 @@ namespace HISP.Game
                 }
                 else if (tileCode == "ARENA")
                 {
-                    message += buildArena(user, Arena.GetAreaById(int.Parse(tileArg)));
+                    message += buildArena(user, Arena.GetAreaById(Helper.S2I(tileArg)));
                 }
                 else if (tileCode == "AUCTION")
                 {
-                    message += buildAuction(user, Auction.GetAuctionRoomById(int.Parse(tileArg)));
+                    message += buildAuction(user, Auction.GetAuctionRoomById(Helper.S2I(tileArg)));
                 }
                 else if (tileCode == "TRAINER")
                 {
-                    message += buildTrainer(user, Trainer.GetTrainerById(int.Parse(tileArg)));
+                    message += buildTrainer(user, Trainer.GetTrainerById(Helper.S2I(tileArg)));
                 }
                 else if (tileCode == "HORSELEASER")
                 {
-                    message += buildLeaser(user, Leaser.GetLeasersById(int.Parse(tileArg)));
+                    message += buildLeaser(user, Leaser.GetLeasersById(Helper.S2I(tileArg)));
                 }
                 else if (tileCode == "LIBRARY")
                 {
@@ -2834,7 +2834,7 @@ namespace HISP.Game
                 }
                 else if (tileCode == "RANCH")
                 {
-                    message += buildRanch(user, int.Parse(tileArg));
+                    message += buildRanch(user, Helper.S2I(tileArg));
                 }
                 else if (tileCode == "SANTA")
                 {
@@ -2854,8 +2854,7 @@ namespace HISP.Game
                 }
                 else if (tileCode == "INN")
                 {
-                    int InnID = int.Parse(tileArg);
-                    Inn inn = Inn.GetInnById(InnID);
+                    Inn inn = Inn.GetInnById(Helper.S2I(tileArg));
                     user.LastVisitedInn = inn;
                     message += buildInn(inn);
                 }

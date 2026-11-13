@@ -1,4 +1,5 @@
 ﻿using HISP.Server;
+using HISP.Util;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -59,7 +60,7 @@ namespace HISP.Game.SwfModules
                 {
                     if (tile.Code.StartsWith("MULTIROOM-D"))
                     {
-                        int roomId = int.Parse(tile.Code.Substring(11));
+                        int roomId = Helper.S2I(tile.Code.Substring(11));
                         Logger.InfoPrint("Loading Drawing Room ID: " + roomId.ToString());
                         Drawingroom room = new Drawingroom(roomId);
                     }

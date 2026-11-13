@@ -67,9 +67,42 @@ namespace HISP.Player
         {
             get
             {
-                return OnlineUsers.Count(o => o.MuteAds);
+                return OnlineUsers.Count(o => !o.MuteAds);
             }
         }
+
+        public int HereListening
+        {
+            get
+            {
+                return GetUsersAt(this.X, this.Y, true, true).Count(o => !o.MuteHere);
+            }
+        }
+
+        public int NearbyListening
+        {
+            get
+            {
+                return GetNearbyUsers(this.X, this.Y, true, true).Count(o => !o.MuteNear);
+            }
+        }
+
+        public int IsleListening
+        {
+            get
+            {
+                return World.InIsle(this.X, this.Y) ? User.GetUsersInIsle(World.GetIsle(this.X, this.Y), false, true).Count(o => !o.MuteIsland) - 1 : 0;
+            }
+        }
+       
+        public int BuddiesListening
+        {
+            get
+            {
+                return this.Friends.Online.Count(o => !o.MuteBuddy);
+            }
+        }
+
         public static bool IsUserOnline(int id)
         {
             return OnlineUsers.Any(o => o.Id == id);
@@ -106,7 +139,7 @@ namespace HISP.Player
         {
             return OnlineUsers.Where(o =>
                 (o.X == x && o.Y == y) && 
-                (includeStealth ? true : !o.Stealth || includeMuted ? true : !o.MuteNear)
+                (includeStealth ? true : !o.Stealth || includeMuted ? true : !o.MuteHere)
             ).ToArray();
 
         }
@@ -321,10 +354,7 @@ namespace HISP.Player
             }
         }
 
-        public int GetNumberOfBuddiesOnline()
-        {
-            return this.Friends.List.Count(o => User.IsUserOnline(o));
-        }
+
 
         public void TakeMoney(int amount)
         {

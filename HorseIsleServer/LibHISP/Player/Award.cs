@@ -74,7 +74,11 @@ namespace HISP.Player
         }
 
         public static AwardEntry[] GlobalAwardList;
-
+        
+        public static bool Exists(int id)
+        {
+            return GlobalAwardList.Any(o => o.Id == id);
+        }
         public static AwardEntry GetAwardById(int id)
         {
             return GlobalAwardList.First(o => o.Id == id);
@@ -96,7 +100,18 @@ namespace HISP.Player
             return AwardsEarned.Any(o => o.Id == award.Id);
         }
 
-        public void AddAward(AwardEntry award,bool addToDatabase=true)
+        public void Add(int id, bool addToDatabase = true)
+        {
+            if (!Award.Exists(id))
+            {
+                Logger.ErrorPrint("Tried to add invalid award id: " + id);
+                return;
+            }
+
+            Add(Award.GetAwardById(id), addToDatabase);
+        }
+
+        public void Add(AwardEntry award, bool addToDatabase=true)
         {
             if (HasAward(award))
                 return;
@@ -122,7 +137,7 @@ namespace HISP.Player
             awardsEarned = new ThreadSafeList<AwardEntry>();
 
             foreach (int awardid in awards)
-                AddAward(GetAwardById(awardid), false);
+                Add(GetAwardById(awardid), false);
 
         }
 

@@ -184,7 +184,7 @@ namespace HISP.Game.Events
 
             winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.QuizWin).Count++;
             if (winner.TrackedItems.GetTrackedItem(Tracking.TrackableItem.QuizWin).Count >= 15)
-                winner.Awards.AddAward(Award.GetAwardById(Award.AWARD_QUIZ_GENIUS)); // Quiz Genius
+                winner.Awards.Add(Award.GetAwardById(Award.AWARD_QUIZ_GENIUS)); // Quiz Genius
 
             provideRewards();
         }

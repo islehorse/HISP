@@ -1,4 +1,5 @@
 ﻿using HISP.Properties;
+using HISP.Util;
 using System;
 using System.Collections;
 using System.IO;
@@ -147,7 +148,7 @@ namespace HISP.Server
                     DatabaseName = value;
                     break;
                 case "db_port":
-                    DatabasePort = int.Parse(value);
+                    DatabasePort = Helper.S2I(value);
                     break;
                 case "map":
                     MapFile = value;
@@ -195,10 +196,10 @@ namespace HISP.Server
                     EnableEolFeatures = (value == "true");
                     break;
                 case "intrest_rate":
-                    IntrestRate = int.Parse(value);
+                    IntrestRate = Helper.S2I(value);
                     break;
                 case "log_level":
-                    LogLevel = int.Parse(value);
+                    LogLevel = Helper.S2I(value);
                     break;
             }
         }

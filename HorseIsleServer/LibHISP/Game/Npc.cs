@@ -241,6 +241,11 @@ namespace HISP.Game
                 return npcList.ToArray();
             }
         }
+        public static bool ReplyExists(NpcEntry npc, int id)
+        {
+            if (npc is null) return false;
+            return npc.Chatpoints.SelectMany(o => o.Replies).Any(o => o.Id == id);
+        }
         public static NpcReply GetNpcReply(NpcEntry npc, int id)
         {
             return npc.Chatpoints.SelectMany(o => o.Replies).First(o => o.Id == id);

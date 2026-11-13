@@ -103,5 +103,41 @@ namespace HISP.Util
                 endPointIp = endPointIp.Substring(0, endPointIp.IndexOf(":"));
             return endPointIp;
         }
+
+        public static int S2I(string s, int def=-1)
+        {
+            try
+            {
+                return int.Parse(s);
+            }
+            catch(FormatException)
+            {
+                Logger.ErrorPrint("Failed to decode value: " + s + " as Int32.");
+                return def;
+            }
+            catch(OverflowException)
+            {
+                return int.MaxValue;
+            }
+        }
+
+        public static double S2D(string s, double def = -1.0)
+        {
+            try
+            {
+                return double.Parse(s);
+            }
+            catch (FormatException)
+            {
+                Logger.ErrorPrint("Failed to decode value: " + s + " as Double.");
+                return def;
+            }
+            catch (OverflowException)
+            {
+                return double.MaxValue;
+            }
+        }
+
     }
+
 }

@@ -2,6 +2,7 @@
 using HISP.Properties;
 using HISP.Server;
 using HISP.Util;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Drawing;
 using System.Globalization;
@@ -78,8 +79,8 @@ namespace HISP.Game
         public static string AutoSellYouSoldHorseOfflineFormat;
 
         // Tag
-        public static string TagYourItFormat;
-        public static string TagOtherBuddiesOnlineFormat;
+        public static string TagOthersFormat;
+        public static string TagSenderFormat;
 
         // Socials
         public static string SocialButton;
@@ -1423,15 +1424,13 @@ namespace HISP.Game
         {
             return AddBuddyDeleteBuddyFormat.Replace("%PLAYERNAME%", buddyName);
         }
-
-
-        public static string FormatTagTotalBuddies(int count)
+        public static string FormatTagForSender(string taggedPlayer, string tagger, int numBuddies)
         {
-            return TagOtherBuddiesOnlineFormat.Replace("%TOTALBUDDIESON%", count.ToString("N0", CultureInfo.InvariantCulture));
+            return TagSenderFormat.Replace("%PLAYERNAME%", taggedPlayer).Replace("%USERNAME%", tagger).Replace("%TOTALBUDDIESON%", numBuddies.ToString("N0", CultureInfo.InvariantCulture));
         }
-        public static string FormatTagYourIt(string taggedPlayer, string tagger)
+        public static string FormatTagForOthers(string taggedPlayer, string tagger)
         {
-            return TagYourItFormat.Replace("%PLAYERNAME%", taggedPlayer).Replace("%USERNAME%", tagger);
+            return TagOthersFormat.Replace("%PLAYERNAME%", taggedPlayer).Replace("%USERNAME%", tagger);
         }
         public static string FormatAddBuddyConfirmed(string playername)
         {

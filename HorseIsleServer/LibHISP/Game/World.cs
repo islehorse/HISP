@@ -218,7 +218,7 @@ namespace HISP.Game
             return SpecialTiles.Where(spTile =>
                 spTile.Code != null && 
                 (spTile.Code.StartsWith(tileType + "-") &&
-                int.Parse(spTile.Code.Split('-')[1]) == id)).ToArray();
+                Helper.S2I(spTile.Code.Split('-')[1]) == id)).ToArray();
         }
         public static void TickWorldClock() 
         {

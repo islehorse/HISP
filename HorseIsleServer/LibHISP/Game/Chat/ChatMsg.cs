@@ -351,7 +351,9 @@ namespace HISP.Game.Chat
                     }
                 case ChatChannel.Admin:
                     if (user.Administrator)
+                    {
                         return Messages.FormatAdminChatMessage(user.Username, message);
+                    }
                     else
                     {
                         Logger.HackerPrint(user.Username + " Tried to send in mod chat without being a moderator. (Hack/Code Attempt)");
@@ -372,27 +374,19 @@ namespace HISP.Game.Chat
                     else
                         return Messages.FormatGlobalChatMessage(user.Username, message);
                 case ChatChannel.Ads:
-                    int numbListening = User.AdsListening;
-                    return Messages.FormatAdsChatForSender(numbListening-1, user.Username, message);
+                    return Messages.FormatAdsChatForSender(User.AdsListening - 1, user.Username, message);
                 case ChatChannel.Buddies:
-                    return Messages.FormatBuddyChatMessageForSender(user.GetNumberOfBuddiesOnline(), user.Username, message);
+                    return Messages.FormatBuddyChatMessageForSender(user.BuddiesListening, user.Username, message);
                 case ChatChannel.Isle:
-                    int inIsle = 0;
-                    if (World.InIsle(user.X, user.Y))
-                        inIsle = User.GetUsersInIsle(World.GetIsle(user.X, user.Y), false, false).Length -1;
-                    return Messages.FormatIsleChatMessageForSender(inIsle, user.Username, message);
+                    return Messages.FormatIsleChatMessageForSender(user.IsleListening - 1, user.Username, message);
                 case ChatChannel.Here:
-                    int usersHere = User.GetUsersAt(user.X, user.Y, false, false).Length -1;
-                    return Messages.FormatHereChatMessageForSender(usersHere, user.Username, message);
+                    return Messages.FormatHereChatMessageForSender(user.HereListening - 1, user.Username, message);
                 case ChatChannel.Near:
-                    int nearbyUsers = User.GetNearbyUsers(user.X, user.Y, false, false).Length -1;
-                    return Messages.FormatNearChatMessageForSender(nearbyUsers, user.Username, message);
+                    return Messages.FormatNearChatMessageForSender(user.NearbyListening - 1, user.Username, message);
                 case ChatChannel.Mod:
-                    int modsOnline = User.ModsOnline - 1;
-                    return Messages.FormatModChatForSender(modsOnline, user.Username, message);
+                    return Messages.FormatModChatForSender(User.ModsOnline - 1, user.Username, message);
                 case ChatChannel.Admin:
-                    int adminsOnline = User.AdminsOnline - 1;
-                    return Messages.FormatAdminChatForSender(adminsOnline, user.Username, message);
+                    return Messages.FormatAdminChatForSender(User.AdminsOnline - 1, user.Username, message);
                 case ChatChannel.Dm:
                     string badge = "";
                     if (user.Moderator || user.Administrator)

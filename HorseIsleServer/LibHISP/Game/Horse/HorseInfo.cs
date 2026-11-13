@@ -647,6 +647,11 @@ namespace HISP.Game.Horse
 
             return swf;
         }
+
+        public static bool BreedExists(int id)
+        {
+            return Breeds.Any(o => o.Id == id);
+        }
         public static Breed GetBreedById(int id)
         {
             return Breeds.First(o => o.Id == id);

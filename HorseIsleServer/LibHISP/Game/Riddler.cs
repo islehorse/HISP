@@ -36,7 +36,7 @@ namespace HISP.Game
             user.AddMoney(10000);
 
             if(HasCompletedAllRiddles(user))
-                user.Awards.AddAward(Award.GetAwardById(Award.AWARD_RIDDLER_RIDDLE)); // Riddlers Riddles
+                user.Awards.Add(Award.GetAwardById(Award.AWARD_RIDDLER_RIDDLE)); // Riddlers Riddles
         }
 
         public void AnswerFail(User user)

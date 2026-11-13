@@ -342,7 +342,7 @@ namespace HISP.Game.Services
                 {
                     if(tile.Code.StartsWith("AUCTION-"))
                     {
-                        int code = int.Parse(tile.Code.Split('-')[1]);
+                        int code = Helper.S2I(tile.Code.Split('-')[1]);
                         Auction loadAuctionRoom = new Auction(code);
                         auctionRooms.Add(loadAuctionRoom);
                         Logger.InfoPrint("Loading Auction Room: " + code.ToString());

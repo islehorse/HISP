@@ -1,11 +1,12 @@
-﻿using HISP.Player;
-using HISP.Server;
-using HISP.Game.Items;
-using HISP.Game.Events;
+﻿using HISP.Game.Events;
 using HISP.Game.Horse;
 using HISP.Game.Inventory;
-using System.Linq;
+using HISP.Game.Items;
+using HISP.Player;
+using HISP.Server;
+using HISP.Util;
 using System;
+using System.Linq;
 
 namespace HISP.Game.Chat
 {
@@ -175,7 +176,7 @@ namespace HISP.Game.Chat
                 {
                     if(args[1] != "RANDOM")
                     {
-                        itemId = int.Parse(args[1]);
+                        itemId = Helper.S2I(args[1]);
                     }
                     else
                     {
@@ -220,10 +221,9 @@ namespace HISP.Game.Chat
             }
             else if (args[0].ToUpper() == "HORSE")
             {
-                int horseId = 0;
                 try
                 {
-                    horseId = int.Parse(args[1]);
+                    int horseId = horseId = Helper.S2I(args[1]);
                     HorseInstance horse = new HorseInstance(HorseInfo.GetBreedById(horseId));
 
                     if (args.Length >= 3)
@@ -245,14 +245,14 @@ namespace HISP.Game.Chat
                 int awardId = 0;
                 try
                 {
-                    awardId = int.Parse(args[1]);
+                    awardId = Helper.S2I(args[1]);
                     if (args.Length >= 3)
                     {
-                        User.GetUserByNameStartswith(args[2]).Awards.AddAward(Award.GetAwardById(awardId));
+                        User.GetUserByNameStartswith(args[2]).Awards.Add(Award.GetAwardById(awardId));
                     }
                     else
                     {
-                        user.Awards.AddAward(Award.GetAwardById(awardId));
+                        user.Awards.Add(Award.GetAwardById(awardId));
                     }
 
                 }
@@ -263,10 +263,9 @@ namespace HISP.Game.Chat
             }
             else if (args[0].ToUpper() == "MONEY")
             {
-                int money = 0;
                 try
                 {
-                    money = int.Parse(args[1]);
+                    int money = Helper.S2I(args[1]);
                     if (args.Length >= 3)
                     {
                         User.GetUserByNameStartswith(args[2]).AddMoney(money);
@@ -283,10 +282,9 @@ namespace HISP.Game.Chat
             }
             else if (args[0].ToUpper() == "QUEST")
             {
-                int questId = 0;
                 try
                 {
-                    questId = int.Parse(args[1]);
+                    int questId = Helper.S2I(args[1]);
                     if(args.Length >= 3)
                     {
                         if (args[2].ToUpper() == "FORCE")
@@ -543,10 +541,9 @@ namespace HISP.Game.Chat
             if (args.Length <= 0)
                 return false;
 
-            int itemId = 0;
             try
             {
-                itemId = int.Parse(args[0]);
+                int itemId = Helper.S2I(args[0]);
                 User target = user;
                 if (args.Length > 1)
                     target = User.GetUserByNameStartswith(args[1]);
@@ -646,8 +643,8 @@ namespace HISP.Game.Chat
                 try
                 {
                     string[] xy = args[0].Split(',');
-                    int x = int.Parse(xy[0]);
-                    int y = int.Parse(xy[1]);
+                    int x = Helper.S2I(xy[0]);
+                    int y = Helper.S2I(xy[1]);
                     user.Teleport(x, y);
                 }
                 catch(FormatException)
@@ -678,9 +675,9 @@ namespace HISP.Game.Chat
             int amount = 0;
             try
             {
-                id = int.Parse(args[0]);
+                id = Helper.S2I(args[0]);
                 if(args[1].ToUpper() != "COLOR")
-                    amount = int.Parse(args[2]);
+                    amount = Helper.S2I(args[2]);
             }
             catch (Exception)
             {
