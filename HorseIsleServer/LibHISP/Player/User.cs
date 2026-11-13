@@ -105,15 +105,14 @@ namespace HISP.Player
         public static User[] GetUsersAt(int x, int y, bool includeStealth = false, bool includeMuted = false)
         {
             return OnlineUsers.Where(o =>
-                includeStealth ? true : !o.Stealth &&
-                includeMuted ? true : !o.MuteIsland &&
-                o.X == x && o.Y == y
+                (o.X == x && o.Y == y) && 
+                (includeStealth ? true : !o.Stealth || includeMuted ? true : !o.MuteNear)
             ).ToArray();
 
         }
         public static User GetUserByNameStartswith(string username)
         {
-            return OnlineUsers.Where(o => o.Username.StartsWith(username, StringComparison.InvariantCultureIgnoreCase)).First();
+            return OnlineUsers.First(o => o.Username.StartsWith(username, StringComparison.InvariantCultureIgnoreCase));
         }
         public static User GetUserByName(string username)
         {
@@ -131,15 +130,8 @@ namespace HISP.Player
             int endX = x + 3;
             int startY = y - 3;
             int endY = y + 3;
-            List<User> usersNearby = new List<User>();
+            return OnlineUsers.Where(o => startX <= o.X && endX >= o.X && startY <= o.Y && endY >= o.Y).ToArray();
 
-            foreach (User user in OnlineUsers)
-            {
-                if (startX <= user.X && endX >= user.X && startY <= user.Y && endY >= user.Y)
-                    usersNearby.Add(user);
-            }
-
-            return usersNearby.ToArray();
         }
 
         public static User[] GetOnScreenUsers(int x, int y, bool includeStealth = false, bool includeMuted = false)
@@ -363,8 +355,8 @@ namespace HISP.Player
                 money = Int32.MaxValue;
             }
 
-            Database.SetPlayerMoney(money, Id);
-            GameServer.UpdatePlayer(Client);
+            Database.SetPlayerMoney(money, this.Id);
+            GameServer.UpdatePlayer(this.Client);
         }
         public string GetWeatherSeen()
         {
@@ -373,7 +365,7 @@ namespace HISP.Player
                 weather = World.GetTown(this.X, this.Y).Weather;
             if (World.InIsle(this.X, this.Y))
                 weather = World.GetIsle(this.X, this.Y).Weather;
-            LastSeenWeather = weather;
+            this.LastSeenWeather = weather;
             return weather;
         }
         public void DoRanchActions()
@@ -722,9 +714,6 @@ namespace HISP.Player
             this.Y = newY;
 
             GameServer.UpdateWeather(Client);
-
-
-
             GameServer.UpdateAll(Client);
         }
 

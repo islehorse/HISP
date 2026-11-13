@@ -5890,31 +5890,22 @@ namespace HISP.Server
                     }
                     else
                     {
-                        string title = ranch.Title;
-                        if (title == null || title == "")
-                            title = Messages.RanchDefaultRanchTitle;
-                        returnedMsg = Messages.FormatRanchClickMessage(Database.GetUsername(ranch.OwnerId), title);
+                        returnedMsg = Messages.FormatRanchClickMessage(Database.GetUsername(ranch.OwnerId), String.IsNullOrEmpty(ranch.Title) ? Messages.RanchDefaultRanchTitle : ranch.Title);
                     }
                 }
-                User[] users = User.GetUsersAt(x, y, false, true);
-                if (users.Length > 0) // Player here?
+
+                User[] usersHere = User.GetUsersAt(x, y, false, true);
+                if(usersHere.Length > 0)
                 {
-                    string usernameStr = "";
-
-                    for(int i = 0; i < users.Length; i++)
-                    {
-                        usernameStr += users[i].Username;
-                        if (i + 1 < users.Length)
-                            usernameStr += ", ";
-                    }
-
-                    returnedMsg = Messages.FormatPlayerHereMessage(usernameStr);
+                    returnedMsg = Messages.FormatPlayerHereMessage(String.Join(", ", usersHere.Select(o => o.Username)));
                 }
-                byte[] tileInfoPacket = PacketBuilder.CreateTileClickInfo(returnedMsg);
-#if OS_DEBUG
-                tileInfoPacket = PacketBuilder.CreateTileClickInfo(x + "," + y + " tile: " + Map.GetTileId(x, y, false) + " overlay: " + Map.GetTileId(x, y, true));
-#endif
-                sender.SendPacket(tileInfoPacket);
+                
+                #if OS_DEBUG
+                sender.SendPacket(PacketBuilder.CreateTileClickInfo(x + "," + y + " tile: " + Map.GetTileId(x, y, false) + " overlay: " + Map.GetTileId(x, y, true)));
+                return;
+                #endif
+
+                sender.SendPacket(PacketBuilder.CreateTileClickInfo(returnedMsg));
             }
         }
         public static void OnItemInteraction(GameClient sender, byte[] packet)
