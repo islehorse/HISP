@@ -1,6 +1,6 @@
 # HISP - Horse Isle Server Project
 
-[![Build](https://github.com/islehorse/HISP/workflows/build/badge.svg)](https://github.com/islehorse/HISP/actions?query=workflow%3Abuild)
+[![Latest artifacts](https://github.com/islehorse/HISP/actions/workflows/build.yml/badge.svg)](https://github.com/islehorse/HISP/actions/workflows/build.yml)
 
 HISP is a "Server Emulator" for the flash-based MMORPG Horse Isle: The Secret Land of Horses
 
@@ -124,6 +124,12 @@ game-site
  See the Wiki page for more information on how to setup a server and get things working.
 
  
+ # Public Servers
+
+an (incomplete) list of some Public HISP Servers; 
+- https://hi1.diamondbyte.org/
+- https://hi1.preloading.dev/
+
 # Building
  Building the server from source requires Microsoft .NET Core SDK, targetting version 10.0 https://dotnet.microsoft.com/download/dotnet-core
  use `dotnet build` to build a debug build, (requires .NET Core Runtime) quickly or one of our publishing XML's
