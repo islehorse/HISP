@@ -8,24 +8,24 @@ namespace HISP.Player.Equips
     {
         
         private int playerId;
-        public Jewelry(int PlayerId)
+        public Jewelry(int id)
         {
-            playerId = PlayerId;
-            if (!Database.HasJewelry(PlayerId))
-                Database.InitJewelry(PlayerId);
-            int itemId = Database.GetJewelrySlot1(PlayerId);
+            playerId = id;
+            if (!Database.HasJewelry(id))
+                Database.InitJewelry(id);
+            int itemId = Database.GetJewelrySlot1(id);
             if (itemId != 0)
                 slot1 = Item.GetItemById(itemId);
 
-            itemId = Database.GetJewelrySlot2(PlayerId);
+            itemId = Database.GetJewelrySlot2(id);
             if (itemId != 0)
                 slot2 = Item.GetItemById(itemId);
 
-            itemId = Database.GetJewelrySlot3(PlayerId);
+            itemId = Database.GetJewelrySlot3(id);
             if (itemId != 0)
                 slot3 = Item.GetItemById(itemId);
 
-            itemId = Database.GetJewelrySlot4(PlayerId);
+            itemId = Database.GetJewelrySlot4(id);
             if (itemId != 0)
                 slot4 = Item.GetItemById(itemId);
 

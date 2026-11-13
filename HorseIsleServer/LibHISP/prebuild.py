@@ -18,9 +18,9 @@ def update_asm_info(assemblyinfofile):
     lines = open(assemblyinfofile, "rb").readlines()
     for i in range(0,len(lines)):
         if lines[i].startswith(b"[assembly: AssemblyVersion(\""):
-            lines[i] = b"[assembly: AssemblyVersion(\""+bytes(assembly_version, "UTF-8")+b"\")]\r\n"
+            lines[i] = b"[assembly: AssemblyVersion(\""+bytes(assembly_version, "UTF-8")+b"\")]\n"
         if lines[i].startswith(b"[assembly: AssemblyFileVersion(\""):
-            lines[i] = b"[assembly: AssemblyFileVersion(\""+bytes(assembly_version, "UTF-8")+b"\")]\r\n"
+            lines[i] = b"[assembly: AssemblyFileVersion(\""+bytes(assembly_version, "UTF-8")+b"\")]\n"
     open(assemblyinfofile, "wb").writelines(lines)
 
 

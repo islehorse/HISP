@@ -20,7 +20,7 @@ namespace HISP.Tests.UnitTests
 
         private static byte[] createLoginPacket(string username, string password)
         {
-            byte[] loginInformation = Encoding.UTF8.GetBytes("91|" + Authentication.EncryptLogin(username) + "|" + Authentication.EncryptLogin(password) + "|");
+            byte[] loginInformation = Encoding.UTF8.GetBytes("91|" + LoginObfuscation.ObfuscateLogin(username) + "|" + LoginObfuscation.ObfuscateLogin(password) + "|");
             byte[] loginPacket = new byte[1 * 3 + loginInformation.Length];
             loginPacket[0] = PacketBuilder.PACKET_LOGIN;
             loginPacket[loginPacket.Length - 2] = PacketBuilder.PACKET_CLIENT_TERMINATOR;
@@ -157,13 +157,13 @@ namespace HISP.Tests.UnitTests
                 results.Add(Test("IconTest1Year", user.GetPlayerListIcon(), Messages.YearSubscriptionIcon));
 
                 // SecCode
-                user.SecCodeSeeds[0] = 0x34;
-                user.SecCodeSeeds[1] = 0x39;
-                user.SecCodeSeeds[2] = 0x2a;
-                user.SecCodeInc = 0x3e;
+                user.SecCodes.Seed[0] = 0x34;
+                user.SecCodes.Seed[1] = 0x39;
+                user.SecCodes.Seed[2] = 0x2a;
+                user.SecCodes.Inc = 0x3e;
 
                 byte[] expectedSecCodeResult = { 0x55, 0x3C, 0x4B, 0x58 };
-                byte[] gotSecCode = user.GenerateSecCode();
+                byte[] gotSecCode = user.SecCodes.Next;
 
                 results.Add(Test("GenerateSecCode", gotSecCode.SequenceEqual(expectedSecCodeResult), true));
 

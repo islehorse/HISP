@@ -27,8 +27,8 @@ namespace HISP.Tests.UnitTests
             for(int i = 0; i <= 100; i++)
             {
                 string rngStr = Helper.RandomString(ALLOWED_CHARS);
-                string cipherText = Authentication.EncryptLogin(rngStr);
-                string plainText = Authentication.DecryptLogin(cipherText);
+                string cipherText = LoginObfuscation.ObfuscateLogin(rngStr);
+                string plainText = LoginObfuscation.DeobfuscateLogin(cipherText);
 
                 results.Add(Test("LoginEncryptDecrypt" + i.ToString(), plainText, rngStr));
             

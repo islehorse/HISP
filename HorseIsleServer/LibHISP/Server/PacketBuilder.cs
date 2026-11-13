@@ -6,6 +6,7 @@ using System.Text;
 
 using HISP.Game;
 using HISP.Game.SwfModules;
+using HISP.Security;
 using HISP.Util;
 namespace HISP.Server
 {
@@ -824,7 +825,7 @@ namespace HISP.Server
         // Creates a byte array of a packet informing the client of its current Sec Code seed and Inc values,
         // Some client packets (eg minigame rewards) require this special Message Authentication Code to validate them
         // Its not at all secure, you can easily just forge these packets by just implementing sec codes, but i didnt make it --
-        public static byte[] CreateSecCode(byte[] SecCodeSeed, int SecCodeInc, bool Admin, bool Moderator)
+        public static byte[] CreateSecCode(SecCode secCode, bool Admin, bool Moderator)
         {
 
             char userType = 'N'; // Normal?
@@ -839,10 +840,10 @@ namespace HISP.Server
 
             packet[0] = PACKET_SEC_CODE;
 
-            packet[1] = (byte)(SecCodeSeed[0] + '!');
-            packet[2] = (byte)(SecCodeSeed[1] + '!');
-            packet[3] = (byte)(SecCodeSeed[2] + '!');
-            packet[4] = (byte)(SecCodeInc     + '!');
+            packet[1] = (byte)(secCode.Seed[0] + SecCode.SEED_START_BYTE);
+            packet[2] = (byte)(secCode.Seed[1] + SecCode.SEED_START_BYTE);
+            packet[3] = (byte)(secCode.Seed[2] + SecCode.SEED_START_BYTE);
+            packet[4] = (byte)(secCode.Inc + SecCode.SEED_START_BYTE);
 
 
             packet[5] = (byte)userType;

@@ -5,6 +5,7 @@ using HISP.Game;
 
 namespace HISP.Security
 {
+    
     public class SocketDomainPolicy
     {
         public static byte[] GetPolicyFile()

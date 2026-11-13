@@ -3262,7 +3262,7 @@ namespace HISP.Server
             }
 
             // Send Security Codes, used (badly) to verify Minigame Rewards
-            byte[] secCodePacket = PacketBuilder.CreateSecCode(sender.User.SecCodeSeeds, sender.User.SecCodeInc, sender.User.Administrator, sender.User.Moderator);
+            byte[] secCodePacket = PacketBuilder.CreateSecCode(sender.User.SecCodes, sender.User.Administrator, sender.User.Moderator);
             sender.SendPacket(secCodePacket);
 
             // Send player money count, total players and total unread mail.
@@ -3986,11 +3986,11 @@ namespace HISP.Server
             }
             else if (method == PacketBuilder.SECCODE_AWARD)
             {
-                byte[] ExpectedSecCode = sender.User.GenerateSecCode();
-                byte[] GotSecCode = new byte[4];
-                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
-                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
-                if (ExpectedSecCode.SequenceEqual(GotSecCode))
+                byte[] expectedSecCode = sender.User.SecCodes.Next;
+                byte[] gotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, gotSecCode, 0, gotSecCode.Length);
+                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(gotSecCode).Replace("-", " "));
+                if (expectedSecCode.SequenceEqual(gotSecCode))
                 {
                     if (packet.Length < 5)
                     {
@@ -4018,11 +4018,11 @@ namespace HISP.Server
                 bool time = (method == PacketBuilder.SECCODE_TIME);
                 bool winloose = (method == PacketBuilder.SECCODE_WINLOOSE);
 
-                byte[] ExpectedSecCode = sender.User.GenerateSecCode();
-                byte[] GotSecCode = new byte[4];
-                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
-                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
-                if (ExpectedSecCode.SequenceEqual(GotSecCode))
+                byte[] expectedSecCode = sender.User.SecCodes.Next;
+                byte[] gotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, gotSecCode, 0, gotSecCode.Length);
+                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(gotSecCode).Replace("-", " "));
+                if (expectedSecCode.SequenceEqual(gotSecCode))
                 {
                     if (packet.Length < 5)
                     {
@@ -4135,11 +4135,11 @@ namespace HISP.Server
             else if (method == PacketBuilder.SECCODE_MONEY)
             {
 
-                byte[] ExpectedSecCode = sender.User.GenerateSecCode();
-                byte[] GotSecCode = new byte[4];
-                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
-                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
-                if (ExpectedSecCode.SequenceEqual(GotSecCode))
+                byte[] expectedSecCode = sender.User.SecCodes.Next;
+                byte[] gotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, gotSecCode, 0, gotSecCode.Length);
+                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(gotSecCode).Replace("-", " "));
+                if (expectedSecCode.SequenceEqual(gotSecCode))
                 {
                     if (packet.Length < 5)
                     {
@@ -4181,11 +4181,11 @@ namespace HISP.Server
             }
             else if (method == PacketBuilder.SECCODE_GIVE_ITEM)
             {
-                byte[] ExpectedSecCode = sender.User.GenerateSecCode();
-                byte[] GotSecCode = new byte[4];
-                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
-                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
-                if (ExpectedSecCode.SequenceEqual(GotSecCode))
+                byte[] expectedSecCode = sender.User.SecCodes.Next;
+                byte[] gotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, gotSecCode, 0, gotSecCode.Length);
+                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(gotSecCode).Replace("-", " "));
+                if (expectedSecCode.SequenceEqual(gotSecCode))
                 {
                     if (packet.Length < 5)
                     {
@@ -4232,11 +4232,11 @@ namespace HISP.Server
             }
             else if (method == PacketBuilder.SECCODE_DELETE_ITEM)
             {
-                byte[] ExpectedSecCode = sender.User.GenerateSecCode();
-                byte[] GotSecCode = new byte[4];
-                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
-                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
-                if (ExpectedSecCode.SequenceEqual(GotSecCode))
+                byte[] expectedSecCode = sender.User.SecCodes.Next;
+                byte[] gotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, gotSecCode, 0, gotSecCode.Length);
+                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(gotSecCode).Replace("-", " "));
+                if (expectedSecCode.SequenceEqual(gotSecCode))
                 {
                     if (packet.Length < 5)
                     {
@@ -4276,11 +4276,11 @@ namespace HISP.Server
             }
             else if (method == PacketBuilder.SECCODE_QUEST)
             {
-                byte[] ExpectedSecCode = sender.User.GenerateSecCode();
-                byte[] GotSecCode = new byte[4];
-                Array.ConstrainedCopy(packet, 2, GotSecCode, 0, GotSecCode.Length);
-                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(GotSecCode).Replace("-", " "));
-                if (ExpectedSecCode.SequenceEqual(GotSecCode))
+                byte[] expectedSecCode = sender.User.SecCodes.Next;
+                byte[] gotSecCode = new byte[4];
+                Array.ConstrainedCopy(packet, 2, gotSecCode, 0, gotSecCode.Length);
+                Logger.DebugPrint(sender.User.Username + " Sent sec code: " + BitConverter.ToString(gotSecCode).Replace("-", " "));
+                if (expectedSecCode.SequenceEqual(gotSecCode))
                 {
                     if (packet.Length < 5)
                     {

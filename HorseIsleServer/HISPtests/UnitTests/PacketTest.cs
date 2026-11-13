@@ -11,6 +11,7 @@ using System.Linq;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.IO;
+using HISP.Security;
 
 
 namespace HISP.Tests.UnitTests
@@ -379,10 +380,10 @@ namespace HISP.Tests.UnitTests
             results.Add(Test("ProfilePage", PacketBuilder.CreateProfilePage("TRANS RIGHTS ARE HUMAN RIGHTS")));
 
             // Test SecCode
-            results.Add(Test("SecCode_AdminMod", PacketBuilder.CreateSecCode(new byte[] { 0x31, 0x52, 0x22 }, 0x34, true, true)));
-            results.Add(Test("SecCode_Admin", PacketBuilder.CreateSecCode(new byte[] { 0x54, 0x32, 0x24 }, 0x34, true, false)));
-            results.Add(Test("SecCode_Mod", PacketBuilder.CreateSecCode(new byte[] { 0x22, 0x12, 0x12 }, 0x34, false, true)));
-            results.Add(Test("SecCode_User", PacketBuilder.CreateSecCode(new byte[] { 0x12, 0x32, 0x14 }, 0x34, false, false)));
+            results.Add(Test("SecCode_AdminMod", PacketBuilder.CreateSecCode(new SecCode(new byte[] { 0x31, 0x52, 0x22 }, 0x34), true, true)));
+            results.Add(Test("SecCode_Admin", PacketBuilder.CreateSecCode(new SecCode(new byte[] { 0x54, 0x32, 0x24 }, 0x34), true, false)));
+            results.Add(Test("SecCode_Mod", PacketBuilder.CreateSecCode(new SecCode(new byte[] { 0x22, 0x12, 0x12 }, 0x34), false, true)));
+            results.Add(Test("SecCode_User", PacketBuilder.CreateSecCode(new SecCode(new byte[] { 0x12, 0x32, 0x14 }, 0x34), false, false)));
 
             // Test SwfModule
             results.Add(Test("SwfModule_Force", PacketBuilder.CreateSwfModule("test.swf", PacketBuilder.PACKET_SWF_MODULE_FORCE)));

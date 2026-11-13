@@ -18,10 +18,6 @@ namespace HISP.Player
         private ThreadSafeList<Auction.AuctionBid> bids = new ThreadSafeList<Auction.AuctionBid>();
         private ThreadSafeList<User> beingSocializedBy = new ThreadSafeList<User>();
 
-        // security codes
-        public byte[] SecCodeSeeds = new byte[3];
-        public int SecCodeInc = 0;
-        private int secCodeCount = 0;
 
         private int chatViolations;
         private int charId;
@@ -304,6 +300,7 @@ namespace HISP.Player
         public Award Awards;
         public User SocializingWith;
         public User PendingBuddyRequestTo;
+        public SecCode SecCodes;
         public Dance ActiveDance;
         public bool CanUseAdsChat = true;
         public int CapturingHorseId;
@@ -766,29 +763,6 @@ namespace HISP.Player
             else
                 return possessive ? Messages.PronounNeutralTheir : Messages.PronounNeutralThey;
         }
-
-        public byte[] GenerateSecCode()
-        {
-            secCodeCount = ((secCodeCount + 1) % 3);
-            
-            SecCodeSeeds[secCodeCount] = (byte)(SecCodeSeeds[secCodeCount] + SecCodeInc);
-            SecCodeSeeds[secCodeCount] = (byte)(SecCodeSeeds[secCodeCount] % '\\');
-            
-            double i = SecCodeSeeds[0] + SecCodeSeeds[1] * SecCodeSeeds[2] - SecCodeSeeds[1];
-            i = Math.Abs(i);
-            i %= '\\';
-
-            byte[] SecCode = new byte[4];
-
-            SecCode[0] = (byte)(SecCodeSeeds[0] + '!');
-            SecCode[1] = (byte)(SecCodeSeeds[1] + '!');
-            SecCode[2] = (byte)(SecCodeSeeds[2] + '!');
-            SecCode[3] = (byte)(i + '!');
-
-            Logger.DebugPrint("Expecting "+Username+" To send Sec Code: "+BitConverter.ToString(SecCode).Replace("-", " "));
-            return SecCode;
-        }
-
         
         public User(GameClient baseClient, int userId)
         {
@@ -798,62 +772,55 @@ namespace HISP.Player
             if (!Database.CheckUserExtExists(userId))
             {
                 Database.CreateUserExt(userId);
-                NewPlayer = true;
+                this.NewPlayer = true;
             }
 
-            EquipedCompetitionGear = new CompetitionGear(userId);
-            EquipedJewelry = new Jewelry(userId);
 
-            Id = userId;
+            this.administrator = Database.GetUserAdmin(Id);
+            this.moderator = Database.GetUserModerator(Id);
 
-            administrator = Database.GetUserAdmin(Id);
-            moderator = Database.GetUserModerator(Id);
+            this.chatViolations = Database.GetChatViolations(userId);
+            this.x = Database.GetPlayerX(userId);
+            this.y = Database.GetPlayerY(userId);
+            this.charId = Database.GetPlayerCharId(userId);
 
-            chatViolations = Database.GetChatViolations(userId);
-            x = Database.GetPlayerX(userId);
-            y = Database.GetPlayerY(userId);
-            charId = Database.GetPlayerCharId(userId);
-
-            Facing = PacketBuilder.DIRECTION_DOWN;
-            experience = Database.GetExperience(userId);
-            
-            bankMoney = Database.GetPlayerBankMoney(userId);
-            questPoints = Database.GetPlayerQuestPoints(userId);
-            subscribed = Database.GetUserSubscribed(userId);
-            subscribedUntil = Database.GetUserSubscriptionExpireDate(userId);
-            profilePage = Database.GetPlayerProfile(userId);
-            userName = Database.GetUsername(userId);
-            privateNotes = Database.GetPlayerNotes(userId);
-            hunger = Database.GetPlayerHunger(userId);
-            thirst = Database.GetPlayerThirst(userId);
-            tired = Database.GetPlayerTiredness(userId);
+            this.experience = Database.GetExperience(userId);
+            this.bankMoney = Database.GetPlayerBankMoney(userId);
+            this.questPoints = Database.GetPlayerQuestPoints(userId);
+            this.subscribed = Database.GetUserSubscribed(userId);
+            this.subscribedUntil = Database.GetUserSubscriptionExpireDate(userId);
+            this.profilePage = Database.GetPlayerProfile(userId);
+            this.userName = Database.GetUsername(userId);
+            this.privateNotes = Database.GetPlayerNotes(userId);
+            this.hunger = Database.GetPlayerHunger(userId);
+            this.thirst = Database.GetPlayerThirst(userId);
+            this.tired = Database.GetPlayerTiredness(userId);
 
             if(Ranch.GetOwnedRanch(this.Id))
-                OwnedRanch = Ranch.GetRanchOwnedBy(this.Id);
+                this.OwnedRanch = Ranch.GetRanchOwnedBy(this.Id);
 
-            Gender = Database.GetGender(userId);
-            MailBox = new Mailbox(this);
-            Highscores = new Highscore(this);
-            Awards = new Award(this);
-            MutePlayer = new MutedPlayers(this);
-            TrackedItems = new Tracking(this);
-            HorseInventory = new HorseInventory(this);
+            this.EquipedCompetitionGear = new CompetitionGear(userId);
+            this.EquipedJewelry = new Jewelry(userId);
 
-            // Generate SecCodes
+            this.Id = userId;
+            this.Client = baseClient;
 
-            SecCodeSeeds[0] = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
-            SecCodeSeeds[1] = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
-            SecCodeSeeds[2] = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
-            SecCodeInc      = (byte)GameServer.RandomNumberGenerator.Next('!', '\\');
-
-            Friends = new Friends(this);
-            LoginTime = DateTime.UtcNow;
-            Client = baseClient;
-            Inventory = new PlayerInventory(this);
-            Quests = new PlayerQuests(this);
+            this.Facing = PacketBuilder.DIRECTION_DOWN;
+            this.Gender = Database.GetGender(userId);
+            this.MailBox = new Mailbox(this);
+            this.Highscores = new Highscore(this);
+            this.Awards = new Award(this);
+            this.MutePlayer = new MutedPlayers(this);
+            this.TrackedItems = new Tracking(this);
+            this.HorseInventory = new HorseInventory(this);
+            this.Friends = new Friends(this);
+            this.LoginTime = DateTime.UtcNow;
+            this.Inventory = new PlayerInventory(this);
+            this.Quests = new PlayerQuests(this);
+            this.SecCodes = new SecCode();
 
             // Get auctions
-            foreach(Auction auction in Auction.AuctionRooms)
+            foreach (Auction auction in Auction.AuctionRooms)
             {
                 foreach(Auction.AuctionEntry auctionEntry in auction.AuctionEntries)
                 {
