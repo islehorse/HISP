@@ -1,5 +1,5 @@
 Package: hisp
-Version: 2.5.43
+Version: 2.6.0
 Depends: libc6
 Maintainer: Li
 Homepage: https://islehorse.com

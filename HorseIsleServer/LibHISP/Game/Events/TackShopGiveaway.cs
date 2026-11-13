@@ -107,7 +107,7 @@ namespace HISP.Game.Events
             Active = false;
             GameServer.TackShopGiveawayEvent = null;
 
-            User[] usersHere = User.GetUsersAt(Location.X, Location.Y, false, true);
+            User[] usersHere = User.GetUsersAt(Location.X, Location.Y, false);
 
             if(usersHere.Length > 0)
             {

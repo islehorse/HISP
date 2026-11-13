@@ -147,7 +147,7 @@ namespace HISP.Game
                 {
                     if(UDLRStartX == 0 && UDLRStartY == 0) // not scripted.
                     {
-                        if (User.GetUsersAt(this.X, this.Y, true, true).Length > 0)
+                        if (User.GetUsersAt(this.X, this.Y, true).Length > 0)
                             return;
 
                         for(int i = 0; i < 500; i++)
@@ -189,7 +189,7 @@ namespace HISP.Game
                     }
                     else // Is Scripted.
                     {
-                        if (User.GetUsersAt(this.X, this.Y, true, true).Length > 0)
+                        if (User.GetUsersAt(this.X, this.Y, true).Length > 0)
                             return;
 
                         if (UdlrScriptPos >= UDLRScript.Length)

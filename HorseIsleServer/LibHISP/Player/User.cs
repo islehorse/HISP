@@ -73,7 +73,7 @@ namespace HISP.Player
         {
             get
             {
-                return GetUsersAt(this.X, this.Y, true, true).Count(o => !o.MuteHere);
+                return GetUsersAt(this.X, this.Y, true).Count(o => !o.MuteHere);
             }
         }
 
@@ -81,7 +81,7 @@ namespace HISP.Player
         {
             get
             {
-                return GetNearbyUsers(this.X, this.Y, true, true).Count(o => !o.MuteNear);
+                return GetNearbyUsers(this.X, this.Y, true).Count(o => !o.MuteNear);
             }
         }
 
@@ -89,7 +89,7 @@ namespace HISP.Player
         {
             get
             {
-                return World.InIsle(this.X, this.Y) ? User.GetUsersInIsle(World.GetIsle(this.X, this.Y), false, true).Count(o => !o.MuteIsland) - 1 : 0;
+                return World.InIsle(this.X, this.Y) ? User.GetUsersInIsle(World.GetIsle(this.X, this.Y), false).Count(o => !o.MuteIsland) - 1 : 0;
             }
         }
        
@@ -106,25 +106,30 @@ namespace HISP.Player
             return OnlineUsers.Any(o => o.Id == id);
         }
 
-        public static User[] GetUsersInTown(World.Town town, bool includeStealth = false, bool includeMuted = false)
+        public static User[] GetUsersInTown(World.Town town, bool includeStealth = false)
         {
             return OnlineUsers.Where(o =>
                 includeStealth ? true : !o.Stealth &&
-                includeMuted ? true : !o.MuteIsland &&
                 World.InTown(o.X, o.Y) && 
                 World.GetTown(o.X, o.Y).Name == town.Name
             ).ToArray();
         }
-        public static User[] GetUsersInIsle(World.Isle isle, bool includeStealth = false, bool includeMuted = false)
+        public static User[] GetUsersInIsle(World.Isle isle, bool includeStealth = false)
         {
             return OnlineUsers.Where(o =>
                 includeStealth ? true : !o.Stealth &&
-                includeMuted ? true : !o.MuteIsland &&
                 World.InTown(o.X, o.Y) &&
                 World.GetIsle(o.X, o.Y).Name == isle.Name
             ).ToArray();
         }
+        public static User[] GetUsersAt(int x, int y, bool includeStealth = false)
+        {
+            return OnlineUsers.Where(o =>
+                (o.X == x && o.Y == y) &&
+                (includeStealth ? true : !o.Stealth)
+            ).ToArray();
 
+        }
         public static User[] GetUsersOnSpecialTileCode(string code)
         {
             return OnlineUsers.Where(o =>
@@ -133,12 +138,20 @@ namespace HISP.Player
             ).ToArray();
 
         }
-        public static User[] GetUsersAt(int x, int y, bool includeStealth = false, bool includeMuted = false)
+
+        public static User[] GetOnScreenUsers(int x, int y, bool includeStealth = false)
         {
-            return OnlineUsers.Where(o =>
-                (o.X == x && o.Y == y) && 
-                (includeStealth ? true : !o.Stealth || includeMuted ? true : !o.MuteHere)
-            ).ToArray();
+            return OnlineUsers.Where(o => (includeStealth ? true : !o.Stealth) && World.IsPointOnScreen(x, y, o.X, o.Y)).ToArray();
+        }
+
+        public static User[] GetNearbyUsers(int x, int y, bool includeStealth = false)
+        {
+            int startX = x - 15;
+            int endX = x + 15;
+            int startY = y - 19;
+            int endY = y + 19;
+
+            return OnlineUsers.Where(o => (includeStealth ? true : !o.Stealth) && (startX <= o.X && endX >= o.X && startY <= o.Y && endY >= o.Y)).ToArray();
 
         }
         public static User GetUserByNameStartswith(string username)
@@ -165,21 +178,6 @@ namespace HISP.Player
 
         }
 
-        public static User[] GetOnScreenUsers(int x, int y, bool includeStealth = false, bool includeMuted = false)
-        {
-            return OnlineUsers.Where(o => (includeStealth ? true : !o.Stealth) && (includeMuted ? true : !o.MuteNear) && World.IsPointOnScreen(x, y, o.X, o.Y)).ToArray();
-        }
-
-        public static User[] GetNearbyUsers(int x, int y, bool includeStealth = false, bool includeMuted = false)
-        {
-            int startX = x - 15;
-            int endX = x + 15;
-            int startY = y - 19;
-            int endY = y + 19;
-
-            return OnlineUsers.Where(o => (includeStealth ? true : !o.Stealth) && (includeMuted ? true : !o.MuteNear) && (startX <= o.X && endX >= o.X && startY <= o.Y && endY >= o.Y)).ToArray();
-
-        }
         public bool NoClip
         {
             get
@@ -192,7 +190,7 @@ namespace HISP.Player
                         {
                             return true;
                         }
-                        if (CurrentlyRidingHorse.Breed.Id == 170) // unipeg
+                        if (CurrentlyRidingHorse.Breed.Id == HorseInfo.Breed.UNIPEG_ID) // unipeg
                         {
                             return true;
                         }
@@ -804,7 +802,6 @@ namespace HISP.Player
 
             this.Id = userId;
             this.Client = baseClient;
-
             this.Facing = PacketBuilder.DIRECTION_DOWN;
             this.Gender = Database.GetGender(userId);
             this.MailBox = new Mailbox(this);

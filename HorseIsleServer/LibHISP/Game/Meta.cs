@@ -42,7 +42,7 @@ namespace HISP.Game
         private static string buildPlayersHere(User fromUser, int x, int y)
         {
             string playersHere = "";
-            User[] playersAt = User.GetUsersAt(x, y, true, true);
+            User[] playersAt = User.GetUsersAt(x, y, true);
             if(playersAt.Length > 1)
             {
                 playersHere += Messages.PlayersHere;
@@ -84,7 +84,7 @@ namespace HISP.Game
         {
             string playersNearby = "";
 
-            User[] nearbyUsers = User.GetNearbyUsers(x, y, false, true);
+            User[] nearbyUsers = User.GetNearbyUsers(x, y, false);
             int count = 0;
             if (nearbyUsers.Length > 1)
             {
@@ -221,7 +221,7 @@ namespace HISP.Game
             user.HorseWindowOpen = false;
             string message = "";
             message += buildPlayersHere(user, x, y);
-            bool playersHere = (User.GetUsersAt(x, y, true, true).Length >= 1);
+            bool playersHere = (User.GetUsersAt(x, y, true).Length >= 1);
             message += buildNearbyString(x, y, playersHere);
 
             // Dropped Items
@@ -1039,7 +1039,7 @@ namespace HISP.Game
         {
             string message = "";
             message += Messages.NearbyPlayersListHeader;
-            User[] nearbyUsers = User.GetNearbyUsers(currentUser.X, currentUser.Y, false, true);
+            User[] nearbyUsers = User.GetNearbyUsers(currentUser.X, currentUser.Y, false);
             foreach (User nearbyUser in nearbyUsers.Where(o => !o.Stealth && o.Id != currentUser.Id))
             {
                 int icon = nearbyUser.GetPlayerListIcon();
@@ -1106,10 +1106,7 @@ namespace HISP.Game
         public static string BuildBuddyList(User user)
         {
             string message = Messages.BuddyListHeader;
-            foreach (User friend in user.Friends.List
-                            .Where(o => User.IsUserOnline(o))
-                            .Select(o => User.GetUserById(o))
-                            .Where(o => !o.Stealth)) {
+            foreach (User friend in user.Friends.Online.Where(o => !o.Stealth)) {
                 try
                 {
                     int icon = friend.GetPlayerListIcon();
@@ -1126,10 +1123,12 @@ namespace HISP.Game
             message += Messages.BuddyListOfflineBuddys;
 
 
-            foreach (int id in user.Friends.List.Where(o => !User.IsUserOnline(o)))
+            foreach (int id in user.Friends.Offline)
             {
                 string username = Database.GetUsername(id);
                 int minutes = Convert.ToInt32(Math.Round(DateTime.UtcNow.Subtract(Helper.UnixTimeStampToDateTime(Database.GetPlayerLastLogin(id))).TotalMinutes));
+                int hours = Convert.ToInt32(Math.Round(DateTime.UtcNow.Subtract(Helper.UnixTimeStampToDateTime(Database.GetPlayerLastLogin(id))).TotalHours));
+                int days = Convert.ToInt32(Math.Round(DateTime.UtcNow.Subtract(Helper.UnixTimeStampToDateTime(Database.GetPlayerLastLogin(id))).TotalDays));
 
                 message += Messages.FormatOfflineBuddyEntry(username, id, minutes);
             }

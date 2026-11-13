@@ -538,7 +538,7 @@ namespace HISP.Server
 
                     if(social.ForEveryone != null)
                     {
-                        foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true, true).Where(usr => 
+                        foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true).Where(usr => 
                             (social.BaseSocialType.Type != "GROUP" && usr.Id != sender.User.SocializingWith.Id) &&
                             usr.Id != sender.User.Id && (!usr.MuteAll && !usr.MuteSocials)
                         )) {
@@ -568,7 +568,7 @@ namespace HISP.Server
 
                     if (social.SoundEffect != null)
                     {
-                        foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true, true).Where(o => !o.MuteAll && !o.MuteSocials))
+                        foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true).Where(o => !o.MuteAll && !o.MuteSocials))
                         {
                             byte[] soundEffect = PacketBuilder.CreatePlaySound(social.SoundEffect);
                             user.Client.SendPacket(soundEffect);
@@ -3142,7 +3142,7 @@ namespace HISP.Server
                                 
                                 HorseInstance leaseHorse = horseLeaser.GenerateLeaseHorse();
                                 
-                                if(leaseHorse.Breed.Id == 170) // UniPeg
+                                if(leaseHorse.Breed.Id == HorseInfo.Breed.UNIPEG_ID) // UniPeg
                                 {
                                     sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.UnipegTeamup).Count++;
                                     if(sender.User.TrackedItems.GetTrackedItem(Tracking.TrackableItem.UnipegTeamup).Count >= 5)
@@ -3745,14 +3745,14 @@ namespace HISP.Server
 
                         // Forward to other users
                         byte[] movePeicePacket = PacketBuilder.CreateDressupRoomPeiceMove(peice.PeiceId, moveToX, moveToY, peice.Active);
-                        User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true, true);
+                        User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true);
                         foreach(User user in users.Where(o => o.Id != sender.User.Id))
                             user.Client.SendPacket(movePeicePacket);
                     }
                     break;
                 case PacketBuilder.SWFMODULE_BROADCAST:
                     byte[] response = PacketBuilder.CreateForwardedSwfModule(packet);
-                    foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true, true).Where(o => o.Id != sender.User.Id))
+                    foreach (User user in User.GetUsersAt(sender.User.X, sender.User.Y, true).Where(o => o.Id != sender.User.Id))
                         user.Client.SendPacket(response);
                     break;
                 case PacketBuilder.SWFMODULE_OPPONENT: 
@@ -4838,7 +4838,7 @@ namespace HISP.Server
                     sender.SendPacket(sellPacket);
 
                     // Change map sprite.
-                    User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true, true);
+                    User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true);
                     foreach (User user in users)
                     {
                         byte[] movementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
@@ -4880,7 +4880,7 @@ namespace HISP.Server
                             sender.SendPacket(upgraded);
 
                             // Change map sprite.
-                            User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true, true);
+                            User[] users = User.GetUsersAt(sender.User.X, sender.User.Y, true);
                             foreach (User user in users)
                             {
                                 byte[] movementPacket = PacketBuilder.CreateMovement(user.X, user.Y, user.CharacterId, user.Facing, PacketBuilder.DIRECTION_TELEPORT, true);
@@ -5434,7 +5434,7 @@ namespace HISP.Server
                     }
                 }
 
-                User[] usersHere = User.GetUsersAt(x, y, false, true);
+                User[] usersHere = User.GetUsersAt(x, y, false);
                 if(usersHere.Length > 0)
                 {
                     returnedMsg = Messages.FormatPlayerHereMessage(String.Join(", ", usersHere.Select(o => o.Username)));
@@ -6802,7 +6802,7 @@ namespace HISP.Server
 
         public static void UpdateNearbyArea(GameClient client)
         {
-            foreach (User nearbyUser in User.GetNearbyUsers(client.User.X, client.User.Y, false, true).Where(o => (o.Id != client.User.Id) && !o.MajorPriority && !o.MinorPriority))
+            foreach (User nearbyUser in User.GetNearbyUsers(client.User.X, client.User.Y, false).Where(o => (o.Id != client.User.Id) && !o.MajorPriority && !o.MinorPriority))
                 UpdateArea(nearbyUser.Client);
             
         }
@@ -6821,7 +6821,7 @@ namespace HISP.Server
             foreach (World.SpecialTile tile in tiles)
             {
                 UpdateAreaForAll(tile.X, tile.Y, true, false, null);
-                User[] usersHere = User.GetUsersAt(tile.X, tile.Y, true, true);
+                User[] usersHere = User.GetUsersAt(tile.X, tile.Y, true);
                 foreach (User user in usersHere.Where(o => includingSender ? true : o.Id != sender.User.Id))
                 {
                     byte[] patchDrawing = PacketBuilder.CreateDrawingUpdate(drawing);
@@ -6931,8 +6931,8 @@ namespace HISP.Server
         }
         public static void UpdatePlayersOnScreen(User forUser, int oldX, int oldY, int newX, int newY)
         {
-            User[] onScreenBefore = User.GetOnScreenUsers(oldX, oldY, true, true);
-            User[] onScreenNow = User.GetOnScreenUsers(newX, newY, true, true);
+            User[] onScreenBefore = User.GetOnScreenUsers(oldX, oldY, true);
+            User[] onScreenNow = User.GetOnScreenUsers(newX, newY, true);
 
             User[] goneOffScreen = onScreenBefore.Except(onScreenNow).Where(o => o.Id != forUser.Id).ToArray();
             User[] goneOnScreen = onScreenNow.Except(onScreenBefore).Where(o => o.Id != forUser.Id).ToArray();
@@ -6962,7 +6962,7 @@ namespace HISP.Server
         {
             byte[] playerInfoBytes = PacketBuilder.CreatePlayerInfoUpdateOrCreate(user.X, user.Y, user.Facing, user.CharacterId, user.Username);
 
-            foreach (User onScreenUser in User.GetOnScreenUsers(user.X, user.Y, true, true).Where(o => o.Id != user.Id))
+            foreach (User onScreenUser in User.GetOnScreenUsers(user.X, user.Y, true).Where(o => o.Id != user.Id))
                     onScreenUser.Client.SendPacket(playerInfoBytes);
         }
 
@@ -7207,7 +7207,7 @@ namespace HISP.Server
             {
                 incBy = 16;
             }
-            if (horseMountInst.Breed.Id == 170) // Unipeg
+            if (horseMountInst.Breed.Id == HorseInfo.Breed.UNIPEG_ID) // Unipeg
             {
                 incBy = 17;
             }

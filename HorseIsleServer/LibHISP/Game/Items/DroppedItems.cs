@@ -90,7 +90,7 @@ namespace HISP.Game.Items
                 Database.RemoveDespawningItems();
 
                 foreach (DroppedItem item in droppedItemsList) item.DespawnTimer -= 5;
-                droppedItemsList.RemoveAll(o => (o.DespawnTimer <= 0 && !User.GetUsersAt(o.X, o.Y, true, true).Any()));
+                droppedItemsList.RemoveAll(o => (o.DespawnTimer <= 0 && !User.GetUsersAt(o.X, o.Y, true).Any()));
             }
         }
 

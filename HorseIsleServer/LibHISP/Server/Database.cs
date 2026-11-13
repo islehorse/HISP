@@ -3936,7 +3936,7 @@ namespace HISP.Server
         {
             using (DbConnection db = connectDb())
             {
-                DbCommand sqlCommand = createCommand(db, "DELETE FROM BuddyList WHERE (sendPlayerId=@playerId AND recvPlayerId=@friendId) OR (sendPlayerId=@friendid AND recvPlayerId=@playerId)");
+                DbCommand sqlCommand = createCommand(db, "DELETE FROM BuddyList WHERE (sendPlayerId=@playerId AND recvPlayerId=@friendId) OR (sendPlayerId=@friendId AND recvPlayerId=@playerId)");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 addWithValue(sqlCommand, "@friendId", friendId);
                 sqlCommand.Prepare();

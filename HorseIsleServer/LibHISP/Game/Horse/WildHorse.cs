@@ -109,7 +109,7 @@ namespace HISP.Game.Horse
 
         public void RandomWander()
         {
-            if (User.GetUsersAt(this.X, this.Y, true, true).Length > 0)
+            if (User.GetUsersAt(this.X, this.Y, true).Length > 0)
                 return;
 
             int tries = 0;
@@ -241,7 +241,7 @@ namespace HISP.Game.Horse
             {
                 wildHorse.Timeout -= 1;
 
-                if (User.GetUsersAt(wildHorse.X, wildHorse.Y, true, true).Length > 0)
+                if (User.GetUsersAt(wildHorse.X, wildHorse.Y, true).Any())
                     continue;
 
                 if (wildHorse.Timeout <= 0)

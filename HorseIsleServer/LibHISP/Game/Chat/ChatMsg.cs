@@ -213,7 +213,7 @@ namespace HISP.Game.Chat
                 return User.OnlineUsers.Where(o => 
                         (!o.MuteBuddy && !o.MuteAll) &&
                         (o.Id != user.Id) &&
-                        (o.Friends.List.Contains(user.Id)) &&
+                        (o.Friends.IsFriend(user.Id)) &&
                         (!o.MutePlayer.IsUserMuted(user)))
                         .Select(o => o.Client).ToArray();
             }
@@ -221,7 +221,7 @@ namespace HISP.Game.Chat
             {
                 if(World.InIsle(user.X,user.Y))
                 {
-                    return User.GetUsersInIsle(World.GetIsle(user.X, user.Y), true, false).Where(o => 
+                    return User.GetUsersInIsle(World.GetIsle(user.X, user.Y), true).Where(o => 
                         (!o.MuteIsland && !o.MuteAll) &&
                         (o.Id != user.Id) &&
                         (!o.MutePlayer.IsUserMuted(user)))
@@ -231,7 +231,7 @@ namespace HISP.Game.Chat
             }
             else if (channel == ChatChannel.Here)
             {
-                return User.GetUsersAt(user.X, user.Y, true, false).Where(o => 
+                return User.GetUsersAt(user.X, user.Y, true).Where(o => 
                         (!o.MuteHere && !o.MuteAll) &&
                         (o.Id != user.Id) &&
                         (!o.MutePlayer.IsUserMuted(user)))
@@ -239,7 +239,7 @@ namespace HISP.Game.Chat
             }
             else if (channel == ChatChannel.Near)
             {
-                return User.GetNearbyUsers(user.X, user.Y, true, false).Where(o =>
+                return User.GetNearbyUsers(user.X, user.Y, true).Where(o =>
                         (!o.MuteNear && !o.MuteAll) &&
                         (o.Id != user.Id) &&
                         (!o.MutePlayer.IsUserMuted(user)))

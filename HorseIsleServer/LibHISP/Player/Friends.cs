@@ -14,15 +14,21 @@ namespace HISP.Player
         {
             get
             {
-                return List.Where(o => o != baseUser.Id && User.IsUserOnline(o)).Select(o => User.GetUserById(o)).ToArray();
+                return List.Where(o => User.IsUserOnline(o)).Select(o => User.GetUserById(o)).ToArray();
             }
         }
-
+        public int[] Offline 
+        {
+            get
+            {
+                return List.Where(o => !User.IsUserOnline(o)).ToArray();
+            }
+        }
         public int[] List
         {
             get
             {
-                return list.ToArray();
+                return list.Where(o => o != baseUser.Id).ToArray();
             }
         }
 

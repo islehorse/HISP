@@ -526,6 +526,9 @@ namespace HISP.Game.Horse
 
         public class Breed
         {
+
+            public const int UNIPEG_ID = 170;
+
             public int Id;
             public string Name;
             public string Description;
