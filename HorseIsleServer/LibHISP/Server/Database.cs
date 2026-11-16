@@ -76,7 +76,7 @@ namespace HISP.Server
             if (ConfigReader.SqlBackend.Equals(Database.SQL_BACKEND_MARIADB, StringComparison.InvariantCultureIgnoreCase))
                 MySqlConnection.ClearAllPools();
             else if (ConfigReader.SqlBackend.Equals(Database.SQL_BACKEND_SQLITE, StringComparison.InvariantCultureIgnoreCase))
-                SqliteConnection.ClearAllPools();   
+                SqliteConnection.ClearAllPools();
         }
 
         public static bool TryExecuteSqlQuery(DbConnection db, string query)
@@ -901,9 +901,7 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "SELECT description FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
-                string description = sqlCommand.ExecuteScalar().ToString();
-                
-                return description;
+                return sqlCommand.ExecuteScalar() as String;
             }
         }
         public static string GetRanchTitle(int ranchId)
@@ -913,9 +911,7 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "SELECT title FROM Ranches WHERE ranchId=@ranchId");
                 addWithValue(sqlCommand, "@ranchId", ranchId);
                 sqlCommand.Prepare();
-                string title = sqlCommand.ExecuteScalar().ToString();
-                
-                return title;
+                return sqlCommand.ExecuteScalar() as String;
             }
         }
         public static int GetRanchOwner(int ranchId)
@@ -1845,10 +1841,7 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "SELECT drawing FROM DrawingRooms WHERE roomId=@room");
                 addWithValue(sqlCommand, "@room", room);
                 sqlCommand.Prepare();
-                string drawing = sqlCommand.ExecuteScalar().ToString();
-
-                
-                return drawing;
+                return sqlCommand.ExecuteScalar() as String;
             }
         }
         public static string LoadDrawingSlot3(int playerId)
@@ -1861,10 +1854,7 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "SELECT drawing3 FROM SavedDrawings WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
-                string drawing = sqlCommand.ExecuteScalar().ToString();
-
-                
-                return drawing;
+                return sqlCommand.ExecuteScalar() as String;
             }
         }
         public static string LoadDrawingSlot2(int playerId)
@@ -1877,10 +1867,7 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "SELECT drawing2 FROM SavedDrawings WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
-                string drawing = sqlCommand.ExecuteScalar().ToString();
-
-                
-                return drawing;
+                return sqlCommand.ExecuteScalar() as String;
             }
         }
         public static string LoadDrawingSlot1(int playerId)
@@ -1893,10 +1880,7 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "SELECT drawing1 FROM SavedDrawings WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
-                string drawing = sqlCommand.ExecuteScalar().ToString();
-
-                
-                return drawing;
+                return sqlCommand.ExecuteScalar() as String;
             }
         }
         public static void SaveDrawingSlot1(int playerId, string drawing)
@@ -2004,8 +1988,7 @@ namespace HISP.Server
                 using (DbConnection db = connectDb())
                 {
                     DbCommand sqlCommand = createCommand(db, "SELECT lastLoadedInVersion FROM World ORDER BY StartTime DESC");
-                    string lastVersion = sqlCommand.ExecuteScalar().ToString();             
-                    return lastVersion;
+                    return sqlCommand.ExecuteScalar() as String;
                 }
             }
             catch (Exception) // table not found? must have been before v1.7.20.
@@ -2131,9 +2114,7 @@ namespace HISP.Server
             {
                 DbCommand sqlCommand = createCommand(db, "SELECT weather FROM Weather WHERE area=@area");
                 addWithValue(sqlCommand, "@area", area);
-                string Weather = sqlCommand.ExecuteScalar().ToString();
-                
-                return Weather;
+                return sqlCommand.ExecuteScalar() as String;
             }
         }
 
@@ -2694,7 +2675,7 @@ namespace HISP.Server
                     DbCommand sqlCommand = createCommand(db, "SELECT salt FROM Users WHERE username=@name");
                     addWithValue(sqlCommand, "@name", username);
                     sqlCommand.Prepare();
-                    string expectedHash = sqlCommand.ExecuteScalar().ToString();
+                    string expectedHash = sqlCommand.ExecuteScalar() as String;
                     
                     return Helper.StringToByteArray(expectedHash);
                 }
@@ -3106,10 +3087,7 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "SELECT gender FROM Users WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
-                string gender = sqlCommand.ExecuteScalar().ToString();
-                
-
-                return gender;
+                return sqlCommand.ExecuteScalar() as String;
             }
         }
         public static int GetLoginCount(int playerId)
@@ -3233,10 +3211,7 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "SELECT moderator FROM Users WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
-                bool admin = sqlCommand.ExecuteScalar().ToString() == "YES";
-
-
-                return admin;
+                return sqlCommand.ExecuteScalar() as String== "YES";
             }
         }
         public static bool GetUserAdmin(int playerId)
@@ -3246,9 +3221,8 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "SELECT admin FROM Users WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
-                bool admin = sqlCommand.ExecuteScalar().ToString() == "YES";
+                bool admin = sqlCommand.ExecuteScalar() as String == "YES";
                 
-
                 return admin;
             }
         }
@@ -3262,7 +3236,7 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "SELECT subscriber FROM UserExt WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", playerId);
                 sqlCommand.Prepare();
-                bool subscribed = sqlCommand.ExecuteScalar().ToString() == "YES";
+                bool subscribed = sqlCommand.ExecuteScalar() as String == "YES";
                 
 
                 return subscribed; 
@@ -3854,10 +3828,7 @@ namespace HISP.Server
                     DbCommand sqlCommand = createCommand(db, "SELECT moderator FROM Users WHERE username=@name");
                     addWithValue(sqlCommand, "@name", username);
                     sqlCommand.Prepare();
-                    string modStr = sqlCommand.ExecuteScalar().ToString();
-
-                    
-                    return modStr == "YES";
+                    return sqlCommand.ExecuteScalar() as String == "YES";
                 }
                 else
                 {
@@ -3876,10 +3847,7 @@ namespace HISP.Server
                     DbCommand sqlCommand = createCommand(db, "SELECT admin FROM Users WHERE username=@name");
                     addWithValue(sqlCommand, "@name", username);
                     sqlCommand.Prepare();
-                    string adminStr = sqlCommand.ExecuteScalar().ToString();
-
-                    
-                    return adminStr == "YES";
+                    return sqlCommand.ExecuteScalar() as String == "YES";
                 }
                 else
                 {
@@ -3969,9 +3937,7 @@ namespace HISP.Server
                 DbCommand sqlCommand = createCommand(db, "SELECT ipAddress FROM UserExt WHERE playerId=@playerId");
                 addWithValue(sqlCommand, "@playerId", id);
                 sqlCommand.Prepare();
-                string IpAddress = sqlCommand.ExecuteScalar().ToString();
-                
-                return IpAddress;
+                return sqlCommand.ExecuteScalar() as String;
             }
         }
         public static void SetIpAddress(int id, string ipAddress)
@@ -4077,10 +4043,7 @@ namespace HISP.Server
                     DbCommand sqlCommand = createCommand(db, "SELECT privateNotes FROM UserExt WHERE playerId=@id");
                     addWithValue(sqlCommand, "@id", userId);
                     sqlCommand.Prepare();
-                    string privateNotes = sqlCommand.ExecuteScalar().ToString();
-
-                    
-                    return privateNotes;
+                    return sqlCommand.ExecuteScalar() as String;
                 }
                 else
                 {
@@ -5095,10 +5058,7 @@ namespace HISP.Server
                     DbCommand sqlCommand = createCommand(db, "SELECT profilePage FROM UserExt WHERE playerId=@id");
                     addWithValue(sqlCommand, "@id", id);
                     sqlCommand.Prepare();
-                    string profilePage = sqlCommand.ExecuteScalar().ToString();
-
-                    
-                    return profilePage;
+                    return sqlCommand.ExecuteScalar() as String;
                 }
                 else
                 {
@@ -5118,10 +5078,7 @@ namespace HISP.Server
                     DbCommand sqlCommand = createCommand(db, "SELECT username FROM Users WHERE playerId=@id");
                     addWithValue(sqlCommand, "@id", userId);
                     sqlCommand.Prepare();
-                    string username = sqlCommand.ExecuteScalar().ToString();
-
-                    
-                    return username;
+                    return sqlCommand.ExecuteScalar() as String;
                 }
                 else
                 {
@@ -5158,7 +5115,7 @@ namespace HISP.Server
                     DbCommand sqlCommand = createCommand(db, "SELECT passHash FROM Users WHERE username=@name");
                     addWithValue(sqlCommand, "@name", username);
                     sqlCommand.Prepare();
-                    string expectedHash = sqlCommand.ExecuteScalar().ToString();
+                    string expectedHash = sqlCommand.ExecuteScalar() as String;
 
                     
                     return Helper.StringToByteArray(expectedHash);

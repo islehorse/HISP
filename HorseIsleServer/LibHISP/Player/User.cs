@@ -764,6 +764,8 @@ namespace HISP.Player
         
         public User(GameClient baseClient, int userId)
         {
+            this.Id = userId;
+
             if (!Database.CheckUserExist(userId))
                 throw new InvalidOperationException("User " + userId + " not found in database!");
 
@@ -773,9 +775,8 @@ namespace HISP.Player
                 this.NewPlayer = true;
             }
 
-
-            this.administrator = Database.GetUserAdmin(Id);
-            this.moderator = Database.GetUserModerator(Id);
+            this.administrator = Database.GetUserAdmin(userId);
+            this.moderator = Database.GetUserModerator(userId);
 
             this.chatViolations = Database.GetChatViolations(userId);
             this.x = Database.GetPlayerX(userId);
@@ -794,13 +795,12 @@ namespace HISP.Player
             this.thirst = Database.GetPlayerThirst(userId);
             this.tired = Database.GetPlayerTiredness(userId);
 
-            if(Ranch.GetOwnedRanch(this.Id))
-                this.OwnedRanch = Ranch.GetRanchOwnedBy(this.Id);
+            if(Ranch.GetOwnedRanch(userId))
+                this.OwnedRanch = Ranch.GetRanchOwnedBy(userId);
 
             this.EquipedCompetitionGear = new CompetitionGear(userId);
             this.EquipedJewelry = new Jewelry(userId);
 
-            this.Id = userId;
             this.Client = baseClient;
             this.Facing = PacketBuilder.DIRECTION_DOWN;
             this.Gender = Database.GetGender(userId);
